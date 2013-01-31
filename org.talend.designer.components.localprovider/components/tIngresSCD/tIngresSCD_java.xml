@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -15,13 +16,16 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Ingres</FAMILY>
     <FAMILY>Business_Intelligence/DB_SCD</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MIN_INPUT="1" MAX_INPUT="1" MAX_OUTPUT="0"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -32,6 +36,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -41,6 +46,7 @@
       REPOSITORY_VALUE="DATABASE:INGRES"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
 	<PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -48,6 +54,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
@@ -56,6 +63,7 @@
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	>
 	</PARAMETER>
+
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
@@ -65,6 +73,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -74,6 +83,7 @@
     >
       <DEFAULT>"II7"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -84,6 +94,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -94,6 +105,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -104,6 +116,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -112,6 +125,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -119,9 +133,11 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="60">
          <DEFAULT/>
     </PARAMETER>
+
     <PARAMETER
       NAME="SURROGATE_KEY"
       FIELD="COLUMN_LIST"
@@ -130,6 +146,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SK_CREATION"
       FIELD="CLOSED_LIST"
@@ -143,6 +160,7 @@
         <ITEM NAME="TABLE_MAX"        VALUE="TABLE_MAX"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SK_DB_SEQUENCE"
       FIELD="TEXT"
@@ -152,6 +170,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SK_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
@@ -161,6 +180,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SK_ROUTINE"
       FIELD="TEXT"
@@ -170,6 +190,7 @@
     >
       <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
@@ -181,6 +202,7 @@
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_SAVE_MEM_MODE"
       FIELD="CHECK"
@@ -188,6 +210,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L0"
       FIELD="CHECK"
@@ -196,6 +219,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L0_FIELDS"
       FIELD="TABLE"
@@ -208,6 +232,7 @@
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
@@ -216,6 +241,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L1_FIELDS"
       FIELD="TABLE"
@@ -228,6 +254,7 @@
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="ONLY_UPDATE_ACTIVE"
       FIELD="CHECK"
@@ -236,6 +263,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L2"
       FIELD="CHECK"
@@ -244,6 +272,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_FIELDS"
       FIELD="TABLE"
@@ -256,6 +285,7 @@
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_STARTDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -264,6 +294,7 @@
       SHOW="false"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_STARTDATE_VALUE"
       FIELD="CLOSED_LIST"
@@ -276,6 +307,7 @@
         <ITEM NAME="INPUT_FIELD"      VALUE="INPUT_FIELD"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_STARTDATE_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
@@ -284,6 +316,7 @@
       SHOW="false"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_ENDDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -292,6 +325,7 @@
       SHOW="false"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_ENDDATE_VALUE"
       FIELD="CLOSED_LIST"
@@ -304,6 +338,7 @@
         <ITEM NAME="FIXED_VALUE"  VALUE="FIXED_VALUE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_ENDDATE_FIXED_VALUE"
       FIELD="TEXT"
@@ -313,6 +348,7 @@
     >
       <DEFAULT>"2500"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L2_ACTIVE"
       FIELD="CHECK"
@@ -322,6 +358,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_ACTIVE_FIELD"
       FIELD="COLUMN_LIST"
@@ -330,6 +367,7 @@
       SHOW="false"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L2_VERSION"
       FIELD="CHECK"
@@ -339,6 +377,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
@@ -347,6 +386,7 @@
       SHOW="false"
     >
     </PARAMETER>
+
     <PARAMETER
     	NAME="NOTE"
     	FIELD="LABEL"
@@ -356,6 +396,7 @@
     >
     	<DEFAULT>(Version must be an Integer)</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_L3"
       FIELD="CHECK"
@@ -364,6 +405,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="L3_FIELDS"
       FIELD="TABLE"
@@ -377,6 +419,7 @@
         <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -389,6 +432,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -396,7 +440,9 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
     <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="DEBUG"
@@ -406,11 +452,13 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" />
+       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_INSERTED" TYPE="id_Integer" AVAILABILITY="AFTER"/>

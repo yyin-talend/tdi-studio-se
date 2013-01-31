@@ -5,12 +5,15 @@
 		HAS_CONDITIONAL_OUTPUTS="true">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
+
   <FAMILIES>
     <FAMILY>Business_Intelligence/OLAP_Cube/Palo</FAMILY>
   </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
+
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
 		<CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -21,7 +24,9 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
+
 	<PARAMETERS>
+
 <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -29,6 +34,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -36,6 +42,7 @@
       NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
+
 	<PARAMETER
 		NAME="SERVER"
 		FIELD="TEXT"
@@ -46,6 +53,7 @@
   	>
 	  <DEFAULT>"localhost"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="SERVERPORT"
 		FIELD="TEXT"
@@ -56,6 +64,7 @@
   	>
 	  <DEFAULT>"7777"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="USERNAME"
 		FIELD="TEXT"
@@ -66,6 +75,7 @@
   	>
 	  <DEFAULT>"admin"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PASS"
 		FIELD="TEXT"
@@ -76,6 +86,7 @@
 	>
 	  <DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="DATABASE"
 		FIELD="TEXT"
@@ -84,6 +95,8 @@
 	>
 	  <DEFAULT>"Database"</DEFAULT>
 	</PARAMETER>
+
+
 	<PARAMETER
 		NAME="CUBE"
 		FIELD="TEXT"
@@ -92,6 +105,8 @@
  	>
 	  <DEFAULT>"Cube"</DEFAULT>
 	</PARAMETER>
+
+
 	<PARAMETER
       	NAME="ERROR_HANDLING"
 	      FIELD="CLOSED_LIST"
@@ -103,8 +118,12 @@
         <ITEM NAME="DIE_ON_MISSING_ELEMENT" VALUE="DIE_ON_MISSING_ELEMENT"/>
       </ITEMS>
     </PARAMETER>
+
+
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="20" SHOW="true">
 		</PARAMETER>
+
+
 		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
 			REQUIRED="true" NUM_ROW="30" CONTEXT="REJECT" SHOW="true">
 			<TABLE READONLY="true">
@@ -120,6 +139,7 @@
 		SHOW="false"
     	>
     	</PARAMETER>
+
     <PARAMETER
 		  NAME="ELEMENTS_TO_CHECK"
 		  FIELD="TABLE"
@@ -137,21 +157,26 @@
 			<ITEM NAME="DEFAULT_ELEMENT" FIELD="TEXT" VALUE="&quot;&quot;" />
 		  </ITEMS>
 	</PARAMETER>
+
+
 	</PARAMETERS>
 	 <ADVANCED_PARAMETERS>
 	<PARAMETER NAME="DEPLOY_PALO_LIBS" FIELD="CHECK" NUM_ROW="200" SHOW="false">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
     <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="paloIX3" MODULE="paloIX3.jar" REQUIRED="true" />
-      <IMPORT NAME="httpclient-4.0.1" MODULE="httpclient-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpclient-4.0.1.jar" />
-      <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpmime-4.0.1.jar" />
+      <IMPORT NAME="httpclient-4.0.1" MODULE="httpclient-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpclient-4.0.1.jar" REQUIRED="true" />
+      <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpmime-4.0.1.jar" REQUIRED="true" />
       <IMPORT NAME="httpcore-4.0" MODULE="httpcore-4.0.jar" REQUIRED="true" />
-      <IMPORT NAME="commons-logging-1.1.1" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" />
-      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" />
+      <IMPORT NAME="commons-logging-1.1.1" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" REQUIRED="true" />
+      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
+
 	<RETURNS></RETURNS>
 </COMPONENT>

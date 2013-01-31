@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070313A"
@@ -14,12 +15,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/MySQL</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
@@ -32,6 +36,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -40,6 +45,7 @@
       REPOSITORY_VALUE="DATABASE:MYSQL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
 		NAME="DB_VERSION"
 		FIELD="CLOSED_LIST"
@@ -51,6 +57,7 @@
 			<ITEM NAME="MYSQL_4" VALUE="MYSQL_4" />
 		</ITEMS>
 	</PARAMETER>
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -58,6 +65,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -65,6 +73,7 @@
       NUM_ROW="15"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"/>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -84,6 +93,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -94,6 +104,7 @@
     >
       <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -104,6 +115,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -114,6 +126,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -124,6 +137,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -131,6 +145,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -147,6 +162,7 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -163,6 +179,7 @@
         <ITEM NAME="INSERT_IGNORE" VALUE="INSERT_IGNORE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -170,6 +187,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -182,6 +200,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
 	<PARAMETER
 	  NAME="NOTE"
       FIELD="LABEL"
@@ -210,6 +229,7 @@
     >
 	<DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -217,6 +237,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -225,7 +246,9 @@
     >
       <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
   		NAME="PROPERTIES"
@@ -260,6 +283,7 @@
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
 		NAME="USE_BATCH_SIZE"
 	  	FIELD="CHECK"
@@ -268,6 +292,7 @@
 	>
 		<DEFAULT>true</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="BATCH_SIZE"
 		FIELD="TEXT"
@@ -276,6 +301,7 @@
 	>
 	<DEFAULT>10000</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -285,6 +311,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -294,6 +321,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -302,9 +330,11 @@
       NB_LINES="3"
     >
       <ITEMS>
+
         <ITEM NAME="NAME" VALUE='"colname"'/>
 		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
+
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
             <ITEM NAME="BEFORE" VALUE="BEFORE"/>
@@ -312,9 +342,12 @@
             <ITEM NAME="REPLACE" VALUE="REPLACE"/>
           </ITEMS>
         </ITEM>
+
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
+
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -322,6 +355,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -337,6 +371,7 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
+
      <PARAMETER
       NAME="USE_HINT_OPTIONS"
       FIELD="CHECK"
@@ -344,6 +379,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HINT_OPTIONS"
       FIELD="TABLE"
@@ -374,6 +410,7 @@
 	  NUM_ROW="17">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
   	  NAME="ON_DUPLICATE_KEY_UPDATE"
   	  FIELD="CHECK"
@@ -382,6 +419,8 @@
 	  >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
+
 	<PARAMETER
       NAME="DUPLICATED_KEYS"
       FIELD="TABLE"
@@ -395,6 +434,7 @@
 		<ITEM NAME="DUPLICATED_VALUE" VALUE='""'/>
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER
 		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
@@ -403,13 +443,16 @@
 				OR (DATA_ACTION == 'UPDATE_OR_INSERT') OR (DATA_ACTION == 'DELETE') ">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" />
-      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-3.1.14-bin.jar" />
+      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_5') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-3.1.14-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_4') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

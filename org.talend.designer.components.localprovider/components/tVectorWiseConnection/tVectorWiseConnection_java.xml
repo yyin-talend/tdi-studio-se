@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070417A"
@@ -11,13 +13,16 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/VectorWise</FAMILY>
     <FAMILY>ELT/Connections</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -27,7 +32,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -35,6 +42,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:VECTORWISE"
     />
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -44,6 +52,7 @@
     >
       <DEFAULT>VectorWise</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
@@ -52,6 +61,8 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -60,6 +71,7 @@
     >
       <DEFAULT>"II7"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -69,6 +81,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -78,6 +91,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -87,6 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
@@ -94,6 +109,7 @@
       REQUIRED="true"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
@@ -103,15 +119,18 @@
     >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
 			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" />
+       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
    <RETURNS/>

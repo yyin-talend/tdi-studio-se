@@ -4,6 +4,7 @@
        SERIAL=""
       VERSION="0.101"
        STATUS="ALPHA"
+
 COMPATIBILITY="ALL"
        AUTHOR="Talend"
  RELEASE_DATE="2010012"
@@ -11,12 +12,15 @@ COMPATIBILITY="ALL"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/eXist</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +30,9 @@ COMPATIBILITY="ALL"
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
 	<PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -34,6 +40,7 @@ COMPATIBILITY="ALL"
       >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -41,6 +48,7 @@ COMPATIBILITY="ALL"
       NUM_ROW="1"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
+
     <PARAMETER
     	NAME="URI"
     	FIELD="TEXT"
@@ -50,6 +58,7 @@ COMPATIBILITY="ALL"
     	>
       <DEFAULT>"xmldb:exist://localhost:8080/exist/xmlrpc"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
     	NAME="COLLECTION"
     	FIELD="TEXT"
@@ -59,6 +68,7 @@ COMPATIBILITY="ALL"
     	>
       <DEFAULT>"/db"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
     	NAME="DRIVER"
     	FIELD="TEXT"
@@ -68,6 +78,7 @@ COMPATIBILITY="ALL"
     	>
       <DEFAULT>"org.exist.xmldb.DatabaseImpl"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
     	NAME="USERNAME"
     	FIELD="TEXT"
@@ -77,6 +88,7 @@ COMPATIBILITY="ALL"
     	>
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
     	NAME="PASSWORD"
     	FIELD="TEXT"
@@ -86,11 +98,13 @@ COMPATIBILITY="ALL"
     	>
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="8" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="TARGET_TYPE"
       FIELD="CLOSED_LIST"
@@ -102,16 +116,20 @@ COMPATIBILITY="ALL"
         <ITEM NAME="ALL_CONTENTS"   VALUE="ALL_CONTENTS"/>
       </ITEMS>
     </PARAMETER>
+
   </PARAMETERS>
+
 	<ADVANCED_PARAMETERS>
+
 	</ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Java-eXist" MODULE="exist.jar" REQUIRED="true" />
        <IMPORT NAME="Java-xmlrpc" MODULE="xmldb.jar" REQUIRED="true" />
        <IMPORT NAME="Java-xmlrpc-client" MODULE="xmlrpc-client-3.1.2.jar" REQUIRED="true" />
        <IMPORT NAME="Java-xmlrpc-common" MODULE="xmlrpc-common-3.1.2.jar" REQUIRED="true" />
-       <IMPORT NAME="Java-log4j" MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" />
+       <IMPORT NAME="Java-log4j" MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
        <IMPORT NAME="Java-ws-commons-util" MODULE="ws-commons-util-1.0.2.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>

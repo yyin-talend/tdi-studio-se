@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070111A"
@@ -12,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -28,7 +32,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="BIND_HOSTNAME"
       FIELD="CHECK"
@@ -37,6 +43,7 @@
     >
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SERVERHOSTNAME"
       FIELD="TEXT"
@@ -45,6 +52,7 @@
     >
     	<DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -53,6 +61,7 @@
     >
     	<DEFAULT>3456</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TIMEOUT"
       FIELD="TEXT"
@@ -61,6 +70,7 @@
     >
     	<DEFAULT>6000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="UNCOMPRESS"
       FIELD="CHECK"
@@ -69,6 +79,7 @@
     >
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -76,6 +87,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
@@ -84,6 +96,7 @@
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
@@ -92,6 +105,7 @@
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ESCAPE_CHAR"
       FIELD="TEXT"
@@ -100,6 +114,7 @@
     >
       <DEFAULT>"""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TEXT_ENCLOSURE"
       FIELD="TEXT"
@@ -108,6 +123,7 @@
     >
       <DEFAULT>"""</DEFAULT>
     </PARAMETER>
+
    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -116,6 +132,7 @@
     >
       <DEFAULT/>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -128,6 +145,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
      FIELD="ENCODING_TYPE"
@@ -137,13 +155,17 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" />
+      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
    </RETURNS>
+
 </COMPONENT>

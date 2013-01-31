@@ -5,12 +5,15 @@
 		HAS_CONDITIONAL_OUTPUTS="true">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
+
   <FAMILIES>
     <FAMILY>Data_Quality</FAMILY>
   </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
+
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
 		<CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0"
@@ -28,12 +31,15 @@
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 			NUM_ROW="1">
 		</PARAMETER>
+
 		<PARAMETER NAME="CHECK_ALL" FIELD="RADIO" NUM_ROW="11" GROUP="MODE">
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="CUSTOMER" FIELD="RADIO" NUM_ROW="21" GROUP="MODE">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="CHECKCOLS" FIELD="TABLE" REQUIRED="true"
 			NUM_ROW="23" NB_LINES="7"
 			SHOW_IF="CUSTOMER == 'true'" GROUP="MODE">
@@ -57,21 +63,26 @@
 				<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false" />
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="25" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CUSTOMER == 'true'">
           <DEFAULT>Please note:
 (1) Nullable setting in this table is more preferential than the default schema.
 (2) Length checking is base on the value of the default schema.</DEFAULT>
         </PARAMETER>
+
 		<PARAMETER NAME="CHECK_ANOTHER" FIELD="RADIO" NUM_ROW="31" GROUP="MODE">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="SCHEMA_OTHER" FIELD="SCHEMA_TYPE"
 			REQUIRED="true" NUM_ROW="33" CONTEXT="OTHER"
 			SHOW_IF="CHECK_ANOTHER == 'true'" GROUP="MODE">
 		</PARAMETER>
+
 		<PARAMETER NAME="NOTE_CHECK_ANOTHER" FIELD="LABEL" REQUIRED="true" NUM_ROW="35" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CHECK_ANOTHER == 'true'">
           <DEFAULT>Please note: only index matching, for example, the second column of checking schema is correspond to the second of input schema</DEFAULT>
         </PARAMETER>
+
         <PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="40" REQUIRED="true" GROUP="MODE">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -84,6 +95,7 @@
 (2) Empty or NULL: 4
 (3) Length/Precision Error: 8</DEFAULT>
         </PARAMETER>
+
 		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
 			REQUIRED="true" NUM_ROW="50" CONTEXT="REJECT" SHOW="true">
 			<TABLE READONLY="true">
@@ -93,6 +105,7 @@
 					LENGTH="255" READONLY="false" CUSTOM="true" />
 			</TABLE>
 		</PARAMETER>
+
 	</PARAMETERS>
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="FAST_DATE_CHECK" FIELD="CHECK" NUM_ROW="1" REQUIRED="true">
@@ -113,10 +126,12 @@
 			</ITEMS>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
+
 	<CODEGENERATION>
 	  <IMPORTS>
-        <IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.4.jar" />
+        <IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.4.jar" REQUIRED="true" />
 	  </IMPORTS>
     </CODEGENERATION>
+
 	<RETURNS></RETURNS>
 </COMPONENT>

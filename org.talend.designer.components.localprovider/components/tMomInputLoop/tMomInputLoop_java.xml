@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
       PLATEFORM="ALL"
       SERIAL=""
       VERSION="0.102"
       STATUS="ALPHA"
+
       COMPATIBILITY="ALL"
       AUTHOR="Talend"
       RELEASE_DATE="20050320A"
@@ -12,12 +14,15 @@
       >
     <SIGNATURE />
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Technical</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL />
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
@@ -27,38 +32,48 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR" />
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER NAME="KEEPLISTENING" FIELD="CHECK" SHOW="true" NUM_ROW="10"
         SHOW_IF="(SERVER == 'JBOSS') OR (SERVER == 'WEBSPHERE') OR (SERVER == 'ACTIVEMQ' AND USEMAX == 'false')">
       <DEFAULT IF="(SERVER == 'JBOSS')">true</DEFAULT>
       <DEFAULT IF="(SERVER == 'WEBSPHERE')">false</DEFAULT>
       <DEFAULT IF="(SERVER == 'ACTIVEMQ')">false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="USE_CONNECTION" FIELD="CHECK" NUM_ROW="1">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST" FILTER="tMomConnection" NUM_ROW="1"
         SHOW_IF="USE_CONNECTION == 'true'" DYNAMIC_SETTINGS="true" />
+
     <PARAMETER NAME="STARTSERVER" FIELD="CHECK" NUM_ROW="60"
         SHOW_IF="SERVER == 'ACTIVEMQ'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="USEMAX" FIELD="CHECK" NUM_ROW="15"
         SHOW_IF="((USE_CONNECTION == 'true') or (SERVER == 'ACTIVEMQ')) AND (KEEPLISTENING == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="FAILOVER" FIELD="CHECK" NUM_ROW="15"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'ACTIVEMQ')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="TIMEOUT" FIELD="TEXT" NUM_ROW="12"
         SHOW_IF="(SERVER == 'JBOSS' and KEEPLISTENING == 'TRUE') or ((SERVER == 'ACTIVEMQ' or (USE_CONNECTION == 'true')) and KEEPLISTENING == 'false' and USEMAX == 'false')">
       <DEFAULT>1</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MAXMSG" FIELD="TEXT" NUM_ROW="17"
         SHOW_IF="((SERVER == 'ACTIVEMQ' or (USE_CONNECTION == 'true')) and KEEPLISTENING == 'false' and USEMAX == 'true')">
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="SERVER" FIELD="CLOSED_LIST" NUM_ROW="25"
         SHOW_IF="(USE_CONNECTION == 'false')">
       <ITEMS DEFAULT="WEBSPHERE">
@@ -67,6 +82,7 @@
         <ITEM NAME="ACTIVEMQ" VALUE="ActiveMQ" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="SERVERADDRESS" FIELD="TEXT" NUM_ROW="25"
         SHOW_IF="(USE_CONNECTION == 'false')">
       <DEFAULT>"localhost"</DEFAULT>
@@ -77,6 +93,7 @@
       <DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
       <DEFAULT IF="(SERVER == 'ACTIVEMQ')">"61616"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="SERVERS" FIELD="TABLE" NB_LINES="5" NUM_ROW="27"
         SHOW_IF="(SERVER == 'ACTIVEMQ' and FAILOVER == 'true')">
       <ITEMS>
@@ -84,16 +101,19 @@
         <ITEM NAME="SERVERS_PORT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="USER" FIELD="TEXT" REQUIRED="false" NUM_ROW="30">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     <PARAMETER NAME="PASS" FIELD="TEXT" REQUIRED="false" NUM_ROW="30">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="FROM" FIELD="TEXT" SHOW="true" NUM_ROW="35"
         SHOW_IF="(SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MSGTYPE" FIELD="CLOSED_LIST" NUM_ROW="35"
         SHOW_IF="(SERVER == 'JBOSS')or (SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')">
       <ITEMS DEFAULT="TOPIC">
@@ -101,10 +121,12 @@
         <ITEM NAME="QUEUE" VALUE="Queue" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="CHANNEL" FIELD="TEXT" NUM_ROW="35"
         SHOW_IF="(SERVER == 'WEBSPHERE') and (USE_CONNECTION == 'false')">
       <DEFAULT>"DC.SVRCONN"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MESSAGE_BODY_TYPE" FIELD="CLOSED_LIST" NUM_ROW="40">
       <ITEMS DEFAULT="TEXT">
         <ITEM NAME="TEXT" VALUE="Text" />
@@ -112,6 +134,7 @@
         <ITEM NAME="MAP" VALUE="Map" />
       </ITEMS>
     </PARAMETER>
+
     <!--PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="45">
       <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
@@ -134,39 +157,50 @@
       <TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
       </TABLE>
     </PARAMETER-->
+
     <PARAMETER NAME="IS_TRANSACTED" FIELD="CHECK" REQUIRED="false" NUM_ROW="45" SHOW="false">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="QM" FIELD="TEXT" NUM_ROW="50"
         SHOW_IF="(SERVER == 'WEBSPHERE') and (USE_CONNECTION == 'false')">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="QUEUE" FIELD="TEXT" NUM_ROW="50"
         SHOW_IF="(SERVER == 'WEBSPHERE') and (USE_CONNECTION == 'false')">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60"
         SHOW_IF="(SERVER == 'WEBSPHERE') AND (MESSAGE_BODY_TYPE != 'MAP') and (USE_CONNECTION == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MSG_ID" FIELD="TEXT" NUM_ROW="70"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE != 'MAP')">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="COMMIT" FIELD="CHECK" REQUIRED="true" NUM_ROW="80"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (BROWSE == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="ROLLBACK" FIELD="CHECK" REQUIRED="true" NUM_ROW="90"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (KEEPLISTENING == 'false') AND (COMMIT == 'false') AND (BROWSE == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
+
     <PARAMETER NAME="BROWSE" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (ROLLBACK == 'false') AND (COMMIT == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="30"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER != 'WEBSPHERE')">
       <ITEMS DEFAULT="AUTO_ACKNOWLEDGE">
@@ -175,10 +209,12 @@
         <ITEM NAME="DUPS_OK_ACKNOWLEDGE" VALUE="DUPS_OK_ACKNOWLEDGE" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="USE_MQ_HEADER" FIELD="CHECK" REQUIRED="false" NUM_ROW="40"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="SET_MQ_SSL_CIPHER" FIELD="CHECK" REQUIRED="false" NUM_ROW="50"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE')">
       <DEFAULT>"false"</DEFAULT>
@@ -205,26 +241,29 @@
       </ITEMS>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JBOSS REMOTING" MODULE="jboss-remoting.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-remoting.jar" />
+      <IMPORT NAME="JBOSS REMOTING" MODULE="jboss-remoting.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-remoting.jar" REQUIRED="true" />
       <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
-      <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jbossall-client.jar" />
+      <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jbossall-client.jar" REQUIRED_IF="SERVER == 'JBOSS'" />
       <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
       <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
       <IMPORT NAME="WEBSPHERE CONNECTOR" MODULE="websphere-connector-1_5.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
-      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.7.0.jar" />
-      <IMPORT NAME="JBOSS MESSAGING CLIENT" MODULE="jboss-messaging-client.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-messaging-client.jar" />
-      <IMPORT NAME="JBOSS AOP" MODULE="jboss-aop.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-aop.jar" />
-      <IMPORT NAME="JBOSS COMMON" MODULE="jboss-common-core.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-common-core.jar" />
-      <IMPORT NAME="JBOSS MDR" MODULE="jboss-mdr.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-mdr.jar" />
+      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.7.0.jar"  REQUIRED_IF="SERVER == 'ACTIVEMQ'" />
+      <IMPORT NAME="JBOSS MESSAGING CLIENT" MODULE="jboss-messaging-client.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-messaging-client.jar" REQUIRED="true" />
+      <IMPORT NAME="JBOSS AOP" MODULE="jboss-aop.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-aop.jar" REQUIRED="true" />
+      <IMPORT NAME="JBOSS COMMON" MODULE="jboss-common-core.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-common-core.jar" REQUIRED="true" />
+      <IMPORT NAME="JBOSS MDR" MODULE="jboss-mdr.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-mdr.jar" REQUIRED="true" />
       <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" />
       <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />
-      <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.13.jar" />
+      <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.13.jar" REQUIRED="false" />
       <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
   </RETURNS>
+
 </COMPONENT>

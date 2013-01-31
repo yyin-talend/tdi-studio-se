@@ -1,15 +1,19 @@
 <COMPONENT>
+
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA"
 		COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A"
 		STARTABLE="true">
 		<SIGNATURE />
 	</HEADER>
+
   <FAMILIES>
     <FAMILY>Business/Microsoft_CRM</FAMILY>
   </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
+
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" />
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
@@ -19,7 +23,9 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
+
 	<PARAMETERS>
+
 		<PARAMETER NAME="AUTH_TYPE" FIELD="CLOSED_LIST" NUM_ROW="5"
 			REQUIRED="true" REPOSITORY_VALUE="ENTITYNAME">
 			<ITEMS DEFAULT="ON_PREMISE">
@@ -28,39 +34,50 @@
 				<!--<ITEM NAME="IFD" VALUE="IFD" />-->
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="ENDPOINTURL" FIELD="TEXT" NUM_ROW="10"
 			REQUIRED="true" SHOW_IF="AUTH_TYPE=='ON_PREMISE'">
 			<DEFAULT>"http://192.168.0.22/MSCrmServices/2007/CrmService.asmx"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="ORGNAME" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
 			<DEFAULT>"talend"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
 			<DEFAULT>"crm1"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PASSWORD" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
 			<DEFAULT>"crm"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="DOMAIN" FIELD="TEXT" NUM_ROW="30" REQUIRED="true" SHOW_IF="AUTH_TYPE=='ON_PREMISE'">
 			<DEFAULT>"192.168.0.22"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="HOST" FIELD="TEXT" NUM_ROW="30" REQUIRED="true">
 			<DEFAULT>"192.168.0.22"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PORT" FIELD="TEXT" NUM_ROW="30" REQUIRED="true" SHOW_IF="AUTH_TYPE=='ON_PREMISE'">
 			<DEFAULT>80</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="ACTION" FIELD="CLOSED_LIST" NUM_ROW="40"
 			REQUIRED="true">
 			<ITEMS DEFAULT="insert">
 				<ITEM NAME="insert" VALUE="insert" />
 				<ITEM NAME="update" VALUE="update" />
 				<ITEM NAME="delete" VALUE="delete" />
+
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="TIMEOUT" FIELD="TEXT" NUM_ROW="40" REQUIRED="true">
 			<DEFAULT>2</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="ENTITYNAME" FIELD="CLOSED_LIST" NUM_ROW="50"
 			REQUIRED="true">
 			<ITEMS DEFAULT="Contact">
@@ -207,11 +224,14 @@
 <ITEM NAME="CustomEntity" VALUE="CustomEntity" />
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="CUSTOM_ENTITY_NAME" FIELD="TEXT" NUM_ROW="50" SHOW_IF="ENTITYNAME=='CustomEntity'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_ENTITY_NAME">
 			<DEFAULT>"customEntityName"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="60"
 			REQUIRED="true">
+
 			<TABLE IF="ACTION=='delete'">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
@@ -4122,6 +4142,7 @@
 <COLUMN KEY="false" LENGTH="0" NAME="stepname" TYPE="id_String"/>
 <COLUMN KEY="false" LENGTH="0" NAME="workflowlogid" TYPE="id_Object"/>
 </TABLE>
+
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <TABLE IF="(ENTITYNAME=='Account') and (ACTION=='update')">
 <COLUMN KEY="true" LENGTH="0" NAME="Id" TYPE="id_Object" NULLABLE="false" READONLY="true" />
@@ -8053,39 +8074,47 @@
 <COLUMN KEY="false" LENGTH="0" NAME="status" TYPE="id_Integer"/>
 <COLUMN KEY="false" LENGTH="0" NAME="stepname" TYPE="id_String"/>
 </TABLE>
+
 <TABLE IF="ENTITYNAME=='CustomEntity'">
 </TABLE>
+
 		</PARAMETER>
+
 		<PARAMETER NAME="LOOKUP_MAPPING" FIELD="TABLE" REQUIRED="false"	NUM_ROW="70" NB_LINES="3" SHOW_IF="(ACTION=='insert') OR (ACTION=='update')">
 			<ITEMS>
 				<ITEM NAME="INPUT_COLUMN" FIELD="COLUMN_LIST" />
 				<ITEM NAME="TYPE" FIELD="String" />
 			</ITEMS>
 		</PARAMETER>
+
 	</PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="REUSE_HTTP_CLIENT" FIELD="CHECK" NUM_ROW="10"
 			REQUIRED="true">
 			<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="DEBUG" FIELD="CHECK" NUM_ROW="20"
 			REQUIRED="false" SHOW="false">
 			<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="axiom-api"
-				MODULE="axiom-api-1.2.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.8.jar" />
-			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.8.jar" />
+				MODULE="axiom-api-1.2.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.8.jar" REQUIRED="true" />
+			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.8.jar" REQUIRED="true" />
 			<IMPORT NAME="axis2-kernel" MODULE="axis2-kernel-1.5.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-kernel-1.5.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.5.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.5.jar" />
-			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.5.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.5.jar" />
+			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.5.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.5.jar" REQUIRED="true" />
+			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.5.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.5.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="commons-httpclient"
-				MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.1.jar" />
+				MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.1.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="crm4client" MODULE="crm4client.jar"
@@ -8108,14 +8137,17 @@
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" />
+			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED="true" />
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" />
   			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" />
 	        <IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true"/>
             <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true"/>
+
 		</IMPORTS>
 	</CODEGENERATION>
+
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
   	</RETURNS>
+
 </COMPONENT>

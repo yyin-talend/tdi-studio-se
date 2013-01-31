@@ -11,12 +11,15 @@
   >
     <SIGNATURE />
   </HEADER>
+
   <FAMILIES>
     <FAMILY>File/Input</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL />
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0"
@@ -28,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR" />
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -39,6 +44,7 @@
         <COLUMN NAME="line" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
@@ -47,6 +53,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
@@ -54,6 +61,7 @@
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
@@ -61,6 +69,7 @@
     >
       <DEFAULT/>
     </PARAMETER>
+
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
@@ -68,6 +77,7 @@
     >
       <DEFAULT/>
     </PARAMETER>
+
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
@@ -75,6 +85,7 @@
     >
       <DEFAULT />
     </PARAMETER>
+
     <PARAMETER
       NAME="REMOVE_EMPTY_ROW"
       FIELD="CHECK"
@@ -89,8 +100,11 @@
     	NUM_ROW="60">
 	<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -100,6 +114,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RANDOM"
       FIELD="CHECK"
@@ -108,6 +123,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="NB_RANDOM"
       FIELD="TEXT"
@@ -117,13 +133,17 @@
     >
       <DEFAULT>10</DEFAULT>
     </PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
   <IMPORTS>
-	<IMPORT NAME="Talend File Enhanced" MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar" />
+	<IMPORT NAME="Talend File Enhanced" MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar" REQUIRED="true" />
   </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
 	</RETURNS>
+
 </COMPONENT>

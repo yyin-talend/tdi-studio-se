@@ -13,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Teradata</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -29,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -37,6 +41,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:TERADATA"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -45,6 +50,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -54,6 +60,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -63,6 +70,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -72,6 +80,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -80,6 +89,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -87,6 +97,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -99,6 +110,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -107,6 +119,7 @@
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -114,7 +127,9 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER
 		NAME="PROPERTIES"
@@ -124,12 +139,14 @@
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" />
+		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_INSERTED" TYPE="id_Integer" AVAILABILITY="AFTER"/>

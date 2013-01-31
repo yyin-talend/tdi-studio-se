@@ -12,12 +12,14 @@
    >
       <SIGNATURE></SIGNATURE>
    </HEADER>
+
   <FAMILIES>
     <FAMILY>Data_Quality/Matching</FAMILY>
   </FAMILIES>
    <DOCUMENTATION>
       <URL/>
    </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MIN_INPUT="2" MAX_INPUT="2" MIN_OUTPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="LOOKUP"/>
@@ -28,6 +30,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="SCHEMA"
@@ -40,6 +43,7 @@
         <COLUMN NAME="MATCHING" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="MATCHING_TYPE"
       FIELD="CLOSED_LIST"
@@ -52,6 +56,7 @@
         <ITEM NAME="DOUBLEMETAPHONE" VALUE="matchDoubleMetaphone" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="CASE_SENSITIVE"
       FIELD="CHECK"
@@ -61,6 +66,7 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="LOOKUP_COLUMN"
       FIELD="LOOKUP_COLUMN_LIST"
@@ -68,6 +74,7 @@
       NUM_ROW="2"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="MIN"
       FIELD="TEXT"
@@ -77,6 +84,7 @@
     >
         <DEFAULT>0</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="MAX"
       FIELD="TEXT"
@@ -86,6 +94,8 @@
     >
         <DEFAULT>0</DEFAULT>
     </PARAMETER>
+
+
     <PARAMETER
       NAME="MATCH"
       FIELD="PREV_COLUMN_LIST"
@@ -93,6 +103,7 @@
       NUM_ROW="11"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="GET_UNIQUE"
       FIELD="CHECK"
@@ -101,6 +112,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ITEMSEPARATOR"
       FIELD="TEXT"
@@ -110,13 +122,16 @@
     >
       <DEFAULT>","</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Commons-Codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" />
-       <IMPORT NAME="Commons-Lang" MODULE="commons-lang-2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.1.jar" />
+       <IMPORT NAME="Commons-Codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" REQUIRED="true" />
+       <IMPORT NAME="Commons-Lang" MODULE="commons-lang-2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.1.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
    </RETURNS>

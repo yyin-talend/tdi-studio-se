@@ -14,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/DB2</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -30,13 +33,16 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
   	<PARAMETER
   	  NAME="USE_EXISTING_CONNECTION"
   	  FIELD="CHECK"
 	  NUM_ROW="5">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
@@ -44,6 +50,7 @@
 	  NUM_ROW="5"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	  DYNAMIC_SETTINGS="true"/>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -52,6 +59,7 @@
       REPOSITORY_VALUE="DATABASE:IBM_DB2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -61,6 +69,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -70,6 +79,7 @@
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -79,6 +89,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -88,6 +99,7 @@
     >
       <DEFAULT>IBM DB2</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -97,6 +109,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -106,6 +119,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -113,6 +127,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -125,6 +140,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -132,6 +148,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -139,6 +156,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -146,6 +164,7 @@
     >
       <DEFAULT>"select * from mytable"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -153,7 +172,9 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="PROPAGATE_RECORD_SET"
@@ -162,12 +183,14 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RECORD_SET_COLUMN"
       FIELD="COLUMN_LIST"
       NUM_ROW="5"
       SHOW_IF="PROPAGATE_RECORD_SET == 'true'"
     />
+
 	<PARAMETER
       NAME="USE_PREPAREDSTATEMENT"
       FIELD="CHECK"
@@ -175,6 +198,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="SET_PREPAREDSTATEMENT_PARAMETERS"
       FIELD="TABLE"
@@ -208,22 +232,26 @@
         <ITEM NAME="PARAMETER_VALUE" VALUE="" />
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="8"
 		REQUIRED="true" SHOW="false">
 		<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="COMMIT_EVERY" FIELD="TEXT" NUM_ROW="8"
 		REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>10000</DEFAULT>
 	</PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" />
+      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
   </RETURNS>

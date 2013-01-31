@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070326A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/AS400</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -34,6 +41,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -41,6 +49,7 @@
       NUM_ROW="1"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"/>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -49,6 +58,7 @@
       REPOSITORY_VALUE="DATABASE:AS400"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="3"
 			REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 			<ITEMS DEFAULT="V5R3_V6R1">
@@ -56,6 +66,7 @@
 				<ITEM NAME="V5R3_V6R1" VALUE="jt400_V5R3.jar" />
 			</ITEMS>
 	</PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -65,6 +76,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -75,6 +87,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -85,6 +98,7 @@
     >
       <DEFAULT>AS400</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -95,6 +109,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -105,6 +120,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -126,6 +142,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
@@ -133,6 +150,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -141,6 +159,7 @@
     >
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -149,11 +168,13 @@
     >
       <DEFAULT>as400_id</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
    <ADVANCED_PARAMETERS>
 	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>"prompt=false"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
      		NAME="ENCODING"
      		FIELD="ENCODING_TYPE"
@@ -163,9 +184,11 @@
    	>
      		<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
@@ -173,12 +196,14 @@
 		</ITEMS>
 	</PARAMETER>
    </ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-V5R2_V5R4" MODULE="jt400_V5R2.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.as400/lib/jt400_V5R2.jar" />
-       <IMPORT NAME="Driver-V5R3_V6R1" MODULE="jt400_V5R3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.as400/lib/jt400_V5R3.jar" />
+       <IMPORT NAME="Driver-V5R2_V5R4" MODULE="jt400_V5R2.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.as400/lib/jt400_V5R2.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-V5R3_V6R1" MODULE="jt400_V5R3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.as400/lib/jt400_V5R3.jar" REQUIRED="false" />
      </IMPORTS>
 	</CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

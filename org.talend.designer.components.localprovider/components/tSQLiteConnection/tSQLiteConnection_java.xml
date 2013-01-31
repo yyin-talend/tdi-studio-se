@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -11,13 +13,16 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/SQLite</FAMILY>
     <FAMILY>ELT/Connections</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -27,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
    <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -35,6 +41,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SQLITE"
     />
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
@@ -44,6 +51,7 @@
     >
        <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
@@ -51,6 +59,7 @@
       REQUIRED="true"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
@@ -60,16 +69,20 @@
     >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
 			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" />
+       <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS/>
 </COMPONENT>

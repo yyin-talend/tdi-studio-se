@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070326A"
@@ -14,12 +15,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Informix</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
@@ -33,6 +37,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -42,6 +47,7 @@
       REPOSITORY_VALUE="DATABASE:INFORMIX"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -49,6 +55,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -57,6 +64,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -66,6 +74,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -94,6 +103,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
@@ -103,6 +113,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -113,6 +124,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -123,6 +135,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBSERVER"
       FIELD="TEXT"
@@ -133,6 +146,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -141,6 +155,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -157,6 +172,7 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -170,6 +186,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -177,6 +194,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -189,6 +207,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -196,6 +215,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -204,6 +224,7 @@
     >
       <DEFAULT>informix_id</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="USE_TRANSACTION"
       FIELD="CHECK"
@@ -211,7 +232,9 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
   		NAME="PROPERTIES"
@@ -222,6 +245,7 @@
   	>
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
@@ -231,6 +255,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -240,6 +265,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -248,9 +274,11 @@
       NB_LINES="3"
     >
       <ITEMS>
+
         <ITEM NAME="NAME" VALUE='"colname"' />
 		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
+
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
             <ITEM NAME="BEFORE" VALUE="BEFORE"/>
@@ -258,9 +286,12 @@
             <ITEM NAME="REPLACE" VALUE="REPLACE"/>
           </ITEMS>
         </ITEM>
+
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
+
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -268,6 +299,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -283,11 +315,13 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
+
   	<PARAMETER
   	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
+
 	</PARAMETER>
 	<PARAMETER
   	  NAME="USE_BATCH_SIZE"
@@ -297,6 +331,7 @@
 	  >
 	  <DEFAULT>true</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
   	  NAME="BATCH_SIZE"
   	  FIELD="TEXT"
@@ -305,6 +340,7 @@
 	  >
 	  <DEFAULT>10000</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
   	  NAME="USE_BATCH_INSERT_OPTIMIZATION"
   	  FIELD="CHECK"
@@ -313,23 +349,27 @@
 	  >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="30">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

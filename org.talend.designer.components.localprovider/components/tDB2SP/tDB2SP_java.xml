@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -13,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/DB2</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -28,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
   	  NAME="USE_EXISTING_CONNECTION"
@@ -35,6 +40,7 @@
 	  NUM_ROW="5">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
@@ -42,6 +48,7 @@
 	  NUM_ROW="5"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	  DYNAMIC_SETTINGS="true"/>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -50,6 +57,7 @@
       REPOSITORY_VALUE="DATABASE:IBM_DB2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -59,6 +67,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -68,6 +77,7 @@
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -77,6 +87,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -86,6 +97,7 @@
     >
       <DEFAULT>IBM DB2</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -95,6 +107,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -104,6 +117,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -111,6 +125,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SP_NAME"
       FIELD="TEXT"
@@ -119,6 +134,7 @@
     >
       <DEFAULT>"myfunction"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="IS_FUNCTION"
       FIELD="CHECK"
@@ -126,6 +142,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RETURN"
       FIELD="COLUMN_LIST"
@@ -133,6 +150,7 @@
       SHOW_IF="IS_FUNCTION == 'true'"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SP_ARGS"
       FIELD="TABLE"
@@ -142,6 +160,7 @@
     >
       <ITEMS>
         <ITEM NAME="COLUMN" FIELD="COLUMN_LIST"/>
+
         <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
@@ -153,6 +172,7 @@
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="ENCODING"
@@ -164,12 +184,14 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" />
+      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS/>
 </COMPONENT>

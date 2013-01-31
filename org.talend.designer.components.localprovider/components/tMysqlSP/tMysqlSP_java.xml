@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -13,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/MySQL</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -28,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -37,6 +42,7 @@
       REPOSITORY_VALUE="DATABASE:MYSQL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
 	<PARAMETER
 		NAME="DB_VERSION"
 		FIELD="CLOSED_LIST"
@@ -48,6 +54,7 @@
 			<ITEM NAME="MYSQL_4" VALUE="MYSQL_4" />
 		</ITEMS>
 	</PARAMETER>
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -55,6 +62,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -63,6 +71,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -72,6 +81,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -81,6 +91,7 @@
     >
       <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -90,6 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -99,6 +111,7 @@
     >
       <DEFAULT>MySQL</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -108,6 +121,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -117,6 +131,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -124,6 +139,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SP_NAME"
       FIELD="TEXT"
@@ -132,6 +148,7 @@
     >
       <DEFAULT>"myfunction"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="IS_FUNCTION"
       FIELD="CHECK"
@@ -139,6 +156,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RETURN"
       FIELD="COLUMN_LIST"
@@ -146,6 +164,7 @@
       SHOW_IF="IS_FUNCTION == 'true'"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SP_ARGS"
       FIELD="TABLE"
@@ -155,6 +174,7 @@
     >
       <ITEMS>
         <ITEM NAME="COLUMN" FIELD="COLUMN_LIST"/>
+
         <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
@@ -166,10 +186,12 @@
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -180,11 +202,13 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" />
-      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-3.1.14-bin.jar" />
+      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_5') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-3.1.14-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_4') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS/>
 </COMPONENT>

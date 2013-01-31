@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070417A"
@@ -14,12 +15,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Ingres</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
@@ -31,6 +35,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -40,6 +45,7 @@
       REPOSITORY_VALUE="DATABASE:INGRES"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
 	<PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -47,6 +53,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
@@ -64,6 +71,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -82,6 +90,7 @@
     >
       <DEFAULT>Ingres</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -92,6 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -102,6 +112,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -112,6 +123,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -120,6 +132,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -135,6 +148,7 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -148,6 +162,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -155,6 +170,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -167,6 +183,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -174,6 +191,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -182,7 +200,9 @@
     >
       <DEFAULT>ingres_id</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="ENCODING"
@@ -193,6 +213,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -201,6 +222,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -222,6 +244,7 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -229,6 +252,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -244,24 +268,29 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
+
   	<PARAMETER
   	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" />
+    	<IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

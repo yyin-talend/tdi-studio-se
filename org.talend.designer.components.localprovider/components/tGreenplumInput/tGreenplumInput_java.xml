@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070319A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Greenplum</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -34,6 +41,7 @@
       REPOSITORY_VALUE="DATABASE:GREENPLUM"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -41,6 +49,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -49,6 +58,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -59,6 +69,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -68,6 +79,7 @@
     >
       <DEFAULT>PostgreSQL</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -78,6 +90,7 @@
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -88,6 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
@@ -97,6 +111,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -107,6 +122,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -117,6 +133,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -124,6 +141,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -131,6 +149,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -138,6 +157,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
@@ -145,6 +165,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -153,6 +174,7 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -161,7 +183,9 @@
     >
       <DEFAULT>postgres_id</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
    <ADVANCED_PARAMETERS>
 	<PARAMETER
       NAME="ENCODING"
@@ -172,6 +196,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_CURSOR"
       FIELD="CHECK"
@@ -179,6 +204,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CURSOR_SIZE"
       FIELD="TEXT"
@@ -187,9 +213,11 @@
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
@@ -197,11 +225,13 @@
 		</ITEMS>
 	</PARAMETER>
    </ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" />
+     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

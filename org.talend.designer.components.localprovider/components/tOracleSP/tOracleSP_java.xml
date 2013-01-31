@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -13,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Oracle</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -28,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -36,6 +41,7 @@
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -43,6 +49,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -51,6 +58,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
@@ -65,6 +73,7 @@
         <ITEM NAME="ORACLE_RAC" VALUE="ORACLE_RAC"/>
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="ORACLE_11">
@@ -75,6 +84,7 @@
 			<ITEM NAME="ORACLE_8" VALUE="ORACLE_8" />
 		</ITEMS>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="RAC_URL"
 		FIELD="TEXT"
@@ -85,6 +95,7 @@
 		>
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -94,6 +105,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -103,6 +115,7 @@
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -112,6 +125,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="LOCAL_SERVICE_NAME"
       FIELD="TEXT"
@@ -122,6 +136,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
      <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
@@ -131,6 +146,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -140,6 +156,7 @@
     >
       <DEFAULT>Oracle</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -149,6 +166,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -158,6 +176,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -165,6 +184,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SP_NAME"
       FIELD="TEXT"
@@ -173,6 +193,7 @@
     >
       <DEFAULT>"myfunction"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="IS_FUNCTION"
       FIELD="CHECK"
@@ -180,6 +201,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RETURN"
       FIELD="COLUMN_LIST"
@@ -187,6 +209,7 @@
       SHOW_IF="IS_FUNCTION == 'true'"
     >
     </PARAMETER>
+
     <!-- RETURN_BDTYPE must same as SP_ARGS.DBTYPE -->
 	<PARAMETER
       NAME="RETURN_BDTYPE"
@@ -202,6 +225,7 @@
 	            <ITEM NAME="NUMERIC" VALUE="NUMERIC"/>
 	          </ITEMS>
     </PARAMETER>
+
 	<PARAMETER
       NAME="SP_ARGS"
       FIELD="TABLE"
@@ -211,6 +235,7 @@
     >
       <ITEMS>
         <ITEM NAME="COLUMN" FIELD="COLUMN_LIST"/>
+
         <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
@@ -239,6 +264,7 @@
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER
 		NAME="PROPERTIES"
@@ -248,6 +274,7 @@
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="NOTE"
 		FIELD="LABEL"
@@ -264,6 +291,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="NLS_LANGUAGE"
       FIELD="CLOSED_LIST"
@@ -329,6 +357,7 @@
         <ITEM NAME="VIETNAMESE" VALUE="VIETNAMESE" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="NLS_TERRITORY"
       FIELD="CLOSED_LIST"
@@ -425,15 +454,18 @@
         <ITEM NAME="YUGOSLAVIA" VALUE="YUGOSLAVIA" />
       </ITEMS>
     </PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-      <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" />
-      <IMPORT NAME="ORACLE_11"  MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" />
-      <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar" />
-      <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" />
-      <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" />
+      <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="ORACLE_11"  MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
    </CODEGENERATION>
+
   <RETURNS/>
 </COMPONENT>

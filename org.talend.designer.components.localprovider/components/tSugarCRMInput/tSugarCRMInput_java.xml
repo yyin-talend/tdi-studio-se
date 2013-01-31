@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -11,13 +13,16 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Business/SugarCRM</FAMILY>
 	<FAMILY>Cloud/SugarCRM</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -27,7 +32,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
@@ -36,6 +43,7 @@
     >
       <DEFAULT>"http://127.0.0.1:8088/sugarcrm/soap.php"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -44,6 +52,7 @@
     >
       <DEFAULT>"admin"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -52,6 +61,9 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+
+
+
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="30" REQUIRED="true">
        <ITEMS DEFAULT="Contacts">
 	  <ITEM NAME="ACL"   VALUE="ACL" />
@@ -122,14 +134,17 @@
 	  <ITEM NAME="CustomModule"   VALUE="CustomModule" />
        </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="CUSTOM_MODULE_PACKAGE" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
     		 SHOW_IF="MODULENAME=='CustomModule'">
 			<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
     		 SHOW_IF="MODULENAME=='CustomModule'">
 			<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -1129,6 +1144,9 @@
       <TABLE IF="MODULENAME=='CustomModule'">
       </TABLE>
    </PARAMETER>
+
+
+
     <PARAMETER
       NAME="CONDITION"
       FIELD="TEXT"
@@ -1137,20 +1155,23 @@
     >
       <DEFAULT>"name='talend'"</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="SugarCRM-management" MODULE="sugarCRMManagement.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" />
+      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" />
-      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" />
-      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
-      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" />
-      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
+      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
+      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
    </RETURNS>

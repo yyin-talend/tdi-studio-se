@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070326A"
@@ -14,12 +15,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/HSQLDb</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -30,6 +34,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -38,6 +43,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:HSQLDB"
     />
+
     <PARAMETER
       NAME="RUNNING_MODE"
       FIELD="CLOSED_LIST"
@@ -51,6 +57,7 @@
         <ITEM NAME="HSQLDB_IN_MEMORY" VALUE="HSQLDB_IN_MEMORY"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="TLS"
       FIELD="CHECK"
@@ -59,6 +66,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -68,6 +76,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -77,6 +86,7 @@
     >
       <DEFAULT>"9001"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBPATH"
       FIELD="DIRECTORY"
@@ -86,6 +96,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -96,6 +107,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DATABASE_ALIAS"
       FIELD="TEXT"
@@ -105,6 +117,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -114,6 +127,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -123,6 +137,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -131,6 +146,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -146,6 +162,7 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -159,6 +176,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -166,6 +184,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -187,6 +206,7 @@
     >
       <DEFAULT>HSQLDB</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -194,6 +214,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -202,7 +223,9 @@
     >
       <DEFAULT>hsqldb_id</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER
 		NAME="PROPERTIES"
@@ -212,6 +235,7 @@
 		<DEFAULT IF="(RUNNING_MODE == 'HSQLDB_INPROGRESS_PERSISTENT')">"ifexists=true"</DEFAULT>
 		<DEFAULT IF="(RUNNING_MODE != 'HSQLDB_INPROGRESS_PERSISTENT')">""</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
@@ -221,6 +245,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -229,6 +254,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -250,6 +276,7 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -257,6 +284,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -272,6 +300,7 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
+
   	<PARAMETER
   	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
@@ -279,11 +308,13 @@
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar"/>
+		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED="true"/>
      </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

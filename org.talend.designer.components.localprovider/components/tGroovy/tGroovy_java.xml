@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.101"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070210A"
@@ -11,12 +12,15 @@
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Custom_Code</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +30,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="CODE"
       FIELD="MEMO_JAVA"
@@ -38,16 +44,19 @@
       <DEFAULT>// your Groovy Code
       </DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="VARIABLES" FIELD="TABLE" NUM_ROW="30" NB_LINES="5">
 			<ITEMS>
 				<ITEM NAME="NAME"/>
 				<ITEM NAME="VALUE" />
 			</ITEMS>
 	</PARAMETER>
+
    </PARAMETERS>
+
    <CODEGENERATION>
    	<IMPORTS>
-		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/antlr-2.7.6.jar" />
+		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/antlr-2.7.6.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-2.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-analysis-2.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-attrs-2.2.jar" REQUIRED="true" />
@@ -58,5 +67,7 @@
 		<IMPORT NAME="Groovy_Module" MODULE="groovy-xmlrpc-0.3.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS/>
+
 </COMPONENT>

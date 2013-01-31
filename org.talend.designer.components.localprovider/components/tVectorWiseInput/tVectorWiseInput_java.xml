@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070417A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/VectorWise</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -35,6 +42,7 @@
       REPOSITORY_VALUE="DATABASE:VECTORWISE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
 	<PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -42,6 +50,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
@@ -50,6 +59,7 @@
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	>
 	</PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -59,6 +69,7 @@
     >
       <DEFAULT>VectorWise</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
@@ -68,6 +79,8 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -77,6 +90,7 @@
     >
       <DEFAULT>"II7"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -87,6 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -97,6 +112,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -107,6 +123,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -114,6 +131,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -121,6 +139,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -128,6 +147,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
@@ -135,6 +155,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -143,6 +164,7 @@
     >
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
@@ -151,11 +173,14 @@
     >
       <DEFAULT>vectorwise_id</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
    <ADVANCED_PARAMETERS>
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
@@ -163,11 +188,13 @@
 		</ITEMS>
 	</PARAMETER>
    </ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" />
+       <IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

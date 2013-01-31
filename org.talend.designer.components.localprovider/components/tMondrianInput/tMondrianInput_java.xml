@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Business_Intelligence/OLAP_Cube/Mondrian</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,6 +31,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="1"
 		REPOSITORY_VALUE="DB_VERSION">
@@ -34,6 +40,7 @@
 			<ITEM NAME="MONDRIAN_3" VALUE="mondrian_3.jar" />
 		</ITEMS>
 	</PARAMETER>
+
     <PARAMETER
       NAME="DBTYPE"
       FIELD="CLOSED_LIST"
@@ -57,6 +64,7 @@
         <ITEM NAME="ODBC"        VALUE="ODBC"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="ORACLETYPE"
       FIELD="CLOSED_LIST"
@@ -68,6 +76,7 @@
         <ITEM NAME="ORACLE SERVICE"    VALUE="Oracle Service"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="JAVADBFRAME"
       FIELD="CLOSED_LIST"
@@ -80,6 +89,7 @@
         <ITEM NAME="DERBYCLIENT"    VALUE="DERBYCLIENT"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="JAVADBNETSERVER"
       FIELD="CHECK"
@@ -88,12 +98,14 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       NUM_ROW="3"
       REPOSITORY_VALUE="DATABASE"
     />
+
     <PARAMETER
       NAME="ACCESSDBNAME"
       FIELD="FILE"
@@ -104,6 +116,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBPATH"
       FIELD="DIRECTORY"
@@ -113,6 +126,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HSQLMODE"
       FIELD="CLOSED_LIST"
@@ -126,6 +140,7 @@
         <ITEM NAME="PROCESS"      VALUE="PROCESS"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="TLS"
       FIELD="CHECK"
@@ -134,6 +149,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -143,6 +159,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -152,6 +169,7 @@
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -162,6 +180,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HSQLDATABASEALIAS"
       FIELD="TEXT"
@@ -171,6 +190,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
      <PARAMETER
       NAME="HSQLDATABASEPATH"
       FIELD="DIRECTORY"
@@ -189,6 +209,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="INTERBASEDBNAME"
       FIELD="TEXT"
@@ -199,6 +220,7 @@
     >
       <DEFAULT>"../test.gdb"</DEFAULT>
     </PARAMETER>
+
    <PARAMETER
       NAME="SQLITEDBNAME"
       FIELD="FILE"
@@ -209,6 +231,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIREBIRDDBNAME"
       FIELD="FILE"
@@ -219,6 +242,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="INFORMIXSERVER"
       FIELD="TEXT"
@@ -229,6 +253,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -239,6 +264,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -249,6 +275,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -256,6 +283,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CATALOG"
       FIELD="TEXT"
@@ -265,6 +293,7 @@
     >
       <DEFAULT>"file:catalog.xml"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO"
@@ -272,6 +301,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -280,52 +310,55 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="log4j"                MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" />
+		<IMPORT NAME="log4j"                MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
 		<IMPORT NAME="eigenbase-xom"        MODULE="eigenbase-xom.jar" REQUIRED="true" />
 		<IMPORT NAME="eigenbase-resgen"     MODULE="eigenbase-resgen.jar" REQUIRED="true" />
 		<IMPORT NAME="eigenbase-properties" MODULE="eigenbase-properties.jar" REQUIRED="true" />
 		<IMPORT NAME="javacup"              MODULE="javacup.jar" REQUIRED="true" />
-		<IMPORT NAME="commons-dbcp"         MODULE="commons-dbcp-1.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-dbcp-1.2.1.jar" />
-		<IMPORT NAME="commons-math"         MODULE="commons-math-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-math-1.0.jar" />
-		<IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-vfs.jar" />
-		<IMPORT NAME="commons-log"          MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
-		<IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.7.jar" />
-		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.jar" />
-		<IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-fileupload-1.0.jar" />
-		<IMPORT NAME="commons-pool"         MODULE="commons-pool-1.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-pool-1.2.jar" />
-		<IMPORT NAME="commons-digester"     MODULE="commons-digester-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-digester-1.7.jar" />
-		<IMPORT NAME="commons-httpclient"   MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" />
-		<IMPORT NAME="commons-codec"        MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" />
-		<IMPORT NAME="Driver-MySql"         MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" />
-		<IMPORT NAME="Driver-DB2" 			MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" />
-		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" />
-		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" />
+		<IMPORT NAME="commons-dbcp"         MODULE="commons-dbcp-1.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-dbcp-1.2.1.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-math"         MODULE="commons-math-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-math-1.0.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-vfs.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-log"          MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.7.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.jar" REQUIRED="true" BundleID="" />
+		<IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-fileupload-1.0.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-pool"         MODULE="commons-pool-1.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-pool-1.2.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-digester"     MODULE="commons-digester-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-digester-1.7.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-httpclient"   MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-codec"        MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-MySql"         MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" 			MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver_MaxDB" 		MODULE="sapdbc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-MSSQL" 		MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" />
-        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" />
-		<IMPORT NAME="Driver-POSTGRESQL" 	MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" />
+		<IMPORT NAME="Driver-MSSQL" 		MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-POSTGRESQL" 	MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-FIREBIRD" 		MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-HSQLDb" 		MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar"/>
-		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" />
-		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" />
-		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" />
-		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" />
-		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" />
-		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar"/>
-		<IMPORT NAME="Driver-INGRES" 		MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar"/>
+		<IMPORT NAME="Driver-HSQLDb" 		MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-INGRES" 		MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-Interbase" 	MODULE="interclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBY" 	MODULE="derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" />
-		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" />
+		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" REQUIRED="true" />
 		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" REQUIRED="false" />
 		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" REQUIRED="false" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="FLOW"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

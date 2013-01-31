@@ -5,6 +5,7 @@
        SERIAL=""
       VERSION="0.101"
        STATUS="ALPHA"
+
 COMPATIBILITY="ALL"
        AUTHOR="Talend"
  RELEASE_DATE="20050320A"
@@ -12,12 +13,15 @@ COMPATIBILITY="ALL"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -27,34 +31,44 @@ COMPATIBILITY="ALL"
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER NAME="TO" FIELD="TEXT" REQUIRED="true" NUM_ROW="10">
       <DEFAULT>"receiver@example.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="FROM" FIELD="TEXT" REQUIRED="true" NUM_ROW="20">
       <DEFAULT>"send@example.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="NEED_PERSONAL_NAME" FIELD="CHECK" REQUIRED="true" NUM_ROW="30">
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="PERSONAL_NAME" FIELD="TEXT" REQUIRED="true" NUM_ROW="40" SHOW_IF="NEED_PERSONAL_NAME == 'true'">
       <DEFAULT>"sender"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="CC" FIELD="TEXT" REQUIRED="false" NUM_ROW="50">
       <DEFAULT>"carbon@example.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="BCC" FIELD="TEXT" REQUIRED="false" NUM_ROW="60">
       <DEFAULT>"blindcarbon@example.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="70">
       <DEFAULT>"Talend Open Studio notification"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MESSAGE" FIELD="MEMO_MESSAGE" REQUIRED="false" NUM_ROW="80">
       <DEFAULT>"Hello"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="CHECK_ATTACHMENT" FIELD="CHECK" REQUIRED="true" NUM_ROW="90">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="ATTACHMENTS" FIELD="TABLE" REQUIRED="false" NUM_ROW="100" NB_LINES="3">
       <ITEMS>
         <ITEM NAME="FILE" FIELD="FILE"/>
@@ -66,6 +80,7 @@ COMPATIBILITY="ALL"
 		</ITEM>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="HEADERS"
       FIELD="TABLE"
@@ -78,12 +93,15 @@ COMPATIBILITY="ALL"
         <ITEM NAME="VALUE" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="120">
       <DEFAULT>"smtp.provider.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="120">
       <DEFAULT>25</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SSL"
       FIELD="CHECK"
@@ -92,6 +110,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="STARTTLS"
       FIELD="CHECK"
@@ -100,6 +119,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="IMPORTANCE"
       FIELD="CLOSED_LIST"
@@ -111,6 +131,9 @@ COMPATIBILITY="ALL"
         <ITEM NAME="LOW" VALUE="Low" />
       </ITEMS>
     </PARAMETER>
+
+
+
     <PARAMETER
       NAME="NEED_AUTH"
       FIELD="CHECK"
@@ -119,6 +142,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
@@ -137,6 +161,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -144,7 +169,9 @@ COMPATIBILITY="ALL"
       NUM_ROW="160">
         <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	 <PARAMETER	NAME="TEXT_SUBTYPE"	FIELD="CLOSED_LIST"	NUM_ROW="4"	REQUIRED="true">
        <ITEMS DEFAULT="PLAIN">
@@ -152,9 +179,11 @@ COMPATIBILITY="ALL"
         <ITEM NAME="HTML" VALUE="html" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="8" REQUIRED="true" REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SET_LOCALHOST"
       FIELD="CHECK"
@@ -162,6 +191,7 @@ COMPATIBILITY="ALL"
       NUM_ROW="10">
         <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="LOCALHOST"
       FIELD="TEXT"
@@ -172,11 +202,14 @@ COMPATIBILITY="ALL"
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" />
-      <IMPORT NAME="JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
+      <IMPORT NAME="JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+      <IMPORT NAME="JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
   </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS/>
+
 </COMPONENT>

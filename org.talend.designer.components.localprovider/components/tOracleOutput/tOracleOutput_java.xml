@@ -14,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Oracle</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
@@ -34,6 +37,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -42,6 +46,7 @@
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -49,6 +54,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -57,6 +63,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
@@ -72,6 +79,7 @@
 		<ITEM NAME="ORACLE_WALLET" VALUE="ORACLE_WALLET"/>
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="25"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="ORACLE_11">
@@ -82,6 +90,7 @@
 				<ITEM NAME="ORACLE_8" VALUE="ORACLE_8" />
 			</ITEMS>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="RAC_URL"
 		FIELD="TEXT"
@@ -92,6 +101,7 @@
 		>
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -101,6 +111,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -110,6 +121,7 @@
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -120,6 +132,7 @@
     >
       <DEFAULT>Oracle</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -130,6 +143,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="LOCAL_SERVICE_NAME"
       FIELD="TEXT"
@@ -140,6 +154,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLESCHEMA"
       FIELD="TEXT"
@@ -150,6 +165,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -160,6 +176,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -170,6 +187,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -178,6 +196,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -193,13 +212,16 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
         <ITEM NAME="TRUNCATE_REUSE_STORAGE" VALUE="TRUNCATE_REUSE_STORAGE"/>
+
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="56"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before data insert/update/delete</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -213,6 +235,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -220,6 +243,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -232,6 +256,7 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
+
 	<PARAMETER
 	  NAME="NOTE"
       FIELD="LABEL"
@@ -260,6 +285,7 @@
     >
 	<DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -275,6 +301,7 @@
     >
       <DEFAULT>oracle_id</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="JDBC_URL"
 	  FIELD="TEXT"
@@ -284,7 +311,9 @@
     >
 	<DEFAULT>"jdbc:oracle:oci:/@talend"</DEFAULT>
 	 </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER
 		NAME="PROPERTIES"
@@ -294,6 +323,7 @@
 		SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET')">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="NOTE"
 		FIELD="LABEL"
@@ -310,6 +340,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -319,6 +350,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -340,6 +372,7 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -347,6 +380,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -362,6 +396,8 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
+
+
     <PARAMETER
       NAME="USE_HINT_OPTIONS"
       FIELD="CHECK"
@@ -369,6 +405,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="HINT_OPTIONS"
       FIELD="TABLE"
@@ -394,6 +431,7 @@
 		</ITEM>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONVERT_COLUMN_TABLE_TO_UPPERCASE"
       FIELD="CHECK"
@@ -401,6 +439,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   	<PARAMETER
   	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
@@ -415,6 +454,7 @@
 	  >
 	  <DEFAULT>true</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
   	  NAME="BATCH_SIZE"
   	  FIELD="TEXT"
@@ -423,31 +463,36 @@
 	  >
 	  <DEFAULT>10000</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="70">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="USE_TIMESTAMP_FOR_DATE_TYPE"
 		FIELD="CHECK"
 		NUM_ROW="80">
 		  <DEFAULT>true</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
        <IMPORTS>
-		   <IMPORT NAME="Driver-Oracle-XDB" MODULE="xdb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xdb.jar" />
-		   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xmlparserv2.jar" />
-       		<IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/talend-oracle-timestamptz.jar" />
-           <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" />
-           <IMPORT NAME="ORACLE_11"  MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" />
-           <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar" />
-           <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" />
-           <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" />
+		   <IMPORT NAME="Driver-Oracle-XDB" MODULE="xdb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xdb.jar" REQUIRED_IF="SCHEMA.DB_TYPE IN ['XMLTYPE']" />
+		   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xmlparserv2.jar" REQUIRED_IF="SCHEMA.DB_TYPE IN ['XMLTYPE']" />
+       		<IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" />
+           <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
+           <IMPORT NAME="ORACLE_11"  MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
+           <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false')" />
+           <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false')" />
+           <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar"  REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false')" />
      </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

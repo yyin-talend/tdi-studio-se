@@ -4,6 +4,7 @@
 		STARTABLE="true">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
+
   <FAMILIES>
     <FAMILY>Talend MDM</FAMILY>
   </FAMILIES>
@@ -19,7 +20,9 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
+
 	<PARAMETERS>
+
 		<PARAMETER
 	      NAME="SCHEMA"
 	      FIELD="SCHEMA_TYPE"
@@ -27,6 +30,7 @@
 	      NUM_ROW="1"
 	    >
 	    </PARAMETER>
+
 	    <PARAMETER
 	      NAME="XMLFIELD"
 	      FIELD="COLUMN_LIST"
@@ -34,6 +38,7 @@
 	      NUM_ROW="5"
 	    >
 	    </PARAMETER>
+
 		<PARAMETER
 	      NAME="USE_EXISTING_CONNECTION"
 	      FIELD="CHECK"
@@ -48,33 +53,41 @@
 	      NUM_ROW="15"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	    />
+
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"http://localhost:8080/talend/TalendPort"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"userName"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="UNIVERSE" FIELD="TEXT"
 			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="DATACLUSTER" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="VIEWNAME" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="OPERATIONS" FIELD="TABLE" NUM_ROW="50" >
 	      <ITEMS>
 	        <ITEM NAME="XPATH" FIELD="TEXT" />
+
 	        <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
 	          <ITEMS DEFAULT="CONTAINS">
 	            <ITEM NAME="CONTAINS"  VALUE="CONTAINS"/>
@@ -90,7 +103,9 @@
 	            <ITEM NAME="FULLTEXTSEARCH"    VALUE="FULLTEXTSEARCH"/>
 	          </ITEMS>
 	        </ITEM>
+
 	        <ITEM NAME="VALUE" FIELD="TEXT" />
+
 	        <ITEM NAME="PREDICATE" FIELD="CLOSED_LIST">
 	        	<ITEMS DEFAULT="NONE">
 	        		<ITEM NAME="NONE" VALUE="NONE" />
@@ -103,6 +118,7 @@
 	        </ITEM>
 	      </ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="ORDER_TABLE" FIELD="TABLE" NUM_ROW="60" >
 	      <ITEMS>
 	      	<ITEM NAME="XPATH" FIELD="TEXT" />
@@ -114,35 +130,42 @@
 	        </ITEM>
 	      </ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="SPELLTHREHOLD" FIELD="TEXT" NUM_ROW="70">
 			<DEFAULT>-1</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="SKIP" FIELD="TEXT" NUM_ROW="70">
 			<DEFAULT>0</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="MAXVALUE" FIELD="TEXT" NUM_ROW="70">
 			<DEFAULT>-1</DEFAULT>
 		</PARAMETER>
+
+
 	</PARAMETERS>
+
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="FETCHSIZE" FIELD="TEXT" NUM_ROW="20" >
 			<DEFAULT>-1</DEFAULT>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" />
+      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" BundleID="" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc-api" MODULE="jaxrpc-api.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" BundleID="" REQUIRED="true" />
-      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" />
-      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" />
-      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.0.4.jar" />
-      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" />
-      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
+      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
+      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.0.4.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" BundleID="" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" BundleID="" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
 	</RETURNS>

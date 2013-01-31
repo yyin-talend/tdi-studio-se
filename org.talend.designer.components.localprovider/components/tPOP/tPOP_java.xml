@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.101"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -11,12 +12,15 @@
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +30,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -35,6 +41,7 @@
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
      NAME="PORT"
      FIELD="TEXT"
@@ -43,6 +50,7 @@
     >
      <DEFAULT>110</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USERNAME"
       FIELD="TEXT"
@@ -51,6 +59,7 @@
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASSWORD"
       FIELD="TEXT"
@@ -59,6 +68,7 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="OUTPUT_DIRECTORY"
       FIELD="DIRECTORY"
@@ -66,6 +76,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FILENAME_PATTERN"
       FIELD="TEXT"
@@ -74,6 +85,7 @@
     >
       <DEFAULT>TalendDate.getDate("yyyyMMdd-hhmmss") + "_" + (counter_tPOP_1 + 1) + ".mail"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ALL_EMAILS"
       FIELD="CHECK"
@@ -82,6 +94,7 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="MAX_EMAILS"
       FIELD="TEXT"
@@ -91,6 +104,7 @@
     >
       <DEFAULT>10</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DELETE_FROM_SERVER"
       FIELD="CHECK"
@@ -99,18 +113,22 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="PROTOCOL" FIELD="CLOSED_LIST" NUM_ROW="8">
       <ITEMS DEFAULT="POP3">
         <ITEM NAME="POP3" VALUE="pop3" />
         <ITEM NAME="IMAP" VALUE="imap"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER NAME="SPECIFY_MAIL_FOLDER" FIELD="CHECK" REQUIRED="true" NUM_ROW="8" SHOW_IF="PROTOCOL == 'IMAP'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MAIL_FOLDER" FIELD="TEXT" REQUIRED="true" NUM_ROW="8" SHOW_IF="(SPECIFY_MAIL_FOLDER == 'true') AND (PROTOCOL == 'IMAP')">
      <DEFAULT>"INBOX"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USE_SSL"
       FIELD="CHECK"
@@ -119,7 +137,9 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="ADVANCED_FILTER" FIELD="TABLE" REQUIRED="false"
 		NUM_ROW="10" NB_LINES="5" SHOW="true">
@@ -136,6 +156,7 @@
 		<ITEM NAME="PATTERN" FIELD="TEXT" />
 	  </ITEMS>
 	</PARAMETER>
+
 	<PARAMETER NAME="FILTER_RELATION" FIELD="CLOSED_LIST" NUM_ROW="20">
       <ITEMS DEFAULT="AND">
         <ITEM NAME="AND" VALUE="&amp;&amp;" />
@@ -143,12 +164,14 @@
       </ITEMS>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" />
-      <IMPORT NAME="JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
+      <IMPORT NAME="JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+      <IMPORT NAME="JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="NB_EMAIL" TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="CURRENT_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>

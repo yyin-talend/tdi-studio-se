@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="2.0"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20091023"
@@ -11,12 +12,15 @@
 	>
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Business_Intelligence/OLAP_Cube/Palo</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
 <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -26,7 +30,12 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
+
+
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -34,6 +43,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -41,6 +51,7 @@
       NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
+
 	<PARAMETER
 		NAME="SERVER"
 		FIELD="TEXT"
@@ -51,6 +62,7 @@
   	>
 	  <DEFAULT>"localhost"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="SERVERPORT"
 		FIELD="TEXT"
@@ -61,6 +73,7 @@
   	>
 	  <DEFAULT>"7777"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="USERNAME"
 		FIELD="TEXT"
@@ -71,6 +84,7 @@
   	>
 	  <DEFAULT>"admin"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PASS"
 		FIELD="TEXT"
@@ -81,6 +95,7 @@
 	>
 	  <DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="DATABASE"
 		FIELD="TEXT"
@@ -89,6 +104,7 @@
 	>
 	  <DEFAULT>"Database"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="CUBE"
 		FIELD="TEXT"
@@ -97,6 +113,7 @@
 	>
 	  <DEFAULT>"Cube"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		  NAME="CUBE_RULES"
 		  FIELD="TABLE"
@@ -118,21 +135,28 @@
 			</ITEM>
 		  </ITEMS>
 	</PARAMETER>
+
+
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER NAME="DEPLOY_PALO_LIBS" FIELD="CHECK" NUM_ROW="200" SHOW="false">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
   </ADVANCED_PARAMETERS>
     <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="paloIX3" MODULE="paloIX3.jar" REQUIRED="true" />
-      <IMPORT NAME="httpclient-4.0.1" MODULE="httpclient-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpclient-4.0.1.jar" />
-      <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpmime-4.0.1.jar" />
+      <IMPORT NAME="httpclient-4.0.1" MODULE="httpclient-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpclient-4.0.1.jar" REQUIRED="true" />
+      <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/httpmime-4.0.1.jar" REQUIRED="true" />
       <IMPORT NAME="httpcore-4.0" MODULE="httpcore-4.0.jar" REQUIRED="true" />
-      <IMPORT NAME="commons-logging-1.1.1" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" />
-      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" />
+      <IMPORT NAME="commons-logging-1.1.1" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" REQUIRED="true" />
+      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
     <RETURNS/>
+
+
 </COMPONENT>

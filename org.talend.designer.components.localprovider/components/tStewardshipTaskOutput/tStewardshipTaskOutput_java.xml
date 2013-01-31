@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <COMPONENT>
   <HEADER AUTHOR="Talend" COMPATIBILITY="ALL"
   		DATA_AUTO_PROPAGATE="false" PLATEFORM="ALL"
@@ -47,6 +48,7 @@
 			<ITEM NAME="DATA" VALUE="2" />
 		</ITEMS>
 	</PARAMETER>
+
     <PARAMETER NAME="CREATED_BY" FIELD="TEXT" NUM_ROW="10">
     	<DEFAULT>"user"</DEFAULT>
     </PARAMETER>
@@ -60,10 +62,12 @@
     	<DEFAULT>"tag1,tag2"</DEFAULT>
     </PARAMETER>
     <PARAMETER NAME="LOOPING_COLUMN" FIELD="PREV_COLUMN_LIST" NUM_ROW="20" SHOW_IF="TASKTYPE=='RESOLUTION'"/>
+
     <PARAMETER NAME="RECORD_TYPE" FIELD="PREV_COLUMN_LIST" NUM_ROW="30" GROUP="RECORD"/>
     <PARAMETER NAME="SOURCE" FIELD="PREV_COLUMN_LIST" NUM_ROW="40" GROUP="RECORD"/>
     <PARAMETER NAME="SCORE" FIELD="PREV_COLUMN_LIST" NUM_ROW="40" GROUP="RECORD" SHOW_IF="TASKTYPE=='RESOLUTION'"/>
     <PARAMETER NAME="WEIGHTS" FIELD="PREV_COLUMN_LIST" NUM_ROW="40" GROUP="RECORD" SHOW_IF="TASKTYPE=='RESOLUTION'"/>
+
     <PARAMETER NAME="EXTRA_INFO" FIELD="TABLE" REQUIRED="false"
 			NUM_ROW="50" NB_LINES="5" GROUP="RECORD">
 		<ITEMS>
@@ -88,8 +92,8 @@
   	<IMPORTS>
 		<IMPORT NAME="talend-stewardship-task" MODULE="talend-stewardshipTask.jar" REQUIRED="true" />
 		<IMPORT NAME="talend-stewardship-client" MODULE="org.talend.taskloadclient.jar" REQUIRED="true" />
-		<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" />
-		<IMPORT NAME="talend-shipTask" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" />
+		<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" REQUIRED="true" />
+		<IMPORT NAME="talend-shipTask" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" REQUIRED="true" />
   	</IMPORTS>
   </CODEGENERATION>
   <RETURNS>

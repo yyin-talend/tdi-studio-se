@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Business/CentricCRM</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="CENTRIC-URL"
       FIELD="TEXT"
@@ -35,6 +42,7 @@
     >
       <DEFAULT>"http://127.0.0.1:8080/centric"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SERVER-ID"
       FIELD="TEXT"
@@ -43,6 +51,7 @@
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CLIENT"
       FIELD="TEXT"
@@ -51,6 +60,7 @@
     >
       <DEFAULT>"1"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CODE"
       FIELD="TEXT"
@@ -59,6 +69,7 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="2" REQUIRED="true">
        <ITEMS DEFAULT="Contact">
       <ITEM NAME="Account"   VALUE="accountList" />
@@ -521,6 +532,7 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="UserGroupName" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="CompanyNameHierarchy" NULLABLE="true" TYPE="id_String"/>
 	</TABLE>
+
 	<TABLE IF="MODULENAME=='CustomFieldCategory'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModuleId" NULLABLE="true" TYPE="id_Integer"/>
@@ -543,6 +555,7 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="CanNotContinue" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="NumberOfRecords" NULLABLE="true" TYPE="id_Integer"/>
 	</TABLE>
+
 	<TABLE IF="MODULENAME=='CustomField'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="GroupId" NULLABLE="true" TYPE="id_Integer"/>
@@ -576,6 +589,7 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="IsStatic" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="ValidateData" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
+
 	<TABLE IF="MODULENAME=='CustomFieldData'">
    		<COLUMN KEY="false" LENGTH="3" NAME="RecordId" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="FieldId" NULLABLE="true" TYPE="id_Integer"/>
@@ -585,6 +599,7 @@
    		<COLUMN KEY="false" LENGTH="5" NAME="EnteredDouble" NULLABLE="true" TYPE="id_Double"/>
 	</TABLE>
    </PARAMETER>
+
    <PARAMETER
       NAME="CONDITION"
       FIELD="TABLE"
@@ -603,7 +618,7 @@
       <IMPORT NAME="Servlet-api" MODULE="servlet-api.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-darkhorseventures" MODULE="darkhorseventures.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-zeroio-iteam" MODULE="zeroio-iteam.jar" REQUIRED="true" />
-      <IMPORT NAME="Log4J" MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" />
+      <IMPORT NAME="Log4J" MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
     </IMPORTS>
   </CODEGENERATION>
    <RETURNS>

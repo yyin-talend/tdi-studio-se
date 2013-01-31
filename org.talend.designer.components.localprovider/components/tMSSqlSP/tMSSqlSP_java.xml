@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -13,12 +14,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/MS_SQL_Server</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -28,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -37,6 +42,7 @@
       REPOSITORY_VALUE="DATABASE:SQL_SERVER"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -44,6 +50,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -52,6 +59,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -61,6 +69,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -70,6 +79,7 @@
     >
       <DEFAULT>"1433"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="DB_SCHEMA"
       FIELD="TEXT"
@@ -79,6 +89,8 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -88,6 +100,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -97,6 +110,10 @@
     >
       <DEFAULT>MSSQL</DEFAULT>
     </PARAMETER>
+
+
+
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -106,6 +123,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -115,6 +133,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -122,6 +141,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SP_NAME"
       FIELD="TEXT"
@@ -130,6 +150,7 @@
     >
       <DEFAULT>"myfunction"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="IS_FUNCTION"
       FIELD="CHECK"
@@ -137,6 +158,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="RETURN"
       FIELD="COLUMN_LIST"
@@ -144,6 +166,7 @@
       SHOW_IF="IS_FUNCTION == 'true'"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SP_ARGS"
       FIELD="TABLE"
@@ -153,6 +176,7 @@
     >
       <ITEMS>
         <ITEM NAME="COLUMN" FIELD="COLUMN_LIST"/>
+
         <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
@@ -163,12 +187,15 @@
         </ITEM>
       </ITEMS>
     </PARAMETER>
+
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING"
   		SHOW_IF="USE_EXISTING_CONNECTION == 'false'" >
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -179,10 +206,12 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" />
+    	<IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS/>
 </COMPONENT>

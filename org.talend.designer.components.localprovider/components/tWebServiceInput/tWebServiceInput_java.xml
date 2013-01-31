@@ -5,12 +5,15 @@
 		STARTABLE="true">
 		<SIGNATURE />
 	</HEADER>
+
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
+
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
@@ -20,6 +23,7 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
+
 	<PARAMETERS>
 		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
 			NUM_ROW="1" REPOSITORY_VALUE="WSDL" />
@@ -30,10 +34,12 @@
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="30" REPOSITORY_VALUE="ENDPOINT">
 			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx?WSDL"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="NEED_AUTH" FIELD="CHECK" REQUIRED="true"
 			NUM_ROW="50" REPOSITORY_VALUE="NEED_AUTH">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="AUTH_USERNAME" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="50" SHOW_IF="NEED_AUTH == 'true'" REPOSITORY_VALUE="AUTH_USERNAME">
 			<DEFAULT>"username"</DEFAULT>
@@ -46,14 +52,17 @@
 			NUM_ROW="52" SHOW_IF="NEED_AUTH == 'true'">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="DOMAIN" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="52" SHOW_IF="(NEED_AUTH == 'true') AND (WIN_AUTH == 'true')" >
 			<DEFAULT>"windows_domain"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="UES_PROXY" FIELD="CHECK" REQUIRED="true"
 			NUM_ROW="55" REPOSITORY_VALUE="UES_PROXY">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PROXY_HOST" FIELD="TEXT"
 			NUM_ROW="56" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_HOST">
 			<DEFAULT>"61.163.92.4"</DEFAULT>
@@ -62,6 +71,7 @@
 			NUM_ROW="57" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_PORT">
 			<DEFAULT>"8080"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PROXY_USERNAME" FIELD="TEXT"
 			NUM_ROW="58" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_USERNAME">
 			<DEFAULT>""</DEFAULT>
@@ -70,9 +80,12 @@
 			NUM_ROW="59" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_PASSWORD">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+
+
 		<PARAMETER NAME="NEED_SSL_TO_TRUSTSERVER" FIELD="CHECK" REQUIRED="true" NUM_ROW="60">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="SSL_TRUSTSERVER_TRUSTSTORE" FIELD="TEXT" NUM_ROW="61" SHOW_IF="NEED_SSL_TO_TRUSTSERVER == 'true'">
 			<DEFAULT>"C:/clientTrustStore.trustStore"</DEFAULT>
 		</PARAMETER>
@@ -85,12 +98,16 @@
 		<PARAMETER NAME="SSL_TRUSTSERVER_KEYSTOREPASSWORD" FIELD="TEXT" NUM_ROW="62" SHOW_IF="KEYSTORE_TYPE == 'PKCS12'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
+
+
 		<PARAMETER NAME="METHOD" FIELD="TEXT" REQUIRED="true" NUM_ROW="70" REPOSITORY_VALUE="METHOD">
 			<DEFAULT>"GetWeather"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="TIMEOUT" FIELD="TEXT" REQUIRED="true" NUM_ROW="70" REPOSITORY_VALUE="TIMEOUT">
 			<DEFAULT>20</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PARAMS" FIELD="TABLE" NUM_ROW="80"
 			NB_LINES="6" REPOSITORY_VALUE="WSDL_PARAMS" >
 			<ITEMS>
@@ -99,13 +116,17 @@
 			</ITEMS>
 		</PARAMETER>
 	</PARAMETERS>
+
 	  <ADVANCED_PARAMETERS>
+
 		<PARAMETER NAME="ADVANCED_USE" FIELD="CHECK" REQUIRED="true" NUM_ROW="30">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="WSDL2Java" FIELD="WSDL2JAVA"  SHOW_IF="ADVANCED_USE == 'true'" REQUIRED="false" NUM_ROW="40" REPOSITORY_VALUE="ENDPOINT">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA"  SHOW_IF="ADVANCED_USE == 'true'" REQUIRED="false" NUM_ROW="50" NB_LINES="9" CONTEXT="begin">
 		    <DEFAULT>
 //==============================================================================
@@ -113,40 +134,55 @@
 //==============================================================================
 /*
 routines.WeatherSoap_PortType weatherSoap = new routines.WeatherLocator().getWeatherSoap();
+
 routines.WeatherSoap_BindingStub stub = (routines.WeatherSoap_BindingStub)weatherSoap;
+
 //stub.setUsername(String username);
 //stub.setPassword(String password);
+
 //stub.setTimeout(int timeout);
+
 //AxisProperties.setProperty("http.proxyHost", proxyHost);
 //AxisProperties.setProperty("http.proxyPort", proxyPort);
 //AxisProperties.setProperty("http.proxyUser", proxyUser);
 //AxisProperties.setProperty("http.proxyPassword", proxyPassword);
+
 String city = "Paris";
 String result = weatherSoap.getWeather(city);
+
 output_row.weather = result;
 */
+
 //==============================================================================
 //example code for : http://localhost:8080/talendJob_0.1/services/talendJob?wsdl
 //==============================================================================
 /*
 routines.TalendJob_PortType talendJob = new routines.TalendJobServiceLocator().getTalendJob();
+
 routines.TalendJobSoapBindingStub stub = (routines.TalendJobSoapBindingStub)talendJob;
+
 //stub.setUsername(String username);
 //stub.setPassword(String password);
+
 //stub.setTimeout(int timeout);
+
 //AxisProperties.setProperty("http.proxyHost", proxyHost);
 //AxisProperties.setProperty("http.proxyPort", proxyPort);
 //AxisProperties.setProperty("http.proxyUser", proxyUser);
 //AxisProperties.setProperty("http.proxyPassword", proxyPassword);
+
 String[] args = new String[]{};
 String[][] result = talendJob.runJob(args);
+
 for(int i = 0; i &lt; result.length; i++){
+
 	// output_row.name = result[i][0];
 	// output_row.address = result[i][1];
 	// output_row.phone = result[i][2];
 */
 		    </DEFAULT>
 		</PARAMETER>
+
 	    <PARAMETER
 	      NAME="MATCHBRACKETS"
 	      FIELD="CLOSED_LIST"
@@ -162,18 +198,19 @@ for(int i = 0; i &lt; result.length; i++){
 	      </ITEMS>
 	    </PARAMETER>
 	  </ADVANCED_PARAMETERS>
+
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="WebServiceInput" MODULE="WebServiceInput.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" />
+			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar"
 				BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
 			<IMPORT NAME="SOAP-discovery"
-				MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" />
+				MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar"
@@ -184,8 +221,11 @@ for(int i = 0; i &lt; result.length; i++){
 				REQUIRED="true" />
 			<IMPORT NAME="COMMONSCODEC" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar"
 				REQUIRED="true" />
+
+
 		</IMPORTS>
 	</CODEGENERATION>
+
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
 	</RETURNS>

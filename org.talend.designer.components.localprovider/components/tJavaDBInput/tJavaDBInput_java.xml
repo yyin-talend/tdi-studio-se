@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070514A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/JavaDB</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -34,6 +41,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:JAVADB"
     />
+
     <PARAMETER
       NAME="FRAMEWORK_TYPE"
       FIELD="CLOSED_LIST"
@@ -46,6 +54,7 @@
         <ITEM NAME="DERBYCLIENT"     VALUE="DERBYCLIENT"/>
       </ITEMS>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -55,6 +64,7 @@
     >
       <DEFAULT>JavaDB</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION_FLAG"
       FIELD="CHECK"
@@ -63,6 +73,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
     	NAME="HOST"
     	FIELD="TEXT"
@@ -73,6 +84,7 @@
     >
     	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -83,6 +95,7 @@
     >
       <DEFAULT>"1527"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DB"
       FIELD="TEXT"
@@ -92,6 +105,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBPATH"
       FIELD="DIRECTORY"
@@ -102,6 +116,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -110,6 +125,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -118,6 +134,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -139,6 +156,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
@@ -146,6 +164,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -154,7 +173,9 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
    <ADVANCED_PARAMETERS>
 	<PARAMETER
       	NAME="ENCODING"
@@ -165,9 +186,11 @@
     >
       	<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
@@ -175,14 +198,16 @@
 		</ITEMS>
 	</PARAMETER>
    </ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Driver-JavaDB" MODULE="derby.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-JavaDB" MODULE="derbyclient.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-JavaDB" MODULE="derbynet.jar" REQUIRED="true"/>
-       <IMPORT NAME="Driver-JavaDB" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar"/>
+       <IMPORT NAME="Driver-JavaDB" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true"/>
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

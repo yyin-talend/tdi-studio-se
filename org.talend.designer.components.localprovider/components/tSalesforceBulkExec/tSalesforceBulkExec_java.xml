@@ -5,13 +5,16 @@
 		STARTABLE="true">
 		<SIGNATURE />
 	</HEADER>
+
  	<FAMILIES>
 		<FAMILY>Business/Salesforce</FAMILY>
 		<FAMILY>Cloud/Salesforce</FAMILY>
   	</FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
+
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0" />
 		<CONNECTOR
@@ -35,6 +38,7 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
+
 	<PARAMETERS>
 		<PARAMETER
 	      NAME="USE_EXISTING_CONNECTION"
@@ -43,6 +47,7 @@
 	    >
 	      <DEFAULT>false</DEFAULT>
 	    </PARAMETER>
+
 	    <PARAMETER
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
@@ -50,18 +55,22 @@
 	      NUM_ROW="5"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	    />
+
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true"  SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"25.0"</DEFAULT>
@@ -70,6 +79,7 @@
 			REQUIRED="true">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sforce_bulk.csv"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="ACTION" FIELD="CLOSED_LIST" NUM_ROW="40"
 			REQUIRED="true">
 			<ITEMS DEFAULT="insert">
@@ -79,10 +89,12 @@
 				<ITEM NAME="delete" VALUE="delete" />
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="UPSERT_KEY_COLUMN" FIELD="TEXT"
 			REQUIRED="true" NUM_ROW="40" SHOW_IF="ACTION=='upsert'">
 			<DEFAULT>"Id"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50"
 			REQUIRED="true">
 			<ITEMS DEFAULT="Account">
@@ -224,15 +236,19 @@
 				<ITEM NAME="CustomModule" VALUE="CustomModule" />
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="60" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
 			<DEFAULT>"customModuleName"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="70"
 			REQUIRED="true">
+
 			<TABLE IF="ACTION=='delete'">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
+
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 			<TABLE IF="(MODULENAME=='Account') and (ACTION=='insert')">
 				<COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" READONLY="true" NULLABLE="false" />
@@ -1094,7 +1110,9 @@
 				<COLUMN KEY="false" LENGTH="40" NAME="DisplayType" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" LENGTH="0" NAME="RequireRowSelection" TYPE="id_Boolean" NULLABLE="false" />
 			</TABLE>
+
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 			<TABLE IF="(MODULENAME=='Account') and (ACTION=='update')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" READONLY="true" NULLABLE="false" />
@@ -2114,6 +2132,7 @@
 			</TABLE>
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 			<!-- UPSERT SCHEMAS -->
+
 			<TABLE IF="(MODULENAME=='Account') and (ACTION=='upsert')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" READONLY="true" NULLABLE="false" />
@@ -3202,19 +3221,26 @@
 				<COLUMN KEY="false" LENGTH="40" NAME="DisplayType" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" LENGTH="0" NAME="RequireRowSelection" TYPE="id_Boolean" NULLABLE="false" />
 			</TABLE>
+
 			<TABLE IF="MODULENAME=='CustomModule'">
 			</TABLE>
 		</PARAMETER>
+
+
+
 	</PARAMETERS>
+
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="COMMIT_LEVEL_ROWS" FIELD="TEXT" NUM_ROW="10"
 			REQUIRED="true">
 			<DEFAULT>10000</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="COMMIT_LEVEL_BYTES" FIELD="TEXT" NUM_ROW="10"
 			REQUIRED="true">
 			<DEFAULT>10*1024*1024</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER NAME="CONCURRENCY_MODE" FIELD="CLOSED_LIST" NUM_ROW="15"
 			REQUIRED="true">
 			<ITEMS DEFAULT="Parallel">
@@ -3222,6 +3248,7 @@
 				<ITEM NAME="Serial" VALUE="Serial" />
 			</ITEMS>
 		</PARAMETER>
+
 		<PARAMETER
 	       NAME="USE_PROXY"
 	       FIELD="CHECK"
@@ -3230,6 +3257,7 @@
 		   REPOSITORY_VALUE="UES_PROXY">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 			NAME="PROXY_HOST"
 			FIELD="TEXT"
@@ -3238,6 +3266,7 @@
 			REPOSITORY_VALUE="PROXY_HOST">
 			<DEFAULT>"61.163.92.4"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 			NAME="PROXY_PORT"
 			FIELD="TEXT"
@@ -3246,6 +3275,7 @@
 			REPOSITORY_VALUE="PROXY_PORT">
 			<DEFAULT>"1080"</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 			NAME="PROXY_USERNAME"
 			FIELD="TEXT"
@@ -3254,6 +3284,7 @@
 			REPOSITORY_VALUE="PROXY_USERNAME">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 			NAME="PROXY_PASSWORD"
 			FIELD="TEXT"
@@ -3262,6 +3293,7 @@
 			REPOSITORY_VALUE="PROXY_PASSWORD">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 	      NAME="SCHEMA_FLOW"
 	      FIELD="SCHEMA_TYPE"
@@ -3272,6 +3304,7 @@
 	      	<COLUMN NAME="salesforce_created" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	      </TABLE>
 	    </PARAMETER>
+
 		<PARAMETER
 	      NAME="SCHEMA_REJECT"
 	      FIELD="SCHEMA_TYPE"
@@ -3283,16 +3316,19 @@
 	      </TABLE>
 	    </PARAMETER>
 	</ADVANCED_PARAMETERS>
+
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="salesforceBulkAPI"
-				MODULE="salesforceBulkAPI.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceBulkAPI.jar" />
+				MODULE="salesforceBulkAPI.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceBulkAPI.jar" REQUIRED="true" />
 			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="true" />
 			<IMPORT NAME="wsc" MODULE="wsc.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" />
+			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" REQUIRED="true" />
+
 		</IMPORTS>
 	</CODEGENERATION>
+
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
 		<RETURN NAME="NB_SUCCESS" TYPE="id_Integer" AVAILABILITY="AFTER" />

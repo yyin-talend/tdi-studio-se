@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -11,13 +13,16 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Business/Salesforce</FAMILY>
 	<FAMILY>Cloud/Salesforce</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -27,6 +32,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
 <PARAMETERS>
 	<PARAMETER
 		NAME="USE_EXISTING_CONNECTION"
@@ -34,16 +40,19 @@
 		NUM_ROW="10">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="CONNECTION"
 		FIELD="COMPONENT_LIST"
 		FILTER="tSalesforceConnection"
 		NUM_ROW="10"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
+
     <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="20"
 		REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -53,6 +62,7 @@
     >
       <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -209,15 +219,18 @@
 		<ITEM NAME="CustomModule" VALUE="CustomModule" />
        </ITEMS>
     </PARAMETER>
+
   	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="50" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
 			<DEFAULT>"customModuleName__c"</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       NUM_ROW="60"
       REQUIRED="true"
     >
+
 		<TABLE IF="MODULENAME=='Account' ">
 			<COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="0" NAME="IsDeleted" TYPE="id_Boolean" />
@@ -2372,7 +2385,9 @@
 		</TABLE>
 		<TABLE IF="MODULENAME=='CustomModule'">
 		</TABLE>
+
    </PARAMETER>
+
 	<PARAMETER
       NAME="START_DATE"
       FIELD="TEXT"
@@ -2380,9 +2395,11 @@
     >
       <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="80">
 	 	<DEFAULT>The start date cannot be older than 30 days ago.</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
       NAME="END_DATE"
       FIELD="TEXT"
@@ -2390,6 +2407,7 @@
     >
       <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
    <ADVANCED_PARAMETERS>
 		<PARAMETER
@@ -2400,6 +2418,7 @@
 		   SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
+
 		<PARAMETER
 			NAME="CLIENT_ID"
 			FIELD="TEXT"
@@ -2410,18 +2429,18 @@
 	</ADVANCED_PARAMETERS>
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="salesforceCRM-management" MODULE="salesforceCRMManagement.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" />
+      <IMPORT NAME="salesforceCRM-management" MODULE="salesforceCRMManagement.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceCRMManagement.jar" REQUIRED="true" />
       <IMPORT NAME="axiom-api"
-				MODULE="axiom-api-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.13.jar" />
-			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.13.jar" />
+				MODULE="axiom-api-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-api-1.2.13.jar" REQUIRED="true" />
+			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axiom-impl-1.2.13.jar" REQUIRED="true" />
 			<IMPORT NAME="axis2-kernel" MODULE="axis2-kernel-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-kernel-1.6.2.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.6.2.jar" />
-			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.6.2.jar" />
+			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-http-1.6.2.jar" REQUIRED="true" />
+			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis2-transport-local-1.6.2.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="commons-httpclient"
-				MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.1.jar" />
+				MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.1.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.jar"
@@ -2444,6 +2463,7 @@
 				REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
    </RETURNS>

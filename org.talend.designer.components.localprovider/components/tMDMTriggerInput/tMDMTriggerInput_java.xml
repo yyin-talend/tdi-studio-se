@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -11,12 +12,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Talend MDM</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_OUTPUT="1" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -26,6 +30,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
   	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 		NUM_ROW="1">
@@ -34,11 +39,15 @@
 		</TABLE>
 	</PARAMETER>
   </PARAMETERS>
+
   <ADVANCED_PARAMETERS/>
+
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="DOM4J" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" />
+      <IMPORT NAME="DOM4J" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" BundleID="org.apache.servicemix.bundles.dom4j" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS/>
+
 </COMPONENT>

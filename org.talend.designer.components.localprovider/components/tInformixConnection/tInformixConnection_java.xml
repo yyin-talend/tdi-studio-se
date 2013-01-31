@@ -1,9 +1,11 @@
 <COMPONENT>
+
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20091105A"
@@ -11,12 +13,15 @@
   >
     <SIGNATURE/>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Databases/Informix</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -26,7 +31,9 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -34,6 +41,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:INFORMIX"
     />
+
      <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -42,6 +50,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -50,6 +59,7 @@
     >
       <DEFAULT>"1533"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -59,6 +69,7 @@
     >
       <DEFAULT>Informix</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -68,6 +79,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
@@ -76,6 +88,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -85,6 +98,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -94,6 +108,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
         <PARAMETER
       NAME="DBSERVER"
       FIELD="TEXT"
@@ -103,6 +118,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -119,6 +135,7 @@
 		REPOSITORY_VALUE="PROPERTIES_STRING">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
@@ -126,6 +143,7 @@
       REQUIRED="true"
     >
     </PARAMETER>
+
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
@@ -135,7 +153,9 @@
     >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
+
    </PARAMETERS>
+
    	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="USE_TRANSACTION" FIELD="CHECK"
      	 	NUM_ROW="10">
@@ -146,15 +166,17 @@
 			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
+
    <RETURNS/>
 </COMPONENT>

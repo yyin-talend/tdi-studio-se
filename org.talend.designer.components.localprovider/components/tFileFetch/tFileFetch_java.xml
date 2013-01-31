@@ -11,12 +11,15 @@ COMPATIBILITY="ALL"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
+
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -26,7 +29,9 @@ COMPATIBILITY="ALL"
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
+
   <PARAMETERS>
+
   <PARAMETER
       NAME="PROTO"
       FIELD="CLOSED_LIST"
@@ -39,6 +44,7 @@ COMPATIBILITY="ALL"
         <ITEM NAME="SAMBA_PROTO" VALUE="smb" />
       </ITEMS>
     </PARAMETER>
+
   <PARAMETER
   	NAME="POST"
   	FIELD="CHECK"
@@ -47,6 +53,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>true</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="URI"
      FIELD="TEXT"
@@ -56,6 +63,7 @@ COMPATIBILITY="ALL"
   >
    <DEFAULT>"http://talendforge.org/file_fetch.txt"</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
   	NAME="USE_CACHE"
   	FIELD="CHECK"
@@ -63,6 +71,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="SMB_URI"
      FIELD="TEXT"
@@ -72,6 +81,7 @@ COMPATIBILITY="ALL"
   >
    <DEFAULT>"smb://host/dir/remoteFileName.txt"</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="DIRECTORY"
      FIELD="DIRECTORY"
@@ -81,6 +91,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>"C:"</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
   	NAME="MAKEDIRS"
   	FIELD="CHECK"
@@ -89,6 +100,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="FILENAME"
      FIELD="TEXT"
@@ -98,6 +110,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>""</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
   	NAME="ADD_HEADER"
   	FIELD="CHECK"
@@ -106,6 +119,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="HEADERS"
      FIELD="TABLE" NUM_ROW="46"
@@ -117,6 +131,7 @@ COMPATIBILITY="ALL"
        <ITEM NAME="HEADER_VALUE"/>
      </ITEMS>
    </PARAMETER>
+
    <PARAMETER
      NAME="SMB_DOMAIN"
      FIELD="TEXT"
@@ -126,6 +141,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>"domain"</DEFAULT>
   </PARAMETER>
+
      <PARAMETER
      NAME="SMB_USERNAME"
      FIELD="TEXT"
@@ -135,6 +151,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>"username"</DEFAULT>
   </PARAMETER>
+
      <PARAMETER
      NAME="SMB_PASSWORD"
      FIELD="TEXT"
@@ -144,6 +161,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>"password"</DEFAULT>
   </PARAMETER>
+
    <PARAMETER
      NAME="DIE_ON_ERROR"
      FIELD="CHECK"
@@ -152,6 +170,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>true</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="COMMON_PARAMS"
      FIELD="TABLE" NUM_ROW="60"
@@ -163,6 +182,7 @@ COMPATIBILITY="ALL"
        <ITEM NAME="COMMON_PARAMS_VALUE"/>
      </ITEMS>
    </PARAMETER>
+
    <PARAMETER
      NAME="READ_COOKIE"
      FIELD="CHECK"
@@ -170,6 +190,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
+
    <PARAMETER
      NAME="SAVE_COOKIE"
      FIELD="CHECK"
@@ -177,6 +198,7 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
      NAME="COOKIE_DIR"
      FIELD="DIRECTORY"
@@ -186,6 +208,7 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>"C:/cookie"</DEFAULT>
   </PARAMETER>
+
   <PARAMETER
 		NAME="COOKIE_POLICY"
 		FIELD="CLOSED_LIST"
@@ -201,6 +224,7 @@ COMPATIBILITY="ALL"
 		<!-- <ITEM NAME="RFC_2965" VALUE="RFC_2965" />  -->
 	</ITEMS>
 	</PARAMETER>
+
   <PARAMETER
 		NAME="SINGLE_COOKIE"
 		FIELD="CHECK"
@@ -210,7 +234,9 @@ COMPATIBILITY="ALL"
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
   </PARAMETERS>
+
    <ADVANCED_PARAMETERS>
+
      <PARAMETER
     	NAME="PRINT"
     	FIELD="CHECK"
@@ -218,6 +244,7 @@ COMPATIBILITY="ALL"
     	SHOW_IF="(PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
     >
     </PARAMETER>
+
     <PARAMETER
       NAME="TIMEOUT"
       FIELD="TEXT"
@@ -227,6 +254,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="UPLOAD"
       FIELD="CHECK"
@@ -235,6 +263,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="FILE_PARAMS"
       FIELD="TABLE"
@@ -247,6 +276,7 @@ COMPATIBILITY="ALL"
         <ITEM NAME="FILE_PARAMS_VALUE"/>
       </ITEMS>
     </PARAMETER>
+
     <PARAMETER
        NAME="USE_PROXY"
        FIELD="CHECK"
@@ -256,6 +286,7 @@ COMPATIBILITY="ALL"
 	   REPOSITORY_VALUE="UES_PROXY">
 	   <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_HOST"
 		FIELD="TEXT"
@@ -264,6 +295,7 @@ COMPATIBILITY="ALL"
 		REPOSITORY_VALUE="PROXY_HOST">
 		<DEFAULT>"61.163.92.4"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_PORT"
 		FIELD="TEXT"
@@ -272,6 +304,7 @@ COMPATIBILITY="ALL"
 		REPOSITORY_VALUE="PROXY_PORT">
 		<DEFAULT>"8080"</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_USERNAME"
 		FIELD="TEXT"
@@ -280,6 +313,7 @@ COMPATIBILITY="ALL"
 		REPOSITORY_VALUE="PROXY_USERNAME">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_PASSWORD"
 		FIELD="TEXT"
@@ -288,6 +322,7 @@ COMPATIBILITY="ALL"
 		REPOSITORY_VALUE="PROXY_PASSWORD">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_NTLM"
 		FIELD="CHECK"
@@ -297,6 +332,7 @@ COMPATIBILITY="ALL"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="PROXY_DOMAIN"
 		FIELD="TEXT"
@@ -306,15 +342,18 @@ COMPATIBILITY="ALL"
         >
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
+
 	<PARAMETER
 		NAME="NEED_AUTH"
 		FIELD="CHECK"
 		REQUIRED="true"
 		NUM_ROW="45"
 		SHOW_IF="(PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
+
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
     <PARAMETER
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
@@ -324,6 +363,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
+
     <PARAMETER
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
@@ -333,6 +373,7 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+
 	<PARAMETER
 		NAME="REDIRECT"
 		FIELD="CHECK"
@@ -342,15 +383,18 @@ COMPATIBILITY="ALL"
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
     </ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
    <IMPORTS>
-       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" />
-       <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
-  	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" />
+       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" REQUIRED="true" />
+       <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
+  	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" REQUIRED="true" />
   	   <IMPORT NAME="jcifs-samba" MODULE="jcifs-1.3.0.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
+
   <RETURNS>
     <RETURN NAME="INPUT_STREAM" TYPE="java.io.InputStream" AVAILABILITY="FLOW"/>
   </RETURNS>
+
 </COMPONENT>
