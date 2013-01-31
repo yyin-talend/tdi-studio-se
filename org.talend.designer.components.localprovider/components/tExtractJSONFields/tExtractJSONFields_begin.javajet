@@ -143,6 +143,7 @@ de.odysseus.staxon.json.JsonXMLInputFactory jsonXMLInputFactory_<%=cid %> = new 
 javax.xml.stream.XMLOutputFactory xmlOutputFactory_<%=cid %> = javax.xml.stream.XMLOutputFactory.newInstance();
 boolean isGetWholeJson_<%=cid %> = false;
 
+	class OriginalJSONString_<%=cid%> {
 <%
         String nodeChecked = null;
         boolean hasNodeCheck = false;
@@ -153,9 +154,8 @@ boolean isGetWholeJson_<%=cid %> = false;
                 break;
             }
         }
-        if(hasNodeCheck){
+        if(hasNodeCheck){//----start has nodeCheck
 %>
-        	class OriginalJSONString_<%=cid%> {
 
         		String originalJSONString = null;
         		java.io.ByteArrayInputStream bais = null;
@@ -200,12 +200,12 @@ boolean isGetWholeJson_<%=cid %> = false;
 					
 					return originalJSONString;
 				}
-			}
+<%
+        }//----end has nodeCheck
+%>
+}
 			
 			OriginalJSONString_<%=cid%> originalJSONString_<%=cid %> = new OriginalJSONString_<%=cid%>();
-<%
-        }
-%>
 
 class XML_API_<%=cid%>{
 	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
@@ -295,9 +295,16 @@ if (outConn!=null) {
 %>
             public void putExtractValue_<%=extractColNo/schemaOptNum%>(<%=NodeUtil.getPrivateConnClassName(outConn)%>Struct <%=firstConnName%>,<%if(inConn!=null){%><%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=inConn.getName()%>,<%}%>
                 String xmlStr_<%=cid%>,org.dom4j.tree.AbstractNode temp_<%=cid %>,String loopQuery_<%=cid %>,java.util.HashMap xmlNameSpaceMap_<%=cid%>,org.dom4j.Node node_<%=cid %>,
-                    String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%><%if("true".equals(nodeCheck)){%> ,OriginalJSONString_<%=cid %> originalJSONString_<%=cid %>,ConvertJSONString_<%=cid%> cjs_<%=cid %>,boolean isGetWholeJson_<%=cid%> <%}%>) throws java.lang.Exception {
+                    String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%>,OriginalJSONString_<%=cid %> originalJSONString_<%=cid %>,ConvertJSONString_<%=cid%> cjs_<%=cid %>,boolean isGetWholeJson_<%=cid%> ) throws java.lang.Exception {
 <%
                 }
+             	if("true".equals(nodeCheck)){
+                	if((".").equals(query.substring(1,query.length()-1)) && ("/").equals(loopQuery.substring(1,loopQuery.length()-1))){
+%>
+                    	isGetWholeJson_<%=cid %>  = true;
+<%
+                	}
+            	}
 %>
                 org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(<%=query%>);
                 xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);

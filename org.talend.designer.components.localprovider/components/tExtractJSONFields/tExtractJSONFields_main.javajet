@@ -233,24 +233,24 @@ if(outConns!=null){
         for (int i=0;i<mapping.size();i++) {  //for S_0
             String query = mapping.get(i).get("QUERY");
             String nodeCheck = mapping.get(i).get("NODECHECK");
-            if("true".equals(nodeCheck) && query!=null){
-				if((".").equals(query.substring(1,query.length()-1)) && ("/").equals(loopQuery.substring(1,loopQuery.length()-1))){
-%>
-					isGetWholeJson_<%=cid %>  = true;
-<%
-				}
-			}
             if(schemaOptNum < mapping.size()){
                 if(query!=null && query.trim().length()>0){  // if S_0_0
                     if(extractColNo%schemaOptNum==0){
 %>
-            xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%><%if("true".equals(nodeCheck)){%> ,originalJSONString_<%=cid %>,cjs_<%=cid %>,isGetWholeJson_<%=cid %><%}%>);
+            xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>,originalJSONString_<%=cid %>,cjs_<%=cid %>,isGetWholeJson_<%=cid %>);
 <%
                     }
                     extractColNo++;
                 }
             }else{
               if(query!=null && query.trim().length()>0){  // if S_0_0
+            		if("true".equals(nodeCheck)){
+						if((".").equals(query.substring(1,query.length()-1)) && ("/").equals(loopQuery.substring(1,loopQuery.length()-1))){
+%>
+						isGetWholeJson_<%=cid %>  = true;
+<%
+						}
+					}
 %>
                 org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(<%=query%>);
                 xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);

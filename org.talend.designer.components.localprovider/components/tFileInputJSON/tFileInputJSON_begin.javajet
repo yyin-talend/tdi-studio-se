@@ -302,11 +302,6 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 %>
 
     int nb_line_<%=cid%> = 0;
-    String os_<%=cid %> = System.getProperty("os.name").toLowerCase();
-    boolean isWindows_<%=cid%>=false;
-    if(os_<%=cid %>.indexOf("windows") > -1 || os_<%=cid %>.indexOf("nt") > -1){
-        isWindows_<%=cid%>=true;
-    }
 
     class XML_API_<%=cid%>{
         public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
@@ -799,7 +794,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                     if (dieOnError) {
 %>
-                        throw(_<%=cid%>);
+                        throw(e_<%=cid%>);
 <%
                     } else {
                         if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
