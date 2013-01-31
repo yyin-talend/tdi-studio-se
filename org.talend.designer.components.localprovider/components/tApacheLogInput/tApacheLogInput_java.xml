@@ -4,27 +4,23 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="true"
-	HAS_CONDITIONAL_OUTPUTS="true"    
+	HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>File/Input</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />    
+    <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -32,9 +28,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -44,7 +38,6 @@
     >
       <DEFAULT/>
     </PARAMETER>
-
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
@@ -54,7 +47,6 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="REGEX"
       SHOW="false"
@@ -67,7 +59,6 @@
       "\"([A-Z]+) (.+?) (.+?)\" (\\d{3}) (\\d+) ?\"?([^\"]*)\"? ?\"?([^\"]*)\"?"
 	  </DEFAULT>
     </PARAMETER>
-     
     <PARAMETER
       NAME="DIE_ON_ERROR"
       SHOW="true"
@@ -75,14 +66,12 @@
       NUM_ROW="55"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>        
-
+    </PARAMETER>
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="10"
-      
 	>
   		<TABLE READONLY="true">
    			   <COLUMN NAME="host"    TYPE="id_String" LENGTH="50"/>
@@ -100,8 +89,6 @@
 			   <COLUMN NAME="agent"   TYPE="id_String" LENGTH="255"/>
   	  </TABLE>
     </PARAMETER>
-    
-    
 	<PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -129,9 +116,7 @@
 			READONLY="false" CUSTOM="true" />
 	</TABLE>
     </PARAMETER>
-
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
   	 <PARAMETER
       NAME="ENCODING"
@@ -143,17 +128,15 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT
         NAME="Talen File Enhanced"
-        MODULE="talend_file_enhanced_20070724.jar"
+        MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar"
         REQUIRED="true"
       />
     </IMPORTS>
   </CODEGENERATION>
-
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
   </RETURNS>

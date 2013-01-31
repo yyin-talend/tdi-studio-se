@@ -1,11 +1,9 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -13,15 +11,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Business/CentricCRM</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -31,9 +26,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="CENTRIC-URL"
       FIELD="TEXT"
@@ -42,7 +35,6 @@
     >
       <DEFAULT>"http://127.0.0.1:8080/centric"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SERVER-ID"
       FIELD="TEXT"
@@ -51,7 +43,6 @@
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CLIENT"
       FIELD="TEXT"
@@ -60,7 +51,6 @@
     >
       <DEFAULT>"1"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CODE"
       FIELD="TEXT"
@@ -69,7 +59,6 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="2" REQUIRED="true">
        <ITEMS DEFAULT="Contact">
       <ITEM NAME="Account"   VALUE="accountList" />
@@ -102,15 +91,15 @@
       <DEFAULT IF="MODULENAME=='CustomField'">org.aspcfs.modules.base.CustomField</DEFAULT>
       <DEFAULT IF="MODULENAME=='CustomFieldData'">org.aspcfs.modules.base.CustomFieldData</DEFAULT>
     </PARAMETER>
-<!--    
+<!--
     <PARAMETER NAME="CLASSNAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
       <ITEMS DEFAULT="ContactClass">
       <ITEM  NAME="AccountClass"   VALUE="org.aspcfs.modules.accounts.base.Organization" />
 	  <ITEM  NAME="ContactClass"   VALUE="org.aspcfs.modules.contacts.base.Contact" />
 	  <ITEM  NAME="ContactAddressClass"   VALUE="org.aspcfs.modules.contacts.base.ContactAddress" />
 	  <ITEM  NAME="ContactEmailAddressClass"   VALUE="org.aspcfs.modules.contacts.base.ContactEmailAddress" />
-	  <ITEM  NAME="ContactPhoneNumberClass"   VALUE="org.aspcfs.modules.contacts.base.ContactPhoneNumber" /> 
-      <ITEM  NAME="OrganizationAddressClass"   VALUE="org.aspcfs.modules.accounts.base.OrganizationAddress" /> 
+	  <ITEM  NAME="ContactPhoneNumberClass"   VALUE="org.aspcfs.modules.contacts.base.ContactPhoneNumber" />
+      <ITEM  NAME="OrganizationAddressClass"   VALUE="org.aspcfs.modules.accounts.base.OrganizationAddress" />
       <ITEM  NAME="OrganizationEmailAddressClass"   VALUE="org.aspcfs.modules.accounts.base.OrganizationEmailAddress" />
       <ITEM  NAME="OrganizationPhoneNumberClass"   VALUE="org.aspcfs.modules.accounts.base.OrganizationPhoneNumber" />
       <ITEM  NAME="CallClass"   VALUE="org.aspcfs.modules.contacts.base.Call" />
@@ -120,7 +109,7 @@
       <ITEM  NAME="CustomFieldDataClass"   VALUE="org.aspcfs.modules.base.CustomFieldData" />
 </ITEMS>
     </PARAMETER>
--->    
+-->
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -328,7 +317,7 @@
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
-       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>    
+       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
 	<TABLE IF="MODULENAME=='ContactPhoneNumber'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
@@ -343,7 +332,7 @@
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
-       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>    
+       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
 	<TABLE IF="MODULENAME=='OrganizationAddress'">
    		 <COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
@@ -369,7 +358,7 @@
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/>  
+         <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
 	<TABLE IF="MODULENAME=='OrganizationEmailAddress'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
@@ -383,7 +372,7 @@
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
-       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>   
+       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
 	<TABLE IF="MODULENAME=='OrganizationPhoneNumber'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
@@ -398,7 +387,7 @@
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
-       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/> 
+       	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
 	<TABLE IF="MODULENAME=='Call'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
@@ -532,7 +521,6 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="UserGroupName" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="CompanyNameHierarchy" NULLABLE="true" TYPE="id_String"/>
 	</TABLE>
-	
 	<TABLE IF="MODULENAME=='CustomFieldCategory'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModuleId" NULLABLE="true" TYPE="id_Integer"/>
@@ -555,7 +543,6 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="CanNotContinue" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="NumberOfRecords" NULLABLE="true" TYPE="id_Integer"/>
 	</TABLE>
-	
 	<TABLE IF="MODULENAME=='CustomField'">
    		<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="GroupId" NULLABLE="true" TYPE="id_Integer"/>
@@ -589,7 +576,6 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="IsStatic" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="ValidateData" NULLABLE="true" TYPE="id_Boolean"/>
 	</TABLE>
-		
 	<TABLE IF="MODULENAME=='CustomFieldData'">
    		<COLUMN KEY="false" LENGTH="3" NAME="RecordId" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="FieldId" NULLABLE="true" TYPE="id_Integer"/>
@@ -599,7 +585,6 @@
    		<COLUMN KEY="false" LENGTH="5" NAME="EnteredDouble" NULLABLE="true" TYPE="id_Double"/>
 	</TABLE>
    </PARAMETER>
-  
    <PARAMETER
       NAME="CONDITION"
       FIELD="TABLE"
@@ -610,7 +595,7 @@
         <ITEM NAME="NAME"/>
         <ITEM NAME="VALUE"/>
       </ITEMS>
-    </PARAMETER> 
+    </PARAMETER>
    </PARAMETERS>
   <CODEGENERATION>
     <IMPORTS>
@@ -618,7 +603,7 @@
       <IMPORT NAME="Servlet-api" MODULE="servlet-api.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-darkhorseventures" MODULE="darkhorseventures.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-zeroio-iteam" MODULE="zeroio-iteam.jar" REQUIRED="true" />
-      <IMPORT NAME="Log4J" MODULE="log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
+      <IMPORT NAME="Log4J" MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" />
     </IMPORTS>
   </CODEGENERATION>
    <RETURNS>

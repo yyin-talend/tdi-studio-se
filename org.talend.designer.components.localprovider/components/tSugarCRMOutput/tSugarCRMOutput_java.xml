@@ -1,11 +1,9 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -13,16 +11,13 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Business/SugarCRM</FAMILY>
 	<FAMILY>Cloud/SugarCRM</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -32,9 +27,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
@@ -43,7 +36,6 @@
     >
       <DEFAULT>"http://127.0.0.1:8088/sugarcrm/soap.php"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -52,7 +44,6 @@
     >
       <DEFAULT>"admin"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -61,19 +52,17 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="50"      
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <ITEMS DEFAULT="insert">
 	  <ITEM NAME="insert"   VALUE="insert" />
-      <ITEM NAME="update"   VALUE="update" />    
+      <ITEM NAME="update"   VALUE="update" />
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="30" REQUIRED="true">
        <ITEMS DEFAULT="Contacts">
 	  <ITEM NAME="ACL"   VALUE="ACL" />
@@ -148,7 +137,6 @@
     		 SHOW_IF="MODULENAME=='CustomModule'">
 			<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
 	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
     		 SHOW_IF="MODULENAME=='CustomModule'">
 			<DEFAULT>""</DEFAULT>
@@ -161,7 +149,7 @@
     >
       <TABLE IF="(MODULENAME=='Home') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='iFrames') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='iFrames') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="url" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="type" NULLABLE="true" TYPE="id_String"/>
@@ -177,7 +165,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='Activities') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Contacts') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Contacts') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -228,7 +216,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Accounts') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Accounts') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -268,7 +256,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Leads') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Leads') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="converted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -322,7 +310,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Opportunities') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Opportunities') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -346,7 +334,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Cases') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Cases') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="case_number" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -364,7 +352,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Bugs') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Bugs') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="bug_number" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -412,7 +400,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Emails') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Emails') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -454,7 +442,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="true" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Campaigns') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Campaigns') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_key" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_count" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="false" TYPE="id_String"/>
@@ -482,7 +470,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Project') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Project') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -495,7 +483,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Feeds') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Feeds') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -508,7 +496,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Dashboard') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Dashboard') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -526,7 +514,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="value" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Currencies') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Currencies') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="symbol" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="iso4217" NULLABLE="false" TYPE="id_String"/>
@@ -544,7 +532,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='DynamicLayout') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='EmailTemplates') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='EmailTemplates') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -562,7 +550,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='Help') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Import') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Import') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="source" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="module" NULLABLE="true" TYPE="id_String"/>
@@ -580,7 +568,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='UpgradeWizard') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Releases') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Releases') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -594,7 +582,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='Sync') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Users') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Users') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="user_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="user_hash" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="authenticate_id" NULLABLE="true" TYPE="id_String"/>
@@ -636,7 +624,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Versions') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Versions') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -666,7 +654,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="related_type" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="true" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='ProjectTask') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='ProjectTask') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -695,7 +683,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='ProspectLists') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='ProspectLists') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="name" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="list_type" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -709,7 +697,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Prospects') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Prospects') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_key" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -752,7 +740,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Employees') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Employees') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="user_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="user_hash" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="authenticate_id" NULLABLE="true" TYPE="id_String"/>
@@ -796,7 +784,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='LabelEditor') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Roles') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Roles') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -808,7 +796,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='EmailMarketing') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='EmailMarketing') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -834,7 +822,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='MailMerge') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Schedulers') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Schedulers') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -855,7 +843,7 @@
       </TABLE>
       <TABLE IF="MODULENAME=='Schedulers_jobs'">
       </TABLE>
-      <TABLE IF="(MODULENAME=='InboundEmail') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='InboundEmail') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -877,7 +865,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='CampaignLog') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='CampaignLog') and (ACTION=='insert')">
          <COLUMN KEY="true" LENGTH="255" NAME="campaign_id" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="target_tracker_key" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="target_id" NULLABLE="true" TYPE="id_String"/>
@@ -895,7 +883,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="more_information" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="true" LENGTH="255" NAME="marketing_id" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Groups') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Groups') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="user_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="user_hash" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="authenticate_id" NULLABLE="true" TYPE="id_String"/>
@@ -937,7 +925,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='ACLActions') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='ACLActions') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -950,7 +938,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='ACLRoles') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='ACLRoles') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -961,7 +949,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='CampaignTrackers') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='CampaignTrackers') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_name" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_url" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="tracker_key" NULLABLE="true" TYPE="id_String"/>
@@ -993,7 +981,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='Configurator') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='UserPreferences') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='UserPreferences') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="1" NAME="deleted" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
@@ -1014,7 +1002,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='Studio') and (ACTION=='insert')">
       </TABLE>
-      <TABLE IF="(MODULENAME=='Calls') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Calls') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -1038,7 +1026,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Meetings') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Meetings') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -1062,7 +1050,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Notes') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Notes') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="modified_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -1081,7 +1069,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
-      <TABLE IF="(MODULENAME=='Tasks') and (ACTION=='insert')">         
+      <TABLE IF="(MODULENAME=='Tasks') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="20" NAME="date_entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="date_modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd hh:mm:ss&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="true" TYPE="id_String"/>
@@ -1113,9 +1101,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='MergeRecords') and (ACTION=='insert')">
       </TABLE>
-      
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
       <TABLE IF="(MODULENAME=='Home') and (ACTION=='update')">
       </TABLE>
       <TABLE IF="(MODULENAME=='iFrames') and (ACTION=='update')">
@@ -2105,28 +2091,24 @@
       <TABLE IF="(MODULENAME=='Audit') and (ACTION=='update')">
       </TABLE>
       <TABLE IF="(MODULENAME=='MergeRecords') and (ACTION=='update')">
-      </TABLE>    
+      </TABLE>
       <TABLE IF="MODULENAME=='CustomModule'">
-      </TABLE> 
-   </PARAMETER>	
-    
-    
+      </TABLE>
+   </PARAMETER>
    </PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="SugarCRM-management" MODULE="sugarCRMManagement.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
-      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="true" />      
+      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" />
+      <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" />
+      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" />
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
     </IMPORTS>
   </CODEGENERATION>
-
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="ID" TYPE="id_String" AVAILABILITY="FLOW"/>

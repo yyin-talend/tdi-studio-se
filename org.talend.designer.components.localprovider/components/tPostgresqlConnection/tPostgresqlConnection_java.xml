@@ -1,11 +1,9 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070319A"
@@ -13,16 +11,13 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/PostgreSQL</FAMILY>
     <FAMILY>ELT/Connections</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -32,9 +27,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -42,7 +35,6 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:POSTGRESQL"
     />
-
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -52,7 +44,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -62,7 +53,6 @@
     >
       <DEFAULT>PostgreSQL</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -72,7 +62,6 @@
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -82,8 +71,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -91,7 +79,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -101,7 +88,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -111,7 +97,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -120,40 +105,33 @@
       SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>    
-	
+    </PARAMETER>
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="10"
       REQUIRED="true"
-    >      
+    >
     </PARAMETER>
-	
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
 	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
-    >      
+    >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
-
   </PARAMETERS>
-  
   	<ADVANCED_PARAMETERS>
-		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">  
-			<DEFAULT>false</DEFAULT>    
+		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
+			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
-  
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" />
      </IMPORTS>
    </CODEGENERATION>
-   
-   <RETURNS/>  
-      
-</COMPONENT>    
+   <RETURNS/>
+</COMPONENT>

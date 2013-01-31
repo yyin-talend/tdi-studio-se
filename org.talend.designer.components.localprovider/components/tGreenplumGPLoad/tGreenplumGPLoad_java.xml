@@ -1,54 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<COMPONENT> 
-	<HEADER AUTHOR="Talend" 
-			COMPATIBILITY="ALL" 
+<COMPONENT>
+	<HEADER AUTHOR="Talend"
+			COMPATIBILITY="ALL"
 			DATA_AUTO_PROPAGATE="false"
 			STARTABLE="true"
-			PLATEFORM="ALL" 
-			RELEASE_DATE="20080229A" 
-			SERIAL="" 
-			STATUS="ALPHA" 
-			VERSION="0.102"> 
-		<SIGNATURE/> 
+			PLATEFORM="ALL"
+			RELEASE_DATE="20080229A"
+			SERIAL=""
+			STATUS="ALPHA"
+			VERSION="0.102">
+		<SIGNATURE/>
 	</HEADER>
-	
-	<FAMILIES> 
-		<FAMILY>Databases/Greenplum</FAMILY> 
+	<FAMILIES>
+		<FAMILY>Databases/Greenplum</FAMILY>
 	</FAMILIES>
-	
-	<DOCUMENTATION> 
-		<URL/> 
-	</DOCUMENTATION>  
-	
-	<CONNECTORS> 
-		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>  
-		<CONNECTOR CTYPE="ITERATE" MAX_INPUT="1" MAX_OUTPUT="1" />  
+	<DOCUMENTATION>
+		<URL/>
+	</DOCUMENTATION>
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+		<CONNECTOR CTYPE="ITERATE" MAX_INPUT="1" MAX_OUTPUT="1" />
 		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
 		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
 		<CONNECTOR CTYPE="COMPONENT_OK"/>
 		<CONNECTOR CTYPE="COMPONENT_ERROR"/>
 		<CONNECTOR CTYPE="RUN_IF"/>
 	</CONNECTORS>
-	
 	<PARAMETERS>
-	
 		<PARAMETER
 			NAME="MAPPING"
 			FIELD="MAPPING_TYPE"
 			NUM_ROW="18"
 			SHOW="false"
-		>       
+		>
 			<DEFAULT>postgres_id</DEFAULT>
 		</PARAMETER>
-	
-		<PARAMETER 
+		<PARAMETER
 			NAME="PROPERTY"
 			FIELD="PROPERTY_TYPE"
 			NUM_ROW="1"
 			REPOSITORY_VALUE="DATABASE:GREENPLUM"
 		/>
-
 		<PARAMETER
 			NAME="TYPE"
 			FIELD="TEXT"
@@ -58,7 +50,6 @@
 		>
 			<DEFAULT>PostgreSQL</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="HOST"
 			FIELD="TEXT"
@@ -68,7 +59,6 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER
 			NAME="PORT"
 			FIELD="TEXT"
@@ -78,7 +68,6 @@
 		>
 			<DEFAULT>"5432"</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER
 			NAME="DBNAME"
 			FIELD="TEXT"
@@ -88,8 +77,7 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
-		<PARAMETER 
+		<PARAMETER
 			NAME="SCHEMA_DB"
 			FIELD="TEXT"
 			NUM_ROW="20"
@@ -97,7 +85,6 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-	
 		<PARAMETER
 			NAME="USER"
 			FIELD="TEXT"
@@ -107,7 +94,6 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER
 			NAME="PASS"
 			FIELD="TEXT"
@@ -117,15 +103,13 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
-		<PARAMETER	
+		<PARAMETER
 			NAME="TABLE"
 			FIELD="DBTABLE"
 			NUM_ROW="40"
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER
 			NAME="TABLE_ACTION"
 			FIELD="CLOSED_LIST"
@@ -142,7 +126,6 @@
 				<ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
 			</ITEMS>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="DATA_ACTION"
 			FIELD="CLOSED_LIST"
@@ -155,7 +138,6 @@
 				<ITEM NAME="MERGE" VALUE="MERGE"/>
 			</ITEMS>
 		</PARAMETER>
-	
 		<PARAMETER
 			NAME="SCHEMA_FLOW"
 			FIELD="SCHEMA_TYPE"
@@ -163,7 +145,6 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="DATA_FILE"
 			FIELD="FILE"
@@ -173,7 +154,6 @@
 		>
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/data_file.txt"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="USE_NAMED_PIPE"
 			FIELD="CHECK"
@@ -182,7 +162,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="NAMED_PIPE"
 			FIELD="TEXT"
@@ -192,7 +171,6 @@
 		>
 			<DEFAULT>"gploadpipe"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="UPDATE_OPTIONS"
 			FIELD="TABLE"
@@ -206,7 +184,6 @@
 				<ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
 			</ITEMS>
 		</PARAMETER>
-	
 		<PARAMETER
 			NAME="UPDATE_CONDITION"
 			FIELD="TEXT"
@@ -216,7 +193,6 @@
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="DIE_ON_ERROR"
 			FIELD="CHECK"
@@ -225,14 +201,8 @@
 		>
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>
-	
 	</PARAMETERS>
-	
-	
-	
-	
-	<ADVANCED_PARAMETERS> 
-	
+	<ADVANCED_PARAMETERS>
 		<PARAMETER
 			NAME="USE_EXISTING_CLT_FILE"
 			FIELD="CHECK"
@@ -240,7 +210,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER
 			NAME="CLT_FILE"
 			FIELD="FILE"
@@ -249,7 +218,6 @@
 		>
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/gpload.ctl"</DEFAULT>
 		</PARAMETER>
-			
 		<PARAMETER
 			NAME="CSV_OPTIONS"
 			FIELD="CHECK"
@@ -259,7 +227,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="FIELD_SEPARATOR"
 			FIELD="TEXT"
@@ -269,7 +236,6 @@
 		>
 			<DEFAULT>"|"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="ESCAPE_CHAR"
 			FIELD="TEXT"
@@ -279,7 +245,6 @@
 		>
 			<DEFAULT>"\\"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="QUOTE_CHAR"
 			FIELD="TEXT"
@@ -289,7 +254,6 @@
 		>
 			<DEFAULT>"\""</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="HEADER_ROW"
 			FIELD="CHECK"
@@ -299,8 +263,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-
-		
 		<PARAMETER
 			NAME="OPTIONS"
 			FIELD="TABLE"
@@ -323,18 +285,16 @@
 				<ITEM NAME="VALUE" FIELD="TEXT"/>
 			</ITEMS>
 		</PARAMETER>
-	
-		<!-- 
-		<PARAMETER 
-			NAME="NOTE" 
-			FIELD="LABEL" 
+		<!--
+		<PARAMETER
+			NAME="NOTE"
+			FIELD="LABEL"
 			NUM_ROW="2"
 			SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
 		>
 			<DEFAULT>*Note: recommended parameters: -dateStyle YMD -timeStyle 24HOUR"</DEFAULT>
 		</PARAMETER>
 		-->
-		
 		<PARAMETER
 			NAME="LOG_FILE"
 			FIELD="TEXT"
@@ -353,7 +313,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="BEFORE_SQL"
 			FIELD="TEXT"
@@ -363,7 +322,6 @@
 		>
 			<DEFAULT>"INSERT INTO audit VALUES('start', current_timestamp)"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="HAS_AFTER_SQL"
 			FIELD="CHECK"
@@ -373,7 +331,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="AFTER_SQL"
 			FIELD="TEXT"
@@ -384,7 +341,6 @@
 			<DEFAULT>"INSERT INTO audit VALUES('end', current_timestamp)"</DEFAULT>
 		</PARAMETER>
 		-->
-		
 		<PARAMETER
 			NAME="ENCODING"
 			FIELD="TEXT"
@@ -394,7 +350,6 @@
 		>
 			<DEFAULT>"SQL_ASCII"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="SPECIFY_GPLOAD_PATH"
 			FIELD="CHECK"
@@ -403,7 +358,6 @@
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 			NAME="GPLOAD_PATH"
 			FIELD="FILE"
@@ -412,20 +366,17 @@
 		>
 			<DEFAULT>"gpload.exe"</DEFAULT>
 		</PARAMETER>
-	
 	</ADVANCED_PARAMETERS>
-	
-	<CODEGENERATION> 
-		<IMPORTS> 
-			<IMPORT MODULE="namedpipe-1.0.jar" NAME="namedpipe-1.0.jar" REQUIRED="true"/> 
-			<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
-			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="false"/> 
-			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="false"/> 
-		</IMPORTS> 
+	<CODEGENERATION>
+		<IMPORTS>
+			<IMPORT MODULE="namedpipe-1.0.jar" NAME="namedpipe-1.0.jar" REQUIRED="true"/>
+			<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" />
+			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="false"/>
+			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="false"/>
+		</IMPORTS>
 	</CODEGENERATION>
-	
-	<RETURNS> 
+	<RETURNS>
 		<RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/>
 		<RETURN AVAILABILITY="AFTER" NAME="GPLOAD_OUTPUT" TYPE="id_String"/>
-	</RETURNS> 
+	</RETURNS>
 </COMPONENT>

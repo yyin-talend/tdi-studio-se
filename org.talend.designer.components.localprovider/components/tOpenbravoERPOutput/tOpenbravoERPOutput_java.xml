@@ -1,11 +1,9 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -13,15 +11,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Business/Open Bravo</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -31,9 +26,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
@@ -42,7 +35,6 @@
     >
       <DEFAULT>"http://210.32.80.89/openbravo/ws/dal"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -51,7 +43,6 @@
     >
       <DEFAULT>"Openbravo"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -60,12 +51,10 @@
     >
       <DEFAULT>"openbravo"</DEFAULT>
     </PARAMETER>
-    
-        
    <PARAMETER
       NAME="ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"      
+      NUM_ROW="6"
       REQUIRED="true"
     >
       <ITEMS DEFAULT="UPDATE_CREATE">
@@ -73,22 +62,19 @@
 		<ITEM NAME="REMOVE" VALUE="REMOVE" />
       </ITEMS>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="USE_EXISTING_FILE"
       FIELD="CHECK"
-      NUM_ROW="7"      
+      NUM_ROW="7"
       REQUIRED="true"
       SHOW_IF="(ACTION == 'UPDATE_CREATE')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-       
    	<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="7"
 		REQUIRED="false" REPOSITORY_VALUE="FILE_PATH" SHOW_IF="(ACTION == 'UPDATE_CREATE') AND (USE_EXISTING_FILE == 'true')">
 		<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/openbravo.xml"</DEFAULT>
 	</PARAMETER>
-    
     <PARAMETER
       NAME="ENTITIES"
       FIELD="TEXT"
@@ -98,7 +84,6 @@
     >
       <DEFAULT>ADAcctProcess;ADAlert;ADAlertRecipient;ADAlertRule;ADAlertRuleTrl;ADAttachment;ADAuxiliaryInput;ADCallout;ADChangeLog;ADClient;ADClientModule;ADColumn;ADColumnAccess;ADEPInstancePara;ADEPProcedures;ADElement;ADElementTrl;ADExtensionPoints;ADField;ADFieldGroup;ADFieldGroupTrl;ADFieldTrl;ADFileType;ADForm;ADFormAccess;ADFormTrl;ADHeartbeatLog;ADImage;ADLanguage;ADList;ADListTrl;ADMenu;ADMenuTrl;ADMessage;ADMessageTrl;ADModelImplementation;ADModelImplementationMapping;ADModule;ADModuleDBPrefixInstall;ADModuleDependencyInst;ADModuleInstall;ADMonth;ADMonthTrl;ADNote;ADOrgModule;ADParameter;ADPreference;ADProcess;ADProcessAccess;ADProcessInstance;ADProcessParameter;ADProcessParameterTrl;ADProcessScheduling;ADProcessTrl;ADRecordAccess;ADReference;ADReferenceTrl;ADReferencedTable;ADRegistration;ADRole;ADRoleOrganization;ADSelector;ADSelectorColumn;ADSequence;ADSession;ADSessionStatus;ADSystem;ADSystemInformation;ADTab;ADTabTrl;ADTable;ADTableAccess;ADTask;ADTaskAccess;ADTaskTrl;ADTextInterface;ADTextInterfaceTrl;ADTree;ADTreeBar;ADTreeNode;ADTreeNodeMM;ADUser;ADUserRoles;ADValidation;ADWFNode;ADWFNodeNext;ADWFNodeTrl;ADWindow;ADWindowAccess;ADWindowTrl;ADWorkflow;ADWorkflowAccess;ADWorkflowTrl;AD_CreateFact_template;ATTest;AcctSchemaTableDocType;ApprovedVendor;Attachment;Attribute;AttributeInstance;AttributeSet;AttributeSetInstance;AttributeUse;AttributeValue;Bank;BankAccount;BankAccountAccounts;BusinessPartner;BusinessPartnerBankAccount;BusinessPartnerCategory;BusinessPartnerCategoryAccount;BusinessPartnerDiscount;BusinessPartnerLocation;BusinessPartnerProductTemplate;BusinessPartnerTaxCategory;BusinessPartnerTreeNode;BusinessPartnerWithholding;CAcctSchemaProcess;City;ClientInformation;Command;CommandTrl;ContactEmailInteraction;ContactInterest;Country;CountryTrl;Currency;CurrencyConversionRate;CurrencyTrl;CustomerAccounts;DataImportBankStatement;DataImportBudgetLine;DataImportBusinessPartner;DataImportElementValue;DataImportFormat;DataImportFormatRow;DataImportGLJournal;DataImportInventory;DataImportInvoice;DataImportOrder;DataImportProduct;DataImportTax;DataPackage;DataSet;DataSetColumn;DataSetTable;DocumentTemplate;DocumentType;DocumentTypeTrl;EmailInteraction;EmailServerConfiguration;EmailTemplate;EmployeeAccounts;EmployeeSalaryCategory;ExpenseType;ExternalPOS;ExternalPOSCategory;ExternalPOSProduct;FinancialMgmtAccountingCombination;FinancialMgmtAccountingFact;FinancialMgmtAccountingReport;FinancialMgmtAccountingRptElement;FinancialMgmtAcctCFS;FinancialMgmtAcctRptGroup;FinancialMgmtAcctRptNode;FinancialMgmtAcctSchema;FinancialMgmtAcctSchemaDefault;FinancialMgmtAcctSchemaElement;FinancialMgmtAcctSchemaGL;FinancialMgmtAcctSchemaTable;FinancialMgmtAmortization;FinancialMgmtAmortizationLine;FinancialMgmtAsset;FinancialMgmtAssetAccounts;FinancialMgmtAssetGroup;FinancialMgmtAssetGroupAcct;FinancialMgmtBankStatement;FinancialMgmtBankStatementLine;FinancialMgmtBudget;FinancialMgmtBudgetLine;FinancialMgmtCalendar;FinancialMgmtCashBook;FinancialMgmtCashBookAccounts;FinancialMgmtCashJournal;FinancialMgmtDPManagement;FinancialMgmtDPManagementLine;FinancialMgmtDebtPayment;FinancialMgmtDebtPaymentBalReplace;FinancialMgmtDebtPaymentBalancing;FinancialMgmtDimension;FinancialMgmtElement;FinancialMgmtElementValue;FinancialMgmtElementValueOperand;FinancialMgmtElementValueTrl;FinancialMgmtGLBatch;FinancialMgmtGLCategory;FinancialMgmtGLCharge;FinancialMgmtGLChargeAccounts;FinancialMgmtGLItem;FinancialMgmtGLItemAccounts;FinancialMgmtGLJournal;FinancialMgmtGLJournalLine;FinancialMgmtIncoterms;FinancialMgmtInterOrgAccounts;FinancialMgmtJournalLine;FinancialMgmtNonBusinessDay;FinancialMgmtPaymentTerm;FinancialMgmtPaymentTermLine;FinancialMgmtPaymentTermTrl;FinancialMgmtPeriod;FinancialMgmtPeriodControl;FinancialMgmtPromissoryFormat;FinancialMgmtRemittance;FinancialMgmtRemittanceLine;FinancialMgmtRemittanceParameter;FinancialMgmtRemittanceType;FinancialMgmtSettlement;FinancialMgmtTaxCategory;FinancialMgmtTaxCategoryTrl;FinancialMgmtTaxPayment;FinancialMgmtTaxRate;FinancialMgmtTaxRateAccounts;FinancialMgmtTaxRegister;FinancialMgmtTaxRegisterType;FinancialMgmtTaxRegisterTypeLines;FinancialMgmtTaxRegisterline;FinancialMgmtTaxReport;FinancialMgmtTaxTrl;FinancialMgmtTaxZone;FinancialMgmtWithholding;FinancialMgmtWithholdingAccounts;FinancialMgmtYear;Greeting;GreetingTrl;InterestArea;Invoice;InvoiceDiscount;InvoiceLine;InvoiceLineAccountingDimension;InvoiceLineOffer;InvoiceSchedule;InvoiceTax;Line;Location;Locator;LocatorType;Lot;LotControl;MRPPlanner;MRPPlanningMethod;MRPPlanningMethodLine;MRPProductionRun;MRPProductionRunLine;MRPPurchasingRun;MRPPurchasingRunLine;MRPSalesForecast;MRPSalesForecastLine;ManufacturingActivity;ManufacturingActivityToolset;ManufacturingCase;ManufacturingCheckPoint;ManufacturingCheckPointSet;ManufacturingCheckPointShift;ManufacturingCostCenter;ManufacturingCostCenterMachine;ManufacturingCostcenterEmployee;ManufacturingCostcenterIC;ManufacturingCostcenterVersion;ManufacturingGlobalUse;ManufacturingIncidence;ManufacturingIndirectCost;ManufacturingIndirectCostValue;ManufacturingMachine;ManufacturingMachineCost;ManufacturingMachineStation;ManufacturingMachineType;ManufacturingMainteanceOrder;ManufacturingMaintenance;ManufacturingMaintenancePeriodicity;ManufacturingMaintenanceSchedule;ManufacturingMaintenanceTask;ManufacturingMaintenanceWorker;ManufacturingMeasureGroup;ManufacturingMeasureShift;ManufacturingMeasureTime;ManufacturingMeasureValues;ManufacturingOperation;ManufacturingOperationEmployee;ManufacturingOperationIndirectCost;ManufacturingOperationMachine;ManufacturingOperationProduct;ManufacturingPeriodicControl;ManufacturingProcessPlan;ManufacturingProductionLine;ManufacturingProductionRunEmployee;ManufacturingProductionRunIndirectCosts;ManufacturingProductionRunInvoiceLine;ManufacturingProductionRunMachine;ManufacturingProductionRunToolset;ManufacturingSection;ManufacturingTest;ManufacturingToolset;ManufacturingToolsetType;ManufacturingValue;ManufacturingVersion;ManufacturingWorkCenter;ManufacturingWorkEffortEmployee;ManufacturingWorkEffortIncidence;ManufacturingWorkRequirement;ManufacturingWorkRequirementOperation;ManufacturingWorkRequirementProduct;MarketingCampaign;MarketingChannel;MarketingMailText;MaterialMgmtABCActivity;MaterialMgmtCosting;MaterialMgmtInternalConsumption;MaterialMgmtInternalConsumptionLine;MaterialMgmtInternalMovement;MaterialMgmtInternalMovementLine;MaterialMgmtInventoryCount;MaterialMgmtInventoryCountLine;MaterialMgmtMaterialTransaction;MaterialMgmtProductionPlan;MaterialMgmtProductionTransaction;MaterialMgmtShipmentInOut;MaterialMgmtShipmentInOutLine;MaterialMgmtStorageDetail;MaterialMgmtStoragePending;ModelImplementationParameter;ModuleDBPrefix;ModuleDependency;ModuleLog;ModuleTrl;NamingException;Order;OrderDiscount;OrderLine;OrderLineOffer;OrderTax;Organization;OrganizationAcctSchema;OrganizationAssignment;OrganizationClosing;OrganizationInformation;OrganizationType;PeriodControlLog;PerpetualInv;PricingAdjustment;PricingAdjustmentBusinessPartner;PricingAdjustmentBusinessPartnerGroup;PricingAdjustmentPriceList;PricingAdjustmentProduct;PricingAdjustmentProductCategory;PricingDiscount;PricingPriceList;PricingPriceListSchema;PricingPriceListSchemeLine;PricingPriceListVersion;PricingProductPrice;PricingVolumeDiscount;PricingVolumeDiscountBusinessPartner;PricingVolumeDiscountInvoice;PricingVolumeDiscountProduct;PricingVolumeDiscountProductCategory;PricingVolumeDiscountScale;ProcessRequest;ProcessRun;ProcurementPOInvoiceMatch;ProcurementReceiptInvoiceMatch;ProcurementRequisition;ProcurementRequisitionLine;ProcurementRequisitionPOMatch;Product;ProductAccounts;ProductBOM;ProductCategory;ProductCategoryAccounts;ProductCustomer;ProductOrg;ProductSubstitute;ProductTreeNode;ProductTrl;ProductUOM;Project;ProjectAccounts;ProjectIssue;ProjectLine;ProjectPhase;ProjectProjectProposalTask;ProjectProposal;ProjectProposalLine;ProjectStandardPhase;ProjectStandardTask;ProjectTask;ProjectType;ProjectVendor;ReferenceDataStore;Region;Replenish;Request;RequestProcessor;RequestProcessorRoute;RequestType;RequestionAction;Resource;ResourceAssignment;ResourcePlanCost;ResourceType;ResourceUnAvailable;RevenueRecognition;RevenueRecognitionPlan;RevenueRecognitionRun;ReversedInvoices;RolLogin;SQLScript;SalaryCategory;SalaryCategoryCost;SalesCommission;SalesCommissionAmount;SalesCommissionDetail;SalesCommissionLine;SalesCommissionRun;SalesRegion;SerialNumberControl;ServiceLevel;ServiceLevelLine;ShippingFreightCategory;ShippingShippingCompany;ShippingShippingCompanyFreight;Test;TestDocument;TestDocumentLine;TimeAndExpenseSheet;TimeAndExpenseSheetLine;TimeType;UOM;UOMConversion;UOMTrl;VendorAccounts;Warehouse;WarehouseAccounts;WarehousePeriod;WarehousePeriodInvoiced;WarehouseSchedule;WarehouseScheduleProduct;WarehouseShipper</DEFAULT>
     </PARAMETER>
-
     <PARAMETER NAME="ENTITYNAME" FIELD="CLOSED_LIST" NUM_ROW="9" REQUIRED="true" SHOW_IF="(ACTION == 'REMOVE') OR (USE_EXISTING_FILE == 'false')">
        <ITEMS DEFAULT="Country">
 	  <ITEM NAME="ADAcctProcess"   VALUE="ADAcctProcess" />
@@ -550,9 +535,6 @@
 	  <ITEM NAME="WarehouseShipper"   VALUE="WarehouseShipper" />
        </ITEMS>
     </PARAMETER>
-    
-    
-	
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -10565,39 +10547,32 @@
          <COLUMN KEY="false" LENGTH="255" NAME="reference" NULLABLE="true" TYPE="id_Boolean"/>
       </TABLE>
    </PARAMETER>
-	
    </PARAMETERS>
-
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="10" SHOW="false">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="THOUSANDS_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="10"
 			SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
 			<DEFAULT>","</DEFAULT>
-		</PARAMETER>		
-		
+		</PARAMETER>
 		<PARAMETER NAME="DECIMAL_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="10"
 			SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
 			<DEFAULT>"."</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="30"
 			REQUIRED="true" REPOSITORY_VALUE="ENCODING" SHOW="false">
 			<DEFAULT>"ISO-8859-15"</DEFAULT>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
-	
   	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar"
+			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
+			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar"
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
-
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="NB_LINE_UPDATED" TYPE="id_Integer" AVAILABILITY="AFTER" />

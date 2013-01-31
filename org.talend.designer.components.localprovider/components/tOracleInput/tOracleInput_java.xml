@@ -4,7 +4,6 @@
 		STARTABLE="true">
 		<SIGNATURE />
 	</HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/Oracle</FAMILY>
   </FAMILIES>
@@ -29,7 +28,6 @@
 		</PARAMETER>
 		<PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST" FILTER="tOracleConnection"
 			NUM_ROW="2" SHOW_IF="USE_EXISTING_CONNECTION == 'true'" DYNAMIC_SETTINGS="true"/>
-			
 		<PARAMETER NAME="CONNECTION_TYPE" FIELD="CLOSED_LIST"
 			NUM_ROW="3" REPOSITORY_VALUE="CONNECTION_TYPE" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<ITEMS DEFAULT="ORACLE_SID">
@@ -99,7 +97,7 @@
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="JDBC_URL" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
-	  		SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_WALLET')"> 
+	  		SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_WALLET')">
 		<DEFAULT>"jdbc:oracle:oci:/@talend"</DEFAULT>
 	 	</PARAMETER>
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="45">
@@ -119,7 +117,6 @@
 			REQUIRED="true">
 			<DEFAULT>"select id, name from employee"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER
 		  NAME="NOTE"
 		  FIELD="LABEL"
@@ -136,7 +133,7 @@
 		  REQUIRED="true"
 		  GROUP="DATASOURCE"
 		  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
-		>      
+		>
 		</PARAMETER>
 		<PARAMETER
 		  NAME="DATASOURCE_ALIAS"
@@ -145,34 +142,29 @@
 		  REQUIRED="true"
 		  GROUP="DATASOURCE"
 		  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
-		>      
+		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
-		<PARAMETER NAME="MAPPING" FIELD="MAPPING_TYPE" NUM_ROW="110" SHOW="false" >       
+		<PARAMETER NAME="MAPPING" FIELD="MAPPING_TYPE" NUM_ROW="110" SHOW="false" >
       		<DEFAULT>oracle_id</DEFAULT>
     	</PARAMETER>
-		
 	</PARAMETERS>
 	<ADVANCED_PARAMETERS>
-	
-		<PARAMETER 
-			NAME="PROPERTIES" 
-			FIELD="TEXT" 
-			NUM_ROW="10" 
+		<PARAMETER
+			NAME="PROPERTIES"
+			FIELD="TEXT"
+			NUM_ROW="10"
 			REPOSITORY_VALUE="PROPERTIES_STRING"
 			SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET')">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-	
-		<PARAMETER 
-			NAME="NOTE" 
-			FIELD="LABEL" 
+		<PARAMETER
+			NAME="NOTE"
+			FIELD="LABEL"
 			NUM_ROW="11"
 			SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET')">
 			<DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1&amp;&amp;parameterName2=value2"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="IS_CONVERT_XMLTYPE" FIELD="CHECK" NUM_ROW="20">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -183,11 +175,10 @@
 				<ITEM NAME="CONVETTYPE" FIELD="CLOSED_LIST">
 					<ITEMS DEFAULT="STRING">
 			            <ITEM NAME="STRING" VALUE="String"/>
-					</ITEMS>	
+					</ITEMS>
 				</ITEM>
 			</ITEMS>
 		</PARAMETER>
-		
 		<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="100"
 			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" SHOW="false">
 			<DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -214,15 +205,15 @@
 	</ADVANCED_PARAMETERS>
 	<CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
-       <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false')  AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
-       <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')"  />
-       <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
-       <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
-	    <IMPORT NAME="Driver-Oracle-XDB" MODULE="xdb.jar" REQUIRED_IF="SCHEMA.DB_TYPE IN ['XMLTYPE']" />
-	   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" REQUIRED_IF="SCHEMA.DB_TYPE IN ['XMLTYPE']" /> 
-	   <IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" /> 
-     </IMPORTS>	
+       <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" />
+       <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" />
+       <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar"  />
+       <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" />
+       <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" />
+	    <IMPORT NAME="Driver-Oracle-XDB" MODULE="xdb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xdb.jar" />
+	   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xmlparserv2.jar" />
+	   <IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/talend-oracle-timestamptz.jar" />
+     </IMPORTS>
 	</CODEGENERATION>
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />

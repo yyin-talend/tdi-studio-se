@@ -12,16 +12,13 @@
   >
     <SIGNATURE />
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/MySQL</FAMILY>
     <FAMILY>Business_Intelligence/DB_SCD</FAMILY>
   </FAMILIES>
-  
   <DOCUMENTATION>
     <URL />
   </DOCUMENTATION>
-  
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MIN_INPUT="0" MAX_INPUT="1" MAX_OUTPUT="0" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
@@ -31,9 +28,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR" />
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
-  
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -42,10 +37,9 @@
       REPOSITORY_VALUE="DATABASE:MYSQL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-
-	<PARAMETER 
-		NAME="DB_VERSION" 
-		FIELD="CLOSED_LIST" 
+	<PARAMETER
+		NAME="DB_VERSION"
+		FIELD="CLOSED_LIST"
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
@@ -54,7 +48,6 @@
 			<ITEM NAME="MYSQL_4" VALUE="MYSQL_4" />
 		</ITEMS>
 	</PARAMETER>
-    
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -62,7 +55,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -71,7 +63,6 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
-    
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -81,7 +72,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -91,7 +81,6 @@
     >
       <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -102,7 +91,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -113,7 +101,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -124,7 +111,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TABLE_SRC"
       FIELD="TEXT"
@@ -133,7 +119,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -142,7 +127,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -158,7 +142,6 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -166,7 +149,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="SURROGATE_KEY"
       FIELD="COLUMN_LIST"
@@ -174,8 +156,7 @@
       SHOW="true"
     >
       <DEFAULT></DEFAULT>
-    </PARAMETER>	
-
+    </PARAMETER>
     <PARAMETER
       NAME="SK_CREATION"
       FIELD="CLOSED_LIST"
@@ -186,7 +167,6 @@
         <ITEM NAME="AUTO_INCREMENT"   VALUE="AUTO_INCREMENT" />
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
@@ -197,7 +177,6 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
@@ -205,7 +184,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="L1_FIELDS"
       FIELD="TABLE"
@@ -217,7 +195,6 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USE_L2"
       FIELD="CHECK"
@@ -225,7 +202,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="L2_FIELDS"
       FIELD="TABLE"
@@ -237,7 +213,6 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="L2_STARTDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -245,7 +220,6 @@
       SHOW_IF="USE_L2 == 'true'"
     >
     </PARAMETER>
-    
     <PARAMETER
       NAME="L2_ENDDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -253,7 +227,6 @@
       SHOW_IF="USE_L2 == 'true'"
     >
     </PARAMETER>
-    
     <PARAMETER
       NAME="USE_L2_ACTIVE"
       FIELD="CHECK"
@@ -262,7 +235,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="L2_ACTIVE_FIELD"
       FIELD="COLUMN_LIST"
@@ -270,7 +242,6 @@
       SHOW_IF="USE_L2_ACTIVE == 'true'"
     >
     </PARAMETER>
-    
     <PARAMETER
       NAME="USE_L2_VERSION"
       FIELD="CHECK"
@@ -279,7 +250,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
@@ -287,20 +257,16 @@
       SHOW_IF="USE_L2_VERSION == 'true'"
     >
     </PARAMETER>
-    
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="18"
       SHOW="false"
-    >       
+    >
       <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>
-    
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
-
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -311,7 +277,6 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
@@ -319,15 +284,12 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-  
   </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_5') AND (USE_EXISTING_CONNECTION == 'false')" />
-      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_4') AND (USE_EXISTING_CONNECTION == 'false')" />
+      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" />
+      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-3.1.14-bin.jar" />
     </IMPORTS>
   </CODEGENERATION>
-  
   <RETURNS />
 </COMPONENT>

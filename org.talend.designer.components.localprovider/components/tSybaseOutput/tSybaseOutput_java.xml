@@ -4,7 +4,6 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070323A"
@@ -15,19 +14,16 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/Sybase</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
-     			NOT_SHOW_IF="((((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true')) OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true')) 
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
+     			NOT_SHOW_IF="((((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true')) OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true'))
     							OR ((DATA_ACTION == 'DELETE') AND (USE_BATCH_SIZE == 'true')))
     							OR (DIE_ON_ERROR == 'true'))"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -37,7 +33,6 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -47,7 +42,6 @@
       REPOSITORY_VALUE="DATABASE:SYBASE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-    
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -55,7 +49,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -64,7 +57,6 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
-
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
@@ -74,7 +66,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -93,7 +84,6 @@
     >
       <DEFAULT>"2648"</DEFAULT>
    </PARAMETER>
-
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -104,7 +94,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DB_SCHEMA"
       FIELD="TEXT"
@@ -115,7 +104,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -126,7 +114,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -137,7 +124,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -146,7 +132,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -163,14 +148,12 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
-    
    	<PARAMETER NAME="IDENTITY_INSERT"
 	      FIELD="CHECK"
 	      NUM_ROW="7"
 	    >
 	      <DEFAULT>false</DEFAULT>
-	    </PARAMETER>    
-
+	    </PARAMETER>
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -184,7 +167,6 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -192,7 +174,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -204,8 +185,7 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-    
+    </PARAMETER>
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -213,29 +193,24 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
       SHOW="false"
-    >       
+    >
       <DEFAULT>sybase_id</DEFAULT>
-    </PARAMETER>    
-    
+    </PARAMETER>
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
-  
-	<PARAMETER 
-		NAME="PROPERTIES" 
-		FIELD="TEXT" 
-		NUM_ROW="3" 
+	<PARAMETER
+		NAME="PROPERTIES"
+		FIELD="TEXT"
+		NUM_ROW="3"
 		REPOSITORY_VALUE="PROPERTIES_STRING"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-  
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -245,7 +220,6 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -267,7 +241,6 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -275,7 +248,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -291,46 +263,40 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-  	<PARAMETER 
-  	  NAME="ENABLE_DEBUG_MODE" 
+  	<PARAMETER
+  	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>    
-	
-	<PARAMETER 
-		NAME="SUPPORT_NULL_WHERE" 
+	</PARAMETER>
+	<PARAMETER
+		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-  	  NAME="USE_BATCH_SIZE" 
+	<PARAMETER
+  	  NAME="USE_BATCH_SIZE"
   	  FIELD="CHECK"
 	  NUM_ROW="30"
 	  SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
 	  >
 	  <DEFAULT>true</DEFAULT>
-	</PARAMETER>            
-  	<PARAMETER 
-  	  NAME="BATCH_SIZE" 
+	</PARAMETER>
+  	<PARAMETER
+  	  NAME="BATCH_SIZE"
   	  FIELD="TEXT"
 	  NUM_ROW="30"
 	  SHOW_IF="(USE_BATCH_SIZE == 'true')AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
 	  >
 	  <DEFAULT>10000</DEFAULT>
-	</PARAMETER> 
-	
+	</PARAMETER>
   </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" />
     </IMPORTS>
   </CODEGENERATION>
-   
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

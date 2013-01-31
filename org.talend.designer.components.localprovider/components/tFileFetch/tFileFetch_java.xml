@@ -11,15 +11,12 @@ COMPATIBILITY="ALL"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
@@ -29,9 +26,7 @@ COMPATIBILITY="ALL"
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-  
   <PARAMETER
       NAME="PROTO"
       FIELD="CLOSED_LIST"
@@ -44,7 +39,6 @@ COMPATIBILITY="ALL"
         <ITEM NAME="SAMBA_PROTO" VALUE="smb" />
       </ITEMS>
     </PARAMETER>
-
   <PARAMETER
   	NAME="POST"
   	FIELD="CHECK"
@@ -53,7 +47,6 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>true</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
      NAME="URI"
      FIELD="TEXT"
@@ -63,15 +56,13 @@ COMPATIBILITY="ALL"
   >
    <DEFAULT>"http://talendforge.org/file_fetch.txt"</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
   	NAME="USE_CACHE"
   	FIELD="CHECK"
-  	NUM_ROW="21"  	
+  	NUM_ROW="21"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
      NAME="SMB_URI"
      FIELD="TEXT"
@@ -81,17 +72,15 @@ COMPATIBILITY="ALL"
   >
    <DEFAULT>"smb://host/dir/remoteFileName.txt"</DEFAULT>
   </PARAMETER>
-
   <PARAMETER
      NAME="DIRECTORY"
      FIELD="DIRECTORY"
      NUM_ROW="30"
-     REQUIRED="true"     
+     REQUIRED="true"
      SHOW_IF=" USE_CACHE == 'false'"
   >
     <DEFAULT>"C:"</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
   	NAME="MAKEDIRS"
   	FIELD="CHECK"
@@ -100,7 +89,6 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
      NAME="FILENAME"
      FIELD="TEXT"
@@ -110,7 +98,6 @@ COMPATIBILITY="ALL"
   >
     <DEFAULT>""</DEFAULT>
   </PARAMETER>
-
   <PARAMETER
   	NAME="ADD_HEADER"
   	FIELD="CHECK"
@@ -119,10 +106,9 @@ COMPATIBILITY="ALL"
   >
   <DEFAULT>false</DEFAULT>
   </PARAMETER>
-
-  <PARAMETER 
-     NAME="HEADERS" 
-     FIELD="TABLE" NUM_ROW="46" 
+  <PARAMETER
+     NAME="HEADERS"
+     FIELD="TABLE" NUM_ROW="46"
      NB_LINES="5"
      SHOW_IF="((PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')) AND (ADD_HEADER == 'true')"
   >
@@ -131,49 +117,44 @@ COMPATIBILITY="ALL"
        <ITEM NAME="HEADER_VALUE"/>
      </ITEMS>
    </PARAMETER>
-  
    <PARAMETER
      NAME="SMB_DOMAIN"
      FIELD="TEXT"
      REQUIRED="true"
-     NUM_ROW="25"  
+     NUM_ROW="25"
      SHOW_IF="PROTO=='SAMBA_PROTO'"
   >
     <DEFAULT>"domain"</DEFAULT>
-  </PARAMETER> 
-  
+  </PARAMETER>
      <PARAMETER
      NAME="SMB_USERNAME"
      FIELD="TEXT"
      REQUIRED="true"
-     NUM_ROW="25"  
+     NUM_ROW="25"
      SHOW_IF="PROTO=='SAMBA_PROTO'"
   >
     <DEFAULT>"username"</DEFAULT>
-  </PARAMETER> 
-  
+  </PARAMETER>
      <PARAMETER
      NAME="SMB_PASSWORD"
      FIELD="TEXT"
      REQUIRED="true"
-     NUM_ROW="25"  
+     NUM_ROW="25"
      SHOW_IF="PROTO=='SAMBA_PROTO'"
   >
     <DEFAULT>"password"</DEFAULT>
-  </PARAMETER>  
-  
+  </PARAMETER>
    <PARAMETER
      NAME="DIE_ON_ERROR"
      FIELD="CHECK"
      NUM_ROW="50"
      SHOW_IF="PROTO!='SAMBA_PROTO'"
   >
-  <DEFAULT>true</DEFAULT> 
-  </PARAMETER>     
-    
-  <PARAMETER 
-     NAME="COMMON_PARAMS" 
-     FIELD="TABLE" NUM_ROW="60" 
+  <DEFAULT>true</DEFAULT>
+  </PARAMETER>
+  <PARAMETER
+     NAME="COMMON_PARAMS"
+     FIELD="TABLE" NUM_ROW="60"
      NB_LINES="5"
      SHOW_IF="((PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')) AND (POST == 'true')"
   >
@@ -182,33 +163,29 @@ COMPATIBILITY="ALL"
        <ITEM NAME="COMMON_PARAMS_VALUE"/>
      </ITEMS>
    </PARAMETER>
-
    <PARAMETER
      NAME="READ_COOKIE"
      FIELD="CHECK"
      NUM_ROW="70"
   >
-  <DEFAULT>false</DEFAULT> 
-  </PARAMETER>     
-
+  <DEFAULT>false</DEFAULT>
+  </PARAMETER>
    <PARAMETER
      NAME="SAVE_COOKIE"
      FIELD="CHECK"
      NUM_ROW="70"
   >
-  <DEFAULT>false</DEFAULT> 
-  </PARAMETER>     
-
+  <DEFAULT>false</DEFAULT>
+  </PARAMETER>
   <PARAMETER
      NAME="COOKIE_DIR"
      FIELD="DIRECTORY"
      NUM_ROW="71"
-     REQUIRED="true"     
+     REQUIRED="true"
      SHOW_IF="(SAVE_COOKIE == 'true') OR (READ_COOKIE == 'true')"
   >
     <DEFAULT>"C:/cookie"</DEFAULT>
   </PARAMETER>
-  
   <PARAMETER
 		NAME="COOKIE_POLICY"
 		FIELD="CLOSED_LIST"
@@ -224,27 +201,23 @@ COMPATIBILITY="ALL"
 		<!-- <ITEM NAME="RFC_2965" VALUE="RFC_2965" />  -->
 	</ITEMS>
 	</PARAMETER>
-	
   <PARAMETER
 		NAME="SINGLE_COOKIE"
 		FIELD="CHECK"
 		NUM_ROW="73"
 		SHOW_IF="(SAVE_COOKIE == 'true') OR (READ_COOKIE == 'true')"
   >
-  <DEFAULT>false</DEFAULT> 
-  </PARAMETER>    
+  <DEFAULT>false</DEFAULT>
+  </PARAMETER>
   </PARAMETERS>
-
    <ADVANCED_PARAMETERS>
-
      <PARAMETER
     	NAME="PRINT"
     	FIELD="CHECK"
     	NUM_ROW="8"
     	SHOW_IF="(PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
     >
-    </PARAMETER> 
-    
+    </PARAMETER>
     <PARAMETER
       NAME="TIMEOUT"
       FIELD="TEXT"
@@ -254,7 +227,6 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="UPLOAD"
       FIELD="CHECK"
@@ -262,12 +234,11 @@ COMPATIBILITY="ALL"
       SHOW_IF="((PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')) AND (POST == 'true')"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-
-    <PARAMETER 
-      NAME="FILE_PARAMS" 
-      FIELD="TABLE" 
-      NUM_ROW="20" 
+    </PARAMETER>
+    <PARAMETER
+      NAME="FILE_PARAMS"
+      FIELD="TABLE"
+      NUM_ROW="20"
       NB_LINES="8"
 	  SHOW_IF="((PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')) AND (POST == 'true') AND (UPLOAD == 'true')"
     >
@@ -275,85 +246,75 @@ COMPATIBILITY="ALL"
         <ITEM NAME="FILE_PARAMS_NAME" />
         <ITEM NAME="FILE_PARAMS_VALUE"/>
       </ITEMS>
-    </PARAMETER> 
-     
-    <PARAMETER 
-       NAME="USE_PROXY" 
-       FIELD="CHECK" 
+    </PARAMETER>
+    <PARAMETER
+       NAME="USE_PROXY"
+       FIELD="CHECK"
        REQUIRED="true"
-	   NUM_ROW="30" 
+	   NUM_ROW="30"
 	   SHOW_IF="PROTO!='SAMBA_PROTO'"
 	   REPOSITORY_VALUE="UES_PROXY">
 	   <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_HOST" 
+	<PARAMETER
+		NAME="PROXY_HOST"
 		FIELD="TEXT"
 		NUM_ROW="35"
-		SHOW_IF="USE_PROXY == 'true'" 
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_HOST">
 		<DEFAULT>"61.163.92.4"</DEFAULT>
 	</PARAMETER>
-
-	<PARAMETER 
-		NAME="PROXY_PORT" 
+	<PARAMETER
+		NAME="PROXY_PORT"
 		FIELD="TEXT"
-		NUM_ROW="36" 
-		SHOW_IF="USE_PROXY == 'true'" 
+		NUM_ROW="36"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_PORT">
 		<DEFAULT>"8080"</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_USERNAME" 
-		FIELD="TEXT" 
-		NUM_ROW="37" 
-		SHOW_IF="USE_PROXY == 'true'" 
+	<PARAMETER
+		NAME="PROXY_USERNAME"
+		FIELD="TEXT"
+		NUM_ROW="37"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_USERNAME">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_PASSWORD" 
+	<PARAMETER
+		NAME="PROXY_PASSWORD"
 		FIELD="TEXT"
-		NUM_ROW="38" 
-		SHOW_IF="USE_PROXY == 'true'" 
+		NUM_ROW="38"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_PASSWORD">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-
-	<PARAMETER 
+	<PARAMETER
 		NAME="PROXY_NTLM"
-		FIELD="CHECK" 
+		FIELD="CHECK"
 		NUM_ROW="39"
 		SHOW_IF="PROTO!='SAMBA_PROTO'"
 		REPOSITORY_VALUE="PROXY_NTLM"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-
-	<PARAMETER 
-		NAME="PROXY_DOMAIN" 
+	<PARAMETER
+		NAME="PROXY_DOMAIN"
 		FIELD="TEXT"
-		NUM_ROW="39" 
-		SHOW_IF="(PROTO!='SAMBA_PROTO') and (PROXY_NTLM == 'true')" 
+		NUM_ROW="39"
+		SHOW_IF="(PROTO!='SAMBA_PROTO') and (PROXY_NTLM == 'true')"
 		REPOSITORY_VALUE="PROXY_DOMAIN"
         >
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
+	<PARAMETER
 		NAME="NEED_AUTH"
-		FIELD="CHECK" 
+		FIELD="CHECK"
 		REQUIRED="true"
 		NUM_ROW="45"
 		SHOW_IF="(PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
-		
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-    
     <PARAMETER
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
@@ -363,7 +324,6 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
@@ -373,28 +333,24 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER 
+	<PARAMETER
 		NAME="REDIRECT"
-		FIELD="CHECK" 
+		FIELD="CHECK"
 		REQUIRED="true"
 		NUM_ROW="60"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
     </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
    <IMPORTS>
-       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" REQUIRED="true" />
-       <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
-  	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" REQUIRED="true" />
+       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" />
+       <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
+  	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" />
   	   <IMPORT NAME="jcifs-samba" MODULE="jcifs-1.3.0.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
-
   <RETURNS>
     <RETURN NAME="INPUT_STREAM" TYPE="java.io.InputStream" AVAILABILITY="FLOW"/>
   </RETURNS>
-
 </COMPONENT>

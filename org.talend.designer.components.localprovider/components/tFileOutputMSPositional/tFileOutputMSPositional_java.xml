@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <COMPONENT>
 	<HEADER AUTHOR="Talend" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true"
 		HAS_CONDITIONAL_OUTPUTS="true" PLATEFORM="ALL" RELEASE_DATE="20080301A"
@@ -85,7 +85,7 @@
 		<IMPORTS>
 			<IMPORT NAME="Advanced_Persistent_Lookup" MODULE="advancedPersistentLookupLib-1.0.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="ApacheCommonsCollection32" MODULE="commons-collections-3.2.jar"
+			<IMPORT NAME="ApacheCommonsCollection32" MODULE="commons-collections-3.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.jar"
 				REQUIRED="true" BundleID="" />
 		</IMPORTS>
 	</CODEGENERATION>

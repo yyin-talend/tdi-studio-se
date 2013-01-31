@@ -4,7 +4,6 @@
     SERIAL=""
     VERSION="0.101"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -31,18 +30,17 @@
   <PARAMETERS>
   	<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="20" REQUIRED="true">
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sforce_bulk.csv"</DEFAULT>
-    </PARAMETER> 
+    </PARAMETER>
     <PARAMETER NAME="APPEND" FIELD="CHECK" REQUIRED="true" NUM_ROW="30">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="50">
-      <DEFAULT/> 
+      <DEFAULT/>
     </PARAMETER>
     <PARAMETER NAME="IGNORE_NULL" FIELD="CHECK" REQUIRED="true" NUM_ROW="60">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
    </PARAMETERS>
-   
    <ADVANCED_PARAMETERS>
 	<PARAMETER NAME="UPSERT_RELATION" FIELD="TABLE" NUM_ROW="10" NB_LINES="5">
 		<ITEMS>
@@ -54,7 +52,7 @@
    </ADVANCED_PARAMETERS>
    <CODEGENERATION>
 	  <IMPORTS>
-	    <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" REQUIRED="true" />
+	    <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" />
 	  </IMPORTS>
 	</CODEGENERATION>
 	<RETURNS>

@@ -2,7 +2,6 @@
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.3" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Pawel Maczka" RELEASE_DATE="20090118" STARTABLE="false" SCHEMA_AUTO_PROPAGATE="true" DATA_AUTO_PROPAGATE="false">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
-
   <FAMILIES>
     <FAMILY>File/Output</FAMILY>
   </FAMILIES>
@@ -22,11 +21,8 @@
 	<PARAMETERS>
 	<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
 			NUM_ROW="1" REPOSITORY_VALUE="EBCDIC" />
-
 	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" SHOW="true"
 		NUM_ROW="2" SHOW_IF="NO_X2CJ_FILE =='true'"/>
-			
-	
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
@@ -36,13 +32,11 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/data.ebcdic"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER NAME="MAPPING" 
+	<PARAMETER NAME="MAPPING"
 		FIELD="MAPPING_TYPE" NUM_ROW="120"
 		SHOW="false">
 		<DEFAULT>ebcdic_id</DEFAULT>
 	</PARAMETER>
-
     <PARAMETER
       NAME="COPYBOOK"
       FIELD="FILE"
@@ -52,13 +46,10 @@
 	>
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/copybook.xc2j"</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER NAME="NO_X2CJ_FILE" FIELD="CHECK" NUM_ROW="35">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-    
 	</PARAMETERS>
-	
 	<ADVANCED_PARAMETERS>
  		<PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="true"	NUM_ROW="5">
 			<DEFAULT>true</DEFAULT>
@@ -68,20 +59,18 @@
 		<DEFAULT>"Cp037"</DEFAULT>
 		</PARAMETER>
  	</ADVANCED_PARAMETERS>
-
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="cobol2j.sf.net" MODULE="cobol2j-1.5.3.jar" REQUIRED="true" />
 			<IMPORT NAME="cb2xml.sf.net" MODULE="cb2xml.jar" REQUIRED="true" />
-			<IMPORT NAME="JAXB-api" MODULE="jaxb-api-2.2.jar" REQUIRED="true" />
-			<IMPORT NAME="JAXB-impl" MODULE="jaxb-impl-2.1.8.jar" REQUIRED="true" />
+			<IMPORT NAME="JAXB-api" MODULE="jaxb-api-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxb-api-2.2.jar" />
+			<IMPORT NAME="JAXB-impl" MODULE="jaxb-impl-2.1.8.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxb-impl-2.1.8.jar" />
 			<IMPORT NAME="jsr173" MODULE="jsr173_1.0_api.jar" REQUIRED="true" />
-			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.4.jar" REQUIRED="true" />
-			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.4.jar" />
+			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" />
 			<IMPORT NAME="cobolX" MODULE="cobolX.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
-	
 	  <RETURNS>
 	    <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
 	  </RETURNS>

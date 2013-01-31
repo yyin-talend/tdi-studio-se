@@ -1,31 +1,26 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070210A"
     STARTABLE="true"
-	HAS_CONDITIONAL_OUTPUTS="true"     
+	HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>File/Input</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />    
+    <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -33,9 +28,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -58,7 +51,6 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
-  
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
@@ -67,7 +59,6 @@
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="USE_BYTE"
       FIELD="CHECK"
@@ -76,7 +67,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="ADVANCED_OPTION"
       FIELD="CHECK"
@@ -85,7 +75,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PATTERN"
       FIELD="TEXT"
@@ -95,7 +84,6 @@
     >
       <DEFAULT>"5,4,5"</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="FORMATS"
       FIELD="TABLE"
@@ -105,11 +93,8 @@
       SHOW_IF="ADVANCED_OPTION == 'true'"
     >
       <ITEMS BASED_ON_SCHEMA="true">
-
         <ITEM NAME="SIZE" VALUE="10" CONTEXT="LENGTH" />
-
         <ITEM NAME="PADDING_CHAR" VALUE="' '" />
-
         <ITEM NAME="ALIGN" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="LEFT">
             <ITEM NAME="LEFT"   VALUE="'L'"/>
@@ -119,7 +104,6 @@
         </ITEM>
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER
       NAME="REMOVE_EMPTY_ROW"
       FIELD="CHECK"
@@ -129,16 +113,14 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="UNCOMPRESS"
       FIELD="CHECK"
       SHOW="true"
-      NUM_ROW="50" 
+      NUM_ROW="50"
     >
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -146,7 +128,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
@@ -155,7 +136,6 @@
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
@@ -164,7 +144,6 @@
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
@@ -173,16 +152,14 @@
     >
       <DEFAULT/>
     </PARAMETER>
-
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="80"
     >
-      <DEFAULT/> 
+      <DEFAULT/>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -195,28 +172,22 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
-
   </PARAMETERS>
-  
-  <ADVANCED_PARAMETERS>  
+  <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="PROCESS_LONG_ROW" FIELD="CHECK" REQUIRED="true" NUM_ROW="40">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
   	<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="41" >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
 	<PARAMETER NAME="THOUSANDS_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="41"
 		SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
 		<DEFAULT>","</DEFAULT>
-	</PARAMETER>		
-	
+	</PARAMETER>
 	<PARAMETER NAME="DECIMAL_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="41"
 		SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
 		<DEFAULT>"."</DEFAULT>
-	</PARAMETER>    
-
+	</PARAMETER>
 	<PARAMETER
       NAME="TRIMALL"
       FIELD="CHECK"
@@ -224,11 +195,9 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-
 	<PARAMETER NAME="CHECK_DATE" FIELD="CHECK" NUM_ROW="50">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
 	<PARAMETER
       NAME="TRIMSELECT"
       FIELD="TABLE"
@@ -241,7 +210,6 @@
         </ITEM>
       </ITEMS>
     </PARAMETER>
-    
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -252,17 +220,15 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT
         NAME="Talen File Enhanced"
-        MODULE="talend_file_enhanced_20070724.jar"
+        MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar"
         REQUIRED="true"
       />
     </IMPORTS>
   </CODEGENERATION>
-
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
   </RETURNS>

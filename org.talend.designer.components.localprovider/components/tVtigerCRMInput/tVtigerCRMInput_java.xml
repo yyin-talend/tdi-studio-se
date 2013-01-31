@@ -2,7 +2,6 @@
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A" STARTABLE="true">
 		<SIGNATURE/>
 	</HEADER>
-
   <FAMILIES>
     <FAMILY>Business/VtigerCRM</FAMILY>
   </FAMILIES>
@@ -25,7 +24,6 @@
 				<ITEM NAME="VTIGER_51" VALUE="VTIGER_51"/>
 			</ITEMS>
 		</PARAMETER>
-	
 		<PARAMETER NAME="SERVERADDR" FIELD="TEXT" NUM_ROW="10" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
 			<DEFAULT>"localhost"</DEFAULT>
 		</PARAMETER>
@@ -34,7 +32,7 @@
 		</PARAMETER>
 		<PARAMETER NAME="VTIGERPATH" FIELD="TEXT" NUM_ROW="10" REQUIRED="false" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
 			<DEFAULT>""</DEFAULT>
-		</PARAMETER>		
+		</PARAMETER>
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
 			<DEFAULT>"admin"</DEFAULT>
 		</PARAMETER>
@@ -43,7 +41,7 @@
 		</PARAMETER>
 		<PARAMETER NAME="VERSION" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
 			<DEFAULT>"5.0.3"</DEFAULT>
-		</PARAMETER>								
+		</PARAMETER>
 		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="30" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
 			<ITEMS DEFAULT="OUTLOOK_PLUGIN">
 				<ITEM NAME="OUTLOOK_PLUGIN" VALUE="outlook"/>
@@ -94,21 +92,16 @@
 				<ITEM NAME="checkRssPermission" VALUE="checkRssPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
 			</ITEMS>
 		</PARAMETER>
-		
 		<!-- version 5.1.0 start -->
-		
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_51'">
 			<DEFAULT>"http://localhost:81/webservice.php"</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="USERNAME_510" FIELD="TEXT" NUM_ROW="20" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_51'">
 			<DEFAULT>"username"</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="ACCESS_KEY" FIELD="TEXT" NUM_ROW="30" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_51'">
 			<DEFAULT>"access_key"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="MODULENAME_510" FIELD="CLOSED_LIST" NUM_ROW="40"
 			REQUIRED="true"  SHOW_IF="VERSION_SELECTION=='VTIGER_51'">
 			<ITEMS DEFAULT="Accounts">
@@ -135,18 +128,15 @@
 				<ITEM NAME="Vendors" VALUE="Vendors" />
 			</ITEMS>
 		</PARAMETER>
-		
 		<PARAMETER NAME="CONDITION" FIELD="TEXT" NUM_ROW="60"
 			REQUIRED="false" REPOSITORY_VALUE="QUERY_CONDITION"
 			SHOW_IF= "(MANUAL_QUERY == 'false') and (VERSION_SELECTION=='VTIGER_51')">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
-		<PARAMETER NAME="MANUAL_QUERY" FIELD="CHECK" NUM_ROW="70" 
+		<PARAMETER NAME="MANUAL_QUERY" FIELD="CHECK" NUM_ROW="70"
 			REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_51'">
 			<DEFAULT>false</DEFAULT>
-		</PARAMETER>		
-	    
+		</PARAMETER>
 	    <PARAMETER
 	      NAME="QUERY"
 	      FIELD="MEMO"
@@ -155,7 +145,6 @@
 	      <DEFAULT>"select firstname, lastname from Contacts"</DEFAULT>
 	    </PARAMETER>
 		<!-- version 5.1.0 end -->
-		
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="50" REQUIRED="true">
 			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='checkEmailPermission' or METHODNAME=='checkContactPermission' or METHODNAME=='checkActivityPermission' or METHODNAME=='loginToVtiger')) and (VERSION_SELECTION=='VTIGER_50')">
 				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
@@ -211,7 +200,7 @@
 				<COLUMN KEY="false" LENGTH="255" NAME="location" NULLABLE="false" TYPE="id_String"/>
 				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
 				<COLUMN KEY="false" LENGTH="255" NAME="contactname" NULLABLE="false" TYPE="id_String"/>
-				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>				
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
 			</TABLE>
 			<TABLE IF="(MODULENAME=='WORD_PLUGIN' and (METHODNAME=='get_contacts_columns' or METHODNAME=='get_accounts_columns' or METHODNAME=='get_leads_columns' or METHODNAME=='get_user_columns')) and (VERSION_SELECTION=='VTIGER_50')">
 				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_Object"/>
@@ -223,12 +212,11 @@
 				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_Object"/>
 			</TABLE>
 			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='get_ticket_creator')">
-				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>		
-			</TABLE>			
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
 			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and (METHODNAME=='checkLeadPermission' or METHODNAME=='checkContactPermission' or METHODNAME=='checkAccountPermission' or METHODNAME=='checkTicketPermission' or METHODNAME=='checkVendorPermission' or METHODNAME=='checkProductPermission' or METHODNAME=='checkNotePermission' or METHODNAME=='checkSitePermission' or METHODNAME=='checkRssPermission' or METHODNAME=='get_version' or METHODNAME=='logintoVtigerCRM')) and (VERSION_SELECTION=='VTIGER_50')">
 				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
 			</TABLE>
-			
 			<!-- version 5.1.0 start -->
 			<TABLE IF="(MODULENAME_510=='Accounts') and (VERSION_SELECTION=='VTIGER_51')">
 				<COLUMN KEY="true" NAME="id" TYPE="id_String" />
@@ -780,26 +768,24 @@
 			</TABLE>
 			<!-- version 5.1.0 end -->
 		</PARAMETER>
-						
 	</PARAMETERS>
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="VtigerCRM" MODULE="vtigercrm.jar" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/axis.jar"/>
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true"/>
 			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true"/>
-			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="true"/>
-			
+			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar"/>
+			<IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar"/>
+			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar"/>
+			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar"/>
+			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"/>
 			<IMPORT NAME="vtwsclib" MODULE="vtwsclib.jar" REQUIRED="true" />
-			<IMPORT NAME="apache-mime4j" MODULE="apache-mime4j-0.6.jar" REQUIRED="true" />
-			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" REQUIRED="true" />
-			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="apache-mime4j" MODULE="apache-mime4j-0.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/apache-mime4j-0.6.jar" />
+			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" />
+			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" />
 			<IMPORT NAME="httpclient" MODULE="httpclient-4.0.jar" REQUIRED="true" />
-			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.1.jar" REQUIRED="true" />
+			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/httpcore-4.0.1.jar" />
 			<IMPORT NAME="httpmime" MODULE="httpmime-4.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>

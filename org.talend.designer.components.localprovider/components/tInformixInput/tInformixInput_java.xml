@@ -1,11 +1,9 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070326A"
@@ -13,15 +11,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/Informix</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -31,9 +26,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -42,7 +35,6 @@
       REPOSITORY_VALUE="DATABASE:INFORMIX"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -50,7 +42,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -58,8 +49,7 @@
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />  
-
+    />
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -69,7 +59,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -79,7 +68,6 @@
     >
       <DEFAULT>"1533"</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -88,8 +76,7 @@
       REPOSITORY_VALUE="TYPE"
     >
       <DEFAULT>Informix</DEFAULT>
-    </PARAMETER>    
-
+    </PARAMETER>
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -100,8 +87,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER 
+	<PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
@@ -110,7 +96,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -121,7 +106,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -132,7 +116,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DBSERVER"
       FIELD="TEXT"
@@ -142,8 +125,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER> 
-
+    </PARAMETER>
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -151,7 +133,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -159,7 +140,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -167,15 +147,13 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
   	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
       NUM_ROW="9"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>   
-
+    </PARAMETER>
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -184,58 +162,51 @@
     >
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
-
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="11"
       SHOW="false"
-    >       
+    >
       <DEFAULT>informix_id</DEFAULT>
     </PARAMETER>
-
    </PARAMETERS>
-   
    <ADVANCED_PARAMETERS>
-   	<PARAMETER 
-   		NAME="PROPERTIES" 
-   		FIELD="TEXT" 
-   		NUM_ROW="10" 
+   	<PARAMETER
+   		NAME="PROPERTIES"
+   		FIELD="TEXT"
+   		NUM_ROW="10"
    		REPOSITORY_VALUE="PROPERTIES_STRING"
    		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="TRIM_ALL_COLUMN" 
-		FIELD="CHECK" 
+	<PARAMETER
+		NAME="TRIM_ALL_COLUMN"
+		FIELD="CHECK"
 		NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="TRIM_COLUMN" 
-		FIELD="TABLE" 
+	<PARAMETER
+		NAME="TRIM_COLUMN"
+		FIELD="TABLE"
 		NUM_ROW="40"
-		NB_LINES="5" 
+		NB_LINES="5"
 		SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
-	</PARAMETER>		
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
-
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" />
      </IMPORTS>
    </CODEGENERATION>
-
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
       <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

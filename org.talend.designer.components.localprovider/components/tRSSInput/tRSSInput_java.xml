@@ -5,7 +5,6 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -13,15 +12,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -31,7 +27,6 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
    <PARAMETER
       NAME="SCHEMA"
@@ -54,7 +49,6 @@
     >
     <DEFAULT>"http://feeds.feedburner.com/Talend"</DEFAULT>
     </PARAMETER>
-    
      <PARAMETER
       NAME="ARTICLE_DATE"
       FIELD="CHECK"
@@ -72,7 +66,6 @@
     >
     <DEFAULT>"2007-05-30 08:12:12"</DEFAULT>
     </PARAMETER>
-    
      <PARAMETER
       NAME="ARTICLE_AMOUNT"
       FIELD="CHECK"
@@ -81,7 +74,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="AMOUNT"
       FIELD="TEXT"
@@ -91,7 +83,6 @@
     >
     <DEFAULT>10</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -100,67 +91,57 @@
     <DEFAULT>false</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
-  
-   <PARAMETER 
-       NAME="USE_PROXY" 
-       FIELD="CHECK" 
+   <PARAMETER
+       NAME="USE_PROXY"
+       FIELD="CHECK"
        REQUIRED="true"
-	   NUM_ROW="10" 
+	   NUM_ROW="10"
 	   REPOSITORY_VALUE="UES_PROXY">
 	   <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_HOST" 
+	<PARAMETER
+		NAME="PROXY_HOST"
 		FIELD="TEXT"
 		NUM_ROW="20"
-		SHOW_IF="USE_PROXY == 'true'" 
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_HOST">
 		<DEFAULT>"61.163.92.4"</DEFAULT>
 	</PARAMETER>
-
-	<PARAMETER 
-		NAME="PROXY_PORT" 
+	<PARAMETER
+		NAME="PROXY_PORT"
 		FIELD="TEXT"
-		NUM_ROW="30" 
-		SHOW_IF="USE_PROXY == 'true'" 
+		NUM_ROW="30"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_PORT">
 		<DEFAULT>"1080"</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_USERNAME" 
-		FIELD="TEXT" 
-		NUM_ROW="40" 
-		SHOW_IF="USE_PROXY == 'true'" 
+	<PARAMETER
+		NAME="PROXY_USERNAME"
+		FIELD="TEXT"
+		NUM_ROW="40"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_USERNAME">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="PROXY_PASSWORD" 
+	<PARAMETER
+		NAME="PROXY_PASSWORD"
 		FIELD="TEXT"
-		NUM_ROW="50" 
-		SHOW_IF="USE_PROXY == 'true'" 
+		NUM_ROW="50"
+		SHOW_IF="USE_PROXY == 'true'"
 		REPOSITORY_VALUE="PROXY_PASSWORD">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-	
 	</ADVANCED_PARAMETERS>
-  
 	<CODEGENERATION>
     <IMPORTS>
        <IMPORT NAME="Java-Feed" MODULE="feed4j.jar" REQUIRED="true" />
-       <IMPORT NAME="Java-DOM" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-DOM" MODULE="dom4j-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" />
         <IMPORT NAME="Java-NEKO" MODULE="nekohtml.jar" REQUIRED="true" />
        <IMPORT NAME="Java-XER" MODULE="xercesImpl.jar" REQUIRED="true" />
-       <IMPORT NAME="Java-XML" MODULE="xml-apis.jar" REQUIRED="true" />
-       
+       <IMPORT NAME="Java-XML" MODULE="xml-apis.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/xml-apis.jar" />
      </IMPORTS>
   </CODEGENERATION>
-  
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
   </RETURNS>

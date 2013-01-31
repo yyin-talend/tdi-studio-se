@@ -7,15 +7,12 @@
 		IS_MULTIPLYING_OUTPUTS="false">
 		<SIGNATURE />
 	</HEADER>
-
 	<FAMILIES>
 		<FAMILY>Internet</FAMILY>
 	</FAMILIES>
-
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
-
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" />
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
@@ -25,7 +22,6 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
-
 	<PARAMETERS>
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="5">
 			<TABLE READONLY="true" IF="OUTPUT_DOCUMENT=='false'">
@@ -86,8 +82,6 @@
 		<PARAMETER NAME="SSL_TRUSTSERVER_PASSWORD" FIELD="TEXT" NUM_ROW="45" SHOW_IF="NEED_SSL_TO_TRUSTSERVER == 'true'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
-
-
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="50">
 			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx"</DEFAULT>
 		</PARAMETER>
@@ -111,7 +105,6 @@
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 	</PARAMETERS>
-
 	<ADVANCED_PARAMETERS>
 		<PARAMETER
 	      NAME="USE_KERBEROS"
@@ -119,8 +112,7 @@
 	      NUM_ROW="10"
 	    >
 	      <DEFAULT>false</DEFAULT>
-	    </PARAMETER>    
-	
+	    </PARAMETER>
 	    <PARAMETER
 	      NAME="KERBEROS_CONFIGURATION"
 	      FIELD="COMPONENT_LIST"
@@ -129,20 +121,17 @@
 	      SHOW_IF="USE_KERBEROS == 'true'"
 	    />
 	</ADVANCED_PARAMETERS>
-
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="activation" MODULE="activation.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="activation" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" />
 			<IMPORT NAME="jaxqname" MODULE="jax-qname.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" BundleID="" />
-			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" BundleID="org.apache.servicemix.bundles.jdom" />
+			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdom/lib/jdom-1.1.jar" />
 			<IMPORT NAME="talendsoap" MODULE="talend-soap.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
-
 	<RETURNS/>
-
 </COMPONENT>

@@ -4,7 +4,6 @@
 		STARTABLE="false">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
-
   <FAMILIES>
     <FAMILY>Talend MDM</FAMILY>
   </FAMILIES>
@@ -20,14 +19,11 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
-
 	<PARAMETERS>
-
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 			NUM_ROW="10">
 			<DEFAULT />
 		</PARAMETER>
- 		    	 
 	    <PARAMETER
 	      NAME="XMLFIELD"
 	      FIELD="PREV_COLUMN_LIST"
@@ -35,63 +31,51 @@
 	      NUM_ROW="15"
 	    >
 	    </PARAMETER>
-
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true">
 			<DEFAULT>"http://localhost:8080/datamanager/loadServlet"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="30">
 			<DEFAULT>"userName"</DEFAULT>
-		</PARAMETER>	
-			
+		</PARAMETER>
 		<PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="30">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="UNIVERSE" FIELD="TEXT"
 			NUM_ROW="30">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="DATAMODEL" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="DATACLUSTER" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="DATACONCEPT" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-		
 		<PARAMETER NAME="VALIDATE" FIELD="CHECK" NUM_ROW="50">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="GENERATE_ID" FIELD="CHECK" NUM_ROW="50">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-
 		<PARAMETER NAME="MASS_LEVEL" FIELD="TEXT" NUM_ROW="60"
 			REQUIRED="true">
 			<DEFAULT>500</DEFAULT>
 		</PARAMETER>
-
 	</PARAMETERS>
-	
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="MDM-Bulkloadclient" MODULE="bulkloadclient.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-codec" MODULE="commons-codec.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-httpclient" MODULE="commons-httpclient.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-logging" MODULE="commons-logging.jar" REQUIRED="true" />    
+      <IMPORT NAME="SOAP-codec" MODULE="commons-codec.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec.jar" />
+      <IMPORT NAME="SOAP-httpclient" MODULE="commons-httpclient.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient.jar" />
+      <IMPORT NAME="SOAP-logging" MODULE="commons-logging.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging.jar" />
     </IMPORTS>
   </CODEGENERATION>
   <RETURNS></RETURNS>

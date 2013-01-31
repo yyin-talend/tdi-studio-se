@@ -14,15 +14,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Cloud/AmazonRDS/Oracle</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
@@ -33,7 +30,6 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -42,7 +38,6 @@
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-    
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -50,7 +45,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -58,8 +52,7 @@
       NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />         
-    
+    />
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
@@ -71,7 +64,6 @@
         <ITEM NAME="ORACLE_SID" VALUE="ORACLE_SID" />
       </ITEMS>
     </PARAMETER>
-    
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="ORACLE_11">
@@ -79,7 +71,6 @@
 			<ITEM NAME="ORACLE_11" VALUE="ORACLE_11" />
 		</ITEMS>
 	</PARAMETER>
-
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -89,7 +80,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -99,7 +89,6 @@
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -109,7 +98,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="LOCAL_SERVICE_NAME"
       FIELD="TEXT"
@@ -120,8 +108,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-     <PARAMETER 
+     <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="50"
@@ -130,7 +117,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -140,7 +126,6 @@
     >
       <DEFAULT>Oracle</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -150,7 +135,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -160,7 +144,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -168,7 +151,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -180,8 +162,7 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-
+    </PARAMETER>
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -189,7 +170,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -197,7 +177,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -205,7 +184,6 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="USE_NB_LINE"
       FIELD="CLOSED_LIST"
@@ -218,13 +196,12 @@
 	        <ITEM NAME="NB_LINE_DELETED" VALUE="NB_LINE_DELETED"/>
 		</ITEMS>
     </PARAMETER>
-	<PARAMETER 
-		NAME="USE_NB_LINE_NOTE" 
-		FIELD="LABEL" 
+	<PARAMETER
+		NAME="USE_NB_LINE_NOTE"
+		FIELD="LABEL"
 		NUM_ROW="91">
 		<DEFAULT>* Just the Query is Insert/Update/Delete SQL.</DEFAULT>
 	</PARAMETER>
-	
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -233,25 +210,22 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
-	<PARAMETER 
-		NAME="PROPERTIES" 
-		FIELD="TEXT" 
-		NUM_ROW="1" 
+	<PARAMETER
+		NAME="PROPERTIES"
+		FIELD="TEXT"
+		NUM_ROW="1"
 		REPOSITORY_VALUE="PROPERTIES_STRING"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-
-	<PARAMETER 
-		NAME="NOTE" 
-		FIELD="LABEL" 
+	<PARAMETER
+		NAME="NOTE"
+		FIELD="LABEL"
 		NUM_ROW="2"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1&amp;&amp;parameterName2=value2"</DEFAULT>
 	</PARAMETER>
-	
   	<PARAMETER
       NAME="PROPAGATE_RECORD_SET"
       FIELD="CHECK"
@@ -259,14 +233,12 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="RECORD_SET_COLUMN"
       FIELD="COLUMN_LIST"
       NUM_ROW="10"
       SHOW_IF="PROPAGATE_RECORD_SET == 'true'"
     />
-    
 	<PARAMETER
       NAME="USE_PREPAREDSTATEMENT"
       FIELD="CHECK"
@@ -274,7 +246,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="SET_PREPAREDSTATEMENT_PARAMETERS"
       FIELD="TABLE"
@@ -308,7 +279,6 @@
         <ITEM NAME="PARAMETER_VALUE" VALUE="" />
       </ITEMS>
     </PARAMETER>
-  
 	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -318,7 +288,6 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-        
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -328,16 +297,13 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-    
   </ADVANCED_PARAMETERS>
-
    <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
-       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
-    </IMPORTS> 
+       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" />
+       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" />
+    </IMPORTS>
    </CODEGENERATION>
-
   <RETURNS>
     <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
 	<RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

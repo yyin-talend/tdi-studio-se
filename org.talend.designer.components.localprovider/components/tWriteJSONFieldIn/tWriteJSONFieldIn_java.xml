@@ -8,14 +8,12 @@
 	>
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
-
   <FAMILIES>
     <FAMILY>XML</FAMILY>
   </FAMILIES>
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
-
 	<CONNECTORS>
 		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
@@ -25,7 +23,6 @@
 		<CONNECTOR CTYPE="COMPONENT_ERROR" />
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
-
 	<PARAMETERS>
 		<PARAMETER
 	      NAME="JSONFIELD"
@@ -34,31 +31,26 @@
 	      NUM_ROW="10"
 	    >
     	</PARAMETER>
-    	
 		<PARAMETER NAME="DESTINATION" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true">
 			<DEFAULT>tWriteJSONFieldIn_1</DEFAULT>
 		</PARAMETER>
-		
     	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 			NUM_ROW="30">
 			<DEFAULT />
 		</PARAMETER>
-    	
 	</PARAMETERS>
-	
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="xom" MODULE="xom-1.2.7.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_beanutils" MODULE="commons-beanutils-1.8.3.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.1.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_lang" MODULE="commons-lang-2.6.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="commons_beanutils" MODULE="commons-beanutils-1.8.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.8.3.jar" />
+			<IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar" />
+			<IMPORT NAME="commons_lang" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" />
+			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" />
 			<IMPORT NAME="ezmorph" MODULE="ezmorph-1.0.6.jar" REQUIRED="true" />
-			<IMPORT NAME="json-lib" MODULE="json-lib-2.4-jdk15.jar" REQUIRED="true" />
+			<IMPORT NAME="json-lib" MODULE="json-lib-2.4-jdk15.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json-lib-2.4-jdk15.jar" />
 		</IMPORTS>
 	</CODEGENERATION>
-
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
 	</RETURNS>

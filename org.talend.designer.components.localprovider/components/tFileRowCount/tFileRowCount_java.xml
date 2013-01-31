@@ -11,15 +11,12 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>File/Management</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
@@ -29,7 +26,6 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
     <PARAMETER
       NAME="FILENAME"
@@ -39,7 +35,6 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
@@ -55,15 +50,12 @@
 	  REQUIRED="true" REPOSITORY_VALUE="ENCODING">
 	  <DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
-	
   </PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Java_Excel" MODULE="jxl.jar" REQUIRED="true" />
+      <IMPORT NAME="Java_Excel" MODULE="jxl.jar" UrlPath="platform:/plugin/org.talend.libraries.jexcel/lib/jxl.jar" />
     </IMPORTS>
   </CODEGENERATION>
-
   <RETURNS>
     <RETURN NAME="COUNT" TYPE="id_Integer" AVAILABILITY="FLOW"/>
   </RETURNS>

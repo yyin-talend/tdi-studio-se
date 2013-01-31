@@ -4,7 +4,6 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070719A"
@@ -15,19 +14,16 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <FAMILIES>
     <FAMILY>Databases/PostgreSQL</FAMILY>
   </FAMILIES>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
-
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
-     			NOT_SHOW_IF="((((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true')) OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true')) 
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
+     			NOT_SHOW_IF="((((DATA_ACTION == 'INSERT') AND (USE_BATCH_SIZE == 'true')) OR ((DATA_ACTION == 'UPDATE') AND (USE_BATCH_SIZE == 'true'))
     							OR ((DATA_ACTION == 'DELETE') AND (USE_BATCH_SIZE == 'true')))
     							OR (DIE_ON_ERROR == 'true'))"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
@@ -37,7 +33,6 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
   <PARAMETERS>
     <PARAMETER
       NAME="PROPERTY"
@@ -46,7 +41,6 @@
       REPOSITORY_VALUE="DATABASE:POSTGRESQL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -54,7 +48,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -62,8 +55,7 @@
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />     
-
+    />
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -74,7 +66,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -85,7 +76,6 @@
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -96,7 +86,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -106,17 +95,15 @@
     >
       <DEFAULT>PostgreSQL</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -127,7 +114,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -138,7 +124,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -146,8 +131,7 @@
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
-
+    </PARAMETER>
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -164,7 +148,6 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -178,7 +161,6 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-         
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -186,7 +168,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -198,38 +179,34 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER> 
-
+    </PARAMETER>
 <PARAMETER
       NAME="USE_SPATIAL_OPTIONS"
       FIELD="CHECK"
       NUM_ROW="9"
-      SHOW_IF="(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      SHOW_IF="(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or
       		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="SPATIAL_INDEX"
       FIELD="CHECK"
-      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or
       		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
       NUM_ROW="9"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
     <PARAMETER
       NAME="GEOMETRY_COLUMNS"
       FIELD="CHECK"
-      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or
       		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
       NUM_ROW="9"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -237,29 +214,24 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
       SHOW="false"
-    >       
+    >
       <DEFAULT>postgres_id</DEFAULT>
-    </PARAMETER>    
-    
+    </PARAMETER>
   </PARAMETERS>
-  
   <ADVANCED_PARAMETERS>
-  
     <PARAMETER
       NAME="SAVE_POINT"
       FIELD="CHECK"
       NUM_ROW="11"
-      SHOW_IF="(USE_BATCH_SIZE == 'false') AND (DIE_ON_ERROR == 'false')" 
+      SHOW_IF="(USE_BATCH_SIZE == 'false') AND (DIE_ON_ERROR == 'false')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
   	    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -269,17 +241,15 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
       NUM_ROW="9"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -301,7 +271,6 @@
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
@@ -309,7 +278,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
@@ -325,49 +293,43 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-  	<PARAMETER 
-  	  NAME="ENABLE_DEBUG_MODE" 
+  	<PARAMETER
+  	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-		NAME="SUPPORT_NULL_WHERE" 
+	<PARAMETER
+		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
-	<PARAMETER 
-  	  NAME="USE_BATCH_SIZE" 
+	<PARAMETER
+  	  NAME="USE_BATCH_SIZE"
   	  FIELD="CHECK"
 	  NUM_ROW="30"
 	  SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
 	  >
 	  <DEFAULT>true</DEFAULT>
-	</PARAMETER>            
-  	<PARAMETER 
-  	  NAME="BATCH_SIZE" 
+	</PARAMETER>
+  	<PARAMETER
+  	  NAME="BATCH_SIZE"
   	  FIELD="TEXT"
 	  NUM_ROW="30"
 	  SHOW_IF="(USE_BATCH_SIZE == 'true')AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
 	  >
 	  <DEFAULT>10000</DEFAULT>
-	</PARAMETER> 
-	
+	</PARAMETER>
   </ADVANCED_PARAMETERS>
-
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+    	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" />
 		<IMPORT NAME="Driver-Postgis" MODULE="postgis_1.4.0.jar" REQUIRED="false" />
      	<IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="false" />
      	<IMPORT NAME="jts" MODULE="jts-1.9.jar" REQUIRED="false"/>
     </IMPORTS>
   </CODEGENERATION>
-   
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
