@@ -165,18 +165,26 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
             fileFieldJSON.setText(getConnection().getJSONFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
             // init the fileViewer
             checkFieldsValue();
-            String JSONFilePath = fileFieldJSON.getText();
+            String jsonFilePath = fileFieldJSON.getText();
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                JSONFilePath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                jsonFilePath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                         fileFieldJSON.getText()));
             }
-            if (!new File(JSONFilePath).exists() && getConnection().getFileContent() != null
+            if (!new File(jsonFilePath).exists() && getConnection().getFileContent() != null
                     && getConnection().getFileContent().length > 0) {
                 initFileContent();
-                JSONFilePath = tempJSONXsdPath;
+                jsonFilePath = tempJSONXsdPath;
             }
-            valid = this.treePopulator.populateTree(JSONFilePath, treeNode);
+            String tempxml = null;
+            if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
+                    || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
+                tempxml = JSONUtil.changeJsonToXml(jsonFilePath);
+                JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+            } else {
+                tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
+            }
+            valid = this.treePopulator.populateTree(tempxml, treeNode);
 
         }
 
@@ -278,11 +286,28 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 } else {
                     treePopulator.setLimit(Integer.valueOf(str));
                 }
+
                 if (tempJSONXsdPath != null && getConnection().getFileContent() != null
                         && getConnection().getFileContent().length > 0) {
-                    valid = treePopulator.populateTree(tempJSONXsdPath, treeNode);
+                    String tempxml = null;
+                    if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
+                            || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
+                        tempxml = JSONUtil.changeJsonToXml(tempJSONXsdPath);
+                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                    } else {
+                        tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
+                    }
+                    valid = treePopulator.populateTree(tempxml, treeNode);
                 } else {
-                    valid = treePopulator.populateTree(fileFieldJSON.getText(), treeNode);
+                    String tempxml = null;
+                    if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
+                            || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
+                        tempxml = JSONUtil.changeJsonToXml(fileFieldJSON.getText());
+                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                    } else {
+                        tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
+                    }
+                    valid = treePopulator.populateTree(tempxml, treeNode);
                 }
                 checkFieldsValue();
 
@@ -376,8 +401,14 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 File file = new File(text);
                 if (file.exists()) {
                     if (file.exists()) {
-                        String tempxml = JSONUtil.changeJsonToXml(text);
-                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                        String tempxml = null;
+                        if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
+                                || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
+                            tempxml = JSONUtil.changeJsonToXml(text);
+                            JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                        } else {
+                            tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
+                        }
                         valid = treePopulator.populateTree(tempxml, treeNode);
                     }
                     // add for bug TDI-20432

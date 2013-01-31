@@ -136,18 +136,24 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
         if (getConnection().getJSONFilePath() != null) {
             jsonFilePath.setText(getConnection().getJSONFilePath().replace("\\\\", "\\"));
             checkFieldsValue();
-            String JSONXsdPath = jsonFilePath.getText();
+            String jsonXmlPath = jsonFilePath.getText();
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                JSONXsdPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                jsonXmlPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                         jsonFilePath.getText()));
             }
-            if (!new File(JSONXsdPath).exists() && getConnection().getFileContent() != null
+            if (!new File(jsonXmlPath).exists() && getConnection().getFileContent() != null
                     && getConnection().getFileContent().length > 0) {
                 initFileContent();
-                JSONXsdPath = tempJSONPath;
+                jsonXmlPath = tempJSONPath;
             }
-            valid = this.treePopulator.populateTree(JSONXsdPath, treeNode);
+            if (JSONFileOutputStep1Form.this.tempPath == null) {
+                JSONFileOutputStep1Form.this.tempPath = JSONUtil.changeJsonToXml(jsonXmlPath);
+            }
+            File file = new File(JSONFileOutputStep1Form.this.tempPath);
+            if (file.exists()) {
+                valid = this.treePopulator.populateTree(JSONFileOutputStep1Form.this.tempPath, treeNode);
+            }
         }
 
         if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
@@ -466,7 +472,14 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 } else {
                     treePopulator.setLimit(Integer.valueOf(str));
                 }
-                valid = treePopulator.populateTree(jsonFilePath.getText(), treeNode);
+                if (JSONFileOutputStep1Form.this.tempPath == null) {
+                    JSONFileOutputStep1Form.this.tempPath = JSONUtil.changeJsonToXml(jsonFilePath.getText());
+                }
+
+                File file = new File(JSONFileOutputStep1Form.this.tempPath);
+                if (file.exists()) {
+                    valid = treePopulator.populateTree(JSONFileOutputStep1Form.this.tempPath, treeNode);
+                }
                 checkFieldsValue();
             }
         });

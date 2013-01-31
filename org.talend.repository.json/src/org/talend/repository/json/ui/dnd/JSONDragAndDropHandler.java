@@ -26,6 +26,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -44,6 +45,7 @@ import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
 import org.talend.repository.model.json.JSONFileNode;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
+import org.talend.repository.model.json.SchemaTarget;
 
 /**
  * DOC wanghong class global comment. Detailled comment
@@ -129,19 +131,23 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
             }
         }
         if (value.equals("ROOT")) {
-            return getOutputXmlValue(connection.getRoot());
+            return getOutputJSONValue(connection.getRoot());
         }
         if (value.equals("GROUP")) {
-            return getOutputXmlValue(connection.getGroup());
+            return getOutputJSONValue(connection.getGroup());
         }
         if (value.equals("LOOP")) {
-            return getOutputXmlValue(connection.getLoop());
+            return getOutputJSONValue(connection.getLoop());
+        }
+
+        if (value.equals("JSON_MAPPING")) {
+            return getTableJSONMappingValue(connection);
         }
 
         return null;
     }
 
-    private List<Map<String, String>> getOutputXmlValue(EList list) {
+    private List<Map<String, String>> getOutputJSONValue(EList list) {
         List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
         for (int i = 0; i < list.size(); i++) {
             Map<String, String> map = new HashMap<String, String>();
@@ -161,6 +167,33 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
 
     }
 
+    private List<Map<String, Object>> getTableJSONMappingValue(Connection connection) {
+        List<Map<String, Object>> tableInfo = new ArrayList<Map<String, Object>>();
+        if (connection instanceof JSONFileConnection) {
+            JSONFileConnection jsonConnection = (JSONFileConnection) connection;
+            if (jsonConnection.isInputModel()) {
+                EList objectList = jsonConnection.getSchema();
+                JSONXPathLoopDescriptor jsonDesc = (JSONXPathLoopDescriptor) objectList.get(0);
+                List<SchemaTarget> schemaTargets = jsonDesc.getSchemaTargets();
+                tableInfo.clear();
+
+                String tagName;
+                for (int j = 0; j < schemaTargets.size(); j++) {
+                    SchemaTarget schemaTarget = schemaTargets.get(j);
+                    if (schemaTarget.getTagName() != null && !schemaTarget.getTagName().equals("")) { //$NON-NLS-1$
+                        tagName = "" + schemaTarget.getTagName().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                        tagName = MetadataToolHelper.validateColumnName(tagName, j);
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("SCHEMA_COLUMN", tagName); //$NON-NLS-1$
+                        map.put("QUERY", TalendQuoteUtils.addQuotes(schemaTarget.getRelativeXPathQuery())); //$NON-NLS-1$
+                        tableInfo.add(map);
+                    }
+                }
+            }
+        }
+        return tableInfo;
+    }
+
     @Override
     public List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         List<IComponent> neededComponents = new ArrayList<IComponent>();
@@ -169,12 +202,21 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
         }
         IComponentsService service = (IComponentsService) GlobalServiceRegister.getDefault().getService(IComponentsService.class);
         Set<IComponent> components = service.getComponentsFactory().getComponents();
+        JSONFileConnection connection = (JSONFileConnection) ((JSONFileConnectionItem) item).getConnection();
         for (IComponent component : components) {
-            if (isValid(item, type, seletetedNode, component, JSON) && !neededComponents.contains(component)) {
-                neededComponents.add(component);
+            if (!connection.isInputModel()) {
+                if (isValid(item, type, seletetedNode, component, "JSONOUTPUT") && !neededComponents.contains(component)) {
+                    neededComponents.add(component);
+                }
+            } else {
+                if (isValid(item, type, seletetedNode, component, JSON) && !neededComponents.contains(component)) {
+                    neededComponents.add(component);
+                }
             }
-        }
 
+        }
+        // List<IComponent> neededComponents = RepositoryComponentManager.filterNeededComponents(item, seletetedNode,
+        // type);
         return neededComponents;
     }
 
@@ -184,12 +226,11 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
             return false;
         }
         String componentProductname = component.getRepositoryType();
-        if (componentProductname != null && repositoryType.contains(componentProductname)
+        if (componentProductname != null && repositoryType.endsWith(componentProductname)
                 && isSubValid(item, type, seletetedNode, component, repositoryType)) {
             return true;
-        } else if (component.getName() != null && component.getName().contains(repositoryType)) {
-            return true;
         }
+
         return false;
     }
 

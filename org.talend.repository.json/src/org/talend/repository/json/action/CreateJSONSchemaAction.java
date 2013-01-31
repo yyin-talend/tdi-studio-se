@@ -12,16 +12,22 @@
 // ============================================================================
 package org.talend.repository.json.action;
 
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.ui.actions.metadata.AbstractCreateAction;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
+import org.talend.repository.json.ui.wizards.FileJSONTableWizard;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -29,11 +35,14 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
+import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
+import orgomg.cwm.resource.record.RecordFactory;
+import orgomg.cwm.resource.record.RecordFile;
 
 /**
  * DOC wanghong class global comment. Detailled comment
  */
-public class CreateJSONSchemaAction extends AbstractCreateAction {
+public class CreateJSONSchemaAction extends AbstractCreateTableAction {
 
     private static final String CREATE_LABEL = Messages.CreateJSONSchemaAction_RETRIEVE_SCHEMA;
 
@@ -114,73 +123,47 @@ public class CreateJSONSchemaAction extends AbstractCreateAction {
             } else if (nodeType == JSONRepositoryNodeType.JSON) {
                 item = (JSONFileConnectionItem) repositoryNode.getObject().getProperty().getItem();
                 connection = (JSONFileConnection) item.getConnection();
+
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), connection, RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
             } else {
                 return;
             }
-
-            boolean isOK = true;
-            // if (creation) {
-            // isOK = checkJSONConnection((JSONFileConnection) item.getConnection());
-            // }
-            if (isOK) {
-                openJSONSchemaWizard(item, metadataTable, false, creation);
-            }
+            initContextMode(item);
+            openJSONSchemaWizard(item, metadataTable, false, creation);
         }
     }
 
-    // private boolean checkJSONConnection(final JSONFileConnection connection) {
-    // final boolean[] result = new boolean[] { true };
-    // IRunnableWithProgress runnableWithProgress = new IRunnableWithProgress() {
-    //
-    // public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-    // monitor.beginTask(Messages.getString("CreateJSONSchemaAction.checkConnection"), IProgressMonitor.UNKNOWN);
-    // Object dfs = null;
-    // try {
-    // JSONConnectionBean connectionBean = JSONModelUtil.convert2JSONConnectionBean(connection);
-    // dfs = HadoopOperationManager.getInstance().getDFS(connectionBean);
-    // } catch (Exception e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // monitor.done();
-    // }
-    // if (dfs == null) {
-    // PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-    //
-    // @Override
-    // public void run() {
-    //                            String mainMsg = Messages.getString("CreateJSONSchemaAction.connectionFailure.mainMsg"); //$NON-NLS-1$
-    //                            String detailMsg = Messages.getString("CreateJSONSchemaAction.connectionFailure.detailMsg", //$NON-NLS-1$
-    // connection.getNameNodeURI());
-    // new ErrorDialogWidthDetailArea(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-    // Activator.PLUGIN_ID, mainMsg, detailMsg);
-    // result[0] = false;
-    // return;
-    // }
-    // });
-    // }
-    // }
-    // };
-    // ProgressMonitorDialog dialog = new
-    // ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
-    // try {
-    // dialog.run(true, true, runnableWithProgress);
-    // } catch (Exception e) {
-    // result[0] = false;
-    // ExceptionHandler.process(e);
-    // }
-    //
-    // return result[0];
-    // }
-
     private void openJSONSchemaWizard(final JSONFileConnectionItem item, final MetadataTable metadataTable,
             final boolean forceReadOnly, final boolean creation) {
-        // WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(),
-        // new JSONSchemaWizard(PlatformUI.getWorkbench(), creation, repositoryNode.getObject(), metadataTable,
-        // getExistingNames(), forceReadOnly));
-        // wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
-        // wizardDialog.create();
-        // wizardDialog.open();
+        FileJSONTableWizard jsonWizard = new FileJSONTableWizard(PlatformUI.getWorkbench(), creation, item, metadataTable,
+                forceReadOnly);
+        jsonWizard.setRepositoryObject(repositoryNode.getObject());
+
+        WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), jsonWizard);
+
+        wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
+        wizardDialog.create();
+        wizardDialog.open();
+
+        // FileXmlTableWizard fileXmlTableWizard = new FileXmlTableWizard(PlatformUI.getWorkbench(), creation, item,
+        // metadataTable,
+        // forceReadOnly);
+        // fileXmlTableWizard.setRepositoryObject(node.getObject());
+        //
+        // WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileXmlTableWizard);
+        // handleWizard(node, wizardDialog);
     }
 
 }
