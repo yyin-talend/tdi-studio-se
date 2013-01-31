@@ -395,6 +395,9 @@ public class JobletUtil {
     public Connection cloneConnection(IConnection conn, INode source, INode target) {
         Connection cloneConn = new Connection(source, target, conn.getLineStyle(), conn.getConnectorName(), conn.getMetaName(),
                 conn.getName(), conn.isMonitorConnection());
+        if (!source.isActivate() || !target.isActivate()) {
+            cloneConn.setActivate(false);
+        }
         return cloneConn;
     }
 

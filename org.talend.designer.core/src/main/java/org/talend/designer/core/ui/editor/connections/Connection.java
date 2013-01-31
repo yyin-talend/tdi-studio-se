@@ -1159,7 +1159,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return this.activate;
     }
 
-    private void setActivate(boolean activate) {
+    public void setActivate(boolean activate) {
         this.activate = activate;
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
     }
