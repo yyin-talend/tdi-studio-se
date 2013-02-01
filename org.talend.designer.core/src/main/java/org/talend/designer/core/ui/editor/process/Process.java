@@ -2890,7 +2890,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         Problems.removeProblemsByProcess(this);
         
         // add Problem
-        if (!unloadedNode.isEmpty()) {
+        if (unloadedNode != null && !unloadedNode.isEmpty()) {
             String unloadedComponents = ""; //$NON-NLS-1$
             for (int i = 0; i < unloadedNode.size(); i++) {
                 unloadedComponents = unloadedComponents + unloadedNode.get(i).getComponentName() + ","; //$NON-NLS-1$
