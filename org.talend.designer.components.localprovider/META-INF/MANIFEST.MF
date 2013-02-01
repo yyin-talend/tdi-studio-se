@@ -11,7 +11,7 @@ Require-Bundle: org.talend.core,
  org.talend.commons,
  org.talend.designer.codegen,
  org.eclipse.ui.workbench,
- org.talend.libraries.jboss
+ org.talend.libraries.jboss;resolution:=optional
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .
