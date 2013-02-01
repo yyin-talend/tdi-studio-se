@@ -317,12 +317,15 @@
 	List<Map<String, String>> contextParams = null;
     if(conns.size()>0) {
         String useJar = ElementParameterParser.getValue(node, "__FROM_EXTERNAL_JAR__");
+        // when propagateHeader parameter will be removed the https://github.com/Talend/tesb-rt-se/blob/master/camel-talendjob/src/main/java/org/talend/camel/TalendProducer.java
+        // have to be changed - remove populateTalendContextParamsWithCamelHeaders(exchange, args); 
+        String propagateHeader = ElementParameterParser.getValue(node, "__PROPAGATE_HEADER__");
         if("true".equals(useJar)){
             String typeName = ElementParameterParser.getValue(node, "__JOB__");
             String context = ElementParameterParser.getValue(node, "__CONTEXT__");
             contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__EXTERNAL_JAR_CONTEXTPARAMS__");
 %>
-		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+ <%=typeName%>+ "?context=" + <%=context%>);
+		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+ <%=typeName%>+ "?context=" + <%=context%>+"&propagateHeader=<%=propagateHeader%>");
 <%
         }else{
            String typeName = "";
@@ -330,27 +333,22 @@
            String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
            String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
            if(id != null){
-           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
-           String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
-           String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-           typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
-        }
+	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
+	           String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
+	           String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+	           typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
+	        }
 %>
-		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+<%=typeName%>.class.getName()+"?context="+"<%=context%>");
+			org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+<%=typeName%>.class.getName()+"?context="+"<%=context%>&propagateHeader=<%=propagateHeader%>");
 <%
         }
+        int contextParamsSize = contextParams.size();
+        if(contextParamsSize > 0){
 %>
-        Map <String, String> propertiesMap = new HashMap<String, String>();
-
-<%	
-    String propagateHeader = "true".equals(ElementParameterParser.getValue(node, "__PROPAGATE_HEADER__")) ?  "\"" +"1"+ "\"":"\"" +"0"+ "\"";	
-
-    // when propagateHeader parameter will be removed the https://github.com/Talend/tesb-rt-se/blob/master/camel-talendjob/src/main/java/org/talend/camel/TalendProducer.java
-	// have to be changed - remove populateTalendContextParamsWithCamelHeaders(exchange, args); 
-%>
-	propertiesMap.put("##propagateheader##", <%=propagateHeader%>);      
+{
+        Map <String, String> propertiesMap = new HashMap<String, String>();  
 <%
-	for (int i=0; i<contextParams.size(); i++) {
+		for (int i=0; i<contextParamsSize; i++) {
 				Map<String, String> contextParam = contextParams.get(i);
 				String paramName;
 				String paramValue;
@@ -363,13 +361,15 @@
 					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
 				}
 %>
-				propertiesMap.put(<%=paramName%>, <%=paramValue%>);
+		propertiesMap.put(<%=paramName%>, <%=paramValue%>);
 <%
-			}
+		}
 %>
         endpoint_<%=cid%>.getCamelContext().setProperties(propertiesMap);
-	<%
+}
+<%
     }
+	}
 	}
 }
 %>
