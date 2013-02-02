@@ -18,7 +18,6 @@ Require-Bundle: org.talend.model,
  org.eclipse.jet.editor,
  org.talend.designer.components.localprovider,
  org.eclipse.jdt.core,
- org.talend.commons,
  org.talend.datatools.xml,
  org.talend.libraries.apache.common
 Eclipse-LazyStart: true
