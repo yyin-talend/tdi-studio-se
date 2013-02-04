@@ -559,7 +559,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             msgError.append("Should select one model\n");
         }
         if (creation && editable && jsonFilePath.getText() == "") {
-            msgError.append("JSON or Xsd filepath must be specified\n");
+            msgError.append("JSON filepath must be specified\n");
         }
         if (!valid && creation) {
             String JSONXsdText = jsonFilePath.getText();
@@ -578,7 +578,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
             text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
         }
-        if (text != null && !text.equals("")) {
+        if (text != null && !text.equals("") && !isJSONFile(text)) {
             msgError.append("Output file is not a JSON file\n");
         }
         if ("".equals(msgError.toString())) {
@@ -586,6 +586,13 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             return true;
         }
         updateStatus(IStatus.ERROR, msgError.toString());
+        return false;
+    }
+
+    private boolean isJSONFile(String value) {
+        if (value != null) {
+            return value.toLowerCase().endsWith(".json");
+        }
         return false;
     }
 
