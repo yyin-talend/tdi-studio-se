@@ -7,6 +7,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ClassPath: .,
  lib/talendUniservAPI.jar,
- uniserv.jar
+ lib/uniserv.jar
 Export-Package: 
  org.talend.uniserv
