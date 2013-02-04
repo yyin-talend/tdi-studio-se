@@ -39,7 +39,7 @@ public class JSONExtendNode implements IExtendRepositoryNode {
      */
     @Override
     public int getOrdinal() {
-        return 0;
+        return 49;
     }
 
     /*

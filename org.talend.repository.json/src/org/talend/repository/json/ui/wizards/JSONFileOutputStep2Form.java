@@ -25,12 +25,10 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -43,7 +41,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Item;
@@ -67,7 +64,6 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.cwm.helper.ConnectionHelper;
-import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.repository.json.ui.wizards.action.CreateJSONAttributeAction;
 import org.talend.repository.json.ui.wizards.action.CreateJSONElementAction;
 import org.talend.repository.json.ui.wizards.action.CreateJSONNameSpaceAction;
@@ -90,7 +86,6 @@ import org.talend.repository.json.ui.wizards.view.JSONTree2SchemaLinker;
 import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.FoxNodeComboViewProvider;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -105,10 +100,6 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
     private SashForm mainSashFormComposite;
 
     private Button schemaButton;
-
-    private ComboViewer rootComboViewer;
-
-    private Combo rootCombo;
 
     private TableViewer schemaViewer;
 
@@ -184,21 +175,6 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
         schemaViewer.refresh();
     }
 
-    private void initRootCombo() {
-        List<ATreeNode> rootNodes = ((JSONWizard) getPage().getWizard()).getRootNodes();
-        if (rootNodes != null) {
-            rootComboViewer.setInput(rootNodes);
-            ATreeNode rootNode = getDefaultRootNode(rootNodes);
-            rootCombo.select(rootNodes.indexOf(rootNode));
-        }
-    }
-
-    public void resetRootCombo() {
-        if (rootCombo != null) {
-            rootCombo.deselectAll();
-        }
-    }
-
     private void initLinker(TreeItem node, TableItem[] tableItems) {
         FOXTreeNode treeNode = (FOXTreeNode) node.getData();
         IMetadataColumn column = treeNode.getColumn();
@@ -245,14 +221,6 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
         Composite composite = new Composite(group, SWT.BORDER);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(data);
-
-        rootComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
-        FoxNodeComboViewProvider comboProvider = new FoxNodeComboViewProvider();
-        rootComboViewer.setLabelProvider(comboProvider);
-        rootComboViewer.setContentProvider(comboProvider);
-        rootCombo = rootComboViewer.getCombo();
-        GridData comboData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        rootCombo.setLayoutData(comboData);
 
         JSONViewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         data = new GridData(GridData.FILL_BOTH);
@@ -361,15 +329,6 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
 
     }
 
-    private void displayRootCombo(boolean visible) {
-        if (rootCombo == null)
-            return;
-        rootCombo.setVisible(visible);
-        GridData layoutData = (GridData) rootCombo.getLayoutData();
-        layoutData.exclude = !visible;
-        rootCombo.getParent().layout();
-    }
-
     private void initToolBar(Composite parent) {
         // tool buttons
         Composite toolBarComp = new Composite(parent, SWT.BORDER);
@@ -443,32 +402,6 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
 
     @Override
     protected void addFieldsListeners() {
-        rootComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                ATreeNode node = (ATreeNode) selection.getFirstElement();
-                List<FOXTreeNode> nodeList = getCorrespondingFoxTreeNodes(node, false);
-                if (nodeList.size() == 0) {
-                    return;
-                }
-                if (ConnectionHelper.getTables(getConnection()).size() > 0) {
-                    EList schemaMetadataColumn = ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0]
-                            .getColumns();
-                    schemaMetadataColumn.clear();
-                    initMetadataTable(nodeList, schemaMetadataColumn);
-                }
-                updateConnectionProperties(nodeList.get(0));
-                initJSONTreeData();
-                initSchemaTable();
-                JSONViewer.setInput(treeData);
-                JSONViewer.expandAll();
-                redrawLinkers();
-                if (!creation) {
-                    checkFieldsValue();
-                }
-            }
-        });
     }
 
     @Override

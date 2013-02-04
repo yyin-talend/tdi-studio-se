@@ -25,11 +25,11 @@
    <extension
          point="org.talend.core.repository.repository_node_provider">
       <repositoryNode
-            alias="JSON"
+            alias="File JSON"
             class="org.talend.repository.json.node.JSONExtendNode"
             folder="metadata/json"
             isResouce="true"
-            label="JSON"
+            label="File JSON"
             products="DI"
             type="JSON">
       </repositoryNode>

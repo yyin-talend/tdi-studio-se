@@ -15,6 +15,8 @@ package org.talend.repository.json.ui.wizards.buttons;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.repository.json.ui.wizards.AbstractJSONStepForm;
 import org.talend.repository.json.ui.wizards.action.CreateJSONAttributeAction;
 import org.talend.repository.json.ui.wizards.action.CreateJSONElementAction;
@@ -30,7 +32,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.AddEl
 public class AddTreeNodeButton extends AbstractTreeNodeButton {
 
     public AddTreeNodeButton(Composite parent, AbstractJSONStepForm form) {
-        super(parent, form, "Add", null);
+        super(parent, form, "Add", ImageProvider.getImage(EImage.ADD_ICON));
     }
 
     protected void handleSelectionEvent(TreeSelection selection) {

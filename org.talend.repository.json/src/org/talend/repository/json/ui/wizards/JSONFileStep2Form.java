@@ -75,6 +75,7 @@ import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.datatools.xml.utils.XPathPopulationUtil;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.json.ui.preview.JSONShadowProcessPreview;
 import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.ui.wizards.extraction.ExtractionFieldsWithJSONXPathEditorView;
 import org.talend.repository.json.ui.wizards.extraction.ExtractionLoopWithJSONXPathEditorView;
@@ -91,7 +92,6 @@ import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreviewHandlerListener;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.preview.StoppablePreviewLoader;
-import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
@@ -123,7 +123,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     private Label previewInformationLabel;
 
-    private ShadowProcessPreview jsonFilePreview;
+    private JSONShadowProcessPreview jsonFilePreview;
 
     private Text fileJSONText;
 
@@ -414,7 +414,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
         // JSON File Preview
-        jsonFilePreview = new ShadowProcessPreview(previewComposite, null, width, height - 10);
+        jsonFilePreview = new JSONShadowProcessPreview(previewComposite, null, width, height - 10);
         jsonFilePreview.newTablePreview();
 
         previewTabItem.setControl(previewComposite);
@@ -515,8 +515,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
              */
             @Override
             protected void previewEnded(CsvArray result) {
-                // jsonFilePreview.refreshTablePreview(result, false,
-                // (getConnection().getSchema().get(0)).getSchemaTargets());
+                jsonFilePreview.refreshTablePreview(result, false, (getConnection().getSchema().get(0)).getSchemaTargets());
                 if (jsonFilePreview.isCsvRowsEmpty()) {
                     clearPreview();
                     Display.getDefault().asyncExec(new Runnable() {
