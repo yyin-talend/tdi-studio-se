@@ -3040,25 +3040,15 @@ public class Node extends Element implements IGraphicalNode {
                         continue;
                     }
                     int nbDynamic = 0;
-                    int indexOfDynamicField = 0;
-                    int lastNotCustom = 0;
                     for (IMetadataColumn col : meta.getListColumns()) {
                         if (col.getTalendType() != null && col.getTalendType().equals("id_Dynamic")) { //$NON-NLS-1$
                             nbDynamic++;
-                            indexOfDynamicField = meta.getListColumns().indexOf(col);
-                        }
-                        if (!col.isCustom()) {
-                            lastNotCustom = meta.getListColumns().indexOf(col);
                         }
                     }
 
                     if (!isJoblet()) {
                         if (nbDynamic > 1) {
                             String errorMessage = Messages.getString("Node.onlyOneDynamicPerSchema"); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        }
-                        if (nbDynamic > 0 && (indexOfDynamicField != lastNotCustom)) {
-                            String errorMessage = Messages.getString("Node.dynamicShouldBeLastType"); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                         if (nbDynamic > 0 && service == null) {
