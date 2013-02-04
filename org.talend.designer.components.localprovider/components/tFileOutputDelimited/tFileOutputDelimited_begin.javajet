@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderValue_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %><%}%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -98,7 +98,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
     					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 	                    if(i%schemaOptNum==0){
 %>
-		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>){
+		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
 <%
 						}
     					if(!isPrimitive) {
@@ -174,7 +174,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %><%}%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
