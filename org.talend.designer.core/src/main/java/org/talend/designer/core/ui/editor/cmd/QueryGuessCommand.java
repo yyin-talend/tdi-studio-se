@@ -84,7 +84,6 @@ public class QueryGuessCommand extends Command {
 
     private IProcess process;
 
-
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -351,11 +350,12 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if (isJdbc && conn != null|| dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())) {
+        if (isJdbc && conn != null || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())) {
             schema = getDefaultSchema(realTableName);
         }
         // Mssql query need add catalog before the table
-        if ((dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
+        if (dbType != null
+                && (dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
                 && conn != null) {
             schema = "";
             realTableName = getMssqlCatalog(realTableName) + "." + realTableName;
