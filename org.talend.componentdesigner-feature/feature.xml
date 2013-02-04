@@ -28,7 +28,6 @@
       <import plugin="org.talend.core.runtime"/>
       <import plugin="org.talend.metadata.managment"/>
       <import plugin="org.talend.designer.components.localprovider"/>
-      <import plugin="org.talend.commons"/>
       <import plugin="org.talend.commons.ui"/>
       <import plugin="org.talend.metadata.managment.ui"/>
       <import plugin="org.eclipse.swt" version="3.6.0" match="compatible"/>

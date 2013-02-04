@@ -28,7 +28,7 @@
       <import plugin="org.talend.commons.ui" version="2.2.0" match="greaterOrEqual"/>
       <import plugin="org.talend.designer.mapper" version="2.2.0" match="greaterOrEqual"/>
       <import plugin="org.talend.repository" version="2.2.0" match="greaterOrEqual"/>
-      <import plugin="org.talend.commons" version="2.2.0" match="greaterOrEqual"/>
+      <import plugin="org.talend.commons.runtime" version="2.2.0" match="greaterOrEqual"/>
       <import plugin="org.talend.model.migration" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.talend.utils" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="org.talend.core" version="2.2.0" match="greaterOrEqual"/>

@@ -23,7 +23,6 @@
    </url>
 
    <requires>
-      <import plugin="org.talend.commons"/>
       <import plugin="org.talend.core.runtime"/>
       <import plugin="org.talend.core"/>
       <import plugin="org.talend.commons.ui"/>
