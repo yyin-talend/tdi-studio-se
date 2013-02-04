@@ -357,7 +357,8 @@ public class QueryGuessCommand extends Command {
             schema = getDefaultSchema(realTableName);
         }
         // Mssql query need add catalog before the table
-        if ((dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
+        if (dbType != null
+                && (dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
                 && conn != null) {
             schema = "";
             realTableName = getMssqlCatalog(realTableName) + "." + realTableName;
