@@ -90,7 +90,7 @@
     <IMPORTS>
       <IMPORT NAME="MDM-Bulkloadclient" MODULE="bulkloadclient.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-codec" MODULE="commons-codec.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-httpclient" MODULE="commons-httpclient.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-httpclient" MODULE="commons-httpclient.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-logging" MODULE="commons-logging.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>

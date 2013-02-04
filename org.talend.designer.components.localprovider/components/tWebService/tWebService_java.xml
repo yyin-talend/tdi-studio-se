@@ -237,7 +237,7 @@
 			<IMPORT NAME="xmlschema-core" MODULE="xmlschema-core-2.0.2.jar" REQUIRED="true"/>
 
 			<IMPORT NAME="commons-beanutils" MODULE="commons-beanutils-1.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.7.0.jar" REQUIRED="true"/>
-			<IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.1.jar" REQUIRED="true"/>
+			<IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED="true"/>
 
 			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"	REQUIRED="true" />

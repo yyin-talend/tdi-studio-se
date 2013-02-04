@@ -386,7 +386,7 @@ COMPATIBILITY="ALL"
 
   <CODEGENERATION>
    <IMPORTS>
-       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-httpclient-3.0.1.jar" REQUIRED="true" />
+       <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.0.1.jar" REQUIRED="true" />
        <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
   	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" REQUIRED="true" />
   	   <IMPORT NAME="jcifs-samba" MODULE="jcifs-1.3.0.jar" REQUIRED="true" />

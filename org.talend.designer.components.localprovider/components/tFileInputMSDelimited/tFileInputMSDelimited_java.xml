@@ -119,7 +119,7 @@
 		<IMPORTS>
 			<IMPORT NAME="Talen File Enhanced"
 				MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar" REQUIRED="true" />
-			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar" REQUIRED="true" />
+			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.csv/lib/talendcsv.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
