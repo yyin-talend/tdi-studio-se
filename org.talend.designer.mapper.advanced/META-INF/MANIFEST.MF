@@ -6,7 +6,6 @@ Bundle-Version: 2.1.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.model,
- org.talend.commons,
  org.talend.designer.codegen,
  org.talend.designer.mapper,
  org.talend.core
