@@ -46,7 +46,6 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -177,13 +176,7 @@ public class CodeView extends ViewPart {
             viewer.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
             document = viewer.getDocument();
             break;
-        default: // PERL
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
-                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
-                        ICorePerlService.class);
-                viewer = service.createViewer(parent, styles, false);
-                document = viewer.getDocument();
-            }
+        default: // empty since only have java
         }
         viewer.setEditable(false);
         text = viewer.getTextWidget();
@@ -221,6 +214,7 @@ public class CodeView extends ViewPart {
             final CodeView codeView = (CodeView) view;
             codeView.getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     codeView.refresh(element);
                 }

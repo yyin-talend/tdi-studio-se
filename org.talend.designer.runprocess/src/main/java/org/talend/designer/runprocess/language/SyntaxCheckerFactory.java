@@ -12,10 +12,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.language;
 
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.runprocess.language.java.JavaCodeProblemsChecker;
 
 /**
@@ -36,18 +34,7 @@ public class SyntaxCheckerFactory {
     }
 
     public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
-        if (codeLanguage == ECodeLanguage.PERL) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                return service.createPerlCodeProblemsChecker();
-            }
-            return null;
-        } else if (codeLanguage == ECodeLanguage.JAVA) {
-            return (ICodeProblemsChecker) new JavaCodeProblemsChecker();
-        } else {
-            throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName()); //$NON-NLS-1$
-        }
+        return new JavaCodeProblemsChecker();
     }
 
 }

@@ -28,7 +28,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -106,13 +105,6 @@ public class SaveAsRoutineAction extends Action {
                 switch (LanguageManager.getCurrentLanguage()) {
                 case JAVA:
                     page.openEditor(routineEditorInput, StandAloneTalendJavaEditor.ID, true);
-                    break;
-                case PERL:
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                        IDesignerPerlService perlService = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                                IDesignerPerlService.class);
-                        page.openEditor(routineEditorInput, perlService.getStandAloneTalendPerlEditorID(), true);
-                    }
                     break;
                 default:
                 }

@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -45,7 +44,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
@@ -123,12 +121,6 @@ public class DefaultRunProcessService implements IRunProcessService {
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
         int i = 0;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-            IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                    IDesignerPerlService.class);
-            i = service.perlExec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
-                    statOption, traceOption, codeOptions);
-        }
         return i;
 
     }
@@ -143,29 +135,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
         switch (language) {
-        case PERL:
-            return createPerlProcessor(process, property, filenameFromLabel);
         case JAVA:
             return createJavaProcessor(process, property, filenameFromLabel);
         default:
             return createJavaProcessor(process, property, filenameFromLabel);
         }
-    }
-
-    /**
-     * DOC xue Comment method "createPerlProcessor".
-     * 
-     * @param process
-     * @param filenameFromLabel
-     * @return
-     */
-    protected IProcessor createPerlProcessor(IProcess process, Property property, boolean filenameFromLabel) {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-            IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                    IDesignerPerlService.class);
-            return service.createPerlProcessor(process, property, filenameFromLabel);
-        }
-        return null;
     }
 
     /**
@@ -191,23 +165,7 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public IProject getProject(ECodeLanguage language) throws CoreException {
-        switch (language) {
-        case PERL:
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                return service.getProject();
-            }
-        case JAVA:
-            return JavaProcessorUtilities.getProcessorProject();
-        default:
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                return service.getProject();
-            }
-            return null;
-        }
+        return JavaProcessorUtilities.getProcessorProject();
     }
 
     @Override

@@ -14,10 +14,8 @@ package org.talend.designer.runprocess.java;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +38,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
@@ -174,188 +171,6 @@ public class JavaProcessorUtilities {
         initJavaProject(rootProject);
         javaProject = JavaCore.create(rootProject);
         return rootProject;
-    }
-
-    private static void updateClasspath() throws CoreException {
-        updateClasspath(null);
-    }
-
-    private static void updateClasspath(Set<String> additionalNeededJars) throws CoreException {
-        if (rootProject == null || javaProject == null) {
-            initializeProject();
-        }
-        boolean modified = false;
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
-
-        IClasspathEntry[] classpathEntryArray = javaProject.getRawClasspath();
-
-        if (!ArrayUtils.contains(classpathEntryArray, jreClasspathEntry)) {
-            classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, jreClasspathEntry);
-            modified = true;
-        }
-        if (!ArrayUtils.contains(classpathEntryArray, classpathEntry)) {
-            IClasspathEntry source = null;
-            for (IClasspathEntry entry : classpathEntryArray) {
-                if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    source = entry;
-                    break;
-                }
-            }
-            if (source != null) {
-                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.remove(classpathEntryArray,
-                        ArrayUtils.indexOf(classpathEntryArray, source));
-            }
-            classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, classpathEntry);
-            modified = true;
-        }
-
-        Set<String> listModulesReallyNeeded = new HashSet<String>();
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-        }
-
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForApplication()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-        }
-
-        // see bug 0005559: Import cannot be resolved in routine after opening
-        // Job Designer
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-        }
-
-        listModulesReallyNeeded.addAll(additionalNeededJars);
-        File libDir = getJavaProjectLibFolder();
-        if ((libDir != null) && (libDir.isDirectory())) {
-            Set<String> jarsNeedRetrieve = new HashSet<String>(listModulesReallyNeeded);
-            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                jarsNeedRetrieve.remove(externalLib.getName());
-            }
-            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-            repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
-            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
-                    IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
-                    if (!ArrayUtils.contains(classpathEntryArray, newEntry)) {
-                        classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, newEntry);
-                        modified = true;
-                    }
-                }
-            }
-        }
-        if (modified) {
-            javaProject.setRawClasspath(classpathEntryArray, null);
-        }
-
-        javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
-    }
-
-    /**
-     * DOC ycbai Comment method "updateLibrariesAndClasspath".
-     * 
-     * @param process
-     * @throws CoreException
-     */
-    private static void updateLibrariesAndClasspath(IProcess process) {
-        try {
-            Set<String> neededLibraries = getNeededLibrariesForProcess(process);
-            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-
-            // Update libraries of java project.
-            File libDir = getJavaProjectLibFolder();
-            List<String> jarNamesInLib = new ArrayList<String>();
-            File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
-            if (jarFiles != null && jarFiles.length > 0) {
-                for (File file : jarFiles) {
-                    if (file.isFile()) {
-                        String fileName = file.getName();
-                        if (!neededLibraries.contains(fileName)) {
-                            FilesUtils.removeFile(file);
-                        } else {
-                            jarNamesInLib.add(file.getName());
-                        }
-                    }
-                }
-            }
-            for (String lib : neededLibraries) {
-                if (!jarNamesInLib.contains(lib)) {
-                    repositoryBundleService.retrieve(lib, libDir.getAbsolutePath());
-                    jarNamesInLib.add(lib);
-                }
-            }
-
-            // Update classpath of java project.
-            boolean modified = false;
-            IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-            IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
-            IClasspathEntry[] classpathEntryArray = javaProject.getRawClasspath();
-            if (!ArrayUtils.contains(classpathEntryArray, jreClasspathEntry)) {
-                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, jreClasspathEntry);
-                modified = true;
-            }
-            if (!ArrayUtils.contains(classpathEntryArray, classpathEntry)) {
-                IClasspathEntry source = null;
-                for (IClasspathEntry entry : classpathEntryArray) {
-                    if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                        source = entry;
-                        break;
-                    }
-                }
-                if (source != null) {
-                    classpathEntryArray = (IClasspathEntry[]) ArrayUtils.remove(classpathEntryArray,
-                            ArrayUtils.indexOf(classpathEntryArray, source));
-                }
-                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, classpathEntry);
-                modified = true;
-            }
-            jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
-            for (File jarFile : jarFiles) {
-                IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(jarFile.getAbsolutePath()), null, null);
-                if (!ArrayUtils.contains(classpathEntryArray, newEntry)) {
-                    classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, newEntry);
-                    modified = true;
-                }
-            }
-
-            // sort
-            int exchange = 2; // The first,second library is JVM and SRC.
-            for (String jar : jarNamesInLib) {
-                int index = indexOfEntry(classpathEntryArray, jar);
-                if (index < 0) {
-                    throw new BusinessException("Missing jar:" + jar);
-                }
-                if (index >= 0 && index != exchange) {
-                    // exchange
-                    IClasspathEntry entry = classpathEntryArray[index];
-                    IClasspathEntry first = classpathEntryArray[exchange];
-                    classpathEntryArray[index] = first;
-                    classpathEntryArray[exchange] = entry;
-                }
-                exchange++;
-            }
-
-            List<IClasspathEntry> classpathEntryList = new ArrayList<IClasspathEntry>(Arrays.asList(classpathEntryArray));
-            for (Iterator<IClasspathEntry> iterator = classpathEntryList.iterator(); iterator.hasNext();) {
-                IClasspathEntry entry = iterator.next();
-                if (classpathEntryList.indexOf(entry) > 1) {
-                    IPath path = entry.getPath();
-                    if (path != null && !jarNamesInLib.contains(path.lastSegment())) {
-                        iterator.remove();
-                        modified = true;
-                    }
-                }
-            }
-            classpathEntryArray = classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
-            if (modified) {
-                javaProject.setRawClasspath(classpathEntryArray, null);
-            }
-            javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
-        } catch (JavaModelException e) {
-            ExceptionHandler.process(e);
-        } catch (BusinessException e) {
-            ExceptionHandler.process(e);
-        }
     }
 
     /**

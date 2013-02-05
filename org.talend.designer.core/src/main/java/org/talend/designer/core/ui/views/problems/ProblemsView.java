@@ -62,7 +62,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -338,13 +337,6 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                 ISourceViewer sourceViewer = null;
                 if (editor instanceof JavaEditor) {
                     sourceViewer = ((JavaEditor) editor).getViewer();
-                } else {
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                        IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                                IDesignerPerlService.class);
-                        sourceViewer = service.getViewer(editor);
-                    }
-
                 }
                 if (sourceViewer != null) {
                     sourceViewer.setRangeIndication(start, length, true);

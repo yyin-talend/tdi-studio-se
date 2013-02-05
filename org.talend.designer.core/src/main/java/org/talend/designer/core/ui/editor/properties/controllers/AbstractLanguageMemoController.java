@@ -48,12 +48,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
@@ -213,16 +210,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
                 if (isNeedToAddCodeGenerateButton()) {
                     addCodeGenerateButton(b);
-                }
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
-                    ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
-                            ICorePerlService.class);
-                    if (elem instanceof INode) {
-                        viewer = service.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true,
-                                (INode) elem);
-                    } else {
-                        viewer = service.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
-                    }
                 }
                 text = viewer.getTextWidget();
                 IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();

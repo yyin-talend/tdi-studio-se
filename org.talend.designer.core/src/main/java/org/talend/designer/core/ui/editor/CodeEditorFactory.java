@@ -14,10 +14,8 @@ package org.talend.designer.core.ui.editor;
 
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
@@ -39,23 +37,7 @@ public final class CodeEditorFactory {
     }
 
     public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language, IProcess2 process) {
-        switch (language) {
-        case PERL:
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                return service.createNewPerlEditor(process);
-            }
-        case JAVA:
-            return new TalendJavaEditor(process);
-        default:
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                return service.createNewPerlEditor(process);
-            }
-        }
-        return null;
+        return new TalendJavaEditor(process);
     }
 
     public ISyntaxCheckableEditor getCodeEditor(IProcess2 process) {

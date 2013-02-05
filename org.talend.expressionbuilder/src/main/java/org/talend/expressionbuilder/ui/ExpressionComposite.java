@@ -46,10 +46,6 @@ import org.eclipse.ui.IEditorPart;
 import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
-import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
@@ -156,6 +152,7 @@ public class ExpressionComposite extends Composite {
         wrapButton.setSelection(true);
         wrapButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 textControl.setWordWrap(wrapButton.getSelection());
             }
@@ -216,17 +213,8 @@ public class ExpressionComposite extends Composite {
         composite.setLayout(layout);
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-                    | SWT.H_SCROLL | SWT.WRAP, dataBean);
-        } else {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
-                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
-                        ICorePerlService.class);
-                viewer = (ReconcilerViewer) service.createViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
-                        | SWT.WRAP, true);
-            }
-        }
+        viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+                | SWT.WRAP, dataBean);
 
         textControl = viewer.getTextWidget();
         // int ops = DND.DROP_COPY | DND.DROP_MOVE;
@@ -238,6 +226,7 @@ public class ExpressionComposite extends Composite {
         textControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         textControl.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
 
                 String content = getExpression();
@@ -255,30 +244,37 @@ public class ExpressionComposite extends Composite {
         target.setTransfer(new Transfer[] { textTransfer });
         target.addDropListener(new DropTargetListener() {
 
+            @Override
             public void dragEnter(DropTargetEvent event) {
 
-                if (event.detail == DND.DROP_DEFAULT)
+                if (event.detail == DND.DROP_DEFAULT) {
                     event.detail = DND.DROP_COPY;
+                }
 
             }
 
+            @Override
             public void dragOver(DropTargetEvent event) {
                 // event.feedback = DND.FEEDBACK_NONE;
             }
 
+            @Override
             public void dragOperationChanged(DropTargetEvent event) {
 
-                if (event.detail == DND.DROP_DEFAULT)
-
+                if (event.detail == DND.DROP_DEFAULT) {
                     event.detail = DND.DROP_COPY;
+                }
             }
 
+            @Override
             public void dragLeave(DropTargetEvent event) {
             }
 
+            @Override
             public void dropAccept(DropTargetEvent event) {
             }
 
+            @Override
             public void drop(DropTargetEvent event) {
 
                 if (textTransfer.isSupportedType(event.currentDataType)) {
@@ -408,7 +404,7 @@ public class ExpressionComposite extends Composite {
                 String fullName = f.getName();
                 newValue = fullName + "("; //$NON-NLS-1$
                 for (Parameter pa : parameters) {
-                    newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                    newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                 }
                 if (!parameters.isEmpty()) {
                     newValue = newValue.substring(0, newValue.length() - 1);
@@ -418,10 +414,10 @@ public class ExpressionComposite extends Composite {
             } else {
                 newValue += f.getName() + "("; //$NON-NLS-1$
                 for (Parameter pa : parameters) {
-                    newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                    newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                 }
                 newValue = newValue.substring(0, newValue.length() - 1);
-                newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
+                newValue += PERL_FUN_SUFFIX;
             }
         }
         IRegion region = viewer.getViewerRegion();

@@ -48,7 +48,6 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
@@ -59,7 +58,6 @@ import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
-import org.talend.core.service.ICorePerlService;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
@@ -303,16 +301,6 @@ public class LoginDialog extends TrayDialog {
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastProject(project.getTechnicalLabel());
         saveLastConnBean(connBean);
-        if (project.getLanguage().equals(ECodeLanguage.PERL)) {
-            IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
-            String prelExecutableValue = store.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
-                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
-                        ICorePerlService.class);
-                service.setExecutablePreference(prelExecutableValue);
-            }
-        }
-
         // check for Talendforge
         if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
             IPreferenceStore prefStore = PlatformUI.getPreferenceStore();

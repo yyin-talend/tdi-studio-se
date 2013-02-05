@@ -12,28 +12,16 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.footer;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.service.IHelpPerlService;
 import org.talend.designer.mapper.i18n.Messages;
-import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -83,15 +71,6 @@ public class FooterComposite extends Composite {
         FormLayout formLayout = new FormLayout();
         formLayout.spacing = 15;
         this.setLayout(formLayout);
-
-        if (LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.PERL) {
-            Image helpImage = JFaceResources.getImage(DLG_IMG_HELP);
-            if (helpImage != null) {
-                ToolBar toolBar = createHelpImageButton(this, helpImage);
-                FormData helpFormData = (FormData) toolBar.getLayoutData();
-                helpFormData.left = new FormAttachment();
-            }
-        }
 
         statusBar = new StatusBar(this, SWT.NONE);
 
@@ -170,42 +149,6 @@ public class FooterComposite extends Composite {
         okFormData.right = new FormAttachment(cancelButton, -5);
         applyFormData.right = new FormAttachment(okButton, -5);
 
-    }
-
-    /*
-     * Creates a button with a help image. This is only used if there is an image available.
-     */
-    private ToolBar createHelpImageButton(Composite parent, Image image) {
-        ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
-        // ((GridLayout) parent.getLayout()).numColumns++;
-        toolBar.setLayoutData(new FormData());
-        final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-        toolBar.setCursor(cursor);
-        toolBar.addDisposeListener(new DisposeListener() {
-
-            public void widgetDisposed(DisposeEvent e) {
-                cursor.dispose();
-            }
-        });
-        ToolItem item = new ToolItem(toolBar, SWT.NONE);
-        item.setImage(image);
-        item.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
-        item.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                helpPressed();
-            }
-
-        });
-        return toolBar;
-    }
-
-    private void helpPressed() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHelpPerlService.class)) {
-            IHelpPerlService perlService = (IHelpPerlService) GlobalServiceRegister.getDefault().getService(
-                    IHelpPerlService.class);
-            perlService.helpPress();
-        }
     }
 
     public StatusBar getStatusBar() {

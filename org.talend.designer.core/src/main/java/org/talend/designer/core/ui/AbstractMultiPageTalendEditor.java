@@ -125,7 +125,6 @@ import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.core.ui.ICreateXtextProcessService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
@@ -732,12 +731,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (nodeName != null) {
             if (codeEditor instanceof TalendJavaEditor) {
                 ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName);
-            } else {
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                    IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                            IDesignerPerlService.class);
-                    service.placeCursorTo(codeEditor, nodeName);
-                }
             }
         }
     }
@@ -807,13 +800,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 }
                 int index = addPage(codeEditor, editorInput);
                 // init Syntax Validation.
-                if (getCurrentLang() == ECodeLanguage.PERL) {
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                        IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                                IDesignerPerlService.class);
-                        service.setSyntaxValidationPreference(true);
-                    }
-                }
                 setPageText(index, "Code"); //$NON-NLS-1$
 
             } catch (PartInitException pie) {

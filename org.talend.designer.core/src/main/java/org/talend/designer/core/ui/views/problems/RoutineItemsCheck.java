@@ -12,14 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
@@ -34,7 +29,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -86,6 +80,7 @@ public class RoutineItemsCheck {
             }
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     Problems.refreshProblemTreeView();
                 }
@@ -103,50 +98,7 @@ public class RoutineItemsCheck {
      */
 
     private void addProblems(RoutineItem item, Property property, IFile file) {
-
-        try {
-            String sourceCode = readSourceFile(file.getLocation().toOSString());
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
-                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
-                        IDesignerPerlService.class);
-                service.perlValidator(file, sourceCode);
-            }
-        } catch (IOException ex) {
-            ExceptionHandler.process(ex);
-        } catch (CoreException ex) {
-            ExceptionHandler.process(ex);
-        }
         Problems.addRoutineFile(file, property);
-
     }
 
-    /**
-     * xhuang Comment method "readSourceFile".
-     * 
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    private String readSourceFile(String path) throws IOException {
-        BufferedReader in = null;
-
-        try {
-            StringWriter sourceCode = new StringWriter();
-
-            char[] buf = new char[1024];
-            in = new BufferedReader(new FileReader(path));
-
-            int read = 0;
-            while ((read = in.read(buf)) > 0) {
-                sourceCode.write(buf, 0, read);
-            }
-            return sourceCode.toString();
-        } finally {
-            if (in != null)
-                try {
-                    in.close();
-                } catch (IOException e) {
-                }
-        }
-    }
 }
