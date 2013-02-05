@@ -16,10 +16,10 @@ Require-Bundle: org.talend.model,
  org.apache.log4j,
  org.talend.libraries.dom4j-jaxen,
  org.eclipse.jet.editor,
+ org.talend.libraries.apache.common,
  org.talend.designer.components.localprovider,
  org.eclipse.jdt.core,
- org.talend.datatools.xml,
- org.talend.libraries.apache.common
+ org.talend.datatools.xml
 Eclipse-LazyStart: true
 Export-Package: org.talend.componentdesigner,
  org.talend.componentdesigner.i18n,
