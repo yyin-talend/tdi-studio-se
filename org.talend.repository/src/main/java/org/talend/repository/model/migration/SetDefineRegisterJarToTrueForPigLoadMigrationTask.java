@@ -106,7 +106,7 @@ public class SetDefineRegisterJarToTrueForPigLoadMigrationTask extends
 						}
 					}
 					if ("PIG_VERSION".equals(para.getName())) { //$NON-NLS-1$
-						if ("HDP_1_0".equals(para.getValue())) {
+						if ("HDP_1_0".equals(para.getValue()) || "HDP_1_2".equals(para.getValue())) {
 							criteriaCount++;
 						} else {
 							doTheMigration = false;
