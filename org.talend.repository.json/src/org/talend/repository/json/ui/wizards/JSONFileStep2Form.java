@@ -223,6 +223,20 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     }
 
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+        // adapt all the fields to enabled
+        adaptFormToReadOnly();
+
+        if (exportContextBtn != null) {
+            exportContextBtn.setEnabled(false);
+        }
+        if (!readOnly) {
+            // adapt the field to the context
+            checkFieldsValue();
+        }
+    }
+
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
