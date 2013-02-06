@@ -510,6 +510,30 @@ if (inConn != null) {
                 	}
                 }
         		
+                String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+                if(destination!=null && destination.indexOf("tCouchbaseOutput_")==0){
+                    INode previousNode = conn.getSource();
+                    List<IMetadataTable> previous_metadatas = previousNode.getMetadataList();
+                    if ((previous_metadatas!=null)&&(previous_metadatas.size()>0)) {
+                        IMetadataTable previous_metadata = previous_metadatas.get(0);
+                        if (previous_metadata!=null) {
+                            List<IMetadataColumn> columnList = previous_metadata.getListColumns();
+                            %>
+                            //java.util.Map map_<%=cid%>  = new java.util.HashMap();
+                            if(!putMap_<%=cid%>){
+                            <%
+                            for(IMetadataColumn colum: columnList){
+%>
+                                map_<%=cid%>.put("<%=colum.getLabel()%>",<%=conn.getName()%>.<%=colum.getLabel()%>);
+<%
+                            }
+                            %>
+                            putMap_<%=cid%> = true;
+                            }
+                            <%
+                        }
+                    }
+                }
         		
         		// init tool
                 XMLTool tool = new XMLTool();
@@ -603,9 +627,17 @@ if(("Dom4j").equals(mode)){
 			listGroupby_<%=cid %>.add(removeHeader_<%=cid %>);
 <%
 		}else{
+            if(destination!=null && destination.indexOf("tCouchbaseOutput_")==0){
+%>
+                map_<%=cid%>.put("json_<%=destination%>",strWriter_<%=cid %>.toString());
+                listGroupby_<%=cid %>.add(map_<%=cid%>);
+                putMap_<%=cid%> = false;
+<%
+            }else{
 %>
 		    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
 <%
+            }
 		}
 %>
 		    doc_<%=cid %>.clearContent();

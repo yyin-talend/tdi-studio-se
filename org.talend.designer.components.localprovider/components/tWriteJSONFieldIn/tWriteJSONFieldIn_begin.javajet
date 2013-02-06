@@ -4,6 +4,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
+    org.talend.core.model.process.ElementParameterParser
    	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.IConnectionCategory
 "
@@ -22,13 +23,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		if(conns!=null && conns.size()>0){
 			if (conns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			    String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 %>
 	int nb_line_<%=cid%> = 0;
 	net.sf.json.xml.XMLSerializer xmlSerializer_<%=cid%> = new net.sf.json.xml.XMLSerializer(); 
     xmlSerializer_<%=cid%>.clearNamespaces();
     xmlSerializer_<%=cid%>.setSkipNamespaces(true);
     xmlSerializer_<%=cid%>.setForceTopLevelObject(true);
-	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+<%
+    if(destination!=null && destination.indexOf("tCouchbaseOutput_")>=0){
+%>
+        java.util.Map map_<%=cid%> = new java.util.HashMap();
+        java.util.Queue<java.util.Map> queue_<%=cid%> = (java.util.Queue<java.util.Map>) globalMap.get("queue_<%=cid%>");
+<%
+    }else{
+%>
+        java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+<%
+    }
+%>
 	
 	String str_<%=cid %> = null;
 	
