@@ -49,6 +49,12 @@ public class ConvertJSONString {
 
     private String loopString4XML = null;
 
+    public static String ROOT = "ROOT";
+
+    public static String ROOT_OBJECT = "ROOT_OBJECT";
+
+    private static String currentFlag = null;
+
     public void barceType() {
 
         for (int c = 0; c < originalJsonString.length(); ++c) {
@@ -86,10 +92,12 @@ public class ConvertJSONString {
             if (isNeedAddRoot(originalJsonString)) {
                 jsonString4XML = "{ \"root\": " + originalJsonString + " }";
                 loopString4XML = "root" + originalLoopString;
+                currentFlag = ROOT;
             }
         } else if (Bracket == barceType) {
             jsonString4XML = "{ \"root\" : { \"object\": " + originalJsonString + " } }";
             loopString4XML = "root/object" + originalLoopString;
+            currentFlag = ROOT_OBJECT;
         }
     }
 
@@ -108,6 +116,10 @@ public class ConvertJSONString {
             isNeedAddRoot = true;
         }
         return isNeedAddRoot;
+    }
+
+    public static String getCurrentFlag() {
+        return currentFlag;
     }
 
     public static void main(String[] args) {

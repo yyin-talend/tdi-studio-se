@@ -26,6 +26,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.repository.json.util.ConvertJSONString;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 
 /**
@@ -159,7 +160,9 @@ public class ExtractionLoopWithJSONXPathEditorView extends AbstractDataTableEdit
             }
 
             public void set(JSONXPathLoopDescriptor bean, String value) {
+                String currentFlag = ConvertJSONString.getCurrentFlag();
                 bean.setAbsoluteXPathQuery(value);
+                bean.setFlag(currentFlag);
             }
         });
         xPathCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.NONE, column);

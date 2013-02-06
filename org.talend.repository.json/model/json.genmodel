@@ -27,6 +27,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute json.ecore#//JSONXPathLoopDescriptor/AbsoluteXPathQuery"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference json.ecore#//JSONXPathLoopDescriptor/connection"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference json.ecore#//JSONXPathLoopDescriptor/schemaTargets"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute json.ecore#//JSONXPathLoopDescriptor/flag"/>
     </genClasses>
     <genClasses ecoreClass="json.ecore#//JSONFileNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute json.ecore#//JSONFileNode/JSONPath"/>

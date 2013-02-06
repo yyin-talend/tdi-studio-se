@@ -29,6 +29,7 @@
         eOpposite="#//JSONFileConnection/schema"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="schemaTargets" upperBound="-1"
         eType="#//SchemaTarget" containment="true" eOpposite="#//SchemaTarget/schema"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="flag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JSONFileNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="JSONPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

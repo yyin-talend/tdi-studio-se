@@ -39,6 +39,7 @@ import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.RepositoryComponentSetting;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
+import org.talend.repository.json.util.ConvertJSONString;
 import org.talend.repository.json.util.EJSONRepositoryToComponent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
@@ -112,9 +113,11 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
                 return ""; //$NON-NLS-1$
             } else {
                 if (isContextMode(connection, xmlDesc.getAbsoluteXPathQuery())) {
-                    return xmlDesc.getAbsoluteXPathQuery();
+                    String xpath = getJsonXpath(xmlDesc);
+                    return xpath;
                 } else {
-                    return TalendQuoteUtils.addQuotes(xmlDesc.getAbsoluteXPathQuery());
+                    String xpath = getJsonXpath(xmlDesc);
+                    return TalendQuoteUtils.addQuotes(xpath);
                 }
             }
         }
@@ -145,6 +148,30 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
         }
 
         return null;
+    }
+
+    private String getJsonXpath(JSONXPathLoopDescriptor xmlDesc) {
+        String flag = xmlDesc.getFlag();
+        String xpath = xmlDesc.getAbsoluteXPathQuery();
+        if (flag != null && flag.equals(ConvertJSONString.ROOT)) {
+            if (xpath.startsWith("/root")) {
+                xpath = xpath.replaceFirst("/root", "");
+            }
+            if (xpath.length() == 0) {
+                xpath = "/";
+            }
+
+        } else if (flag != null && flag.equals(ConvertJSONString.ROOT_OBJECT)) {
+            if (xpath.startsWith("/root/object")) {
+                xpath = xpath.replaceFirst("/root/object", "");
+            } else if (xpath.startsWith("/root")) {
+                xpath = xpath.replaceFirst("/root", "");
+            }
+            if (xpath.length() == 0) {
+                xpath = "/";
+            }
+        }
+        return xpath;
     }
 
     private List<Map<String, String>> getOutputJSONValue(EList list) {
@@ -185,7 +212,21 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
                         tagName = MetadataToolHelper.validateColumnName(tagName, j);
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("SCHEMA_COLUMN", tagName); //$NON-NLS-1$
-                        map.put("QUERY", TalendQuoteUtils.addQuotes(schemaTarget.getRelativeXPathQuery())); //$NON-NLS-1$
+                        String xpath = schemaTarget.getRelativeXPathQuery();
+
+                        String flag = jsonDesc.getFlag();
+                        if (flag != null && flag.equals(ConvertJSONString.ROOT)) {
+                            if (xpath.startsWith("root/")) {
+                                xpath = xpath.replaceFirst("root/", "");
+                            }
+
+                        } else if (flag != null && flag.equals(ConvertJSONString.ROOT_OBJECT)) {
+                            if (xpath.startsWith("object/")) {
+                                xpath = xpath.replaceFirst("object/", "");
+                            }
+                        }
+
+                        map.put("QUERY", TalendQuoteUtils.addQuotes(xpath)); //$NON-NLS-1$
                         tableInfo.add(map);
                     }
                 }

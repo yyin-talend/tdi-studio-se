@@ -680,13 +680,22 @@ public interface JsonPackage extends EPackage {
     int JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS = 3;
 
     /**
+     * The feature id for the '<em><b>Flag</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int JSONX_PATH_LOOP_DESCRIPTOR__FLAG = 4;
+
+    /**
      * The number of structural features of the '<em>JSONX Path Loop Descriptor</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int JSONX_PATH_LOOP_DESCRIPTOR_FEATURE_COUNT = 4;
+    int JSONX_PATH_LOOP_DESCRIPTOR_FEATURE_COUNT = 5;
 
     /**
      * The meta object id for the '{@link org.talend.repository.model.json.impl.JSONFileNodeImpl <em>JSON File Node</em>}' class.
@@ -1005,6 +1014,17 @@ public interface JsonPackage extends EPackage {
     EReference getJSONXPathLoopDescriptor_SchemaTargets();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getFlag <em>Flag</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Flag</em>'.
+     * @see org.talend.repository.model.json.JSONXPathLoopDescriptor#getFlag()
+     * @see #getJSONXPathLoopDescriptor()
+     * @generated
+     */
+    EAttribute getJSONXPathLoopDescriptor_Flag();
+
+    /**
      * Returns the meta object for class '{@link org.talend.repository.model.json.JSONFileNode <em>JSON File Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1294,6 +1314,14 @@ public interface JsonPackage extends EPackage {
          * @generated
          */
         EReference JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS = eINSTANCE.getJSONXPathLoopDescriptor_SchemaTargets();
+
+        /**
+         * The meta object literal for the '<em><b>Flag</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute JSONX_PATH_LOOP_DESCRIPTOR__FLAG = eINSTANCE.getJSONXPathLoopDescriptor_Flag();
 
         /**
          * The meta object literal for the '{@link org.talend.repository.model.json.impl.JSONFileNodeImpl <em>JSON File Node</em>}' class.

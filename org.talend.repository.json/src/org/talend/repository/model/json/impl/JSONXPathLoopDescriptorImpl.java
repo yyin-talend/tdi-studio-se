@@ -32,6 +32,7 @@ import org.talend.repository.model.json.SchemaTarget;
  *   <li>{@link org.talend.repository.model.json.impl.JSONXPathLoopDescriptorImpl#getAbsoluteXPathQuery <em>Absolute XPath Query</em>}</li>
  *   <li>{@link org.talend.repository.model.json.impl.JSONXPathLoopDescriptorImpl#getConnection <em>Connection</em>}</li>
  *   <li>{@link org.talend.repository.model.json.impl.JSONXPathLoopDescriptorImpl#getSchemaTargets <em>Schema Targets</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONXPathLoopDescriptorImpl#getFlag <em>Flag</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +89,26 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
      * @ordered
      */
     protected EList<SchemaTarget> schemaTargets;
+
+    /**
+     * The default value of the '{@link #getFlag() <em>Flag</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFlag()
+     * @generated
+     * @ordered
+     */
+    protected static final String FLAG_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getFlag() <em>Flag</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFlag()
+     * @generated
+     * @ordered
+     */
+    protected String flag = FLAG_EDEFAULT;
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -195,6 +216,27 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getFlag() {
+        return flag;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setFlag(String newFlag) {
+        String oldFlag = flag;
+        flag = newFlag;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__FLAG, oldFlag, flag));
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
@@ -256,6 +298,8 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
                 return getConnection();
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 return getSchemaTargets();
+            case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__FLAG:
+                return getFlag();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -281,6 +325,9 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
                 getSchemaTargets().clear();
                 getSchemaTargets().addAll((Collection<? extends SchemaTarget>)newValue);
                 return;
+            case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__FLAG:
+                setFlag((String)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -304,6 +351,9 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 getSchemaTargets().clear();
                 return;
+            case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__FLAG:
+                setFlag(FLAG_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -323,6 +373,8 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
                 return getConnection() != null;
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 return schemaTargets != null && !schemaTargets.isEmpty();
+            case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__FLAG:
+                return FLAG_EDEFAULT == null ? flag != null : !FLAG_EDEFAULT.equals(flag);
         }
         return super.eIsSet(featureID);
     }
@@ -340,6 +392,8 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
         result.append(limitBoucle);
         result.append(", AbsoluteXPathQuery: ");
         result.append(absoluteXPathQuery);
+        result.append(", flag: ");
+        result.append(flag);
         result.append(')');
         return result.toString();
     }

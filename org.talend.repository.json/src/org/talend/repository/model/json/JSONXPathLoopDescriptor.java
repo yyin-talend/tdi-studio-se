@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getAbsoluteXPathQuery <em>Absolute XPath Query</em>}</li>
  *   <li>{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}</li>
  *   <li>{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getSchemaTargets <em>Schema Targets</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getFlag <em>Flag</em>}</li>
  * </ul>
  * </p>
  *
@@ -126,5 +127,31 @@ public interface JSONXPathLoopDescriptor extends EObject {
      * @generated
      */
     EList<SchemaTarget> getSchemaTargets();
+
+    /**
+     * Returns the value of the '<em><b>Flag</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Flag</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Flag</em>' attribute.
+     * @see #setFlag(String)
+     * @see org.talend.repository.model.json.JsonPackage#getJSONXPathLoopDescriptor_Flag()
+     * @model
+     * @generated
+     */
+    String getFlag();
+
+    /**
+     * Sets the value of the '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getFlag <em>Flag</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Flag</em>' attribute.
+     * @see #getFlag()
+     * @generated
+     */
+    void setFlag(String value);
 
 } // JSONXPathLoopDescriptor

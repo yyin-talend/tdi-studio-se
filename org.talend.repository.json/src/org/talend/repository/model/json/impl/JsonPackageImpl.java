@@ -298,6 +298,15 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getJSONXPathLoopDescriptor_Flag() {
+        return (EAttribute)jsonxPathLoopDescriptorEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getJSONFileNode() {
         return jsonFileNodeEClass;
     }
@@ -440,6 +449,7 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
         createEAttribute(jsonxPathLoopDescriptorEClass, JSONX_PATH_LOOP_DESCRIPTOR__ABSOLUTE_XPATH_QUERY);
         createEReference(jsonxPathLoopDescriptorEClass, JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION);
         createEReference(jsonxPathLoopDescriptorEClass, JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS);
+        createEAttribute(jsonxPathLoopDescriptorEClass, JSONX_PATH_LOOP_DESCRIPTOR__FLAG);
 
         jsonFileNodeEClass = createEClass(JSON_FILE_NODE);
         createEAttribute(jsonFileNodeEClass, JSON_FILE_NODE__JSON_PATH);
@@ -511,6 +521,7 @@ public class JsonPackageImpl extends EPackageImpl implements JsonPackage {
         initEAttribute(getJSONXPathLoopDescriptor_AbsoluteXPathQuery(), ecorePackage.getEString(), "AbsoluteXPathQuery", null, 0, 1, JSONXPathLoopDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getJSONXPathLoopDescriptor_Connection(), this.getJSONFileConnection(), this.getJSONFileConnection_Schema(), "connection", null, 0, 1, JSONXPathLoopDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getJSONXPathLoopDescriptor_SchemaTargets(), this.getSchemaTarget(), this.getSchemaTarget_Schema(), "schemaTargets", null, 0, -1, JSONXPathLoopDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getJSONXPathLoopDescriptor_Flag(), ecorePackage.getEString(), "flag", null, 0, 1, JSONXPathLoopDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(jsonFileNodeEClass, JSONFileNode.class, "JSONFileNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getJSONFileNode_JSONPath(), ecorePackage.getEString(), "JSONPath", null, 0, 1, JSONFileNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

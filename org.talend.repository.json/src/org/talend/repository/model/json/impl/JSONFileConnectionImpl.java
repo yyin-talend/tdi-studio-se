@@ -28,28 +28,28 @@ import org.talend.repository.model.json.JsonPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getJSONFilePath <em>JSON File Path</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#isGuess <em>Guess</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getMaskXPattern <em>Mask XPattern</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getSchema <em>Schema</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getEncoding <em>Encoding</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getRoot <em>Root</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getLoop <em>Loop</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#isInputModel <em>Input Model</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getOutputFilePath <em>Output File Path</em>}</li>
- * <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getFileContent <em>File Content</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getJSONFilePath <em>JSON File Path</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#isGuess <em>Guess</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getMaskXPattern <em>Mask XPattern</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getSchema <em>Schema</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getEncoding <em>Encoding</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getGroup <em>Group</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getRoot <em>Root</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getLoop <em>Loop</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#isInputModel <em>Input Model</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getOutputFilePath <em>Output File Path</em>}</li>
+ *   <li>{@link org.talend.repository.model.json.impl.JSONFileConnectionImpl#getFileContent <em>File Content</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileConnection {
 
     /**
-     * The default value of the '{@link #getJSONFilePath() <em>JSON File Path</em>}' attribute. <!-- begin-user-doc -->
+     * The default value of the '{@link #getJSONFilePath() <em>JSON File Path</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getJSONFilePath()
      * @generated
      * @ordered
@@ -57,9 +57,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final String JSON_FILE_PATH_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getJSONFilePath() <em>JSON File Path</em>}' attribute. <!-- begin-user-doc -->
+     * The cached value of the '{@link #getJSONFilePath() <em>JSON File Path</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getJSONFilePath()
      * @generated
      * @ordered
@@ -87,9 +87,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected boolean guess = GUESS_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getMaskXPattern() <em>Mask XPattern</em>}' attribute. <!-- begin-user-doc -->
+     * The default value of the '{@link #getMaskXPattern() <em>Mask XPattern</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getMaskXPattern()
      * @generated
      * @ordered
@@ -97,9 +97,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final String MASK_XPATTERN_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getMaskXPattern() <em>Mask XPattern</em>}' attribute. <!-- begin-user-doc -->
+     * The cached value of the '{@link #getMaskXPattern() <em>Mask XPattern</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getMaskXPattern()
      * @generated
      * @ordered
@@ -107,9 +107,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected String maskXPattern = MASK_XPATTERN_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getSchema() <em>Schema</em>}' containment reference list. <!-- begin-user-doc
+     * The cached value of the '{@link #getSchema() <em>Schema</em>}' containment reference list.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getSchema()
      * @generated
      * @ordered
@@ -117,9 +117,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected EList<JSONXPathLoopDescriptor> schema;
 
     /**
-     * The default value of the '{@link #getEncoding() <em>Encoding</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The default value of the '{@link #getEncoding() <em>Encoding</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getEncoding()
      * @generated
      * @ordered
@@ -127,9 +127,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final String ENCODING_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getEncoding() <em>Encoding</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #getEncoding() <em>Encoding</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getEncoding()
      * @generated
      * @ordered
@@ -137,9 +137,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected String encoding = ENCODING_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getGroup() <em>Group</em>}' containment reference list. <!-- begin-user-doc -->
+     * The cached value of the '{@link #getGroup() <em>Group</em>}' containment reference list.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getGroup()
      * @generated
      * @ordered
@@ -147,9 +147,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected EList<JSONFileNode> group;
 
     /**
-     * The cached value of the '{@link #getRoot() <em>Root</em>}' containment reference list. <!-- begin-user-doc -->
+     * The cached value of the '{@link #getRoot() <em>Root</em>}' containment reference list.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getRoot()
      * @generated
      * @ordered
@@ -157,9 +157,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected EList<JSONFileNode> root;
 
     /**
-     * The cached value of the '{@link #getLoop() <em>Loop</em>}' containment reference list. <!-- begin-user-doc -->
+     * The cached value of the '{@link #getLoop() <em>Loop</em>}' containment reference list.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getLoop()
      * @generated
      * @ordered
@@ -167,9 +167,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected EList<JSONFileNode> loop;
 
     /**
-     * The default value of the '{@link #isInputModel() <em>Input Model</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The default value of the '{@link #isInputModel() <em>Input Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #isInputModel()
      * @generated
      * @ordered
@@ -177,9 +177,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final boolean INPUT_MODEL_EDEFAULT = true;
 
     /**
-     * The cached value of the '{@link #isInputModel() <em>Input Model</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #isInputModel() <em>Input Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #isInputModel()
      * @generated
      * @ordered
@@ -187,9 +187,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected boolean inputModel = INPUT_MODEL_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getOutputFilePath() <em>Output File Path</em>}' attribute. <!-- begin-user-doc
+     * The default value of the '{@link #getOutputFilePath() <em>Output File Path</em>}' attribute.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getOutputFilePath()
      * @generated
      * @ordered
@@ -197,9 +197,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final String OUTPUT_FILE_PATH_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getOutputFilePath() <em>Output File Path</em>}' attribute. <!-- begin-user-doc
+     * The cached value of the '{@link #getOutputFilePath() <em>Output File Path</em>}' attribute.
+     * <!-- begin-user-doc
      * --> <!-- end-user-doc -->
-     * 
      * @see #getOutputFilePath()
      * @generated
      * @ordered
@@ -207,9 +207,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected String outputFilePath = OUTPUT_FILE_PATH_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getFileContent() <em>File Content</em>}' attribute. <!-- begin-user-doc -->
+     * The default value of the '{@link #getFileContent() <em>File Content</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
      * @see #getFileContent()
      * @generated
      * @ordered
@@ -217,9 +217,9 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
     protected static final byte[] FILE_CONTENT_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getFileContent() <em>File Content</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #getFileContent() <em>File Content</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getFileContent()
      * @generated
      * @ordered
@@ -228,7 +228,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     protected JSONFileConnectionImpl() {
@@ -237,7 +236,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -247,7 +245,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public String getJSONFilePath() {
@@ -256,20 +253,17 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setJSONFilePath(String newJSONFilePath) {
         String oldJSONFilePath = jsonFilePath;
         jsonFilePath = newJSONFilePath;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH,
-                    oldJSONFilePath, jsonFilePath));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH, oldJSONFilePath, jsonFilePath));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public boolean isGuess() {
@@ -278,7 +272,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setGuess(boolean newGuess) {
@@ -290,7 +283,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public String getMaskXPattern() {
@@ -299,33 +291,28 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setMaskXPattern(String newMaskXPattern) {
         String oldMaskXPattern = maskXPattern;
         maskXPattern = newMaskXPattern;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN,
-                    oldMaskXPattern, maskXPattern));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN, oldMaskXPattern, maskXPattern));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<JSONXPathLoopDescriptor> getSchema() {
         if (schema == null) {
-            schema = new EObjectContainmentWithInverseEList<JSONXPathLoopDescriptor>(JSONXPathLoopDescriptor.class, this,
-                    JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION);
+            schema = new EObjectContainmentWithInverseEList<JSONXPathLoopDescriptor>(JSONXPathLoopDescriptor.class, this, JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION);
         }
         return schema;
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public String getEncoding() {
@@ -334,20 +321,17 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setEncoding(String newEncoding) {
         String oldEncoding = encoding;
         encoding = newEncoding;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__ENCODING, oldEncoding,
-                    encoding));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__ENCODING, oldEncoding, encoding));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<JSONFileNode> getGroup() {
@@ -359,7 +343,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<JSONFileNode> getRoot() {
@@ -371,7 +354,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<JSONFileNode> getLoop() {
@@ -383,7 +365,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public boolean isInputModel() {
@@ -392,20 +373,17 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setInputModel(boolean newInputModel) {
         boolean oldInputModel = inputModel;
         inputModel = newInputModel;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL, oldInputModel,
-                    inputModel));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL, oldInputModel, inputModel));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public String getOutputFilePath() {
@@ -414,20 +392,17 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setOutputFilePath(String newOutputFilePath) {
         String oldOutputFilePath = outputFilePath;
         outputFilePath = newOutputFilePath;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH,
-                    oldOutputFilePath, outputFilePath));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH, oldOutputFilePath, outputFilePath));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public byte[] getFileContent() {
@@ -436,224 +411,214 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setFileContent(byte[] newFileContent) {
         byte[] oldFileContent = fileContent;
         fileContent = newFileContent;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT, oldFileContent,
-                    fileContent));
+            eNotify(new ENotificationImpl(this, Notification.SET, JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT, oldFileContent, fileContent));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            return ((InternalEList<InternalEObject>) (InternalEList<?>) getSchema()).basicAdd(otherEnd, msgs);
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                return ((InternalEList<InternalEObject>)(InternalEList<?>)getSchema()).basicAdd(otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            return ((InternalEList<?>) getSchema()).basicRemove(otherEnd, msgs);
-        case JsonPackage.JSON_FILE_CONNECTION__GROUP:
-            return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
-        case JsonPackage.JSON_FILE_CONNECTION__ROOT:
-            return ((InternalEList<?>) getRoot()).basicRemove(otherEnd, msgs);
-        case JsonPackage.JSON_FILE_CONNECTION__LOOP:
-            return ((InternalEList<?>) getLoop()).basicRemove(otherEnd, msgs);
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                return ((InternalEList<?>)getSchema()).basicRemove(otherEnd, msgs);
+            case JsonPackage.JSON_FILE_CONNECTION__GROUP:
+                return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
+            case JsonPackage.JSON_FILE_CONNECTION__ROOT:
+                return ((InternalEList<?>)getRoot()).basicRemove(otherEnd, msgs);
+            case JsonPackage.JSON_FILE_CONNECTION__LOOP:
+                return ((InternalEList<?>)getLoop()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
-            return getJSONFilePath();
-        case JsonPackage.JSON_FILE_CONNECTION__GUESS:
-            return isGuess();
-        case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
-            return getMaskXPattern();
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            return getSchema();
-        case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
-            return getEncoding();
-        case JsonPackage.JSON_FILE_CONNECTION__GROUP:
-            return getGroup();
-        case JsonPackage.JSON_FILE_CONNECTION__ROOT:
-            return getRoot();
-        case JsonPackage.JSON_FILE_CONNECTION__LOOP:
-            return getLoop();
-        case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
-            return isInputModel();
-        case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
-            return getOutputFilePath();
-        case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
-            return getFileContent();
+            case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
+                return getJSONFilePath();
+            case JsonPackage.JSON_FILE_CONNECTION__GUESS:
+                return isGuess();
+            case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
+                return getMaskXPattern();
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                return getSchema();
+            case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
+                return getEncoding();
+            case JsonPackage.JSON_FILE_CONNECTION__GROUP:
+                return getGroup();
+            case JsonPackage.JSON_FILE_CONNECTION__ROOT:
+                return getRoot();
+            case JsonPackage.JSON_FILE_CONNECTION__LOOP:
+                return getLoop();
+            case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
+                return isInputModel();
+            case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
+                return getOutputFilePath();
+            case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
+                return getFileContent();
         }
         return super.eGet(featureID, resolve, coreType);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
-            setJSONFilePath((String) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__GUESS:
-            setGuess((Boolean) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
-            setMaskXPattern((String) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            getSchema().clear();
-            getSchema().addAll((Collection<? extends JSONXPathLoopDescriptor>) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
-            setEncoding((String) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__GROUP:
-            getGroup().clear();
-            getGroup().addAll((Collection<? extends JSONFileNode>) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__ROOT:
-            getRoot().clear();
-            getRoot().addAll((Collection<? extends JSONFileNode>) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__LOOP:
-            getLoop().clear();
-            getLoop().addAll((Collection<? extends JSONFileNode>) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
-            setInputModel((Boolean) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
-            setOutputFilePath((String) newValue);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
-            setFileContent((byte[]) newValue);
-            return;
+            case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
+                setJSONFilePath((String)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__GUESS:
+                setGuess((Boolean)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
+                setMaskXPattern((String)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                getSchema().clear();
+                getSchema().addAll((Collection<? extends JSONXPathLoopDescriptor>)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
+                setEncoding((String)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__GROUP:
+                getGroup().clear();
+                getGroup().addAll((Collection<? extends JSONFileNode>)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__ROOT:
+                getRoot().clear();
+                getRoot().addAll((Collection<? extends JSONFileNode>)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__LOOP:
+                getLoop().clear();
+                getLoop().addAll((Collection<? extends JSONFileNode>)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
+                setInputModel((Boolean)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
+                setOutputFilePath((String)newValue);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
+                setFileContent((byte[])newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
-            setJSONFilePath(JSON_FILE_PATH_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__GUESS:
-            setGuess(GUESS_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
-            setMaskXPattern(MASK_XPATTERN_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            getSchema().clear();
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
-            setEncoding(ENCODING_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__GROUP:
-            getGroup().clear();
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__ROOT:
-            getRoot().clear();
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__LOOP:
-            getLoop().clear();
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
-            setInputModel(INPUT_MODEL_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
-            setOutputFilePath(OUTPUT_FILE_PATH_EDEFAULT);
-            return;
-        case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
-            setFileContent(FILE_CONTENT_EDEFAULT);
-            return;
+            case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
+                setJSONFilePath(JSON_FILE_PATH_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__GUESS:
+                setGuess(GUESS_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
+                setMaskXPattern(MASK_XPATTERN_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                getSchema().clear();
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
+                setEncoding(ENCODING_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__GROUP:
+                getGroup().clear();
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__ROOT:
+                getRoot().clear();
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__LOOP:
+                getLoop().clear();
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
+                setInputModel(INPUT_MODEL_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
+                setOutputFilePath(OUTPUT_FILE_PATH_EDEFAULT);
+                return;
+            case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
+                setFileContent(FILE_CONTENT_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-        case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
-            return JSON_FILE_PATH_EDEFAULT == null ? jsonFilePath != null : !JSON_FILE_PATH_EDEFAULT.equals(jsonFilePath);
-        case JsonPackage.JSON_FILE_CONNECTION__GUESS:
-            return guess != GUESS_EDEFAULT;
-        case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
-            return MASK_XPATTERN_EDEFAULT == null ? maskXPattern != null : !MASK_XPATTERN_EDEFAULT.equals(maskXPattern);
-        case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
-            return schema != null && !schema.isEmpty();
-        case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
-            return ENCODING_EDEFAULT == null ? encoding != null : !ENCODING_EDEFAULT.equals(encoding);
-        case JsonPackage.JSON_FILE_CONNECTION__GROUP:
-            return group != null && !group.isEmpty();
-        case JsonPackage.JSON_FILE_CONNECTION__ROOT:
-            return root != null && !root.isEmpty();
-        case JsonPackage.JSON_FILE_CONNECTION__LOOP:
-            return loop != null && !loop.isEmpty();
-        case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
-            return inputModel != INPUT_MODEL_EDEFAULT;
-        case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
-            return OUTPUT_FILE_PATH_EDEFAULT == null ? outputFilePath != null : !OUTPUT_FILE_PATH_EDEFAULT.equals(outputFilePath);
-        case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
-            return FILE_CONTENT_EDEFAULT == null ? fileContent != null : !FILE_CONTENT_EDEFAULT.equals(fileContent);
+            case JsonPackage.JSON_FILE_CONNECTION__JSON_FILE_PATH:
+                return JSON_FILE_PATH_EDEFAULT == null ? jsonFilePath != null : !JSON_FILE_PATH_EDEFAULT.equals(jsonFilePath);
+            case JsonPackage.JSON_FILE_CONNECTION__GUESS:
+                return guess != GUESS_EDEFAULT;
+            case JsonPackage.JSON_FILE_CONNECTION__MASK_XPATTERN:
+                return MASK_XPATTERN_EDEFAULT == null ? maskXPattern != null : !MASK_XPATTERN_EDEFAULT.equals(maskXPattern);
+            case JsonPackage.JSON_FILE_CONNECTION__SCHEMA:
+                return schema != null && !schema.isEmpty();
+            case JsonPackage.JSON_FILE_CONNECTION__ENCODING:
+                return ENCODING_EDEFAULT == null ? encoding != null : !ENCODING_EDEFAULT.equals(encoding);
+            case JsonPackage.JSON_FILE_CONNECTION__GROUP:
+                return group != null && !group.isEmpty();
+            case JsonPackage.JSON_FILE_CONNECTION__ROOT:
+                return root != null && !root.isEmpty();
+            case JsonPackage.JSON_FILE_CONNECTION__LOOP:
+                return loop != null && !loop.isEmpty();
+            case JsonPackage.JSON_FILE_CONNECTION__INPUT_MODEL:
+                return inputModel != INPUT_MODEL_EDEFAULT;
+            case JsonPackage.JSON_FILE_CONNECTION__OUTPUT_FILE_PATH:
+                return OUTPUT_FILE_PATH_EDEFAULT == null ? outputFilePath != null : !OUTPUT_FILE_PATH_EDEFAULT.equals(outputFilePath);
+            case JsonPackage.JSON_FILE_CONNECTION__FILE_CONTENT:
+                return FILE_CONTENT_EDEFAULT == null ? fileContent != null : !FILE_CONTENT_EDEFAULT.equals(fileContent);
         }
         return super.eIsSet(featureID);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
-            return super.toString();
+        if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (JSONFilePath: ");
