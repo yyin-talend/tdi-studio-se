@@ -1837,7 +1837,7 @@
             description="change DB_VERSION for import jar use REQUEIRE_IF"
             id="org.talend.repository.model.migration.ChangeHadoopVersionValue4TDQComponents"
             name="ChangeHadoopVersionValue4TDQComponents"
-            version="5.3.0">
+            version="5.2.2">
        	</projecttask>
         <projecttask
             beforeLogon="false"
