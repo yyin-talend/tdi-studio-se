@@ -2812,19 +2812,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private void checkProblems() {
         Problems.removeProblemsByProcess(this);
 
-        // add Problem
-        if (unloadedNode != null && !unloadedNode.isEmpty()) {
-            String unloadedComponents = ""; //$NON-NLS-1$
-            for (int i = 0; i < unloadedNode.size(); i++) {
-                unloadedComponents = unloadedComponents + unloadedNode.get(i).getComponentName() + ","; //$NON-NLS-1$
-            }
-            Problem problem = new Problem();
-            problem.setElement(this);
-            problem.setStatus(ProblemStatus.ERROR);
-            problem.setDescription(Messages.getString("Process.components.notloaded", unloadedComponents));
-            Problems.add(problem);
-        }
-
         for (INode node : nodes) {
             if (node.isActivate()) {
                 node.checkNode();
