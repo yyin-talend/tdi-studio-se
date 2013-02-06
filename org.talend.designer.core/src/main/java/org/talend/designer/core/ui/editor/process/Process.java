@@ -91,8 +91,6 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
-import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
@@ -2888,19 +2886,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private void checkProblems() {
         Problems.removeProblemsByProcess(this);
-        
-        // add Problem
-        if (unloadedNode != null && !unloadedNode.isEmpty()) {
-            String unloadedComponents = ""; //$NON-NLS-1$
-            for (int i = 0; i < unloadedNode.size(); i++) {
-                unloadedComponents = unloadedComponents + unloadedNode.get(i).getComponentName() + ","; //$NON-NLS-1$
-            }
-            Problem problem = new Problem();
-            problem.setElement(this);
-            problem.setStatus(ProblemStatus.ERROR);
-            problem.setDescription(Messages.getString("Process.components.notloaded", unloadedComponents));
-            Problems.add(problem);
-        }
 
         for (INode node : nodes) {
             if (node.isActivate()) {
