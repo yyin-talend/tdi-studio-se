@@ -504,6 +504,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 IElementParameter externalParam = node.getElementParameterFromField(EParameterFieldType.EXTERNAL);
                 if (externalParam != null && externalParam.isShow(node.getElementParameters())) {
                     externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+                } else if (externalParam != null && node.getComponent().getName().equals("tMatchGroup")) { //$NON-NLS-1$
+                    externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
                 }
             }
 
