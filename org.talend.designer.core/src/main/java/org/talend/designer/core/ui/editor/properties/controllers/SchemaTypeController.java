@@ -651,7 +651,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
                     // check if the inputMetadata is readonly
                     if (inputMetadata != null) {
-                        for (IMetadataColumn column : inputMetadata.getListColumns()) {
+                        for (IMetadataColumn column : inputMetadata.getListColumns(true)) {
                             IMetadataColumn columnCopied = inputMetaCopy.getColumn(column.getLabel());
                             columnCopied.setCustom(column.isCustom());
                             columnCopied.setReadOnly(column.isReadOnly());
@@ -680,7 +680,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 originaleOutputTable = node.getMetadataTable("OUTPUT_SCHEMA");
             }
             IMetadataTable outputMetaCopy = originaleOutputTable.clone(true);
-            for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
+            for (IMetadataColumn column : originaleOutputTable.getListColumns(true)) {
                 IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
                 columnCopied.setCustom(column.isCustom());
                 columnCopied.setReadOnly(column.isReadOnly());

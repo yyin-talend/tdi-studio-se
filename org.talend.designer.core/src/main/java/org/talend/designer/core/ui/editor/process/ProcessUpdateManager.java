@@ -1225,6 +1225,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                      * should ignore the db type column. because database component can use other
                                      * database schema.
                                      */
+                                    copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable);
                                     if (onlySimpleShow
                                             || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
                                                     IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
@@ -1261,6 +1262,22 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         return schemaResults;
+    }
+
+    private void copyUsefulAttribute(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess) {
+        for (IMetadataColumn columnFromMetadata : tableFromMetadata.getListColumns()) {
+            boolean flag = false;
+            for (IMetadataColumn columnFromProcess : tableFromProcess.getListColumns(true)) {
+                if (columnFromMetadata.getLabel().equals(columnFromProcess.getLabel())) {
+                    flag = true;
+                    columnFromMetadata.setUsefulColumn(columnFromProcess.isUsefulColumn());
+                }
+            }
+            if (!flag) {
+                columnFromMetadata.setUsefulColumn(false);
+            }
+        }
+        tableFromMetadata.getListColumns();
     }
 
     /**
@@ -1576,7 +1593,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                .isUseCustomModuleName())) {
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;

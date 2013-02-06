@@ -63,9 +63,9 @@ public class MetadataEmfFactory {
         metadataType.setConnector(metadataTable.getAttachedConnector());
         listColType = metadataType.getColumn();
 
-        if (metadataTable.getListColumns() != null) {
-            for (int i = 0; i < metadataTable.getListColumns().size(); i++) {
-                metaCol = metadataTable.getListColumns().get(i);
+        if (metadataTable.getListColumns(true) != null) {
+            for (int i = 0; i < metadataTable.getListColumns(true).size(); i++) {
+                metaCol = metadataTable.getListColumns(true).get(i);
                 colType = fileFact.createColumnType();
                 colType.setComment(metaCol.getComment());
                 colType.setKey(metaCol.isKey());
@@ -104,6 +104,7 @@ public class MetadataEmfFactory {
                     colType.setRelatedEntity(metaCol.getRelatedEntity());
                     colType.setRelationshipType(metaCol.getRelationshipType());
                 }
+                colType.setUsefulColumn(metaCol.isUsefulColumn());
                 listColType.add(colType);
             }
         }
@@ -181,6 +182,7 @@ public class MetadataEmfFactory {
             } else {
                 metaCol.setOriginalDbColumnName(colType.getOriginalDbColumnName());
             }
+            metaCol.setUsefulColumn(colType.isUsefulColumn());
             listMetadataColumn.add(metaCol);
         }
         metadataTable.setListColumns(listMetadataColumn);

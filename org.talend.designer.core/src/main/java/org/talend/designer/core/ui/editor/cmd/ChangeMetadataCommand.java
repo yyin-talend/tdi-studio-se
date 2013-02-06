@@ -469,29 +469,30 @@ public class ChangeMetadataCommand extends Command {
         propagatedChange.clear();
 
         propagateDatas(true);
-
         if (currentInputMetadata != null) {
             if (!currentInputMetadata.sameMetadataAs(newInputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-                MetadataToolHelper.copyTable(newInputMetadata, currentInputMetadata);
-                String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                if (type != null) {
-                    if (type.equals(EmfComponent.REPOSITORY)) {
-                        inputWasRepository = true;
-                        inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                if (!currentInputMetadata.sameMetadataAs(newInputMetadata, IMetadataColumn.OPTIONS_IGNORE_USED)) {
+                    String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+                    if (type != null) {
+                        if (type.equals(EmfComponent.REPOSITORY)) {
+                            inputWasRepository = true;
+                            inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                        }
                     }
                 }
+                MetadataToolHelper.copyTable(newInputMetadata, currentInputMetadata);
             }
         }
 
         if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-            MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
-
-            String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
-                outputWasRepository = true;
-                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_IGNORE_USED)) {
+                String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+                if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
+                    outputWasRepository = true;
+                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                }
             }
-
+            MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
         }
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()) != null
