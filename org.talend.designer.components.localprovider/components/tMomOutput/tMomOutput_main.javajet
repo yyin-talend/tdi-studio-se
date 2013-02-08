@@ -85,12 +85,12 @@ class="MomInput"
 						IMetadataColumn column = (IMetadataColumn)columns.get(0);
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 %>
-						byte[] msgBody_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>;
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
 <%
 						if(!("true").equals(useMsgId)){
 %>
 							javax.jms.BytesMessage message_<%=cid%> = session_<%=cid%>.createBytesMessage();
-							message_<%=cid%>.writeBytes(msgBody_<%=cid%>);
+							message_<%=cid%>.writeBytes(msgBody_<%=cid%>.getBytes());
 <%
 						} else {
 %>
