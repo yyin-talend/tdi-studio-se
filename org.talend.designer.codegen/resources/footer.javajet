@@ -580,6 +580,18 @@ if (execStat) {
     }
 %>
 
+    private java.util.Map<String, Object> getJmsConnections() {
+        java.util.Map<String, Object> jmsConnections = new java.util.HashMap<String, Object>();
+<%
+        for (INode momNode : momComponentsList) {
+%>
+            jmsConnections.put("connection_<%=momNode.getUniqueName() %>", globalMap.get("connection_<%=momNode.getUniqueName() %>");
+<%
+        }
+%>
+        return jmsConnections;
+    }
+
     private void evalParam(String arg) {
         if (arg.startsWith("--resuming_logs_dir_path")) {
             resuming_logs_dir_path = arg.substring(25);
