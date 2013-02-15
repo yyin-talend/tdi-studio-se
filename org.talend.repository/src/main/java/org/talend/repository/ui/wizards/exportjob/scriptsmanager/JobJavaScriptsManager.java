@@ -51,7 +51,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -111,9 +113,9 @@ import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
  * Manages the job scripts to be exported. <br/>
- * 
+ *
  * $Id: JobScriptsManager.java 1 2006-12-14 下�?�05:06:49 bqian
- * 
+ *
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
 
@@ -144,7 +146,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Getter for compiledModules.
-     * 
+     *
      * @return the compiledModules
      */
     protected MultiKeyMap getCompiledModules() {
@@ -153,7 +155,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Getter for excludedModules.
-     * 
+     *
      * @return the excludedModules
      */
     protected MultiKeyMap getExcludedModules() {
@@ -239,7 +241,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "posExportResource".
-     * 
+     *
      * @param process
      * @param exportChoice
      * @param contextName
@@ -280,11 +282,89 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         addBuildScripts(process[i], processItem, selectedJobVersion);
 
+        // add ESB configs
+        List<URL> esbResources = getEsbConfigs(processItem);
+        if (null != esbResources) {
+            process[i].addResources(esbResources);
+        }
+
         // add children jobs
         boolean needChildren = true;
         List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
                 selectedJobVersion);
         return childrenList;
+    }
+
+    private List<URL> getEsbConfigs(ProcessItem processItem) {
+
+        boolean samEnabled = false;
+        boolean slEnabled = false;
+
+        for (Object node : processItem.getProcess().getNode()) { // loop every node in exported job
+            if (node instanceof NodeType) {
+                NodeType nodeType = (NodeType) node;
+                String componentName = nodeType.getComponentName();
+                if (("tESBConsumer".equals(componentName) || "tESBProviderRequest".equals(componentName) //$NON-NLS-1$ //$NON-NLS-2$
+                        || "tRESTClient".equals(componentName) || "tRESTRequest".equals(componentName))) { //$NON-NLS-1$ //$NON-NLS-2$
+                    for (Object elementParameter : nodeType.getElementParameter()) { // loop every parameter of node
+                        if (elementParameter instanceof ElementParameterType) {
+                            ElementParameterType elementParameterType = (ElementParameterType) elementParameter;
+                            if (!samEnabled && elementParameterType.getName().equals("SERVICE_ACTIVITY_MONITOR")) {
+                                String value = elementParameterType.getValue();
+                                if ("true".equals(value)) {
+                                    samEnabled = true;
+                                }
+                            }
+
+                            if (!slEnabled && elementParameterType.getName().equals("SERVICE_LOCATOR")) {
+                                String value = elementParameterType.getValue();
+                                if ("true".equals(value)) {
+                                    slEnabled = true;
+                                }
+                            }
+                            if (samEnabled && slEnabled) {
+                                break;
+                            }
+                        }
+                    }
+                    if (samEnabled && slEnabled) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (samEnabled || slEnabled) {
+            String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
+
+            List<URL> esbResources = new ArrayList<URL>();
+
+            if (samEnabled) {
+                String samConfigPath = eclipseHome + "esb/agent.properties"; //$NON-NLS-1$
+                try {
+                    esbResources.add(new URL(samConfigPath));
+                } catch (MalformedURLException e) {
+                    RepositoryPlugin.getDefault().getLog().log(
+                            new Status(IStatus.WARNING,
+                                    RepositoryPlugin.getDefault().getBundle().getSymbolicName(),
+                                    "illegal SAM configuration file path - " + samConfigPath)); //$NON-NLS-1$
+                }
+            }
+            if (slEnabled) {
+                String slConfigPath = eclipseHome + "esb/locator.propertie"; //$NON-NLS-1$
+                try {
+                    esbResources.add(new URL(slConfigPath));
+                } catch (MalformedURLException e) {
+                    RepositoryPlugin.getDefault().getLog().log(
+                            new Status(IStatus.WARNING,
+                                    RepositoryPlugin.getDefault().getBundle().getSymbolicName(),
+                                    "illegal SL configuration file path - " + slConfigPath)); //$NON-NLS-1$
+                }
+            }
+
+            return esbResources.isEmpty() ? null : esbResources;
+        }
+        return null;
     }
 
     private void addBuildScripts(ExportFileResource resource, ProcessItem processItem, String selectedJobVersion) {
@@ -396,9 +476,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * 
+     *
      * DOC ggu Comment method "getMavenPropertiesMap".
-     * 
+     *
      * @param item
      * @param privatePackage
      * @param exportService
@@ -584,7 +664,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "preExportResource".
-     * 
+     *
      * @param process
      * @param i
      * @param selectedJobVersion
@@ -608,7 +688,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties
      * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
@@ -742,7 +822,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC acer Comment method "addContextScripts".
-     * 
+     *
      * @param resource
      * @param boolean1
      */
@@ -753,7 +833,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * ftang Comment method "addContextScripts".
-     * 
+     *
      * @param resource
      * @param boolean1
      */
@@ -764,7 +844,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC acer Comment method "addContextScripts".
-     * 
+     *
      * @param resource
      * @param boolean1
      */
@@ -796,7 +876,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     /**
      * User may delete some contexts after generating the context files. So we will only export those files that match
      * any existing context name. See bug 0003568: Three contexts file exported, while only two contexts in the job.
-     * 
+     *
      * @param listFiles The generated context files.
      * @param processItem The current process item that will be exported.
      * @return An url list of context files.
@@ -828,7 +908,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.
      * properties.ProcessItem, boolean)
      */
@@ -1124,7 +1204,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * It's preferable to use the function with additional parameter neededLibraries. <br>
      * Right now all the needed librairies in jobs can be retrieved just after the code generation with the method
      * ProcessorUtilities.getNeededModules(), which will be really faster and memory used will be much lower.
-     * 
+     *
      * @deprecated
      */
     @Deprecated
@@ -1134,9 +1214,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets required java jars.
-     * 
+     *
      * @param process
-     * 
+     *
      * @param boolean1
      * @return
      */
@@ -1232,7 +1312,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets Job Scripts.
-     * 
+     *
      * @param process
      * @param needJob
      * @param needContext
@@ -1246,7 +1326,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets JobInfo properties.
-     * 
+     *
      * @param process
      * @return
      */
@@ -1274,7 +1354,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets Job Scripts.
-     * 
+     *
      * @param process
      * @param version
      * @param needJob
@@ -1287,12 +1367,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets Job Scripts.
-     * 
+     *
      * @param projectName TODO
      * @param needJob
      * @param process
      * @param needContext
-     * 
+     *
      * @return
      */
     protected List<URL> getJobScripts(String projectName, String jobName, String jobVersion, boolean needJob) {
@@ -1345,10 +1425,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets all the perl files in the project .Perl.
-     * 
+     *
      * @param name
      * @param projectName
-     * 
+     *
      * @return
      */
     protected String getClassRootLocation() throws Exception {
@@ -1372,7 +1452,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Get the path of .JAVA/src
-     * 
+     *
      * @throws Exception
      */
     protected IPath getSrcRootLocation() throws Exception {
@@ -1395,7 +1475,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets system routine.
-     * 
+     *
      * @param needSystemRoutine
      * @return
      */
@@ -1424,7 +1504,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * Gets user routine.
-     * 
+     *
      * @param needUserRoutine
      * @return
      */
@@ -1484,7 +1564,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     Item item = object.getProperty().getItem();
                     /*
                      * only support like "ABC.class", "ABC$1.class" and "ABC$XYZ.class",
-                     * 
+                     *
                      * Do not support the class in one routine file.
                      */
                     String pattern = item.getProperty().getLabel() + "(\\$.+)*\\.class"; //$NON-NLS-1$
@@ -1599,7 +1679,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
     @Override
@@ -1677,7 +1757,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC hywang Comment method "initUrlForDrlFiles".
-     * 
+     *
      * @param process
      * @param talendDrlFiles
      * @throws PersistenceException
@@ -1774,9 +1854,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * 
+     *
      * DOC ggu Comment method "isCompiledLib".
-     * 
+     *
      * The modudle will be use to compile and run the job.
      */
     protected boolean isCompiledLib(ModuleNeeded module) {
