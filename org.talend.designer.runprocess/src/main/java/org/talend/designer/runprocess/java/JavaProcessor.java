@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,9 @@ import java.util.Set;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -1183,7 +1187,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * (non-Javadoc)
      * generate WSDL files on classpath for jobs with tESBConsumer components
      */
-    public void generateWsdlFiles() throws ProcessorException {
+    public void generateEsbFiles() throws ProcessorException {
+        List<? extends INode> graphicalNodes = process.getGraphicalNodes(); //process.getGeneratingNodes();
+
         try {
             IPath jobPackagePath = this.codePath.removeLastSegments(1);
             IFolder jobPackageFolder = this.project.getFolder(jobPackagePath);
@@ -1192,7 +1198,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 wsdlsPackageFolder.delete(true, true, null);
             }
 
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes(); //process.getGeneratingNodes();
             for (INode node : graphicalNodes) {
                 if ("tESBConsumer".equals(node.getComponent().getName()) && node.isActivate()) { //$NON-NLS-1$
                     // retrieve WSDL content (compressed-n-encoded)
@@ -1220,7 +1225,85 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
+
+        boolean samEnabled = false;
+        boolean slEnabled = false;
+        for (INode node : graphicalNodes) {
+            String nodeName = node.getComponent().getName();
+            if (("tESBConsumer".equals(nodeName) || "tESBProviderRequest".equals(nodeName) //$NON-NLS-1$ //$NON-NLS-2$
+                    || "tRESTClient".equals(nodeName) || "tRESTRequest".equals(nodeName)) //$NON-NLS-1$ //$NON-NLS-2$
+                    && node.isActivate()) {
+
+                if (!samEnabled) {
+                    Object value = node.getPropertyValue("SERVICE_ACTIVITY_MONITOR");
+                    if (null != value) {
+                        samEnabled = (Boolean) value;
+                    }
+                }
+                if (!slEnabled) {
+                    Object value = node.getPropertyValue("SERVICE_LOCATOR");
+                    if (null != value) {
+                        slEnabled = (Boolean) value;
+                    }
+                }
+
+                if (samEnabled && slEnabled) {
+                    break;
+                }
+            }
+        }
+
+        if (samEnabled || slEnabled) {
+            String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
+            IFileSystem fileSystem = EFS.getLocalFileSystem();
+            IFileStore esbConfigsSourceFolder = fileSystem.getStore(URI.create(eclipseHome + "esb")); //$NON-NLS-1$
+            if (!esbConfigsSourceFolder.fetchInfo().exists()) {
+                RunProcessPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING,
+                                RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                                "ESB configuration folder does not exists - " + esbConfigsSourceFolder.toURI())); //$NON-NLS-1$
+                return;
+            }
+
+            IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
+            IFolder sourceFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+            IFileStore esbConfigsTargetFolder = fileSystem.getStore(sourceFolder.getLocation());
+
+            // add SAM config file to classpath
+            if (samEnabled) {
+                copyEsbConfigFile(esbConfigsSourceFolder, esbConfigsTargetFolder, "agent.properties"); //$NON-NLS-1$
+            }
+
+            // add SL config file to classpath
+            if (slEnabled) {
+                copyEsbConfigFile(esbConfigsSourceFolder, esbConfigsTargetFolder, "locator.properties"); //$NON-NLS-1$
+            }
+        }
     }
+
+    private void copyEsbConfigFile(IFileStore esbConfigsSourceFolder, IFileStore esbConfigsTargetFolder, String configFile) {
+        IFileStore esbConfig = esbConfigsSourceFolder.getChild(configFile);
+        if (esbConfig.fetchInfo().exists()) {
+            try {
+                esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
+            } catch (CoreException e) {
+//                if (e.getStatus() != null && e.getStatus().getException() != null) {
+//                    ExceptionHandler.process(e.getStatus().getException());
+//                }
+//                throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
+                RunProcessPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING,
+                                RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                                "cannot add configuration file on classpath - " + configFile)); //$NON-NLS-1$
+            }
+        } else {
+            RunProcessPlugin.getDefault().getLog().log(
+                    new Status(IStatus.WARNING,
+                            RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                            "cannot find configuration file - " + esbConfig.toURI())); //$NON-NLS-1$
+        }
+    }
+
 
     /*
      * (non-Javadoc)
@@ -1230,41 +1313,41 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     @Override
     public void generateSpringContent() throws ProcessorException {
         try {
-        	ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-        	ICodeGenerator codeGen = service.createCodeGenerator(process, false, false);
+            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
+            ICodeGenerator codeGen = service.createCodeGenerator(process, false, false);
 
-        	if (codeGen == null) {
-        		return;
-        	}
+            if (codeGen == null) {
+                return;
+            }
             String	content = codeGen.generateSpringContent();
             if(content == null){
-            	return;
+                return;
             }
-            
+
             IProject processorProject = this.project == null?JavaProcessorUtilities.getProcessorProject():this.project;
             if(processorProject == null){
-            	return;
+                return;
             }
             processorProject.refreshLocal(IResource.DEPTH_INFINITE, null);
             IFolder srcFolder = processorProject.getFolder("src");//refreshLocal(IResource.DEPTH_INFINITE, null);
             if(!srcFolder.exists()){
-            	srcFolder.create(true, true, null);
+                srcFolder.create(true, true, null);
             }
             IFolder metainfFolder = srcFolder.getFolder("META-INF");
             if(!metainfFolder.exists()){
-            	metainfFolder.create(true, true, null);
+                metainfFolder.create(true, true, null);
             }
             IFolder springFolder = metainfFolder.getFolder("spring");
             if(!springFolder.exists()){
-            	springFolder.create(true, true, null);
+                springFolder.create(true, true, null);
             }
             IFile springFile = springFolder.getFile(process.getName().toLowerCase()+".xml");
             InputStream is = new ByteArrayInputStream(content.getBytes());
 
             if (!springFile.exists()) {
-            	springFile.create(is, true, null);
+                springFile.create(is, true, null);
             } else {
-            	springFile.setContents(is, true, false, null);
+                springFile.setContents(is, true, false, null);
             }
             is.close();
         }   catch (SystemException e) {
@@ -1272,8 +1355,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (IOException e) {
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        }
     }
 
     /*
