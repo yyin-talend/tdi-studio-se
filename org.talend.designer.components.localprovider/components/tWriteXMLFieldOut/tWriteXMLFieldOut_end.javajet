@@ -158,31 +158,6 @@ boolean storeFlow = ("true").equals(ElementParameterParser.getValue(node, "__STO
 String cid = node.getUniqueName();
 
 String virtualTargetCid = node.getOutgoingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getTarget().getUniqueName();
-List< ? extends IConnection> conns = node.getIncomingConnections();
-String connName = "";
-if(conns!=null && conns.size()>0){
-    IConnection conn = conns.get(0);
-	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
-	if(destination.indexOf("tCouchbaseOutput_")==0){
-		INode previousNode = conn.getSource();
-		List<IMetadataTable> previous_metadatas = previousNode.getMetadataList();
-		if ((previous_metadatas!=null)&&(previous_metadatas.size()>0)) {
-			IMetadataTable previous_metadata = previous_metadatas.get(0);
-			if (previous_metadata!=null) {
-				List<IMetadataColumn> columnList = previous_metadata.getListColumns();
-%>
-				map_<%=cid%>  = new java.util.HashMap();
-<%
-				for(IMetadataColumn colum: columnList){
-%>
-            		map_<%=cid%>.put("<%=colum.getLabel()%>",<%=conn.getName()%>.<%=colum.getLabel()%>);
-<%
-				}
-			}
-		}
-	}
-    connName = conn.getName();
-}
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {

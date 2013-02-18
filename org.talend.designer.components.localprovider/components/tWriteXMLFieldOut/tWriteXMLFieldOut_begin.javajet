@@ -57,8 +57,7 @@ if(destination.indexOf("tCouchbaseOutput_")==0){
         IMetadataTable previous_metadata = previous_metadatas.get(0);
         if (previous_metadata!=null) {
 %>
-            java.util.Map map_<%=cid%> = new java.util.HashMap();
-            boolean putMap_<%=cid%> = false;
+            java.util.Map map_<%=cid%> = null;
 <%
         }
     }

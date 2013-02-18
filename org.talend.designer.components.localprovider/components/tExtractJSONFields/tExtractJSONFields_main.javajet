@@ -49,7 +49,9 @@ if (inConn!=null) {
         if(inputCol.getLabel().equals(jsonField))
         {
 %>
-            jsonStr_<%=cid%> = <%=inConn.getName()%>.<%=jsonField%>;
+            if(<%=inConn.getName()%>.<%=jsonField%>!=null){
+                jsonStr_<%=cid%> = <%=inConn.getName()%>.<%=jsonField%>.toString();
+            }
 <%
             break;
         }
