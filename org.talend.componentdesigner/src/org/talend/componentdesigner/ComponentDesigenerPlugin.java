@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.componentdesigner;
 
-import java.io.IOException;
-import java.util.Properties;
-
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
@@ -46,18 +42,10 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
      * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        Properties prop = new Properties();
-        try {
-            prop.load(ComponentDesigenerPlugin.class.getResourceAsStream("log4j.properties")); //$NON-NLS-1$
-        } catch (IOException e) {
-            // e.printStackTrace();
-            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
-        }
-
-        PropertyConfigurator.configure(prop);
     }
 
     /*
@@ -65,6 +53,7 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
      * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
      */
+    @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
