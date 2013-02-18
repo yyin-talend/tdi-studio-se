@@ -1185,7 +1185,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * generate WSDL files on classpath for jobs with tESBConsumer components
+     * generate ESB files on classpath for jobs with ESB components
      */
     public void generateEsbFiles() throws ProcessorException {
         List<? extends INode> graphicalNodes = process.getGraphicalNodes(); //process.getGeneratingNodes();
@@ -1235,13 +1235,13 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     && node.isActivate()) {
 
                 if (!samEnabled) {
-                    Object value = node.getPropertyValue("SERVICE_ACTIVITY_MONITOR");
+                    Object value = node.getPropertyValue("SERVICE_ACTIVITY_MONITOR"); //$NON-NLS-1$
                     if (null != value) {
                         samEnabled = (Boolean) value;
                     }
                 }
                 if (!slEnabled) {
-                    Object value = node.getPropertyValue("SERVICE_LOCATOR");
+                    Object value = node.getPropertyValue("SERVICE_LOCATOR"); //$NON-NLS-1$
                     if (null != value) {
                         slEnabled = (Boolean) value;
                     }
@@ -1287,10 +1287,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             try {
                 esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
             } catch (CoreException e) {
-//                if (e.getStatus() != null && e.getStatus().getException() != null) {
-//                    ExceptionHandler.process(e.getStatus().getException());
-//                }
-//                throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
                 RunProcessPlugin.getDefault().getLog().log(
                         new Status(IStatus.WARNING,
                                 RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
