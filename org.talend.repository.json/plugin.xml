@@ -30,6 +30,7 @@
             folder="metadata/json"
             isResouce="true"
             label="File JSON"
+            parentNodeType="METDATA"
             products="DI"
             type="JSON">
       </repositoryNode>
@@ -79,16 +80,6 @@
       </Service>
    </extension>
    <extension
-         point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester
-            class="org.talend.repository.json.tester.JSONMetadataNodeTester"
-            id="org.talend.repository.json.tester.JSONMetadataNodeTester"
-            namespace="org.talend.repository.node.metadata"
-            properties="isJSONConnection"
-            type="org.talend.repository.model.RepositoryNode">
-      </propertyTester>
-   </extension>
-   <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             contentProvider="org.talend.repository.json.ui.MetadataJSONContentProvider"
@@ -97,22 +88,40 @@
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="JSON"
             priority="high">
-            <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
          <triggerPoints>
             <and>
                <instanceof
                      value="org.talend.repository.model.RepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isMetadataTopNode">
-               </test>
+               <or>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isMetadataTopNode">
+                  </test>
+                  <test
+                        property="org.talend.repository.node.metadata.isJSONConnection">
+                  </test>
+               </or>
             </and>
          </triggerPoints>
+         <possibleChildren>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <or>
+                  <test
+                        property="org.talend.repository.node.metadata.isSchema">
+                  </test>
+                  <test
+                        property="org.talend.repository.node.metadata.isSchemaColumn">
+                  </test>
+                  <test
+                        property="org.talend.repository.node.metadata.isJSONConnection">
+                  </test>
+               </or>
+            </and>
+         </possibleChildren>
          <actionProvider
                class="org.talend.repository.metadata.action.MetedataNodeActionProvier"
                id="org.talend.repository.json.action.provider.id">
@@ -135,6 +144,16 @@
             </enablement>
          </actionProvider>
       </navigatorContent>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.talend.repository.json.tester.JSONMetadataNodeTester"
+            id="org.talend.repository.node.tester.metadata.json"
+            namespace="org.talend.repository.node.metadata"
+            properties="isJSONConnection"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
    </extension>
 
 </plugin>
