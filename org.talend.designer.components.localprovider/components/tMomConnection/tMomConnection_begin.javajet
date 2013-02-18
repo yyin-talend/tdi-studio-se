@@ -86,9 +86,8 @@ class="MomConnection"
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
 <%		} %>
 
-                connection_<%=cid %>.start();
-
+        connection_<%=cid %>.start();
 		globalMap.put("connection_<%=cid%>", connection_<%=cid %>);
-		
+
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-						
+        globalMap.put("session_<%=cid %>", session_<%=cid %>);

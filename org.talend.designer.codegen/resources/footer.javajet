@@ -586,6 +586,7 @@ if (execStat) {
         for (INode momNode : momComponentsList) {
 %>
             jmsConnections.put("connection_<%=momNode.getUniqueName() %>", globalMap.get("connection_<%=momNode.getUniqueName() %>"));
+            jmsConnections.put("session_<%=momNode.getUniqueName() %>", globalMap.get("session_<%=momNode.getUniqueName() %>"));
 <%
         }
 %>
