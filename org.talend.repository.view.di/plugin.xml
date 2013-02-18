@@ -20,12 +20,22 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isBusinessModelBranch">
+               </test>
             </or>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isBusinessModelBranch">
+               </test>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
@@ -66,12 +76,22 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isJobBranch">
+               </test>
             </or>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isJobBranch">
+               </test>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
@@ -112,12 +132,22 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isContextTopNode">
+               </test>
             </or>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isContextTopNode">
+               </test>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
@@ -154,16 +184,28 @@
                <instanceof
                      value="org.talend.repository.model.RepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isCodeTopNode">
-               </test>
+               <or>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.code.isRoutines">
+                  </test>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isCodeTopNode">
+                  </test>
+               </or>
             </and>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.code.isRoutines">
+               </test>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
@@ -203,12 +245,22 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isSqlTemplatesTopNode">
+               </test>
             </or>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isSqlTemplatesTopNode">
+               </test>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
@@ -243,11 +295,6 @@
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="%NavigatorContent.documentation"
             priority="normal">
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
          <triggerPoints>
             <or>
                <adapt
@@ -256,8 +303,25 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isDocTopNode">
+               </test>
             </or>
          </triggerPoints>
+         <possibleChildren>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <or>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isDocTopNode">
+                  </test>
+               </or>
+            </and>
+         </possibleChildren>
          <actionProvider
                class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
                id="org.talend.repository.documentation.action.provider.id">
@@ -353,6 +417,36 @@
             class="org.talend.repository.view.di.viewer.seeker.RoutinesRepositorySeeker"
             name="Routines">
       </seeker>
+   </extension>
+   <extension
+         point="org.talend.core.repository.repository_node_provider">
+      <repositoryNode
+            class="org.talend.repository.view.di.model.RoutinesExtendNode"
+            folder="code/routines"
+            icon="icons/routines.gif"
+            isResouce="true"
+            label="%NavigatorContent.routines"
+            parentNodeType="CODE"
+            products="DI"
+            type="ROUTINES">
+      </repositoryNode>
+      <repositoryNode
+            folder="context"
+            icon="icons/contexts.gif"
+            isResouce="true"
+            label="%NavigatorContent.contexts"
+            products="DI"
+            type="CONTEXT">
+      </repositoryNode>
+      <repositoryNode
+            folder="process"
+            icon="icons/jobDesigns.gif"
+            isResouce="true"
+            label="%NavigatorContent.jobDesigns"
+            ordinal="4"
+            products="DI"
+            type="PROCESS">
+      </repositoryNode>
    </extension>
 
 

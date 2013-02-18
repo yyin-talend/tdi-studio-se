@@ -44,16 +44,28 @@
                <instanceof
                      value="org.talend.repository.model.RepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isMetadataTopNode">
-               </test>
+               <or>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isMetadataTopNode">
+                  </test>
+                  <test
+                        property="org.talend.repository.node.metadata.isFtp">
+                  </test>
+               </or>
             </and>
          </triggerPoints>
          <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <or>
+                  <test
+                        property="org.talend.repository.node.metadata.isFtp">
+                  </test>
+               </or>
+            </and>
          </possibleChildren>
          <actionProvider
                class="org.talend.repository.metadata.action.MetedataNodeActionProvier"

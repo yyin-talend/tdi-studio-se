@@ -576,5 +576,18 @@
             priority="normal">
       </linker>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_node_provider">
+      <repositoryNode
+            alias="BM"
+            folder="businessProcess"
+            icon="icons/obj16/BusinessDiagramFile.gif"
+            isResouce="true"
+            label="%repository.businessProcess"
+            ordinal="2"
+            products="DI"
+            type="BUSINESS_PROCESS">
+      </repositoryNode>
+   </extension>
    
 </plugin>

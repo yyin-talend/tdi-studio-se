@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -14,16 +14,12 @@ package org.talend.repository.view.di.model;
 
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.IImage;
-import org.talend.core.repository.IExtendRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
+import org.talend.core.repository.model.AbstractExtendRepositoryNode;
 
 /**
- * DOC ggu class global comment. Detailled comment <br/>
- * 
- * $Id: talend.epf 55206 2011-02-15 17:32:14Z mhirt $
- * 
+ * DOC ggu class global comment. Detailled comment
  */
-public class StandardExtendNode implements IExtendRepositoryNode {
+public class RoutinesExtendNode extends AbstractExtendRepositoryNode {
 
     /*
      * (non-Javadoc)
@@ -32,7 +28,7 @@ public class StandardExtendNode implements IExtendRepositoryNode {
      */
     @Override
     public IImage getNodeImage() {
-        return ECoreImage.PROCESS_ICON;
+        return ECoreImage.ROUTINE_ICON;
     }
 
     /*
@@ -42,17 +38,7 @@ public class StandardExtendNode implements IExtendRepositoryNode {
      */
     @Override
     public int getOrdinal() {
-        return 0;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.repository.IExtendRepositoryNode#getChildren()
-     */
-    @Override
-    public Object[] getChildren() {
-        return new RepositoryNode[0];
+        return 1;
     }
 
 }
