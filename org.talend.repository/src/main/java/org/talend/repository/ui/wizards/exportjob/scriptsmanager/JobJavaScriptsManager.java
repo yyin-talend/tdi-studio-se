@@ -309,16 +309,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     for (Object elementParameter : nodeType.getElementParameter()) { // loop every parameter of node
                         if (elementParameter instanceof ElementParameterType) {
                             ElementParameterType elementParameterType = (ElementParameterType) elementParameter;
-                            if (!samEnabled && elementParameterType.getName().equals("SERVICE_ACTIVITY_MONITOR")) {
+                            String componentParameterName = elementParameterType.getName();
+                            if (!samEnabled && "SERVICE_ACTIVITY_MONITOR".equals(componentParameterName)) { //$NON-NLS-1$
                                 String value = elementParameterType.getValue();
-                                if ("true".equals(value)) {
+                                if (Boolean.valueOf(value)) {
                                     samEnabled = true;
                                 }
                             }
-
-                            if (!slEnabled && elementParameterType.getName().equals("SERVICE_LOCATOR")) {
+                            if (!slEnabled && "SERVICE_LOCATOR".equals(componentParameterName)) { //$NON-NLS-1$
                                 String value = elementParameterType.getValue();
-                                if ("true".equals(value)) {
+                                if (Boolean.valueOf(value)) {
                                     slEnabled = true;
                                 }
                             }
@@ -338,31 +338,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
 
             List<URL> esbResources = new ArrayList<URL>();
-
-            if (samEnabled) {
-                String samConfigPath = eclipseHome + "esb/agent.properties"; //$NON-NLS-1$
-                try {
-                    esbResources.add(new URL(samConfigPath));
-                } catch (MalformedURLException e) {
-                    RepositoryPlugin.getDefault().getLog().log(
-                            new Status(IStatus.WARNING,
-                                    RepositoryPlugin.getDefault().getBundle().getSymbolicName(),
-                                    "illegal SAM configuration file path - " + samConfigPath)); //$NON-NLS-1$
+            try {
+                if (samEnabled) {
+                    esbResources.add(new URL(eclipseHome + "esb/agent.properties")); //$NON-NLS-1$
                 }
-            }
-            if (slEnabled) {
-                String slConfigPath = eclipseHome + "esb/locator.propertie"; //$NON-NLS-1$
-                try {
-                    esbResources.add(new URL(slConfigPath));
-                } catch (MalformedURLException e) {
-                    RepositoryPlugin.getDefault().getLog().log(
-                            new Status(IStatus.WARNING,
-                                    RepositoryPlugin.getDefault().getBundle().getSymbolicName(),
-                                    "illegal SL configuration file path - " + slConfigPath)); //$NON-NLS-1$
+                if (slEnabled) {
+                    esbResources.add(new URL(eclipseHome + "esb/locator.properties")); //$NON-NLS-1$
                 }
+            } catch (MalformedURLException e) {
+                RepositoryPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING,
+                                RepositoryPlugin.getDefault().getBundle().getSymbolicName(),
+                                "illegal ESB configuration file path - " + e.getMessage())); //$NON-NLS-1$
+                return null;
             }
-
-            return esbResources.isEmpty() ? null : esbResources;
+            return esbResources;
         }
         return null;
     }
