@@ -42,8 +42,8 @@ public class RefreshTemplatesAction extends Action {
     public void run() {
         ComponentCompilations.deleteMarkers();
         ComponentsFactoryProvider.getInstance().resetCache();
-        CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        CodeGeneratorEmittersPoolFactory.initialize();
         // achen modify to record ctrl+shift+f3 is pressed to fix bug 0006107
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
