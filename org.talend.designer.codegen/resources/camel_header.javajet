@@ -42,6 +42,15 @@
 	boolean stats = codeGenArgument.isStatistics();
 
 %>
+			private String propertyToString(Object obj){
+				if(obj!=null && obj instanceof java.util.Date){
+					return String.format("yyyy-MM-dd HH:mm:ss;%tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS",obj);
+				}else{
+					return String.valueOf(obj);
+				}
+			}
+
+
 			/**
 			* please initial uri map 
 			*/
@@ -361,7 +370,7 @@
 					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
 				}
 %>
-		propertiesMap.put(<%=paramName%>, <%=paramValue%>);
+				propertiesMap.put(<%=paramName%>, propertyToString(<%=paramValue%>));
 <%
 		}
 %>
