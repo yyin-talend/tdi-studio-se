@@ -570,7 +570,7 @@ public class LoginComposite extends Composite {
         userEmailComposite.setLayout(new FormLayout());
 
         Label detailLabel = toolkit.createLabel(userEmailComposite,
-                Messages.getString("LoginComposite.detailMessage", productName)); //$NON-NLS-1$
+                Messages.getString("LoginComposite.detailMessage", productName), SWT.WRAP); //$NON-NLS-1$
         detailLabel.setBackground(userEmailComposite.getBackground());
         FormData detailLabelFormData = new FormData();
         detailLabelFormData.top = new FormAttachment(0, 0);
