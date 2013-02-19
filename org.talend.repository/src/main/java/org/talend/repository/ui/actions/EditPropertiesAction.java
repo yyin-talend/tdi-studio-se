@@ -83,6 +83,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.wizards.EditProcessPropertiesWizard;
 import org.talend.repository.ui.wizards.PropertiesWizard;
 
 /**
@@ -100,6 +101,7 @@ public class EditPropertiesAction extends AContextualAction {
         setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
     }
 
+    @Override
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -122,7 +124,7 @@ public class EditPropertiesAction extends AContextualAction {
         }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
-        PropertiesWizard wizard = new PropertiesWizard(object, path, getNeededVersion() == null);
+        PropertiesWizard wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
             refresh(node);
@@ -192,7 +194,7 @@ public class EditPropertiesAction extends AContextualAction {
             IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
 
             // qli modified to fix the bug 5400 and 6185.
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY); //$NON-NLS-1$
+            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {
@@ -226,8 +228,7 @@ public class EditPropertiesAction extends AContextualAction {
             if (conditionStatus.hasError()) {
                 String errorMessage = Messages.getString("EditPropertiesAction.renameError", unit.getElementName(), newName); //$NON-NLS-1$
                 RefactoringStatusEntry[] entries = conditionStatus.getEntries();
-                for (int i = 0; i < entries.length; i++) {
-                    RefactoringStatusEntry entry = entries[i];
+                for (RefactoringStatusEntry entry : entries) {
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
                 Shell shell = null;
@@ -273,9 +274,9 @@ public class EditPropertiesAction extends AContextualAction {
     protected IEditorPart getCorrespondingEditor(RepositoryNode node) {
         IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
-        for (int i = 0; i < eidtors.length; i++) {
+        for (IEditorReference eidtor : eidtors) {
             try {
-                IEditorInput input = eidtors[i].getEditorInput();
+                IEditorInput input = eidtor.getEditorInput();
                 if (!(input instanceof RepositoryEditorInput)) {
                     continue;
                 }
@@ -285,7 +286,7 @@ public class EditPropertiesAction extends AContextualAction {
 
                     IPath path = repositoryInput.getFile().getLocation();
 
-                    return eidtors[i].getEditor(false);
+                    return eidtor.getEditor(false);
                 }
             } catch (PartInitException e) {
                 continue;
@@ -297,7 +298,7 @@ public class EditPropertiesAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = selection.size() == 1;
         if (canWork) {
-            Object o = ((IStructuredSelection) selection).getFirstElement();
+            Object o = selection.getFirstElement();
             if (o instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {

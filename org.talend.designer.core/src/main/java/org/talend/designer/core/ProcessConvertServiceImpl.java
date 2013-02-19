@@ -8,6 +8,10 @@ import org.talend.designer.core.ui.editor.process.Process;
 
 public class ProcessConvertServiceImpl implements IProcessConvertService {
 
+    private boolean isOriginalItemDeleted = false;
+
+    private boolean isNewItemCreated = false;
+
     public ProcessConvertServiceImpl() {
         // TODO Auto-generated constructor stub
     }
@@ -26,11 +30,23 @@ public class ProcessConvertServiceImpl implements IProcessConvertService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IProcessConvertService#doConvert(org.talend.core.model.properties.Item,
+     * @see org.talend.designer.core.IProcessConvertService#convertToProcess(org.talend.core.model.properties.Item,
      * org.talend.core.model.repository.IRepositoryViewObject)
      */
     @Override
-    public Item doConvert(Item item, IRepositoryViewObject repViewObject) {
+    public Item convertToProcess(Item item, IRepositoryViewObject repViewObject) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IProcessConvertService#convertFromProcess(org.talend.core.model.properties.Item,
+     * org.talend.core.model.repository.IRepositoryViewObject)
+     */
+    @Override
+    public Item convertFromProcess(Item item, IRepositoryViewObject repViewObject) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -55,6 +71,17 @@ public class ProcessConvertServiceImpl implements IProcessConvertService {
     public boolean isNewItemCreated() {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IProcessConvertService#getConverterType()
+     */
+    @Override
+    public ProcessConverterType getConverterType() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
