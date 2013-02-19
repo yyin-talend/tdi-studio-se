@@ -437,7 +437,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
      * @param source
      * @return
      */
-    private Command createButtonCommand(Button button) {
+    protected Command createButtonCommand(Button button) {
         String procssId = null;
         if (elem != null && elem instanceof Node) {
             Node runJobNode = (Node) elem;
@@ -681,7 +681,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
      * @param processParam
      */
     private void updateContextList(IElementParameter processParam) {
-        if (processParam == null || processParam.getFieldType() != EParameterFieldType.PROCESS_TYPE) {
+        if (processParam == null || (processParam.getFieldType() != EParameterFieldType.PROCESS_TYPE
+                && processParam.getFieldType() != EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE)) {
             return;
         }
         // for context type

@@ -1306,7 +1306,7 @@ public class EmfComponent extends AbstractComponent {
             // listParam.add(newParam);
         }
 
-        if (type == EParameterFieldType.PROCESS_TYPE) {
+        if (type == EParameterFieldType.PROCESS_TYPE || type == EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
