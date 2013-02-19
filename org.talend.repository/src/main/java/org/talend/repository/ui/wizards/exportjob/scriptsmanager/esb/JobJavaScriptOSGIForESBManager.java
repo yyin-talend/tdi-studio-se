@@ -355,20 +355,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @throws MalformedURLException
      */
     protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) throws Exception {
-    	IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
-    	IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-    	IPath srcPath = srcFolder.getLocation();
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
+        IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+        IPath srcPath = srcFolder.getLocation();
 
-    	// http://jira.talendforge.org/browse/TESB-6437
-    	//https://jira.talendforge.org/browse/TESB-7893
+        // http://jira.talendforge.org/browse/TESB-6437
+        //https://jira.talendforge.org/browse/TESB-7893
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 ICamelDesignerCoreService.class);
         if(camelService != null){
-	        List<IPath> paths = camelService.synchronizeRouteResource(processItem);
-	        for (IPath path : paths) {
-	            osgiResource
-	                    .addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI().toURL());
-	        }
+            List<IPath> paths = camelService.synchronizeRouteResource(processItem);
+            for (IPath path : paths) {
+                osgiResource
+                        .addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI().toURL());
+            }
         }
     }
 
@@ -481,28 +481,32 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
         String additionalJobBeanParams = "";
+        String additionalJsonProviderBeanParams = "";
         boolean useHttpBasicAuth = EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent);
         if (useHttpBasicAuth) {
             jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
             additionalBeansConfig = "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
         }
+        boolean wrapJsonRequest = EmfModelUtils.computeCheckElementValue("WRAP_JSON_REQUEST", restRequestComponent);
+        if (wrapJsonRequest) {
+            additionalJsonProviderBeanParams = "<property name=\"supportUnwrapped\" value=\"true\"/>"
+                    + "\n\t\t<property name=\"wrapperName\" value=\"root\"/>";
+        }
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
-        
-		boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR",restRequestComponent);
-		boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR",restRequestComponent);
+
+        boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR",restRequestComponent);
+        boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR",restRequestComponent);
         String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem,isSlEnable,isSamEnable);
-        String jaxrsSamImport=isSamEnable?"<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />":"";
+        String jaxrsSamImport = isSamEnable ? "<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />" : "";
         String serviceNamespace = "";
         String serviceName = "";
         if(isSlEnable){
-        	serviceNamespace = "xmlns:tns=\""+			//give default service namespace
-        			EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)
-        			+"\"";
-        	serviceName = "serviceName=\"tns:"+EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent)+"\"";	//give default service name
+            serviceNamespace = "xmlns:tns=\"" + EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent) + "\"";
+            serviceName = "serviceName=\"tns:" + EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent) + "\"";
         }
-        
+
         BufferedReader br = null;
         BufferedWriter bw = null;
         try {
@@ -517,10 +521,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
                         .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
                         .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
-                		.replace("@JAXRS_FEATURES@", jaxrsFeature) //$NON-NLS-1$
-                		.replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
-                		.replace("@LOCATOR_SERVICE_NAME@", serviceName) //$NON-NLS-1$
-                		.replace("@JAXRS_SAM_IMPORT@",jaxrsSamImport); //$NON-NLS-1$
+                        .replace("@ADDITIONAL_JSON_PROVIDER_BEAN_PARAMS@", additionalJsonProviderBeanParams) //$NON-NLS-1$
+                        .replace("@JAXRS_FEATURES@", jaxrsFeature) //$NON-NLS-1$
+                        .replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
+                        .replace("@LOCATOR_SERVICE_NAME@", serviceName) //$NON-NLS-1$
+                        .replace("@JAXRS_SAM_IMPORT@",jaxrsSamImport); //$NON-NLS-1$
                 bw.write(line);
                 bw.newLine();
                 line = br.readLine();
@@ -536,73 +541,73 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-	/**
-	 * Gets the jaxrs feature config.
-	 * Currently, support SL&SAM feature config.
-	 * @param component the component
-	 * @param processItem the process item
-	 * @param isSamEnable 
-	 * @param isSlEnable 
-	 * @return the jaxrs feature config
-	 */
-	private String getJaxrsFeatureConfig(NodeType component,
-			ProcessItem processItem, boolean isSlEnable, boolean isSamEnable) {
-		if (isSamEnable | isSlEnable) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("<jaxrs:features>\n");
-			if (isSlEnable) {
-				//add SL support
-				sb.append("\t\t\t<bean id=\"");
-				sb.append(processItem.getProperty().getLabel().toLowerCase());
-				sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
-				for (Object obj : component.getElementParameter()) {
-					ElementParameterType cpType = (ElementParameterType) obj;
-					if ("SL_META_DATA".equals(cpType.getName())) {
-						EList<?> elementValue = cpType.getElementValue();
-						int size = elementValue.size();
-						if (size > 0) {
-							sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
-							sb.append("\n\t\t\t\t\t<map>");
-						}
-						for (int i = 0; i < size; i += 2) {
-							if (size <= i + 1) {
-								break;
-							}
-							ElementValueType name = (ElementValueType) elementValue
-									.get(i);
-							ElementValueType value = (ElementValueType) elementValue
-									.get(i + 1);
-							sb.append("\n\t\t\t\t\t\t<entry>");
-							sb.append("\n\t\t\t\t\t\t\t<key><value>");
-							sb.append(name.getValue() == null ? "" : name
-									.getValue());
-							sb.append("</value></key>");
-							sb.append("\n\t\t\t\t\t\t\t<value>");
-							sb.append(value.getValue() == null ? "" : value
-									.getValue());
-							sb.append("</value>");
-							sb.append("\n\t\t\t\t\t\t</entry>");
-						}
-						if (elementValue.size() > 0) {
-							sb.append("\n\t\t\t\t\t</map>");
-							sb.append("\n\t\t\t\t</property>");
-						}
-					}
-				}
-				sb.append("\n\t\t\t</bean>\n");
-			}
-			
-			if(isSamEnable) {
-				//add sam support
-				sb.append("\t\t\t<ref bean=\"eventFeature\"/>\n");
-			}
-			sb.append("\t\t</jaxrs:features>");
-			return sb.toString();
-		} else {
-			return "";
-		}
-    
-        
+    /**
+     * Gets the jaxrs feature config.
+     * Currently, support SL&SAM feature config.
+     * @param component the component
+     * @param processItem the process item
+     * @param isSamEnable
+     * @param isSlEnable
+     * @return the jaxrs feature config
+     */
+    private String getJaxrsFeatureConfig(NodeType component,
+            ProcessItem processItem, boolean isSlEnable, boolean isSamEnable) {
+        if (isSamEnable | isSlEnable) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("<jaxrs:features>\n");
+            if (isSlEnable) {
+                //add SL support
+                sb.append("\t\t\t<bean id=\"");
+                sb.append(processItem.getProperty().getLabel().toLowerCase());
+                sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
+                for (Object obj : component.getElementParameter()) {
+                    ElementParameterType cpType = (ElementParameterType) obj;
+                    if ("SL_META_DATA".equals(cpType.getName())) {
+                        EList<?> elementValue = cpType.getElementValue();
+                        int size = elementValue.size();
+                        if (size > 0) {
+                            sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
+                            sb.append("\n\t\t\t\t\t<map>");
+                        }
+                        for (int i = 0; i < size; i += 2) {
+                            if (size <= i + 1) {
+                                break;
+                            }
+                            ElementValueType name = (ElementValueType) elementValue
+                                    .get(i);
+                            ElementValueType value = (ElementValueType) elementValue
+                                    .get(i + 1);
+                            sb.append("\n\t\t\t\t\t\t<entry>");
+                            sb.append("\n\t\t\t\t\t\t\t<key><value>");
+                            sb.append(name.getValue() == null ? "" : name
+                                    .getValue());
+                            sb.append("</value></key>");
+                            sb.append("\n\t\t\t\t\t\t\t<value>");
+                            sb.append(value.getValue() == null ? "" : value
+                                    .getValue());
+                            sb.append("</value>");
+                            sb.append("\n\t\t\t\t\t\t</entry>");
+                        }
+                        if (elementValue.size() > 0) {
+                            sb.append("\n\t\t\t\t\t</map>");
+                            sb.append("\n\t\t\t\t</property>");
+                        }
+                    }
+                }
+                sb.append("\n\t\t\t</bean>\n");
+            }
+
+            if(isSamEnable) {
+                //add sam support
+                sb.append("\t\t\t<ref bean=\"eventFeature\"/>\n");
+            }
+            sb.append("\t\t</jaxrs:features>");
+            return sb.toString();
+        } else {
+            return "";
+        }
+
+
     }
     /**
      * Created OSGi Blueprint configuration for job bundle.
@@ -649,14 +654,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
-            	// https://jira.talendforge.org/browse/TESB-8066
-            	if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-            		// SAM
-            		additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-            		additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
-            				+ "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
-            		break;
-            	}
+                // https://jira.talendforge.org/browse/TESB-8066
+                if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+                    // SAM
+                    additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+                    additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
+                            + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                    break;
+                }
             }
         }
 
@@ -764,26 +769,26 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
                 if (null != restRequestComponent && "".equals(importPackages)){
-                	if(EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
-                		importPackages = "org.apache.cxf.jaxrs.security,";
-                	}
-                	if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
-                		importPackages += "org.talend.esb.servicelocator.cxf,";
-                	}
+                    if(EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
+                        importPackages = "org.apache.cxf.jaxrs.security,";
+                    }
+                    if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
+                        importPackages += "org.talend.esb.servicelocator.cxf,";
+                    }
                 }
                 if(null != restRequestComponent && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
-                	importPackages += "org.talend.esb.sam.agent.feature,";
-                	analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                    importPackages += "org.talend.esb.sam.agent.feature,";
+                    analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
                 }else{
-	                Collection<NodeType> tRESTClientComps = EmfModelUtils.getComponentsByName(pi, "tRESTClient");
-	                for (NodeType node : tRESTClientComps) { //$NON-NLS-1$
-	                	// https://jira.talendforge.org/browse/TESB-8066
-	                	if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-	                		importPackages += "org.talend.esb.sam.agent.feature,";
-	                		analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
-	                		break;
-	                	}
-	                }
+                    Collection<NodeType> tRESTClientComps = EmfModelUtils.getComponentsByName(pi, "tRESTClient");
+                    for (NodeType node : tRESTClientComps) { //$NON-NLS-1$
+                        // https://jira.talendforge.org/browse/TESB-8066
+                        if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+                            importPackages += "org.talend.esb.sam.agent.feature,";
+                            analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -809,7 +814,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-        
+
 
 
         // } else {
