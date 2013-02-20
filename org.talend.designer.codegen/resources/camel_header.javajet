@@ -19,8 +19,12 @@
 		org.talend.core.ui.branding.AbstractBrandingService
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.runprocess.CodeGeneratorRoutine
+		org.talend.designer.runprocess.ItemCacheManager
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.designer.codegen.ITalendSynchronizer
+		org.talend.core.model.properties.ProcessItem
+		org.eclipse.emf.common.util.EList
+		org.talend.designer.core.model.utils.emf.talendfile.ContextType
 	"
 %>
 <%
@@ -342,6 +346,35 @@
            String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
            String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
            if(id != null){
+        	   String useSelectedContext = ElementParameterParser.getValue(node, "__USE_SELECTED_CONTEXT__");
+        	   String useRouteContext = ElementParameterParser.getValue(node, "__USE_ROUTE_CONTEXT__");
+        	   String useJobContext = ElementParameterParser.getValue(node, "__USE_JOB_CONTEXT__");
+        	   if("true".equals(useRouteContext)){
+        		   ProcessItem currentRoute = ItemCacheManager.getProcessItem(process.getId());
+            	   context = currentRoute.getProcess().getDefaultContext();
+            	   
+            	   boolean foundContextInJob = false;
+            	   ProcessItem selectedJob = ItemCacheManager.getProcessItem(id);
+            	   EList jobContexts = selectedJob.getProcess().getContext();
+            	   for(Object c: jobContexts){
+            		   if(!(c instanceof ContextType)){
+            			   continue;
+            		   }
+            		   ContextType ct = (ContextType)c;
+            		   if(context.equals(ct.getName())){
+            			   foundContextInJob = true;
+            			   break;
+            		   }
+            	   }
+            	   if(!foundContextInJob){
+            		   context = "Default";
+            	   }
+            	   
+        	   }else if("true".equals(useJobContext)){
+        		   ProcessItem selectedJob = ItemCacheManager.getProcessItem(id);
+            	   context = selectedJob.getProcess().getDefaultContext();
+        	   }
+        	   
 	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
 	           String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
 	           String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
