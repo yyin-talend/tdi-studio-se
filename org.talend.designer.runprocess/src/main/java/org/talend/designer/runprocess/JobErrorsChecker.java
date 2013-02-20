@@ -30,6 +30,8 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
@@ -37,6 +39,7 @@ import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -134,14 +137,18 @@ public class JobErrorsChecker {
                     // Property property = process.getProperty();
                     Problems.addRoutineFile(sourceFile, ProblemType.JOB, item.getProperty().getLabel(), item.getProperty()
                             .getVersion(), true);
+                    IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+                    IProcess process = service.getProcessFromItem(item);
+                    if (process instanceof IProcess2) {
+                        ((IProcess2) process).checkProcess();
+                    }
+                    Problems.refreshProblemTreeView();
                 } catch (Exception e) {
                     MessageBoxExceptionHandler.process(e);
                     return true;
                 }
 
             }
-
-            Problems.refreshProblemTreeView();
 
             List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
             ErrorDetailTreeBuilder builder = new ErrorDetailTreeBuilder();
