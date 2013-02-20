@@ -1811,6 +1811,15 @@
             name="SettingValuesIntoHadoopPropertiesFortHiveConnection"
             version="5.2.2">
       </projecttask>
+	  <projecttask
+            beforeLogon="false"
+            breaks="5.2.1"
+            class="org.talend.repository.model.migration.ChangeHadoopVersionValue4TDQComponents"
+            description="change DB_VERSION for import jar use REQUEIRE_IF"
+            id="org.talend.repository.model.migration.ChangeHadoopVersionValue4TDQComponents"
+            name="ChangeHadoopVersionValue4TDQComponents"
+            version="5.2.2">
+	  </projecttask>
    </extension>
    
    <extension
