@@ -176,14 +176,14 @@
       </TABLE>
       <TABLE IF="(IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE == 'TEXT')">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
-        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       </TABLE>
       <TABLE IF="(IS_USE_MESSAGE_ID == 'false') AND (MESSAGE_BODY_TYPE == 'BYTES')">
         <COLUMN NAME="message" TYPE="id_byte[]" CUSTOM="true"/>
       </TABLE>
       <TABLE IF="(IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE == 'BYTES')">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
-        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       </TABLE>
       <TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
       </TABLE>
