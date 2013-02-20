@@ -54,7 +54,9 @@ public class TreeBuilder {
 
     static {
         for (int i = 0; i < ALL_TYPES.length; i++) {
-            typeOrders.put(ALL_TYPES[i], i);
+            if (ALL_TYPES[i] != null) {
+                typeOrders.put(ALL_TYPES[i], i);
+            }
         }
     }
 
