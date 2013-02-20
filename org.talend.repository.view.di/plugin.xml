@@ -421,11 +421,11 @@
    <extension
          point="org.talend.core.repository.repository_node_provider">
       <repositoryNode
-            class="org.talend.repository.view.di.model.RoutinesExtendNode"
             folder="code/routines"
             icon="icons/routines.gif"
             isResouce="true"
             label="%NavigatorContent.routines"
+            ordinal="1"
             parentNodeType="CODE"
             products="DI"
             type="ROUTINES">

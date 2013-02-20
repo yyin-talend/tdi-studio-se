@@ -19,6 +19,7 @@ import org.talend.core.repository.model.AbstractExtendRepositoryNode;
 /**
  * DOC ggu class global comment. Detailled comment
  */
+@Deprecated
 public class RoutinesExtendNode extends AbstractExtendRepositoryNode {
 
     /*
