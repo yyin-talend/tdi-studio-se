@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -266,7 +266,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -274,9 +274,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             * 
+             *
              * If empty, nothing will be added.
-             * 
+             *
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -301,9 +301,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     * 
+     *
      * If empty, nothing will be added. @see isExcludedLib
-     * 
+     *
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -346,7 +346,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     * 
+     *
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -369,7 +369,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     * 
+     *
      * @param resource
      * @param process
      * @throws IOException
@@ -402,7 +402,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     * 
+     *
      * @param processItem
      * @author rzubairov
      * @return
@@ -476,11 +476,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
         String additionalJobBeanParams = "";
+        String additionalJsonProviderBeanParams = "";
         boolean useHttpBasicAuth = EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent);
         if (useHttpBasicAuth) {
             jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
             additionalBeansConfig = "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
+        }
+        boolean wrapJsonRequest = EmfModelUtils.computeCheckElementValue("WRAP_JSON_REQUEST", restRequestComponent);
+        if (wrapJsonRequest) {
+            additionalJsonProviderBeanParams = "<property name=\"supportUnwrapped\" value=\"true\"/>"
+                    + "\n\t\t<property name=\"wrapperName\" value=\"root\"/>";
         }
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
@@ -498,7 +504,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
                         .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams); //$NON-NLS-1$
+                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
+                        .replace("@ADDITIONAL_JSON_PROVIDER_BEAN_PARAMS@", additionalJsonProviderBeanParams); //$NON-NLS-1$
 
                 bw.write(line);
                 bw.newLine();
@@ -517,7 +524,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     * 
+     *
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -935,7 +942,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     * 
+     *
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {

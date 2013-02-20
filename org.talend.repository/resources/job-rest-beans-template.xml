@@ -36,6 +36,7 @@
 
 	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
 		<property name="ignoreNamespaces" value="true"/>
+		@ADDITIONAL_JSON_PROVIDER_BEAN_PARAMS@
 	</bean>
 
 	<bean id="job" class="@JOBCLASSNAME@" destroy-method="destroy" >
@@ -55,7 +56,7 @@
 
 	<!-- Wiring the counter repository -->
 	<bean class="org.apache.cxf.management.counters.CounterRepository">
-		<property name="bus" ref="cxf" /> 
+		<property name="bus" ref="cxf" />
 	</bean>
 
 </beans>
