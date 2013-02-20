@@ -26,8 +26,8 @@ import org.talend.designer.components.exchange.ui.actions.InsertionExtensionActi
 import org.talend.designer.components.exchange.ui.actions.ModifyExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.UploadRevisionAction;
 import org.talend.designer.components.exchange.ui.views.ExchangeManager;
-import org.talend.json.JSONException;
-import org.talend.json.JSONObject;
+import org.talend.utils.json.JSONException;
+import org.talend.utils.json.JSONObject;
 
 /**
  * DOC talend class global comment. Detailled comment
