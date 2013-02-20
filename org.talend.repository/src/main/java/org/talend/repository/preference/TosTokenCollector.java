@@ -118,39 +118,48 @@ public class TosTokenCollector extends AbstractTokenCollector {
         Map<String, Integer> numComponentMap = new HashMap<String, Integer>();
 
         // jobs
-        List<IRepositoryViewObject> all = factory.getAll(currentProject, ERepositoryObjectType.PROCESS);
-        jobsNum += all.size();
+        ERepositoryObjectType jobType = ERepositoryObjectType.PROCESS;
+        if (jobType != null) {
+            List<IRepositoryViewObject> all = factory.getAll(currentProject, jobType);
+            jobsNum += all.size();
 
-        for (IRepositoryViewObject rvo : all) {
-            Item item = rvo.getProperty().getItem();
-            if (item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
-                ProcessType processType = ((ProcessItem) item).getProcess();
+            for (IRepositoryViewObject rvo : all) {
+                Item item = rvo.getProperty().getItem();
+                if (item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
+                    ProcessType processType = ((ProcessItem) item).getProcess();
 
-                componentsNum += processType.getNode().size();
-                // components name
-                for (NodeType node : (List<NodeType>) processType.getNode()) {
-                    String componentName = node.getComponentName();
-                    Integer integer = numComponentMap.get(componentName);
-                    if (integer == null) {
-                        numComponentMap.put(componentName, 1);
-                    } else {
-                        numComponentMap.put(componentName, integer + 1);
+                    componentsNum += processType.getNode().size();
+                    // components name
+                    for (NodeType node : (List<NodeType>) processType.getNode()) {
+                        String componentName = node.getComponentName();
+                        Integer integer = numComponentMap.get(componentName);
+                        if (integer == null) {
+                            numComponentMap.put(componentName, 1);
+                        } else {
+                            numComponentMap.put(componentName, integer + 1);
+                        }
                     }
-                }
-                // context variable per job
-                EList contexts = processType.getContext();
-                if (contexts.size() > 0) {
-                    ContextType contextType = (ContextType) contexts.get(0);
-                    contextVarsNum += contextType.getContextParameter().size();
+                    // context variable per job
+                    EList contexts = processType.getContext();
+                    if (contexts.size() > 0) {
+                        ContextType contextType = (ContextType) contexts.get(0);
+                        contextVarsNum += contextType.getContextParameter().size();
+                    }
+
                 }
 
             }
-
         }
         // business model
-        businessModelsNum += factory.getAll(currentProject, ERepositoryObjectType.BUSINESS_PROCESS).size();
+        ERepositoryObjectType bmType = ERepositoryObjectType.BUSINESS_PROCESS;
+        if (bmType != null) {
+            businessModelsNum += factory.getAll(currentProject, bmType).size();
+        }
         // generated job docs
-        generatedJobDocsNum += factory.getAll(currentProject, ERepositoryObjectType.JOB_DOC).size();
+        ERepositoryObjectType jobDocType = ERepositoryObjectType.JOB_DOC;
+        if (jobDocType != null) {
+            generatedJobDocsNum += factory.getAll(currentProject, jobDocType).size();
+        }
         // metadata
         for (DynaEnum type : ERepositoryObjectType.values()) {
             if (type instanceof ERepositoryObjectType) {
