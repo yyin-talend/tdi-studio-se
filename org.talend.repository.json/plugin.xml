@@ -30,7 +30,8 @@
             folder="metadata/json"
             isResouce="true"
             label="File JSON"
-            parentNodeType="METDATA"
+            ordinal="49"
+            parentNodeType="METADATA"
             products="DI"
             type="JSON">
       </repositoryNode>
