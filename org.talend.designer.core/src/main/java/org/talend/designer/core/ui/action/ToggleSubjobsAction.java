@@ -37,6 +37,8 @@ public class ToggleSubjobsAction extends Action {
 
     private static final String JOBLET_ID = "org.talend.designer.joblet.multieditor";//$NON-NLS-1$
 
+    private static final String MAP_REDUCE_MULTIPAGE_EDITOR_ID = "org.talend.designer.mapreduce.editor";//$NON-NLS-1$
+
     public static final String TEXT = Messages.getString("ToggleSubjobsAction.LABEL"); //$NON-NLS-1$
 
     private static ToggleSubjobsAction instance = new ToggleSubjobsAction();
@@ -64,7 +66,8 @@ public class ToggleSubjobsAction extends Action {
                 .getEditorReferences();
 
         for (IEditorReference reference : editorParts) {
-            if (!(reference.getId().equals(MultiPageTalendEditor.ID) || reference.getId().equals(JOBLET_ID))) {
+            if (!(reference.getId().equals(MultiPageTalendEditor.ID) || reference.getId().equals(JOBLET_ID) || MAP_REDUCE_MULTIPAGE_EDITOR_ID
+                    .equals(reference.getId()))) {
                 continue;
             }
 
