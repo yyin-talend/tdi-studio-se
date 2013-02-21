@@ -3616,7 +3616,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         }
                     }
                 }
-                if (pathExist) {
+                if (pathExist && type != null) {
                     allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                             .getAllVersion(property.getId(), state.getPath(), type);
                 } else {
@@ -3991,6 +3991,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @return the componentsType
      */
+    @Override
     public String getComponentsType() {
         return this.componentsType;
     }
