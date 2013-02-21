@@ -224,7 +224,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
     private void expandSomeNodes(IProjectRepositoryNode root) {
         if (root instanceof IProjectRepositoryNode) {
-            final IProjectRepositoryNode rootNode = (IProjectRepositoryNode) root;
+            final IProjectRepositoryNode rootNode = root;
             // metadata
             IRepositoryNode metadataConNode = rootNode.getRootRepositoryNode(ERepositoryObjectType.METADATA);
             if (metadataConNode != null) {
@@ -316,7 +316,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             }
         } else {
             for (IRepositoryNode child : node.getChildren()) {
-                processItems(objects, (RepositoryNode) child);
+                processItems(objects, child);
             }
         }
     }
@@ -333,6 +333,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         removeBtn.setToolTipText(Messages.getString("VersionManagementDialog.RemoveTip")); //$NON-NLS-1$
         removeBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] selections = itemTable.getSelection();
                 itemTable.setRedraw(false);
@@ -486,6 +487,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         });
         statusCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String version = statusCombo.getText();
                 refreshTableItems();
@@ -502,6 +504,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         // });
         documentStatusButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 statusCombo.removeAll();
                 documentStatusButton.setSelection(true);
@@ -516,6 +519,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         });
         revertBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 statusCombo.setText(VersionUtils.DEFAULT_VERSION); // set min version
                 // researchMaxVersion();
@@ -537,6 +541,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         checkFixedButtons();
     }
 
+    @Override
     protected IPreferenceStore doGetPreferenceStore() {
         RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore(ProxyRepositoryFactory.getInstance());
         try {
@@ -600,9 +605,9 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         }
         TableEditor[] editors = (TableEditor[]) item.getData(ITEM_EDITOR_KEY);
         if (editors != null) {
-            for (int j = 0; j < editors.length; j++) {
-                editors[j].getEditor().dispose();
-                editors[j].dispose();
+            for (TableEditor editor : editors) {
+                editor.getEditor().dispose();
+                editor.dispose();
             }
         }
         item.dispose();
@@ -685,8 +690,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 if (isTechinalStatus()) {
                     // Modified by Marvin Wang on Jan.7, 2011 for bug Talend DI TDI-19154, should not use
                     // obj.equals(constant) that will cause NPE.
-                    if (!ERepositoryObjectType.DOCUMENTATION.equals(type) && !ERepositoryObjectType.BUSINESS_PROCESS.equals(type)
-                            && !ERepositoryObjectType.JOBLETS.equals(type)) {
+                    if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
+                            && !type.equals(ERepositoryObjectType.JOBLETS)) {
                         // if (!type.equals(ERepositoryObjectType.DOCUMENTATION) &&
                         // !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
                         // && !type.equals(ERepositoryObjectType.JOBLETS)) {
@@ -694,7 +699,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
                 } else if (isDocumentStatus()) {
-                    if (ERepositoryObjectType.DOCUMENTATION.equals(type) || ERepositoryObjectType.BUSINESS_PROCESS.equals(type)) {
+                    if (type.equals(ERepositoryObjectType.DOCUMENTATION) || type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
@@ -773,6 +778,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                     }
                     statusItemCombo.addSelectionListener(new SelectionAdapter() {
 
+                        @Override
                         public void widgetSelected(SelectionEvent e) {
                             String version = statusItemCombo.getText();
                             String status = statusHelper.getStatusCode(version);
@@ -854,8 +860,9 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
         boolean modified = false;
         String newStatus = null;
-        if (getModifiedVersionItems().size() > 0)
+        if (getModifiedVersionItems().size() > 0) {
             newStatus = statusHelper.getStatusCode(statusCombo.getText());
+        }
         for (RepositoryObject object : getModifiedVersionItems()) {
             if (!isFixedstatus()) {
                 newStatus = object.getStatusCode();

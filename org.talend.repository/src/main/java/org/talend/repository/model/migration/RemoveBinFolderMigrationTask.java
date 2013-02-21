@@ -104,7 +104,7 @@ public class RemoveBinFolderMigrationTask extends AbstractProjectMigrationTask {
 
         for (ERepositoryObjectType type : getTypes()) {
             IFolder folder = null;
-            if (type.hasFolder()) {
+            if (type != null && type.hasFolder()) {
                 try {
                     IProject fsProject = ResourceUtils.getProject(project.getTechnicalLabel());
                     if (!fsProject.getFolder(ERepositoryObjectType.getFolderName(type)).exists()) {

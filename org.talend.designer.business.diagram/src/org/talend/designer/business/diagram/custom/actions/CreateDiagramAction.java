@@ -72,6 +72,7 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
         wizardDialog.open();
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         // PTODO mhelleboid refactor AContextualAction
 
@@ -137,6 +138,7 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
      * 
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
      */
+    @Override
     public void run(IIntroSite site, Properties params) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
@@ -177,7 +179,7 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
         if (view != null) {
 
             Object type = params.get("type");
-            if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
+            if (ERepositoryObjectType.BUSINESS_PROCESS != null && ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
                 RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
                         .getRootRepositoryNode(ERepositoryObjectType.BUSINESS_PROCESS);
                 final StructuredViewer viewer = view.getViewer();

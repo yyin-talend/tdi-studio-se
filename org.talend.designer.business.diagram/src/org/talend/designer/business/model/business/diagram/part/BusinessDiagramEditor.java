@@ -507,7 +507,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 ItemState state = item.getState();
                 ERepositoryObjectType type = ERepositoryObjectType.BUSINESS_PROCESS;
 
-                if (state != null && state.getPath() != null) {
+                if (type != null && state != null && state.getPath() != null) {
                     allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                             .getAllVersion(item.getProperty().getId(), state.getPath(), type);
                 } else {
