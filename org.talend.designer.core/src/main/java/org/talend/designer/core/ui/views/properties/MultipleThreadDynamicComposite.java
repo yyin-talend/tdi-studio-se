@@ -364,6 +364,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         maxRow = 0;
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
+        Map<String, Integer> groupPosition = new HashMap<String, Integer>();
 
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
@@ -430,7 +431,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             }
 
             curRowSize = 0;
-            int maxRowSize = createCrtrol(curRow, additionalHeightSize, heightSize, nbInRow);
+            int maxRowSize = createCrtrol(curRow, additionalHeightSize, heightSize, nbInRow, groupPosition);
             heightSize += maxRowSize;
 
         }
@@ -441,11 +442,12 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         resizeScrolledComposite();
     }
 
-    protected int createCrtrol(int curRow, int additionalHeightSize, int heightSize, int nbInRow) {
+    protected int createCrtrol(int curRow, int additionalHeightSize, int heightSize, int nbInRow,
+            Map<String, Integer> groupPosition) {
         int numInRow = 0;
         int maxRowSize = 0;
         Control lastControl = null;
-        Map<String, Integer> groupPosition = new HashMap<String, Integer>();
+
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter curParam = listParam.get(i);
