@@ -119,12 +119,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					org.talend.mdm.webservice.WSWhereCondition wc_<%=cid %> = null;
 					java.util.List<org.talend.mdm.webservice.WSWhereItem> conditions_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSWhereItem>();
 					<%
+					boolean isOnlyOrPredicate=true;
 					for(int i=0; i < operations.size(); i++){
 						Map<String, String> map= operations.get(i);
 						String xpath=map.get("XPATH");
 						String operator=map.get("FUNCTION");
 						String value = map.get("VALUE");
 						String predicate = map.get("PREDICATE");
+						if((i < operations.size()-1) && (!"OR".equals(predicate))){
+							isOnlyOrPredicate = false;
+						}
 						%>
 						wc_<%=cid %> =new org.talend.mdm.webservice.WSWhereCondition(<%=xpath %>,org.talend.mdm.webservice.WSWhereOperator.<%=operator %>, <%=value %>, org.talend.mdm.webservice.WSStringPredicate.<%=predicate %>,false);
 						org.talend.mdm.webservice.WSWhereItem wsItem_<%=i %>_<%=cid %>=new org.talend.mdm.webservice.WSWhereItem(wc_<%=cid %>,null,null);
@@ -134,7 +138,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					%>
 					org.talend.mdm.webservice.WSWhereItem wsItem_<%=cid %> = null;
 					if(conditions_<%=cid %>.size() > 0){
+					<%
+					if(!isOnlyOrPredicate){
+					%>
 						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]),null);
+					<%
+					}else{
+					%>
+						wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]));
+					<%
+					}
+					%>
 					}
 					
 					int limit_<%=cid%> = <%=limit%>;
