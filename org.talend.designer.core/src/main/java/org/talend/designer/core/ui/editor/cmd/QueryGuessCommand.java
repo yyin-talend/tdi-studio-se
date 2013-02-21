@@ -289,6 +289,12 @@ public class QueryGuessCommand extends Command {
                     dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
                 }
             }
+            if (dbType == null) {
+                // if we can not get the DB Type from the existing driver list, just set back the type to ORACLE
+                // since it's one DB unknown from Talend.
+                // it might not work directly for all DB, but it will generate a standard query.
+                dbType = EDatabaseTypeName.ORACLE_OCI.getDisplayName();
+            }
             // data view， conn=null
             // need add code here for dbtype(oracle)
         }
