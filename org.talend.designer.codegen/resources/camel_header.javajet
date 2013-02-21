@@ -352,7 +352,7 @@
         		   context = ElementParameterParser.getProcessSelectedContext(process.getId()); // route context
         		   boolean found = ElementParameterParser.checkIfContextExisted(id, context); // check the same context exist or not in job
             	   if(!found){
-            		   context = "Default"; // if not found, then use "Default"
+            		   context = ElementParameterParser.getProcessSelectedContext(id); // if not found, then use default job context
             	   }
             	   
         	   }else if("true".equals(useJobContext)){
