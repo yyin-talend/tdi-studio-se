@@ -19,7 +19,6 @@
 		org.talend.core.ui.branding.AbstractBrandingService
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.runprocess.CodeGeneratorRoutine
-		org.talend.designer.runprocess.ItemCacheManager
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.designer.codegen.ITalendSynchronizer
 		org.talend.core.model.properties.ProcessItem
@@ -350,29 +349,14 @@
         	   String useRouteContext = ElementParameterParser.getValue(node, "__USE_ROUTE_CONTEXT__");
         	   String useJobContext = ElementParameterParser.getValue(node, "__USE_JOB_CONTEXT__");
         	   if("true".equals(useRouteContext)){
-        		   ProcessItem currentRoute = ItemCacheManager.getProcessItem(process.getId());
-            	   context = currentRoute.getProcess().getDefaultContext();
-            	   
-            	   boolean foundContextInJob = false;
-            	   ProcessItem selectedJob = ItemCacheManager.getProcessItem(id);
-            	   EList jobContexts = selectedJob.getProcess().getContext();
-            	   for(Object c: jobContexts){
-            		   if(!(c instanceof ContextType)){
-            			   continue;
-            		   }
-            		   ContextType ct = (ContextType)c;
-            		   if(context.equals(ct.getName())){
-            			   foundContextInJob = true;
-            			   break;
-            		   }
-            	   }
-            	   if(!foundContextInJob){
-            		   context = "Default";
+        		   context = ElementParameterParser.getProcessSelectedContext(process.getId()); // route context
+        		   boolean found = ElementParameterParser.checkIfContextExisted(id, context); // check the same context exist or not in job
+            	   if(!found){
+            		   context = "Default"; // if not found, then use "Default"
             	   }
             	   
         	   }else if("true".equals(useJobContext)){
-        		   ProcessItem selectedJob = ItemCacheManager.getProcessItem(id);
-            	   context = selectedJob.getProcess().getDefaultContext();
+        		   context = ElementParameterParser.getProcessSelectedContext(id);
         	   }
         	   
 	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
