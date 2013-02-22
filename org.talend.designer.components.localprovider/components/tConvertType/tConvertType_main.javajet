@@ -111,6 +111,7 @@
         if (preLabel.equals(outLabel)){
           String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
           String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".") + 1) : inTypeWhole;
+          String inPattern = preCol.getPattern();
           
           if (("byte[]").equals(inType)){
             inType = "byteArray";
@@ -126,8 +127,10 @@
             <%
             }
             
-            if (("Date".equals(outType) && "String".equals(inType)) || ("String".equals(outType) && "Date".equals(inType))){%>
+            if ("Date".equals(outType) && "String".equals(inType)) {%>
               <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+            <%} else if ("String".equals(outType) && "Date".equals(inType)) {%>
+              <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=inPattern %>);
         	<%} else if (("Document".equals(outType) && "String".equals(inType))){%>
               <%=outconnName %>.<%=outLabel %>=ParserUtils.parseTo_Document(<%=preconnName %>.<%=preLabel %>);
             <%} else if (("String".equals(outType) && "Document".equals(inType))){%>
@@ -191,6 +194,7 @@
       String outLabel = out.getLabel();
       String outPattern = out.getPattern();
       String preLabel = in.getLabel();
+      String inPattern = in.getPattern();
       %>     
       try {
         <%
@@ -202,8 +206,10 @@
         <%
         }
         
-        if (("Date".equals(outType) && "String".equals(inType)) || ("String".equals(outType)&& "Date".equals(inType))){%>
+        if ("Date".equals(outType) && "String".equals(inType)) {%>
           <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+        <%} else if ("String".equals(outType) && "Date".equals(inType)) {%>
+          <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=inPattern %>);
         <%} else if (("Document".equals(outType) && "String".equals(inType))){%>
           <%=outconnName %>.<%=outLabel %>=ParserUtils.parseTo_Document(<%=preconnName %>.<%=preLabel %>);
 		<%} else if (("String".equals(outType) && "Document".equals(inType))){%>
