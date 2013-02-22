@@ -116,11 +116,20 @@ imports="
 	cacheList_<%=cid %>.add(<%=firstConnName%>);
 <%
     	            }
+    	     }
 %>
 	for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
+<%
+			if(firstConnName!=null && !firstConnName.equals("")){
+%>	
 		for(<%=firstConnName%>Struct tmpRow_<%=cid %> : cacheList_<%=cid %>){
-	
-			nb_line_<%=cid %> ++;		
+<%
+			}
+%>
+			nb_line_<%=cid %> ++;
+<%
+			if(firstConnName!=null && !firstConnName.equals("")){
+%>		
 			<%=firstConnName%> = tmpRow_<%=cid %>;
 <%
     	    }
