@@ -596,7 +596,10 @@ public class TableController extends AbstractElementPropertySectionController {
 
         IElementParameter processTypeParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
         if (processTypeParam == null) {
-            return;
+            processTypeParam = elem.getElementParameterFromField(EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE);
+            if(processTypeParam == null){
+                return;
+            }
         }
         boolean haveContextParamList = false;
         for (Object valueParam : param.getListItemsValue()) {
