@@ -653,7 +653,7 @@
       <topic href="guide/components/en/tGoogleGeocoder.html" label="tGoogleGeocoder Component Documentation"/>
    </context>
    <context id="tGoogleMapLookup">
-      <description>tGoogleMapLoopup allows you to obtain detailed gepgraphic information using geographic coordinates and address information.</description>
+      <description>tGoogleMapLoopup allows you to obtain detailed geographic information using geographic coordinates and address information.</description>
       <topic href="guide/components/en/tGoogleMapLookup.html" label="tGoogleMapLookup Component Documentation"/>
    </context>
    <context id="tIntervalMatch">
@@ -661,7 +661,7 @@
       <topic href="guide/components/en/tIntervalMatch.html" label="tIntervalMatch Component Documentation"/>
    </context>
    <context id="tLastRegexlibExpressions">
-      <description>tFindRegexlibExpressionsreturns a dataset holding information about the N most recent regular expressions added to the library and that match the query at .</description>
+      <description>tFindRegexlibExpressionsreturns a dataset holding information about the N most recent regular expressions added to the library and that match the query at http://regexlib.com.</description>
       <topic href="guide/components/en/tLastRegexlibExpressions.html" label="tLastRegexlibExpressions Component Documentation"/>
    </context>
    <context id="tLaunchDQReports">
@@ -757,7 +757,7 @@
       <topic href="guide/components/en/tStandardizePhoneNumber.html" label="tStandardizePhoneNumber Component Documentation"/>
    </context>
    <context id="tStandardizeRow">
-      <description>tStandardizeRow normalizes the incoming data in a separate XML data flow. This allows you to separate, even standardize if need be, the rule-compliant data from the non-compliant data.“Format”</description>
+      <description>tStandardizeRow normalizes the incoming data in a separate XML data flow. This allows you to separate, even standardize if need be, the rule-compliant data from the non-compliant data.</description>
       <topic href="guide/components/en/tStandardizeRow.html" label="tStandardizeRow Component Documentation"/>
    </context>
    <context id="tStem">
@@ -777,7 +777,7 @@
       <topic href="guide/components/en/tSynonymSearch.html" label="tSynonymSearch Component Documentation"/>
    </context>
    <context id="tThresholdViolationAlert">
-      <description>tThresholdViolationAlert can communicate with Talend Data Quality in order to check on thresholds put on the indicators used in analyses created in Talend Data Quality. You can then use it with other components, for example tSendMail, to alert to the violation of thresholds.</description>
+      <description>tThresholdViolationAlert communicates with the report database that stores the analysis results. It scans the report database looking for the thresholds that are violated in the column analyses in the selected report. You can then use it with other components in the job, for example tSendMail, to alert to any threshold violations regarding the thresholds set on indicators used in the column analyses.</description>
       <topic href="guide/components/en/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
    </context>
    <context id="tUniqRow">
@@ -2065,7 +2065,7 @@
       <topic href="guide/components/en/tFileInputFullRow.html" label="tFileInputFullRow Component Documentation"/>
    </context>
    <context id="tFileInputJSON">
-      <description>This component opens a file and reads it in order to isolate data according to the schemas which describe this file structure, and to send the data and schemas to the next component(s), via a Row connection.</description>
+      <description>tFileInputJSON extracts JSON data from a file according to the JSONPath query, then transferring the flat data to a file, a database table, etc.</description>
       <topic href="guide/components/en/tFileInputJSON.html" label="tFileInputJSON Component Documentation"/>
    </context>
    <context id="tFileInputLDIF">

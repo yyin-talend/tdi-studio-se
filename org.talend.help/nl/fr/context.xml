@@ -49,7 +49,7 @@
       <topic href="guide/components/fr/tHBaseInput.html" label="tHBaseInput Component Documentation"/>
    </context>
    <context id="tHBaseOutput">
-      <description>Le tHBaseOutput écrit des colonnes de données dans une base de données tHBase.</description>
+      <description>Le tHBaseOutput écrit des colonnes de données dans une base de données HBase.</description>
       <topic href="guide/components/fr/tHBaseOutput.html" label="tHBaseOutput Component Documentation"/>
    </context>
    <context id="tHCatalogInput">
@@ -465,7 +465,7 @@
       <topic href="guide/components/fr/tPaloOutput.html" label="tPaloOutput Component Documentation"/>
    </context>
    <context id="tPaloOutputMulti">
-      <description>Ce composant prend la flux d’entrée et l’écrit dans un cube Palo donné.</description>
+      <description>Ce composant prend le flux d’entrée et l’écrit dans un cube Palo donné.</description>
       <topic href="guide/components/fr/tPaloOutputMulti.html" label="tPaloOutputMulti Component Documentation"/>
    </context>
    <context id="tPaloRule">
@@ -757,7 +757,7 @@
       <topic href="guide/components/fr/tStandardizePhoneNumber.html" label="tStandardizePhoneNumber Component Documentation"/>
    </context>
    <context id="tStandardizeRow">
-      <description>Le tStandardizeRow normalise les données d’entrée dans un flux de données XML distinct. Cela vous permet de séparer (et de standardiser si besoin) les données conformes à la règle des données non conformes.“Format”</description>
+      <description>Le tStandardizeRow normalise les données d’entrée dans un flux de données XML distinct. Cela vous permet de séparer (et de standardiser si besoin) les données conformes à la règle des données non conformes.</description>
       <topic href="guide/components/fr/tStandardizeRow.html" label="tStandardizeRow Component Documentation"/>
    </context>
    <context id="tStem">
@@ -777,7 +777,7 @@
       <topic href="guide/components/fr/tSynonymSearch.html" label="tSynonymSearch Component Documentation"/>
    </context>
    <context id="tThresholdViolationAlert">
-      <description>Le tThresholdViolationAlert peut communiquer avec Talend Data Quality afin de vérifier les seuils définis sur les indicateurs utilisés dans des analyses créées dans Talend Data Quality. Vous pouvez donc l’utiliser avec d’autres composants, par exemple le tSendMail, afin d’alerter en cas de violation des seuils.</description>
+      <description>Le tThresholdViolationAlert communique avec la base de données de rapports stockant les résultats d'analyse. Il scanne la base de données de rapports afin de trouver les seuils violés dans les analyses de colonnes dans le rapport sélectionné. Vous pouvez l’utiliser avec d’autres composants dans un Job, par exemple le tSendMail, afin d’alerter en cas de violation des seuils définis sur les indicateurs utilisés dans les analyses de colonnes.</description>
       <topic href="guide/components/fr/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
    </context>
    <context id="tUniqRow">
@@ -2065,7 +2065,7 @@
       <topic href="guide/components/fr/tFileInputFullRow.html" label="tFileInputFullRow Component Documentation"/>
    </context>
    <context id="tFileInputJSON">
-      <description>Ce composant ouvre un fichier et le lit afin d’isoler les données en fonction des schémas décrivant la structure de ce fichier et d’envoyer ses données et schémas au(x) composant(s) suivant(s) via une connexion Row.</description>
+      <description>Ce composant extrait des données JSON selon la requête JSONPath, transfère les données plates à un fichier, une table de base de données, etc.</description>
       <topic href="guide/components/fr/tFileInputJSON.html" label="tFileInputJSON Component Documentation"/>
    </context>
    <context id="tFileInputLDIF">

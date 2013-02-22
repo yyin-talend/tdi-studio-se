@@ -1,0 +1,364 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMBulkLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-mdm.html" title="Chapter&nbsp;21.&nbsp;Talend MDM components"><link rel="prev" href="ch-mdm.html" title="Chapter&nbsp;21.&nbsp;Talend MDM components"><link rel="next" href="tMDMClose.html" title="tMDMClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMDMBulkLoad</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-mdm.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;21.&nbsp;Talend MDM components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMDMClose.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMDMBulkLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMBulkLoad"></a>tMDMBulkLoad</h2></div></div></div><div class="mediaobject"><img src="../images/tMDMBulkLoad.png"></div><div class="section" title="tMDMBulkLoad properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13911"></a>tMDMBulkLoad properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Talend
+								MDM</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tMDMBulkLoad</strong></span> writes XML
+								structured master data into the MDM hub in bulk mode.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component uses bulk mode to write data so that big batches of
+								data or data of high complexity can be fast uploaded onto the MDM
+								server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to modify the
+								schema.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you modify the schema, it automatically becomes
+									built-in.</p></div>
+							<p>Click <span class="emphasis"><strong>Sync columns</strong></span> to collect the
+								schema from the previous component.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: You create the schema and store it locally
+								for this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema and
+								stored it in the Repository. You can reuse it in various projects
+								and Job designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>XML field</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the name of the column in which you want to write the XML
+								data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the URL required to access the MDM server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Type in the user authentication data for the MDM server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the Version of master data you want to connect
+								to, for which you have the required user rights.</p>
+							<p> Leave this field empty if you want to display the default Version
+								of master data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data model</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the data model against which the data to be
+								written is validated.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data Container</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the data container where you want to write the
+								master data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Entity</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the entity that holds the data record(s) you
+								want to write.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Validate</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this checkbox to validate the data you want to write onto
+								the MDM server against validation rules defined for the current data
+								model.</p>
+							<p> For more information on how to set the validation rules, see <span class="emphasis"><em>Talend MDM Studio Administrator
+								Guide</em></span>.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em>If you need faster loading performance, do not select
+										this checkbox.</em></span>
+								</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Generate ID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to generate an ID number for all of the data
+								written.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em>If you need faster loading performance, do not select
+										this checkbox.</em></span>
+								</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Commit size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the row count of each batch to be written onto the MDM
+								server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the processing metadata at the Job
+								level as well as at each component level.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable parallel execution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to perform high-speed data processing, that
+								is treating multiple data flows simultaneously. </p>
+							<p> For more information, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Main,</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Run if; On Component Ok;
+								On Component Error, On Subjob Ok, On Subjob Error.</p>
+							<p> </p>
+							<p> Incoming links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Main</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Run if, On Component Ok,
+								On Component Error, On Subjob Ok, On Subjob Error </p>
+							<p> </p>
+							<p> For further information regarding connections, see <span class="emphasis"><em>Talend Data Integration Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component needs always an incoming link to offer XML
+								structured data. If your data offered is not yet in the XML
+								structure, you need use components like <span class="emphasis"><strong>tWriteXMLField</strong></span> to transform this data into the XML
+								structure. For further information about <span class="emphasis"><strong>tWriteXMLField</strong></span>, see <a class="xref" href="tWriteXMLField.html" title="tWriteXMLField">the section called &#8220;tWriteXMLField&#8221;</a>.</p>
+						</td></tr></tbody></table></div><div class="section" title="Enhancing the MDM bulk data load"><div class="titlepage"><div><div><h4 class="title"><a name="Raa80398"></a>Enhancing the MDM bulk data load</h4></div></div></div><p>The information below concerns only MDM used with eXist.</p><p>As XML parsing is a CPU and memory consuming process, it is not really compatible
+				with large datasets. The following Scenario: <a class="xref" href="tMDMBulkLoad.html#Raa24053" title="Scenario: Loading records into a business entity">the section called &#8220;Scenario: Loading records into a business entity&#8221;</a>, which shows
+				how to use the <span class="emphasis"><strong>tMDMBulkLoad </strong></span>component, has some
+				limitations because it cannot work with large dataset, for the time being at least. </p><p>An alternative scenario in which you process the dataset file per bulk load
+				iterations can be designed as the following:</p><div class="mediaobject"><img src="../images/MDM_Data_Import.jpg"></div><p>In such a scenario, the <span class="emphasis"><strong>tMDMBulkLoad</strong></span> component
+				waits for XML data as an input. You must manually format this incoming data to match
+				the entity schema defined in the MDM Studio. Most of the time, the data you want to
+				import is in a flat &#8220;format&#8221;, and you have to transform it into XML.</p><p>As XML parsing is memory consuming, you can workaround this problem by splitting
+				your source file into several files using the <span class="emphasis"><strong>tAdvancedFileOutputXML</strong></span> component. To do this, you select the
+					<span class="emphasis"><strong>Split output in several files</strong></span> option in the
+					<span class="emphasis"><strong>Advaced settings</strong></span> view of the component and then
+				set the rows in each output file through a context variable
+					(<span class="emphasis"><em>context.chunkSize</em></span>), for example. </p><div class="mediaobject"><img src="../images/MDM_Data_Import1.png"></div><p>The XML schema you must define in the XML editor of this component should be an
+				exact match of the business entity defined in the MDM Studio. The XML schema in the
+				editor must represent a single <code class="code">&lt;root&gt;</code> element which contains all the
+				other elements, so that you can loop on each of the element. The path of the file
+				should be defined in a temporary folder.</p><p>Use a <span class="emphasis"><strong>tFileList</strong></span> component to read all the XML
+				files that have just been created. This component enables you to parallelize the
+				process. Connect it to a <span class="emphasis"><strong>tFileInputXML </strong></span>component
+				using the <span class="emphasis"><strong>Iterate</strong></span> link.</p><div class="mediaobject"><img src="../images/MDM_Data_Import2.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>For the <span class="emphasis"><strong>Iterate</strong></span> link, it is recommended that
+					you set as many threads as the number of the physical cores of the computer. You
+					can achieve that using
+					<code class="code">Runtime.getRuntime().availableProcessors()</code></p></div><p>The <span class="emphasis"><strong>tFileInputXML</strong></span> component will read the data
+				from the XML files you have created, by defining a loop on the elements, and getting
+				all the nodes that are already formatted as XML. You must then select the <span class="emphasis"><strong>Get Nodes</strong></span> check box.</p><div class="mediaobject"><img src="../images/MDM_Data_Import3.png"></div><p>Finally, you must setup the <span class="emphasis"><strong>tMDMBulkLoad
+				</strong></span>component as the following:</p><div class="mediaobject"><img src="../images/MDM_Data_Import4.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ensure that you set the commit size to the same value you defined in the
+						<span class="emphasis"><strong>tAdvancedfileOutputXML</strong></span>, the
+						<span class="emphasis"><em>context.chunkSize</em></span> context variable.</p></div><p>The <span class="emphasis"><strong>tFiledelete </strong></span>component in such a scenario will
+				delete all the temporary data at the end of the Job.</p></div><div class="section" title="Tips for better-performance bulk commit with Talend XML database"><div class="titlepage"><div><div><h4 class="title"><a name="Raa57966"></a>Tips for better-performance bulk commit with Talend XML database </h4></div></div></div><p>The below tables will help you decide what batch size to use in the <span class="emphasis"><strong>tMDMBulkLoad</strong></span> component and the expected bulk load time
+				for each choice.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The information below concerns only MDM used with Talend XML database.</p></div><p>The table below lists recommended batch size according to the database size and
+				the corresponding expected bulk load time.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+								<p>Database size (in XML documents)</p>
+							</td><td valign="top">
+								<p>Optimal batch size (in XML documents)</p>
+							</td><td valign="top">
+								<p>Expected bulk load time</p>
+							</td></tr><tr><td valign="top">
+								<p>5000 000</p>
+							</td><td valign="top">
+								<p>20 000</p>
+							</td><td valign="top">
+								<p>42 min</p>
+							</td></tr><tr><td valign="top">
+								<p>10 000 000</p>
+							</td><td valign="top">
+								<p>40 000</p>
+							</td><td valign="top">
+								<p>1 h 30 min</p>
+							</td></tr><tr><td valign="top">
+								<p>15 000 000</p>
+							</td><td valign="top">
+								<p>59 000</p>
+							</td><td valign="top">
+								<p>2 h 20 min</p>
+							</td></tr><tr><td valign="top">
+								<p>50 000 000</p>
+							</td><td valign="top">
+								<p>200 000</p>
+							</td><td valign="top">
+								<p>10 h</p>
+							</td></tr></tbody></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Batch size depends only on database size and not on the size of the XML
+					document.</p></div><p>The above bulk load times were observed on the following environment:</p><p> -Intel Xeon X3430 @2.40 Ghz</p><p> -8 Gb RAM</p><p> -Windows Server 2008 64 bits SP1</p><p> The prerequisites for an optimal performance of bulk load on an MDM Server are
+				(in ascending order of importance):</p><p> -I/O speed</p><p> -CPU speed</p><p> -Amount of RAM</p><p>For optimal performance, you should perform MDM bulk load with 2 threads (each
+				thread with the optimal batch size) and without XML validation. The <span class="emphasis"><strong>Validate</strong></span> check box in the basic settings view of the
+					<span class="emphasis"><strong>tMDMBulkLoad</strong></span> component must be unchecked; for
+				further information, see <a class="xref" href="tMDMBulkLoad.html#Raa13911" title="tMDMBulkLoad properties">the section called &#8220;tMDMBulkLoad properties&#8221;</a>. </p><p>For disk usage, it is recommended that available space is three times the database
+				size after bulk load is completed. For example, for XML documents of 1.5 Kb, the
+				database size after bulk load is:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><tbody><tr><td valign="top">
+								<p>Database size (in XML documents)</p>
+							</td><td valign="top">
+								<p>database size on disk</p>
+							</td></tr><tr><td valign="top">
+								<p>5000 000</p>
+							</td><td valign="top">
+								<p>10 Gb</p>
+							</td></tr><tr><td valign="top">
+								<p>10 000 000</p>
+							</td><td valign="top">
+								<p>20 Gb</p>
+							</td></tr><tr><td valign="top">
+								<p>15 000 000</p>
+							</td><td valign="top">
+								<p>30 Gb</p>
+							</td></tr><tr><td valign="top">
+								<p>50 000 000</p>
+							</td><td valign="top">
+								<p>100 Gb</p>
+							</td></tr></tbody></table></div><p>For example, for a 5 million document database and 1.5 Kb XML documents, we
+				recommend a disk with 30 Gb available space.</p></div></div><div class="section" title="Scenario: Loading records into a business entity"><div class="titlepage"><div><div><h3 class="title"><a name="Raa24053"></a>Scenario: Loading records into a business entity</h3></div></div></div><p>This scenario describes a Job that loads records into the <span class="emphasis"><em>ProductFamily
+			</em></span>business entity defined by a specific data model in the MDM hub.</p><p>Prerequisites of this Job:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The <span class="emphasis"><em>Product</em></span> data container: this data container is used
+					to separate the product master data domain from the other master data
+					domains.</p></li><li class="listitem"><p>The <span class="emphasis"><em>Product</em></span> data model: this data model is used to define
+					the attributes, validation rules, user access rights and relationships of the
+					entities of interest. Thus it defines the attributes of the
+						<span class="emphasis"><em>ProductFamily</em></span> business entity.</p></li><li class="listitem"><p>The <span class="emphasis"><em>ProductFamily</em></span> business entity: this business entity
+					contains <span class="emphasis"><em>Id, Name</em></span>, both defined by the
+						<span class="emphasis"><em>Product</em></span> data model.</p></li></ul></div><p>For further information about how to create a data container, a data model, and a
+			business entity along with its attributes, see <span class="emphasis"><em>Talend MDM Studio</em></span>
+			Administrator Guide.</p><p>The Job in this scenario uses three components.</p><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>tFixedFlowInput</strong></span>: this component generates the
+					records to be loaded into the <span class="emphasis"><em>ProductFamily</em></span> business
+					entity. In the real case, your records to be loaded are often voluminous and
+					stored in a specific file, while in order to simplify the replication of this
+					scenario, this Job uses <span class="emphasis"><strong>tFixedFlowInput</strong></span> to
+					generate four sample records.</p></li><li class="listitem"><p><span class="emphasis"><strong>tWriteXMLField</strong></span>: this component transforms the
+					incoming data into XML structure.</p></li><li class="listitem"><p><span class="emphasis"><strong>tMDMBulkLoad</strong></span>: this component writes the
+					incoming data into the <span class="emphasis"><em>ProductFamily</em></span> business entity in
+					bulk mode, generating ID value for each of the record data.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+				<span class="emphasis"><em>For the time being, <span class="emphasis"><strong>tWriteXMLField</strong></span> has some limitations when used with very large
+					datasets. Another scenario is possible to enhance the MDM bulk data load. For
+					further information, see <a class="xref" href="tMDMBulkLoad.html#Raa80398" title="Enhancing the MDM bulk data load">the section called &#8220;Enhancing the MDM bulk data load&#8221;</a>.</em></span>
+			</p></div><p>To replicate this scenario, proceed as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tWriteXMLField</strong></span> and <span class="emphasis"><strong>tMDMBulkLoad</strong></span>
+					onto the design workspace.</p></li><li class="listitem"><p>Right click <span class="emphasis"><strong>tFixedFlowInput</strong></span> to open its
+					contextual menu.</p></li><li class="listitem"><p>Select <span class="emphasis"><strong>Row &gt; Main</strong></span> to connect <span class="emphasis"><strong>tFixedFlowInput</strong></span> to the following component using
+						<span class="emphasis"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Do the same to link the other components.</p></li><li class="listitem"><p>Double click <span class="emphasis"><strong>tFixedFlowInput</strong></span> to open its
+						<span class="emphasis"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+						schema</strong></span> to open the schema editor.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the schema editor, click the plus button to add one row. </p></li><li class="listitem"><p>In the schema editor, click the new row and type in the new name:
+						<span class="emphasis"><em>family</em></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Mode</strong></span> area of the <span class="emphasis"><strong>Basic settings</strong></span> view, select the <span class="emphasis"><strong>Use inline
+						table</strong></span> option.</p></li><li class="listitem"><p>Under the inline table, click the plus button four times to add four rows in
+					the table.</p></li><li class="listitem"><p>In the inline table, click each of the added rows and type in their names
+					between the quotation marks: <span class="emphasis"><em>Shirts</em></span>,
+						<span class="emphasis"><em>Hats</em></span>, <span class="emphasis"><em>Pets</em></span>,
+						<span class="emphasis"><em>Mugs</em></span>.</p></li><li class="listitem"><p>Double click <span class="emphasis"><strong>tWriteXMLField</strong></span> to open its
+						<span class="emphasis"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="emphasis"><strong>Edit
+						schema</strong></span> field to open the schema editor where you can add a row by
+					clicking the plus button.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad5.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the newly added row to the right view of the schema editor and type in
+					the name of the output column where you want to write the XML content. In this
+					example, type in <span class="emphasis"><em>xmlRecord</em></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate this output schema and
+					close the schema editor.</p></li><li class="listitem"><p>In the popped up dialog box, click <span class="emphasis"><strong>OK</strong></span> to
+					propagate this schema to the following component.</p></li><li class="listitem"><p>On the <span class="emphasis"><strong>Basic settings</strong></span> view, click the
+					three-dot button next to <span class="emphasis"><strong>Configure Xml Tree</strong></span> to
+					open the interface that helps to create the XML structure.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad6.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="emphasis"><strong>Link Target</strong></span> area, click
+						<span class="emphasis"><em>rootTag</em></span> and rename it as
+						<span class="emphasis"><em>ProductFamily</em></span>, which is the name of the business entity
+					used in this scenario.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Linker source</strong></span> area, drop
+						<span class="emphasis"><em>family</em></span> to <span class="emphasis"><em>ProductFamily</em></span> in the
+						<span class="emphasis"><strong>Link target</strong></span> area.</p><p> A dialog box displays asking what type of operation you want to do.</p></li><li class="listitem"><p>Select <span class="emphasis"><strong>Create as sub-element of target node</strong></span>
+					to create a sub-element of the <span class="emphasis"><em>ProductFamily</em></span> node. Then the
+						<span class="emphasis"><em>family</em></span> element appears under the
+						<span class="emphasis"><em>ProductFamily</em></span> node.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Link target</strong></span> area, click the <span class="emphasis"><strong>family</strong></span> node and rename it as <span class="emphasis"><strong>Name</strong></span>, which is one of the attributes of the <span class="emphasis"><strong>ProductFamily</strong></span> business entity.</p></li><li class="listitem"><p>Right-click the <span class="emphasis"><em>Name</em></span> node and select from the contextual
+					menu <span class="emphasis"><strong>Set As Loop Element</strong></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate the XML structure you
+					defined.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tMDMBulkLoad</strong></span> to open its
+						<span class="emphasis"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_MDMBulkLoad7.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In <span class="emphasis"><strong>XML Field</strong></span>, click this field and select
+						<span class="emphasis"><em>xmlRecord</em></span> from the drop-down list.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>URL</strong></span> field, enter the bulk loader URL,
+					between quotes: for example,
+						<span class="emphasis"><em>http://localhost:8080/datamanager/loadServlet</em></span>.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Username</strong></span> and <span class="emphasis"><strong>Password</strong></span> fields, enter your login and password to connect to the
+					MDM server.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Data Model</strong></span> and the <span class="emphasis"><strong>Data Container</strong></span> fields, enter the names corresponding
+					to the data model and the data container you need to use. Both are
+						<span class="emphasis"><em>Product</em></span> for this scenario.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Entity</strong></span> field, enter the name of the
+					business entity which the records are to be loaded in. In this example, type in
+						<span class="emphasis"><em>ProductFamily</em></span>.</p></li><li class="listitem"><p>Select the <span class="emphasis"><strong>Generate ID</strong></span> check box in order to
+					generate ID values for the records to be loaded.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Commit size</strong></span> field, type in the batch
+					size to be written into the MDM hub in bulk mode. </p><p> For more information about the batch size, see
+						<a class="xref" href="tMDMBulkLoad.html#Raa57966" title="Tips for better-performance bulk commit with Talend XML database">the section called &#8220;Tips for better-performance bulk commit with Talend XML database &#8221;</a>.</p></li><li class="listitem"><p>Press <span class="emphasis"><strong>F6</strong></span> to run the Job.</p></li><li class="listitem"><p>Log into your <span class="emphasis"><em>Talend MDM Web User Interface</em></span> to check the newly
+					added records for the <span class="emphasis"><em>ProductFamily</em></span> business entity.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_MDMBulkLoad8.png"></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-mdm.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-mdm.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMDMClose.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;21.&nbsp;Talend MDM components&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMDMClose</td></tr></table></div></body></html>

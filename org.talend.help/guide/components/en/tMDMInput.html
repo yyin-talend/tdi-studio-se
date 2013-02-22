@@ -1,0 +1,220 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-mdm.html" title="Chapter&nbsp;20.&nbsp;Talend MDM components"><link rel="prev" href="tMDMDelete.html" title="tMDMDelete"><link rel="next" href="tMDMOutput.html" title="tMDMOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMDMInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMDMDelete.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;20.&nbsp;Talend MDM components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMDMOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMDMInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMInput"></a>tMDMInput</h2></div></div></div><div class="mediaobject"><img src="../images/TalendMDMInput_white.png"></div><div class="section" title="tMDMInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa86313"></a>tMDMInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component family</strong></span></p>
+                                                </td><td valign="top"><p>Talend MDM</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tMDMInput</strong></span>
+                                                  reads master data in the MDM Hub.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>This component reads master data in an MDM
+                                                  Hub and thus makes it possible to process this
+                                                  data.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic Settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Property
+                                                  Type</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Either Built in or Repository.</p>
+                                                  <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                                                  centrally</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>: Select the repository file
+                                                  where properties are stored. The fields that
+                                                  follow are completed automatically using the
+                                                  fetched data</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component. The
+                                                  schema is either built-in or remote in the
+                                                  Repository. </p>
+                                                  <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                                                  <p> Click <span class="emphasis"><strong>Edit
+                                                  Schema</strong></span> to modify the schema.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you modify the schema, it automatically
+                                                  becomes built-in.</p></div>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be created
+                                                  and stored for this component only. Related Topic:
+                                                  see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                                  <span class="emphasis"><em>User
+                                                  Guide</em></span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>: The schema already exists
+                                                  and is stored in the repository. You can reuse it
+                                                  in various projects and jobs. Related Topic: see
+                                                  <span class="emphasis"><em>Talend Open Studio</em></span>
+                                                  <span class="emphasis"><em>User Guide</em></span>.
+                                                  </p>
+                                                </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Use an existing
+                                                  connection</em></span></td><td valign="top">Select this check box if you
+                                                  want to use a configured <span class="emphasis"><strong>tMDMConnection</strong></span> component.</td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>URL</em></span></p>
+                                                </td><td valign="top"><p>Type in the URL to access
+                                                  the MDM server.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                                  <span class="emphasis"><em>Password</em></span></p>
+                                                </td><td valign="top"><p>Type in user
+                                                  authentication data for the MDM server.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Version</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  master data Version you want to connect to and to
+                                                  which you have access rights.</p><p> Leave
+                                                  this field empty if you want to display the
+                                                  default Version.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Entity</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  business entity that holds the master data you
+                                                  want to read.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Data
+                                                  Container</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  data container that holds the master data you want
+                                                  to read.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Use multiple
+                                                  conditions</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to filter the master
+                                                  data using certain conditions.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Xpath</strong></span>: Enter
+                                                  between quotes the path and the XML node to which
+                                                  you want to apply the condition.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Function</strong></span>: Select
+                                                  the condition to be used from the list.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Value</strong></span>: Enter
+                                                  between inverted commas the value you want to use.
+                                                  Note that if the value contains XML special
+                                                  characters such as /, you must also enter the
+                                                  value in single quotes ("'ABC/XYZ'") or the value
+                                                  will be considered as an XPath.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Predicate</strong></span>: Select
+                                                  a predicate if you use more than one
+                                                  condition.</p>
+                                                  <p> If you clear this check box, you have the
+                                                  option of selecting particular IDs to be displayed
+                                                  in the <span class="emphasis"><strong>ID value</strong></span>
+                                                  column of the <span class="emphasis"><strong>IDS</strong></span>
+                                                  table.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you clear the <span class="emphasis"><strong>Use
+                                                  multiple conditions</strong></span> check box, the
+                                                  <span class="emphasis"><strong>Batch Size</strong></span> option
+                                                  in the <span class="emphasis"><strong>Advanced
+                                                  Settings</strong></span> tab will no longer be
+                                                  available</p></div>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Skip
+                                                  rows</em></span></p>
+                                                </td><td valign="top"><p>Enter the number of lines
+                                                  to be ignored.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Limit</em></span></p>
+                                                </td><td valign="top"><p>Maximum number of rows to
+                                                  be processed. If Limit = 0, no row is read or
+                                                  processed.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Die on error
+                                                  </em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  skip the row in error and complete the process for
+                                                  error-free rows. If needed, you can retrieve the
+                                                  rows in error via a <span class="emphasis"><strong>Row
+                                                  </strong></span>&gt; <span class="emphasis"><strong>Rejects
+                                                  </strong></span>link.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Batch
+                                                  Size</em></span></p>
+                                                </td><td valign="top"><p>Number of lines in each
+                                                  processed batch.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This option is not displayed if you have
+                                                  cleared the <span class="emphasis"><strong>Use multiple
+                                                  conditions</strong></span> check box in the <span class="emphasis"><strong>Basic settings</strong></span> view.</p></div>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Loop XPath
+                                                  query</em></span></p>
+                                                </td><td valign="top"><p>The XML structure node on
+                                                  which the loop is based.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Mapping</em></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Column</strong></span>: reflects the schema as defined
+                                                  in the Edit schema editor.</p><p>
+                                                  <span class="emphasis"><strong>XPath query</strong></span>: Type
+                                                  in the name of the fields to extract from the
+                                                  input XML structure.</p><p>
+                                                  <span class="emphasis"><strong>Get Nodes</strong></span>: Select
+                                                  this check box to retrieve the Xml node together
+                                                  with the data.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  gather the processing metadata at the Job level as
+                                                  well as at each component level.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Use this component as a start component. It
+                                                  needs an output flow.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading master data in an MDM hub"><div class="titlepage"><div><div><h3 class="title"><a name="Raa34575"></a>Scenario: Reading master data in an MDM hub</h3></div></div></div><p>This scenario describes a two-component Job that reads master data on an MDM
+                        server. The master data is fetched and displayed in the log console.</p><div class="mediaobject"><img src="../images/Use_Case_tMDMInput1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="emphasis"><strong>Palette,</strong></span> drop
+                                                <span class="emphasis"><strong>tMDMInput</strong></span> and
+                                                <span class="emphasis"><strong>tLogRow</strong></span> onto the
+                                        design workspace.</p></li><li class="listitem"><p>Connect the two components together using a <span class="emphasis"><strong>Row Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tMDMInput</strong></span> to
+                                        open the <span class="emphasis"><strong>Basic settings</strong></span>
+                                        view and define the component properties.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMDMInput2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="emphasis"><strong>Property Type</strong></span> list,
+                                        select <span class="emphasis"><strong>Built-In </strong></span>to complete
+                                        the fields manually. If you have stored the MDM connection
+                                        information in the repository metadata, select <span class="emphasis"><strong>Repository</strong></span> from the list and
+                                        the fields will be completed automatically.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Schema</strong></span> list, select
+                                                <span class="emphasis"><strong>Built-In</strong></span> and click
+                                        the three-dot button next to <span class="emphasis"><strong>Edit
+                                                schema</strong></span> to open a dialog box. Here you can
+                                        define the structure of the master data you want to read on
+                                        the MDM server.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMDMInput3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The master data is collected in a three column schema of the
+                                        type <span class="emphasis"><strong>String</strong></span>:
+                                                <span class="emphasis"><em>ISO2Code</em></span>,
+                                                <span class="emphasis"><em>Name</em></span> and
+                                                <span class="emphasis"><em>Currency</em></span>. Click <span class="emphasis"><strong>OK</strong></span> to close the dialog box
+                                        and proceed to the next step.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>URL</strong></span> field, enter
+                                        between inverted commas the URL of the MDM server.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Username</strong></span> and <span class="emphasis"><strong>Password</strong></span> fields, enter your
+                                        login and password to connect to the MDM server.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Version</strong></span> field, enter
+                                        between inverted commas the name of the master data Version
+                                        you want to access. Leave this field empty to display the
+                                        default Version.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Entity</strong></span> field, enter
+                                        between inverted commas the name of the business entity that
+                                        holds the master data you want to read.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Data Container</strong></span> field,
+                                        enter between inverted commas the name of the data container
+                                        that holds the master data you want to read.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Component</strong></span> view, click
+                                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                                        to set the advanced parameters.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMDMInput4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="emphasis"><strong>Loop XPath query</strong></span>
+                                        field, enter between inverted commas the structure and the
+                                        name of the XML node on which the loop is to be carried
+                                        out.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Mapping</strong></span> table and in
+                                        the <span class="emphasis"><strong>XPath query</strong></span> column,
+                                        enter between inverted commas the name of the XML tag in
+                                        which you want to collect the master data, next to the
+                                        corresponding output column name.</p></li><li class="listitem"><p>In the design workspace, click on the <span class="emphasis"><strong>tLogRow</strong></span> component to display the
+                                                <span class="emphasis"><strong>Basic settings</strong></span> in
+                                        the <span class="emphasis"><strong>Component</strong></span> view and set
+                                        the properties.</p></li><li class="listitem"><p>Click on <span class="emphasis"><strong>Edit Schema</strong></span> and
+                                        ensure that the schema has been collected from the previous
+                                        component. If not, click <span class="emphasis"><strong>Sync
+                                                Columns</strong></span> to fetch the schema from the
+                                        previous component.</p></li><li class="listitem"><p>Save the Job and press <span class="emphasis"><strong>F6</strong></span> to
+                                        run it.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMDMInput6.png"></div><p>The list of different countries along with their codes and currencies is
+                        displayed on the console of the <span class="emphasis"><strong>Run</strong></span>
+                        view.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMDMDelete.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-mdm.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMDMOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMDMDelete&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMDMOutput</td></tr></table></div></body></html>
