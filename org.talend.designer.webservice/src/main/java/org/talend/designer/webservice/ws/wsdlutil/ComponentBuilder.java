@@ -92,6 +92,24 @@ public class ComponentBuilder {
             ExceptionHandler.process(e);
         }
     }
+    
+    /**
+     * Getter for allXmlSchemaType.
+     * 
+     * @return the allXmlSchemaType
+     */
+    public List<XmlSchemaType> getAllXmlSchemaType() {
+        return this.allXmlSchemaType;
+    }
+
+    /**
+     * Getter for allXmlSchemaElement.
+     * 
+     * @return the allXmlSchemaElement
+     */
+    public List<XmlSchemaElement> getAllXmlSchemaElement() {
+        return this.allXmlSchemaElement;
+    }
 
     public ServiceInfo buildserviceinformation(ServiceInfo serviceinfo) throws Exception {
         // WSDLReader reader = wsdlFactory.newWSDLReader();
@@ -420,6 +438,7 @@ public class ComponentBuilder {
             Iterator opIter = operations.iterator();
 
             while (opIter.hasNext()) {
+                alldExtendtion.clear();
                 BindingOperation oper = (BindingOperation) opIter.next();
                 Vector operElems = findExtensibilityElement(oper.getExtensibilityElements(), "operation");
                 ExtensibilityElement operElem = (ExtensibilityElement) operElems.elementAt(0);
@@ -588,6 +607,12 @@ public class ComponentBuilder {
                         } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
                             XmlSchemaSimpleType xmlSchemaSimpleType = (XmlSchemaSimpleType) xmlSchemaElement.getSchemaType();
                             String typeName = xmlSchemaSimpleType.getName();
+                            if (typeName != null && typeName.equals("anyType")) {
+                                ParameterInfo parameterSon = new ParameterInfo();
+                                parameterSon.setName("anyType");
+                                parameterSon.setParent(parameterRoot);
+                                parameterRoot.getParameterInfos().add(parameterSon);
+                            }
                             parameterRoot.setType(typeName);
 
                         }
@@ -768,6 +793,9 @@ public class ComponentBuilder {
                 // }
                 if (xmlSchemaElement.getSchemaTypeName() != null) {
                     String elementTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                    if (elementTypeName != null && elementTypeName.equals("anyType")) {
+                        parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
+                    }
                     parameterSon.setType(elementTypeName);
                     if (!isHave && !WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
                         buileParameterFromTypes(elementTypeName, parameterSon, ioOrRecursion);
@@ -793,6 +821,12 @@ public class ComponentBuilder {
                     } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
                         XmlSchemaSimpleType xmlSchemaSimpleType = (XmlSchemaSimpleType) xmlSchemaElement.getSchemaType();
                         String typeName = xmlSchemaSimpleType.getName();
+                        if (typeName != null && typeName.equals("anyType")) {
+                            ParameterInfo pSon = new ParameterInfo();
+                            pSon.setName("anyType");
+                            pSon.setParent(parameter);
+                            parameter.getParameterInfos().add(pSon);
+                        }
                         parameter.setType(typeName);
 
                     }

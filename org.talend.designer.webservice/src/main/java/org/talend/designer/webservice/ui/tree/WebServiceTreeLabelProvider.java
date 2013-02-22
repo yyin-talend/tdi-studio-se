@@ -90,6 +90,12 @@ public class WebServiceTreeLabelProvider extends LabelProvider implements ITable
      * @see org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang.Object, int)
      */
     public Color getForeground(Object element, int columnIndex) {
+        if (element instanceof ParameterInfo) {
+            ParameterInfo para = (ParameterInfo) element;
+            if (para.getName().contains("anyType")) {
+                return Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
+            }
+        }
         return null;
     }
 

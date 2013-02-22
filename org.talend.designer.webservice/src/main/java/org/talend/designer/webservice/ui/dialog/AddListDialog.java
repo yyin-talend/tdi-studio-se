@@ -14,6 +14,7 @@ package org.talend.designer.webservice.ui.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.CellEditor;
@@ -23,8 +24,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -35,11 +39,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.webservice.i18n.Messages;
 import org.talend.designer.webservice.ui.ParameterInfoUtil;
 import org.talend.designer.webservice.ui.tree.WebServiceTreeContentProvider;
 import org.talend.designer.webservice.ui.tree.WebServiceTreeLabelProvider;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -73,6 +79,10 @@ public class AddListDialog extends Dialog {
     private Shell parentShell;
 
     private SelectAction selectAction;
+    
+    private String URLValue;
+
+    private ServiceHelperConfiguration serverConfig;
 
     /**
      * DOC Administrator AddListDialog constructor comment.
@@ -91,12 +101,15 @@ public class AddListDialog extends Dialog {
      * 
      * @param parentShell
      */
-    public AddListDialog(Shell parentShell, ParameterInfo para, String inOrOut) {
+    public AddListDialog(Shell parentShell, ParameterInfo para, String inOrOut, String URLValue,
+            ServiceHelperConfiguration serverConfig) {
         super(parentShell);
         this.para = para;
         this.inOrOut = inOrOut;
         this.parentShell = parentShell;
         selectAction = new SelectAction();
+        this.URLValue = URLValue;
+        this.serverConfig = serverConfig;
         // Composite baseCom = new Composite(parentShell, SWT.NONE);
         // createTreeDialogArea(baseCom);
     }
@@ -189,7 +202,75 @@ public class AddListDialog extends Dialog {
         // }
         //
         // });
+        treeViewer.getTree().addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                createAllTypeDialog();
+            }
+
+        });
         return baseCom;
+    }
+    
+    private void createAllTypeDialog() {
+        IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+        if (selection.size() == 1) {
+            Object obj = selection.getFirstElement();
+            if (obj instanceof ParameterInfo) {
+                ParameterInfo info = (ParameterInfo) obj;
+                if (info.getName().contains("anyType")) {
+                    AllTypeDialog alltype;
+                    try {
+                        alltype = new AllTypeDialog(parentShell, info, URLValue, serverConfig);
+                        if (alltype.open() == Window.OK) {
+                            String selectedName = alltype.getSelectedName();
+                            Map<String, String> labelAndNameSpaceMap = alltype.getLabelAndNameSpaceMap();
+                            if (selectedName.contains("simpletype")) {
+                                String namespace = labelAndNameSpaceMap.get(selectedName);
+                                String[] ret = getNameSpaceAndType(namespace);
+                                ParameterInfo newChild = new ParameterInfo();
+                                newChild.setName(selectedName);
+                                newChild.setType(selectedName.split(":")[1]);
+                                newChild.setParent(info);
+                                info.getParameterInfos().clear();
+                                if (info.getName().indexOf("{") > 0) {
+                                    info.setName(info.getName().substring(0, info.getName().indexOf("{")));
+                                }
+                                info.setName(info.getName() + "{" + ret[0] + "," + ret[1] + "}");
+                                info.getParameterInfos().add(newChild);
+                                treeViewer.refresh();
+                            } else if (selectedName.contains("complextype")) {
+                                String namespace = labelAndNameSpaceMap.get(selectedName);
+                                String[] ret = getNameSpaceAndType(namespace);
+                                ParameterInfo selectParameterInfo = alltype.getSelectedParaInfo();
+                                info.getParameterInfos().clear();
+                                if (info.getName().indexOf("{") > 0) {
+                                    info.setName(info.getName().substring(0, info.getName().indexOf("{")));
+                                }
+                                info.setName(info.getName() + "{" + ret[0] + "," + ret[1] + "}");
+                                List<ParameterInfo> childAttributes = selectParameterInfo.getParameterInfos();
+                                for (ParameterInfo child : childAttributes) {
+                                    info.getParameterInfos().add(child);
+                                    child.setParent(info);
+                                }
+                                treeViewer.refresh();
+                            }
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        }
+    }
+    
+    private String[] getNameSpaceAndType(String temp) {
+        int index1 = temp.indexOf("{");
+        int index2 = temp.indexOf("}");
+        String[] ret = new String[2];
+        ret[0] = temp.substring(index1 + 1, index2);
+        ret[1] = temp.substring(index2 + 1);
+        return ret;
     }
 
     public class SelectAction implements ISelectionChangedListener {
@@ -232,27 +313,43 @@ public class AddListDialog extends Dialog {
     @Override
     protected void okPressed() {
         boolean falg = false;
-        ParameterInfo selPara = getSelectedParaInfo();
-        ParameterInfo usePara = null;
-        paraUtil = new ParameterInfoUtil();
-        int currentindex = -1;
-        // int arraySize = selPara.getArraySize();
+        IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+        paramList = selection.toList();
+        if (selection.size() == 1) {
+            ParameterInfo selPara = getSelectedParaInfo();
+            ParameterInfo usePara = null;
+            paraUtil = new ParameterInfoUtil();
+            int currentindex = -1;
+            // int arraySize = selPara.getArraySize();
 
-        // if select multi simple type items.
-        if (paramList != null && !paramList.isEmpty()) {
+            // if select multi simple type items.
+            if (paramList != null && !paramList.isEmpty()) {
 
-        }
+            }
 
-        // if selected have branch.
-        if (selPara == null) {
-            return;
-        }
-        if (!selPara.getParameterInfos().isEmpty()) {
-            MessageBox box = new MessageBox(parentShell, SWT.ICON_ERROR | SWT.OK);
-            box.setText(Messages.getString("AddListDialog.Error")); //$NON-NLS-1$
-            box.setMessage("Please Select " + selPara.getName() + " branch Item."); //$NON-NLS-1$
-            box.open();
-            return;
+            // if selected have branch.
+            if (selPara == null) {
+                return;
+            }
+            if (!selPara.getParameterInfos().isEmpty()) {
+                MessageBox box = new MessageBox(parentShell, SWT.ICON_ERROR | SWT.OK);
+                box.setText(Messages.getString("AddListDialog.Error")); //$NON-NLS-1$
+                box.setMessage("Please Select " + selPara.getName() + " branch Item."); //$NON-NLS-1$
+                box.open();
+                return;
+            }
+        } else if (selection.size() > 1) {
+            paraUtil = new ParameterInfoUtil();
+            List<ParameterInfo> list = selection.toList();
+            for (ParameterInfo info : list) {
+                if (!info.getParameterInfos().isEmpty()) {
+                    MessageBox box = new MessageBox(parentShell, SWT.ICON_ERROR | SWT.OK);
+                    box.setText(Messages.getString("AddListDialog.Error")); //$NON-NLS-1$
+                    box.setMessage("Please Select " + info.getName() + " branch Item."); //$NON-NLS-1$
+                    box.open();
+                    return;
+                }
+            }
         }
 
         // if select a array item.
