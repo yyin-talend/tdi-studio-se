@@ -67,4 +67,5 @@ Export-Package:
  org.apache.poi.xwpf.extractor,
  org.apache.poi.xwpf.model,
  org.apache.poi.xwpf.usermodel
- 
+Require-Bundle: org.talend.libraries.dom4j-jaxen,
+ org.talend.libraries.apache.xml
