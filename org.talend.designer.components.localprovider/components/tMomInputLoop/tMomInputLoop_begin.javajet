@@ -170,8 +170,12 @@ imports="
 				javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
 				byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
 				bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
+			<%
+			    if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+			%>
 				String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
 			<%
+			    }
 			} else if ("Map".equals(msgBobyType)) {
 			%>
 				javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
@@ -331,8 +335,12 @@ imports="
 				%>
 					byte[] bytesMsgBody_<%=cid%> = new byte[inMessage<%=cid%>.getDataLength()];
 					inMessage<%=cid%>.readFully(bytesMsgBody_<%=cid%>);
+				<%
+			    	if(!"id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+				%>
 					String msg_<%=cid%> = new String(bytesMsgBody_<%=cid%>);
 				<%
+			    	}
 				} else if ("Map".equals(msgBobyType)) {
 				%>
 					java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
