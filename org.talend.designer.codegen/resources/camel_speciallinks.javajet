@@ -77,13 +77,18 @@ if(connsIf.size()>0) {
 				int previousOrder = -1;
 				IConnection previousCon = null;
 				List<? extends IConnection> allWhenConnections = sourceNode.getOutgoingConnections(EConnectionType.ROUTE_WHEN);
-				for(IConnection c:allWhenConnections){
-					int tmp = c.getOutputId();
-					if(tmp >previousOrder){
-						previousCon = c;
-						previousOrder = tmp;
-					}
-				} 
+				int whenConnectionsSize = allWhenConnections.size();
+				if(whenConnectionsSize == 1){
+					previousCon = allWhenConnections.get(0);
+				}else if(whenConnectionsSize >1){
+					for(IConnection c:allWhenConnections){
+						int tmp = c.getOutputId();
+						if(tmp >previousOrder){
+							previousCon = c;
+							previousOrder = tmp;
+						}
+					} 
+				}
 				if(previousCon != null && "true".equals(previousCon.getEndChoice())){
 %>
 				.endChoice()
