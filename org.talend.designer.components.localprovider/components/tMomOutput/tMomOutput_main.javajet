@@ -62,7 +62,7 @@ class="MomInput"
 					/*-------------------1.is use message id.this functions just use map message type-------------------------------------*/
 					if(("true").equals(useMsgId)){
 %>
-						String msgID_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(1)).getLabel() %>;
+						String msgID_<%=cid%> = <%=conn.getName() %>.<%=metadata.getColumn("messageid").getLabel() %>;
 						javax.jms.MapMessage message_<%=cid%> = session_<%=cid%>.createMapMessage();
 <%
 					}
@@ -70,7 +70,7 @@ class="MomInput"
 					/*--------------------------2.judge message body type----------------------------------------------------------------*/
 					if ("Text".equals(msgBobyType)) {
 %>
-						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=metadata.getColumn("message").getLabel()%>);
 <%
 						if(!("true").equals(useMsgId)){
 %>
@@ -82,19 +82,24 @@ class="MomInput"
 <%
 						}
 					} else if ("Bytes".equals(msgBobyType)) {
-						IMetadataColumn column = (IMetadataColumn)columns.get(0);
-						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						IMetadataColumn column = conn.getMetadataTable().getColumn("message");
+						if(!"id_byte[]".equals(column.getTalendType())) {
 %>
-						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+						    byte[] msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>).getBytes();
 <%
+						}else{
+%>
+	                        byte[] msgBody_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+<%
+						}
 						if(!("true").equals(useMsgId)){
 %>
 							javax.jms.BytesMessage message_<%=cid%> = session_<%=cid%>.createBytesMessage();
-							message_<%=cid%>.writeBytes(msgBody_<%=cid%>.getBytes());
+							message_<%=cid%>.writeBytes(msgBody_<%=cid%>);
 <%
 						} else {
 %>
-							message_<%=cid%>.setBytes(msgID_<%=cid%>,msgBody_<%=cid%>.getBytes());
+							message_<%=cid%>.setBytes(msgID_<%=cid%>,msgBody_<%=cid%>);
 <%
 						}
 					} else if ("Map".equals(msgBobyType)) {
@@ -166,7 +171,7 @@ class="MomInput"
 <%
 					if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 %>
-						String msgID_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(1)).getLabel() %>;
+						String msgID_<%=cid%> = <%=conn.getName() %>.<%=metadata.getColumn("messageid").getLabel() %>;
 						if (msgID_<%=cid%> != null & !("").equals(msgID_<%=cid%>)) {
 							String padding = new String();
 					       	int padlen = 24;
@@ -253,14 +258,21 @@ class="MomInput"
 					
 					if ("Text".equals(msgBobyType)) {
 %>
-						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=metadata.getColumn("message").getLabel()%>);
 						message_<%=cid%>.writeString(msgBody_<%=cid%>);
 <%
 					} else if ("Bytes".equals(msgBobyType)) {
+					    IMetadataColumn column = conn.getMetadataTable().getColumn("message");
+                        if(!"id_byte[]".equals(column.getTalendType())) {
 %>
-						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
-						message_<%=cid%>.write(msgBody_<%=cid%>.getBytes());
+						    String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>);
+						    message_<%=cid%>.write(msgBody_<%=cid%>.getBytes());
 <%
+                        }else{
+%>
+                            message_<%=cid%>.write(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+                        }
 					} else if ("Map".equals(msgBobyType)) {
 %>
 						java.util.Map msgBody_<%=cid%> = new java.util.HashMap();
