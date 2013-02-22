@@ -83,6 +83,10 @@ imports="
 				%>
 					<%=firstConnName%>.message=ParserUtils.parseTo_Document(msg_<%=cid%>);
 				<%
+					} else if("id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					<%=firstConnName%>.message=bytesMsgBody_<%=cid%>;
+				<%
 					} else {
 				%>
 					<%=firstConnName%>.message=msg_<%=cid%>;	
@@ -160,6 +164,10 @@ imports="
 					if("id_Document".equals(metadata.getColumn("message").getTalendType())){
 				%>
 					<%=firstConnName%>.message=ParserUtils.parseTo_Document(msg_<%=cid%>);
+				<%
+					} else if("id_byte[]".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					<%=firstConnName%>.message=bytesMsgBody_<%=cid%>;
 				<%
 					} else {
 				%>
