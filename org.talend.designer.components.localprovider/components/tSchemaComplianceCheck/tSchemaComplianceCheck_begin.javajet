@@ -83,6 +83,7 @@
 
 	class SchemaChecker { //CLASS SCHEMACHECKER START
 		boolean anotherChecked = "true".equals(ElementParameterParser.getValue(node, "__CHECK_ANOTHER__"));
+		boolean ignoreTimeZone = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_TIMEZONE__"));
 
 		public void  testDataType(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, String typeSelected, String cid) { //METHOD_TESTDATATYPE START
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
@@ -321,7 +322,7 @@
 <%
 					if (!useFasteDateChecker) { //CONDITION_001512 START
 %>
-			if (!TalendDate.isDate((<%=_sInConnName%>.<%=colName%>).toString(), <%=pattern%>))
+			if (!TalendDate.isDate((<%=_sInConnName%>.<%=colName%>).toString(), <%=pattern%>,<%if(ignoreTimeZone){%>true<%}else{%>false<%}%>))
 				throw new IllegalArgumentException("Data format not matches");
 <%
 					} else { //CONDITION_001512 ELSE

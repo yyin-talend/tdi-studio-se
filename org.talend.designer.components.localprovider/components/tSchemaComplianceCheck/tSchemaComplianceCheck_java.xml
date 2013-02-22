@@ -114,6 +114,9 @@
 		<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="1">
 	    	<DEFAULT>(Not compatible with multi-threaded jobs)</DEFAULT>
 	    </PARAMETER>
+	    <PARAMETER NAME="IGNORE_TIMEZONE" FIELD="CHECK" NUM_ROW="3" REQUIRED="true" SHOW_IF="(CUSTOMER == 'true' OR CHECK_ANOTHER == 'true') AND (FAST_DATE_CHECK == 'false')">
+            <DEFAULT>false</DEFAULT>
+        </PARAMETER>
 		<PARAMETER NAME="EMPTY_IS_NULL" FIELD="CHECK" NUM_ROW="9" REQUIRED="true" SHOW="false"> 
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
