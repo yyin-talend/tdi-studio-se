@@ -265,7 +265,7 @@ public class JobletUtil {
 
         List<? extends IElementParameter> elementParas = null;
         if (paraMap.containsKey(node.getUniqueName())) {
-            elementParas = (List<? extends IElementParameter>) paraMap.get(node.getUniqueName());
+            elementParas = paraMap.get(node.getUniqueName());
         } else {
             elementParas = node.getElementParameters();
         }
@@ -355,7 +355,7 @@ public class JobletUtil {
                 } catch (CloneNotSupportedException e) {
                     ExceptionHandler.process(e);
                 }
-                ((Node) cloneNode).setExternalData(externalNode.getExternalData());
+                cloneNode.setExternalData(externalNode.getExternalData());
             }
             if (node.getExternalNode().getExternalEmfData() != null) {
                 externalNode.setExternalEmfData(EcoreUtil.copy(node.getExternalNode().getExternalEmfData()));
@@ -433,14 +433,11 @@ public class JobletUtil {
         List<? extends INode> nodeList = process.getGraphicalNodes();
         for (INode node : nodeList) {
             if (((Node) node).isJoblet()) {
-                // if (!((Node) node).getNodeContainer().isCollapsed()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
                 if (service != null) {
-                    service.reloadJobletProcess(node);
                     service.unlockJoblet(node, false);
                 }
-                // }
             }
         }
 
@@ -449,9 +446,9 @@ public class JobletUtil {
     public boolean needReadOnlyJoblet(JobletProcessItem jobletItem) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart[] editors = page.getEditors();
-        for (int i = 0; i < editors.length; i++) {
-            if (editors[i] instanceof AbstractMultiPageTalendEditor) {
-                List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editors[i]).getProcess().getGraphicalNodes();
+        for (IEditorPart editor : editors) {
+            if (editor instanceof AbstractMultiPageTalendEditor) {
+                List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editor).getProcess().getGraphicalNodes();
                 for (INode node : nodeList) {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
                         if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
@@ -490,9 +487,9 @@ public class JobletUtil {
     public boolean openedInJob(JobletProcessItem jobletItem, Node currNode) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart[] editors = page.getEditors();
-        for (int i = 0; i < editors.length; i++) {
-            if (editors[i] instanceof AbstractMultiPageTalendEditor) {
-                IProcess2 pro = ((AbstractMultiPageTalendEditor) editors[i]).getProcess();
+        for (IEditorPart editor : editors) {
+            if (editor instanceof AbstractMultiPageTalendEditor) {
+                IProcess2 pro = ((AbstractMultiPageTalendEditor) editor).getProcess();
                 if (currNode != null) {
                     IProcess2 currPro = (IProcess2) currNode.getProcess();
                     if (currPro.getId().equals(pro.getId())) {
@@ -802,8 +799,7 @@ public class JobletUtil {
         if (editors.length <= 0) {
             return false;
         }
-        for (int i = 0; i < editors.length; i++) {
-            IEditorPart editor = editors[i];
+        for (IEditorPart editor : editors) {
             RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
             String jobletId = editorInput.getId();
             if (jobletId.equals(jobletProcess.getId())) {
