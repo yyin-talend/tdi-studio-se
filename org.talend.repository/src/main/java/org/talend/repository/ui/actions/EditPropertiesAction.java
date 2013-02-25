@@ -85,6 +85,7 @@ import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.wizards.EditProcessPropertiesWizard;
 import org.talend.repository.ui.wizards.PropertiesWizard;
+import org.talend.repository.ui.wizards.routines.EditRoutinePropertiesWizard;
 
 /**
  * smallet class global comment. Detailled comment <br/>
@@ -124,7 +125,14 @@ public class EditPropertiesAction extends AContextualAction {
         }
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = object.getLabel();
-        PropertiesWizard wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
+        PropertiesWizard wizard = null;
+        if (ERepositoryObjectType.ROUTINES == object.getRepositoryObjectType()) {
+            wizard = new EditRoutinePropertiesWizard(object, path, getNeededVersion() == null);
+        } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
+            wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
+        } else {
+            wizard = new PropertiesWizard(object, path, getNeededVersion() == null);
+        }
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
             refresh(node);
