@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.abstractmap;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
@@ -109,21 +112,34 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
         hasOrRenameData(oldName, newName, true);
 
     }
+    
+    private static Map<String, Pattern> patternsCache = new HashMap<String, Pattern>();
 
     protected final Pattern getRenamePattern(String oldName) {
+    	if (patternsCache.containsKey(oldName)) {
+            return patternsCache.get(oldName);
+        }
         PatternCompiler compiler = new Perl5Compiler();
         Pattern pattern = null;
         try {
             pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
+            patternsCache.put(oldName, pattern);
             return pattern;
         } catch (MalformedPatternException e) {
             ExceptionHandler.process(e);
             return null;
         }
     }
+    
+    private static Map<String, Perl5Substitution> substitutionsCache = new HashMap<String, Perl5Substitution>();
 
     protected final Perl5Substitution getRenameSubstitution(String newName) {
-        return new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+        if (substitutionsCache.containsKey(newName)) {
+            return substitutionsCache.get(newName);
+        }
+        Perl5Substitution ps = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+        substitutionsCache.put(newName, ps);
+        return ps;
     }
 
     /**
