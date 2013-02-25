@@ -78,7 +78,7 @@ public class XmlMapInputZoneToolBar extends InputZoneToolBar {
     @Override
     public void moveUp() {
         List<InputXmlTree> inputTrees = externalData.getInputTrees();
-        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedInputXmlTree();
+        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedInputTable();
         if (currentSelectedInputXmlTree != null) {
             InputXmlTree selectedTree = (InputXmlTree) currentSelectedInputXmlTree.getModel();
 
@@ -105,7 +105,7 @@ public class XmlMapInputZoneToolBar extends InputZoneToolBar {
     @Override
     public void moveDown() {
         List<InputXmlTree> inputTrees = externalData.getInputTrees();
-        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedInputXmlTree();
+        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedInputTable();
         if (currentSelectedInputXmlTree != null) {
             InputXmlTree selectedTree = (InputXmlTree) currentSelectedInputXmlTree.getModel();
 

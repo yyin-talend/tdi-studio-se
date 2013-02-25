@@ -145,7 +145,7 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
             @Override
             public void execute() {
                 OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
-                        .getCurrentSelectedOutputXmlTree();
+                        .getCurrentSelectedOutputTable();
                 if (currentSelectedOutputXmlTree != null) {
                     OutputXmlTree outputTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
                     int indexOf = externalPart.getModelChildren().indexOf(outputTree);
@@ -202,7 +202,7 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
     @Override
     public void moveUp() {
         List<OutputXmlTree> outputTrees = externalData.getOutputTrees();
-        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputXmlTree();
+        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputTable();
         if (currentSelectedOutputXmlTree != null) {
             OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
 
@@ -229,7 +229,7 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
     @Override
     public void moveDown() {
         List<OutputXmlTree> outputTrees = externalData.getOutputTrees();
-        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputXmlTree();
+        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputTable();
         if (currentSelectedOutputXmlTree != null) {
             OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
 

@@ -186,11 +186,11 @@ public abstract class FiguresManager implements ISelectionChangedListener {
 
     }
 
-    public InputTablePart getCurrentSelectedInputXmlTree() {
+    public InputTablePart getCurrentSelectedInputTable() {
         return this.currentSelectedInputTable;
     }
 
-    public OutputTablePart getCurrentSelectedOutputXmlTree() {
+    public OutputTablePart getCurrentSelectedOutputTable() {
         return this.currentSelectedOutputTable;
     }
 

@@ -41,13 +41,13 @@ public class XmlMapFiguresManager extends FiguresManager {
     }
 
     @Override
-    public InputXmlTreeEditPart getCurrentSelectedInputXmlTree() {
-        return (InputXmlTreeEditPart) super.getCurrentSelectedInputXmlTree();
+    public InputXmlTreeEditPart getCurrentSelectedInputTable() {
+        return (InputXmlTreeEditPart) super.getCurrentSelectedInputTable();
     }
 
     @Override
-    public OutputXmlTreeEditPart getCurrentSelectedOutputXmlTree() {
-        return (OutputXmlTreeEditPart) super.getCurrentSelectedOutputXmlTree();
+    public OutputXmlTreeEditPart getCurrentSelectedOutputTable() {
+        return (OutputXmlTreeEditPart) super.getCurrentSelectedOutputTable();
     }
 
     /*
