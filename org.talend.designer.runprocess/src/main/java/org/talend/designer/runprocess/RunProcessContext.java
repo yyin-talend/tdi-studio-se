@@ -529,6 +529,7 @@ public class RunProcessContext {
                                                 Throwable cause = e.getCause();
                                                 if (cause != null && cause.getClass().equals(InterruptedException.class)) {
                                                     setRunning(false);
+                                                    addErrorMessage(e);
                                                 } else {
                                                     ExceptionHandler.process(e);
                                                     addErrorMessage(e);
