@@ -21,7 +21,6 @@
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.designer.codegen.ITalendSynchronizer
-		org.talend.designer.core.model.utils.emf.talendfile.ContextType
 	"
 %>
 <%
