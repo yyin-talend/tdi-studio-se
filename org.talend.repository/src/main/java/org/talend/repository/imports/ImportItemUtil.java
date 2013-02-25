@@ -68,6 +68,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionPackage;
@@ -1197,7 +1198,9 @@ public class ImportItemUtil {
                             if (projectFilePath != null) {
                                 Project project = computeProject(collector, itemRecord, projectFilePath);
                                 if (checkProject(project, itemRecord)) {
-                                    treeBuilder.addItem(project, itemRecord);
+                                    if (!checkHadoopSubitem(collector, itemRecord)) {
+                                        treeBuilder.addItem(project, itemRecord);
+                                    }
 
                                     // set item project into record.
                                     itemRecord.setItemProject(project);
@@ -1266,6 +1269,69 @@ public class ImportItemUtil {
         }
 
         return checkProject;
+    }
+
+    /**
+     * DOC ycbai Comment method "checkHadoopSubitem".
+     * 
+     * Check whether or not the itemRecord is a subitem record of a hadoop cluster item record.
+     * 
+     * @param itemRecord
+     * @return
+     */
+    public static boolean checkHadoopSubitem(ResourcesManager manager, ItemRecord itemRecord) {
+        Item item = itemRecord.getItem();
+        if (item == null) {
+            return false;
+        }
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService != null) {
+            new ImportItemUtil().resolveItem(manager, itemRecord);
+            return hadoopClusterService.isHadoopSubItem(item);
+        }
+
+        return false;
+    }
+
+    /**
+     * DOC ycbai Comment method "collectHadoopSubrecords".
+     * 
+     * Collect all subitem records belong to a hadoop cluster.
+     * 
+     * @param totalItemRecords
+     * @param itemRecord
+     * @return
+     */
+    public static Set<ItemRecord> collectHadoopSubrecords(ResourcesManager manager, List<ItemRecord> totalItemRecords,
+            ItemRecord itemRecord) {
+        Set<ItemRecord> subnodes = new HashSet<ItemRecord>();
+        Item item = itemRecord.getItem();
+        if (item == null) {
+            return subnodes;
+        }
+        new ImportItemUtil().resolveItem(manager, itemRecord);
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService != null && hadoopClusterService.isHadoopClusterItem(item)) {
+            List<String> subitemIds = hadoopClusterService.getSubitemIdsOfHadoopCluster(item);
+            if (subitemIds.size() == 0) {
+                return subnodes;
+            }
+            for (ItemRecord ir : totalItemRecords) {
+                if (ir.getProperty() != null && subitemIds.contains(ir.getProperty().getId())) {
+                    subnodes.add(ir);
+                }
+            }
+        }
+
+        return subnodes;
     }
 
     private List<String> getOptionnalMigrationTasks() {

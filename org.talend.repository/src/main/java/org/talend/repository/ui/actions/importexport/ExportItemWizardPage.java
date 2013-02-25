@@ -68,6 +68,8 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
@@ -272,6 +274,15 @@ class ExportItemWizardPage extends WizardPage {
         // hide the generated documentation node, avoid to export .
         if (object == null && ERepositoryObjectType.GENERATED.equals(node.getContentType())) {
             return false;
+        }
+        // hide subnodes of hadoop cluster if they are existent.
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService != null) {
+            return !hadoopClusterService.isHadoopSubnode(node);
         }
         return true;
     }

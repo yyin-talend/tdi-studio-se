@@ -68,6 +68,7 @@ import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
@@ -211,18 +212,27 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     @Override
     public boolean isEnabled(DropTargetEvent e) {
-        if (PluginChecker.isCDCPluginLoaded()) {
-            ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
-                    ICDCProviderService.class);
-            Object obj = getSelection().getFirstElement();
-            if (obj instanceof RepositoryNode) {
-                RepositoryNode sourceNode = (RepositoryNode) obj;
+        Object obj = getSelection().getFirstElement();
+        if (obj instanceof RepositoryNode) {
+            RepositoryNode sourceNode = (RepositoryNode) obj;
+            if (PluginChecker.isCDCPluginLoaded()) {
+                ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                        ICDCProviderService.class);
+
                 if (service != null && (service.isSubscriberTableNode(sourceNode) || service.isSystemSubscriberTable(sourceNode))) {
                     return false;
                 }
             }
-
+            IHadoopClusterService hadoopClusterService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+                hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                        IHadoopClusterService.class);
+            }
+            if (hadoopClusterService != null && hadoopClusterService.isHadoopClusterNode(sourceNode)) {
+                return false;
+            }
         }
+
         return !this.editor.getProcess().isReadOnly();
     }
 

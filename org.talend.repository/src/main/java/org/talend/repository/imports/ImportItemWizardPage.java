@@ -174,6 +174,8 @@ class ImportItemWizardPage extends WizardPage {
 
     private TarFile sourceTarFile;
 
+    private List<ItemRecord> totalItemRecords = new ArrayList<ItemRecord>();
+
     @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
 
@@ -782,7 +784,7 @@ class ImportItemWizardPage extends WizardPage {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 repositoryUtil.clearAllData();
-                items.addAll(repositoryUtil.populateItems(manager, overwrite, monitor));
+                items.addAll(totalItemRecords = repositoryUtil.populateItems(manager, overwrite, monitor));
             }
 
         };
@@ -935,8 +937,28 @@ class ImportItemWizardPage extends WizardPage {
         return list;
     }
 
+    /**
+     * DOC ycbai Comment method "getHadoopSubnodes".
+     * 
+     * Get hadoop sub item records.
+     * 
+     * @param itemRecords
+     * @return
+     */
+    private Set<ItemRecord> getHadoopSubrecords(List<ItemRecord> itemRecords) {
+        Set<ItemRecord> hadoopSubrecords = new HashSet<ItemRecord>();
+        for (ItemRecord itemRecord : itemRecords) {
+            hadoopSubrecords.addAll(ImportItemUtil.collectHadoopSubrecords(manager, totalItemRecords, itemRecord));
+        }
+
+        return hadoopSubrecords;
+    }
+
     public boolean performFinish() {
-        final List<ItemRecord> itemRecords = getCheckedElements();
+        final List<ItemRecord> itemRecords = new ArrayList<ItemRecord>();
+        final List<ItemRecord> checkedItemRecords = getCheckedElements();
+        itemRecords.addAll(checkedItemRecords);
+        itemRecords.addAll(getHadoopSubrecords(itemRecords));
         for (ItemRecord itemRecord : itemRecords) {
             Item item = itemRecord.getProperty().getItem();
             if (item instanceof JobletProcessItem) {
