@@ -14,6 +14,7 @@ package org.talend.designer.runprocess.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,9 +30,6 @@ import java.util.Set;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -317,7 +315,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean, boolean)
      */
-    @SuppressWarnings("restriction")
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
             throws ProcessorException {
@@ -332,7 +329,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
-    @SuppressWarnings("restriction")
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
@@ -496,7 +492,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @param processCode
      * @return
      */
-    private String formatCode(String processCode) {
+    @SuppressWarnings("restriction")
+	private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
         // we cannot make calls to Ui in headless mode
@@ -1255,9 +1252,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         if (samEnabled || slEnabled) {
             String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
-            IFileSystem fileSystem = EFS.getLocalFileSystem();
-            IFileStore esbConfigsSourceFolder = fileSystem.getStore(URI.create(eclipseHome + "esb")); //$NON-NLS-1$
-            if (!esbConfigsSourceFolder.fetchInfo().exists()) {
+            File esbConfigsSourceFolder = new File(URI.create(eclipseHome + "esb")); //$NON-NLS-1$
+            if (!esbConfigsSourceFolder.exists()) {
                 RunProcessPlugin.getDefault().getLog().log(
                         new Status(IStatus.WARNING,
                                 RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
@@ -1266,8 +1262,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
 
             IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
-            IFolder sourceFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-            IFileStore esbConfigsTargetFolder = fileSystem.getStore(sourceFolder.getLocation());
+            IFolder esbConfigsTargetFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
 
             // add SAM config file to classpath
             if (samEnabled) {
@@ -1281,16 +1276,31 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
     }
 
-    private void copyEsbConfigFile(IFileStore esbConfigsSourceFolder, IFileStore esbConfigsTargetFolder, String configFile) {
-        IFileStore esbConfig = esbConfigsSourceFolder.getChild(configFile);
-        if (esbConfig.fetchInfo().exists()) {
+    private void copyEsbConfigFile(File esbConfigsSourceFolder, IFolder esbConfigsTargetFolder, String configFile) {
+        File esbConfig = new File(esbConfigsSourceFolder, configFile);
+        if (esbConfig.exists()) {
             try {
-                esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
-            } catch (CoreException e) {
+                IFile target = esbConfigsTargetFolder.getFile(configFile);
+                InputStream is = null;
+                try {
+                    is = new FileInputStream(esbConfig);
+                    if (!target.exists()) {
+                        target.create(is, true, null);
+                    } else {
+                        target.setContents(is, true, false, null);
+                    }
+                } finally {
+                    if (null != is) {
+                        is.close();
+                    }
+                }
+//                esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
+            } catch (Exception e) {
                 RunProcessPlugin.getDefault().getLog().log(
                         new Status(IStatus.WARNING,
                                 RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
-                                "cannot add configuration file on classpath - " + configFile)); //$NON-NLS-1$
+                                "cannot add configuration file on classpath - " + configFile, //$NON-NLS-1$
+                                e));
             }
         } else {
             RunProcessPlugin.getDefault().getLog().log(
