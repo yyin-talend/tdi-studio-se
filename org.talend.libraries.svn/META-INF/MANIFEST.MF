@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Svn Plug-in
+Bundle-SymbolicName: org.talend.libraries.svn
+Bundle-Version: 2.2.0.qualifier
+Bundle-ClassPath: .,
+ lib/svnkit-javahl.jar,
+ lib/svnkit.jar,
+ lib/trilead.jar,
+ lib/antlr.jar,
+ lib/sequence-library.jar
+Export-Package: org.tigris.subversion.javahl,
+ org.tmatesoft.svn.core,
+ org.tmatesoft.svn.core.io,
+ org.tmatesoft.svn.core.javahl
