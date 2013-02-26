@@ -274,17 +274,18 @@ public class TOSLoginComposite extends Composite {
         repositoryComposite.setLayout(new FormLayout());
         repositoryComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
-        Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("TOSLoginComposite.welcomeTitle")); //$NON-NLS-1$
+        String productName = brandingService.getProductName();
+        Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("TOSLoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         FormData welcomeLabelFormData = new FormData();
         welcomeLabelFormData.top = new FormAttachment(0, 7);
         welcomeLabelFormData.left = new FormAttachment(0, 10);
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            welcomeLabelFormData.right = new FormAttachment(0, 350);
+            welcomeLabelFormData.right = new FormAttachment(0, 380);
         } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            welcomeLabelFormData.right = new FormAttachment(0, 390);
+            welcomeLabelFormData.right = new FormAttachment(0, 420);
         } else {
-            welcomeLabelFormData.right = new FormAttachment(0, 390);
+            welcomeLabelFormData.right = new FormAttachment(0, 420);
         }
         welcomeLabelFormData.bottom = new FormAttachment(100, 0);
         welcomeLabel.setLayoutData(welcomeLabelFormData);
