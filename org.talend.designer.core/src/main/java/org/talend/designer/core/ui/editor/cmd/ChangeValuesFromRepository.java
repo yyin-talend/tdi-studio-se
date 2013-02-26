@@ -272,7 +272,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML") //$NON-NLS-1$
                                 || ((INode) elem).getComponent().getName().equals("tMDMOutput")
                                 || ((INode) elem).getComponent().getName().equals("tWebService") || ((INode) elem).getComponent()
-                                .getName().equals("tCreateTable")); //$NON-NLS-1$
+                                .getName().equals("tCreateTable")) || ((INode) elem).getComponent().getName().equals("tWriteJSONField"); //$NON-NLS-1$
 
                 if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || b) //$NON-NLS-1$
                         && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
