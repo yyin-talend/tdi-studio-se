@@ -442,20 +442,21 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         resizeScrolledComposite();
     }
 
-    protected int createCrtrol(int curRow, int additionalHeightSize, int heightSize, int nbInRow,
-            Map<String, Integer> groupPosition) {
+    private int createCrtrol(int curRow, int additionalHeightSize, int heightSize, int nbInRow, Map<String, Integer> groupPosition) {
         int numInRow = 0;
         int maxRowSize = 0;
+        int currentHeightSize = heightSize;
         Control lastControl = null;
 
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter curParam = listParam.get(i);
+            updateParameter(curParam);
             if (curParam.getCategory() == section) {
                 if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                     // System.out.println("test:" + curParam.getName() + "
                     // field:"+curParam.getField());
-                    if (curParam.isShow(listParam)) {
+                    if (curParam.isShow(listParam) && isShouldDisParameter(curParam)) {
                         // System.out.println("show:" + curParam.getName() + " field:" + curParam.getField());
                         numInRow++;
                         AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
@@ -475,25 +476,25 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         if (groupName != null) {
                             if (!hashCurControls.containsKey(groupName)) {
                                 if (groupPosition.size() > 0) {
-                                    heightSize += DEFAULT_GROUP_HEIGHT;
+                                    currentHeightSize += DEFAULT_GROUP_HEIGHT;
                                 }
-                                new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
-                                        lastControl);
-                                groupPosition.put(groupName, heightSize);
+                                new GroupController(this).createControl(composite, curParam, numInRow, nbInRow,
+                                        currentHeightSize, lastControl);
+                                groupPosition.put(groupName, currentHeightSize);
                             }
                             subComposite = (Composite) hashCurControls.get(groupName);
-                            int h2 = heightSize - groupPosition.get(groupName);
+                            int h2 = currentHeightSize - groupPosition.get(groupName);
                             lastControl = controller.createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
 
                         } else {
                             if (isCompactView()) {
-                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + currentHeightSize;
                                 lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
                             } else {
                                 if (numInRow > 1 && nbInRow > 1) {
-                                    heightSize += maxRowSize;
+                                    currentHeightSize += maxRowSize;
                                 }
-                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + currentHeightSize;
                                 lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
                             }
                         }
@@ -507,7 +508,28 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 }
             }
         }
-        return maxRowSize;
+        // return maxRowSize;
+        return currentHeightSize - heightSize + maxRowSize;// return the change in this create method
+    }
+
+    /**
+     * this method to special which control should display on the composite
+     * 
+     * @param curParam
+     * @return
+     */
+    protected boolean isShouldDisParameter(IElementParameter curParam) {
+        return true;
+    }
+
+    /**
+     * 
+     * only need a convert for MatchRuleComposite, because we split old composite into two different composite
+     * 
+     * @param curParam
+     */
+    protected void updateParameter(IElementParameter curParam) {
+        // only need a convert for MatchRuleComposite
     }
 
     /**
