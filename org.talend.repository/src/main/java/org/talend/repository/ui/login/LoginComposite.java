@@ -504,7 +504,7 @@ public class LoginComposite extends Composite {
         repositoryComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         repositoryComposite.setBackground(parent.getBackground());
         // repositoryComposite.setBackground(GREY_COLOR);
-        String productName = brandingService.getFullProductName();
+        String productName = brandingService.getProductName();
         Label welcomeLabel = toolkit.createLabel(repositoryComposite,
                 Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
