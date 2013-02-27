@@ -162,6 +162,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     private CTabItem outputTabItem;
 
+    private CTabItem fileTabItem;
+
     private Composite outputComposite;
 
     private JSONWizard wizard;
@@ -279,7 +281,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         sash2.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         addGroupFileViewer(sash2, 400, 210);
-        addGroupJSONViewer(sash2, 300, 110);
+        // addGroupJSONViewer(sash2, 300, 110);
 
         if (!isInWizard()) {
             // Bottom Button
@@ -288,6 +290,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             cancelButton = new UtilsButton(compositeBottomButton, "Cancel", WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
+        mainComposite.setWeights(new int[] { 60, 40 });
     }
 
     /**
@@ -365,7 +368,9 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         fieldsTableEditorView = new ExtractionFieldsWithJSONXPathEditorView(fieldsModel, schemaTargetGroup);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         final Composite fieldTableEditorComposite = fieldsTableEditorView.getMainComposite();
-        fieldTableEditorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        data2 = new GridData(GridData.FILL_BOTH);
+        data2.heightHint = 180;
+        fieldTableEditorComposite.setLayoutData(data2);
         fieldTableEditorComposite.setBackground(null);
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
@@ -408,9 +413,12 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         previewTabItem.setText("Preview"); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
         outputTabItem.setText("Output");
+        fileTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        fileTabItem.setText("File Viewer");
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
+        Composite compositeFileViewer = Form.startNewGridLayout(tabFolder, 1);
 
         // previewGroup.setLayout(new GridLayout());
 
@@ -431,8 +439,20 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         jsonFilePreview = new JSONShadowProcessPreview(previewComposite, null, width, height - 10);
         jsonFilePreview.newTablePreview();
 
+        // File View
+        fileJSONText = new Text(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.minimumWidth = width;
+        gridData.minimumHeight = HEIGHT_BUTTON_PIXEL;
+        fileJSONText.setLayoutData(gridData);
+        fileJSONText.setToolTipText("When Filepath is specified, you can read here the" + " "
+                + TreePopulator.getMaximumRowsToPreview() + " " + "first rows of the file.");
+        fileJSONText.setEditable(false);
+        fileJSONText.setText("Filepath must be specified to show the Data file");
+
         previewTabItem.setControl(previewComposite);
         outputTabItem.setControl(outputComposite);
+        fileTabItem.setControl(compositeFileViewer);
         tabFolder.setSelection(previewTabItem);
         tabFolder.pack();
     }
