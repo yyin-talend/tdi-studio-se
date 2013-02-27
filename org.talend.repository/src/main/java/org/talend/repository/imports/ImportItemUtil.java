@@ -1427,8 +1427,7 @@ public class ImportItemUtil {
         try {
             final Item item = itemRecord.getItem();
             boolean byteArray = (item instanceof FileItem);
-            IPath itemPath = getItemPath(itemRecord.getPath());
-
+            IPath itemPath = getItemPath(itemRecord.getPath(), item);
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord.getResourceSet(), itemPath, byteArray);
 
@@ -1594,8 +1593,12 @@ public class ImportItemUtil {
         return xmiResourceManager.isPropertyFile(path.lastSegment());
     }
 
-    private IPath getItemPath(IPath path) {
-        return path.removeFileExtension().addFileExtension(FileConstants.ITEM_EXTENSION);
+    private IPath getItemPath(IPath path, Item item) {
+        if (item.getFileExtension() != null) {
+            return path.removeFileExtension().addFileExtension(item.getFileExtension());
+        } else {
+            return path.removeFileExtension().addFileExtension(FileConstants.ITEM_EXTENSION);
+        }
     }
 
     private IPath getReferenceItemPath(IPath path, String extension) {
