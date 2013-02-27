@@ -124,7 +124,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Java_xmlUtil" MODULE="xmlUtil.jar"
+			<IMPORT NAME="Java_xmlUtil" MODULE="xmlUtil.jar" UrlPath="platform:/plugin/org.talend.libraries.xml/lib/xmlUtil.jar"
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>

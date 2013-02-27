@@ -4189,7 +4189,7 @@
 				MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="crm4client" MODULE="crm4client.jar"
+			<IMPORT NAME="crm4client" MODULE="crm4client.jar" UrlPath="platform:/plugin/org.talend.libraries.crm/lib/crm4client.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.0.jar"
 				REQUIRED="true" />
@@ -4199,7 +4199,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="wsdl4j" MODULE="wsdl4j-1.6.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar"
 				BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
-			<IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/xmlbeans-2.3.0.jar"
+			<IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlbeans-2.3.0.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="XmlSchema" MODULE="xmlschema-core-2.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/xmlschema-core-2.0.1.jar"
 				REQUIRED="true" />
@@ -4210,10 +4210,10 @@
 			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED="true" />
-			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" />
-  			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" />
-  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true"/>
-            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true"/>
+			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-api.jar" REQUIRED="true" />
+  			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-impl.jar" REQUIRED="true" />
+  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED="true"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-ri.jar" REQUIRED="true"/>
 		</IMPORTS>
 	</CODEGENERATION>
 

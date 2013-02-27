@@ -5,7 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070319A"
@@ -62,7 +62,7 @@
     >
       <DEFAULT>ParAccel</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -83,7 +83,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -101,7 +101,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -111,7 +111,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -120,40 +120,40 @@
       SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="10"
       REQUIRED="true"
-    >      
+    >
     </PARAMETER>
-	
+
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
 	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
-    >      
+    >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
-	
+
   </PARAMETERS>
-  
+
   	<ADVANCED_PARAMETERS>
-		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">  
-			<DEFAULT>false</DEFAULT>    
+		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
+			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
-  
+
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.paraccel/lib/paraccel-jdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
-   
-   <RETURNS/>  
-      
-</COMPONENT>    
+
+   <RETURNS/>
+
+</COMPONENT>

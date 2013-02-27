@@ -670,7 +670,7 @@
         <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
 		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" REQUIRED_IF="(DBTYPE=='POSTGRE') or (DBTYPE=='POSTGREPLUS') or (DBTYPE=='GREENPLUM')" />
-		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" REQUIRED_IF="DBTYPE=='FIREBIRD'" />
+		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.firebird/lib/jaybird-full-2.1.1.jar" REQUIRED_IF="DBTYPE=='FIREBIRD'" />
 		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED_IF="DBTYPE=='HSQLDB'"/>
 		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED_IF="DBTYPE=='INFORMIX'" />
 		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED_IF="DBTYPE=='INFORMIX'" />
@@ -680,20 +680,20 @@
 		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED_IF="DBTYPE=='INFORMIX'"/>
 		<IMPORT NAME="Driver-INGRES" MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED_IF="DBTYPE=='INGRES'"/>
 		<IMPORT NAME="Driver-Interbase" MODULE="interclient.jar" REQUIRED_IF="DBTYPE=='INTERBASE'" />
-		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
-		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
-		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
+		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derby.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
+		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbyclient.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
+		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbynet.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" REQUIRED_IF="DBTYPE=='SQLITE'" />
 		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" REQUIRED_IF="DBTYPE=='SYBASE'" />
 		<IMPORT NAME="Driver-Teradata_jdbc" MODULE="terajdbc4.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
 		<IMPORT NAME="Driver-Teradata_config" MODULE="tdgssconfig.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
 		<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED_IF="DBTYPE=='NETEZZA'" />
-		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3')" />
-		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3.5')" />
-		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_4')" />
-		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_4.1')" />
-		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_5.0')" />
-		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_6_0')" />
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.0_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3')" />
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.5_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3.5')" />
+		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.0_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_4')" />
+		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.7_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_4.1')" />
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.14_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_5.0')" />
+		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_6_0')" />
      </IMPORTS>
    </CODEGENERATION>
 

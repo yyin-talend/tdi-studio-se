@@ -316,10 +316,10 @@
    <CODEGENERATION>
      <IMPORTS>
 		<IMPORT NAME="log4j"                MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
-		<IMPORT NAME="eigenbase-xom"        MODULE="eigenbase-xom.jar" REQUIRED="true" />
-		<IMPORT NAME="eigenbase-resgen"     MODULE="eigenbase-resgen.jar" REQUIRED="true" />
-		<IMPORT NAME="eigenbase-properties" MODULE="eigenbase-properties.jar" REQUIRED="true" />
-		<IMPORT NAME="javacup"              MODULE="javacup.jar" REQUIRED="true" />
+		<IMPORT NAME="eigenbase-xom"        MODULE="eigenbase-xom.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/eigenbase-xom.jar" REQUIRED="true" />
+		<IMPORT NAME="eigenbase-resgen"     MODULE="eigenbase-resgen.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/eigenbase-resgen.jar" REQUIRED="true" />
+		<IMPORT NAME="eigenbase-properties" MODULE="eigenbase-properties.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/eigenbase-properties.jar" REQUIRED="true" />
+		<IMPORT NAME="javacup"              MODULE="javacup.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/javacup.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-dbcp"         MODULE="commons-dbcp-1.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-dbcp-1.2.1.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-math"         MODULE="commons-math-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-math-1.0.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-vfs.jar" REQUIRED="true" />
@@ -339,7 +339,7 @@
 		<IMPORT NAME="Driver-MSSQL" 		MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" REQUIRED="true" />
         <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-POSTGRESQL" 	MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-FIREBIRD" 		MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-FIREBIRD" 		MODULE="jaybird-full-2.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.firebird/lib/jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-HSQLDb" 		MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED="true" />
@@ -349,13 +349,13 @@
 		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-INGRES" 		MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-Interbase" 	MODULE="interclient.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-JAVADB-DERBY" 	MODULE="derby.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBY" 	MODULE="derby.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derby.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbyclient.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbynet.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" REQUIRED="true" />
-		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" REQUIRED="false" />
-		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" REQUIRED="false" />
+		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/mondrian_2.jar" REQUIRED="false" />
+		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/mondrian_3.jar" REQUIRED="false" />
      </IMPORTS>
    </CODEGENERATION>
 

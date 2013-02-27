@@ -5,7 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -50,7 +50,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <!-- PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -59,7 +59,7 @@
     >
       <DEFAULT>"3050"</DEFAULT>
     </PARAMETER -->
-    
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -85,7 +85,7 @@
       NUM_ROW="40"
       REPOSITORY_VALUE="FILE"
       REQUIRED="true"
-    >    
+    >
        <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/database.fdb"</DEFAULT>
     </PARAMETER>
 
@@ -98,7 +98,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -108,36 +108,36 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
 	<PARAMETER
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="60"
       REQUIRED="true"
-    >      
+    >
     </PARAMETER>
-	
+
 	<PARAMETER
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
       NUM_ROW="60"
       REQUIRED="true"
 	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
-    >      
+    >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
-        
+
    </PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
-		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">  
-			<DEFAULT>false</DEFAULT>    
+		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
+			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.firebird/lib/jaybird-full-2.1.1.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

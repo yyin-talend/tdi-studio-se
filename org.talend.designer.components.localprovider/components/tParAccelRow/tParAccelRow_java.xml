@@ -42,7 +42,7 @@
       REPOSITORY_VALUE="DATABASE:PARACCEL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-    
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -50,7 +50,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -58,7 +58,7 @@
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />        
+    />
 
     <PARAMETER
       NAME="HOST"
@@ -93,7 +93,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
@@ -102,7 +102,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -112,7 +112,7 @@
     >
       <DEFAULT>ParAccel</DEFAULT>
     </PARAMETER>
-     
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -142,7 +142,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -154,8 +154,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -163,7 +163,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -179,7 +179,7 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -191,7 +191,7 @@
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
-  
+
   	<PARAMETER
       NAME="PROPAGATE_RECORD_SET"
       FIELD="CHECK"
@@ -199,7 +199,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="RECORD_SET_COLUMN"
       FIELD="COLUMN_LIST"
@@ -214,7 +214,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="SET_PREPAREDSTATEMENT_PARAMETERS"
       FIELD="TABLE"
@@ -258,7 +258,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-        
+
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -272,7 +272,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.paraccel/lib/paraccel-jdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

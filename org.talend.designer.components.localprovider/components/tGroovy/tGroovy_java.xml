@@ -57,14 +57,14 @@
    <CODEGENERATION>
    	<IMPORTS>
 		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/antlr-2.7.6.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="asm-2.2.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="asm-analysis-2.2.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="asm-attrs-2.2.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="asm-tree-2.2.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="asm-util-2.2.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="groovy-1.0.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="groovy-starter.jar" REQUIRED="true" />
-		<IMPORT NAME="Groovy_Module" MODULE="groovy-xmlrpc-0.3.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-analysis-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-analysis-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-attrs-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-attrs-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-tree-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-tree-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-util-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-util-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.groovy/lib/groovy-1.0.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-starter.jar" UrlPath="platform:/plugin/org.talend.libraries.groovy/lib/groovy-starter.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-xmlrpc-0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.groovy/lib/groovy-xmlrpc-0.3.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

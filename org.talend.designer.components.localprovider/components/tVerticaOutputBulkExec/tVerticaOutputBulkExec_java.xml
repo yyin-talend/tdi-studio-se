@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070316A"
@@ -40,9 +40,9 @@
       REPOSITORY_VALUE="DATABASE:VERTICA"
     />
 
-	<PARAMETER 
-		NAME="DB_VERSION" 
-		FIELD="CLOSED_LIST" 
+	<PARAMETER
+		NAME="DB_VERSION"
+		FIELD="CLOSED_LIST"
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION">
 		<ITEMS DEFAULT="VERTICA_3">
@@ -84,15 +84,15 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-    	<PARAMETER 
-		NAME="SCHEMA_DB" 
-		FIELD="TEXT" 
+
+    	<PARAMETER
+		NAME="SCHEMA_DB"
+		FIELD="TEXT"
 		NUM_ROW="30"
 		REPOSITORY_VALUE="SCHEMA" >
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-    
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -102,7 +102,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -164,12 +164,12 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER 
+
+    <PARAMETER
     	NAME="APPEND"
-        FIELD="CHECK" 
-        REQUIRED="true" 
-        NUM_ROW="70" 
+        FIELD="CHECK"
+        REQUIRED="true"
+        NUM_ROW="70"
         REPOSITORY_VALUE="APPEND">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -180,12 +180,12 @@
       NUM_ROW="90"
       SHOW="false"
       READONLY="true"
-    >       
+    >
       <DEFAULT>vertica_id</DEFAULT>
     </PARAMETER>
-    
+
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="ROS"
@@ -194,7 +194,7 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="EXIT_ON_NO_ROWS"
       FIELD="CHECK"
@@ -202,7 +202,7 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
@@ -220,19 +220,19 @@
     >
       <DEFAULT>"null"</DEFAULT>
     </PARAMETER>
-    
-   	<PARAMETER 
-   		NAME="INCLUDEHEADER" 
-   		FIELD="CHECK" 
+
+   	<PARAMETER
+   		NAME="INCLUDEHEADER"
+   		FIELD="CHECK"
    		NUM_ROW="7">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
-    	NAME="ENCODING" 
-    	FIELD="ENCODING_TYPE" 
-    	NUM_ROW="8" 
-    	REQUIRED="true" 
+    <PARAMETER
+    	NAME="ENCODING"
+    	FIELD="ENCODING_TYPE"
+    	NUM_ROW="8"
+    	REQUIRED="true"
     	REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
@@ -244,17 +244,17 @@
       <TEMPLATE NAME="tVOB" COMPONENT="tVerticaOutputBulk">
         <LINK_TO NAME="tVBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
-      
-      <TEMPLATE NAME="tVBE" COMPONENT="tVerticaBulkExec"/>  
-      
+
+      <TEMPLATE NAME="tVBE" COMPONENT="tVerticaBulkExec"/>
+
       <TEMPLATE_PARAM SOURCE="self.FILENAME"   TARGET="tVOB.FILENAME" />
       <TEMPLATE_PARAM SOURCE="self.FIELDSEPARATOR"   TARGET="tVOB.FIELDSEPARATOR" />
       <TEMPLATE_PARAM SOURCE="self.APPEND"   TARGET="tVOB.APPEND" />
       <TEMPLATE_PARAM SOURCE="self.INCLUDEHEADER"   TARGET="tVOB.INCLUDEHEADER" />
       <TEMPLATE_PARAM SOURCE="self.ENCODING"   TARGET="tVOB.ENCODING" />
       <TEMPLATE_PARAM SOURCE="self.SCHEMA"   TARGET="tVOB.SCHEMA" />
-	  <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tVOB.NULL_STRING" />	 
-      
+	  <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tVOB.NULL_STRING" />
+
       <TEMPLATE_PARAM SOURCE="self.DB_VERSION"   TARGET="tVBE.DB_VERSION" />
       <TEMPLATE_PARAM SOURCE="self.HOST"   TARGET="tVBE.HOST" />
       <TEMPLATE_PARAM SOURCE="self.PORT"   TARGET="tVBE.PORT" />
@@ -272,19 +272,19 @@
       <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tVBE.NULL_STRING" />
       <TEMPLATE_PARAM SOURCE="self.MAPPING"   TARGET="tVBE.MAPPING" />
       <TEMPLATE_PARAM SOURCE="self.ROS"   TARGET="tVBE.ROS" />
-      
-      
+
+
 
     </TEMPLATES>
     <IMPORTS>
-		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED="false" />		
-		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="DB_VERSION=='VERTICA_6_0'" />
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.5_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.7_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="DB_VERSION=='VERTICA_6_0'" />
     </IMPORTS>
   </CODEGENERATION>
-  
+
   <RETURNS/>
 </COMPONENT>

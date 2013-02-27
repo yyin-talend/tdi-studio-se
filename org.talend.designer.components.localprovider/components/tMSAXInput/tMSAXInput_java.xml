@@ -5,7 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070312A"
@@ -47,17 +47,17 @@
 				<ITEM NAME="DOTNET" VALUE="DOTNET" />
 			</ITEMS>
 	</PARAMETER>
-    
-    <PARAMETER 
-        NAME="ASSEMBLY_NAME" 
-        FIELD="FILE" 
+
+    <PARAMETER
+        NAME="ASSEMBLY_NAME"
+        FIELD="FILE"
         NUM_ROW="6"
         SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
         REQUIRED="true"
     >
 		<DEFAULT>"C:\\Program Files (x86)\\Microsoft Dynamics AX\\60\\Client\\Bin\\Microsoft.Dynamics.BusinessConnectorNet.dll"</DEFAULT>
 	</PARAMETER>
-    
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -77,7 +77,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="AOS_SERVER_INSTANCE"
       FIELD="TEXT"
@@ -97,7 +97,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -107,7 +107,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="DOMAIN"
       FIELD="TEXT"
@@ -117,7 +117,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="COMPANY"
       FIELD="TEXT"
@@ -127,7 +127,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="LANGUAGE"
       FIELD="TEXT"
@@ -137,7 +137,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CONFIGURATION_FILE"
       FIELD="FILE"
@@ -155,7 +155,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
@@ -163,7 +163,7 @@
     >
       <DEFAULT>"EmplTable"</DEFAULT>
     </PARAMETER>
-   
+
 
     <PARAMETER
       NAME="QUERY"
@@ -179,15 +179,15 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="MSAX-JInterop" MODULE="a-j-interop.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Iwonbat" MODULE="b-iwombat.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Jarapac" MODULE="b-jarapac.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Jcifs" MODULE="b-jcifs-1.2.9.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Jcifs-ntlm-auth" MODULE="b-jcifs-ntlm-auth.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Ncacn_ip_tcp" MODULE="b-ncacn_ip_tcp.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'" />
-       <IMPORT NAME="MSAX-Ncacn_np" MODULE="b-ncacn_np.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-Ntlm-securityt" MODULE="b-ntlm-security.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
-       <IMPORT NAME="MSAX-NET-CONNECTOR" MODULE="janet-java-1.0.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DOTNET'"/>
+       <IMPORT NAME="MSAX-JInterop" MODULE="a-j-interop.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/a-j-interop.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Iwonbat" MODULE="b-iwombat.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-iwombat.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jarapac" MODULE="b-jarapac.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-jarapac.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jcifs" MODULE="b-jcifs-1.2.9.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-jcifs-1.2.9.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jcifs-ntlm-auth" MODULE="b-jcifs-ntlm-auth.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-jcifs-ntlm-auth.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Ncacn_ip_tcp" MODULE="b-ncacn_ip_tcp.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-ncacn_ip_tcp.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'" />
+       <IMPORT NAME="MSAX-Ncacn_np" MODULE="b-ncacn_np.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-ncacn_np.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Ntlm-securityt" MODULE="b-ntlm-security.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/b-ntlm-security.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-NET-CONNECTOR" MODULE="janet-java-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.microsoft/lib/janet-java-1.0.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DOTNET'"/>
      </IMPORTS>
    </CODEGENERATION>
 

@@ -76,17 +76,17 @@
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
 	</PARAMETER>
-	
+
 	<PARAMETER NAME="SCHEMA_OPT_NUM" FIELD="TEXT" NUM_ROW="60"
             REQUIRED="true" SHOW="false">
             <DEFAULT>100</DEFAULT>
     </PARAMETER>
-    
+
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cobolX" MODULE="cobolX.jar" REQUIRED="true" />
+			<IMPORT NAME="cobolX" MODULE="cobolX.jar" UrlPath="platform:/plugin/org.talend.libraries.ebcdic/lib/cobolX.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

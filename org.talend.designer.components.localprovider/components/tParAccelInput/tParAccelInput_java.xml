@@ -5,7 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070319A"
@@ -49,7 +49,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -57,7 +57,7 @@
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />    
+    />
 
     <PARAMETER
       NAME="HOST"
@@ -79,7 +79,7 @@
     >
       <DEFAULT>ParAccel</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -102,7 +102,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
@@ -122,7 +122,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -141,7 +141,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -149,7 +149,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -164,7 +164,7 @@
       NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>  
+    </PARAMETER>
 
     <PARAMETER
       NAME="QUERY"
@@ -174,18 +174,18 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
       SHOW="false"
-    >       
+    >
       <DEFAULT>postgres_id</DEFAULT>
     </PARAMETER>
-      
+
    </PARAMETERS>
-	
+
    <ADVANCED_PARAMETERS>
 	<PARAMETER
       NAME="LOG_FILE"
@@ -218,16 +218,16 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER 
+
+    <PARAMETER
       NAME="USE_CURSOR"
       FIELD="CHECK"
       NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER 
+
+    <PARAMETER
       NAME="CURSOR_SIZE"
       FIELD="TEXT"
       NUM_ROW="20"
@@ -235,22 +235,22 @@
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
-	</PARAMETER>	    
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
-	
+
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.paraccel/lib/paraccel-jdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -28,7 +28,7 @@
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="COMPONENT_OK"/>
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
-    <CONNECTOR CTYPE="RUN_IF"/>   
+    <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
 
   <PARAMETERS>
@@ -41,16 +41,16 @@
     >
       <DEFAULT>"http://svn.gna.org/svn/phpwebgallery"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER 
+
+    <PARAMETER
 		NAME="NEED_AUTH"
-		FIELD="CHECK" 
+		FIELD="CHECK"
 		REQUIRED="true"
 		NUM_ROW="20"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-    
+
     <PARAMETER
       NAME="USERNAME"
       FIELD="TEXT"
@@ -60,7 +60,7 @@
     >
       <DEFAULT>"anonymous"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASSWORD"
       FIELD="TEXT"
@@ -117,7 +117,7 @@
 
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="SVN" MODULE="svnkit.jar" REQUIRED="true" />
+       <IMPORT NAME="SVN" MODULE="svnkit.jar" UrlPath="platform:/plugin/org.talend.libraries.svn/lib/svnkit.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 

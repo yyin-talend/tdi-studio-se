@@ -5,7 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070926A"
@@ -43,9 +43,9 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
-	<PARAMETER 
-		NAME="DB_VERSION" 
-		FIELD="CLOSED_LIST" 
+	<PARAMETER
+		NAME="DB_VERSION"
+		FIELD="CLOSED_LIST"
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
@@ -65,7 +65,7 @@
       NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="CONNECTION"
@@ -117,11 +117,11 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER 
-		NAME="SCHEMA_DB" 
-		FIELD="TEXT" 
+	<PARAMETER
+		NAME="SCHEMA_DB"
+		FIELD="TEXT"
 		NUM_ROW="40"
-		REPOSITORY_VALUE="SCHEMA" 
+		REPOSITORY_VALUE="SCHEMA"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
@@ -136,7 +136,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -155,7 +155,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -163,7 +163,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
@@ -200,23 +200,23 @@
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
+
 	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
 		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
 		<ITEMS BASED_ON_SCHEMA="true">
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
-	</PARAMETER>	   
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
        <IMPORTS>
-		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED="false" />		
-		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DB_VERSION=='VERTICA_6_0')" />
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.5_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.7_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DB_VERSION=='VERTICA_6_0')" />
     </IMPORTS>
   </CODEGENERATION>
 

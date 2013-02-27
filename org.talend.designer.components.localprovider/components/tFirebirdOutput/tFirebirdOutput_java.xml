@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -26,7 +26,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
     			NOT_SHOW_IF="(DIE_ON_ERROR == 'true')"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
@@ -81,7 +81,7 @@
     >
       <DEFAULT>FireBird</DEFAULT>
     </PARAMETER>
-    
+
      <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -91,8 +91,8 @@
       SHOW="true"
     >
       <DEFAULT>"3050"</DEFAULT>
-    </PARAMETER>   
-    
+    </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
@@ -164,7 +164,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-        
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -172,7 +172,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -184,8 +184,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-	
+    </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -199,12 +199,12 @@
       FIELD="MAPPING_TYPE"
       NUM_ROW="100"
       SHOW="false"
-    >       
+    >
       <DEFAULT>firebird_id</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="ENCODING"
@@ -235,7 +235,7 @@
     >
       <ITEMS>
         <ITEM NAME="NAME" VALUE='"colname"' />
-		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>	
+		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
@@ -271,29 +271,29 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-  	<PARAMETER 
-  	  NAME="ENABLE_DEBUG_MODE" 
+
+  	<PARAMETER
+  	  NAME="ENABLE_DEBUG_MODE"
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>    
-	
-	<PARAMETER 
-		NAME="SUPPORT_NULL_WHERE" 
+	</PARAMETER>
+
+	<PARAMETER
+		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
+
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.firebird/lib/jaybird-full-2.1.1.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

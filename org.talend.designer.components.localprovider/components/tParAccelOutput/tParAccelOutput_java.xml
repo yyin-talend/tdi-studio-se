@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070719A"
@@ -26,7 +26,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" 
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
     			NOT_SHOW_IF="(DIE_ON_ERROR == 'true')"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
@@ -52,7 +52,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -60,7 +60,7 @@
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />     
+    />
 
     <PARAMETER
       NAME="HOST"
@@ -94,7 +94,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -105,12 +105,12 @@
       <DEFAULT>ParAccel</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
+    <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -144,7 +144,7 @@
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="TABLE_ACTION"
@@ -175,7 +175,7 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-         
+
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -183,7 +183,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -195,8 +195,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -204,18 +204,18 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="10"
       SHOW="false"
-    >       
+    >
       <DEFAULT>postgres_id</DEFAULT>
-    </PARAMETER>    
-    
+    </PARAMETER>
+
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
   	    <PARAMETER
       NAME="ENCODING"
@@ -232,7 +232,7 @@
       FIELD="TEXT"
       NUM_ROW="9"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
@@ -282,22 +282,22 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-    
-    	<PARAMETER 
-		NAME="SUPPORT_NULL_WHERE" 
+
+    	<PARAMETER
+		NAME="SUPPORT_NULL_WHERE"
 		FIELD="CHECK"
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	
+
   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.paraccel/lib/paraccel-jdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>

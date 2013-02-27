@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20101029A"
@@ -37,8 +37,8 @@
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
 
-  <PARAMETERS>  
-    
+  <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -47,9 +47,9 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
-	<PARAMETER 
-		NAME="DB_VERSION" 
-		FIELD="CLOSED_LIST" 
+	<PARAMETER
+		NAME="DB_VERSION"
+		FIELD="CLOSED_LIST"
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
@@ -110,16 +110,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	<PARAMETER 
-		NAME="SCHEMA_DB" 
-		FIELD="TEXT" 
+	<PARAMETER
+		NAME="SCHEMA_DB"
+		FIELD="TEXT"
 		NUM_ROW="31"
-		REPOSITORY_VALUE="SCHEMA" 
+		REPOSITORY_VALUE="SCHEMA"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 	>
 			<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-		
+
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -171,9 +171,9 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="60">
-         <DEFAULT/>  
+         <DEFAULT/>
     </PARAMETER>
 
     <PARAMETER
@@ -184,7 +184,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SK_CREATION"
       FIELD="CLOSED_LIST"
@@ -199,7 +199,7 @@
       </ITEMS>
     </PARAMETER>
 
-	
+
     <PARAMETER
       NAME="SK_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
@@ -209,7 +209,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SK_ROUTINE"
       FIELD="TEXT"
@@ -219,7 +219,7 @@
     >
       <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
@@ -283,7 +283,7 @@
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L2"
       FIELD="CHECK"
@@ -439,7 +439,7 @@
         <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -451,8 +451,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER> 
-    
+    </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -461,7 +461,7 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
 	<PARAMETER
       NAME="ENCODING"
@@ -473,7 +473,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-	
+
   	<PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
@@ -485,15 +485,15 @@
 
    <CODEGENERATION>
        <IMPORTS>
-		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED="false" /> 
-		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED="false" />		
-		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DB_VERSION=='VERTICA_6_0')" />
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_3.5_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.0_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.7_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DB_VERSION=='VERTICA_6_0')" />
     </IMPORTS>
   </CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_INSERTED" TYPE="id_Integer" AVAILABILITY="AFTER"/>

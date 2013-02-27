@@ -137,11 +137,11 @@
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar"
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
-			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
+			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xercesImpl.jar"
 				REQUIRED_IF="(GENERATION_MODE == 'XERCES') OR (GENERATION_MODE == 'SAX')" />
-			<IMPORT NAME="Java_xalan" MODULE="xalan.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/xalan.jar"
+			<IMPORT NAME="Java_xalan" MODULE="xalan.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xalan.jar"
                 REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
-			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar"
+			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar" UrlPath="platform:/plugin/org.talend.libraries.xml/lib/TalendSAX.jar"
 				REQUIRED_IF="GENERATION_MODE == 'SAX'" />
 		</IMPORTS>
 	</CODEGENERATION>
