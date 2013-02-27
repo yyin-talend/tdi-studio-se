@@ -1764,9 +1764,31 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
         }
-        IComponent component = chooseOneComponent(neededComponents, rcSetting, quickCreateInput, quickCreateOutput);
+        // Check if the components in the list neededComponents have the same category that is required by Process.
+        IComponent component = chooseOneComponent(extractComponents(neededComponents), rcSetting, quickCreateInput,
+                quickCreateOutput);
         store.component = component;
         store.componentName = rcSetting;
+    }
+
+    /**
+     * Extracts the components which have the same palette type as process. Added by Marvin Wang on Feb 27, 2013.
+     * 
+     * @param neededComponents
+     * @return
+     */
+    protected List<IComponent> extractComponents(List<IComponent> neededComponents) {
+        if (neededComponents != null && neededComponents.size() > 0) {
+            Iterator<IComponent> componentsIterator = neededComponents.iterator();
+            while (componentsIterator.hasNext()) {
+                IComponent component = componentsIterator.next();
+                String compType = component.getPaletteType();
+                if (compType != null && !compType.equals(editor.getProcess().getComponentsType())) {
+                    componentsIterator.remove();
+                }
+            }
+        }
+        return neededComponents;
     }
 
     /**
