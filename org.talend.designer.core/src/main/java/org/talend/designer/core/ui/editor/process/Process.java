@@ -115,6 +115,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
+import org.talend.designer.core.model.components.EOozieParameterName;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -484,7 +485,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         addElementParameter(param);
 
         param = new ElementParameter(this);
-        param.setName("HADOOP_APP_PATH");
+        param.setName(EOozieParameterName.HADOOP_APP_PATH.getName());
+        param.setDisplayName(EOozieParameterName.HADOOP_APP_PATH.getDisplayName());
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
@@ -493,7 +495,18 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         addElementParameter(param);
 
         param = new ElementParameter(this);
-        param.setName("JOBID_FOR_OOZIE");
+        param.setName(EOozieParameterName.JOBID_FOR_OOZIE.getName());
+        param.setDisplayName(EOozieParameterName.JOBID_FOR_OOZIE.getDisplayName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setValue("");
+        param.setReadOnly(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EOozieParameterName.REPOSITORY_CONNECTION_ID.getName());
+        param.setDisplayName(EOozieParameterName.REPOSITORY_CONNECTION_ID.getDisplayName());
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
