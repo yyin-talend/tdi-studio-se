@@ -231,7 +231,9 @@ if(columnList != null && columnList.size() > 0) {
         for(Map<String, String> type1Attribute : type1Attributes) {
             columnNames.add(type1Attribute.get("NAME"));
             setColumns.add(type1Attribute.get("NAME"));
-            whereClause.add(" d." + type1Attribute.get("NAME") + " <> t." + type1Attribute.get("NAME"));            
+            whereClause.add("( d." + type1Attribute.get("NAME") + " is null AND t." + type1Attribute.get("NAME")+" is not null )");
+        	whereClause.add("( d." + type1Attribute.get("NAME") + " is not null AND t." + type1Attribute.get("NAME")+" is null )");
+            whereClause.add("( d." + type1Attribute.get("NAME") + " <> t." + type1Attribute.get("NAME")+")");            
         }
         selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");    
@@ -263,7 +265,9 @@ if(columnList != null && columnList.size() > 0) {
     if(isEnableType2) {
         List<String> whereClause = new ArrayList<String>();
         for (Map<String, String> type2Attribute : type2Attributes) {
-            whereClause.add(" d." + type2Attribute.get("NAME") + " <> t." + type2Attribute.get("NAME"));
+        	whereClause.add("( d." + type2Attribute.get("NAME") + " is null AND t." + type2Attribute.get("NAME")+" is not null )");
+        	whereClause.add("( d." + type2Attribute.get("NAME") + " is not null AND t." + type2Attribute.get("NAME")+" is null )");
+            whereClause.add("( d." + type2Attribute.get("NAME") + " <> t." + type2Attribute.get("NAME")+")");
         }
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
