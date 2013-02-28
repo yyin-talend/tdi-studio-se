@@ -117,7 +117,7 @@
 
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="SVN" MODULE="svnkit.jar" UrlPath="platform:/plugin/org.talend.libraries.svn/lib/svnkit-javahl.jar" REQUIRED="true" />
+       <IMPORT NAME="SVN" MODULE="svnkit-javahl.jar" UrlPath="platform:/plugin/org.talend.libraries.svn/lib/svnkit-javahl.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 
