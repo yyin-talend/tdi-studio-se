@@ -297,4 +297,24 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         }
         return super.isErrorStatus(status);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#rememberSelection()
+     */
+    @Override
+    protected void rememberSelection() {
+        // do nothing since we display the code only in the editor after generate the code
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#restoreSelection()
+     */
+    @Override
+    protected void restoreSelection() {
+        // do nothing since we display the code only in the editor after generate the code
+    }
 }

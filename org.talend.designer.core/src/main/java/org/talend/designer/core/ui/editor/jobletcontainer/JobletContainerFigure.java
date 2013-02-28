@@ -153,8 +153,14 @@ public class JobletContainerFigure extends Figure {
         refreshNodes();
     }
 
+    boolean lastJobletRedState = false;
+
     private void refreshNodes() {
         boolean isRed = new JobletUtil().isRed(this.jobletContainer);
+        if (lastJobletRedState == isRed) {
+            return;
+        }
+        lastJobletRedState = isRed;
         if (isRed && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
         } else if (rectFig != null) {
