@@ -122,6 +122,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
+import org.talend.designer.core.model.process.IGeneratingProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
@@ -180,7 +181,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     protected List<Note> notes = new ArrayList<Note>();
 
-    private List<RoutinesParameterType> routinesDependencies;
+    protected List<RoutinesParameterType> routinesDependencies;
 
     private final String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
@@ -603,7 +604,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return this.nodes;
     }
 
-    DataProcess generatingProcess = null;
+    protected IGeneratingProcess generatingProcess = null;
 
     @Override
     public List<? extends INode> getGeneratingNodes() {
@@ -633,7 +634,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @param nodes
      * @return
      */
-    private List<INode> sortNodes(List<INode> nodes) {
+    protected List<INode> sortNodes(List<INode> nodes) {
 
         if (nodes == null || nodes.size() <= 1) {
             return nodes;
@@ -723,7 +724,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    boolean processModified = true;
+    protected boolean processModified = true;
 
     private boolean loadScreenshots;
 
@@ -1433,7 +1434,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void checkRoutineDependencies() {
+    protected void checkRoutineDependencies() {
         if (routinesDependencies == null) {
             routinesDependencies = new ArrayList<RoutinesParameterType>();
         }
@@ -3308,7 +3309,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @param generatingProcess the generatingProcess to set
      */
-    public void setGeneratingProcess(DataProcess generatingProcess) {
+    public void setGeneratingProcess(IGeneratingProcess generatingProcess) {
         this.generatingProcess = generatingProcess;
     }
 

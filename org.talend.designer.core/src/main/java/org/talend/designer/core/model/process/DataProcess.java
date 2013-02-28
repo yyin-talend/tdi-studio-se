@@ -95,7 +95,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
  * $Id$
  * 
  */
-public class DataProcess {
+public class DataProcess implements IGeneratingProcess {
 
     private static final String COMBINED_COMPONENT = "COMBINED_COMPONENT"; //$NON-NLS-1$
 
@@ -3167,7 +3167,7 @@ public class DataProcess {
         asyncInNode.setStart(true);
         asyncInNode.setDesignSubjobStartNode(asyncInNode);
         newMetadata = connection.getMetadataTable().clone();
-        newMetadata.setTableName(Messages.getString("DataProcess.tableName") + suffix); //$NON-NLS-1$
+        newMetadata.setTableName("tAsyncIn_" + suffix); //$NON-NLS-1$
         asyncInNode.getMetadataList().remove(0);
         asyncInNode.getMetadataList().add(newMetadata);
         asyncInNode.setSubProcessStart(true);
