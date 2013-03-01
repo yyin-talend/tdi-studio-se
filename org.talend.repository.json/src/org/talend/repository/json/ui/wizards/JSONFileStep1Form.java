@@ -427,6 +427,10 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 String text = fileFieldJSON.getText();
+                File temp = new File(text);
+                if (!temp.exists()) {
+                    return;
+                }
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), connectionItem.getConnection().getContextName());
