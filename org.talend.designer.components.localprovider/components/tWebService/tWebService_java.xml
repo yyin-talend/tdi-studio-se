@@ -207,8 +207,8 @@
 			<IMPORT NAME="asm" MODULE="asm-3.3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-3.3.1.jar" REQUIRED="true"/>
 			<IMPORT NAME="commons-collections" MODULE="commons-collections-3.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar" REQUIRED="true"/>
 			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" REQUIRED="true"/>
-			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.1.jar" REQUIRED="true"/>
-			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.3.jar" REQUIRED="true"/>
+			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED="true"/>
+			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/base/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar" REQUIRED="true"/>
 
 			<IMPORT NAME="cxf-xjc-boolean" MODULE="cxf-xjc-boolean-2.6.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-xjc-boolean-2.6.0.jar" REQUIRED="true" />
 			<IMPORT NAME="cxf-xjc-bug671" MODULE="cxf-xjc-bug671-2.6.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-xjc-bug671-2.6.0.jar" REQUIRED="true" />
@@ -236,7 +236,7 @@
 			<IMPORT NAME="woodstox-core-asl" MODULE="woodstox-core-asl-4.1.2.jar" REQUIRED="true"/>
 			<IMPORT NAME="xmlschema-core" MODULE="xmlschema-core-2.0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlschema-core-2.0.2.jar" REQUIRED="true"/>
 
-			<IMPORT NAME="commons-beanutils" MODULE="commons-beanutils-1.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.7.0.jar" REQUIRED="true"/>
+			<IMPORT NAME="commons-beanutils" MODULE="commons-beanutils-1.7.0.jar" UrlPath="platform:/base/plugins/org.apache.commons.beanutils_1.7.0.v200902170505.jar" REQUIRED="true"/>
 			<IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED="true"/>
 
 			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
@@ -246,7 +246,7 @@
 			<!--<IMPORT NAME="jcifs" MODULE="jcifs-1.3.11.jar" REQUIRED="true"/>-->
 			<!--<IMPORT NAME="commons-pool" MODULE="commons-pool-1.3.jar" REQUIRED="true"/>
 			-->
-			<IMPORT NAME="xalan" MODULE="xalan-2.7.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xalan-2.7.1.jar" REQUIRED="true" />
+			<IMPORT NAME="xalan" MODULE="xalan-2.7.1.jar" UrlPath="platform:/base/plugins/org.apache.xalan_2.7.1.v201005080400.jar" REQUIRED="true" />
 			<IMPORT NAME="serializer" MODULE="serializer-2.7.1.jar" REQUIRED="true" />
 
 			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED="true"/>

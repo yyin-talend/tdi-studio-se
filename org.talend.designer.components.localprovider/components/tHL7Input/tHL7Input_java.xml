@@ -99,9 +99,9 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="commons_cli" MODULE="commons-cli-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-cli-1.0.jar" REQUIRED="true" />
+			<IMPORT NAME="commons_cli" MODULE="commons-cli-1.0.jar" UrlPath="platform:/base/plugins/org.apache.commons.cli_1.0.0.v201105210649.jar" REQUIRED="true" />
 			<IMPORT NAME="commons_lang" MODULE="commons-lang-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.0.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.0.4.jar" REQUIRED="true" />
+			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.0.4.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.0.4.v201101211617.jar" REQUIRED="true" />
 			<IMPORT NAME="hapi_base" MODULE="hapi-base-1.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.hl7/lib/hapi-base-1.0.1.jar" REQUIRED="true" />
 			<IMPORT NAME="hapi_structures_V21" MODULE="hapi-structures-v21-1.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.hl7/lib/hapi-structures-v21-1.0.1.jar" REQUIRED="true" />
 			<IMPORT NAME="hapi_structures_V22" MODULE="hapi-structures-v22-1.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.hl7/lib/hapi-structures-v22-1.0.1.jar" REQUIRED="true" />
