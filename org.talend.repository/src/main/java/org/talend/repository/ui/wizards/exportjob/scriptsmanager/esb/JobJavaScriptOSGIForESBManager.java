@@ -550,9 +550,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param isSlEnable
      * @return the jaxrs feature config
      */
-    private String getJaxrsFeatureConfig(NodeType component,
+    private static String getJaxrsFeatureConfig(NodeType component,
             ProcessItem processItem, boolean isSlEnable, boolean isSamEnable) {
-        if (isSamEnable | isSlEnable) {
+        if (isSamEnable || isSlEnable) {
             StringBuilder sb = new StringBuilder();
             sb.append("<jaxrs:features>\n");
             if (isSlEnable) {
@@ -629,6 +629,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String additionalJobBundleConfig = "";
         String additionalJobBeanParams = "";
 
+        boolean hasSAM = false;
+
         // http://jira.talendforge.org/browse/TESB-3677
         if (ROUTE.equals(itemType)) {
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
@@ -636,10 +638,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
                 if (!"RAW".equals(format)) { //$NON-NLS-1$
                     if (EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node)) { //$NON-NLS-1$
-                        // SAM
-                        additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-                        additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
-                                + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                        hasSAM = true;
                         break;
                     }
                 }
@@ -653,16 +652,19 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
             }
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
+            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient", "tESBConsumer")) { //$NON-NLS-1$, $NON-NLS-2$
                 // https://jira.talendforge.org/browse/TESB-8066
                 if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-                    // SAM
-                    additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-                    additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
-                            + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                    hasSAM = true;
                     break;
                 }
             }
+        }
+
+        if (hasSAM) {
+            additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+            additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
+                    + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
         }
 
         // OSGi DataSource

@@ -47,6 +47,21 @@
     if (momComponentsList.size() > 0) {
         exist_tMOM = true;
     }
+
+    boolean hasSAM = false;
+    for (INode node : process.getNodesOfType("tRESTClient")) {
+        if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
+            hasSAM = true;
+            break;
+        }
+    }
+    for (INode node : process.getNodesOfType("tESBConsumer")) {
+        if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
+            hasSAM = true;
+            break;
+        }
+    }
+
 %>
     public String resuming_logs_dir_path = null;
     public String resuming_checkpoint_path = null;
@@ -79,6 +94,16 @@
             return threadRunResultMap;
         };
     };
+
+<% if (hasSAM) { %>
+    // ESB Service Activity Monitor Feature
+    private org.apache.cxf.feature.AbstractFeature eventFeature;
+
+    public void setEventFeature(org.apache.cxf.feature.AbstractFeature eventFeature) {
+        this.eventFeature = eventFeature;
+    }
+<% } %>
+
 <%
     if(isRunInMultiThread || exist_tParallelize){
 %>
@@ -472,14 +497,6 @@ this.globalResumeTicket = false;//to run others jobs
 }// end if(isRunInMultiThread)
 %>
 
-<%
-    if(exist_tMOM) {
-%>
-    closeJmsConnections();
-<%
-    }
-%>
-
 this.globalResumeTicket = true;//to run tPostJob
 
 <%
@@ -518,6 +535,28 @@ this.globalResumeTicket = true;//to run tPostJob
 <%
     }
 %>
+
+<%
+    if(exist_tMOM) {
+%>
+    closeJmsConnections();
+<%
+    }
+%>
+
+<%
+    if(hasSAM) {
+%>
+    if (null == eventFeature) { // TESB-8574: Fix SAM timeout issue in Studio
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
+    }
+<%
+    }
+%>
+
 
 <%
     if (stats) {
