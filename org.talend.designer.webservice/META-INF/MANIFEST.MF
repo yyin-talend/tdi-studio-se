@@ -16,12 +16,12 @@ Require-Bundle: org.apache.commons.beanutils,
  org.eclipse.gef,
  org.talend.libraries.apache,
  org.talend.metadata.managment.ui,
- org.apache.commons.httpclient
+ org.apache.commons.httpclient,
+ javax.wsdl;bundle-version="1.6.2"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/cxf-2.2.2.jar,
  lib/jaxrpc.jar,
- lib/wsdl4j-1.6.2.jar,
  lib/castor-xml.jar,
  lib/jdom.jar,
  lib/xerces-1.2.3.jar,
