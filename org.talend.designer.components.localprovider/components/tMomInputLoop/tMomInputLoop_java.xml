@@ -392,6 +392,7 @@
       <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" />
       <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
+      <IMPORT NAME="Java Message Service" MODULE="jms.jar" REQUIRED_IF="SERVER == 'WEBSPHERE'" />
     </IMPORTS>
   </CODEGENERATION>
 
