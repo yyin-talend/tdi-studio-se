@@ -7,7 +7,8 @@ Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: .Talend SA.
 Bundle-Activator: org.talend.designer.scd.ScdPlugin
-Require-Bundle: org.talend.core,
+Require-Bundle: org.apache.commons.lang,
+ org.talend.core,
  org.talend.designer.core,
  org.talend.commons.ui,
  org.eclipse.help.ui,

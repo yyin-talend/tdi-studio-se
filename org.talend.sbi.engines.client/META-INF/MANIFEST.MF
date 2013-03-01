@@ -6,6 +6,8 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.sbi.engines.client.Activator
 Require-Bundle: org.talend.core,
  org.eclipse.ui.ide,
+ org.apache.commons.httpclient,
+ org.apache.commons.lang,
  org.talend.core.repository,
  org.talend.repository,
  org.talend.commons.ui,
@@ -14,12 +16,5 @@ Require-Bundle: org.talend.core,
  org.talend.metadata.managment,
  org.eclipse.ui.workbench
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/commons-codec-1.3.jar,
- lib/commons-fileupload-1.2.jar,
- lib/commons-httpclient-3.0.1.jar,
- lib/commons-io-1.0.jar,
- lib/commons-logging-1.1.jar,
- lib/commons-logging-adapters-1.1.jar,
- lib/commons-logging-api-1.1.jar
+Bundle-ClassPath: .
 Bundle-Vendor: .Talend SA.

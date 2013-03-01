@@ -15,6 +15,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore.xmi,
+ org.apache.commons.lang,
+ org.apache.commons.io,
  org.talend.core.runtime,
  org.talend.core,
  org.talend.core.repository,
