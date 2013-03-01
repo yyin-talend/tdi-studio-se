@@ -22,8 +22,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/cxf-2.2.2.jar,
  lib/jaxrpc.jar,
- lib/castor-xml.jar,
- lib/jdom.jar,
  lib/xerces-1.2.3.jar,
  lib/xercesImpl.jar,
  lib/XmlSchema-1.4.5.jar,

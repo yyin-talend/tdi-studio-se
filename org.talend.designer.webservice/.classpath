@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/castor-xml.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/jdom.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xerces-1.2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/XmlSchema-1.4.5.jar"/>

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.exolab.castor.xml.schema.SchemaException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -143,9 +142,6 @@ public class WSDLDiscoveryHelper {
                 f.setName(operationName);
                 functionsAvailable.add(f);
             }
-        } catch (SchemaException e) {
-            exceptionMessage = exceptionMessage + e.getMessage();
-            ExceptionHandler.process(e);
         } catch (Exception e) {
             exceptionMessage = exceptionMessage + e.getMessage();
             ExceptionHandler.process(e);

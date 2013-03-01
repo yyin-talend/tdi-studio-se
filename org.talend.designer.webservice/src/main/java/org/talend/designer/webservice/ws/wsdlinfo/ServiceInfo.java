@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.exolab.castor.xml.schema.Schema;
 import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 
 /**
@@ -27,20 +26,10 @@ public class ServiceInfo {
 
     private String targetnamespace;
 
-    private Schema wsdlType;
-
     private ServiceHelperConfiguration authConfig;
 
     /** The list of operations that this service defines. */
     List<OperationInfo> operations = new ArrayList<OperationInfo>();
-
-    public Schema getWsdlType() {
-        return wsdlType;
-    }
-
-    public void setWsdlTypes(Schema wsdlType) {
-        this.wsdlType = wsdlType;
-    }
 
     public List<OperationInfo> getOperation() {
         return operations;
