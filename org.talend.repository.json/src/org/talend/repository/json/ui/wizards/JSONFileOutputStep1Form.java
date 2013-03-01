@@ -675,10 +675,10 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
             jsonPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, jsonPath));
         }
-        if (jsonPath != null) {
-            fileName = JSONUtil.TMP_JSON_FILE;
-        } else if (jsonPath.contains(".zip")) {
+        if (jsonPath != null && jsonPath.contains(".zip")) {
             fileName = new Path(jsonPath).lastSegment();
+        } else if (jsonPath != null) {
+            fileName = JSONUtil.TMP_JSON_FILE;
         }
         File temfile = new File(tem + File.separator + fileName);
         if (!temfile.exists()) {
