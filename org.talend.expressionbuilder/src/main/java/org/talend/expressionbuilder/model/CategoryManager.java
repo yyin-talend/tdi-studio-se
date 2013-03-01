@@ -36,8 +36,13 @@ public class CategoryManager {
 
     private Category defaultCategory;
 
-    public java.util.List<Category> getInputCategory() {
-        FunctionManager functionManager = new FunctionManager();
+    public java.util.List<Category> getInputCategory(boolean isPigMap) {
+        FunctionManager functionManager = null;
+        if (isPigMap) {
+            functionManager = new FunctionManager(isPigMap);
+        } else {
+            functionManager = new FunctionManager();
+        }
 
         java.util.List<TalendType> talendTypes = functionManager.getTalendTypes();
 
@@ -65,8 +70,10 @@ public class CategoryManager {
         }
 
         List<Category> input = new ArrayList<Category>();
-        input.add(allCategories);
-        input.add(userDefined);
+        if (!isPigMap) {
+            input.add(allCategories);
+            input.add(userDefined);
+        }
         input.addAll(categories);
 
         return input;

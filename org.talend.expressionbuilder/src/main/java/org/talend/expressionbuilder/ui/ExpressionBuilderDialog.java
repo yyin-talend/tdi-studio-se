@@ -98,6 +98,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private static boolean isESCClose = true;
 
+    private boolean isPigMap = false;
+
     /**
      * Create the dialog
      * 
@@ -110,6 +112,21 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
         this.dataBean = dataBean;
         this.component = component;
+    }
+
+    /**
+     * Create the dialog
+     * 
+     * @param parentShell
+     */
+    public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean, INode component, Boolean isPigMap) {
+        super(parentShell);
+        this.nodeStyle = parentShell.toString();
+
+        setShellStyle(this.getShellStyle() | SWT.RESIZE);
+        this.dataBean = dataBean;
+        this.component = component;
+        this.isPigMap = isPigMap;
     }
 
     /**
@@ -135,14 +152,16 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         expressionComposite = new ExpressionComposite(this, upperSashform, SWT.NONE, dataBean);
         expressionComposite.setExpression(defaultExpression, true);
 
-        testComposite = new TestComposite(upperSashform, SWT.NONE);
-        testComposite.addVariables(defaultVariables);
-        upperSashform.setWeights(new int[] { 3, 2 });
+        if (!isPigMap) {
+            testComposite = new TestComposite(upperSashform, SWT.NONE);
+            testComposite.addVariables(defaultVariables);
+            upperSashform.setWeights(new int[] { 3, 2 });
+        }
 
         final Composite lowerComposite = new Composite(sashForm, SWT.NONE);
         lowerComposite.setLayout(new FillLayout());
 
-        categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
+        categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager, isPigMap);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);
@@ -242,7 +261,10 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
                 String filePath = dialog.open();
                 if (filePath != null) {
                     String expresionContent = expressionComposite.getExpression();
-                    List<Variable> variables = testComposite.getVariableList();
+                    List<Variable> variables = new ArrayList<Variable>();
+                    if (!isPigMap) {
+                        variables = testComposite.getVariableList();
+                    }
                     File file = new File(filePath);
                     ExpressionFileOperation operation = new ExpressionFileOperation();
                     try {
@@ -315,7 +337,9 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      */
     @Override
     public boolean close() {
-        testComposite.stopServerThread();
+        if (!isPigMap) {
+            testComposite.stopServerThread();
+        }
         if (isESCClose) {
             if (!defaultExpression.equals(newExpression())) {
                 boolean flag = MessageDialog.openConfirm(getParentShell(), Messages.getString("ExpressionBuilderDialog.message"),
@@ -402,7 +426,12 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         if (dataBean != null) {
             dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
             if (ExpressionPersistance.getInstance().getPath() != null) { // hywang add for 9225
-                ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
+                if (isPigMap) {
+                    ExpressionPersistance.getInstance().saveExpression(new Expression(expression, new ArrayList<Variable>()));
+                } else {
+                    ExpressionPersistance.getInstance().saveExpression(
+                            new Expression(expression, testComposite.getVariableList()));
+                }
             }
         }
         isESCClose = false;

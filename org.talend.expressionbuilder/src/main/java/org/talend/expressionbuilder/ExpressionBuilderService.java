@@ -37,4 +37,15 @@ public class ExpressionBuilderService implements IExpressionBuilderDialogService
         return new ExpressionBuilderDialog(parent.getShell(), dataBean, component);
     }
 
+    /*
+     * (non-Jsdoc)
+     * 
+     * @see org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService#getExpressionBuilderInstance(Composite,
+     * IExpressionDataBean, INode)
+     */
+    public IExpressionBuilderDialogController getExpressionBuilderInstance(Composite parent, IExpressionDataBean dataBean,
+            INode component, Boolean isPigMap) {
+        return new ExpressionBuilderDialog(parent.getShell(), dataBean, component, isPigMap);
+    }
+
 }
