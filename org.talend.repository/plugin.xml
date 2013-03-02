@@ -1848,6 +1848,15 @@
             name="SetReadByJSONPathToFalse"
             version="5.2.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.UniqueJoinKeyParameterTMatchGroupTask"
+              description="unique joinkey parameter of tmatchgroup component"
+              id="org.talend.repository.model.migration.UniqueJoinKeyParameterTMatchGroupTask"
+              name="UniqueJoinKeyParameterTMatchGroup"
+              version="5.3.0">
+        </projecttask>
    </extension>
    
    <extension
