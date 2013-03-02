@@ -68,7 +68,7 @@
       />
       <IMPORT
         NAME="Log4j"
-        MODULE="log4j-1.2.15.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.hive/lib/log4j-1.2.15.jar"
+        MODULE="log4j-1.2.15.jar" UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar"
         REQUIRED="true"
         BundleID=""
       />
