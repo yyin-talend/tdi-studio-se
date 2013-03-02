@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.talend.metadata.managment,
  org.talend.metadata.managment.ui,
  org.eclipse.jface,
+ org.talend.libraries.custom,
  org.talend.libraries.csv,
  org.eclipse.gef
 Bundle-ActivationPolicy: lazy
