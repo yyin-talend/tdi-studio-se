@@ -10,14 +10,12 @@
     RELEASE_DATE="20070323A"
     STARTABLE="true"
     DATA_AUTO_PROPAGATE="false"
-	VISIBLE="false"
-    TECHNICAL="true"
   >
     <SIGNATURE/>
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Technical</FAMILY>
+    <FAMILY>Databases/Teradata</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -43,9 +41,6 @@
     >
       <ITEMS DEFAULT="INSERT">
     		<ITEM NAME="INSERT" VALUE="Insert" />
-    		<ITEM NAME="UPDATE" VALUE="Update" />
-    		<ITEM NAME="UPSERT" VALUE="InsertOrUpdate" />
-			<ITEM NAME="DELETE" VALUE="Delete" />
     	</ITEMS>
     </PARAMETER>
     <PARAMETER
@@ -65,14 +60,6 @@
     		<ITEM NAME="WINDOWS" VALUE="Windows" />
     		<ITEM NAME="UNIX" VALUE="Unix" />
     	</ITEMS>
-    </PARAMETER>
-	<PARAMETER
-      NAME="FIELD_SEPARATOR"
-      FIELD="TEXT"
-      NUM_ROW="2"
-      REQUIRED="true"
-    >
-      <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
 	<PARAMETER
@@ -173,15 +160,6 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="WHERE"
-      FIELD="TEXT"
-      NUM_ROW="14"
-      REQUIRED="false"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
 	
 	<PARAMETER
       NAME="LOAD_FILE"
@@ -202,10 +180,18 @@
     </PARAMETER>
   </PARAMETERS>
   <ADVANCED_PARAMETERS>
+    <PARAMETER
+      NAME="FIELD_SEPARATOR"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>";"</DEFAULT>
+    </PARAMETER>
 	<PARAMETER 
 	    NAME="SPECIFY_LOG_TABLE" 
 	    FIELD="CHECK" 
-	    NUM_ROW="1" 
+	    NUM_ROW="20" 
 	    REQUIRED="true"
 	> 
 	    <DEFAULT>false</DEFAULT> 
@@ -213,7 +199,7 @@
 	<PARAMETER 
 	    NAME="LOG_TABLE_TABLE" 
 	    FIELD="TEXT" 
-	    NUM_ROW="1" 
+	    NUM_ROW="20" 
 	    REQUIRED="true"
 		SHOW_IF="SPECIFY_LOG_TABLE=='true'"
 	> 
@@ -222,7 +208,7 @@
 	<PARAMETER 
 	    NAME="BEGINLOAD_ADVANCEDPARAM" 
 	    FIELD="TEXT" 
-	    NUM_ROW="2" 
+	    NUM_ROW="30" 
 	    REQUIRED="true" 
 	> 
 	    <DEFAULT>"SESSIONS 8 CHECKPOINT 60 ERRLIMIT 1000"</DEFAULT> 
@@ -230,7 +216,7 @@
 	<PARAMETER 
 	    NAME="RETURN_CODE_DIE" 
 	    FIELD="CHECK" 
-	    NUM_ROW="3" 
+	    NUM_ROW="40" 
 	    REQUIRED="true" 
 	> 
 	    <DEFAULT>false</DEFAULT> 
@@ -238,7 +224,7 @@
 	<PARAMETER 
 	    NAME="RETURN_CODE" 
 	    FIELD="TEXT" 
-	    NUM_ROW="3" 
+	    NUM_ROW="40" 
 	    REQUIRED="true"
 		SHOW_IF="RETURN_CODE_DIE=='true'"
 	> 
@@ -247,7 +233,7 @@
 	<PARAMETER 
 	    NAME="DEFINE_CHARSET" 
 	    FIELD="CHECK" 
-	    NUM_ROW="4" 
+	    NUM_ROW="50" 
 	    REQUIRED="true" 
 	> 
 	    <DEFAULT>false</DEFAULT> 
@@ -255,7 +241,7 @@
 	<PARAMETER 
 	    NAME="CHARSET" 
 	    FIELD="TEXT" 
-	    NUM_ROW="4" 
+	    NUM_ROW="50" 
 	    REQUIRED="true"
 		SHOW_IF="DEFINE_CHARSET=='true'"
 	> 

@@ -26,8 +26,6 @@ String table= ElementParameterParser.getValue(node, "__TABLE__");
 
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
 String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
-String action= ElementParameterParser.getValue(node, "__ACTION__");
-String where= ElementParameterParser.getValue(node, "__WHERE__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
