@@ -209,7 +209,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.0.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="stax-api" MODULE="stax-api-1.0.1.jar"
+			<IMPORT NAME="stax-api" MODULE="stax-api-1.0.1.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/stax-api-1.0.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="woodstox" MODULE="wstx-lgpl-3.2.7.jar"
 				REQUIRED="true" />

@@ -86,7 +86,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Talend File Enhanced" MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.uniserv/lib/talend_file_enhanced_20070724.jar" REQUIRED="true" />
+			<IMPORT NAME="Talend File Enhanced" MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.custom/lib/talend_file_enhanced_20070724.jar" REQUIRED="true" />
 			<IMPORT NAME="cobol2j.sf.net" MODULE="cobol2j-1.5.3.jar" UrlPath="platform:/plugin/org.talend.libraries.ebcdic/lib/cobol2j-1.5.3.jar" REQUIRED="true" />
 			<IMPORT NAME="cb2xml.sf.net" MODULE="cb2xml.jar" UrlPath="platform:/plugin/org.talend.libraries.ebcdic/lib/cb2xml.jar" REQUIRED="true" />
 			<IMPORT NAME="JAXB-api" MODULE="jaxb-api-2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxb-api-2.2.jar" REQUIRED="true" />

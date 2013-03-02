@@ -231,7 +231,7 @@
 			<IMPORT NAME="saaj-api" MODULE="saaj-api-1.3.4.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-api-1.3.4.jar" REQUIRED="true"/>
 			<IMPORT NAME="saaj-impl" MODULE="saaj-impl-1.3.18.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-impl-1.3.18.jar" REQUIRED="true"/>
 
-			<IMPORT NAME="stax2-api" MODULE="stax2-api-3.1.1.jar" REQUIRED="true"/>
+			<IMPORT NAME="stax2-api" MODULE="stax2-api-3.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/stax2-api-3.1.1.jar" REQUIRED="true"/>
 			<IMPORT NAME="velocity" MODULE="velocity-1.7.jar" REQUIRED="true"/>
 			<IMPORT NAME="woodstox-core-asl" MODULE="woodstox-core-asl-4.1.2.jar" REQUIRED="true"/>
 			<IMPORT NAME="xmlschema-core" MODULE="xmlschema-core-2.0.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlschema-core-2.0.2.jar" REQUIRED="true"/>
