@@ -44,13 +44,13 @@ public abstract class FilterContainer extends Figure {
 
     private static final int DEFAULT_HEIGHT = 40;
 
-    private TableManager tableManager;
+    protected TableManager tableManager;
 
-    private ImageFigure button;
+    protected ImageFigure button;
 
     private FilterTextArea textArea;
 
-    private Composite parent;
+    protected Composite parent;
 
     public FilterContainer(TableManager tableManager, Composite parent) {
         this.parent = parent;
@@ -83,7 +83,7 @@ public abstract class FilterContainer extends Figure {
 
     protected abstract Command getFilterChangeCommand(Object model, String newValue);
 
-    private void addButtonListener() {
+    protected void addButtonListener() {
         IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                 IExpressionBuilderDialogService.class);
 

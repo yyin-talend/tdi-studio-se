@@ -341,7 +341,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
             testComposite.stopServerThread();
         }
         if (isESCClose) {
-            if (!defaultExpression.equals(newExpression())) {
+            if (defaultExpression != null && !defaultExpression.equals(newExpression())) {
                 boolean flag = MessageDialog.openConfirm(getParentShell(), Messages.getString("ExpressionBuilderDialog.message"),
                         Messages.getString("ExpressionBuilderDialog.Confirm"));
                 if (!flag) {
