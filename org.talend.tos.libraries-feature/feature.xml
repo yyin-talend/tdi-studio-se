@@ -253,7 +253,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-         
+
    <plugin
          id="org.w3c.css.sac"
          download-size="0"
@@ -331,6 +331,10 @@
          version="1.7.0.v201011041433"
          unpack="false"/>
 
-
+   <plugin
+         id="org.talend.libraries.custom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
