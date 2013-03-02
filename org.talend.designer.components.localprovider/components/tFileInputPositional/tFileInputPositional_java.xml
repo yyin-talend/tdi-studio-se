@@ -257,7 +257,7 @@
     <IMPORTS>
       <IMPORT
         NAME="Talen File Enhanced"
-        MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.csv/lib/talend_file_enhanced_20070724.jar"
+        MODULE="talend_file_enhanced_20070724.jar" UrlPath="platform:/plugin/org.talend.libraries.custom/lib/talend_file_enhanced_20070724.jar"
         REQUIRED="true"
       />
     </IMPORTS>
