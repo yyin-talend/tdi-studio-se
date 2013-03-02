@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -93,7 +94,7 @@ public class PropertySetDialog extends Dialog {
         lookupInParallelButton = new Button(container, SWT.CHECK);
         lookupInParallelButton.setText("Lookup in parallel");
         lookupInParallelButton.setEnabled(true);
-        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize");//$NON-NLS-1$
+        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize",ComponentCategory.CATEGORY_4_DI.getName());//$NON-NLS-1$
         if (tempNode == null) {
             lookupInParallelButton.setVisible(false);
         }

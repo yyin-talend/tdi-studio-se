@@ -19,6 +19,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -212,7 +213,7 @@ public class JobletUtil {
         if (tempComponent != null) {
             String tempComponentName = tempComponent.getName();
             if (tempComponentName != null) {
-                IComponent component = ComponentsFactoryProvider.getInstance().get(tempComponentName);
+                IComponent component = ComponentsFactoryProvider.getInstance().get(tempComponentName, ComponentCategory.CATEGORY_4_DI.getName());
                 if (component != null) {
                     cloneNode.setComponent(component);
                 }

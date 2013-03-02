@@ -344,7 +344,7 @@ public class NodesPasteCommand extends Command {
             if (!containNodeInProcess(copiedNode)) {
                 continue;
             }
-            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(), copiedNode.getProcess().getComponentsType());
             if (component == null) {
                 component = copiedNode.getComponent();
             }

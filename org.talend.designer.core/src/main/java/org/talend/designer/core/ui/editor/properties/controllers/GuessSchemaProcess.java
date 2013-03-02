@@ -27,6 +27,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
@@ -121,14 +122,14 @@ public class GuessSchemaProcess {
         process.getContextManager().getListContext().addAll(node.getProcess().getContextManager().getListContext());
         process.getContextManager().setDefaultContext(this.selectContext);
         outputComponent = ComponentsFactoryProvider.getInstance().get(
-                EDatabaseComponentName.FILEDELIMITED.getOutPutComponentName());
+                EDatabaseComponentName.FILEDELIMITED.getOutPutComponentName(),ComponentCategory.CATEGORY_4_DI.getName());
 
         // create the tLibraryLoad for the input node
 
         if (node.getComponent().getModulesNeeded().size() > 0) {
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
                 if (module.isRequired(node.getElementParameters())) {
-                    Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
+                    Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,ComponentCategory.CATEGORY_4_DI.getName()), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     NodeContainer nc = null;
                     if (libNode1.isJoblet()) {
@@ -143,7 +144,7 @@ public class GuessSchemaProcess {
             if (node.getComponent().getName().equals("tJDBCInput")) {
                 List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
                 String moduleNeedName = "";
-                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
+                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE, ComponentCategory.CATEGORY_4_DI.getName()), process);
                 if (drivers.size() > 0) {
                     // use the first driver as defalult.
                     // added for bug 13592

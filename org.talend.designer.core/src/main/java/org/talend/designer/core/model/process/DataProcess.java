@@ -284,7 +284,7 @@ public class DataProcess implements IGeneratingProcess {
         dataNode.setProcess(graphicalNode.getProcess());
 
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow"); //$NON-NLS-1$
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
             if (component != null) { // only if component is available
                 dataNode = new DataNode(component, uniqueName);
                 dataNode.setActivate(true);
@@ -423,7 +423,7 @@ public class DataProcess implements IGeneratingProcess {
                         param.setShow(true);
 
                         ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
-                        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
+                        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",ComponentCategory.CATEGORY_4_DI.getName());
                         DataNode tmpNode = new DataNode(component, "breakpointNode");
                         IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
                         if (tmpParam != null) {
@@ -486,7 +486,7 @@ public class DataProcess implements IGeneratingProcess {
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
 
-        if (ComponentsFactoryProvider.getInstance().get("tFlowMeter") == null) { //$NON-NLS-1$
+        if (ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()) == null) { //$NON-NLS-1$
             return targetNode;
         }
         // from current node to vFlowMeter node.
@@ -517,7 +517,7 @@ public class DataProcess implements IGeneratingProcess {
         dataConnec.setCondition(connection.getCondition());
         dataConnec.setConnectorName(connection.getConnectorName());
         dataConnec.setInputId(connection.getInputId());
-        DataNode meterNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), "vFlowMeter_" //$NON-NLS-1$ //$NON-NLS-2$
+        DataNode meterNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()), "vFlowMeter_" //$NON-NLS-1$ //$NON-NLS-2$
                 + connection.getUniqueName());
         meterNode.getMetadataList().get(0).setListColumns(connection.getMetadataTable().getListColumns());
         meterNode.setActivate(connection.isActivate());
@@ -777,7 +777,7 @@ public class DataProcess implements IGeneratingProcess {
 
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName(); //$NON-NLS-1$
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent(), ComponentCategory.CATEGORY_4_DI.getName());
             if (component == null) {
                 continue;
             }
@@ -1113,10 +1113,10 @@ public class DataProcess implements IGeneratingProcess {
 
                 if (hashComponent == null) {
                     uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
-                    component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+                    component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME,ComponentCategory.CATEGORY_4_DI.getName());
                 } else {
                     uniqueName = hashComponent + "_" + connection.getName(); //$NON-NLS-1$
-                    component = ComponentsFactoryProvider.getInstance().get(hashComponent);
+                    component = ComponentsFactoryProvider.getInstance().get(hashComponent,ComponentCategory.CATEGORY_4_DI.getName());
                 }
                 if (component == null) {
                     continue;
@@ -1495,7 +1495,7 @@ public class DataProcess implements IGeneratingProcess {
             // add the tELTNode component if this one is not already added to the list.
             if (eltNode == null || needCreateTELTNode) {
                 // Create the new elt component
-                IComponent component = ComponentsFactoryProvider.getInstance().get(ELTNODE_COMPONENT_NAME);
+                IComponent component = ComponentsFactoryProvider.getInstance().get(ELTNODE_COMPONENT_NAME, ComponentCategory.CATEGORY_4_DI.getName());
                 if (component == null) {
                     break;
                 }
@@ -1700,7 +1700,7 @@ public class DataProcess implements IGeneratingProcess {
                     progressBarList.clear();
                 }
                 // Create the new FS component
-                IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME);
+                IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME, ComponentCategory.CATEGORY_4_DI.getName());
                 if (component == null) {
                     break;
                 }
@@ -2252,7 +2252,7 @@ public class DataProcess implements IGeneratingProcess {
         // Change from Input => Ouptut, to Input => tJoin (with ref link) => Output
 
         // create tJoin component
-        IComponent component = ComponentsFactoryProvider.getInstance().get("tJoin"); //$NON-NLS-1$
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tJoin", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         String typeStr;
         if (isOutput) {
             typeStr = "output"; //$NON-NLS-1$
@@ -2447,10 +2447,10 @@ public class DataProcess implements IGeneratingProcess {
 
         if (hashComponent == null) {
             uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
-            component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+            component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME, ComponentCategory.CATEGORY_4_DI.getName());
         } else {
             uniqueName = hashComponent + "_" + connection.getName(); //$NON-NLS-1$
-            component = ComponentsFactoryProvider.getInstance().get(hashComponent);
+            component = ComponentsFactoryProvider.getInstance().get(hashComponent, ComponentCategory.CATEGORY_4_DI.getName());
         }
         if (component == null) {
             return;
@@ -2554,7 +2554,7 @@ public class DataProcess implements IGeneratingProcess {
         }
 
         // create tFilterRow
-        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow"); //$NON-NLS-1$
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         String typeStr;
         if (isOutput) {
             typeStr = "output"; //$NON-NLS-1$
@@ -2896,8 +2896,8 @@ public class DataProcess implements IGeneratingProcess {
 
         INode mergeDataNode = buildCheckMap.get(graphicalNode);
 
-        IComponent hashMergeOutputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeOutput);
-        IComponent hashMergeInputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeInput);
+        IComponent hashMergeOutputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeOutput,ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent hashMergeInputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeInput,ComponentCategory.CATEGORY_4_DI.getName());
 
         if (hashMergeOutputComponent == null || hashMergeInputComponent == null) {
             return;
@@ -3114,7 +3114,7 @@ public class DataProcess implements IGeneratingProcess {
         String suffix = graphicalNode.getUniqueName();
 
         // create tAsyncOut component
-        IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut"); //$NON-NLS-1$
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         if (component == null) {
             return;
         }
@@ -3158,7 +3158,7 @@ public class DataProcess implements IGeneratingProcess {
         incomingConnections.add(connection);
 
         // create tAsyncIn component
-        component = ComponentsFactoryProvider.getInstance().get("tAsyncIn"); //$NON-NLS-1$
+        component = ComponentsFactoryProvider.getInstance().get("tAsyncIn",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         if (component == null) {
             return;
         }
@@ -3429,7 +3429,7 @@ public class DataProcess implements IGeneratingProcess {
     private INode addVParallelizeBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
 
-        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize");//$NON-NLS-1$
+        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize",ComponentCategory.CATEGORY_4_DI.getName());//$NON-NLS-1$
         if (tempNode == null) {
             return targetNode;
         }
@@ -3442,7 +3442,7 @@ public class DataProcess implements IGeneratingProcess {
             alreadyHave = true;
         } else {
             String uniqueName = "tParallelize_" + connection.getUniqueName();//$NON-NLS-1$ 
-            parallelizeNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tParallelize"), uniqueName); //$NON-NLS-1$ 
+            parallelizeNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tParallelize",ComponentCategory.CATEGORY_4_DI.getName()), uniqueName); //$NON-NLS-1$ 
 
             // DataNode hashNode = new DataNode(component, uniqueName);
             parallelizeNode.setActivate(connection.isActivate());

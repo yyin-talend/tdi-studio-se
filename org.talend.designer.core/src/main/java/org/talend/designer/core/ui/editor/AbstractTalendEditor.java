@@ -1262,7 +1262,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (components == null) {
             components = ComponentsFactoryProvider.getInstance();
         }
-        return components.get(name);
+        return components.get(name, getProcess().getComponentsType());
     }
 
     public ProcessPart getProcessPart() {

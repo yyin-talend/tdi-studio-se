@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -185,7 +186,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter"); //$NON-NLS-1$
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
             if (component != null) { // only if tFlowMeter is available
                 createMeterParameters((Process) source.getProcess());
             }
@@ -414,7 +415,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
 
                 addElementParameter(param);
-                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
+                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow", ComponentCategory.CATEGORY_4_DI.getName());
                 Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.setTemplate(source.isTemplate());
                 tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
@@ -542,7 +543,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setNumRow(10);
         addElementParameter(param);
 
-        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process); //$NON-NLS-1$
+        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()), process); //$NON-NLS-1$
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
             if (curParam.getCategory() == EComponentCategory.BASIC
                     && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {

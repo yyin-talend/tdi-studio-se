@@ -36,6 +36,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
@@ -127,8 +128,8 @@ public class ConnectionManagerTest {
             }
         }
 
-        componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited");
-        componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited");
+        componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited", ComponentCategory.CATEGORY_4_DI.getName());
+        componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited", ComponentCategory.CATEGORY_4_DI.getName());
 
         sourceProcess = new Process(createProperty());
         targetProcess = new Process(createProperty());

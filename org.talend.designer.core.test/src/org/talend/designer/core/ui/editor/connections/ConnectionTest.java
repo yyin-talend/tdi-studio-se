@@ -23,6 +23,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -59,8 +60,8 @@ public class ConnectionTest {
     public void setUp() throws Exception {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         IProcess2 process = new Process(property);
-        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput");
-        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput");
+        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput", ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
         source = new Node(sourceCom, process);
         target = new Node(targetCom, process);
 

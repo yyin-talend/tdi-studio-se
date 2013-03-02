@@ -887,7 +887,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (param.getElement() instanceof Node) {
             Node curNode = (Node) param.getElement();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName(),getComponentsType());
             if (param != null && param.getName().equals(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName())) {
                 return;
             }

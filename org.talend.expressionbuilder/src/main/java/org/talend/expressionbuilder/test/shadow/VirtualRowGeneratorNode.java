@@ -25,6 +25,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
 import org.talend.commons.expressionbuilder.Variable;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -60,7 +61,7 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
     public VirtualRowGeneratorNode(Function function) {
 
         IComponentsFactory compFac = PluginUtils.getRepositoryService().getComponentsFactory();
-        setComponent(compFac.get(ROW_GENERATOR));
+        setComponent(compFac.get(ROW_GENERATOR, ComponentCategory.CATEGORY_4_DI.getName()));
 
         IMetadataTable m1 = new MetadataTable();
         m1.setTableName("tRowGenerator_1"); //$NON-NLS-1$

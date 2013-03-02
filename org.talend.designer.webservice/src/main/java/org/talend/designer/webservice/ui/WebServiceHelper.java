@@ -24,6 +24,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -64,7 +65,7 @@ public class WebServiceHelper implements IWebServiceTos {
         // TODO Auto-generated method stub
         WebServiceComponent wenCom = new WebServiceComponent();
         wenCom.initialize();
-        IComponent iComponent = ComponentsFactoryProvider.getInstance().get("tWebService");
+        IComponent iComponent = ComponentsFactoryProvider.getInstance().get("tWebService",ComponentCategory.CATEGORY_4_DI.getName());
         List<? extends IElementParameter> parameters = iComponent.createElementParameters(wenCom);
         wenCom.setElementParameters(parameters);
         if (connectionItem.getState() != null) {

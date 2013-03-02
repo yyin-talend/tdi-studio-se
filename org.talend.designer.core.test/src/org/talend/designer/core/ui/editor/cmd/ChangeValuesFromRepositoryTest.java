@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -86,8 +87,8 @@ public class ChangeValuesFromRepositoryTest {
     public void setUp() throws Exception {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         IProcess2 process = new Process(property);
-        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput");
-        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput");
+        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput", ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
         elem = new Node(sourceCom, process);
         elem.setLabel("tMysqlInput_1");
         target = new Node(targetCom, process);

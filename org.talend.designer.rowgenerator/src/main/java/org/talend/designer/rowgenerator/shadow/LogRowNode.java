@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -67,7 +68,7 @@ public class LogRowNode extends AbstractNode {
         this.setElementParameters(new ArrayList<IElementParameter>());
 
         IComponentsFactory compFac = PluginUtils.getRepositoryService().getComponentsFactory();
-        setComponent(compFac.get(componentName));
+        setComponent(compFac.get(componentName,ComponentCategory.CATEGORY_4_DI.getName()));
         TextElementParameter param = null;
         TextElementParameter param2 = null;
         TextElementParameter param3 = null;

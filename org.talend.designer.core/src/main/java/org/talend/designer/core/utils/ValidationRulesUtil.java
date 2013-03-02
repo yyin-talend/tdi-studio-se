@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -190,7 +191,7 @@ public class ValidationRulesUtil {
 
         // tRunJob is special from our rules
         if (name == EDatabaseComponentName.RunJob || item instanceof JobletProcessItem) {
-            return ComponentsFactoryProvider.getInstance().get(componentName);
+            return ComponentsFactoryProvider.getInstance().get(componentName, ComponentCategory.CATEGORY_4_DI.getName());
         } else {
             // for database, file, webservices, saleforce ...
             List<IComponent> neededComponents = filterNeededComponents(item, type);

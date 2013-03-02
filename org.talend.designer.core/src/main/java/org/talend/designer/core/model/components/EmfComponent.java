@@ -54,6 +54,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
@@ -996,7 +997,7 @@ public class EmfComponent extends AbstractComponent {
             }
             /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
             if (!isStatCatcherComponent) {
-                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
+                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME, ComponentCategory.CATEGORY_4_DI.getName()) != null;
                 param = new ElementParameter(node);
                 param.setName(EParameterName.TSTATCATCHER_STATS.getName());
                 param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));

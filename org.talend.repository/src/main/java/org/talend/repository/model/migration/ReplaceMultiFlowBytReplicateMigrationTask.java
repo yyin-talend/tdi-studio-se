@@ -22,6 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -63,7 +64,7 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         try {
             List<NodeType> initialNodes = new ArrayList<NodeType>(processType.getNode());
             for (NodeType nodeType : initialNodes) {
-                IComponent component = componentFactory.get(nodeType.getComponentName());
+                IComponent component = componentFactory.get(nodeType.getComponentName(),ComponentCategory.CATEGORY_4_DI.getName());
                 if (component != null) {
                     if (checkMaxOutputAndUpdate(processItem, processType, component, nodeType)) {
                         modified = true;

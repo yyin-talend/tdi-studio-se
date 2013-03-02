@@ -24,6 +24,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -166,7 +167,7 @@ public class StatsAndLogsManager {
                     } else {
                         commitComponentName = "tOracleCommit";//$NON-NLS-1$
                     }
-                    commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName);
+                    commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName,ComponentCategory.CATEGORY_4_DI.getName());
                     if (commitComponentName.indexOf("Informix") != -1) {
                         isNotInformixDB = false;
                     }
@@ -381,7 +382,7 @@ public class StatsAndLogsManager {
                     } else {
                         connectionComponentName = "tOracleConnection"; //$NON-NLS-1$
                     }
-                    component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
+                    component = ComponentsFactoryProvider.getInstance().get(connectionComponentName, process.getComponentsType());
 
                     if (component != null) {
                         connectionNode = new DataNode(component, connectionUID);
@@ -421,7 +422,7 @@ public class StatsAndLogsManager {
                         connectionNode.setProcess(process);
                         nodeList.add(connectionNode);
 
-                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get(TPREJOB);
+                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get(TPREJOB,ComponentCategory.CATEGORY_4_DI.getName());
                         DataNode preNode = new DataNode(prejobComponent, PRE_STA_LOG_CON);
                         preNode.setStart(true);
                         preNode.setSubProcessStart(true);
@@ -645,7 +646,7 @@ public class StatsAndLogsManager {
         logsNode.getMetadataList().clear();
 
         // load the tLogCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tLogCatcher"); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tLogCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -674,7 +675,7 @@ public class StatsAndLogsManager {
         statsNode.getMetadataList().clear();
 
         // load the tStatCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tStatCatcher"); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tStatCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -703,7 +704,7 @@ public class StatsAndLogsManager {
         statsNode.getMetadataList().clear();
 
         // load the tFlowMeterCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tFlowMeterCatcher"); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tFlowMeterCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {

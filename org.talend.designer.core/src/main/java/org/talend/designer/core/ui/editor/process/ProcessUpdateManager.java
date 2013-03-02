@@ -32,6 +32,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
@@ -2283,7 +2284,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (newJobletName == null) {
             newJobletName = oldjobletName;
         }
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName);
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName,ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return Collections.EMPTY_LIST;
         }

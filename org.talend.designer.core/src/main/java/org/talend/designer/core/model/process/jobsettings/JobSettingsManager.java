@@ -29,6 +29,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -1078,7 +1079,7 @@ public class JobSettingsManager {
     }
 
     private static IMetadataTable getSchemaTablefromComponent(final String componentName, final String tableName) {
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(componentName);
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(componentName,ComponentCategory.CATEGORY_4_DI.getName());
 
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         for (int k = 0; k < tmpNode.getElementParameters().size(); k++) {

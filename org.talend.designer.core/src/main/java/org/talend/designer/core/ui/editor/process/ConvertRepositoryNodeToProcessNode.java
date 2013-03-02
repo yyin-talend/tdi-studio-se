@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.process;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -84,7 +85,7 @@ public class ConvertRepositoryNodeToProcessNode {
                 ERepositoryObjectType.METADATA_CONNECTIONS);
         String componentName = null;
         componentName = name.getDefaultComponentName();
-        IComponent dbInputComponent = ComponentsFactoryProvider.getInstance().get(componentName);
+        IComponent dbInputComponent = ComponentsFactoryProvider.getInstance().get(componentName,ComponentCategory.CATEGORY_4_DI.getName());
         Process process = new Process(GuessSchemaProcess.getNewmockProperty());
         node = new Node(dbInputComponent, process);
         selectedContext = node.getProcess().getContextManager().getDefaultContext();

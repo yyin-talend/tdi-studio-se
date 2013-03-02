@@ -2719,7 +2719,7 @@ public class Node extends Element implements IGraphicalNode {
                 List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
                 if (itemList != null && !itemList.isEmpty()) {
                     for (IMultipleComponentItem curItem : itemList) {
-                        IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
+                        IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent(), getProcess().getComponentsType());
                         if (component == null) {
                             // Notify an error
                             String errorMessage = Messages.getString("Node.componentNotExist", curItem.getComponent()); //$NON-NLS-1$
