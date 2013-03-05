@@ -53,6 +53,7 @@ import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -566,6 +567,11 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     // if (((Connection) elem).checkTraceShowEnable()) {
                     final List<EComponentCategory> list = new ArrayList<EComponentCategory>(Arrays.asList(categories));
                     list.add(EComponentCategory.BREAKPOINT);
+
+                    if (elem.getElementParameter(EParameterName.PARALIZATION.getName()) != null
+                            || elem.getElementParameter(EParameterName.DPARALIZATION.getName()) != null) {
+                        list.add(EComponentCategory.PARALLELIZATION);
+                    }
                     return list.toArray(new EComponentCategory[0]);
                     // }
                 } else if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)

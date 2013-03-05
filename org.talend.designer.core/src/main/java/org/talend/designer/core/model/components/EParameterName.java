@@ -60,7 +60,7 @@ public enum EParameterName {
     REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
     ROUTETYPE(Messages.getString("EParameterName.routeType")),
-    ENDOFCHOICE(Messages.getString("EParameterName.endofChoice")),//TESB-8043
+    ENDOFCHOICE(Messages.getString("EParameterName.endofChoice")), // TESB-8043
     EXCEPTIONLIST(Messages.getString("EParameterName.listExceptions")),
     COMPONENT_NAME(Messages.getString("EParameterName.componentName")), //$NON-NLS-1$
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
@@ -325,6 +325,10 @@ public enum EParameterName {
     // Route Component Type
     ROUTE_COMPONENT_TYPE("ROUTE_COMPONENT_TYPE"),
     ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"),
+
+    // Automatic Parlization
+    PARALIZATION(Messages.getString("Connection.parallelize")), //$NON-NLS-1$
+    DPARALIZATION(Messages.getString("Connection.dParallelize")), //$NON-NLS-1$
 
     // tFlowToIterator
     DEFAULT_MAP("DEFAULT_MAP");

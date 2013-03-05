@@ -60,6 +60,7 @@ import org.talend.designer.core.ui.action.ParallelExecutionAction;
 import org.talend.designer.core.ui.action.SearchComponentAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
+import org.talend.designer.core.ui.action.SetParallelizationAction;
 import org.talend.designer.core.ui.action.ShowBreakpointAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 import org.talend.designer.core.ui.action.TraceDisableAction;
@@ -316,8 +317,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_OK);
 
             retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_ERROR);
-			
-			retrieveConnectors(subMenu, EConnectionType.STARTS);
+
+            retrieveConnectors(subMenu, EConnectionType.STARTS);
 
             action = new NodeBreakpointAction(part);
             ((NodeBreakpointAction) action).update();
@@ -334,6 +335,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);
+            }
+
+            if (PluginChecker.isAutoParalelPluginLoaded()) {
+                action = new SetParallelizationAction(part);
+                ((SelectionAction) action).update();
+                if (action.isEnabled()) {
+                    menu.appendToGroup(GROUP_OTHER, action);
+                }
             }
 
             // see feature 5027
