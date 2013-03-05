@@ -603,7 +603,7 @@ if(("Dom4j").equals(mode)){
 			listGroupby_<%=cid %>.add(removeHeader_<%=cid %>);
 <%
 		}else{
-            if(destination!=null && destination.indexOf("tCouchbaseOutput_")==0){
+            if(destination!=null && (destination.indexOf("tCouchbaseOutput_")==0) || destination.indexOf("tCouchDBOutput_")==0){
 %>
                 map_<%=cid%>.put("json_<%=destination%>",strWriter_<%=cid %>.toString());
                 listGroupby_<%=cid %>.add(map_<%=cid%>);
@@ -647,7 +647,7 @@ if(("Dom4j").equals(mode)){
     generateToolByDom4j.tool = tool;
     
     //start generate code
-    if(destination!=null && destination.indexOf("tCouchbaseOutput_")==0){
+    if(destination!=null && (destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0)){
         INode previousNode = conn.getSource();
         List<IMetadataTable> previous_metadatas = previousNode.getMetadataList();
         if ((previous_metadatas!=null)&&(previous_metadatas.size()>0)) {
