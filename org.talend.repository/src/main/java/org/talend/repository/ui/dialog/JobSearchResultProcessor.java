@@ -24,6 +24,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.processor.JobTypeProcessor;
 
 /**
  * DOC chuang class global comment. Detailled comment
@@ -61,6 +62,7 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
         }
     }
 
+    @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
         if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
 
