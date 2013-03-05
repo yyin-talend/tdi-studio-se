@@ -41,11 +41,16 @@ public class DummyComponent extends AbstractComponent {
 
     protected ImageDescriptor icon32;
 
-    private NodeType nType;
+    private String componentName;
 
-    public DummyComponent(NodeType nType) {
+    public DummyComponent(NodeType nodeType) {
         icon32 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
-        this.nType = nType;
+        this.componentName = nodeType.getComponentName();
+    }
+
+    public DummyComponent(String componentName) {
+        icon32 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
+        this.componentName = componentName;
     }
 
     /*
@@ -53,6 +58,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#canParallelize()
      */
+    @Override
     public boolean canParallelize() {
         // TODO Auto-generated method stub
         return false;
@@ -63,11 +69,10 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#createConnectors(org.talend.core.model.process.INode)
      */
+    @Override
     public List<? extends INodeConnector> createConnectors(INode node) {
         List<INodeConnector> listConnector = new ArrayList<INodeConnector>();
         INodeConnector nodeConnector;
-        int nbInput = 0;
-        int nbOutput = 0;
         for (int i = 0; i < EConnectionType.values().length; i++) {
             EConnectionType currentType = EConnectionType.values()[i];
 
@@ -102,13 +107,6 @@ public class DummyComponent extends AbstractComponent {
                 listConnector.add(nodeConnector);
             }
         }
-        INodeConnector mainConnector = null;
-        for (INodeConnector connector : listConnector) {
-            if (connector.getDefaultConnectionType().equals(EConnectionType.FLOW_MAIN)) {
-                mainConnector = connector;
-            }
-        }
-
         return listConnector;
 
     }
@@ -118,6 +116,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#createElementParameters(org.talend.core.model.process.INode)
      */
+    @Override
     public List<? extends IElementParameter> createElementParameters(INode node) {
         List<IElementParameter> listParam = new ArrayList<IElementParameter>();
         ElementParameter param = new ElementParameter(node);
@@ -161,6 +160,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#createReturns()
      */
+    @Override
     public List<? extends INodeReturn> createReturns() {
         return new ArrayList<NodeReturn>();
     }
@@ -170,6 +170,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getAvailableCodeParts()
      */
+    @Override
     public List<ECodePart> getAvailableCodeParts() {
         return new ArrayList<ECodePart>();
     }
@@ -179,6 +180,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
+    @Override
     public EComponentType getComponentType() {
         return EComponentType.DUMMY;
     }
@@ -188,6 +190,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getIcon16()
      */
+    @Override
     public ImageDescriptor getIcon16() {
         // TODO Auto-generated method stub
         return null;
@@ -198,6 +201,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getIcon24()
      */
+    @Override
     public ImageDescriptor getIcon24() {
         // TODO Auto-generated method stub
         return null;
@@ -208,6 +212,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getIcon32()
      */
+    @Override
     public ImageDescriptor getIcon32() {
         return icon32;
     }
@@ -217,8 +222,9 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getLongName()
      */
+    @Override
     public String getLongName() {
-        return nType.getComponentName();
+        return componentName;
     }
 
     /*
@@ -226,6 +232,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getModulesNeeded()
      */
+    @Override
     public List<ModuleNeeded> getModulesNeeded() {
         return new ArrayList<ModuleNeeded>();
     }
@@ -235,6 +242,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getMultipleComponentManagers()
      */
+    @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
         return Collections.EMPTY_LIST;
     }
@@ -244,8 +252,9 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getName()
      */
+    @Override
     public String getName() {
-        return nType.getComponentName();
+        return componentName;
     }
 
     /*
@@ -253,9 +262,9 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getOriginalFamilyName()
      */
+    @Override
     public String getOriginalFamilyName() {
-        // TODO Auto-generated method stub
-        return "";
+        return ""; //$NON-NLS-1$ 
     }
 
     /*
@@ -263,6 +272,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getPathSource()
      */
+    @Override
     public String getPathSource() {
         // TODO Auto-generated method stub
         return null;
@@ -273,6 +283,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getPluginDependencies()
      */
+    @Override
     public List<String> getPluginDependencies() {
         // TODO Auto-generated method stub
         return null;
@@ -283,6 +294,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getPluginFullName()
      */
+    @Override
     public String getPluginExtension() {
         return null;
     }
@@ -292,9 +304,9 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
      */
+    @Override
     public String getTranslatedFamilyName() {
-        // TODO Auto-generated method stub
-        return "";
+        return ""; //$NON-NLS-1$ 
     }
 
     /*
@@ -302,6 +314,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getVersion()
      */
+    @Override
     public String getVersion() {
         // TODO Auto-generated method stub
         return null;
@@ -312,6 +325,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
+    @Override
     public boolean hasConditionalOutputs() {
         return false;
     }
@@ -321,6 +335,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isDataAutoPropagated()
      */
+    @Override
     public boolean isDataAutoPropagated() {
         // TODO Auto-generated method stub
         return false;
@@ -331,6 +346,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isHashComponent()
      */
+    @Override
     public boolean isHashComponent() {
         // TODO Auto-generated method stub
         return false;
@@ -341,6 +357,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isLoaded()
      */
+    @Override
     public boolean isLoaded() {
         // TODO Auto-generated method stub
         return false;
@@ -351,6 +368,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
      */
+    @Override
     public boolean isMainCodeCalled() {
         // TODO Auto-generated method stub
         return false;
@@ -361,6 +379,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMultipleOutput()
      */
+    @Override
     public boolean isMultipleOutput() {
         // TODO Auto-generated method stub
         return false;
@@ -371,6 +390,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMultiplyingOutputs()
      */
+    @Override
     public boolean isMultiplyingOutputs() {
         return false;
     }
@@ -380,6 +400,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isSchemaAutoPropagated()
      */
+    @Override
     public boolean isSchemaAutoPropagated() {
         // TODO Auto-generated method stub
         return false;
@@ -390,6 +411,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isSingleton()
      */
+    @Override
     public boolean isSingleton() {
         // TODO Auto-generated method stub
         return false;
@@ -400,6 +422,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
+    @Override
     public boolean isTechnical() {
         // TODO Auto-generated method stub
         return false;
@@ -410,6 +433,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisible()
      */
+    @Override
     public boolean isVisible() {
         // TODO Auto-generated method stub
         return false;
@@ -420,6 +444,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisible(java.lang.String)
      */
+    @Override
     public boolean isVisible(String family) {
         // TODO Auto-generated method stub
         return false;
@@ -430,6 +455,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
      */
+    @Override
     public boolean isVisibleInComponentDefinition() {
         // TODO Auto-generated method stub
         return false;
@@ -470,6 +496,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useImport()
      */
+    @Override
     public boolean useImport() {
         // TODO Auto-generated method stub
         return false;
@@ -480,6 +507,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useLookup()
      */
+    @Override
     public boolean useLookup() {
         // TODO Auto-generated method stub
         return false;
@@ -490,6 +518,7 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useMerge()
      */
+    @Override
     public boolean useMerge() {
         // TODO Auto-generated method stub
         return false;
@@ -500,20 +529,24 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getShortName()
      */
+    @Override
     public String getShortName() {
-        return "dc";
+        return "dc"; //$NON-NLS-1$ 
     }
 
+    @Override
     public String getCombine() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         // TODO Auto-generated method stub
 

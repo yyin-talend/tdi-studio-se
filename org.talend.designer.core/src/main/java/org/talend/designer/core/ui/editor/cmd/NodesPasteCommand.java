@@ -48,6 +48,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -194,12 +195,12 @@ public class NodesPasteCommand extends Command {
             for (NodePart partToOrder : restToOrder) {
                 IGraphicalNode copiedNode = (IGraphicalNode) partToOrder.getModel();
                 if (curLocation == null) {
-                    curLocation = (Point) copiedNode.getLocation();
+                    curLocation = copiedNode.getLocation();
                     toAdd = partToOrder;
                 } else {
-                    if (curLocation.y >= ((Point) copiedNode.getLocation()).y) {
-                        if (curLocation.x >= ((Point) copiedNode.getLocation()).x) {
-                            curLocation = (Point) copiedNode.getLocation();
+                    if (curLocation.y >= copiedNode.getLocation().y) {
+                        if (curLocation.x >= copiedNode.getLocation().x) {
+                            curLocation = copiedNode.getLocation();
                             toAdd = partToOrder;
                         }
                     }
@@ -260,7 +261,7 @@ public class NodesPasteCommand extends Command {
         Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
         for (IGraphicalNode node : (List<IGraphicalNode>) process.getGraphicalNodes()) {
-            Rectangle currentRect = new Rectangle((Point) node.getLocation(), (Dimension) node.getSize());
+            Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
             if (currentRect.intersects(copiedRect)) {
                 newLocation.x += size.width;
                 newLocation.y += size.height;
@@ -277,7 +278,7 @@ public class NodesPasteCommand extends Command {
         if (getCursorLocation() == null) {
             for (NodeContainer nodeContainer : nodeContainerList) {
                 IGraphicalNode node = nodeContainer.getNode();
-                Rectangle currentRect = new Rectangle((Point) node.getLocation(), (Dimension) node.getSize());
+                Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
                 if (currentRect.intersects(copiedRect)) {
                     newLocation.x += size.width;
                     newLocation.y += size.height;
@@ -344,9 +345,10 @@ public class NodesPasteCommand extends Command {
             if (!containNodeInProcess(copiedNode)) {
                 continue;
             }
-            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(), copiedNode.getProcess().getComponentsType());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(),
+                    process.getComponentsType());
             if (component == null) {
-                component = copiedNode.getComponent();
+                component = new DummyComponent(copiedNode.getComponent().getName());
             }
             IGraphicalNode pastedNode = new Node(component, process);
             if (nodeMap != null) {
@@ -362,7 +364,7 @@ public class NodesPasteCommand extends Command {
 
             Point location = null;
             if (getCursorLocation() == null) {
-                location = (Point) copiedNode.getLocation();
+                location = copiedNode.getLocation();
             } else {
                 location = getCursorLocation();
                 index = nodeParts.indexOf(copiedNodePart);
@@ -375,8 +377,7 @@ public class NodesPasteCommand extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNode.setLocation(findLocationForNode(location, (Dimension) copiedNode.getSize(), index, firstIndex,
-                    copiedNodePart));
+            pastedNode.setLocation(findLocationForNode(location, copiedNode.getSize(), index, firstIndex, copiedNodePart));
             pastedNode.setSize(copiedNode.getSize());
 
             INodeConnector mainConnector;
