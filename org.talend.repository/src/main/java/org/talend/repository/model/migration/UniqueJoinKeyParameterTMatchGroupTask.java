@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
@@ -36,11 +38,17 @@ public class UniqueJoinKeyParameterTMatchGroupTask extends AbstractJobMigrationT
 
     private final String PROPERTYKEY = "JOIN_KEY"; //$NON-NLS-1$
 
-    private final String COMPONENTNAME = "tMatchGroup"; //$NON-NLS-1$
+    private final String COMPONENTNAME1 = "tMatchGroup"; //$NON-NLS-1$
+
+    private final String COMPONENTNAME2 = "tRecordMatching"; //$NON-NLS-1$
+
+    private final String COMPONENTNAME3 = "tMatchGroupHadoop"; //$NON-NLS-1$
 
     private final String NEWCOLUMNNAME = "HANDLE_NULL"; //$NON-NLS-1$
 
-    private final String NEWCOLUMNDEFAULEVALUE = "null_match_null"; //$NON-NLS-1$
+    private final String NEWCOLUMNDEFAULEVALUE = "nullMatchNull"; //$NON-NLS-1$
+
+    private Map<String, Integer> COMPONENTSIZE = new HashMap<String, Integer>();
 
     /*
      * (non-Javadoc)
@@ -59,20 +67,33 @@ public class UniqueJoinKeyParameterTMatchGroupTask extends AbstractJobMigrationT
      */
     @Override
     public ExecutionResult execute(Item item) {
+        initComponentMap();
         ProcessType processType = getProcessType(item);
         if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
-            IComponentFilter filter = new NameComponentFilter(COMPONENTNAME);
-            IComponentConversion addHandleNullColumn = new AddHandleNullColumn();
-            ModifyComponentsAction.searchAndModify(item, processType, filter,
-                    Arrays.<IComponentConversion> asList(addHandleNullColumn));
+            for (String Mapkey : COMPONENTSIZE.keySet()) {
+                IComponentFilter filter = new NameComponentFilter(Mapkey);
+                IComponentConversion addHandleNullColumn = new AddHandleNullColumn();
+                ModifyComponentsAction.searchAndModify(item, processType, filter,
+                        Arrays.<IComponentConversion> asList(addHandleNullColumn));
+            }
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
+    }
+
+    /**
+     * DOC zshen Comment method "initComponentMap".
+     */
+    private void initComponentMap() {
+        COMPONENTSIZE.put(COMPONENTNAME1, 4);
+        COMPONENTSIZE.put(COMPONENTNAME2, 5);
+        COMPONENTSIZE.put(COMPONENTNAME3, 4);
+
     }
 
     /**
@@ -94,11 +115,11 @@ public class UniqueJoinKeyParameterTMatchGroupTask extends AbstractJobMigrationT
             if (ComponentUtilities.getNodeProperty(node, PROPERTYKEY) != null) {
                 ElementParameterType p = ComponentUtilities.getNodeProperty(node, PROPERTYKEY);
                 java.util.List<ElementValueType> joinKeys = new ArrayList<ElementValueType>();
-                int insertIndex = 4;
+                int insertIndex = COMPONENTSIZE.get(node.getComponentName());
                 for (int i = 0; i < p.getElementValue().size(); i++) {
                     joinKeys.add((ElementValueType) p.getElementValue().get(i));
                     if (i + 1 == insertIndex) {
-                        insertIndex = insertIndex + 4;
+                        insertIndex = insertIndex + COMPONENTSIZE.get(node.getComponentName());
                         ElementValueType handleNullElemenVauleType = TalendFileFactoryImpl.eINSTANCE.createElementValueType();
                         handleNullElemenVauleType.setElementRef(NEWCOLUMNNAME);
                         handleNullElemenVauleType.setValue(NEWCOLUMNDEFAULEVALUE);
