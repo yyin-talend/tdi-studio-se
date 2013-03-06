@@ -1857,6 +1857,15 @@
               name="UniqueJoinKeyParameterTMatchGroup"
               version="5.3.0">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="5.2.1"
+            class="org.talend.repository.model.migration.ChangeBagName4tPigCode"
+            description="change the bagname for tPigCode."
+            id="org.talend.repository.model.migration.ChangeBagName4tPigCode"
+            name="ChangeBagName4tPigCode"
+            version="5.3.0">
+        </projecttask>
    </extension>
    
    <extension
