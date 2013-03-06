@@ -183,14 +183,14 @@ public class JavaProcessorUtilities {
      */
     public static Set<ModuleNeeded> extractLibsOnlyForMapperAndReducer(IProcess process) {
         Set<ModuleNeeded> allModules = JavaProcessUtil.getNeededModules(process, true, true);
-        if (allModules != null) {
-            Iterator<ModuleNeeded> itAllModules = allModules.iterator();
-            while (itAllModules.hasNext()) {
-                if (!itAllModules.next().isMrRequired()) {
-                    itAllModules.remove();
-                }
-            }
-        }
+        // if (allModules != null) {
+        // Iterator<ModuleNeeded> itAllModules = allModules.iterator();
+        // while (itAllModules.hasNext()) {
+        // if (!itAllModules.next().isMrRequired()) {
+        // itAllModules.remove();
+        // }
+        // }
+        // }
         return allModules;
     }
 
