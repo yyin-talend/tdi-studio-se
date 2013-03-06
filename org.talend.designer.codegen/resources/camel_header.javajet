@@ -50,14 +50,30 @@
 				}
 			}
 
-
+<%
+			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
+			if( null != cxfNodes && cxfNodes.size() >0 ){
+%>
+			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri){
+				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
+				if( null != bundleContext ){
+					org.apache.cxf.Bus bus = cxfEndpoint.getBus();
+			        org.apache.cxf.configuration.ConfiguredBeanLocator cbl = bus==null?null:bus.getExtension(org.apache.cxf.configuration.ConfiguredBeanLocator.class);
+			        if(cbl != null){
+			             bus.setExtension(new org.apache.cxf.bus.osgi.OSGiBeanLocator(cbl, bundleContext), org.apache.cxf.configuration.ConfiguredBeanLocator.class);
+			        }
+				}
+				return cxfEndpoint;
+			}
+<%
+			}
+%>
 			/**
 			* please initial uri map 
 			*/
 			public void configure() throws java.lang.Exception {
 <%
 	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGraphicalNodes();
-	List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 	for (INode node : processNodes) {
 			if (!node.isActivate()) {
 				continue;
@@ -77,7 +93,7 @@
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 %>
 				// CXF endpoint for <%=cid%>
-				org.apache.camel.Endpoint <%=endpointVar%> = endpoint(<%=uriRef%>);
+				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>);
 <%
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
@@ -111,7 +127,7 @@
 						<% } %>
 					<% } %>
 
-					((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(locatorFeature);
+					<%=endpointVar%>.getFeatures().add(locatorFeature);
 				}
 <%
 			}

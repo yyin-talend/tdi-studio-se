@@ -44,7 +44,11 @@
 			if(bundleContext != null){
 				CamelContextFactoryBean contextFactory = new CamelContextFactoryBean();
 				contextFactory.setId("<%=process.getName()%>-ctx");
-				contextFactory.setApplicationContext(new ClassPathXmlApplicationContext("META-INF/spring/<%=process.getName().toLowerCase()%>.xml"));
+				OsgiBundleXmlApplicationContext appContext = new OsgiBundleXmlApplicationContext(
+						new String[]{"META-INF/spring/<%=process.getName().toLowerCase()%>.xml"});
+				appContext.setBundleContext(bundleContext);
+				appContext.refresh();
+				contextFactory.setApplicationContext(appContext);
 				contextFactory.setBundleContext(bundleContext);
 				camelContext = contextFactory.getContext(true);
 				bundleContext.registerService(CamelContext.class.getName(), camelContext, null);
