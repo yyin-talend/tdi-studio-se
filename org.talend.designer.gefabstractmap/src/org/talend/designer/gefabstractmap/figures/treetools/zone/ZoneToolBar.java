@@ -67,7 +67,7 @@ public abstract class ZoneToolBar extends Figure {
             image = miniImage;
         }
         min_size = new MinSizeButton(image);
-        min_size.setEnabled(isMinSizeEnable());
+        min_size.setEnabled(!isMinSizeEnable());
     }
 
     protected abstract boolean getMinSizeStatus();

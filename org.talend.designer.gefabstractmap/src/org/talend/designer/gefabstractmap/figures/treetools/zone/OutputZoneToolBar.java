@@ -57,7 +57,7 @@ public abstract class OutputZoneToolBar extends ZoneToolBar {
             image = miniImage;
         }
         min_size = new MinSizeButton(image);
-        min_size.setEnabled(isMinSizeEnable());
+        min_size.setEnabled(!isMinSizeEnable());
         this.add(min_size);
 
         auto_map = new AutoMapButton();
