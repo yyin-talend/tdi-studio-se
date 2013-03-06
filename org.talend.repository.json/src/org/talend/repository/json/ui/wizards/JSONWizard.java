@@ -313,7 +313,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             }
         }
         if (creation) {
-            setWindowTitle("New JSON File");
+            setWindowTitle("New Json File");
 
             propertiesWizardPage.setTitle("File - Step" + " 1 " + "of" + " 5");
             propertiesWizardPage.setDescription("Add a Metadata File on repository\\nDefine the properties");
@@ -326,7 +326,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             jsonFileSelectPage.setPageComplete(true);
 
         } else {
-            setWindowTitle("Edit an existing JSON File");
+            setWindowTitle("Edit an existing Json File");
 
             propertiesWizardPage.setTitle("File - Step" + " 1 " + "of" + " 4");
             propertiesWizardPage.setDescription("Edit an existing Metadata File on repository\\nUpdate the properties");

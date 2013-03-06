@@ -29,7 +29,7 @@
             class="org.talend.repository.json.node.JSONExtendNode"
             folder="metadata/json"
             isResouce="true"
-            label="File JSON"
+            label="File Json"
             ordinal="49"
             parentNodeType="METADATA"
             products="DI"

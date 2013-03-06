@@ -254,7 +254,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
         // file Field JSON
         String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        fileFieldJSON = new LabelledFileField(compositeFileLocation, "JSON", //$NON-NLS-1$
+        fileFieldJSON = new LabelledFileField(compositeFileLocation, "Json", //$NON-NLS-1$
                 JSONExtensions);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();

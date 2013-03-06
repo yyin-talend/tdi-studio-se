@@ -70,11 +70,11 @@ public class JSONFileSelectWizardPage extends JSONFileWizardPage {
         GridData labelData = new GridData();
         labelData.verticalSpan = 8;
         label.setLayoutData(labelData);
-        label.setText("Select one model to create JSON metadata");
+        label.setText("Select one model to create Json metadata");
 
         boolean inputModel = ((JSONFileConnection) connectionItem.getConnection()).isInputModel();
         inputModeButton = new Button(composite, SWT.RADIO);
-        inputModeButton.setText("Input JSON");
+        inputModeButton.setText("Input Json");
         if (creation) {
             inputModeButton.setSelection(isInputModel);
         } else {
@@ -83,7 +83,7 @@ public class JSONFileSelectWizardPage extends JSONFileWizardPage {
         inputModeButton.setEnabled(creation);
 
         outputModeButton = new Button(composite, SWT.RADIO);
-        outputModeButton.setText("Output JSON");
+        outputModeButton.setText("Output Json");
         if (creation) {
             outputModeButton.setSelection(!isInputModel);
         } else {
