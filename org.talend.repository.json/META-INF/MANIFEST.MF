@@ -5,10 +5,7 @@ Bundle-SymbolicName: org.talend.repository.json;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/staxon-1.2.jar,
- lib/json-lib-2.4-jdk15.jar,
- lib/ezmorph-1.0.6.jar,
- lib/xom-1.2.7.jar,
- lib/dom4j-1.6.1.jar
+ lib/xom-1.2.7.jar
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -27,6 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.commons.runtime,
  org.talend.metadata.managment.ui,
  org.talend.libraries.apache,
+ org.talend.libraries.dom4j-jaxen,
+ org.talend.libraries.jackson,
  org.talend.datatools.xml,
  org.talend.metadata.managment,
  org.eclipse.gef,
