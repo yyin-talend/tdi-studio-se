@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -67,6 +68,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -171,6 +173,45 @@ public class JavaProcessorUtilities {
         initJavaProject(rootProject);
         javaProject = JavaCore.create(rootProject);
         return rootProject;
+    }
+
+    /**
+     * Extracts the set of modules for mapper and reducer dependency. Added by Marvin Wang on Mar 4, 2013.
+     * 
+     * @param process
+     * @return
+     */
+    public static Set<ModuleNeeded> extractLibsOnlyForMapperAndReducer(IProcess process) {
+        Set<ModuleNeeded> allModules = JavaProcessUtil.getNeededModules(process, true, true);
+        if (allModules != null) {
+            Iterator<ModuleNeeded> itAllModules = allModules.iterator();
+            while (itAllModules.hasNext()) {
+                if (!itAllModules.next().isMrRequired()) {
+                    itAllModules.remove();
+                }
+            }
+        }
+        return allModules;
+    }
+
+    /**
+     * Extracts the name of libs only for mapper and reducer methods dependency. Added by Marvin Wang on Mar 4, 2013.
+     * 
+     * @param process
+     * @return
+     */
+    public static Set<String> extractLibNamesOnlyForMapperAndReducer(IProcess process) {
+        Set<String> libNames = new HashSet<String>();
+        Set<ModuleNeeded> libs = extractLibsOnlyForMapperAndReducer(process);
+        if (libs != null) {
+            Iterator<ModuleNeeded> itLibs = libs.iterator();
+            while (itLibs.hasNext()) {
+                libNames.add(itLibs.next().getModuleName());
+            }
+        }
+        libNames.add("systemRoutines.jar");
+        libNames.add("userRoutines.jar");
+        return libNames;
     }
 
     /**

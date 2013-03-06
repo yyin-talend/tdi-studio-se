@@ -89,6 +89,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
@@ -122,16 +123,16 @@ import org.talend.repository.ProjectManager;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
- *
+ * 
  * The creation for the java package should follow the pattern below:
- *
+ * 
  * 1)The name for the first grade folder should keep same with the T.O.S project name. 2)The folder name within the
  * project should be the job name.
- *
+ * 
  * <br/>
- *
+ * 
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
- *
+ * 
  */
 public class JavaProcessor extends Processor implements IJavaBreakpointListener {
 
@@ -161,15 +162,15 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     private static final String METHOD_START_COMMENT = "Start of Function:"; //$NON-NLS-1$
 
-    private Property property;
+    protected Property property;
 
     private String exportAsOSGI;
 
     /**
      * Set current status.
-     *
+     * 
      * DOC yzhang Comment method "setStatus".
-     *
+     * 
      * @param states
      */
     public void setStatus(IJavaProcessorStates states) {
@@ -178,7 +179,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Constructs a new JavaProcessor.
-     *
+     * 
      * @param process Process to be turned in Java code.
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
@@ -207,7 +208,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Initialization of the variable codePath and contextPath.
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model .process.IContext)
      */
     @Override
@@ -227,6 +228,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         this.context = context;
     }
 
+    @Override
     public void initPath() throws ProcessorException {
         initCodePath(context);
     }
@@ -269,7 +271,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * DOC chuang Comment method "computeMethodSizeIfNeeded".
-     *
+     * 
      * @param processCode
      * @return
      */
@@ -311,7 +313,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean, boolean)
      */
@@ -325,7 +327,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
@@ -372,7 +374,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                         List<? extends INode> allNodes = this.process.getGeneratingNodes();
                         for (int i = 0; i < allNodes.size(); i++) {
                             if (allNodes.get(i) instanceof INode) {
-                                INode node = (INode) allNodes.get(i);
+                                INode node = allNodes.get(i);
                                 if (rulesService.isRuleComponent(node)
                                         && !node.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getValue()
                                                 .toString().equals("BUILT_IN")) { //$NON-NLS-N$
@@ -488,12 +490,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * DOC nrousseau Comment method "formatCode".
-     *
+     * 
      * @param processCode
      * @return
      */
     @SuppressWarnings("restriction")
-	private String formatCode(String processCode) {
+    private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
         // we cannot make calls to Ui in headless mode
@@ -550,6 +552,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         return document.get();
     }
 
+    @Override
     public void setSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
         this.checkableEditor = checkableEditor;
     }
@@ -562,7 +565,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     @Override
@@ -576,7 +579,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
     @Override
@@ -586,7 +589,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     @Override
@@ -596,7 +599,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     @Override
@@ -606,7 +609,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Find line numbers of the beginning of the code of process nodes.
-     *
+     * 
      * @param file Code file where we are searching node's code.
      * @param nodes List of nodes searched.
      * @return Line numbers where code of nodes appears.
@@ -661,7 +664,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Return line number where stands specific node in code generated.
-     *
+     * 
      * @param nodeName
      */
     @Override
@@ -684,7 +687,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Tells if a line is a line of perl code, not an empty or comment line.
-     *
+     * 
      * @param line The tested line of code.
      * @return true if the line is a line of code.
      */
@@ -695,7 +698,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Set java breakpoints in a java file.
-     *
+     * 
      * @param srcFile Java file in wich breakpoints are added.
      * @param lineNumbers Line numbers in the source file where breakpoints are installed.
      * @throws CoreException Breakpoint addition failed.
@@ -711,9 +714,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Get the required project package under java project, if not existed new one will be created.
-     *
+     * 
      * DOC yzhang Comment method "getProjectPackage".
-     *
+     * 
      * @param packageName The required package name, should keep same with the T.O.S project name.
      * @return The required packaged.
      * @throws JavaModelException
@@ -751,9 +754,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /**
      * Get the required job package under the project package within the tranfered project, if not existed new one will
      * be created.
-     *
+     * 
      * DOC yzhang Comment method "getJobPackage".
-     *
+     * 
      * @param projectPackage The project package within which the job package you need to get, can be getted by method
      * getProjectPackage().
      * @param jobName The required job package name.
@@ -774,7 +777,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Get the interpreter of Java.
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     @Override
@@ -811,7 +814,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for compliedCodePath.
-     *
+     * 
      * @return the compliedCodePath
      */
     public IPath getCompiledCodePath() {
@@ -820,7 +823,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for compiledContextPath.
-     *
+     * 
      * @return the compiledContextPath
      */
     public IPath getCompiledContextPath() {
@@ -829,7 +832,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for codePath.
-     *
+     * 
      * @return the codePath
      */
     public IPath getSrcCodePath() {
@@ -838,11 +841,27 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for srcContextPath.
-     *
+     * 
      * @return the srcContextPath
      */
     public IPath getSrcContextPath() {
         return this.contextPath;
+    }
+
+    protected List<String> getJavaCommandSegments() {
+        return null;
+    }
+
+    protected List<String> extractCPCommandSegments() {
+        return null;
+    }
+
+    protected String extractMainClassSegments() {
+        return null;
+    }
+
+    protected List<String> extractArgumentSegments() {
+        return null;
     }
 
     @Override
@@ -995,6 +1014,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         tmpParams.add(className);
         strings = tmpParams.toArray(new String[0]);
 
+        // If the current job is m/r job, then add the argument "-libjars *.jar" for mapper and reducer method if
+        // required.
+        if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
+            strings = addMapReduceJobCommands(strings);
+        }
+
         String[] cmd2 = addVMArguments(strings, exportingJob);
         // achen modify to fix 0001268
         if (!exportingJob) {
@@ -1014,7 +1039,63 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         // end
     }
 
-    private String[] addVMArguments(String[] strings, boolean exportingJob) {
+    protected String getLibFolderInWorkingDir() {
+        return JavaProcessorUtilities.getJavaProjectLibFolder().getAbsolutePath();
+    }
+
+    private List<String> getCommandSegmentsForMapReduceProcess() {
+        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
+        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
+        List<String> list = new ArrayList<String>();
+
+        list.add("-libjars"); //$NON-NLS-1$
+        StringBuffer libJars = new StringBuffer("");
+        Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
+        if (libNames != null && libNames.size() > 0) {
+            Iterator<String> itLibNames = libNames.iterator();
+            while (itLibNames.hasNext()) {
+                libJars.append(getLibFolderInWorkingDir() + File.separator + itLibNames.next()).append(",");
+            }
+        }
+        list.add(libJars.substring(0, libJars.length() - 1));
+        list.add("-fs");//$NON-NLS-1$
+        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$
+        list.add("-jt");//$NON-NLS-1$
+        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$
+
+        return list;
+    }
+
+    protected String[] addMapReduceJobCommands(String[] strings) {
+        List<String> list = new ArrayList<String>();
+        if (strings != null && strings.length > 0) {
+            for (String commandSegment : strings) {
+                list.add(commandSegment);
+            }
+        }
+        list.addAll(getCommandSegmentsForMapReduceProcess());
+        return list.toArray(new String[list.size()]);
+    }
+
+    protected String extractClassPathSeparator() {
+        boolean win32 = false;
+        String classPathSeparator;
+        if (targetPlatform == null) {
+            targetPlatform = Platform.getOS();
+            win32 = Platform.OS_WIN32.equals(targetPlatform);
+            classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
+        } else {
+            win32 = targetPlatform.equals(Platform.OS_WIN32);
+            if (win32) {
+                classPathSeparator = ";"; //$NON-NLS-1$
+            } else {
+                classPathSeparator = ":"; //$NON-NLS-1$
+            }
+        }
+        return classPathSeparator;
+    }
+
+    protected String[] addVMArguments(String[] strings, boolean exportingJob) {
         String string = null;
         if (this.process != null) {
             IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
@@ -1069,7 +1150,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
     @Override
@@ -1079,7 +1160,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
     @Override
@@ -1094,7 +1175,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Get current class name, and it imported package structure.
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getTypeName()
      */
     @Override
@@ -1104,7 +1185,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
     @Override
@@ -1133,6 +1214,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     // generate the ILaunchConfiguration with the parameter string.
+    @Override
     public Object saveLaunchConfigurationWithParam(String parameterStr) throws CoreException {
 
         /*
@@ -1159,7 +1241,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.designer.runprocess.Processor#generateContextCode()
      */
     @Override
@@ -1181,11 +1263,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     /*
-     * (non-Javadoc)
-     * generate ESB files on classpath for jobs with ESB components
+     * (non-Javadoc) generate ESB files on classpath for jobs with ESB components
      */
+    @Override
     public void generateEsbFiles() throws ProcessorException {
-        List<? extends INode> graphicalNodes = process.getGraphicalNodes(); //process.getGeneratingNodes();
+        List<? extends INode> graphicalNodes = process.getGraphicalNodes(); // process.getGeneratingNodes();
 
         try {
             IPath jobPackagePath = this.codePath.removeLastSegments(1);
@@ -1203,8 +1285,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     if (null != uniqueName && null != wsdlContent && !wsdlContent.trim().isEmpty()) {
 
                         // configure decoding and uncompressing
-                        InputStream wsdlStream = new InflaterInputStream(new Base64InputStream(
-                                new ByteArrayInputStream(wsdlContent.getBytes())));
+                        InputStream wsdlStream = new InflaterInputStream(new Base64InputStream(new ByteArrayInputStream(
+                                wsdlContent.getBytes())));
 
                         if (!wsdlsPackageFolder.exists()) {
                             wsdlsPackageFolder.create(true, true, null);
@@ -1254,9 +1336,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
             File esbConfigsSourceFolder = new File(URI.create(eclipseHome + "esb")); //$NON-NLS-1$
             if (!esbConfigsSourceFolder.exists()) {
-                RunProcessPlugin.getDefault().getLog().log(
-                        new Status(IStatus.WARNING,
-                                RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                RunProcessPlugin
+                        .getDefault()
+                        .getLog()
+                        .log(new Status(IStatus.WARNING, RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
                                 "ESB configuration folder does not exists - " + esbConfigsSourceFolder.toURI())); //$NON-NLS-1$
                 return;
             }
@@ -1294,27 +1377,26 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                         is.close();
                     }
                 }
-//                esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
+                // esbConfig.copy(esbConfigsTargetFolder.getChild(configFile), EFS.OVERWRITE, null);
             } catch (Exception e) {
-                RunProcessPlugin.getDefault().getLog().log(
-                        new Status(IStatus.WARNING,
-                                RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                RunProcessPlugin
+                        .getDefault()
+                        .getLog()
+                        .log(new Status(IStatus.WARNING, RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
                                 "cannot add configuration file on classpath - " + configFile, //$NON-NLS-1$
                                 e));
             }
         } else {
-            RunProcessPlugin.getDefault().getLog().log(
-                    new Status(IStatus.WARNING,
-                            RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+            RunProcessPlugin
+                    .getDefault()
+                    .getLog()
+                    .log(new Status(IStatus.WARNING, RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
                             "cannot find configuration file - " + esbConfig.toURI())); //$NON-NLS-1$
         }
     }
 
-
     /*
-     * (non-Javadoc)
-     * generate spring file for RouteBuilder
-     * ADDED for TESB-7887 by GangLiu
+     * (non-Javadoc) generate spring file for RouteBuilder ADDED for TESB-7887 by GangLiu
      */
     @Override
     public void generateSpringContent() throws ProcessorException {
@@ -1325,29 +1407,29 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if (codeGen == null) {
                 return;
             }
-            String	content = codeGen.generateSpringContent();
-            if(content == null){
+            String content = codeGen.generateSpringContent();
+            if (content == null) {
                 return;
             }
 
-            IProject processorProject = this.project == null?JavaProcessorUtilities.getProcessorProject():this.project;
-            if(processorProject == null){
+            IProject processorProject = this.project == null ? JavaProcessorUtilities.getProcessorProject() : this.project;
+            if (processorProject == null) {
                 return;
             }
             processorProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-            IFolder srcFolder = processorProject.getFolder("src");//refreshLocal(IResource.DEPTH_INFINITE, null);
-            if(!srcFolder.exists()){
+            IFolder srcFolder = processorProject.getFolder("src");// refreshLocal(IResource.DEPTH_INFINITE, null);
+            if (!srcFolder.exists()) {
                 srcFolder.create(true, true, null);
             }
             IFolder metainfFolder = srcFolder.getFolder("META-INF");
-            if(!metainfFolder.exists()){
+            if (!metainfFolder.exists()) {
                 metainfFolder.create(true, true, null);
             }
             IFolder springFolder = metainfFolder.getFolder("spring");
-            if(!springFolder.exists()){
+            if (!springFolder.exists()) {
                 springFolder.create(true, true, null);
             }
-            IFile springFile = springFolder.getFile(process.getName().toLowerCase()+".xml");
+            IFile springFile = springFolder.getFile(process.getName().toLowerCase() + ".xml");
             InputStream is = new ByteArrayInputStream(content.getBytes());
 
             if (!springFile.exists()) {
@@ -1356,9 +1438,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 springFile.setContents(is, true, false, null);
             }
             is.close();
-        }   catch (SystemException e) {
+        } catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
-        }catch (CoreException e1) {
+        } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (IOException e) {
             e.printStackTrace();
@@ -1367,21 +1449,23 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org
      * .eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void addingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
 
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener#
      * breakpointHasCompilationErrors(org.eclipse.jdt.debug.core. IJavaLineBreakpoint,
      * org.eclipse.jdt.core.dom.Message[])
      */
+    @Override
     public void breakpointHasCompilationErrors(IJavaLineBreakpoint breakpoint, Message[] errors) {
         // TODO Auto-generated method stub
 
@@ -1389,10 +1473,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener# breakpointHasRuntimeException(org.eclipse.jdt.debug.core.
      * IJavaLineBreakpoint, org.eclipse.debug.core.DebugException)
      */
+    @Override
     public void breakpointHasRuntimeException(IJavaLineBreakpoint breakpoint, DebugException exception) {
         // TODO Auto-generated method stub
 
@@ -1400,10 +1485,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHit(org. eclipse.jdt.debug.core.IJavaThread,
      * org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public int breakpointHit(IJavaThread thread, IJavaBreakpoint breakpoint) {
         // TODO Auto-generated method stub
         return 0;
@@ -1411,20 +1497,22 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointInstalled
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void breakpointInstalled(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
         updateGraphicalNodeBreaking(breakpoint, false);
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointRemoved(
      * org.eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void breakpointRemoved(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
         if (!target.isTerminated()) {
             updateGraphicalNodeBreaking(breakpoint, true);
@@ -1434,7 +1522,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * yzhang Comment method "updateGraphicalNodeBreaking".
-     *
+     * 
      * @param breakpoint
      */
     private void updateGraphicalNodeBreaking(IJavaBreakpoint breakpoint, boolean removed) {
@@ -1472,6 +1560,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                             final INode currentNode = node;
                             Display.getDefault().syncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     ((Node) currentNode).removeStatus(Process.BREAKPOINT_STATUS);
 
@@ -1506,7 +1595,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#installingBreakpoint
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint,
      * org.eclipse.jdt.debug.core.IJavaType)
