@@ -116,7 +116,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
             ItemCacheManager.clearCache();
 
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-            IPath path = service.getRepositoryPath((RepositoryNode) node);
+            IPath path = service.getRepositoryPath(node);
             if (RepositoryConstants.isSystemFolder(path.toString())) {
                 // Not allowed to create in system folder.
                 return;
@@ -160,6 +160,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -193,6 +194,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     /*
      * only use for creating a process in the intro by url
      */
+    @Override
     public void run(IIntroSite site, Properties params) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {

@@ -170,8 +170,9 @@ public class ExportTreeViewer {
             if (treeItem.getData() != null && treeItem.getData() instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) treeItem.getData();
                 for (RepositoryNode repositoryNode2 : repositoryNodes) {
-                    if (repositoryNode.getId().equals(repositoryNode2.getId()))
+                    if (repositoryNode.getId().equals(repositoryNode2.getId())) {
                         exportItemsTreeViewer.setChecked(repositoryNode, true);
+                    }
                 }
             }
             selectItems(treeItem.getItems());
@@ -206,7 +207,7 @@ public class ExportTreeViewer {
                 ret.add(node);
             }
         }
-        return (RepositoryNode[]) ret.toArray(new RepositoryNode[0]);
+        return ret.toArray(new RepositoryNode[0]);
     }
 
     private void createTreeViewer(Composite itemComposite) {
@@ -276,6 +277,8 @@ public class ExportTreeViewer {
             } else if (contentType == ERepositoryObjectType.SVN_ROOT) {
                 return true;
             } else if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS) {
+                return true;
+            } else if (contentType == ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "PROCESS_MR")) {
                 return true;
             } else {
                 return false;
@@ -381,4 +384,5 @@ public class ExportTreeViewer {
 
         realRepView = null;
     }
+
 }

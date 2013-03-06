@@ -117,6 +117,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String)
      */
+    @Override
     public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
         return run(statisticsPort, tracePort, watchParam, null, null);
     }
@@ -127,6 +128,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String,
      * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
      */
+    @Override
     public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
@@ -171,6 +173,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @throws CoreException
      * @throws ProcessorException
      */
+    @Override
     public ILaunchConfiguration debug() throws ProcessorException {
         if (context == null) {
             throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
@@ -203,8 +206,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
         StringBuilder parameterStr = new StringBuilder(" "); //$NON-NLS-1$
         if (codeOptions != null) {
-            for (int i = 0; i < codeOptions.length; i++) {
-                String string = codeOptions[i];
+            for (String string : codeOptions) {
                 if (string != null) {
                     parameterStr.append(string).append(" "); //$NON-NLS-1$
                 }
@@ -236,6 +238,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @param codeOptions
      * @return
      */
+    @Override
     public String[] getCommandLine(boolean needContext, boolean externalUse, int statOption, int traceOption,
             String... codeOptions) {
         setExternalUse(externalUse);
@@ -251,9 +254,9 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         // (feature 4258)
         if (Platform.OS_LINUX.equals(getTargetPlatform())) {
             // original is $*
-            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORUNIX); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORUNIX);
         } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
-            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORWIN); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORWIN);
         }
         return cmd;
     }
@@ -272,8 +275,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             int traceOption, String... codeOptions) {
         String[] cmd = commandLine;
         if (codeOptions != null) {
-            for (int i = 0; i < codeOptions.length; i++) {
-                String string = codeOptions[i];
+            for (String string : codeOptions) {
                 if (string != null) {
                     cmd = (String[]) ArrayUtils.add(cmd, string);
                 }
@@ -301,7 +303,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @return Command Process Launched
      * @throws ProcessorException
      */
-    private Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+    protected Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
         String[] cmd = getCommandLine(true, false, statOption, traceOption, codeOptions);
 
@@ -317,6 +319,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
             final StringBuffer out, final StringBuffer err) {
         Thread thread = new Thread() {
 
+            @Override
             public void run() {
                 try {
                     BufferedInputStream outStreamProcess = new BufferedInputStream(input);
@@ -367,6 +370,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
+    @Override
     public String getInterpreter() throws ProcessorException {
         return interpreter;
     }
@@ -376,6 +380,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setInterpreter(java.lang.String )
      */
+    @Override
     public void setInterpreter(String interpreter) {
         this.interpreter = interpreter;
     }
@@ -385,6 +390,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setLibraryPath(java.lang.String )
      */
+    @Override
     public void setLibraryPath(String libraryPath) {
         this.libraryPath = libraryPath;
     }
@@ -394,6 +400,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeLocation()
      */
+    @Override
     public String getCodeLocation() throws ProcessorException {
         return codeLocation;
     }
@@ -403,10 +410,12 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setCodeLocation(java.lang.String )
      */
+    @Override
     public void setCodeLocation(String codeLocation) {
         this.codeLocation = codeLocation;
     }
 
+    @Override
     public abstract void setSyntaxCheckableEditor(ISyntaxCheckableEditor editor);
 
     /*
@@ -415,6 +424,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
+    @Override
     public void generateCode(boolean statistics, boolean trace, boolean properties) throws ProcessorException {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
@@ -440,6 +450,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
+    @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
             throws ProcessorException {
         if (context == null) {
@@ -465,6 +476,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
+    @Override
     public abstract String getCodeContext();
 
     /*
@@ -472,6 +484,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
+    @Override
     public abstract IPath getCodePath();
 
     /*
@@ -479,6 +492,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
+    @Override
     public abstract IProject getCodeProject();
 
     public abstract String[] getCommandLine() throws ProcessorException;
@@ -488,6 +502,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
+    @Override
     public abstract IPath getContextPath();
 
     /*
@@ -495,6 +510,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getLineNumber(java.lang.String)
      */
+    @Override
     public abstract int getLineNumber(String nodeName);
 
     /*
@@ -502,6 +518,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
+    @Override
     public abstract String getProcessorType();
 
     /*
@@ -509,6 +526,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getTypeName()
      */
+    @Override
     public abstract String getTypeName();
 
     /*
@@ -523,6 +541,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
+    @Override
     public abstract Object saveLaunchConfiguration() throws CoreException;
 
     /*
@@ -537,6 +556,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setProcessorStates(java.lang .String)
      */
+    @Override
     public abstract void setProcessorStates(int states);
 
     /*
@@ -544,6 +564,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setContext(org.talend.core. model.process.IContext)
      */
+    @Override
     public void setContext(IContext context) {
         if (context == null) {
             // usefull to generate a commandline only (from ProcessorUtilities)
@@ -591,22 +612,27 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         return this.targetExecutionConfig;
     }
 
+    @Override
     public void setTargetExecutionConfig(ITargetExecutionConfig serverConfiguration) {
         this.targetExecutionConfig = serverConfiguration;
     }
 
+    @Override
     public IProcess getProcess() {
         return this.process;
     }
 
+    @Override
     public IContext getContext() {
         return this.context;
     }
 
+    @Override
     public String getTargetPlatform() {
         return targetPlatform;
     }
 
+    @Override
     public void setTargetPlatform(String targetPlatform) {
         this.targetPlatform = targetPlatform;
     }
@@ -645,6 +671,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @return boolean to tell if any code has been generated already or not for this job.
      */
+    @Override
     public boolean isCodeGenerated() {
         return this.codeGenerated;
     }
@@ -655,6 +682,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @param codeGenerated boolean to tell if any code has been generated already or not for this job.
      */
+    @Override
     public void setCodeGenerated(boolean codeGenerated) {
         this.codeGenerated = codeGenerated;
     }
@@ -664,12 +692,15 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#generateContextCode()
      */
+    @Override
     abstract public void generateContextCode() throws ProcessorException;
 
+    @Override
     public String[] getProxyParameters() {
         return this.proxyParameters;
     }
 
+    @Override
     public void setProxyParameters(String[] proxyParameters) {
         if (proxyParameters != null) {
             this.proxyParameters = proxyParameters;

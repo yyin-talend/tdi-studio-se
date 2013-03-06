@@ -37,6 +37,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.business.BusinessType;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
@@ -53,7 +54,6 @@ import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -120,6 +120,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         tabFactory.initComposite(parent, false);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -259,6 +260,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
             dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
                     .getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)) {
+            dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, (Element) data, true);
         }
 
         if (dynamicComposite != null) {
@@ -314,22 +317,27 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         cleaned = false;
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -347,6 +355,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -427,25 +436,17 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
         if (obj instanceof Process) {
             Process process = (Process) obj;
-            boolean route = false;
-
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                        .getService(ICamelDesignerCoreService.class);
-                if (camelService.isInstanceofCamelRoutes(process.getProperty().getItem())) {
-                    route = true;
-                }
-            }
-
             category.add(EComponentCategory.MAIN);
-            if (!route) {
+            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
+            if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
                 category.add(EComponentCategory.EXTRA);
             }
-            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
-            if (!isJoblet && !route) {
+            if (!isJoblet && process.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
                 category.add(EComponentCategory.STATSANDLOGS);
             }
-
+            if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
+                category.add(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP);
+            }
             if (allowVerchange) {
                 category.add(EComponentCategory.VERSIONS);
             }
@@ -462,7 +463,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (service != null && service.isProjectInSvnMode()) {
                 category.add(EComponentCategory.SVNHISTORY);
             }
-            // category.add(EComponentCategory.CONTEXT);
 
         } else if (obj instanceof IRepositoryViewObject) {
             category.add(EComponentCategory.MAIN);
@@ -473,8 +473,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (service != null
                     && service.isProjectInSvnMode()
                     && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.PROCESS || ((IRepositoryViewObject) obj)
-                            .getRepositoryObjectType() == ERepositoryObjectType.JOBLET))
+                            .getRepositoryObjectType() == ERepositoryObjectType.JOBLET)) {
                 category.add(EComponentCategory.SVNHISTORY);
+            }
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 category.add(EComponentCategory.MAIN);
@@ -501,10 +502,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         return (Process) element;
     }
 
+    @Override
     public boolean isCleaned() {
         return this.cleaned;
     }
 
+    @Override
     public void cleanDisplay() {
         setPartName(null);
         tabFactory.setInput(null);
@@ -521,6 +524,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         process = null;
     }
 
+    @Override
     public void refresh() {
         refresh(false, null);
     }
@@ -608,6 +612,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
      * )
      */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         ISelection selection = event.getSelection();
         if (selection instanceof StructuredSelection) {
@@ -646,7 +651,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                String title = repositoryObject.getLabel(); //$NON-NLS-1$
+                String title = repositoryObject.getLabel();
                 if (allowVerchange) {
                     title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
                 }
@@ -662,6 +667,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * 
      * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#getSelection()
      */
+    @Override
     public ISelection getSelection() {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
@@ -689,6 +695,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * 
      * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#refreshCurrentViewTab()
      */
+    @Override
     public void refreshCurrentViewTab() {
         if (currentSelectedTab == null) {
             return;
