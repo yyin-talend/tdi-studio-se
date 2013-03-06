@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -224,6 +225,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }// else ignors it
     }
 
+    /**
+     * Extracts all types of job for exporting, about the exporting job type, please refer to {@link JobExportType}.
+     * Subclasses can override this method to return the types that job requires for exporting. Added by Marvin Wang on
+     * Mar 6, 2013.
+     * 
+     * @return
+     */
+    protected List<JobExportType> extractExportJobTypes() {
+        return Arrays.asList(JobExportType.values());
+    }
+
     @Override
     public JobExportType getCurrentExportType1() {
         if (exportTypeCombo != null && !exportTypeCombo.getText().equals("")) { //$NON-NLS-1$
@@ -341,8 +353,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gd.horizontalSpan = 1;
         exportTypeCombo.setLayoutData(gd);
 
-        for (JobExportType exportType : JobExportType.values()) {
-            if (!Boolean.getBoolean("talend.export.job.2." + exportType.toString() + ".hide")) {
+        for (JobExportType exportType : extractExportJobTypes()) {
+            if (!Boolean.getBoolean("talend.export.job.2." + exportType.toString() + ".hide")) { //$NON-NLS-1$//$NON-NLS-2$
                 exportTypeCombo.add(exportType.label);
             }
         }
@@ -374,10 +386,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         });
         exportTypeCombo.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 destinationNameFieldInnerComposite.dispose();
                 GridLayout layout = new GridLayout();
@@ -1124,10 +1138,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         // Additional listeners
         contextCombo.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
 
                 int index = contextCombo.getSelectionIndex();
@@ -1410,6 +1426,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     public boolean isAddMavenScript() {
         if (addBSButton != null) {
             return addBSButton.getSelection();
