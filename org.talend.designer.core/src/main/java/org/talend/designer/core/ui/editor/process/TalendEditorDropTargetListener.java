@@ -69,6 +69,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.hadoop.IHadoopClusterService;
+import org.talend.core.hadoop.IOozieService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
@@ -229,6 +230,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         IHadoopClusterService.class);
             }
             if (hadoopClusterService != null && hadoopClusterService.isHadoopClusterNode(sourceNode)) {
+                return false;
+            }
+            IOozieService oozieService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IOozieService.class)) {
+                oozieService = (IOozieService) GlobalServiceRegister.getDefault().getService(IOozieService.class);
+            }
+            if (oozieService != null && oozieService.isOozieNode(sourceNode)) {
                 return false;
             }
         }
@@ -1145,7 +1153,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                                .isHL7PluginLoaded())) {
+                            .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1189,7 +1197,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                                .isBRMSPluginLoaded())) {
+                            .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
