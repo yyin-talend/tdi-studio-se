@@ -219,6 +219,90 @@ for (INode node : graphicalNodes) {
 	uri = "";
 	if ("cMessagingEndpoint".equals(componentName)) {
 		uri = ElementParameterParser.getValue(node, "__URI__");
+	}else if("cDirect".equals(componentName)){
+		boolean createNew = "true".equals(ElementParameterParser.getValue(node, "__CREATE_NEW_ENDPOINT__"));
+		if(!createNew){
+			continue;//no endpoint uri generated.
+		}
+		String directName=ElementParameterParser.getValue(node, "__NAME__");
+		uri="\"direct:\"+"+directName;
+		StringBuilder sb=new StringBuilder();
+		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
+		for (Map<String, String> map : tableValues) {
+			String argName = map.get("NAME").trim();
+			String argValue = map.get("VALUE").trim();
+			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+		}
+		if(sb.length()>0){
+			sb.setCharAt(sb.indexOf("&"),'?');
+			uri = uri + sb.toString();
+		}
+	}else if("cVM".equals(componentName)||"cSEDA".equals(componentName)){
+		boolean asProductor = "true".equals(ElementParameterParser.getValue(node, "__CREATE_ENDPOINT__"));
+		if(!asProductor){
+			continue;//no endpoint uri generated.
+		}
+		String endpointName=ElementParameterParser.getValue(node, "__NAME__");
+		uri="\""
+			+ ("cVM".equals(componentName) ? "vm":"seda" )
+			+ ":\"+" + endpointName;
+		StringBuilder sb=new StringBuilder();
+		boolean  specifySize="true".equals(ElementParameterParser.getValue(node, "__SPECIFY_SIZE__"));
+		if(specifySize){
+			String size=ElementParameterParser.getValue(node, "__SIZE__");
+			if(size!=null && !size.trim().equals("") && !"0".equals(size)){
+				sb.append("+\"&size=\"+");
+				//the first '&' should replace to '?' later.
+				sb.append(size);
+			}
+		}
+		String concurCnsmrs=ElementParameterParser.getValue(node, "__CONCURRENT_CONSUMERS__");
+		if(concurCnsmrs!=null && !concurCnsmrs.trim().equals("") && !"1".equals(concurCnsmrs)){
+			sb.append("+\"&concurrentConsumers=\"+");
+			sb.append(concurCnsmrs);
+		}
+		String waitForTaskToComplete=ElementParameterParser.getValue(node, "__WAIT_FOR_TASK_TO_COMPLETE__");
+		if(waitForTaskToComplete!=null && !waitForTaskToComplete.trim().equals("") && !"IfReplyExpected".equals(waitForTaskToComplete)){
+			sb.append("+\"&waitForTaskToComplete=\"+");
+			sb.append('\"');
+			sb.append(waitForTaskToComplete);
+			sb.append('\"');
+		}
+		String timeout=ElementParameterParser.getValue(node, "__TIMEOUT__");
+		if(timeout!=null && !timeout.trim().equals("") && !"30000".equals(timeout)){
+			sb.append("+\"&timeout=\"+");
+			sb.append(timeout);
+		}
+		String multipleConsumers=ElementParameterParser.getValue(node, "__MULTIPLE_CONSUMERS__");
+		if(multipleConsumers!=null && !multipleConsumers.trim().equals("") && !"false".equals(multipleConsumers)){
+			sb.append("+\"&multipleConsumers=\"+");
+			sb.append(multipleConsumers);
+		}
+		String limitConcurrentConsumers=ElementParameterParser.getValue(node, "__LIMIT_CONCURRENT_CONSUMERS__");
+		if(limitConcurrentConsumers!=null && !limitConcurrentConsumers.trim().equals("") && !"true".equals(limitConcurrentConsumers)){
+			sb.append("+\"&limitConcurrentConsumers=\"+");
+			sb.append(limitConcurrentConsumers);
+		}
+		String blockWhenFull=ElementParameterParser.getValue(node, "__BLOCK_WHEN_FULL__");
+		if(blockWhenFull!=null && !blockWhenFull.trim().equals("") && !"false".equals(blockWhenFull)){
+			sb.append("+\"&blockWhenFull=\"+");
+			sb.append(blockWhenFull);
+		}
+		String pollTimeout=ElementParameterParser.getValue(node, "__POLLTIMEOUT__");
+		if(pollTimeout!=null && !pollTimeout.trim().equals("") && !"1000".equals(pollTimeout)){
+			sb.append("+\"&pollTimeout=\"+");
+			sb.append(pollTimeout);
+		}
+		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
+		for (Map<String, String> map : tableValues) {
+			String argName = map.get("NAME").trim();
+			String argValue = map.get("VALUE").trim();
+			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+		}
+		if(sb.length()>0){
+			sb.setCharAt(sb.indexOf("&"),'?');
+			uri = uri + sb.toString();
+		}
 	}else if("cTimer".equals(componentName)){
 		uri = "\"timer:\"+\""+node.getUniqueName()+"\"";
 		StringBuilder sb = new StringBuilder();
