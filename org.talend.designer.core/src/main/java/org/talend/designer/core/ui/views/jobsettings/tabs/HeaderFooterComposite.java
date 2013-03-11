@@ -47,7 +47,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.librariesmanager.prefs.PreferencesUtilities;
+import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -427,7 +427,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
 
     private void copyLibriesToLibJava(HeaderFooterConnection headerFooterConnection) {
         String libraries = headerFooterConnection.getLibraries();
-        String librariesPath = PreferencesUtilities.getLibrariesPath(ECodeLanguage.JAVA);
+        String librariesPath = LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA);
 
         if (librariesPath != null && libraries != null && !"".equals(libraries)) {//$NON-NLS-1$
             if (libraries.contains(";")) {//$NON-NLS-1$

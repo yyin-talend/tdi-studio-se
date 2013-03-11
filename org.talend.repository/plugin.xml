@@ -1869,7 +1869,7 @@
    </extension>
    
    <extension
-         point="org.talend.core.librariesNeeded">
+         point="org.talend.core.runtime.librariesNeeded">
       <libraryNeeded
           context="JBoss ESB Export"
           language="java"

@@ -37,7 +37,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
-import org.talend.librariesmanager.prefs.PreferencesUtilities;
+import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -156,7 +156,7 @@ public class FileInputDelimitedNode extends FileInputNode {
         if (config.exists()) {
             config.delete();
         }
-        String modulepath = PreferencesUtilities.getLibrariesPath(ECodeLanguage.PERL);
+        String modulepath = LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.PERL);
         FileWriter filewriter;
         String str = "0"; //$NON-NLS-1$
         File resultFile = new File(CorePlugin.getDefault().getPreferenceStore()

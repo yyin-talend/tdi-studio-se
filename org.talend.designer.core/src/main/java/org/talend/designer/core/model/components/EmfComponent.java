@@ -118,7 +118,7 @@ import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYT
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.librariesmanager.prefs.PreferencesUtilities;
+import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -1066,7 +1066,7 @@ public class EmfComponent extends AbstractComponent {
         param.setNumRow(99);
         param.setShow(false);
         // param.setValue(CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath());
-        param.setValue(PreferencesUtilities.getLibrariesPath(ECodeLanguage.JAVA));
+        param.setValue(LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA));
         param.setReadOnly(true);
         listParam.add(param);
 
