@@ -22,25 +22,22 @@ String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-StringBuilder tableName = new StringBuilder();
-StringBuilder tmpTableName = new StringBuilder();
 %>
 String tableName_<%=cid%> = null;
 <%
 if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
-    tableName.append("\\\"\" + " + table + " + \"\\\"");
     %>
     tableName_<%=cid%> = <%=table%>;
     <%
 } else {
-    tableName.append("\\\"\" + " + dbSchema + " + \"\\\".\\\"\" + " + table + " + \"\\\"");
     %>
     tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
     <%
 }
 if(("UPDATE").equals(dataAction)) {
-    tmpTableName = tableName;
-    tableName = new StringBuilder("\\\"tmp_" + cid + "\\\"");
+%>
+    String tmpTableName_<%=cid%> = "tmp_<%=cid %>_" + pid;
+<%
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -75,7 +72,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
     }
 }
 %>
-String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+String bulkSQL_<%=cid%> = "COPY \"" + <%if(("UPDATE").equals(dataAction)) {%>tmpTableName_<%=cid%><% } else {%>tableName_<%=cid%> <%}%> + "\" <%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
 <%
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
 String oids = (("true").equals(ElementParameterParser.getValue(node, "__OIDS__")) ? "OIDS" : "");
@@ -143,8 +140,8 @@ if(("UPDATE").equals(dataAction)) {
         if(keyCount_<%=cid%> == 0) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
-        String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-        tableName_<%=cid%> = "tmp_<%=cid%>" + pid;
+        tmpTableName_<%=cid%> = tableName_<%=cid%>;
+        tableName_<%=cid%> = "tmp_<%=cid%>_" + pid;
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.close();
@@ -152,7 +149,7 @@ if(("UPDATE").equals(dataAction)) {
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
         stmtTmpBulk_<%=cid%>.close();
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
-        tmpTableName_<%=cid%> = "tmp_<%=cid%>" + pid;
+        tmpTableName_<%=cid%> = "tmp_<%=cid%>_" + pid;
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
