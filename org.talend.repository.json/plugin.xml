@@ -83,6 +83,7 @@
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
+            appearsBefore="org.talend.repository.viewer.metadata.ldap"
             contentProvider="org.talend.repository.json.ui.MetadataJSONContentProvider"
             icon="icons/unknown.gif"
             id="org.talend.repository.viewer.metadata.json"
