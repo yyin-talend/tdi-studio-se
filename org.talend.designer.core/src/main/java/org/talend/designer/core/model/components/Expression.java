@@ -480,7 +480,9 @@ public final class Expression {
                         }
                     }
                     if (value instanceof String) {
-                        if (testedParameter.getListItemsValue() instanceof Object[]) {
+                        if (variableValue.equals(value)) {
+                            found = true;
+                        } else if (testedParameter.getListItemsValue() instanceof Object[]) {
                             Object[] values = testedParameter.getListItemsValue();
                             for (int i = 0; i < values.length && !found; i++) {
                                 if (values[i].equals(value)) {
