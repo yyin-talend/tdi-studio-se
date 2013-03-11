@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.repository.model.ComponentsFactoryProvider;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -23,8 +28,8 @@ public class FileInputPositionalNode extends FileInputNode {
     /**
      * Constructs a new FileInputPositionalNode.
      */
-    public FileInputPositionalNode(String filename, String rowSep, String pattern, int headerRows, int footerRows,
-            int limitRows, boolean removeEmptyRow, String encoding) {
+    public FileInputPositionalNode(String filename, String rowSep, String pattern, int headerRows, int footerRows, int limitRows,
+            boolean removeEmptyRow, String encoding) {
         super("tFileInputPositional", pattern.split(",").length); //$NON-NLS-1$ //$NON-NLS-2$
 
         String[] paramNames = new String[] {
@@ -32,10 +37,15 @@ public class FileInputPositionalNode extends FileInputNode {
         String[] paramValues = new String[] { filename, rowSep, pattern, Integer.toString(headerRows),
                 Integer.toString(footerRows), Integer.toString(limitRows), Boolean.toString(removeEmptyRow), encoding };
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputPositional", //$NON-NLS-1$
+                ComponentCategory.CATEGORY_4_DI.getName());
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
     }

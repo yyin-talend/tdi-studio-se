@@ -31,6 +31,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -38,6 +41,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -140,10 +144,15 @@ public class FileInputDelimitedNode extends FileInputNode {
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
                 Boolean.toString(removeEmptyRow), encoding, Boolean.toString(csvoption), Boolean.toString(spitRecord) };
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited", //$NON-NLS-1$
+                ComponentCategory.CATEGORY_4_DI.getName());
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
     }

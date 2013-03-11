@@ -15,7 +15,11 @@ package org.talend.designer.runprocess.shadow;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -46,10 +50,15 @@ public class FileInputRegExpNode extends FileInputNode {
         String[] paramValues = new String[] { filename, rowSep, regex, Integer.toString(limitRows), Integer.toString(headerRows),
                 Integer.toString(footerRows), Boolean.toString(removeEmptyRow), encoding };
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputRegex", //$NON-NLS-1$
+                ComponentCategory.CATEGORY_4_DI.getName());
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
     }

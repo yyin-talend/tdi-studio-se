@@ -21,8 +21,12 @@ import netscape.ldap.util.LDIFContent;
 import netscape.ldap.util.LDIFRecord;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -66,10 +70,15 @@ public class FileInputLdifNode extends FileInputNode {
         String[] paramNames = new String[] { "FILENAME", "ENCODING", "VALUE_SEPARATOR" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] paramValues = new String[] { filename, encoding, TalendQuoteUtils.addQuotes(",") }; //$NON-NLS-1$
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputLDIF", //$NON-NLS-1$
+                ComponentCategory.CATEGORY_4_DI.getName());
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
         setMetadataList(metadatas);
