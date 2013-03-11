@@ -122,6 +122,8 @@ import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
+import com.sun.corba.se.spi.orb.StringPair;
+
 /**
  * 
  * Component manager that read each information in a xml file with Emf. <br/>
@@ -2118,7 +2120,9 @@ public class EmfComponent extends AbstractComponent {
             } else {
                 listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
             }
-            if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
+            if(type ==EParameterFieldType.ROUTE_COMPONENT_TYPE) {
+                listItemsValue[k] = new StringPair(item.getNAME(), item.getFILTER());
+            }else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
