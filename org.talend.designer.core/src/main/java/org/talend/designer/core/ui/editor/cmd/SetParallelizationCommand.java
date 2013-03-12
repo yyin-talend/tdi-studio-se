@@ -173,6 +173,23 @@ public class SetParallelizationCommand extends Command {
         boolean hasDeparInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             Node sourceNode = (Node) con.getSource();
+            if (sourceNode.getIncomingConnections().size() > 0) {
+                for (IConnection con1 : sourceNode.getIncomingConnections()) {
+                    if (con1.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
+                            && con1.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
+                        hasDeparInPreviousCon = true;
+                    }
+                }
+            }
+        }
+        return hasDeparInPreviousCon;
+    }
+
+    private boolean existPreviousDeparCon1(Node currentNode) {
+        // To judge if there has depar/recol on previous connection
+        boolean hasDeparInPreviousCon = false;
+        for (IConnection con : currentNode.getIncomingConnections()) {
+            Node sourceNode = (Node) con.getSource();
             hasDeparInPreviousCon = isExistPreviouDeparCon(sourceNode);
         }
         return hasDeparInPreviousCon;
