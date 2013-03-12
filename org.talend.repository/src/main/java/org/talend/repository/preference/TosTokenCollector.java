@@ -13,19 +13,26 @@
 package org.talend.repository.preference;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.DynaEnum;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.token.AbstractTokenCollector;
 import org.talend.core.token.TokenInforUtil;
@@ -35,6 +42,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 import us.monoid.json.JSONException;
@@ -105,7 +113,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
         JSONObject jObject = new JSONObject();
 
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
-        final IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         int jobsNum = 0;
         int componentsNum = 0;
@@ -115,6 +123,13 @@ public class TosTokenCollector extends AbstractTokenCollector {
         int metadatasNum = 0;
 
         Map<String, Integer> numComponentMap = new HashMap<String, Integer>();
+
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+        Set<String> idsOpened = new HashSet<String>();
+        for (IProcess2 process : processes) {
+            idsOpened.add(process.getId());
+        }
 
         // jobs
         List<IRepositoryViewObject> all = factory.getAll(currentProject, ERepositoryObjectType.PROCESS);
@@ -144,7 +159,14 @@ public class TosTokenCollector extends AbstractTokenCollector {
                 }
 
             }
-
+            if (factory.getStatus(item) != ERepositoryStatus.LOCK_BY_USER && !idsOpened.contains(item.getProperty().getId())) {
+                // job is not locked and not opened by editor, so we can unload.
+                if (item.getParent() instanceof FolderItem) {
+                    ((FolderItem) item.getParent()).getChildren().remove(item);
+                    item.setParent(null);
+                }
+                item.eResource().unload();
+            }
         }
         // business model
         businessModelsNum += factory.getAll(currentProject, ERepositoryObjectType.BUSINESS_PROCESS).size();
