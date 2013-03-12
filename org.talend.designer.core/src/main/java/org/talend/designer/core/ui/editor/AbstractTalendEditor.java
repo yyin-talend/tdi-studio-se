@@ -2233,4 +2233,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             }
         }
     }
+
+    /**
+     * Getter for readOnly.
+     * 
+     * @return the readOnly
+     */
+    public boolean isReadOnly() {
+        return this.readOnly;
+    }
 }

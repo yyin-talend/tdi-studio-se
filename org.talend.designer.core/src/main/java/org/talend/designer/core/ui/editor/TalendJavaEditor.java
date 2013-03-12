@@ -12,11 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -35,8 +32,6 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
@@ -110,18 +105,14 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
+    @Override
     public void validateSyntax() {
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof JavaSourceViewer) {
             this.getSourceViewer().getTextWidget().getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
-                    // selectAndReveal(0, 0);
-                    // JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
-                    // if (javaSourceViewer != null) {
-                    // javaSourceViewer.doOperation(ISourceViewer.FORMAT);
-                    // }
-                    // doSave(null);
                     placeCursorToSelection();
                     Property property = process.getProperty();
 
@@ -129,19 +120,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                             .createRoutineSynchronizer();
 
                     try {
-                        // try {
-                        // ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-                        // } catch (CoreException e) {
-                        // ExceptionHandler.process(e);
-                        // }
-                        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                            try {
-                                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                                        .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                            } catch (CoreException e) {
-                                ExceptionHandler.process(e);
-                            }
-                        }
                         Item item = property.getItem();
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
@@ -160,33 +138,16 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                                 property.getInformations().add(info);
                             }
                         }
-                        Problems.computePropertyMaxInformationLevel(property);
+                        Problems.computePropertyMaxInformationLevel(property, false);
                     } catch (SystemException e) {
                         ExceptionHandler.process(e);
                     }
 
-                    Problems.refreshRepositoryView();
                     Problems.refreshProblemTreeView();
                 }
             });
         }
 
-    }
-
-    /**
-     * For job item, we only need to display if it is error.
-     * 
-     * @param informations
-     * @return
-     */
-    private List<Information> collectOnlyErrors(List<Information> informations) {
-        List<Information> errors = new ArrayList<Information>();
-        for (Information info : informations) {
-            if (InformationLevel.ERROR_LITERAL.equals(info.getLevel())) {
-                errors.add(info);
-            }
-        }
-        return errors;
     }
 
     private void placeCursorToSelection() {
@@ -246,6 +207,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * @return Whether this editor had been disposed.
      */
+    @Override
     public boolean isDisposed() {
         return this.disposed;
     }
@@ -281,11 +243,13 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                 IJavaPartitions.JAVA_PARTITIONING);
     }
 
+    @Override
     protected void createActions() {
         super.createActions();
         getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
     }
 
+    @Override
     protected boolean isErrorStatus(IStatus status) {
         if (!(process.getProperty().getItem() instanceof ProcessItem)) {
             return false;
@@ -293,7 +257,9 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         return super.isErrorStatus(status);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#rememberSelection()
      */
     @Override
@@ -301,7 +267,9 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         // do nothing since we display the code only in the editor after generate the code
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#restoreSelection()
      */
     @Override

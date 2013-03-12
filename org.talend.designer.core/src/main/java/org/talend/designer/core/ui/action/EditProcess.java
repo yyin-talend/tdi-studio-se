@@ -41,7 +41,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -132,11 +131,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                     ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
                     page.activate(editorPart);
                 }
-                // see the bug 6585,qli comment.
-                if (editorPart instanceof AbstractMultiPageTalendEditor) {
-                    ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
-                }
-                // refresh(obj);
             } catch (PartInitException e) {
                 MessageBoxExceptionHandler.process(e);
             } catch (PersistenceException e) {

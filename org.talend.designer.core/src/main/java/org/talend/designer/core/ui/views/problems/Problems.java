@@ -36,8 +36,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -281,8 +281,9 @@ public class Problems {
      * DOC xhuang refresh the structure of problems view
      */
     public static void refreshProblemTreeView() {
-        if (!isWorkbenchStarted())
+        if (!isWorkbenchStarted()) {
             return;
+        }
 
         if (getProblemView() != null) {
             Display.getDefault().syncExec(new Runnable() {
@@ -292,6 +293,7 @@ public class Problems {
                  * 
                  * @see java.lang.Runnable#run()
                  */
+                @Override
                 public void run() {
                     getProblemView().refresh();
                 }
@@ -303,8 +305,9 @@ public class Problems {
      * workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=49316
      */
     private static boolean isWorkbenchStarted() {
-        if (!PlatformUI.isWorkbenchRunning())
+        if (!PlatformUI.isWorkbenchRunning()) {
             return false;
+        }
         try {
             PlatformUI.getWorkbench();
             PlatformUI.getWorkbench().getWorkbenchWindows();
@@ -321,8 +324,9 @@ public class Problems {
      * DOC xtan Comment method "refreshRepositoryView".
      */
     public static void refreshRepositoryView() {
-        if (!isWorkbenchStarted())
+        if (!isWorkbenchStarted()) {
             return;
+        }
 
         Display.getDefault().syncExec(new Runnable() {
 
@@ -331,6 +335,7 @@ public class Problems {
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
                 // TDI-21143 : Studio repository view : remove all refresh call to repo view
                 // IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
@@ -405,8 +410,9 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem == null || problem instanceof TalendProblem)
+            if (problem == null || problem instanceof TalendProblem) {
                 continue;
+            }
             if (problem.getJobInfo() != null
                     && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
@@ -428,8 +434,9 @@ public class Problems {
     public static void removeProblemsByProcess(IProcess process, boolean isDeleted) {
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem == null)
+            if (problem == null) {
                 continue;
+            }
             if (problem.getJobInfo() != null
                     && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
@@ -594,7 +601,7 @@ public class Problems {
      * 
      * @param property
      */
-    public static void computePropertyMaxInformationLevel(Property property) {
+    public static void computePropertyMaxInformationLevel(Property property, boolean allowUpdateProperty) {
         EList<Information> informations = property.getInformations();
         InformationLevel maxLevel = null;
         for (int i = 0; i < informations.size(); i++) {
@@ -622,16 +629,17 @@ public class Problems {
             isModified = true;
         }
         // save the property
-        if (isModified && isSVN()) {
+        if (isModified && allowUpdateProperty) {
             IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
             Item item = property.getItem();
             try {
                 factory.save(item, false);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
+
     }
 
     private static boolean isSVN() {
@@ -758,7 +766,6 @@ public class Problems {
                         result[1][1] = str;
                         break;
                     }
-                } else {
                 }
             }
         } catch (IOException e) {
@@ -809,7 +816,6 @@ public class Problems {
                                                 }
 
                                             } else {
-                                                //                                                if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
                                                 if (node.isErrorFlag() == true) {
                                                     node.setErrorFlag(false);
                                                     node.setCompareFlag(false);
@@ -819,9 +825,6 @@ public class Problems {
                                                 } else {
                                                     continue;
                                                 }
-                                                // } else {
-                                                // continue;
-                                                // }
                                             }
 
                                         }
@@ -839,7 +842,6 @@ public class Problems {
                                 }
                             }
                         } else {
-                            //                            if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
                             if (node.isErrorFlag() == true) {
                                 node.setErrorFlag(false);
                                 node.setCompareFlag(false);
@@ -849,9 +851,6 @@ public class Problems {
                             } else {
                                 continue;
                             }
-                            // } else {
-                            // continue;
-                            // }
                         }
                     }
                 }
@@ -871,27 +870,7 @@ public class Problems {
                 node.setErrorInfo(befor + des);
                 node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                 node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
-            } else {
-                if (node.getErrorInfo() != null) {
-                    node.setErrorInfo(null);
-                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                }
             }
         }
-
-        // for (Node node : nodeList) {
-        // if (node.isErrorFlag() == false) {
-        // node.setErrorFlag(true);
-        // node.setErrorInfo(null);
-        //                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-        //                node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
-        // } else {
-        // if (node.getErrorInfo() != null) {
-        // node.setErrorInfo(null);
-        //                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-        // }
-        // }
-        //
-        // }
     }
 }

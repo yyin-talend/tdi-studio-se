@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -57,6 +58,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -93,6 +95,9 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -110,6 +115,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -118,7 +124,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
@@ -131,6 +136,7 @@ import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
@@ -192,7 +198,17 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     // ignore
                     return;
                 } else if (featureID == PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
-                    updateTitleImage();
+                    if (notification.getOldValue() != null && notification.getOldValue().equals(notification.getNewValue())) {
+                        return; // nothing to do
+                    }
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            updateTitleImage();
+                        }
+                    });
                     return;
                 }
 
@@ -263,7 +279,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         @Override
         public void partClosed(IWorkbenchPart part) {
             if (part == AbstractMultiPageTalendEditor.this) {
-                restorePropertyInformation();
+                savePropertyIfNeededForErrorStatus();
                 IProject currentProject;
                 try {
                     currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
@@ -312,16 +328,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     /**
      * DOC hcw Comment method "restorePropertyInformation".
      */
-    protected void restorePropertyInformation() {
-        if (getEditor(0).isDirty()) {
-            // if user discard change, restore property information, make it possible to remove error status
-            Property property = processEditorInput.getItem().getProperty();
-            property.getInformations().clear();
-            if (propertyInformation == null) {
-                propertyInformation = new ArrayList(property.getInformations());
-            }
-            property.getInformations().addAll(propertyInformation);
-            Problems.computePropertyMaxInformationLevel(property);
+    protected void savePropertyIfNeededForErrorStatus() {
+        if (designerEditor.isReadOnly()) {
+            return;
+        }
+        Property property = processEditorInput.getItem().getProperty();
+        if (!CollectionUtils.isEqualCollection(propertyInformation, property.getInformations())) {
+            Problems.computePropertyMaxInformationLevel(property, true);
         }
     }
 
@@ -333,17 +346,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         super();
 
         ActiveProcessTracker.initialize();
-
-        // Display.getDefault().asyncExec(new Runnable() {
-        //
-        // public void run() {
-        // try {
-        // CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
-        // } catch (Exception e) {
-        // ExceptionHandler.process(e);
-        // }
-        // }
-        // });
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -432,21 +434,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                             Constant.REPOSITORY_ITEM_EVENT_PREFIX + "*"))); //$NON-NLS-1$
             revisionChanged = true;
         }
-        // if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-        // ICamelDesignerCoreService camelService = (ICamelDesignerCoreService)
-        // GlobalServiceRegister.getDefault().getService(
-        // ICamelDesignerCoreService.class);
-        // boolean isCamel = camelService.isInstanceofCamelRoutes(processEditorInput.getItem());
-        // ERepositoryObjectType repositoryNodeType = camelService.getRoutes();
-        // if (isCamel) {
-        // RepositoryManager.refresh(repositoryNodeType);
-        // }
-        // }
-        // if (processEditorInput.getItem() instanceof ProcessItem) {
-        // RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-        // } else {
-        // RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-        // }
+        // setTitleImage(ImageProvider.getImage(getEditorTitleImage()));
+        updateTitleImage(processEditorInput.getItem().getProperty());
         getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 
     }
@@ -1012,14 +1001,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (processEditorInput != null) {
             propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
             propertyIsDirty = false;
-            firePropertyChange(IEditorPart.PROP_DIRTY);
-
-            if (processEditorInput.getItem() instanceof ProcessItem) {
-                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-
-            } else {
-                RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-            }
         }
         if (designerEditor != null && dirtyListener != null) {
             designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
@@ -1369,7 +1350,27 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return node;
     }
 
-    public abstract void updateTitleImage();
+    private void updateTitleImage(Property property) {
+        Image image = null;
+        InformationLevel level = property.getMaxInformationLevel();
+        image = ImageProvider.getImage(getEditorTitleImage());
+        if (level.equals(InformationLevel.ERROR_LITERAL)) {
+            image = OverlayImageProvider.getImageWithError(image).createImage();
+        }
+        setTitleImage(image);
+    }
+
+    protected void updateTitleImage() {
+        if (getProcess() == null) {
+            return;
+        }
+        Property property = getProcess().getProperty();
+        updateTitleImage(property);
+    }
+
+    protected IImage getEditorTitleImage() {
+        return ECoreImage.PROCESS_ICON;
+    }
 
     /**
      * Closes all project files on project close.
@@ -1392,8 +1393,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     }
                 }
             });
-        } else if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-            updateTitleImage();
         }
     }
 
@@ -1402,10 +1401,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (designerEditor != null && designerEditor.equals(getActiveEditor())) {
             return this.getActiveEditor().getAdapter(adapter);
         }
-        /*
-         * if (textEditor.equals(getActiveEditor())) { if (adapter == IPropertySheetPage.class) { return null; } return
-         * this.getActiveEditor().getAdapter(adapter); }
-         */
         return super.getAdapter(adapter);
     }
 

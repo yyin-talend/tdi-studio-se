@@ -13,26 +13,19 @@
 package org.talend.designer.core.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.talend.commons.ui.runtime.image.ECoreImage;
-import org.talend.commons.ui.runtime.image.IImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -79,37 +72,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     @Override
     protected void createPages() {
         super.createPages();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.AbstractMultiPageTalendEditor#updateTitleImage()
-     */
-    @Override
-    public void updateTitleImage() {
-        Display.getDefault().syncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                Image image = null;
-                if (getProcess() == null) {
-                    return;
-                }
-                Property property = getProcess().getProperty();
-                InformationLevel level = property.getMaxInformationLevel();
-                image = ImageProvider.getImage(getEditorTitleImage());
-                if (level.equals(InformationLevel.ERROR_LITERAL)) {
-                    image = OverlayImageProvider.getImageWithError(image).createImage();
-                }
-                setTitleImage(image);
-            }
-
-        });
-    }
-
-    protected IImage getEditorTitleImage() {
-        return ECoreImage.PROCESS_ICON;
     }
 
     /**
