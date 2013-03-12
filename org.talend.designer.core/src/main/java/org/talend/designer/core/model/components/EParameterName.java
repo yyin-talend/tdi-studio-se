@@ -327,8 +327,9 @@ public enum EParameterName {
     ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"),
 
     // Automatic Parlization
-    PARALIZATION(Messages.getString("Connection.parallelize")), //$NON-NLS-1$
-    DPARALIZATION(Messages.getString("Connection.dParallelize")), //$NON-NLS-1$
+    PARTITIONER(Messages.getString("Connection.paral_partitioner")), //$NON-NLS-1$
+    DEPARTITIONER(Messages.getString("Connection.paral_departitioner")), //$NON-NLS-1$
+    NONE(Messages.getString("Connection.paral_none")), //$NON-NLS-1$
 
     // tFlowToIterator
     DEFAULT_MAP("DEFAULT_MAP");

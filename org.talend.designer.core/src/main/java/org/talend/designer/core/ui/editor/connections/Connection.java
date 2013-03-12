@@ -452,6 +452,96 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
         }
+        if (PluginChecker.isAutoParalelPluginLoaded()
+                && source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
+            createParallelizeParameters();
+        }
+    }
+
+    private void createParallelizeParameters() {
+        // flag for start the parlization or not for the inputs
+        IElementParameter tmpParam = new ElementParameter(this);
+        tmpParam.setName(EParameterName.PARTITIONER.getName());
+        tmpParam.setValue(Boolean.FALSE);
+        tmpParam.setDisplayName(EParameterName.PARTITIONER.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.RADIO);
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setNumRow(1);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
+        tmpParam.setGroup("TYPE"); //$NON-NLS-1$
+        tmpParam.setGroupDisplayName("Type");
+        tmpParam.setShow(true);
+        addElementParameter(tmpParam);
+        tmpParam = new ElementParameter(this);
+        tmpParam.setName(EParameterName.DEPARTITIONER.getName());
+        tmpParam.setValue(Boolean.FALSE);
+        tmpParam.setDisplayName(EParameterName.DEPARTITIONER.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.RADIO);
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setNumRow(2);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
+        tmpParam.setShow(true);
+        tmpParam.setGroup("TYPE"); //$NON-NLS-1$
+        tmpParam.setGroupDisplayName("Type");
+        addElementParameter(tmpParam);
+        tmpParam = new ElementParameter(this);
+        tmpParam.setName(EParameterName.NONE.getName());
+        tmpParam.setValue(Boolean.TRUE);
+        tmpParam.setDisplayName(EParameterName.NONE.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.RADIO);
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setNumRow(3);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
+        tmpParam.setShow(true);
+        tmpParam.setGroup("TYPE"); //$NON-NLS-1$
+        tmpParam.setGroupDisplayName("Type");
+        addElementParameter(tmpParam);
+
+        IComponent componentPar = ComponentsFactoryProvider.getInstance().get("tPartitioner",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        Node tmpNode = new Node(componentPar, (Process) source.getProcess());
+
+        tmpParam = tmpNode.getElementParameter("NUM_PARTITIONS");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("PARTITIONER == 'true'");
+        addElementParameter(tmpParam);
+
+        tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("PARTITIONER == 'true'");
+        addElementParameter(tmpParam);
+
+        tmpParam = tmpNode.getElementParameter("HASH_PARTITION");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("PARTITIONER == 'true'");
+        addElementParameter(tmpParam);
+
+        tmpParam = tmpNode.getElementParameter("HASH_KEYS");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("PARTITIONER == 'true'");
+        ColumnListController.updateColumnList(tmpNode, null, true);
+        addElementParameter(tmpParam);
+
+        componentPar = ComponentsFactoryProvider.getInstance().get("tDepartitioner", ComponentCategory.CATEGORY_4_DI.getName());
+        tmpNode = new Node(componentPar, (Process) source.getProcess());
+
+        tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("DEPARTITIONER == 'true'");
+        addElementParameter(tmpParam);
+
+        IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        Node tmpNode1 = new Node(componentCol, (Process) source.getProcess());
+
+        tmpParam = tmpNode1.getElementParameter("IS_SORTING");
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setShowIf("DEPARTITIONER == 'true'");
+        addElementParameter(tmpParam);
+
     }
 
     /**

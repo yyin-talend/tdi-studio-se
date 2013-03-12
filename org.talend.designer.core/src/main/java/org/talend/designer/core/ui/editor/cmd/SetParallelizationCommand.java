@@ -10,15 +10,14 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.ui.action;
+package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -27,113 +26,47 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.ui.editor.cmd.SetParallelizationCommand;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodePart;
-import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
-import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
-public class SetParallelizationAction extends SelectionAction {
+public class SetParallelizationCommand extends Command {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.action.SetParallelizationAction"; //$NON-NLS-1$
+    INode node;
 
-    private static final String INPUT = "Input";
+    public SetParallelizationCommand(INode node) {
+        this.node = node;
+    }
 
-    private static final String OUTPUT = "Output";
-
-    IWorkbenchPart part;
-
-    public SetParallelizationAction(IWorkbenchPart part) {
-        super(part);
-        this.part = part;
-        setId(ID);
-        setText(Messages.getString("PropertiesContextAction.parallelization")); //$NON-NLS-1$
+    public SetParallelizationCommand(String label) {
+        super(label);
+        // TODO Auto-generated constructor stub
     }
 
     @Override
-    protected boolean calculateEnabled() {
-        List parts = getSelectedObjects();
-        if (parts.isEmpty()) {
+    public void execute() {
+        setParallelization(this.node);
+    }
+
+    private boolean isComponentCanParlization(IConnection parConnection, Node needToPar) {
+
+        // TODO:Temply fix,later need a parameter in components to judge this node can be paralization or not
+        if (needToPar.getComponent().getName().contains("tMatchGroup") || needToPar.getComponent().getName().contains("tSortRow")) { // ||
+            return true;
+        } else if (needToPar.getComponent().getName().contains("tAggregate")) {
             return false;
         }
-        if (parts.size() == 1) {
-            Object o = parts.get(0);
-            if (o instanceof SubjobContainerPart) {
-                SubjobContainerPart part = (SubjobContainerPart) o;
-                SubjobContainer subjob = (SubjobContainer) part.getModel();
-                if (subjob.isDisplayed()) {
+        // some components have no field table but can be paralization such as tMap
+        for (IConnection outCon : needToPar.getOutgoingConnections()) {
+            if (outCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
+                    || outCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
+                IMetadataTable metaTable = outCon.getMetadataTable();
+                if (parConnection.getMetadataTable().sameMetadataAs(metaTable)) {
                     return true;
-                } else {
-                    return false;
                 }
-            } else if (o instanceof NodePart) {
-                NodePart part = (NodePart) o;
-                Node node = (Node) part.getModel();
-                if (node.isStart()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
             }
         }
         return false;
-    }
-
-    @Override
-    public void run() {
-        List editparts = getSelectedObjects();
-        if (editparts.size() == 1) {
-            Object o = editparts.get(0);
-            if (o instanceof NodePart) {
-                NodePart part = (NodePart) o;
-                Node node = (Node) part.getModel();
-                getCommandStack().execute(new SetParallelizationCommand(node));
-            } else if (o instanceof SubjobContainerPart) {
-                boolean hasStartNode = false;
-                List<NodeContainerPart> childNodes = ((SubjobContainerPart) o).getChildren();
-                for (NodeContainerPart childNode : childNodes) {
-                    NodeContainerPart part = (NodeContainerPart) childNode;
-                    NodeContainer node = (NodeContainer) part.getModel();
-                    if (node.getNode().isStart()) {
-                        hasStartNode = true;
-                        getCommandStack().execute(new SetParallelizationCommand(node.getNode()));
-                    }
-                }
-                if (!hasStartNode) {
-                    for (NodeContainerPart childNode : childNodes) {
-                        NodeContainerPart part = (NodeContainerPart) childNode;
-                        NodeContainer node = (NodeContainer) part.getModel();
-                        if (node.getNode().isSubProcessStart()) {
-                            getCommandStack().execute(new SetParallelizationCommand(node.getNode()));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean existPreviousParCon(Node currentNode) {
-        // To judge if there has par/col on previous connection
-        boolean hasParInPreviousCon = false;
-        for (IConnection con : currentNode.getIncomingConnections()) {
-            Node sourceNode = (Node) con.getSource();
-            if (sourceNode.getIncomingConnections().size() > 0) {
-                for (IConnection con1 : sourceNode.getIncomingConnections()) {
-                    if (con1.getElementParameter(EParameterName.PARTITIONER.getName()) != null
-                            && con1.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)) {
-                        hasParInPreviousCon = true;
-                    }
-                }
-            }
-        }
-        return hasParInPreviousCon;
     }
 
     private void setParallelization(INode node) {
@@ -180,7 +113,9 @@ public class SetParallelizationAction extends SelectionAction {
                         }
                     } else {
                         if (!con.getSource().isStart()) {
-                            setDeparallelization(con.getTarget());
+                            if (!existPreviousDeparCon((Node) con.getTarget())) {
+                                setDeparallelization(con.getTarget());
+                            }
                         }
                     }
                 } else {
@@ -208,6 +143,56 @@ public class SetParallelizationAction extends SelectionAction {
         return columnList;
     }
 
+    private boolean existPreviousParCon(Node currentNode) {
+        // To judge if there has par/col on previous connection
+        boolean hasParInPreviousCon = false;
+        for (IConnection con : currentNode.getIncomingConnections()) {
+            Node sourceNode = (Node) con.getSource();
+            hasParInPreviousCon = isExistPreviousParCon(sourceNode);
+        }
+        return hasParInPreviousCon;
+    }
+
+    private boolean isExistPreviousParCon(Node previousNode) {
+        boolean hasParInPreviousCon = false;
+        if (previousNode.getIncomingConnections().size() > 0) {
+            for (IConnection con : previousNode.getIncomingConnections()) {
+                if (con.getElementParameter(EParameterName.PARTITIONER.getName()) != null
+                        && con.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)) {
+                    hasParInPreviousCon = true;
+                } else {
+                    hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
+                }
+            }
+        }
+        return hasParInPreviousCon;
+    }
+
+    private boolean existPreviousDeparCon(Node currentNode) {
+        // To judge if there has depar/recol on previous connection
+        boolean hasDeparInPreviousCon = false;
+        for (IConnection con : currentNode.getIncomingConnections()) {
+            Node sourceNode = (Node) con.getSource();
+            hasDeparInPreviousCon = isExistPreviouDeparCon(sourceNode);
+        }
+        return hasDeparInPreviousCon;
+    }
+
+    private boolean isExistPreviouDeparCon(Node previousNode) {
+        boolean hasParInPreviousCon = false;
+        if (previousNode.getIncomingConnections().size() > 0) {
+            for (IConnection con : previousNode.getIncomingConnections()) {
+                if (con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
+                        && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
+                    hasParInPreviousCon = true;
+                } else {
+                    hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
+                }
+            }
+        }
+        return hasParInPreviousCon;
+    }
+
     private void setDeparallelization(INode node) {
         for (IConnection con : node.getIncomingConnections()) {
             EConnectionType lineStyle = con.getLineStyle();
@@ -223,28 +208,4 @@ public class SetParallelizationAction extends SelectionAction {
         }
     }
 
-    private boolean isComponentCanParlization(IConnection parConnection, Node needToPar) {
-
-        // TODO:Temply fix,later need a parameter in components to judge this node can be paralization or not
-        if (needToPar.getComponent().getName().contains("tMatchGroup") || needToPar.getComponent().getName().contains("tSortRow")) { // ||
-            return true;
-        } else if (needToPar.getComponent().getName().contains("tAggregate")) {
-            return false;
-        }
-        // some components have no field table but can be paralization such as tMap
-        for (IConnection outCon : needToPar.getOutgoingConnections()) {
-            if (outCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
-                    || outCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
-                IMetadataTable metaTable = outCon.getMetadataTable();
-                if (parConnection.getMetadataTable().sameMetadataAs(metaTable)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    //
-    // public CommandStack getCommandStack() {
-    // return part == null ? null : (CommandStack) (part.getTalendEditor().getAdapter(CommandStack.class));
-    // }
 }

@@ -568,8 +568,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     final List<EComponentCategory> list = new ArrayList<EComponentCategory>(Arrays.asList(categories));
                     list.add(EComponentCategory.BREAKPOINT);
 
-                    if (elem.getElementParameter(EParameterName.PARALIZATION.getName()) != null
-                            || elem.getElementParameter(EParameterName.DPARALIZATION.getName()) != null) {
+                    if (elem.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
+                            || elem.getElementParameter(EParameterName.PARTITIONER.getName()) != null) {
                         list.add(EComponentCategory.PARALLELIZATION);
                     }
                     return list.toArray(new EComponentCategory[0]);

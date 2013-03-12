@@ -47,6 +47,7 @@ import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
+import org.talend.designer.core.ui.action.DisableParallelizationAction;
 import org.talend.designer.core.ui.action.DisplaySubjobAction;
 import org.talend.designer.core.ui.action.FilterTraceColumnAction;
 import org.talend.designer.core.ui.action.GEFCopyAction;
@@ -339,6 +340,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
             if (PluginChecker.isAutoParalelPluginLoaded()) {
                 action = new SetParallelizationAction(part);
+                ((SelectionAction) action).update();
+                if (action.isEnabled()) {
+                    menu.appendToGroup(GROUP_OTHER, action);
+                }
+
+                action = new DisableParallelizationAction(part);
                 ((SelectionAction) action).update();
                 if (action.isEnabled()) {
                     menu.appendToGroup(GROUP_OTHER, action);
