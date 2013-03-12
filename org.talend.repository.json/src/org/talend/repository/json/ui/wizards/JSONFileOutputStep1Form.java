@@ -312,10 +312,10 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 if (JSONFileOutputStep1Form.this.tempPath == null) {
                     JSONFileOutputStep1Form.this.tempPath = JSONUtil.changeJsonToXml(text);
                 }
-                File file = new File(JSONFileOutputStep1Form.this.tempPath);
+                File file = new File(text);
                 if (file.exists()) {
                     List<ATreeNode> treeNodes = new ArrayList<ATreeNode>();
-                    valid = treePopulator.populateTree(JSONFileOutputStep1Form.this.tempPath, treeNode);
+                    valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
                     if (treeNodes.size() > 0) {
                         treeNode = treeNodes.get(0);
                     }

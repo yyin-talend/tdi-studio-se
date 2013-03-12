@@ -401,14 +401,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 File file = new File(text);
                 if (file.exists()) {
                     if (file.exists()) {
-                        String tempxml = null;
-                        if (JSONFileStep1Form.this.wizard.getTempJsonPath() == null
-                                || JSONFileStep1Form.this.wizard.getTempJsonPath().length() == 0) {
-                            tempxml = JSONUtil.changeJsonToXml(text);
-                            JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-                        } else {
-                            tempxml = JSONFileStep1Form.this.wizard.getTempJsonPath();
-                        }
+                        String tempxml = JSONUtil.changeJsonToXml(text);
+                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
                         valid = treePopulator.populateTree(tempxml, treeNode);
                     }
                     // add for bug TDI-20432
