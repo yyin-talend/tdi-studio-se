@@ -173,41 +173,24 @@ public class SetParallelizationCommand extends Command {
         boolean hasDeparInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             Node sourceNode = (Node) con.getSource();
-            if (sourceNode.getIncomingConnections().size() > 0) {
-                for (IConnection con1 : sourceNode.getIncomingConnections()) {
-                    if (con1.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
-                            && con1.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
-                        hasDeparInPreviousCon = true;
-                    }
-                }
-            }
-        }
-        return hasDeparInPreviousCon;
-    }
-
-    private boolean existPreviousDeparCon1(Node currentNode) {
-        // To judge if there has depar/recol on previous connection
-        boolean hasDeparInPreviousCon = false;
-        for (IConnection con : currentNode.getIncomingConnections()) {
-            Node sourceNode = (Node) con.getSource();
             hasDeparInPreviousCon = isExistPreviouDeparCon(sourceNode);
         }
         return hasDeparInPreviousCon;
     }
 
     private boolean isExistPreviouDeparCon(Node previousNode) {
-        boolean hasParInPreviousCon = false;
+        boolean hasDeparInPreviousCon = false;
         if (previousNode.getIncomingConnections().size() > 0) {
             for (IConnection con : previousNode.getIncomingConnections()) {
                 if (con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
                         && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
-                    hasParInPreviousCon = true;
+                    hasDeparInPreviousCon = true;
                 } else {
-                    hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
+                    hasDeparInPreviousCon = isExistPreviouDeparCon((Node) con.getSource());
                 }
             }
         }
-        return hasParInPreviousCon;
+        return hasDeparInPreviousCon;
     }
 
     private void setDeparallelization(INode node) {
