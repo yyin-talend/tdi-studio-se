@@ -83,40 +83,14 @@ public class SetParallelizationCommand extends Command {
                             node = con.getTarget();
                             setParallelization(node);
                         } else {
-                            List<String> conKeyColumnList = getKeyColumnList(con.getMetadataTable());
+                            // List<String> conKeyColumnList = getKeyColumnList(con.getMetadataTable());
                             con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
                             con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                             con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
 
                             // set the keys for hash keys
-                            IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
-                            boolean isExistHashValue = false;
-                            if (parTableCon != null) {
-                                Object[] itemCon = parTableCon.getListItemsValue();
-                                String clumnKeyListName = "";
-                                for (Object itemList : itemCon) {
-                                    if (((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
-                                            || ((ElementParameter) itemList).getFieldType().equals(
-                                                    EParameterFieldType.COLUMN_LIST)) {
-                                        clumnKeyListName = ((ElementParameter) itemList).getName();
-                                    }
-                                }
-                                for (String partionValue : conKeyColumnList) {
-                                    for (Object keyParMap : ((List) parTableCon.getValue())) {
-                                        Map existKeyMap = (Map) keyParMap;
-                                        if (existKeyMap.get(clumnKeyListName).equals(partionValue)) {
-                                            isExistHashValue = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!isExistHashValue) {
-                                        Map partionKeyMap = new HashMap<String, String>();
-                                        partionKeyMap.put(clumnKeyListName, partionValue);
-                                        ((List) parTableCon.getValue()).add(partionKeyMap);
-                                    }
-                                }
+                            setHashKeysFromCon(con);
 
-                            }
                             if (con.getTarget() != null) {
                                 setParallelization(con.getTarget());
                             }
@@ -136,6 +110,41 @@ public class SetParallelizationCommand extends Command {
         } else {
             if (!node.isStart()) {
                 setDeparallelization(node);
+            }
+        }
+    }
+
+    private void setHashKeysFromCon(IConnection con) {
+        List<String> conKeyColumnList = getKeyColumnList(con.getMetadataTable());
+        IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
+        boolean isExistHashValue = false;
+        if (parTableCon != null) {
+            ((List) parTableCon.getValue()).clear();
+            if (conKeyColumnList.size() > 0) {
+                con.getElementParameter("HASH_PARTITION").setValue(true);
+
+                Object[] itemCon = parTableCon.getListItemsValue();
+                String clumnKeyListName = "";
+                for (Object itemList : itemCon) {
+                    if (((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
+                            || ((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
+                        clumnKeyListName = ((ElementParameter) itemList).getName();
+                    }
+                }
+                for (String partionValue : conKeyColumnList) {
+                    for (Object keyParMap : ((List) parTableCon.getValue())) {
+                        Map existKeyMap = (Map) keyParMap;
+                        if (existKeyMap.get(clumnKeyListName).equals(partionValue)) {
+                            isExistHashValue = true;
+                            break;
+                        }
+                    }
+                    if (!isExistHashValue) {
+                        Map partionKeyMap = new HashMap<String, String>();
+                        partionKeyMap.put(clumnKeyListName, partionValue);
+                        ((List) parTableCon.getValue()).add(partionKeyMap);
+                    }
+                }
             }
         }
     }
