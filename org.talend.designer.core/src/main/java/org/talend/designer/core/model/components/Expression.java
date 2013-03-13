@@ -61,6 +61,10 @@ public final class Expression {
     private static final String EQUALS = "=="; //$NON-NLS-1$
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
+    
+    private static final String GREAT_THAN = ">"; //$NON-NLS-1$
+    
+    private static final String LESS_THAN = "<"; //$NON-NLS-1$
 
     private Expression(String expressionString) {
         this.expressionString = expressionString;
@@ -240,10 +244,12 @@ public final class Expression {
         String test = null;
         if (simpleExpression.contains(EQUALS)) {
             test = EQUALS;
-        } else {
-            if (simpleExpression.contains(NOT_EQUALS)) {
-                test = NOT_EQUALS;
-            }
+        } else if (simpleExpression.contains(NOT_EQUALS)) {
+            test = NOT_EQUALS;
+        } else if (simpleExpression.contains(GREAT_THAN)) {
+            test = GREAT_THAN;
+        } else if (simpleExpression.contains(LESS_THAN)) {
+            test = LESS_THAN;
         }
         if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$ 
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -318,11 +324,44 @@ public final class Expression {
                     if (element != null && element instanceof INode) {
                         INode node = (INode) element;
                         if (varNames.length > 2 && varNames[1] != null && varNames[2] != null) {
-                            IConnection[] allConnections = node.getProcess().getAllConnections("TYPE:" + varNames[1]);
-                            for (IConnection c : allConnections) {
-                                IElementParameter elementParameter = c.getElementParameter(varNames[2]);
-                                if (variableValue.equals(elementParameter.getValue())) {
-                                    return true;
+                            // read in/out connection type accounts
+                            List<? extends IConnection> connections = new ArrayList<IConnection>();
+                            if("IN".equals(varNames[1]) || "OUT".equals(varNames[1])){
+                                if("IN".equals(varNames[1])){
+                                    if("ANY".equals(varNames[2])){
+                                        connections = node.getIncomingConnections();
+                                    } else {
+                                        connections = node.getIncomingConnections(EConnectionType.valueOf(varNames[2]));
+                                    }
+                                } else {
+                                    if("ANY".equals(varNames[2])){
+                                        connections = node.getOutgoingConnections();
+                                    }else{
+                                        connections = node.getOutgoingConnections(EConnectionType.valueOf(varNames[2]));
+                                    }
+                                }
+                                try{
+                                    int connSize = connections.size();
+                                    int targetNumber = Integer.parseInt(variableValue);
+                                    if(GREAT_THAN.equals(test)){
+                                        return connSize > targetNumber;
+                                    }else if(LESS_THAN.equals(test)){
+                                        return connSize < targetNumber;
+                                    }else if(EQUALS.equals(test)){
+                                        return connSize == targetNumber;
+                                    }else if(NOT_EQUALS.equals(test)){
+                                        return connSize != targetNumber;
+                                    }
+                                }catch(Exception e){
+                                }
+                            }else{
+                                // read specific connection parameter
+                                connections = node.getOutgoingConnections(EConnectionType.valueOf(varNames[1]));
+                                for (IConnection c : connections) {
+                                    IElementParameter elementParameter = c.getElementParameter(varNames[2]);
+                                    if (variableValue.equals(elementParameter.getValue())) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
