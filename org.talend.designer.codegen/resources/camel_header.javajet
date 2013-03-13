@@ -54,7 +54,7 @@
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
 %>
-			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri){
+			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
 				if( null != bundleContext ){
 					org.apache.cxf.Bus bus = cxfEndpoint.getBus();
@@ -62,9 +62,69 @@
 			        if(cbl != null){
 			             bus.setExtension(new org.apache.cxf.bus.osgi.OSGiBeanLocator(cbl, bundleContext), org.apache.cxf.configuration.ConfiguredBeanLocator.class);
 			        }
+			        
+			        if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
+			        	addUsernameToken(cxfEndpoint,bus, true);
+			        }else if(token!=null&&"SAMLToken".equals(token[0])){
+			        	
+			        }
+
 				}
+				if(!isProvider&&token!=null&&token.length>=3&&"UsernameToken".equals(token[0])){
+		        	addUsernameToken(cxfEndpoint, null, false, token[1], token[2]);
+		        }
+				
 				return cxfEndpoint;
 			}
+			
+			private void addUsernameToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, 
+					org.apache.cxf.Bus bus, boolean isProvider, final String... userInfo){
+				if(isProvider){
+			        Map<String, Object> props = new HashMap<String, Object>();
+					props.put(org.apache.ws.security.handler.WSHandlerConstants.ACTION, org.apache.ws.security.handler.WSHandlerConstants.USERNAME_TOKEN);
+					
+					org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor wss4jInInterceptor = new org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor();
+					wss4jInInterceptor.setProperties(props);
+					cxfEndpoint.getInInterceptors().add(wss4jInInterceptor);
+					
+					org.apache.ws.security.validate.JAASUsernameTokenValidator validator = new org.apache.ws.security.validate.JAASUsernameTokenValidator();
+					validator.setContextName("karaf");
+					Map<String,Object> map = new HashMap<String, Object>();
+					map.put("ws-security.ut.validator", validator);
+					cxfEndpoint.setProperties(map);
+					
+					org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
+					policyReference.setURI("org.talend.esb.job.token.policy");
+					org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
+					policy.addPolicyComponent(policyReference);
+					
+					org.apache.cxf.ws.policy.WSPolicyFeature wsPolicyFeature = new org.apache.cxf.ws.policy.WSPolicyFeature();
+					wsPolicyFeature.getPolicies().add(policy);
+					bus.getFeatures().add(wsPolicyFeature);
+				}else{
+					javax.security.auth.callback.CallbackHandler c = new javax.security.auth.callback.CallbackHandler() {
+						
+						public void handle(javax.security.auth.callback.Callback[] arg0) throws java.io.IOException,
+						javax.security.auth.callback.UnsupportedCallbackException {
+							org.apache.ws.security.WSPasswordCallback callback = (org.apache.ws.security.WSPasswordCallback) arg0[0];
+							callback.setPassword(userInfo[1]);
+							
+						}
+					};
+
+					Map<String, Object> props = new HashMap<String, Object>();
+					props.put(org.apache.ws.security.handler.WSHandlerConstants.ACTION, org.apache.ws.security.handler.WSHandlerConstants.USERNAME_TOKEN);
+					props.put(org.apache.ws.security.handler.WSHandlerConstants.USER, userInfo[0]);
+					props.put(org.apache.ws.security.handler.WSHandlerConstants.PASSWORD_TYPE, org.apache.ws.security.WSConstants.PW_TEXT);
+					props.put(org.apache.ws.security.handler.WSHandlerConstants.PW_CALLBACK_REF, c);
+					
+					org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor wss4jOutInterceptor = new org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor();
+					wss4jOutInterceptor.setProperties(props);
+					
+					cxfEndpoint.getOutInterceptors().add(wss4jOutInterceptor);
+				}
+			}
+			
 <%
 			}
 %>
@@ -91,9 +151,33 @@
 			}
 			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
+			String useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
+			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
+			String username = ElementParameterParser.getValue(node, "__USERNAME__");
+			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
+			String securityToken = "(String[])null";
+			if("true".equals(useSecurity)){
+				if("USER".equals(securityType)){
+					securityToken = "\"UsernameToken\"";
+				}else if("SAML".equals(securityType)){
+					securityToken = "\"SAMLToken\"";
+				}
+			}else{
+				isProvider = false;
+			}
+			
 %>
 				// CXF endpoint for <%=cid%>
-				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>);
+				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=securityToken%>
+<%
+				if("true".equals(useSecurity) && !isProvider){
+%>				
+							,<%=username%>,<%=password%>
+<%
+				}
+%>
+						);
 <%
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
