@@ -16,11 +16,15 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
@@ -39,6 +43,10 @@ public class ConnectionFigure extends PolylineConnection {
 
     private IConnection connection;
 
+    private ParallelFigure parallelFigure;
+
+    private ParallelFigure dparallelFigure;
+
     /**
      * Used for standard connections.
      * 
@@ -51,6 +59,38 @@ public class ConnectionFigure extends PolylineConnection {
         this.connection = connection;
         setTargetDecoration(new PolygonDecoration());
         setConnectionProperty(connectionProperty);
+
+        parallelFigure = new ParallelFigure();
+        parallelFigure.setImage(ImageProvider.getImage(EImage.PARTITIONER_ICON));
+        parallelFigure.setVisible(false);
+        add(parallelFigure, new ParallelLocator(this, 0));
+
+        dparallelFigure = new ParallelFigure();
+        dparallelFigure.setImage(ImageProvider.getImage(EImage.DEPARTITIONER_ICON));
+        dparallelFigure.setVisible(false);
+        add(dparallelFigure, new DparallelLocator(this, 0));
+
+    }
+
+    public void updateStatus() {
+        IElementParameter enableParatitoner = connection.getElementParameter(EParameterName.PARTITIONER.getName());
+        IElementParameter enableDepatitoner = connection.getElementParameter(EParameterName.DEPARTITIONER.getName());
+        IElementParameter none = connection.getElementParameter(EParameterName.NONE.getName());
+        if (enableParatitoner != null && enableParatitoner.getValue().equals(true)) {
+            if (parallelFigure != null)
+                parallelFigure.setVisible(true);
+        }
+
+        if (enableDepatitoner != null && enableDepatitoner.getValue().equals(true)) {
+            if (dparallelFigure != null)
+                dparallelFigure.setVisible(true);
+        }
+        if (none != null && none.getValue().equals(true)) {
+            if (parallelFigure != null)
+                parallelFigure.setVisible(false);
+            if (dparallelFigure != null)
+                dparallelFigure.setVisible(false);
+        }
     }
 
     /**

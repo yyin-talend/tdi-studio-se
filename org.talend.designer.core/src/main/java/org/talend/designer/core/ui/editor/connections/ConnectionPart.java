@@ -29,6 +29,7 @@ import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
@@ -174,6 +175,9 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         } else {
             ((ConnectionFigure) connection).setAlpha(Connection.ALPHA_VALUE);
         }
+        if (PluginChecker.isAutoParalelPluginLoaded()) {
+            connection.updateStatus();
+        }
 
         return connection;
     }
@@ -196,6 +200,13 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         }
 
         if (EParameterName.MONITOR_CONNECTION.getName().equals(property)) {
+            connectionFigure.repaint();
+            refreshChildren();
+        }
+
+        if (EParameterName.NONE.getName().equals(property) || EParameterName.PARTITIONER.getName().equals(property)
+                || EParameterName.DEPARTITIONER.getName().equals(property)) {
+            connectionFigure.updateStatus();
             connectionFigure.repaint();
             refreshChildren();
         }

@@ -186,7 +186,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
+            IComponent component = ComponentsFactoryProvider.getInstance().get(
+                    "tFlowMeter", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
             if (component != null) { // only if tFlowMeter is available
                 createMeterParameters((Process) source.getProcess());
             }
@@ -415,7 +416,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
 
                 addElementParameter(param);
-                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow", ComponentCategory.CATEGORY_4_DI.getName());
+                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",
+                        ComponentCategory.CATEGORY_4_DI.getName());
                 Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.setTemplate(source.isTemplate());
                 tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
@@ -633,7 +635,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setNumRow(10);
         addElementParameter(param);
 
-        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter",ComponentCategory.CATEGORY_4_DI.getName()), process); //$NON-NLS-1$
+        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get(
+                "tFlowMeter", ComponentCategory.CATEGORY_4_DI.getName()), process); //$NON-NLS-1$
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
             if (curParam.getCategory() == EComponentCategory.BASIC
                     && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {
@@ -1188,7 +1191,10 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (id.equals(NUMBER_PARALLEL) || id.equals(ENABLE_PARALLEL) || id.equals(EParameterName.LABEL.getName())) {
             updateName();
         }
-
+        if (EParameterName.PARTITIONER.getName().equals(id) || EParameterName.DEPARTITIONER.getName().equals(id)
+                || EParameterName.NONE.getName().equals(id)) {
+            firePropertyChange(id, null, value);
+        }
     }
 
     /*
@@ -1568,6 +1574,48 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
 
             firePropertyChange(parameterName, null, traceConnection);
+        }
+    }
+
+    public void setParallelConnection(boolean paralelConnection) {
+        final String parameterName = EParameterName.PARTITIONER.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
+
+        if (propertyValue == null || !propertyValue.equals(new Boolean(paralelConnection))) {
+            super.setPropertyValue(parameterName, paralelConnection);
+            if (propertyValue != null) {
+                setProcessStates();
+            }
+
+            firePropertyChange(parameterName, null, paralelConnection);
+        }
+    }
+
+    public void setDeparallelConnection(boolean deparalelConnection) {
+        final String parameterName = EParameterName.DEPARTITIONER.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
+
+        if (propertyValue == null || !propertyValue.equals(new Boolean(deparalelConnection))) {
+            super.setPropertyValue(parameterName, deparalelConnection);
+            if (propertyValue != null) {
+                setProcessStates();
+            }
+
+            firePropertyChange(parameterName, null, deparalelConnection);
+        }
+    }
+
+    public void setNoneConnection(boolean noneConnection) {
+        final String parameterName = EParameterName.NONE.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
+
+        if (propertyValue == null || !propertyValue.equals(new Boolean(noneConnection))) {
+            super.setPropertyValue(parameterName, noneConnection);
+            if (propertyValue != null) {
+                setProcessStates();
+            }
+
+            firePropertyChange(parameterName, null, noneConnection);
         }
     }
 
