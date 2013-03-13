@@ -31,6 +31,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.gefabstractmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.gefabstractmap.figures.cells.IWidgetCell;
+import org.talend.designer.gefabstractmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.gefabstractmap.part.OutputTablePart;
 import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
@@ -255,15 +256,20 @@ public class OutputXmlTreeEditPart extends OutputTablePart implements NodeEditPa
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
             DirectEditRequest drequest = (DirectEditRequest) req;
             Point figureLocation = drequest.getLocation();
-
             IFigure findFigureAt = getFigure().findFigureAt(figureLocation.x, figureLocation.y);
-
-            if (findFigureAt instanceof IWidgetCell) {
+            if (findFigureAt != null && findFigureAt instanceof IWidgetCell) {
                 directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator((Figure) findFigureAt));
                 directEditManager.show();
             }
+            if (directEditManager != null) {
+                if (findFigureAt != null && findFigureAt instanceof FilterTextArea) {
+                    if (figure.containsPoint(figureLocation)) {
+                        directEditManager.show();
+                        ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
+                    }
+                }
+            }
         }
-
     }
 
     /*
