@@ -90,6 +90,7 @@ public class SetParallelizationCommand extends Command {
 
                             // set the keys for hash keys
                             IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
+                            boolean isExistHashValue = false;
                             if (parTableCon != null) {
                                 Object[] itemCon = parTableCon.getListItemsValue();
                                 String clumnKeyListName = "";
@@ -101,9 +102,18 @@ public class SetParallelizationCommand extends Command {
                                     }
                                 }
                                 for (String partionValue : conKeyColumnList) {
-                                    Map partionKeyMap = new HashMap<String, String>();
-                                    partionKeyMap.put(clumnKeyListName, partionValue);
-                                    ((List) parTableCon.getValue()).add(partionKeyMap);
+                                    for (Object keyParMap : ((List) parTableCon.getValue())) {
+                                        Map existKeyMap = (Map) keyParMap;
+                                        if (existKeyMap.get(clumnKeyListName).equals(partionValue)) {
+                                            isExistHashValue = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isExistHashValue) {
+                                        Map partionKeyMap = new HashMap<String, String>();
+                                        partionKeyMap.put(clumnKeyListName, partionValue);
+                                        ((List) parTableCon.getValue()).add(partionKeyMap);
+                                    }
                                 }
 
                             }
