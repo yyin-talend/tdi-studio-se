@@ -652,7 +652,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
             }
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient", "tESBConsumer")) { //$NON-NLS-1$, $NON-NLS-2$
+            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
                 // https://jira.talendforge.org/browse/TESB-8066
                 if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
                     hasSAM = true;

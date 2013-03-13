@@ -1,12 +1,12 @@
-<%@ jet 
-    package="org.talend.designer.codegen.translators" 
+<%@ jet
+    package="org.talend.designer.codegen.translators"
     imports="
         org.talend.core.model.process.IProcess
-        org.talend.core.model.process.INode 
+        org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.CorePlugin
         org.talend.core.model.process.EConnectionType
-        org.talend.core.model.process.IConnection   
+        org.talend.core.model.process.IConnection
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.IMetadataColumn
         java.util.Vector
@@ -17,9 +17,9 @@
         org.talend.core.model.metadata.types.JavaType
         org.talend.core.model.utils.JavaResourcesHelper
         org.talend.core.model.process.ElementParameterParser
-    " 
-    class="Footer" 
-    skeleton="footer_java.skeleton" 
+    "
+    class="Footer"
+    skeleton="footer_java.skeleton"
 %>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -33,7 +33,7 @@
     List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-    
+
     boolean exist_tParallelize = false;
     List<? extends INode> tParallelizeList = process.getNodesOfType("tParallelize");
     if(tParallelizeList != null && tParallelizeList.size() > 0){
@@ -48,16 +48,17 @@
         exist_tMOM = true;
     }
 
-    boolean hasSAM = false;
+    boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
-            hasSAM = true;
+            hasSAM4RS = true;
             break;
         }
     }
+    boolean hasSAM4WS = false;
     for (INode node : process.getNodesOfType("tESBConsumer")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
-            hasSAM = true;
+            hasSAM4WS = true;
             break;
         }
     }
@@ -95,7 +96,7 @@
         };
     };
 
-<% if (hasSAM) { %>
+<% if (hasSAM4RS) { %>
     // ESB Service Activity Monitor Feature
     private org.apache.cxf.feature.AbstractFeature eventFeature;
 
@@ -116,7 +117,7 @@
         {
             count +=i;
         }
-        
+
         public synchronized int getCount()
         {
             return count;
@@ -137,15 +138,15 @@
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
         System.exit(exitCode);
     }
-   
- 
+
+
     public String[][] runJob(String[] args) {
-    
+
         int exitCode = runJobInTOS(args);
-    <%  
+    <%
         List<INode> tBufferNodes = (List<INode>)process.getNodesOfType("tBufferOutput");
         if(tBufferNodes != null && tBufferNodes.size() > 0) {
-    %>                  
+    %>
         String[][] bufferValue = (String[][])globalBuffer.toArray(new String[globalBuffer.size()][]);
     <%
         } else {
@@ -160,7 +161,7 @@
 
 
     public int runJobInTOS(String[] args) {
-        
+
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
@@ -208,7 +209,7 @@
 %>
 
         try {
-            //call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.  
+            //call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.
             java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
             if(isDefaultContext && inContext ==null) {
 
@@ -223,7 +224,7 @@
                     System.err.println("Could not find the context " + contextStr);
                 }
             }
-            
+
             if(!context_param.isEmpty()) {
                 context.putAll(context_param);
             }
@@ -268,7 +269,7 @@
              context.<%=ctxParam.getName()%>= new java.text.StringCharacterIterator(context.getProperty("<%=ctxParam.getName()%>")).first();
          <%
                 } else {
-             %> 
+             %>
              try{
                  context.<%=ctxParam.getName()%>=routines.system.ParserUtils.parseTo_<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
              }catch(NumberFormatException e){
@@ -305,7 +306,7 @@
         resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
 
         //Resume: jobStart
-        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));       
+        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));
 
 <%
         if (stats) {
@@ -319,7 +320,7 @@ if(execStat) {
     } catch (java.io.IOException ioException) {
         ioException.printStackTrace();
     }
-}   
+}
 <%
     }
 %>
@@ -345,7 +346,7 @@ if(execStat) {
     long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     long endUsedMemory = 0;
     long end = 0;
-    
+
     startTime = System.currentTimeMillis();
 <%
         //1. send the begin msg
@@ -365,7 +366,7 @@ if(execStat) {
         for (INode rootNode : rootNodes) {
             String componentName = rootNode.getComponent().getName();
             String uniqueName = rootNode.getUniqueName();
-            
+
             if (componentName.equals("tPrejob")) {
                 prejobNodes.add(rootNode);
                 continue;
@@ -400,7 +401,7 @@ this.globalResumeTicket = true;//to run tPreJob
     for(INode preNode:prejobNodes) {
 %>
 <%=createCallProcess(preNode, process.getName(), false) %>
-<% 
+<%
     }
  }
 %>
@@ -448,7 +449,7 @@ this.globalResumeTicket = false;//to run others jobs
                 threadRunResultMap.put("errorCode", null);
                 threadRunResultMap.put("status", "");
                 threadLocal.set(threadRunResultMap);
-                
+
                 <%=createCallProcess(rootNode, process.getName(), true) %>
                 finally {
                     Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get("errorCode"));
@@ -483,7 +484,7 @@ this.globalResumeTicket = false;//to run others jobs
         for (INode rootNode : rootNodes) {
             String componentName = rootNode.getComponent().getName();
             String uniqueName = rootNode.getUniqueName();
-            
+
             //filter the special subjob
             if("tPrejob".equals(componentName)) continue;
             if("tPostjob".equals(componentName)) continue;
@@ -505,7 +506,7 @@ this.globalResumeTicket = true;//to run tPostJob
     for(INode postNode:postjobNodes){
 %>
 <%=createCallProcess(postNode, process.getName(), false) %>
-<% 
+<%
     }
  }
 %>
@@ -537,7 +538,7 @@ this.globalResumeTicket = true;//to run tPostJob
 %>
 
 <%
-    if(exist_tMOM) {
+    if (exist_tMOM) {
 %>
     closeJmsConnections();
 <%
@@ -545,9 +546,9 @@ this.globalResumeTicket = true;//to run tPostJob
 %>
 
 <%
-    if(hasSAM) {
+    if (hasSAM4RS) { // if (hasSAM4RS || hasSAM4WS)
 %>
-    if (null == eventFeature) { // TESB-8574: Fix SAM timeout issue in Studio
+    if (false<% if (hasSAM4RS) { %> || null == eventFeature<% } %><% if (hasSAM4WS) { %> || null == registry<% } %>) { // TESB-8574: Fix SAM timeout issue in Studio
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -574,14 +575,14 @@ if (execStat) {
 <%
     }
 %>
-    int returnCode = 0; 
+    int returnCode = 0;
     if(errorCode == null) {
          returnCode = status != null && status.equals("failure") ? 1 : 0;
     } else {
          returnCode = errorCode.intValue();
     }
     resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","" + returnCode,"","","");
-  
+
     return returnCode;
 
   }
@@ -698,6 +699,6 @@ if (execStat) {
     public String getStatus() {
         return status;
     }
-    
+
     ResumeUtil resumeUtil = null;
 }
