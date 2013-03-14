@@ -2574,7 +2574,7 @@ public class Node extends Element implements IGraphicalNode {
                                         IElementParameter param = elementParam.getChildParameters().get(key);
                                         if (param != null && param.getName().equals("CONNECTION") && param.getValue() != null
                                                 && param.getValue().toString().length() > 0) {
-                                            if (rowList.contains((String) param.getValue())) {
+                                            if (rowList.contains(param.getValue())) {
                                                 String errorMessage = "Can't not have more than one input linked to the same connection";
                                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                                             } else {
@@ -2719,7 +2719,8 @@ public class Node extends Element implements IGraphicalNode {
                 List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
                 if (itemList != null && !itemList.isEmpty()) {
                     for (IMultipleComponentItem curItem : itemList) {
-                        IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent(), getProcess().getComponentsType());
+                        IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent(),
+                                getProcess().getComponentsType());
                         if (component == null) {
                             // Notify an error
                             String errorMessage = Messages.getString("Node.componentNotExist", curItem.getComponent()); //$NON-NLS-1$
@@ -2753,7 +2754,7 @@ public class Node extends Element implements IGraphicalNode {
                             } else {
                                 String errorMessage = Messages.getString(
                                         "Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         }
                         if (componentName != null && componentName.equals(TPOSTJOB_STR)) {
@@ -2762,7 +2763,7 @@ public class Node extends Element implements IGraphicalNode {
                             } else {
                                 String errorMessage = Messages.getString(
                                         "Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         }
                     }
