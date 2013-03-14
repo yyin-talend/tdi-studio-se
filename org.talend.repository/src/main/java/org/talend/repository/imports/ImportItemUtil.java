@@ -59,6 +59,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.emf.CwmResource;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -401,6 +402,7 @@ public class ImportItemUtil {
 
         Collections.sort(itemRecords, new Comparator<ItemRecord>() {
 
+            @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
                 if (o1.getProperty().getItem() instanceof RoutineItem) {
                     return -1;
@@ -420,6 +422,7 @@ public class ImportItemUtil {
             public void run() throws PersistenceException {
                 final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
 
                         final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
@@ -452,16 +455,25 @@ public class ImportItemUtil {
                             }
                         }
 
-                        List<Item> items = new ArrayList<Item>();
-
                         for (ItemRecord itemRecord : itemRecords) {
                             if (!monitor.isCanceled()) {
                                 if (itemRecord.isValid()) {
-                                    if (itemRecord.getProperty() != null && itemRecord.getItem() != null) {
-                                        items.add(itemRecord.getItem());
-                                    }
                                     importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
                                             idDeletedBeforeImport, contentType, monitor);
+                                    IRepositoryViewObject object;
+                                    try {
+                                        Property property = itemRecord.getProperty();
+                                        if (property == null) {
+                                            object = factory.getSpecificVersion(itemRecord.getItemId(),
+                                                    itemRecord.getItemVersion(), true);
+                                            property = object.getProperty();
+                                        }
+                                        RelationshipItemBuilder.getInstance().addOrUpdateItem(property.getItem(), true);
+                                        itemRecord.setProperty(null);
+                                        ProxyRepositoryFactory.getInstance().unloadResources(property);
+                                    } catch (PersistenceException e) {
+                                        ExceptionHandler.process(e);
+                                    }
                                     statAndLogsSettingsReloaded = false;
                                     implicitSettingsReloaded = false;
 
@@ -492,10 +504,6 @@ public class ImportItemUtil {
                             if (service != null) {
                                 service.loadComponentsFromProviders();
                             }
-                        }
-
-                        for (Item itemRecord : items) {
-                            RelationshipItemBuilder.getInstance().addOrUpdateItem(itemRecord, true);
                         }
                         // cannot cancel this part
                         //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
@@ -818,8 +826,6 @@ public class ImportItemUtil {
                             repFactory.save(tmpItem, true);
                         }
                     }
-                    repFactory.unloadResources(tmpItem.getProperty());
-
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setRepositoryType(itemType);
                     itemRecord.setItemId(itemRecord.getProperty().getId());
@@ -992,6 +998,7 @@ public class ImportItemUtil {
                     .executeMigrationTasksForImport(project, item, itemRecord.getMigrationTasksToApply(), monitor);
             itemRecord.setExistingItemWithSameId(null);
             itemRecord.clear();
+            itemRecord.setProperty(item.getProperty());
         } catch (Exception e) {
             logError(e);
         }
@@ -1229,6 +1236,7 @@ public class ImportItemUtil {
 
         Collections.sort(items, new Comparator<ItemRecord>() {
 
+            @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
                 return VersionUtils.compareTo(o1.getProperty().getVersion(), o2.getProperty().getVersion());
             }
@@ -1466,7 +1474,7 @@ public class ImportItemUtil {
         InputStream stream = null;
         try {
             stream = manager.getStream(itemRecord.getPath());
-            Resource resource = createResource(itemRecord.getResourceSet(), itemRecord.getPath(), false);
+            Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
             resource.load(stream, null);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
@@ -1495,7 +1503,7 @@ public class ImportItemUtil {
             boolean byteArray = (item instanceof FileItem);
             IPath itemPath = getItemPath(itemRecord.getPath(), item);
             stream = manager.getStream(itemPath);
-            Resource resource = createResource(itemRecord.getResourceSet(), itemPath, byteArray);
+            Resource resource = createResource(itemRecord, itemPath, byteArray);
 
             if (byteArray) {
                 // TDI-24612
@@ -1516,7 +1524,7 @@ public class ImportItemUtil {
             for (ReferenceFileItem rfItem : (List<ReferenceFileItem>) item.getReferenceResources()) {
                 itemPath = getReferenceItemPath(itemRecord.getPath(), rfItem.getExtension());
                 stream = manager.getStream(itemPath);
-                Resource rfResource = createResource(itemRecord.getResourceSet(), itemPath, true);
+                Resource rfResource = createResource(itemRecord, itemPath, true);
                 rfResource.load(stream, null);
             }
             resetItemReference(itemRecord, resource);
@@ -1620,7 +1628,7 @@ public class ImportItemUtil {
         try {
             if (!projects.containsKey(path)) {
                 stream = manager.getStream(path);
-                Resource resource = createResource(itemRecord.getResourceSet(), path, false);
+                Resource resource = createResource(itemRecord, path, false);
                 resource.load(stream, null);
                 projects.put(path,
                         (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE.getProject()));
@@ -1640,13 +1648,34 @@ public class ImportItemUtil {
         return null;
     }
 
-    private Resource createResource(ResourceSet resourceSet, IPath path, boolean byteArrayResource) throws FileNotFoundException {
+    private Resource createResource(ItemRecord itemRecord, IPath path, boolean byteArrayResource) throws FileNotFoundException {
         Resource resource;
+        ResourceSet resourceSet = itemRecord.getResourceSet();
         if (byteArrayResource) {
             resource = new ByteArrayResource(getURI(path));
             resourceSet.getResources().add(resource);
         } else {
-            resource = resourceSet.createResource(getURI(path));
+            if (FileConstants.ITEM_EXTENSION.equals(path.getFileExtension())) {
+                String projectName = "";
+                if (itemRecord.getItemProject() != null) {
+                    projectName = itemRecord.getItemProject().getTechnicalLabel();
+                }
+                // note: do similar code as the CwmResourceFactory
+                String business = projectName + "/businessProcess/"; //$NON-NLS-1$
+                String context = projectName + "/context/"; //$NON-NLS-1$
+                String process = projectName + "/process/"; //$NON-NLS-1$
+                String joblet = projectName + "/joblets/"; //$NON-NLS-1$
+                String pathString = path.toPortableString();
+                if (pathString.contains(process) || pathString.contains(context) || pathString.contains(business)
+                        || pathString.contains(joblet)) {
+                    resource = new XMIResourceImpl(getURI(path));
+                } else {
+                    resource = new CwmResource(getURI(path));
+                }
+                resourceSet.getResources().add(resource);
+            } else {
+                resource = resourceSet.createResource(getURI(path));
+            }
         }
         return resource;
     }
