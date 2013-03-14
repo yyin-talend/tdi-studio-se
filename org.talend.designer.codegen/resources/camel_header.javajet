@@ -51,8 +51,37 @@
 			}
 
 <%
+			boolean hasCXFComponent = false;
+			boolean hasCXFSamlTokenProvider = false;
+			boolean hasCXFSamlTokenConsumer = false;
+			boolean hasCXFUsernameTokenProvider = false;
+			boolean hasCXFUsernameTokenConsumer = false;
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
+				hasCXFComponent = true;
+				for(INode n: cxfNodes){
+					String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
+					String securityType = ElementParameterParser.getValue(n, "__SECURITY_TYPE__");
+					int incomingConnections = n.getIncomingConnections().size();
+					if("true".equals(useSecurity)){
+						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer)){
+							if(incomingConnections == 0){
+								hasCXFSamlTokenProvider = true;
+							}else{
+								hasCXFSamlTokenConsumer = true;
+							}
+						}else if("USER".equals(securityType) && (!hasCXFUsernameTokenProvider || !hasCXFUsernameTokenConsumer)){
+							if(incomingConnections == 0){
+								hasCXFUsernameTokenProvider = true;
+							}else{
+								hasCXFUsernameTokenConsumer = true;
+							}
+						}
+					}
+				}
+			}
+			
+			if(hasCXFComponent){
 %>
 			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
@@ -62,23 +91,38 @@
 			        if(cbl != null){
 			             bus.setExtension(new org.apache.cxf.bus.osgi.OSGiBeanLocator(cbl, bundleContext), org.apache.cxf.configuration.ConfiguredBeanLocator.class);
 			        }
-			        
-			        if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
-			        	addUsernameToken(cxfEndpoint,bus, true);
-			        }else if(token!=null&&"SAMLToken".equals(token[0])){
-			        	
-			        }
+<%
+					if(hasCXFUsernameTokenProvider){
+%>			        
+				        if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
+				        	addUsernameToken(cxfEndpoint,bus, true);
+				        } 
+<%
+					}
+					if(hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer){
 
+%>
+			        if(token!=null&&"SAMLToken".equals(token[0])){
+			        	addSAMLToken(cxfEndpoint, bus, isProvider, token);
+			        }
+<%}%>
 				}
+<%
+				if(hasCXFUsernameTokenConsumer){
+%>
 				if(!isProvider&&token!=null&&token.length>=3&&"UsernameToken".equals(token[0])){
 		        	addUsernameToken(cxfEndpoint, null, false, token[1], token[2]);
 		        }
+<%}%>
 				
 				return cxfEndpoint;
 			}
-			
+<%
+			if(hasCXFUsernameTokenConsumer || hasCXFUsernameTokenProvider){
+%>			
 			private void addUsernameToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, 
 					org.apache.cxf.Bus bus, boolean isProvider, final String... userInfo){
+<%if(hasCXFUsernameTokenProvider){%>
 				if(isProvider){
 			        Map<String, Object> props = new HashMap<String, Object>();
 					props.put(org.apache.ws.security.handler.WSHandlerConstants.ACTION, org.apache.ws.security.handler.WSHandlerConstants.USERNAME_TOKEN);
@@ -101,7 +145,12 @@
 					org.apache.cxf.ws.policy.WSPolicyFeature wsPolicyFeature = new org.apache.cxf.ws.policy.WSPolicyFeature();
 					wsPolicyFeature.getPolicies().add(policy);
 					bus.getFeatures().add(wsPolicyFeature);
-				}else{
+				}
+<%
+}
+if(hasCXFUsernameTokenConsumer){				
+%>
+				if(!isProvider){
 					javax.security.auth.callback.CallbackHandler c = new javax.security.auth.callback.CallbackHandler() {
 						
 						public void handle(javax.security.auth.callback.Callback[] arg0) throws java.io.IOException,
@@ -123,11 +172,219 @@
 					
 					cxfEndpoint.getOutInterceptors().add(wss4jOutInterceptor);
 				}
+<%}%>
 			}
-			
 <%
 			}
+			}
+if(hasCXFSamlTokenConsumer){
 %>
+
+private Map<String, String> clientProperties;
+
+private Map<String, String> stsProperties;
+	
+public void setClientProperties(Map<String, String> clientProperties) {
+        this.clientProperties = clientProperties;
+}
+
+public void setStsProperties(Map<String, String> stsProperties) {
+        this.stsProperties = stsProperties;
+}
+
+
+class WSPasswordCallbackHandler implements javax.security.auth.callback.CallbackHandler {
+
+    private final String user;
+    private final String pass;
+
+    public WSPasswordCallbackHandler(String username, String password) {
+        user = username;
+        pass = password;
+    }
+
+    public void handle(javax.security.auth.callback.Callback[] callbacks) throws java.io.IOException,
+    javax.security.auth.callback.UnsupportedCallbackException {
+        for (javax.security.auth.callback.Callback callback : callbacks) {
+            if (callback instanceof org.apache.ws.security.WSPasswordCallback) {
+            	org.apache.ws.security.WSPasswordCallback pc = (org.apache.ws.security.WSPasswordCallback) callback;
+                if (user.equals(pc.getIdentifier())) {
+                    pc.setPassword(pass);
+                    break;
+                }
+            }
+        }
+    }
+
+} 
+<%
+}
+
+if(hasCXFSamlTokenProvider){
+%>
+private Map<String, String> samlProps;
+
+public void setSamlProps(Map<String, String> samlProps){
+	this.samlProps = samlProps;
+}
+<%
+}
+
+if(hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer){
+%>
+
+
+private Map<String, String> policies;
+
+public void setPolicies(Map<String, String> policies){
+	this.policies = policies;
+}
+
+private org.apache.neethi.Policy loadPolicy(String location, org.apache.cxf.Bus bus) {
+    java.io.InputStream is = null;
+    try {
+        is = new java.io.FileInputStream(location);
+        return bus.getExtension(org.apache.cxf.ws.policy.PolicyBuilder.class).getPolicy(is);
+    } catch (Exception e) {
+        throw new RuntimeException("Cannot load policy", e);
+    } finally {
+        if (null != is) {
+            try {
+                is.close();
+            } catch (java.io.IOException e) {
+                // just ignore
+            }
+        }
+    }
+}
+public void registerPolicies(org.apache.cxf.Bus bus) {
+	if(policies != null){
+        org.apache.neethi.PolicyRegistry policyRegistry =
+                bus.getExtension(org.apache.cxf.ws.policy.PolicyEngine.class).getRegistry();
+        policyRegistry.register("org.talend.esb.job.token.policy",
+        		loadPolicy(policies.get("policy.token"), bus));
+        policyRegistry.register("org.talend.esb.job.saml.policy",
+        		loadPolicy(policies.get("policy.saml"), bus));
+	}
+}
+
+private void addSAMLToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, org.apache.cxf.Bus bus,
+		boolean isProvider, String... token) {
+<%
+if(hasCXFSamlTokenConsumer){
+%>
+	if (!isProvider) {
+		org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
+				bus);
+		stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
+		stsClient.setServiceQName(new javax.xml.namespace.QName(
+				stsProperties.get("sts.namespace"), stsProperties
+						.get("sts.service.name")));
+		stsClient.setEndpointQName(new javax.xml.namespace.QName(
+				stsProperties.get("sts.namespace"), stsProperties
+						.get("sts.endpoint.name")));
+
+		Map<String, Object> stsProps = new HashMap<String, Object>();
+
+		for (Map.Entry<String, String> entry : stsProperties.entrySet()) {
+			if (org.apache.cxf.ws.security.SecurityConstants.ALL_PROPERTIES
+					.contains(entry.getKey())) {
+				stsProps.put(entry.getKey(), entry.getValue());
+			}
+		}
+
+		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
+				token[1]);
+		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
+				token[2]);
+		stsClient.setProperties(stsProps);
+
+		Map<String, Object> clientProps = new HashMap<String, Object>();
+		clientProps.put(
+				org.apache.cxf.ws.security.SecurityConstants.STS_CLIENT,
+				stsClient);
+
+		for (Map.Entry<String, String> entry : clientProperties.entrySet()) {
+			if (org.apache.cxf.ws.security.SecurityConstants.ALL_PROPERTIES
+					.contains(entry.getKey())) {
+				clientProps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		clientProps
+				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
+						new WSPasswordCallbackHandler(
+								clientProperties
+										.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
+								clientProperties
+										.get("ws-security.signature.password")));
+		// set the cxfEndpoint Properties
+		cxfEndpoint.setProperties(clientProps);
+
+		// add policy
+		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
+		policyReference.setURI("org.talend.esb.job.saml.policy");
+		org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
+		policy.addPolicyComponent(policyReference);
+
+		org.apache.cxf.ws.policy.WSPolicyFeature wsPolicyFeature = new org.apache.cxf.ws.policy.WSPolicyFeature();
+		wsPolicyFeature.getPolicies().add(policy);
+		cxfEndpoint.getFeatures().add(wsPolicyFeature);
+		// register bus with policy
+		registerPolicies(bus);
+	}
+<%
+}
+if(hasCXFSamlTokenProvider){
+%>
+if (isProvider) {
+		// get saml properties
+		String userName = (String) samlProps
+				.get("ws-security.signature.username");
+		String password = (String) samlProps
+				.get("ws-security.signature.password");
+		String properties = (String) samlProps
+				.get("ws-security.signature.properties");
+		// add in intercept
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.put(
+				org.apache.ws.security.handler.WSHandlerConstants.ACTION,
+				org.apache.ws.security.handler.WSHandlerConstants.SAML_TOKEN_SIGNED);
+		props.put(
+				org.apache.ws.security.handler.WSHandlerConstants.SIG_PROP_FILE,
+				properties);
+
+		org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor wss4jInInterceptor = org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor.INSTANCE;
+		wss4jInInterceptor.setProperties(props);
+		cxfEndpoint.getInInterceptors().add(wss4jInInterceptor);
+
+		// set endpoint properties
+		org.apache.cxf.interceptor.security.NamePasswordCallbackHandler callbackHandler = new org.apache.cxf.interceptor.security.NamePasswordCallbackHandler(
+				userName, password, "setPassword");
+		Map<String, Object> endpointProps = new HashMap<String, Object>();
+		endpointProps.put("ws-security.signature.username", userName);
+		endpointProps.put("ws-security.signature.properties",
+				properties);
+		endpointProps.put("ws-security.callback-handler",
+				callbackHandler);
+		cxfEndpoint.setProperties(endpointProps);
+		// add policy
+		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
+		policyReference.setURI("org.talend.esb.job.saml.policy");
+		org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
+		policy.addPolicyComponent(policyReference);
+
+		org.apache.cxf.ws.policy.WSPolicyFeature wsPolicyFeature = new org.apache.cxf.ws.policy.WSPolicyFeature();
+		wsPolicyFeature.getPolicies().add(policy);
+		cxfEndpoint.getFeatures().add(wsPolicyFeature);
+		// register policy on bus
+		registerPolicies(bus);
+}	
+<%
+}
+%>
+}
+<%}%>
+
 			/**
 			* please initial uri map 
 			*/
