@@ -46,6 +46,9 @@ public class TalendDesignerPrefConstants {
     /** Path used for components for the default project directory. */
     public static final String COMP_DEFAULT_PROJECT_DIR = "projectFileDir";//$NON-NLS-1$
 
+    // ADD sizhaoliu TDQ-6698
+    public static final String DQ_REPORTING_BUNDLE_DIR = "dqReportingBundleDir";//$NON-NLS-1$
+
     public static final String JOB_RUN_VM_ARGUMENTS = "jobVMArguments";//$NON-NLS-1$
 
     /** Property code check. */

@@ -22,6 +22,7 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
+import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -79,6 +80,18 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString()
                     + "/" + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel());
         }
+        // ADD sizhaoliu TDQ-6698
+        Bundle refBundle = Platform.getBundle("org.talend.dataquality.reporting"); //$NON-NLS-1$
+        if (refBundle != null) {
+            String bundlePath = refBundle.getLocation();
+            String prefix = "reference:file:"; //$NON-NLS-1$
+            int prefixPos = bundlePath.lastIndexOf(prefix);
+            if (prefixPos >= 0) {
+                bundlePath = bundlePath.substring(prefixPos + prefix.length(), bundlePath.length() - 1);
+            }
+            store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, bundlePath);
+        }
+
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none"); //$NON-NLS-1$

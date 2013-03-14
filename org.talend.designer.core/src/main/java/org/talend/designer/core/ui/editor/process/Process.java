@@ -374,6 +374,18 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         addElementParameter(param);
 
         param = new ElementParameter(this);
+        param.setName(EParameterName.DQ_REPORTING_BUNDLE_DIR.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.DQ_REPORTING_BUNDLE_DIR.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
+                .getString(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
         param.setName(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setFieldType(EParameterFieldType.TEXT);
@@ -887,7 +899,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (param.getElement() instanceof Node) {
             Node curNode = (Node) param.getElement();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName(),getComponentsType());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName(),
+                    getComponentsType());
             if (param != null && param.getName().equals(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName())) {
                 return;
             }

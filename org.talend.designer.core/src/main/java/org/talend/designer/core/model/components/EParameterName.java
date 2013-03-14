@@ -82,6 +82,7 @@ public enum EParameterName {
     COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PRODUCT_ROOT_DIR("PRODUCT_ROOT_DIR"), //$NON-NLS-1$  for TDQ_INSTALL_DIR
     COMP_DEFAULT_PROJECT_DIR("COMP_DEFAULT_PROJECT_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
+    DQ_REPORTING_BUNDLE_DIR("DQ_REPORTING_BUNDLE_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
     JOB_RUN_VM_ARGUMENTS("JOB_RUN_VM_ARGUMENTS"), //$NON-NLS-1$  Hidden parameter so no translation needed
     JOB_RUN_VM_ARGUMENTS_OPTION(Messages.getString("EParameterName.jvmArgTitle")), //$NON-NLS-1$
     REPOSITORY_ALLOW_AUTO_SWITCH("REPOSITORY_ALLOW_AUTO_SWITCH"), //$NON-NLS-1$  Hidden parameter so no translation needed
