@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.jar.Manifest;
 
@@ -54,6 +56,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -68,6 +71,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -633,6 +637,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // http://jira.talendforge.org/browse/TESB-3677
         if (ROUTE.equals(itemType)) {
+        	boolean hasCXFSamlConsumer = false;
+        	boolean hasCXFSamlProvider = false;
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
                 // http://jira.talendforge.org/browse/TESB-3850
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
@@ -641,7 +647,45 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         hasSAM = true;
                         break;
                     }
+                    if(hasCXFSamlConsumer && hasCXFSamlProvider){
+                    	continue;
+                    }
+                    if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
+                    	continue;
+                    }
+                    String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
+                    if(!"SAML".equals(securityType)){
+                    	continue;
+                    }
+                    
+                    String uniquename = ElementParameterParser.getUNIQUENAME(node);
+                    EList connections = processItem.getProcess().getConnection();
+                    boolean found = false;
+                    for(Object c:connections){
+                    	String target = ((ConnectionType)c).getTarget();
+                    	if(uniquename.equals(target)){
+                    		hasCXFSamlConsumer = true;
+                    		found = true;
+                    		break;
+                    	}
+                    }
+                    if(!found){
+                    	hasCXFSamlProvider = true;
+                    }
                 }
+            }
+            
+            if(hasCXFSamlConsumer || hasCXFSamlProvider ){
+            	additionalJobBeanParams += readFileContent("ccxf_saml_bean.txt");
+            	additionalJobBundleConfig += readFileContent("ccxf_saml_bundle.txt");
+            }
+            if(hasCXFSamlProvider){
+            	additionalJobBeanParams += readFileContent("ccxf_saml_provider_bean.txt");
+            	additionalJobBundleConfig += readFileContent("ccxf_saml_provider_bundle.txt");
+            }
+            if(hasCXFSamlConsumer){
+            	additionalJobBeanParams += readFileContent("ccxf_saml_consumer_bean.txt");
+            	additionalJobBundleConfig += readFileContent("ccxf_saml_consumer_bundle.txt");
             }
         } else { // JOB
             if (isTalendESBJob(processItem)) {
@@ -662,7 +706,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
 
         if (hasSAM) {
-            additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+            additionalJobBeanParams += "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
             additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
                     + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
         }
@@ -701,6 +745,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
+    private String readFileContent(String path) throws IOException{
+    	InputStream is = getClass().getResourceAsStream(path);
+    	String s = new Scanner(is).useDelimiter("\\A").next();
+    	is.close();
+    	return s;
+    }
+    
     private static String getOSGIInfFolder() {
         return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
     }
