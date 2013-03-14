@@ -54,26 +54,31 @@ imports="
 	    %>
 	    for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
 	        <%
+	        String firstConnName = "";	
     	    for(IConnection conn : conns) {
-    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    	        	
-    	            for(Map<String, String> tableValue : tableValues) {
-    	            	String lable = tableValue.get("SCHEMA_COLUMN");
-        	            String value = tableValue.get("VALUE");
-        	            if(value == null || value.length() == 0){ //use the default value
-        	            	IMetadataColumn column = metadata.getColumn(lable);
-    	            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-    	            		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-    	            		%>        	            	
-        	            		<%=conn.getName()%>.<%=lable %> = <%=defaultValue %>;        	            	
-        	            	<%
-        	            }else{
-        	            	%>        	            	
-        	            		<%=conn.getName()%>.<%=lable %> = <%=value %>;
-        	            	<%
-        	            }
+    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    	        	firstConnName = conn.getName();
+    	        	break;
+    	        } // if(conn) end
+    	    } // for(conns) end
+    	    if (firstConnName !=null && !"".equals(firstConnName)) {
+	            for(Map<String, String> tableValue : tableValues) {
+	            	String lable = tableValue.get("SCHEMA_COLUMN");
+    	            String value = tableValue.get("VALUE");
+    	            if(value == null || value.length() == 0){ //use the default value
+    	            	IMetadataColumn column = metadata.getColumn(lable);
+	            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	            		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+	            		%>        	            	
+    	            		<%=firstConnName%>.<%=lable %> = <%=defaultValue %>;        	            	
+    	            	<%
+    	            }else{
+    	            	%>        	            	
+    	            		<%=firstConnName%>.<%=lable %> = <%=value %>;
+    	            	<%
     	            }
-    	        }
-    	    }
+	            } // for (map) end
+    		} // if(firstConnName) end
 		}
 //***************************the original part end ***************************************
 	}else if(use_inTable){
