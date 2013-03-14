@@ -32,7 +32,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 
 public class JobletContainerFigure extends Figure {
 
-    private ImageFigure errorFigure;
+    private ImageFigure errorFigure, warningFigure;
 
     private SimpleHtmlFigure htmlStatusHint;
 
@@ -84,6 +84,13 @@ public class JobletContainerFigure extends Figure {
         errorFigure.setVisible(false);
         errorFigure.setSize(errorFigure.getPreferredSize());
         this.add(errorFigure);
+
+        warningFigure = new ImageFigure();
+        warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
+        warningFigure.setVisible(false);
+        warningFigure.setSize(warningFigure.getPreferredSize());
+        this.add(warningFigure);
+
         htmlStatusHint = new SimpleHtmlFigure();
 
         initSubJobTitleColor();
@@ -147,11 +154,16 @@ public class JobletContainerFigure extends Figure {
     @Override
     public void paint(Graphics graphics) {
         graphics.setAlpha(100);
-        errorFigure.setLocation(jobletContainer.getErrorLocation());
+        if (errorFigure.isVisible()) {
+            errorFigure.setLocation(jobletContainer.getErrorLocation());
+        }
+        if (warningFigure.isVisible()) {
+            warningFigure.setLocation(jobletContainer.getWarningLocation());
+        }
         super.paint(graphics);
         refreshNodes();
     }
-    
+
     boolean lastJobletRedState = false;
 
     private void refreshNodes() {
@@ -160,7 +172,7 @@ public class JobletContainerFigure extends Figure {
             return;
         }
         lastJobletRedState = isRed;
-        
+
         if (isRed && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
         } else if (rectFig != null) {
@@ -274,6 +286,23 @@ public class JobletContainerFigure extends Figure {
 
     public void updateStatus(int status) {
         if ((status & Process.ERROR_STATUS) != 0) {
+
+            warningFigure.setVisible(false);
+            errorFigure.setVisible(true);
+        } else {
+            errorFigure.setVisible(false);
+            errorFigure.setToolTip(null);
+        }
+
+        if (((status & Process.WARNING_STATUS) != 0) && !errorFigure.isVisible()) {
+            warningFigure.setVisible(true);
+        } else {
+            warningFigure.setVisible(false);
+            warningFigure.setToolTip(null);
+        }
+
+        if (warningFigure.isVisible() || errorFigure.isVisible()) {
+
             List<String> problemsList;
 
             String text = "<b>" + jobletContainer.getNode().getUniqueName() + "</b><br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -294,8 +323,11 @@ public class JobletContainerFigure extends Figure {
                 }
             }
             htmlStatusHint.setText(text);
-            errorFigure.setToolTip(htmlStatusHint);
-            errorFigure.setVisible(true);
+            if (errorFigure.isVisible()) {
+                errorFigure.setToolTip(htmlStatusHint);
+            } else if (warningFigure.isVisible()) {
+                warningFigure.setToolTip(htmlStatusHint);
+            }
         } else {
             errorFigure.setVisible(false);
             errorFigure.setToolTip(null);

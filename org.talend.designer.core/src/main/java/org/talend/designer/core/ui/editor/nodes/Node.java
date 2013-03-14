@@ -2753,7 +2753,7 @@ public class Node extends Element implements IGraphicalNode {
                             } else {
                                 String errorMessage = Messages.getString(
                                         "Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         }
                         if (componentName != null && componentName.equals(TPOSTJOB_STR)) {
@@ -2762,7 +2762,7 @@ public class Node extends Element implements IGraphicalNode {
                             } else {
                                 String errorMessage = Messages.getString(
                                         "Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         }
                     }
