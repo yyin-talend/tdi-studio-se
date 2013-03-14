@@ -294,6 +294,14 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="SOURCE_KEY_INC_NULL"
+      FIELD="CHECK"
+      NUM_ROW="73"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="USE_L0"
       FIELD="CHECK"

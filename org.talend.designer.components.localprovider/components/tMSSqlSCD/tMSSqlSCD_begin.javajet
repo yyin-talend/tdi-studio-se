@@ -61,6 +61,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean isSourceKeyIncNull = ("true").equals(ElementParameterParser.getValue(node, "__SOURCE_KEY_INC_NULL__"));
     String dbType = MSSQL;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -98,23 +99,29 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 <%
 		if(isEnableSaveMemMode) {//EnableSaveMemMode
 			int paramIndex = 1;
+			int indexMult= 0;
 	        for(Column sourceKey : sourceKeys) {
-	        	if((paramIndex/2)%schemaOptNum==0){
+	        	if(indexMult%schemaOptNum==0){
 %>
-			public void genSearchSetStatment_<%=(paramIndex/2)/schemaOptNum%>(java.sql.PreparedStatement searchingStmt_<%=cid%>,<%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=incomingConnName%>)throws Exception{
+			public void genSearchSetStatment_<%=indexMult/schemaOptNum%>(java.sql.PreparedStatement searchingStmt_<%=cid%>,<%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=incomingConnName%>)throws Exception{
 <%
 				}
 %>
-            <%=scdManager.genSetStatement("searchingStmt_" + cid, incomingConnName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),true)%>
+            <%=scdManager.genSetStatement("searchingStmt_" + cid, incomingConnName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),isSourceKeyIncNull)%>
 <%
-				if(((paramIndex/2)+1)%schemaOptNum==0){
+				if((indexMult+1)%schemaOptNum==0){
 %>
 			}
 <%
 				}
-	            paramIndex=paramIndex+2;
+				if(isSourceKeyIncNull){
+	            	paramIndex=paramIndex+2;
+	            }else{
+	            	paramIndex++;
+	            }
+	            indexMult= isSourceKeyIncNull?paramIndex/2:paramIndex-1;
 	        }
-			if((paramIndex/2)>0&&((paramIndex/2)%schemaOptNum)>0){
+			if(indexMult>0&&(indexMult%schemaOptNum)>0){
 %>
 			}
 <%
@@ -408,9 +415,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 <%
             	}
                 %>
-                <%=scdManager.genSetStatement("updateForType1_" + cid, incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+                <%=scdManager.genSetStatement("updateForType1_" + cid, incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
                 <%
-                index=index+2;
+                if(isSourceKeyIncNull){
+                	index=index+2;
+                }else{
+                   	index++;
+                }
                 if((columnIndex + 1) % schemaOptNum == 0){
 %>
 			}
@@ -488,9 +499,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 <%
             	}
 %>
-            	<%=scdManager.genSetStatement("updateForType2_" + cid, incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+            	<%=scdManager.genSetStatement("updateForType2_" + cid, incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
 <%
-                index=index+2;
+                if(isSourceKeyIncNull){
+                	index=index+2;
+                }else{
+                   	index++;
+                }
                 if((columnIndex + 1) % schemaOptNum == 0){
 %>
 			}
@@ -689,9 +704,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 <%
             	}
 %>
-                <%=scdManager.genSetStatement("updateForType3_" + cid,  incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+                <%=scdManager.genSetStatement("updateForType3_" + cid,  incomingConnName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
 <%
-                index=index+2;
+                if(isSourceKeyIncNull){
+                	index=index+2;
+                }else{
+                   	index++;
+                }
                 if((columnIndex + 1) % schemaOptNum == 0){
 %>
 			}
@@ -751,7 +770,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     <%
     if(isEnableSaveMemMode) {
         %>
-        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger)%>";
+        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement searchingStmt_<%=cid%> = conn_<%=cid%>.prepareStatement(searching_<%=cid%>);
         java.sql.ResultSet searchingResult_<%=cid%> = null;
         <%
@@ -907,13 +926,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType1()) {
         %>
-        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger)%>";
+        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType1_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType1_<%=cid%>);        
         <%
     }
     if(scdConfiger.isEnableType2()) {
         %>
-        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger)%>";
+        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType2_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
         <%
         if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
@@ -924,7 +943,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType3()) {
         %>
-        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger)%>";
+        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType3_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType3_<%=cid%>);
         <%
     }
