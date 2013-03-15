@@ -219,6 +219,9 @@ public class RepositoryReviewDialog extends Dialog {
                 return processor;
             }
         }
+        if (type == null && repositoryTypes != null) {
+            return new MetadataMultiTypeProcessor(repositoryTypes);
+        }
 
         if (type == ERepositoryObjectType.PROCESS) {
             return new JobTypeProcessor(repositoryType);
@@ -249,10 +252,6 @@ public class RepositoryReviewDialog extends Dialog {
 
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return new ValidationRuleTypeProcessor(repositoryType);
-        }
-
-        if (repositoryTypes != null) {
-            return new MetadataMultiTypeProcessor(repositoryTypes);
         }
 
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
