@@ -5,11 +5,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.metadata.MappingTypeRetriever
-    org.talend.core.model.metadata.MetadataTalendType
     java.util.List
-    java.lang.StringBuilder
-    java.util.Map
 " 
 %>
 <%
@@ -52,8 +48,6 @@ if(exportedFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	lineSeparator = "\\n";
 }
 
-String dbmsId = "teradata_id";
-
 List<IMetadataColumn> columnList = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -93,7 +87,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for(IMetadataColumn column:columnList){	
 				if( columnList.size() != counter){	
 					if(separator.length()>0 && !"\"\"".equals(separator)){
-						columnsLength+=column.getLength()+separator.length();
+						columnsLength+=(column.getLength()==null?0:column.getLength())+separator.length();
 				%>
 					fw_<%=cid %>.write("TRIM(COALESCE(CAST(<%=column.getOriginalDbColumnName()%> AS CHAR(<%=column.getLength()%>)),'')) || '"+<%=separator%>+"' ||"+"<%=lineSeparator%>");
 					<%}else{%>
@@ -102,7 +96,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			<%
 				} else {
 					if(separator.length()>0 && !"\"\"".equals(separator)){
-						columnsLength+=column.getLength()+1;
+						columnsLength+=(column.getLength()==null?0:column.getLength())+1;
 			%>
 					fw_<%=cid %>.write("TRIM(COALESCE(CAST(<%=column.getOriginalDbColumnName()%> AS VARCHAR(<%=column.getLength()%>)),''))) AS CHAR(<%=columnsLength%>))"+"<%=lineSeparator%>");
 					<%}else{%>
