@@ -2123,8 +2123,14 @@ public class Node extends Element implements IGraphicalNode {
                 for (INode node : mergeInfo.keySet()) {
                     if (mergeInfo.get(node) != 1) {
                         // get the first merge connection to have the main branch (id 1 for merge connection)
-                        IConnection connection = NodeUtil.getIncomingConnections(node, IConnectionCategory.MERGE).get(0);
-                        return ((Node) connection.getSource()).getMainBranch(visitedNodes);
+                        List<? extends IConnection> connections = NodeUtil
+                                .getIncomingConnections(node, IConnectionCategory.MERGE);
+                        if (connections.size() > 0) {
+                            IConnection connection = NodeUtil.getIncomingConnections(node, IConnectionCategory.MERGE).get(0);
+                            return ((Node) connection.getSource()).getMainBranch(visitedNodes);
+                        } else {
+                            return this;
+                        }
                     }
                 }
                 // if go here, then this component is on the main branch.
@@ -4030,6 +4036,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return the subtreeStart
      */
+    @Override
     public boolean isSubtreeStart() {
         return this.subtreeStart;
     }
