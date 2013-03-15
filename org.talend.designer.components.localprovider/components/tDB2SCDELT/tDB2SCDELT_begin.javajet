@@ -35,6 +35,7 @@ if(columnList != null && columnList.size() > 0) {
         type2Attributes = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
     }
     String endDateFieldType="DATE";
+    boolean isFieldValueIncNull = ("true").equals(ElementParameterParser.getValue(node, "__FIELD_VALUE_INC_NULL__"));
     String useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
     if (("true").equals(useExistingConnection)) {
         String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
@@ -181,9 +182,11 @@ if(columnList != null && columnList.size() > 0) {
         	strFieldName = StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME"));
             columnNames.add(strFieldName);
             setColumns.add(strFieldName);
-            whereClause.add("( d." + strFieldName + " is null AND t." + strFieldName + " is not null )");
-        	whereClause.add("( d." + strFieldName + " is not null AND t." + strFieldName + " is null )");
-            whereClause.add("( d." + strFieldName + " <> t." + strFieldName+")");            
+            if(isFieldValueIncNull){
+	            whereClause.add("( d." + strFieldName + " is null AND t." + strFieldName + " is not null )");
+	        	whereClause.add("( d." + strFieldName + " is not null AND t." + strFieldName + " is null )");
+	       	}
+            whereClause.add("( d." + strFieldName + " <> t." + strFieldName+")");           
         }
         selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");    
@@ -211,8 +214,10 @@ if(columnList != null && columnList.size() > 0) {
         List<String> whereClause = new ArrayList<String>();
         for (Map<String, String> type2Attribute : type2Attributes) {
         	strFieldName = StringUtils.getPostgresqlProtectedColumnName(type2Attribute.get("NAME"));
-        	whereClause.add("( d." + strFieldName + " is null AND t." + strFieldName + " is not null )");
-        	whereClause.add("( d." + strFieldName + " is not null AND t." + strFieldName + " is null )");
+        	if(isFieldValueIncNull){
+	        	whereClause.add("( d." + strFieldName + " is null AND t." + strFieldName + " is not null )");
+	        	whereClause.add("( d." + strFieldName + " is not null AND t." + strFieldName + " is null )");
+	     	}
             whereClause.add("( d." + strFieldName + " <> t." + strFieldName+")");
         }
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
