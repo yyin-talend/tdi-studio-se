@@ -642,36 +642,36 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
                 // http://jira.talendforge.org/browse/TESB-3850
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-                if (!"RAW".equals(format)) { //$NON-NLS-1$
-                    if (EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node)) { //$NON-NLS-1$
-                        hasSAM = true;
-                        break;
-                    }
-                    if(hasCXFSamlConsumer && hasCXFSamlProvider){
-                    	continue;
-                    }
-                    if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
-                    	continue;
-                    }
-                    String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
-                    if(!"SAML".equals(securityType)){
-                    	continue;
-                    }
-                    
-                    String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                    EList connections = processItem.getProcess().getConnection();
-                    boolean found = false;
-                    for(Object c:connections){
-                    	String target = ((ConnectionType)c).getTarget();
-                    	if(uniquename.equals(target)){
-                    		hasCXFSamlConsumer = true;
-                    		found = true;
-                    		break;
-                    	}
-                    }
-                    if(!found){
-                    	hasCXFSamlProvider = true;
-                    }
+                if (!"RAW".equals(format) && !hasSAM) { //$NON-NLS-1$
+                    hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node);
+                }
+                if("CXF_MESSAGE".equals(format) || "RAW".equals(format)){
+                	continue;
+                }
+                if(hasCXFSamlConsumer && hasCXFSamlProvider){
+                	continue;
+                }
+                if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
+                	continue;
+                }
+                String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
+                if(!"SAML".equals(securityType)){
+                	continue;
+                }
+                
+                String uniquename = ElementParameterParser.getUNIQUENAME(node);
+                EList connections = processItem.getProcess().getConnection();
+                boolean found = false;
+                for(Object c:connections){
+                	String target = ((ConnectionType)c).getTarget();
+                	if(uniquename.equals(target)){
+                		hasCXFSamlConsumer = true;
+                		found = true;
+                		break;
+                	}
+                }
+                if(!found){
+                	hasCXFSamlProvider = true;
                 }
             }
             
