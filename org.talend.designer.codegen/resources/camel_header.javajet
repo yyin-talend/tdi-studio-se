@@ -62,6 +62,10 @@
 				hasCXFComponent = true;
 				for(INode n: cxfNodes){
 					String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
+					String formatType = ElementParameterParser.getValue(n, "__DATAFORMAT__");
+					if("RAW".equals(formatType) || "CXF_MESSAGE".equals(formatType)){
+						useSecurity = "false";
+					}
 					String securityType = ElementParameterParser.getValue(n, "__SECURITY_TYPE__");
 					int incomingConnections = n.getIncomingConnections().size();
 					if(!hasCXFComponentConsumer && incomingConnections>0){
@@ -435,7 +439,11 @@ if (isProvider) {
 			}
 			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
+			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
 			String useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
+			if("RAW".equals(formatType) || "CXF_MESSAGE".equals(formatType)){
+					useSecurity = "false";
+			}
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
@@ -500,7 +508,6 @@ if (isProvider) {
 <%
 			}
 			//http://jira.talendforge.org/browse/TESB-3850
-			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
 			if ("true".equals(useSAM) && !"RAW".equals(formatType)) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
