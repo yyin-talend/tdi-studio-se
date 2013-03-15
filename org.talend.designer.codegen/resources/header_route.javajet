@@ -520,7 +520,7 @@ for (INode node : graphicalNodes) {
 			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
 		}
 		
-		if(conns.isEmpty()){
+		if(!conns.isEmpty()){
 			sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
 		}
 		uri = sb.toString();
