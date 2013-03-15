@@ -2126,7 +2126,7 @@ public class Node extends Element implements IGraphicalNode {
                         List<? extends IConnection> connections = NodeUtil
                                 .getIncomingConnections(node, IConnectionCategory.MERGE);
                         if (connections.size() > 0) {
-                            IConnection connection = NodeUtil.getIncomingConnections(node, IConnectionCategory.MERGE).get(0);
+                            IConnection connection = connections.get(0);
                             return ((Node) connection.getSource()).getMainBranch(visitedNodes);
                         } else {
                             return this;
