@@ -962,6 +962,18 @@ public class EmfComponent extends AbstractComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
+        param.setName(EParameterName.SUBTREE_START.getName());
+        param.setValue(new Boolean(canStart()));
+        param.setDisplayName(EParameterName.SUBTREE_START.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setNumRow(5);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
         param.setName(EParameterName.ACTIVATE.getName());
         param.setValue(new Boolean(true));
         param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
@@ -999,7 +1011,8 @@ public class EmfComponent extends AbstractComponent {
             }
             /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
             if (!isStatCatcherComponent) {
-                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME, ComponentCategory.CATEGORY_4_DI.getName()) != null;
+                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME,
+                        ComponentCategory.CATEGORY_4_DI.getName()) != null;
                 param = new ElementParameter(node);
                 param.setName(EParameterName.TSTATCATCHER_STATS.getName());
                 param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
@@ -2120,9 +2133,9 @@ public class EmfComponent extends AbstractComponent {
             } else {
                 listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
             }
-            if(type ==EParameterFieldType.ROUTE_COMPONENT_TYPE) {
+            if (type == EParameterFieldType.ROUTE_COMPONENT_TYPE) {
                 listItemsValue[k] = new StringPair(item.getNAME(), item.getFILTER());
-            }else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
+            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());

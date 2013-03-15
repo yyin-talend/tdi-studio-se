@@ -247,6 +247,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private static final String TPOSTJOB_STR = "tPostjob"; //$NON-NLS-1$
 
+    private boolean subtreeStart;
+
     /**
      * Getter for index.
      * 
@@ -557,6 +559,9 @@ public class Node extends Element implements IGraphicalNode {
         } else {
             size.height = DEFAULT_SIZE;
             size.width = DEFAULT_SIZE;
+        }
+        if (!getProcess().isDuplicate()) { // only for graphical process
+            calculateSubtreeStart();
         }
     }
 
@@ -1260,6 +1265,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             }
+            calculateSubtreeStart();
         }
     }
 
@@ -1386,6 +1392,7 @@ public class Node extends Element implements IGraphicalNode {
                 vlist.add(map);
             }
         }
+        calculateSubtreeStart();
         fireStructureChange(OUTPUTS, conn);
     }
 
@@ -1494,6 +1501,7 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         removeTargetMetaData(connection);
+        calculateSubtreeStart();
         fireStructureChange(INPUTS, connection);
     }
 
@@ -1551,6 +1559,7 @@ public class Node extends Element implements IGraphicalNode {
         ((Connection) connection).updateAllId();
         removeSourceMatadata(connection);
         removeTargetMetaData(connection);
+        calculateSubtreeStart();
         fireStructureChange(OUTPUTS, connection);
     }
 
@@ -4010,6 +4019,33 @@ public class Node extends Element implements IGraphicalNode {
 
     public void fireImageChage() {
         firePropertyChange(ICON_CHANGE, null, null);
+    }
+
+    public void calculateSubtreeStart() {
+        setSubtreeStart(isDesignSubjobStartNode() && !isThereLinkWithHash());
+    }
+
+    /**
+     * Getter for subtreeStart.
+     * 
+     * @return the subtreeStart
+     */
+    public boolean isSubtreeStart() {
+        return this.subtreeStart;
+    }
+
+    /**
+     * Sets the subtreeStart.
+     * 
+     * @param subtreeStart the subtreeStart to set
+     */
+    public void setSubtreeStart(boolean subtreeStart) {
+        this.subtreeStart = subtreeStart;
+        IElementParameter param = getElementParameter(EParameterName.SUBTREE_START.getName());
+        if (param == null) {
+            return;
+        }
+        param.setValue(new Boolean(subtreeStart));
     }
 
 }
