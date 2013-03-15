@@ -71,6 +71,25 @@
 			camelContext.setRegistry(contextRegister);
 
 <%
+			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
+			if( null != cxfNodes && cxfNodes.size() >0 ){
+				boolean hasCXFConsumer = false;
+				for(INode n: cxfNodes){
+					int incomingConnections = n.getIncomingConnections().size();
+					if(incomingConnections > 0){
+						hasCXFConsumer = true;
+						break;
+					}
+				}
+				if(hasCXFConsumer){
+%>
+					contextRegister.register("CXF_PAYLOAD_HEADER_FILTER", new CxfConsumerSoapHeaderFilter());
+<%
+				}
+			}
+%>
+
+<%
 			//then process cBeanRegister components
 			List<? extends INode> beanRegisterNodes = process.getNodesOfType("cBeanRegister");
 			if(beanRegisterNodes != null && beanRegisterNodes.size()>0){

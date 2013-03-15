@@ -56,6 +56,7 @@
 			boolean hasCXFSamlTokenConsumer = false;
 			boolean hasCXFUsernameTokenProvider = false;
 			boolean hasCXFUsernameTokenConsumer = false;
+			boolean hasCXFComponentConsumer = false;
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
 				hasCXFComponent = true;
@@ -63,6 +64,9 @@
 					String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
 					String securityType = ElementParameterParser.getValue(n, "__SECURITY_TYPE__");
 					int incomingConnections = n.getIncomingConnections().size();
+					if(!hasCXFComponentConsumer && incomingConnections>0){
+						hasCXFComponentConsumer = true;
+					}
 					if("true".equals(useSecurity)){
 						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer)){
 							if(incomingConnections == 0){
@@ -217,6 +221,29 @@ class WSPasswordCallbackHandler implements javax.security.auth.callback.Callback
     }
 
 } 
+
+<%
+}
+
+if(hasCXFComponentConsumer){
+%>
+class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy{
+	public boolean applyFilterToCamelHeaders(String headerName,
+			Object headerValue, org.apache.camel.Exchange exchange) {
+		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
+			return true;
+		}
+		return super.applyFilterToCamelHeaders(headerName, headerValue, exchange);
+	}
+
+	public boolean applyFilterToExternalHeaders(String headerName,
+			Object headerValue, org.apache.camel.Exchange exchange) {
+		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
+			return true;
+		}
+		return super.applyFilterToExternalHeaders(headerName, headerValue, exchange);
+	}
+}
 <%
 }
 

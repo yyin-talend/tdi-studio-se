@@ -468,8 +468,8 @@ for (INode node : graphicalNodes) {
 	} else if ("cCXF".equals(componentName)) {
 		String url = ElementParameterParser.getValue(node, "__ADDRESS__").trim();
 
+		List<? extends IConnection> conns = node.getIncomingConnections();
 		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
-			List<? extends IConnection> conns = node.getIncomingConnections();
 			if (!conns.isEmpty()) {
 				INode source = conns.get(0).getSource();
 				if (!("cErrorHandler".equals(source.getComponent().getName())
@@ -518,6 +518,10 @@ for (INode node : graphicalNodes) {
 			String argName = map.get("NAME").trim();
 			String argValue = map.get("VALUE").trim();
 			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+		}
+		
+		if(conns.isEmpty()){
+			sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
 		}
 		uri = sb.toString();
 
