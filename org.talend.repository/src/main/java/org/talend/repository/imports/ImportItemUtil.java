@@ -1297,9 +1297,9 @@ public class ImportItemUtil {
             hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
                     IHadoopClusterService.class);
         }
-        if (hadoopClusterService != null) {
+        if (hadoopClusterService != null && hadoopClusterService.isHadoopSubItem(item)) {
             new ImportItemUtil().resolveItem(manager, itemRecord);
-            return hadoopClusterService.isHadoopSubItem(item);
+            return hadoopClusterService.isValidHadoopSubItem(item);
         }
 
         return false;
@@ -1321,13 +1321,13 @@ public class ImportItemUtil {
         if (item == null) {
             return subnodes;
         }
-        new ImportItemUtil().resolveItem(manager, itemRecord);
         IHadoopClusterService hadoopClusterService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
             hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
                     IHadoopClusterService.class);
         }
         if (hadoopClusterService != null && hadoopClusterService.isHadoopClusterItem(item)) {
+            new ImportItemUtil().resolveItem(manager, itemRecord);
             List<String> subitemIds = hadoopClusterService.getSubitemIdsOfHadoopCluster(item);
             if (subitemIds.size() == 0) {
                 return subnodes;
