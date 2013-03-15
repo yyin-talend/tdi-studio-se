@@ -48,8 +48,6 @@ if(exportedFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	lineSeparator = "\\n";
 }
 
-String dbmsId = "teradata_id";
-
 List<IMetadataColumn> columnList = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
