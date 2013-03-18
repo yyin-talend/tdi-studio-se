@@ -47,6 +47,9 @@ public class ChangetMongoDBInputSortTextToTable extends AbstractJobMigrationTask
 
 						public void transform(NodeType node) {
 							ElementParameterType sort = ComponentUtilities.getNodeProperty(node, "SORT"); 
+							if (sort == null) {
+                                return;
+                            }
                             String fieldType = sort.getField();
                             if ("TEXT".equalsIgnoreCase(fieldType)) {
                             	String sortValue = sort.getValue();
