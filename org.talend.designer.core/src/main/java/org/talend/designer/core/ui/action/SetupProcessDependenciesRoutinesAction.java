@@ -60,6 +60,7 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.ROUTINE_ICON));
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -71,15 +72,11 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
-                if (node.getObjectType() != ERepositoryObjectType.PROCESS && node.getObjectType() != ERepositoryObjectType.JOBLET) {
+                if (ERepositoryObjectType.PROCESS_MR != null && node.getObjectType().equals(ERepositoryObjectType.PROCESS_MR)) {
+                    canWork = true;
+                } else if (node.getObjectType() != ERepositoryObjectType.PROCESS
+                        && node.getObjectType() != ERepositoryObjectType.JOBLET) {
                     canWork = false;
-                } else {
-                    // canWork = false;
-                    // IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-                    // IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                    // if (repFactory.isPotentiallyEditable(node.getObject())) {
-                    // canWork = true;
-                    // }
                 }
                 break;
             default:
@@ -168,8 +165,7 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             return;
         }
         for (RoutineItemRecord r : routineRecords) {
-            List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) process.getParameters()
-                    .getRoutinesParameter();
+            List<RoutinesParameterType> routinesDependencies = process.getParameters().getRoutinesParameter();
             boolean found = false;
             for (RoutinesParameterType type : routinesDependencies) {
                 // if (r.isSystem() == type.isSystem()) {
