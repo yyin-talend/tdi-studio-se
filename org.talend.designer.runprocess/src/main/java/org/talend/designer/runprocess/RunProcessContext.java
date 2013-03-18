@@ -265,7 +265,7 @@ public class RunProcessContext {
         if (this.monitorTrace != monitorTrace) {
             this.monitorTrace = monitorTrace;
             if (process instanceof IProcess2) {
-                ((IProcess2) process).setNeedRegenerateCode(true);
+                process.setNeedRegenerateCode(true);
             }
 
             firePropertyChange(TRACE_MONITOR, Boolean.valueOf(!monitorTrace), Boolean.valueOf(monitorTrace));
@@ -453,6 +453,7 @@ public class RunProcessContext {
             try {
                 progressService.run(false, true, new IRunnableWithProgress() {
 
+                    @Override
                     public void run(final IProgressMonitor monitor) {
 
                         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
@@ -486,9 +487,11 @@ public class RunProcessContext {
                             final Display display = shell.getDisplay();
                             new Thread(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     display.syncExec(new Runnable() {
 
+                                        @Override
                                         public void run() {
                                             try {
                                                 startingMessageWritten = false;
@@ -595,12 +598,16 @@ public class RunProcessContext {
         return ProcessorUtilities.getProcessor(process, property);
     }
 
+    public synchronized int kill() {
+        return kill(null);
+    }
+
     /**
      * Kill the process.
      * 
      * @return Exit code of the process.
      */
-    public synchronized int kill() {
+    public synchronized int kill(Integer returnExitValue) {
         int exitCode;
 
         if (!killing && isRunning()) {
@@ -608,7 +615,7 @@ public class RunProcessContext {
             try {
                 exitCode = killProcess();
                 if (startingMessageWritten) {
-                    displayJobEndMessage(exitCode);
+                    displayJobEndMessage(returnExitValue == null ? exitCode : returnExitValue);
                 }
             } finally {
                 killing = false;
@@ -744,15 +751,16 @@ public class RunProcessContext {
         /**
          * @see java.lang.Runnable#run()
          */
+        @Override
         public void run() {
+            int exitValue = 0;
             while (!stopThread) {
                 boolean dataPiped = extractMessages(false);
-
                 boolean ended;
                 try {
 
                     if (!hasCompilationError) {
-                        process.exitValue();
+                        exitValue = process.exitValue();
                     }
 
                     // flush remaining messages
@@ -792,10 +800,11 @@ public class RunProcessContext {
                     }
                 }
             }
-
-            kill();
+            ps = null;
+            kill(exitValue);
         }
 
+        @Override
         public void stopThread() {
             stopThread = true;
             synchronized (this) {
@@ -904,6 +913,7 @@ public class RunProcessContext {
         /**
          * @see java.lang.Runnable#run()
          */
+        @Override
         public void run() {
             // final int acceptTimeout = 30000;
 
@@ -987,6 +997,7 @@ public class RunProcessContext {
 
                                 Display.getDefault().asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         if (data != null) {
                                             if (perfData.isClearCommand()) {
@@ -1039,9 +1050,9 @@ public class RunProcessContext {
         private IConnection findConnection(final String connectionId) {
             IConnection conn = null;
             IConnection[] conns = process.getAllConnections(null);
-            for (int i = 0; i < conns.length; i++) {
-                if (connectionId.equals(conns[i].getUniqueName())) {
-                    conn = conns[i];
+            for (IConnection conn2 : conns) {
+                if (connectionId.equals(conn2.getUniqueName())) {
+                    conn = conn2;
                 }
             }
             return conn;
@@ -1074,6 +1085,7 @@ public class RunProcessContext {
         /**
          * @see java.lang.Runnable#run()
          */
+        @Override
         public void run() {
             // final int acceptTimeout = 30000;
 
@@ -1180,6 +1192,7 @@ public class RunProcessContext {
                                                     if (connection != null) {
                                                         Display.getDefault().syncExec(new Runnable() {
 
+                                                            @Override
                                                             public void run() {
                                                                 connection.setTraceData(nextRowTrace);
                                                             }
@@ -1223,6 +1236,7 @@ public class RunProcessContext {
                                             if (connection != null) {
                                                 Display.getDefault().syncExec(new Runnable() {
 
+                                                    @Override
                                                     public void run() {
                                                         connection.setTraceData(previousRowTrace);
                                                     }
@@ -1296,6 +1310,7 @@ public class RunProcessContext {
                                 }
                                 Display.getDefault().syncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         if (data != null) {
                                             connection.setTraceData(connAndTraces.get(connection));
