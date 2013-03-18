@@ -56,6 +56,8 @@
 			boolean hasCXFSamlTokenConsumer = false;
 			boolean hasCXFUsernameTokenProvider = false;
 			boolean hasCXFUsernameTokenConsumer = false;
+			boolean hasCXFHTTPAuthConsumer = false;
+			boolean hasCXFHTTPAuthProvider = false;
 			boolean hasCXFComponentConsumer = false;
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
@@ -84,6 +86,12 @@
 							}else{
 								hasCXFUsernameTokenConsumer = true;
 							}
+						}else if(("BASIC".equals(securityType)||"DIGEST".equals(securityType)) && (!hasCXFHTTPAuthProvider || !hasCXFHTTPAuthConsumer)){
+							if(incomingConnections == 0){
+								hasCXFHTTPAuthProvider = true;
+							}else{
+								hasCXFHTTPAuthConsumer = true;
+							}
 						}
 					}
 				}
@@ -107,6 +115,15 @@
 				        } 
 <%
 					}
+					if(hasCXFHTTPAuthProvider){
+%>
+						if(isProvider&&token!=null &&
+							(org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_BASIC.equals(token[0])
+								||org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST.equals(token[0]))){
+							addHttpAuth(cxfEndpoint, isProvider, token);
+						}
+<%
+					}
 					if(hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer){
 
 %>
@@ -121,11 +138,52 @@
 				if(!isProvider&&token!=null&&token.length>=3&&"UsernameToken".equals(token[0])){
 		        	addUsernameToken(cxfEndpoint, null, false, token[1], token[2]);
 		        }
-<%}%>
+<%
+				}
+				if(hasCXFHTTPAuthConsumer){
+%>
+					if(!isProvider&&token!=null &&
+							(org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_BASIC.equals(token[0])
+									||org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST.equals(token[0]))){
+						addHttpAuth(cxfEndpoint, isProvider, token);
+					}
+<%
+				}
+%>
 				
 				return cxfEndpoint;
 			}
 <%
+			if(hasCXFHTTPAuthConsumer || hasCXFHTTPAuthProvider){
+%>
+			private void addHttpAuth(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, boolean isProvider, final String... userInfo){
+<%
+				if(hasCXFHTTPAuthConsumer){
+%>
+					if(!isProvider){
+						Map <String, Object> myProperties = new HashMap<String, Object> ();
+						org.apache.cxf.configuration.security.AuthorizationPolicy authorizationPolicy = new org.apache.cxf.configuration.security.AuthorizationPolicy();
+						authorizationPolicy.setUserName(userInfo[1]);
+						authorizationPolicy.setPassword(userInfo[2]);
+						authorizationPolicy.setAuthorizationType(userInfo[0]);
+						myProperties.put(org.apache.cxf.configuration.security.AuthorizationPolicy.class.getName(), authorizationPolicy); 
+						cxfEndpoint.setProperties(myProperties);
+					}
+<%
+				}
+				if(hasCXFHTTPAuthProvider){
+%>
+					if(isProvider){
+						org.apache.cxf.interceptor.security.JAASLoginInterceptor jaasLoginInterceptor = new org.apache.cxf.interceptor.security.JAASLoginInterceptor();
+						jaasLoginInterceptor.setContextName("karaf");
+						cxfEndpoint.getInInterceptors().add(jaasLoginInterceptor);
+					}
+<%
+				}
+%>
+			}
+<%
+			}
 			if(hasCXFUsernameTokenConsumer || hasCXFUsernameTokenProvider){
 %>			
 			private void addUsernameToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, 
@@ -454,6 +512,10 @@ if (isProvider) {
 					securityToken = "\"UsernameToken\"";
 				}else if("SAML".equals(securityType)){
 					securityToken = "\"SAMLToken\"";
+				}else if("BASIC".equals(securityType)){
+					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_BASIC";
+				}else if("DIGEST".equals(securityType)){
+					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST";
 				}
 			}else{
 				isProvider = false;
