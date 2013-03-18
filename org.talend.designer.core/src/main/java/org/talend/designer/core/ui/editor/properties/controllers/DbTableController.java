@@ -45,8 +45,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
@@ -85,8 +85,8 @@ import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.ui.utils.ManagerConnection;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -504,7 +504,22 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     // Added by Marvin Wang for bug TDI-24288.
                     if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(con.getDatabaseType())) {
                         if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equalsIgnoreCase(con.getDbVersionString())) {
-                            isStatus = new ManagerConnection().checkForHive(iMetadataConnection);
+                            try {
+                                HiveConnectionManager.getInstance().checkConnection(iMetadataConnection);
+                                isStatus = true;
+                            } catch (ClassNotFoundException e) {
+                                isStatus = false;
+                                ExceptionHandler.process(e);
+                            } catch (InstantiationException e) {
+                                isStatus = false;
+                                ExceptionHandler.process(e);
+                            } catch (IllegalAccessException e) {
+                                isStatus = false;
+                                ExceptionHandler.process(e);
+                            } catch (SQLException e) {
+                                isStatus = false;
+                                ExceptionHandler.process(e);
+                            }
                         }
                     } else {
                         isStatus = checkConnection(iMetadataConnection);
@@ -613,6 +628,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
                             }
                         });
 
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
                     }
                 }
                 monitor.done();
