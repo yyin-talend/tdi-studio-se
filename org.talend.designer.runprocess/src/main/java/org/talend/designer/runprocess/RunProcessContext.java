@@ -612,6 +612,9 @@ public class RunProcessContext {
 
         if (!killing && isRunning()) {
             killing = true;
+            if (returnExitValue != null) {
+                ps = null;
+            }
             try {
                 exitCode = killProcess();
                 if (startingMessageWritten) {
@@ -800,7 +803,6 @@ public class RunProcessContext {
                     }
                 }
             }
-            ps = null;
             kill(exitValue);
         }
 
