@@ -3658,4 +3658,14 @@ public class EmfComponent extends AbstractComponent {
             info.setType(paletteType);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getPartitioning()
+     */
+    @Override
+    public String getPartitioning() {
+        return compType.getHEADER().getPARTITIONING();
+    }
 }

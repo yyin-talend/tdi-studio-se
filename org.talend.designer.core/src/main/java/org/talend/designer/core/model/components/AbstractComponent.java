@@ -91,4 +91,14 @@ public abstract class AbstractComponent implements IComponent {
     public boolean isReduce() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getPartitioning()
+     */
+    @Override
+    public String getPartitioning() {
+        return "AUTO"; //$NON-NLS-1$
+    }
 }
