@@ -4,16 +4,13 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.impl.ProcessItemImpl;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.designer.core.convert.IProcessConvertService;
+import org.talend.designer.core.convert.ProcessConverterType;
 import org.talend.designer.core.ui.editor.process.Process;
 
 public class ProcessConvertServiceImpl implements IProcessConvertService {
 
-    private boolean isOriginalItemDeleted = false;
-
-    private boolean isNewItemCreated = false;
-
     public ProcessConvertServiceImpl() {
-        // TODO Auto-generated constructor stub
     }
 
     @Override

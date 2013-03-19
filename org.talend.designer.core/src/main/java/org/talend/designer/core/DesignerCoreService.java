@@ -59,6 +59,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.convert.IProcessConvertService;
+import org.talend.designer.core.convert.ProcessConvertManager;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -141,7 +143,7 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     public IProcess getProcessFromItemByExtendion(Item item, boolean loadScreenshots) {
         IProcess process = null;
-        List<IProcessConvertService> processConvertServices = ProcessConvertManager.getProcessConvertService();
+        List<IProcessConvertService> processConvertServices = ProcessConvertManager.getInstance().extractAllConvertServices();
         for (IProcessConvertService service : processConvertServices) {
             process = service.getProcessFromItem(item, loadScreenshots);
             if (process != null) {
