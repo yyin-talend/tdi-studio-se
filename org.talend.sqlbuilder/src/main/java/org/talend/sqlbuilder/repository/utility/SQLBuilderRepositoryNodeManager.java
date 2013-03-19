@@ -62,6 +62,7 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.relational.TdColumn;
+import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectNodeHelper;
@@ -123,7 +124,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param node
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public boolean[] isDiff(RepositoryNode node) {
         boolean isDiffDivergency = false;
         boolean isDiffSyschronize = false;
@@ -236,7 +237,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param set
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private static List<MetadataTable> sortTableColumn(Collection<MetadataTable> set) {
         List<MetadataTable> sysTables = new ArrayList<MetadataTable>();
         List<MetadataTable> divTables = new ArrayList<MetadataTable>();
@@ -336,7 +337,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param node current RepositoryNode
      * @return List :all Table Names.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public static Map<String, List<String>> getAllNamesByRepositoryNode(RepositoryNode node) {
         Map<String, List<String>> allNames = new HashMap<String, List<String>>();
         DatabaseConnectionItem item = getItem(getRoot(node));
@@ -392,7 +393,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param oldNode
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode, String selectedContext) {
         DatabaseConnectionItem item = getItem(getRoot(oldNode));
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
@@ -412,7 +413,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param connection
      * @param iMetadataConnection
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void modifyOldRepositoryNode(DatabaseConnection connection, IMetadataConnection iMetadataConnection,
             RepositoryNode oldNode) throws Exception {
 
@@ -501,7 +502,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection
      * @param tablesFromDB
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void modifyOldConnection(List<MetadataTable> tablesFromEMF, IMetadataConnection iMetadataConnection,
             List<MetadataTable> tablesFromDB, RepositoryNode oldNode) {
         for (MetadataTable tableFromDB : tablesFromDB) {
@@ -531,7 +532,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param connection
      * @param tablesFromEMF
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void restoreConnection(DatabaseConnection connection, List<MetadataTable> tablesFromEMF) {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
         // ConnectionHelper.getTables(connection).clear();
@@ -577,7 +578,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param parameters
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
 
         DatabaseConnection connection = createConnection(parameters);
@@ -600,7 +601,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private RepositoryNode createNewRepositoryNode(RepositoryNode node, ConnectionParameters parameters,
             DatabaseConnection connection, IMetadataConnection iMetadataConnection) {
         ManagerConnection managerConnection = new ManagerConnection();
@@ -686,8 +687,13 @@ public class SQLBuilderRepositoryNodeManager {
         }
         try {
             if (sqlConn != null) {
-                DatabaseMetaData dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType, false,
-                        metadataConnectionTemp.getDatabase());
+                DatabaseMetaData dm = null;
+                // Added by Marvin Wang on Mar. 13, 2013 for loading hive jars dynamically, refer to TDI-25072.
+                if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
+                    dm = HiveConnectionManager.getInstance().extractDatabaseMetaData(metadataConnectionTemp);
+                } else {
+                    dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType, false, metadataConnectionTemp.getDatabase());
+                }
                 MetadataFillFactory.getDBInstance().fillCatalogs(dbConn, dm,
                         MetadataConnectionUtils.getPackageFilter(dbConn, dm, true));
                 MetadataFillFactory.getDBInstance().fillSchemas(dbConn, dm,
@@ -741,7 +747,7 @@ public class SQLBuilderRepositoryNodeManager {
         dbs.init();
         List<String> names = dbs.getNeedSchemaDBNames();
         boolean ifNeedSchemaDB = names.contains(productName);
-        if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) { //$NON-NLS-1$
+        if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) {
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }
@@ -780,7 +786,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (!isSchemaInValid && isNeedSchema) {
             schema = schema.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
             schema = schema.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            connection.setUiSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
+            connection.setUiSchema(schema);
         }
         connection.setServerName(parameters.getHost());
         connection.setAdditionalParams(parameters.getJdbcProperties());
@@ -848,15 +854,26 @@ public class SQLBuilderRepositoryNodeManager {
      * 
      * @param iMetadataConnection contains connection
      * @return dbMetaData DatabaseMetaData .
+     * @throws SQLException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
      */
-    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
+    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, SQLException {
         ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                 iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
         String dbType = iMetadataConnection.getDbType();
-        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType,
-                iMetadataConnection.isSqlMode(), iMetadataConnection.getDatabase());
+        DatabaseMetaData dbMetaData = null;
+        // Added by Marvin Wang on Mar. 13, 2013 for loading hive jars dynamically, refer to TDI-25072.
+        if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
+            dbMetaData = HiveConnectionManager.getInstance().extractDatabaseMetaData(iMetadataConnection);
+        } else {
+            dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType,
+                    iMetadataConnection.isSqlMode(), iMetadataConnection.getDatabase());
+        }
         return dbMetaData;
     }
 
@@ -866,7 +883,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param repositoryNode current RepositoryNode.
      * @return all QueryLabels in Emf.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<String> getALLQueryLabels(RepositoryNode repositoryNode) {
         List<String> allQueries = new ArrayList<String>();
         DatabaseConnectionItem item = getEMFItem(repositoryNode.getObject().getId());
@@ -887,7 +904,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param repositoryNode current RepositoryNode
      * @param query need to save Query
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void saveEMFQuery(String id, Query query, String oldQuery) {
         DatabaseConnectionItem item = getEMFItem(id);
         if (query != null) {
@@ -953,7 +970,7 @@ public class SQLBuilderRepositoryNodeManager {
         tList = null;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void saveQuery(RepositoryNode repositoryNode, Query query, String oldQuery) {
         saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
         DatabaseConnectionItem item = getItem(repositoryNode);
@@ -999,7 +1016,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param repositoryNode databaseConnection's RepositoryNode
      * @param queries need to deleted Queries
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
         DatabaseConnectionItem item = getItem(repositoryNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
@@ -1073,7 +1090,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param metaFromEMF MetadataTable from Emf
      * @param iMetadataConnection contain Connection.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF,
             IMetadataConnection iMetadataConnection, RepositoryNode oldNode) {
         List<MetadataTable> removeEmfDB = new ArrayList<MetadataTable>();
@@ -1106,7 +1123,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection
      * @param db
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void modifyOldOneTableFromEMF(List<MetadataTable> metaFromEMF, IMetadataConnection iMetadataConnection,
             MetadataTable db) {
         boolean flag = true;
@@ -1139,7 +1156,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param connectionLabel
      * @param emf
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private boolean modifyOldOneTableFromDB(List<MetadataTable> metaFromDB, MetadataTable emf) {
         boolean flag = true;
         for (MetadataTable db : metaFromDB) {
@@ -1249,7 +1266,7 @@ public class SQLBuilderRepositoryNodeManager {
                 if (table.getLabel().equals(col.getTable().getLabel())) {
                     List<TdColumn> returnCols = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
                             table.getSourceName());
-                    for (MetadataColumn emfcolumn : (List<MetadataColumn>) table.getColumns()) {
+                    for (MetadataColumn emfcolumn : table.getColumns()) {
                         for (MetadataColumn column : returnCols) {
                             if (emfcolumn.getLabel().equals(col.getLabel()) && column.getLabel().equals(col.getOriginalField())) {
                                 emfCols.add(emfcolumn);
@@ -1264,7 +1281,7 @@ public class SQLBuilderRepositoryNodeManager {
         saveMetaData(item);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private static void saveOneMetadataColumn(List<MetadataColumn> emfCols, List<MetadataColumn> columnNodes,
             List<MetadataColumn> dbCols) {
         for (int i = 0; i < columnNodes.size(); i++) {
@@ -1428,6 +1445,7 @@ public class SQLBuilderRepositoryNodeManager {
  */
 class MetadataTableComparator implements Comparator<MetadataTable> {
 
+    @Override
     public int compare(MetadataTable o1, MetadataTable o2) {
         if (o1.getSourceName() == null || "".equals(o1.getSourceName()) || " ".equals(o1.getSourceName()) //$NON-NLS-1$ //$NON-NLS-2$
                 || o2.getSourceName() == null) {
@@ -1446,6 +1464,7 @@ class MetadataTableComparator implements Comparator<MetadataTable> {
  */
 class MetadataColumnComparator implements Comparator<MetadataColumn> {
 
+    @Override
     public int compare(MetadataColumn o1, MetadataColumn o2) {
         if (o1.getOriginalField() == null || "".equals(o1.getOriginalField()) || " ".equals(o1.getOriginalField()) //$NON-NLS-1$ //$NON-NLS-2$
                 || o2.getOriginalField() == null) {
