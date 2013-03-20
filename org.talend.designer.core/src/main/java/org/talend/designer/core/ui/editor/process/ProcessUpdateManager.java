@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -1221,12 +1223,30 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,
                                     // (List<IElementParameter>) node.getElementParameters());
 
-                                    IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                    final IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam
+                                            .getContext());
                                     /*
                                      * should ignore the db type column. because database component can use other
                                      * database schema.
                                      */
-                                    copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable);
+                                    boolean isAddColumn = isAddColumn(copyOfrepositoryMetadata, metadataTable);
+
+                                    if (isAddColumn) {
+                                        Display.getDefault().syncExec(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                boolean isUsed = false;
+                                                isUsed = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+                                                        Messages.getString("ProcessUpdateManager.Question"),
+                                                        Messages.getString("ProcessUpdateManager.QuestionString"));
+                                                copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isUsed);
+                                            }
+
+                                        });
+                                    } else {
+                                        copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, false);
+                                    }
                                     if (onlySimpleShow
                                             || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
                                                     IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
@@ -1265,7 +1285,24 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return schemaResults;
     }
 
-    private void copyUsefulAttribute(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess) {
+    private boolean isAddColumn(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess) {
+        boolean isHaveAddColumn = false;
+        for (IMetadataColumn columnFromMetadata : tableFromMetadata.getListColumns()) {
+            boolean flag = false;
+            for (IMetadataColumn columnFromProcess : tableFromProcess.getListColumns(true)) {
+                if (columnFromMetadata.getLabel().equals(columnFromProcess.getLabel())) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                isHaveAddColumn = true;
+                break;
+            }
+        }
+        return isHaveAddColumn;
+    }
+
+    private void copyUsefulAttribute(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess, boolean isMustUsed) {
         for (IMetadataColumn columnFromMetadata : tableFromMetadata.getListColumns()) {
             boolean flag = false;
             for (IMetadataColumn columnFromProcess : tableFromProcess.getListColumns(true)) {
@@ -1275,7 +1312,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
             }
             if (!flag) {
-                columnFromMetadata.setUsefulColumn(false);
+                if (isMustUsed) {
+                    columnFromMetadata.setUsefulColumn(true);
+                } else {
+                    columnFromMetadata.setUsefulColumn(false);
+                }
             }
         }
         tableFromMetadata.getListColumns();
@@ -2284,7 +2325,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (newJobletName == null) {
             newJobletName = oldjobletName;
         }
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName,ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return Collections.EMPTY_LIST;
         }
