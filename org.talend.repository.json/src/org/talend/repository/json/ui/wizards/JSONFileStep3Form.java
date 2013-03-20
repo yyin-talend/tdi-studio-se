@@ -62,6 +62,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.util.JSONConnectionContextUtils;
+import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
@@ -317,8 +318,13 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
     private ProcessDescription getProcessDescription(boolean defaultContext) {
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(getConnection(),
                 this.connectionItem, isContextMode(), defaultContext);
-        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
-                wizard.getTempJsonPath());
+        ProcessDescription processDescription = null;
+        if (wizard != null) {
+            processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, wizard.getTempJsonPath());
+        } else {
+            processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
+                    JSONUtil.changeJsonToXml(connection2.getJSONFilePath()));
+        }
         return processDescription;
     }
 
