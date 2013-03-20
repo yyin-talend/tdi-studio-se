@@ -1160,6 +1160,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             final String uniqueName = node.getUniqueName();
                             String newSourceId = getSchemaRenamedMap().get(propertyValue);
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
+                            String connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                    .getName());
                             List<Object> parameter = null;
                             // renamed
                             if (newSourceId != null && !newSourceId.equals(propertyValue)) {
@@ -1184,7 +1186,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         builtIn = false;
                                     }
                                 }
-                            } else if (!deletedOrReselect.isEmpty()) {
+                            } else if (!deletedOrReselect.isEmpty() && connectionId != null) {
                                 String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
                                 EUpdateResult status = deletedOrReselect.get(propertyValue);
                                 // deleted
