@@ -201,15 +201,18 @@ public class ImportItemUtil {
     private boolean checkItem(ItemRecord itemRecord, boolean overwrite) {
 
         boolean result = false;
+
         try {
             Item item = itemRecord.getItem();
             if (item instanceof TDQItem) {
                 return false; // hide tdq first
             }
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-
+            if (itemType == null) {
+                itemRecord.addError(Messages.getString("ImportItemUtil.unsupportItem")); //$NON-NLS-1$
+                return false; // can't import this item.
+            }
             cache.initialize(itemType);
-
             boolean isAllowMultipleName = (itemType == ERepositoryObjectType.SQLPATTERNS || itemType == ERepositoryObjectType.METADATA_FILE_XML);
             String itemPath = null;
             if (item.getState() != null) {
@@ -276,7 +279,7 @@ public class ImportItemUtil {
 
             if (isSystem) {
                 itemRecord.addError(Messages.getString("RepositoryUtil.isSystem"));
-                return result;
+                return false;
             }
 
             if (nameAvailable) {

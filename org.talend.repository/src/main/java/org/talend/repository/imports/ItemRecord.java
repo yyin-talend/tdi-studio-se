@@ -97,12 +97,20 @@ public class ItemRecord {
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
             boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
-            if (allowVerchange) {
-                itemName = ERepositoryObjectType.getItemType(property.getItem()).toString() + " " + property.getLabel() //$NON-NLS-1$
-                        + " " + property.getVersion(); //$NON-NLS-1$
-            } else {
-                itemName = ERepositoryObjectType.getItemType(property.getItem()).toString() + " " + property.getLabel(); //$NON-NLS-1$
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
+
+            StringBuffer sb = new StringBuffer();
+            if (itemType != null) {
+                sb.append(itemType.toString());
+                sb.append(' ');
             }
+            sb.append(property.getLabel());
+
+            if (allowVerchange) {
+                sb.append(' ');
+                sb.append(property.getVersion());
+            }
+            itemName = sb.toString();
         }
         return itemName;
     }
