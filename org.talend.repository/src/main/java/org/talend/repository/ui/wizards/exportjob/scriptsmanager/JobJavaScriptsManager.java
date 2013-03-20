@@ -1325,20 +1325,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected List<String> getRelatedJobFolderNames(ProcessItem process) {
-        return this.getRelatedJobFolderNames(process, true);
+        return this.getRelatedJobFolderNames(process, new HashSet<String>());
     }
 
-    protected List<String> getRelatedJobFolderNames(ProcessItem process, boolean includeSelf) {
+    protected List<String> getRelatedJobFolderNames(ProcessItem process, Set<String> jobNameVersionChecked) {
         List<String> jobFolderNames = new ArrayList<String>();
-        if (includeSelf) {
-            String jobName = process.getProperty().getLabel();
-            String jobVersion = process.getProperty().getVersion();
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-            jobFolderNames.add(jobFolderName);
+        String jobName = process.getProperty().getLabel();
+        String jobVersion = process.getProperty().getVersion();
+        String id = jobName + "_" + jobVersion; //$NON-NLS-1$
+        if (jobNameVersionChecked.contains(id)) {
+            return jobFolderNames; // no need to add more to the list, just return the empty list
         }
+        jobNameVersionChecked.add(id);
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+        jobFolderNames.add(jobFolderName);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
-            jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), true));
+            jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), jobNameVersionChecked));
         }
         return jobFolderNames;
     }
