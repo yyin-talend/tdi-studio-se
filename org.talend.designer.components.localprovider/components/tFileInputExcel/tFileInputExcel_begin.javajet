@@ -463,7 +463,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				            String sheetName = sheet.getSheetName();
 				            java.util.regex.Matcher matcher = pattern.matcher(sheetName);
 				            if (matcher.matches()) {
-				            	if(sheet != null){
+				            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
 				                	list.add(sheet);
 				                }	
 				            }
@@ -471,7 +471,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				        
 			        }else{	
 			        	org.apache.poi.xssf.usermodel.XSSFSheet sheet = workbook.getSheet(oneSheetName);
-		            	if(sheet != null){
+		            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
 		                	list.add(sheet);
 		                }
 			        	
@@ -483,7 +483,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			    public java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> getSheets(org.apache.poi.xssf.usermodel.XSSFWorkbook workbook, int index, boolean useRegex) {
 			    	java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> list =  new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
 			    	org.apache.poi.xssf.usermodel.XSSFSheet sheet = workbook.getSheetAt(index);
-	            	if(sheet != null){
+	            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
 	                	list.add(sheet);
 	                }
 			    	return list;
@@ -508,7 +508,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
     	java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> sheetList_<%= cid %> = new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
     	for(org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%=cid%>:workbook_<%=cid%>){
-    		sheetList_<%= cid %>.add(sheet_<%=cid%>);
+			if(sheet_<%=cid%> != null && sheet_<%=cid%>.iterator()!=null && sheet_<%=cid%>.iterator().hasNext()){
+	    		sheetList_<%= cid %>.add(sheet_<%=cid%>);
+    		}
     	}
 <%
 		}else{
@@ -545,7 +547,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(lastColumn_<%=cid %>!=null){
         	end_column_<%= cid %> = lastColumn_<%=cid %>.intValue();
         }        
-        <%}%>;
+        <%}%>
         
         org.apache.poi.xssf.usermodel.XSSFRow row_<%= cid %> = null;
         org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%= cid %> = sheetList_<%= cid %>.get(0);
