@@ -42,6 +42,7 @@
 			Map<String,CamelContext> answer = new HashMap<String, CamelContext>();
 			DefaultCamelContext camelContext = null;
 			if(bundleContext != null){
+				org.apache.camel.spring.SpringCamelContext.setNoStart(true);
 				CamelContextFactoryBean contextFactory = new CamelContextFactoryBean();
 				contextFactory.setId("<%=process.getName()%>-ctx");
 				OsgiBundleXmlApplicationContext appContext = new OsgiBundleXmlApplicationContext(
