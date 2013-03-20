@@ -1156,6 +1156,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             final String uniqueName = node.getUniqueName();
                             String newSourceId = getSchemaRenamedMap().get(propertyValue);
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
+                            String connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                    .getName());
                             List<Object> parameter = null;
                             // renamed
                             if (newSourceId != null && !newSourceId.equals(propertyValue)) {
@@ -1180,7 +1182,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         builtIn = false;
                                     }
                                 }
-                            } else if (!deletedOrReselect.isEmpty()) {
+                            } else if (!deletedOrReselect.isEmpty() && connectionId != null) {
                                 String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
                                 EUpdateResult status = deletedOrReselect.get(propertyValue);
                                 // deleted
@@ -1374,7 +1376,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 final String schemaName = (String) line.get(IEbcdicConstant.FIELD_SCHEMA);
                                 final String propertyValue = repositoryItem.getProperty().getId() + UpdatesConstants.SEGMENT_LINE
                                         + schemaName;
-                                
+
                                 //
                                 boolean builtIn = true;
                                 UpdateCheckResult result = null;
@@ -1576,7 +1578,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                .isUseCustomModuleName())) {
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
