@@ -33,24 +33,32 @@ public class DataSourceConfig {
         Set<String> aliases = getAliases(processItem);
         String additionalJobBeanParams = ""; //$NON-NLS-1$
         if (!aliases.isEmpty()) {
-            additionalJobBeanParams +=
-                  "\n\t\t<property name=\"dataSources\">" //$NON-NLS-1$
-                + "\n\t\t\t<map>"; //$NON-NLS-1$
+            additionalJobBeanParams += "\n\t\t<property name=\"dataSources\">" //$NON-NLS-1$
+                    + "\n\t\t\t<map>"; //$NON-NLS-1$
             for (String alias : aliases) {
-                additionalJobBeanParams +=
-                          "\n\t\t\t\t<entry key=\"" + alias + "\">" //$NON-NLS-1$
+                additionalJobBeanParams += "\n\t\t\t\t<entry key=\"" + alias + "\">" //$NON-NLS-1$
                         + "\n\t\t\t\t\t<" + (addOsgiPrefix ? "osgi:" : "") + "reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>" //$NON-NLS-1$
                         + "\n\t\t\t\t</entry>"; //$NON-NLS-1$
             }
-            additionalJobBeanParams +=
-                  "\n\t\t\t</map>" //$NON-NLS-1$
-                + "\n\t\t</property>"; //$NON-NLS-1$
+            additionalJobBeanParams += "\n\t\t\t</map>" //$NON-NLS-1$
+                    + "\n\t\t</property>"; //$NON-NLS-1$
         }
         return additionalJobBeanParams;
     }
 
     private static Set<String> getAliases(ProcessItem processItem) {
+        return getAliases(processItem, new HashSet<String>());
+    }
+
+    private static Set<String> getAliases(ProcessItem processItem, Set<String> jobNameVersionChecked) {
         Set<String> aliases = new HashSet<String>();
+        String jobName = processItem.getProperty().getLabel();
+        String jobVersion = processItem.getProperty().getVersion();
+        String id = jobName + "_" + jobVersion; //$NON-NLS-1$
+        if (jobNameVersionChecked.contains(id)) {
+            return aliases; // no need to add more to the list, just return the empty list
+        }
+        jobNameVersionChecked.add(id);
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
                 NodeType node = (NodeType) o;
@@ -61,10 +69,10 @@ public class DataSourceConfig {
                     }
                 }
             }
-        } 
+        }
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
         for (JobInfo subjobInfo : subjobInfos) {
-            aliases.addAll(getAliases(subjobInfo.getProcessItem()));
+            aliases.addAll(getAliases(subjobInfo.getProcessItem(), jobNameVersionChecked));
         }
         return aliases;
     }
