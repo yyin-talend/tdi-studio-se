@@ -86,6 +86,7 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
                 compareResult = lookupInstance.compareTo(currentSearchedKey);
 
                 if (compareResult == 0) {
+                    localSkip -= previousValuesSize;
                     sizeDataToRead = currentValuesSize;
                     lookupInstance.copyKeysDataTo(resultLookupInstance);
                 }
@@ -108,9 +109,9 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
                             lookupInstance.copyKeysDataTo(resultLookupInstance);
                             previousValuesSize = 0;
                             currentValuesSize = 0;
-                        } else if (compareResult > 0) {
-                            // localSkip += previousValuesSize;
+                        } else {
                             previousValuesSize = currentValuesSize;
+                            localSkip += currentValuesSize;
                         }
 
                         break;
