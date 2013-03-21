@@ -51,7 +51,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 		
-	boolean useExistingConnection = false ;// not active this function
+	String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
 
 <%
@@ -111,6 +112,10 @@ int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
 int nb_line_deleted_<%=cid%> = 0;
 
+int nb_line_rejected_<%=cid%> = 0;
+int rejectedCount_<%=cid%>=0;
+int tmp_batchUpdateCount_<%=cid%> = 0;
+
 int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
@@ -153,6 +158,14 @@ if(!("true").equals(useExistingConn)) {
             <%
         }
     }
+}
+if (("true").equals(useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+       int batchSize_<%=cid%> = <%=batchSize%>;
+       int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
 }
 if(!isDynamic) {
 %>
