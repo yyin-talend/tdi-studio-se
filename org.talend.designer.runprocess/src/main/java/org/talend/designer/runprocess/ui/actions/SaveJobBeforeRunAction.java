@@ -41,19 +41,19 @@ public class SaveJobBeforeRunAction extends Action {
         this.activeProcess = activeProcess;
     }
 
+    @Override
     public void run() {
         List<? extends INode> nodes = activeProcess.getGraphicalNodes();
 
         if (nodes.isEmpty()) {
             return;
         }
-        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-              .getActiveEditor();
-        
-     
-        if (part!=null && part instanceof AbstractMultiPageTalendEditor) {
-            AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
-            editor.doSave(new NullProgressMonitor());
+        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (part.isDirty()) {
+            if (part != null && part instanceof AbstractMultiPageTalendEditor) {
+                AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
+                editor.doSave(new NullProgressMonitor());
+            }
         }
     }
 }

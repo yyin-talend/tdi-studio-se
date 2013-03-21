@@ -666,7 +666,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         }
 
                     }
-                    Problems.computePropertyMaxInformationLevel(property);
+                    Problems.computePropertyMaxInformationLevel(property, false);
                     Problems.refreshRepositoryView();
                     Problems.refreshProblemTreeView();
                 }

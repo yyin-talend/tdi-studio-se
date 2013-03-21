@@ -132,11 +132,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                     ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
                     page.activate(editorPart);
                 }
-                // see the bug 6585,qli comment.
-                if (editorPart instanceof AbstractMultiPageTalendEditor) {
-                    ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
-                }
-                // refresh(obj);
             } catch (PartInitException e) {
                 MessageBoxExceptionHandler.process(e);
             } catch (PersistenceException e) {

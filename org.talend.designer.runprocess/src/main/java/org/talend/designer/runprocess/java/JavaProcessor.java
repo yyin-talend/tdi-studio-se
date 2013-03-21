@@ -458,7 +458,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             processCode = null;
 
             // updateContextCode(codeGen);
-            syntaxCheck();
 
             codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true, IResource.DEPTH_INFINITE); //$NON-NLS-1$
 
@@ -553,7 +552,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         this.checkableEditor = checkableEditor;
     }
 
-    private void syntaxCheck() {
+    @Override
+    public void syntaxCheck() {
         if (checkableEditor != null) {
             checkableEditor.validateSyntax();
         }
