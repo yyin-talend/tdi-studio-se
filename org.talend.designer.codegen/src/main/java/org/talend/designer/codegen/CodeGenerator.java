@@ -21,7 +21,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.codegen.jet.JETException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -56,7 +56,6 @@ import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.ICamelDesignerCoreService;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -111,7 +110,6 @@ public class CodeGenerator implements ICodeGenerator {
      * @param process
      * @param language
      */
-    @SuppressWarnings("unchecked")
     public CodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
         if (process == null) {
@@ -279,47 +277,13 @@ public class CodeGenerator implements ICodeGenerator {
 								.getSubProcessStartNode(true);
 						String startNodeName = subProcessStartNode
 								.getComponent().getName();
-						List<String> routerFroms = new ArrayList<String>();
-						{
-							routerFroms.add("cMessagingEndpoint");
-							routerFroms.add("cFile");
-							routerFroms.add("cFTP");
-							routerFroms.add("cJMS");
-							routerFroms.add("cCXF");
-							routerFroms.add("cMail");
-							// routerFroms.add("cErrorHandler");
-						}
-                        // http://jira.talendforge.org/browse/TESB-3734 Remove cActiveMQ
-						if (routerFroms.contains(startNodeName)) {
+						IElementParameter family = subProcessStartNode.getElementParameter("FAMILY");
+						if(subProcessStartNode.isStart() && null != family && "Messaging".equals(family.getValue())){
                             nodeSubTreeList.add(subTree);
 						} else if ("cConfig".equals(startNodeName)) {
                             // Customized remove the cConfig routeId codes.
                             // TESB-2825 LiXP 20110823
                             // Do nothing.
-						} else if ("cErrorHandler".equals(startNodeName)) {
-							List<? extends IConnection> outgoingConnections = subProcessStartNode
-									.getOutgoingConnections();
-							if (outgoingConnections.size() < 1) {
-								componentsCode.append(generateComponentsCode(
-										subTree, subTree.getRootNode(),
-										ECodePart.MAIN, null, ETypeGen.CAMEL));
-								componentsCode.append(";");
-							} else if (outgoingConnections.size() > 0) {
-								INode target = outgoingConnections.get(0)
-										.getTarget();
-								if (routerFroms.contains(target.getComponent()
-										.getName())) {
-									nodeSubTreeList.add(subTree);
-								} else {
-									componentsCode
-											.append(generateComponentsCode(
-													subTree,
-													subTree.getRootNode(),
-													ECodePart.MAIN, null,
-													ETypeGen.CAMEL));
-									componentsCode.append(";");
-								}
-							}
                         } else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                     ETypeGen.CAMEL)); // And
@@ -697,61 +661,31 @@ public class CodeGenerator implements ICodeGenerator {
                     }
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
                     if (ETypeGen.CAMEL == typeGen) {
-						String label = null;
-						IElementParameter parameter = node
-								.getElementParameter("LABEL");
-						if (parameter != null
-								&& !"__UNIQUE_NAME__".equals(parameter
-										.getValue())) {
-							label = (String) parameter.getValue();
-						}
+                    	if (node.getIncomingConnections().size() < 1 && node.isStart()){
+                    		// http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
+                    		String label = null;
+                    		IElementParameter parameter = node
+                    				.getElementParameter("LABEL");
+                    		if (parameter != null
+                    				&& !"__UNIQUE_NAME__".equals(parameter
+                    						.getValue())) {
+                    			label = (String) parameter.getValue();
+                    		}
 
-						/*
-						 * Fix https://jira.talendforge.org/browse/TESB-6685
-						 * label + uniqueName to make it unique
-						 */
-						if (label == null) {
-							label = node.getUniqueName();
-						}else{
-							label += "_"+node.getUniqueName();
-						}
-						List<? extends IConnection> inConnections = node
-								.getIncomingConnections();
-						int size = inConnections.size();
-						if (size < 1) {
-							// http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
-							if ("cErrorHandler".equals(node.getComponent()
-									.getName())) {
-								// codeComponent.append(".id(\""
-								// + node.getUniqueName() + "\")");
-							} else {
-								codeComponent.append(".routeId(\"" + label
-										+ "\")");
-							}
-						} else if (size == 1) {
-							IConnection iConnection = inConnections.get(0);
-							INode source = iConnection.getSource();
-							if ("cErrorHandler".equals(source.getComponent()
-									.getName())
-									&& source.getIncomingConnections().size() < 1) {
-
-								if ("true"
-										.equals(node
-												.getPropertyValue(EParameterName.STARTABLE
-														.getName()))) {
-									codeComponent.append(".routeId(\"" + label
-											+ "\")");
-								} else {
-									// codeComponent.append(".id(\""
-									// + node.getUniqueName() + "\")");
-								}
-							} else {
-								codeComponent.append(".id(\""
-										+ node.getUniqueName() + "\")");
-							}
-						} else {
-							codeComponent.append(".id(\""
-									+ node.getUniqueName() + "\")");
+                    		/*
+                    		 * Fix https://jira.talendforge.org/browse/TESB-6685
+                    		 * label + uniqueName to make it unique
+                    		 */
+                    		if (label == null) {
+                    			label = node.getUniqueName();
+                    		}else{
+                    			label += "_"+node.getUniqueName();
+                    		}
+                    		if(!"cErrorHandler".equals(node.getComponent().getName())){
+                    			codeComponent.append(".routeId(\"" + label + "\")");
+                    		}
+                    	}else{
+                        	codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
 						}
                     }
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
