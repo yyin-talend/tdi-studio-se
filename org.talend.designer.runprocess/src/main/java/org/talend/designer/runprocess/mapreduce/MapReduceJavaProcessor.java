@@ -279,9 +279,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         return vmArgsSegments;
     }
 
-    /**
-    * 
-    */
     @Override
     protected List<String> extractCPCommandSegments() {
         List<String> cpCommandSegments = new ArrayList<String>();
@@ -321,6 +318,14 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         return list;
     }
 
+    /**
+     * Makes up the class path string that should be like this
+     * "[rootPath]/../lib/a.jar:[rootPath]/../lib/b.jar:[rootPath]/job.jar" in linux. In windows, ":" should be replaced
+     * by ";". About the root path it depends on {@link #getRootWorkingDir()}. The job jar can be gotton by
+     * {@link #makeupJobJarName()}. Added by Marvin Wang on Mar 21, 2013.
+     * 
+     * @return
+     */
     protected String makeUpClassPathString() {
         String rootPath = getRootWorkingDir();
         String libPath = getLibFolderInWorkingDir();
@@ -333,16 +338,19 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         sb.append("."); //$NON-NLS-1$
         sb.append(JavaUtils.JAVA_CLASSPATH_SEPARATOR);
 
-        Set<String> jobJars = extractJobJars();
-        if (jobJars != null && jobJars.size() > 0) {
-            for (String jobJar : jobJars) {
-                sb.append(rootPath).append(process.getName()).append(File.separator);
-                sb.append(jobJar);
-                sb.append(JavaUtils.JAVA_CLASSPATH_SEPARATOR);
-            }
-        }
+        sb.append(rootPath).append(process.getName()).append(File.separator);
+        sb.append(makeupJobJarName());
 
-        return sb.substring(0, sb.length() - 1);
+        // Set<String> jobJars = extractJobJars();
+        // if (jobJars != null && jobJars.size() > 0) {
+        // for (String jobJar : jobJars) {
+        // sb.append(rootPath).append(process.getName()).append(File.separator);
+        // sb.append(jobJar);
+        // sb.append(JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+        // }
+        // }
+
+        return sb.toString();
     }
 
     /**
@@ -381,6 +389,17 @@ public class MapReduceJavaProcessor extends JavaProcessor {
     }
 
     /**
+     * Makes up a job jar name that should be like "aa_0_4.jar". Added by Marvin Wang on Mar 21, 2013.
+     * 
+     * @return
+     */
+    protected String makeupJobJarName() {
+        String version = process.getVersion();
+        String jobJarName = process.getName().toLowerCase() + "_" + version.replace(".", "_") + ".jar"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+        return jobJarName;
+    }
+
+    /**
      * 
      * Added by Marvin Wang on Mar 20, 2013.
      * 
@@ -388,6 +407,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
      */
     protected Set<String> extractJobJars() {
         Set<String> set = new HashSet<String>();
+
         String jobFolderString = getRootWorkingDir() + process.getName();
         File jobFolder = new File(jobFolderString);
         File[] jarFiles = jobFolder.listFiles(new FileFilter() {
