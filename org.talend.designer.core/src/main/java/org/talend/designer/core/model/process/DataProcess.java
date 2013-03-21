@@ -1114,10 +1114,12 @@ public class DataProcess implements IGeneratingProcess {
                 // (to replace by a Node maybe that will take the informations of an IComponent)
                 String uniqueName = null;
                 IComponent component = null;
-
+                String hashComponent = null;
                 String baseConnector = connection.getSource().getConnectorFromName(connection.getConnectorName()).getBaseSchema();
                 INodeConnector connector = connection.getTarget().getConnectorFromName(baseConnector);
-                String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
+                if (connector != null) {
+                    hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
+                }
 
                 if (hashComponent == null) {
                     uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$

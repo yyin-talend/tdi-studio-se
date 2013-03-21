@@ -12,11 +12,15 @@
 // ============================================================================
 package org.talend.expressionbuilder;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.core.model.process.INode;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
+import org.talend.expressionbuilder.ui.PigExpressionBuilderDialog;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -38,14 +42,17 @@ public class ExpressionBuilderService implements IExpressionBuilderDialogService
     }
 
     /*
-     * (non-Jsdoc)
+     * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService#getExpressionBuilderInstance(Composite,
-     * IExpressionDataBean, INode)
+     * @see
+     * org.talend.expressionbuilder.IExpressionBuilderDialogService#getExpressionBuilderInstance(org.eclipse.swt.widgets
+     * .Composite, org.talend.commons.ui.expressionbuilder.IExpressionDataBean, org.talend.core.model.process.INode,
+     * java.util.List, java.lang.Boolean)
      */
+    @Override
     public IExpressionBuilderDialogController getExpressionBuilderInstance(Composite parent, IExpressionDataBean dataBean,
-            INode component, Boolean isPigMap) {
-        return new ExpressionBuilderDialog(parent.getShell(), dataBean, component, isPigMap);
+            INode component, List<Variable> vars) {
+        return new PigExpressionBuilderDialog(parent.getShell(), dataBean, component, vars);
     }
 
 }

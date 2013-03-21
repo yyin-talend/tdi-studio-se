@@ -63,21 +63,21 @@ public class ExpressionComposite extends Composite {
 
     private static final String TEXT_CLOSE_SNIPPETS = "Close Snippets"; //$NON-NLS-1$
 
-    private final IDocument document;
+    protected IDocument document;
 
-    private final StyledText textControl;
+    protected StyledText textControl;
 
     private String replacedText;
 
-    private final ExpressionRecorder modificationRecord;
+    protected ExpressionRecorder modificationRecord;
 
-    private ReconcilerViewer viewer;
+    protected ReconcilerViewer viewer;
 
     TrayDialog trayDialog = null;
 
     private IEditorPart editorPart;
 
-    private TextTransfer textTransfer = TextTransfer.getInstance();
+    protected TextTransfer textTransfer = TextTransfer.getInstance();
 
     /**
      * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -114,6 +114,10 @@ public class ExpressionComposite extends Composite {
                 }
             }
         }
+    }
+
+    public ExpressionComposite(Composite parent, int style) {
+        super(parent, style);
     }
 
     /**
@@ -469,19 +473,21 @@ public class ExpressionComposite extends Composite {
      * @param expression
      */
     public void setExpression(String expression, boolean append) {
-        if (append) {
-            Point sel = viewer.getSelectedRange();
-            try {
-                document.replace(sel.x, sel.y, expression);
-            } catch (BadLocationException e) {
-                MessageBoxExceptionHandler.process(e);
-            }
-        } else {
-            IRegion region = viewer.getViewerRegion();
-            try {
-                document.replace(region.getOffset(), region.getLength(), expression);
-            } catch (BadLocationException e) {
-                MessageBoxExceptionHandler.process(e);
+        if (document != null) {
+            if (append) {
+                Point sel = viewer.getSelectedRange();
+                try {
+                    document.replace(sel.x, sel.y, expression);
+                } catch (BadLocationException e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
+            } else {
+                IRegion region = viewer.getViewerRegion();
+                try {
+                    document.replace(region.getOffset(), region.getLength(), expression);
+                } catch (BadLocationException e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
             }
         }
     }

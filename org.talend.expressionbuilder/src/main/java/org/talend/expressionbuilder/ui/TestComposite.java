@@ -59,25 +59,37 @@ import org.talend.expressionbuilder.test.shadow.ExpressionTestMain;
  */
 public class TestComposite extends Composite {
 
-    private final Table table;
+    protected Table table;
 
-    private final Button buttonAddVar, buttonRemoveVar;
+    protected Button buttonAddVar, buttonRemoveVar;
 
-    private final TableViewer variableTableViewer;
+    protected TableViewer variableTableViewer;
 
-    private final Button testButton;
+    protected Button testButton;
 
-    private final Button clearButton;
+    protected Button clearButton;
 
-    private final StyledText testResultText;
+    protected StyledText testResultText;
 
-    private static final String NAME_PROPERTY = "Name"; //$NON-NLS-1$
+    protected String NAME_PROPERTY = "Name"; //$NON-NLS-1$
 
-    private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
+    protected String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
-    private final JavaTestShadow shadow;
+    protected JavaTestShadow shadow;
 
-    private TextTransfer textTransfer = TextTransfer.getInstance();
+    protected TextTransfer textTransfer = TextTransfer.getInstance();
+
+    /**
+     * 
+     * DOC TestComposite constructor comment.
+     * 
+     * @param parent
+     * @param style
+     * @param temp
+     */
+    public TestComposite(Composite parent, int style, String temp) {
+        super(parent, style);
+    }
 
     /**
      * Create the composite
@@ -252,7 +264,7 @@ public class TestComposite extends Composite {
      * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
      * 
      */
-    private class DoubleClickTextCellEditor extends TextCellEditor {
+    protected class DoubleClickTextCellEditor extends TextCellEditor {
 
         public DoubleClickTextCellEditor(Composite parent) {
             super(parent);

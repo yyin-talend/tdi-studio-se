@@ -61,19 +61,17 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionContentProposal;
  */
 public class CategoryComposite extends Composite {
 
-    private final List categoryList;
+    protected List categoryList;
 
-    private final List functionList;
+    protected List functionList;
 
-    final ListViewer functionViewer;
+    protected ListViewer functionViewer;
 
-    private final TextTransfer textTransfer = TextTransfer.getInstance();
+    protected TextTransfer textTransfer = TextTransfer.getInstance();
 
-    CategoryManager manager = null;
+    protected CategoryManager manager = null;
 
     private static Function selectedFunction = new Function();
-
-    private boolean isPigMap = false;
 
     /**
      * Getter for selectedFunction.
@@ -84,13 +82,17 @@ public class CategoryComposite extends Composite {
         return selectedFunction;
     }
 
+    public CategoryComposite(Composite parent, int style) {
+        super(parent, style);
+    }
+
     /**
      * Create the composite
      * 
      * @param parent
      * @param style
      */
-    public CategoryComposite(Composite parent, int style, CategoryManager manager, boolean isPigMap) {
+    public CategoryComposite(Composite parent, int style, CategoryManager manager) {
         super(parent, style);
         this.manager = manager;
 
@@ -208,9 +210,8 @@ public class CategoryComposite extends Composite {
             sashForm.setWeights(new int[] { 2, 1 });
             new UIRelationShipLinker(categoryViewer, functionViewer, descriptionText);
         }
-        initializeData(categoryViewer, isPigMap);
+        initializeData(categoryViewer);
         categoryViewer.getList().setFocus();
-        this.isPigMap = isPigMap;
     }
 
     /**
@@ -218,8 +219,8 @@ public class CategoryComposite extends Composite {
      * 
      * @param categoryViewer
      */
-    private void initializeData(ListViewer categoryViewer, boolean isPigMap) {
-        categoryViewer.setInput(manager.getInputCategory(isPigMap));
+    private void initializeData(ListViewer categoryViewer) {
+        categoryViewer.setInput(manager.getInputCategory("java"));
         // if (manager.getInputCategory().size() > 0) {
         // categoryViewer.getList().select(0);
         // java.util.List<Function> functions = manager.getInputCategory().get(0).getFunctions();
@@ -304,11 +305,10 @@ public class CategoryComposite extends Composite {
                             column.setFunction(function);
 
                             ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
-                            if (isPigMap) {
+                            if (expressionComposite != null && expressionComposite instanceof PigExpressionComposite) {
                                 expressionComposite.setExpression(function.getName() + "()", true);
                             } else
                                 expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
-
                         } else {
                             if (docDisplayer instanceof Text) {
                                 ((Text) docDisplayer).setText("");
@@ -361,7 +361,7 @@ public class CategoryComposite extends Composite {
         }
 
         java.util.List<IContentProposal> proposals = new LinkedList<IContentProposal>();
-        java.util.List<Category> categories = manager.getInputCategory(isPigMap);
+        java.util.List<Category> categories = manager.getInputCategory("java");
 
         boolean addAllCategory = category.equals("*C") ? true : false; //$NON-NLS-1$
 

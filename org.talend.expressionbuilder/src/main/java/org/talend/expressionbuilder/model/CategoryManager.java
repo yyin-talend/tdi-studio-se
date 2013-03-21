@@ -36,10 +36,10 @@ public class CategoryManager {
 
     private Category defaultCategory;
 
-    public java.util.List<Category> getInputCategory(boolean isPigMap) {
+    public java.util.List<Category> getInputCategory(String type) {
         FunctionManager functionManager = null;
-        if (isPigMap) {
-            functionManager = new FunctionManager(isPigMap);
+        if ("pig".equals(type)) {
+            functionManager = new FunctionManager(type);
         } else {
             functionManager = new FunctionManager();
         }
@@ -70,7 +70,7 @@ public class CategoryManager {
         }
 
         List<Category> input = new ArrayList<Category>();
-        if (!isPigMap) {
+        if (!"pig".equals(type)) {
             input.add(allCategories);
             input.add(userDefined);
         }

@@ -2527,6 +2527,7 @@ public class EmfComponent extends AbstractComponent {
                     lineStyle = currentType.getDefaultLineStyle();
                 }
                 nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+                nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
                 currentType = EConnectionType.FLOW_MERGE;
 
                 if (connType.getCOLOR() == null) {
@@ -2536,6 +2537,7 @@ public class EmfComponent extends AbstractComponent {
                     lineStyle = currentType.getDefaultLineStyle();
                 }
                 nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+                nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
             }
         }
 

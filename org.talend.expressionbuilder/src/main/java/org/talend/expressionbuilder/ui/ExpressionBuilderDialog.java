@@ -74,19 +74,19 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private static final int IMPORT_ID = IDialogConstants.CLIENT_ID + 21;
 
-    private static TestComposite testComposite;
+    protected static TestComposite testComposite;
 
-    private static ExpressionComposite expressionComposite;
+    protected static ExpressionComposite expressionComposite;
 
-    private static CategoryComposite categoryComposite;
+    protected static CategoryComposite categoryComposite;
 
-    private final CategoryManager manager = new CategoryManager();
+    protected CategoryManager manager = new CategoryManager();
 
-    private final IExpressionDataBean dataBean;
+    protected final IExpressionDataBean dataBean;
 
-    private String defaultExpression = ""; //$NON-NLS-1$
+    protected String defaultExpression = ""; //$NON-NLS-1$
 
-    private List<Variable> defaultVariables;
+    protected List<Variable> defaultVariables;
 
     private Composite container;
 
@@ -96,9 +96,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private String expressionForTable = null;
 
-    private static boolean isESCClose = true;
-
-    private boolean isPigMap = false;
+    protected static boolean isESCClose = true;
 
     /**
      * Create the dialog
@@ -112,21 +110,6 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
         this.dataBean = dataBean;
         this.component = component;
-    }
-
-    /**
-     * Create the dialog
-     * 
-     * @param parentShell
-     */
-    public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean, INode component, Boolean isPigMap) {
-        super(parentShell);
-        this.nodeStyle = parentShell.toString();
-
-        setShellStyle(this.getShellStyle() | SWT.RESIZE);
-        this.dataBean = dataBean;
-        this.component = component;
-        this.isPigMap = isPigMap;
     }
 
     /**
@@ -152,16 +135,14 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         expressionComposite = new ExpressionComposite(this, upperSashform, SWT.NONE, dataBean);
         expressionComposite.setExpression(defaultExpression, true);
 
-        if (!isPigMap) {
-            testComposite = new TestComposite(upperSashform, SWT.NONE);
-            testComposite.addVariables(defaultVariables);
-            upperSashform.setWeights(new int[] { 3, 2 });
-        }
+        testComposite = new TestComposite(upperSashform, SWT.NONE);
+        testComposite.addVariables(defaultVariables);
+        upperSashform.setWeights(new int[] { 3, 2 });
 
         final Composite lowerComposite = new Composite(sashForm, SWT.NONE);
         lowerComposite.setLayout(new FillLayout());
 
-        categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager, isPigMap);
+        categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);
@@ -209,16 +190,16 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @param composite
      */
-    private void addUndoOperationListener(Composite composite) {
-
-        Control controls[] = composite.getChildren();
-        for (Control control : controls) {
-            if (control instanceof Composite) {
-                addUndoOperationListener((Composite) control);
+    protected void addUndoOperationListener(Composite composite) {
+        if (composite != null) {
+            Control controls[] = composite.getChildren();
+            for (Control control : controls) {
+                if (control instanceof Composite) {
+                    addUndoOperationListener((Composite) control);
+                }
+                control.addKeyListener(new UndoKeyListener());
             }
-            control.addKeyListener(new UndoKeyListener());
         }
-
     }
 
     /**
@@ -262,9 +243,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
                 if (filePath != null) {
                     String expresionContent = expressionComposite.getExpression();
                     List<Variable> variables = new ArrayList<Variable>();
-                    if (!isPigMap) {
-                        variables = testComposite.getVariableList();
-                    }
+                    variables = testComposite.getVariableList();
                     File file = new File(filePath);
                     ExpressionFileOperation operation = new ExpressionFileOperation();
                     try {
@@ -337,7 +316,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      */
     @Override
     public boolean close() {
-        if (!isPigMap) {
+        if (testComposite != null) {
             testComposite.stopServerThread();
         }
         if (isESCClose) {
@@ -353,7 +332,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         return super.close();
     }
 
-    private String newExpression() {
+    protected String newExpression() {
         String expression = null;
         int startInx = nodeStyle.indexOf("-") + 2;//$NON-NLS-1$ 
         int endInx = nodeStyle.lastIndexOf("-") - 1;//$NON-NLS-1$
@@ -363,7 +342,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         } else {
             sub = nodeStyle;
         }
-        if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
+        if (sub != null && sub.equals("tRowGenerator")) { //$NON-NLS-1$
             expression = expressionComposite.getReplaceExpression();
             expressionForTable = expression; // hywang add for 9225
         } else {
@@ -405,7 +384,6 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
-    @Override
     protected void okPressed() {
         String expression = null;
         int startInx = nodeStyle.indexOf("-") + 2;//$NON-NLS-1$ 
@@ -426,12 +404,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         if (dataBean != null) {
             dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
             if (ExpressionPersistance.getInstance().getPath() != null) { // hywang add for 9225
-                if (isPigMap) {
-                    ExpressionPersistance.getInstance().saveExpression(new Expression(expression, new ArrayList<Variable>()));
-                } else {
-                    ExpressionPersistance.getInstance().saveExpression(
-                            new Expression(expression, testComposite.getVariableList()));
-                }
+                ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
             }
         }
         isESCClose = false;
@@ -468,7 +441,6 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
                     vars.add(var1);
                 }
             }
-
             addVariables(vars);
         }
         open();
@@ -499,7 +471,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      * 
      * @return
      */
-    private String getExpressionStorePath() {
+    protected String getExpressionStorePath() {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
