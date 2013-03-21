@@ -889,7 +889,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             }
             for (IElementParameter currentParam : JobSettingsManager.getJobSettingsParameters(this)) {
-                if (currentParam.getName().equals(param.getName())) {
+                if (!currentParam.getName().equals(EParameterName.MULTI_THREAD_EXECATION.getName())
+                        && currentParam.getName().equals(param.getName())) {
                     if (currentParam.getValue() != null && currentParam.getValue().equals(param.getValue())) {
                         // don't save parameter if the value is default one.
                         return;
