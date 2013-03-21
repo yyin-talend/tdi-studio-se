@@ -129,7 +129,12 @@ public class RunProcessContextManager {
      * @return
      */
     protected RunProcessContext getRunProcessContext(IProcess2 activeProcess) {
+
+        // if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(activeProcess.getComponentsType())) {
+        // return new RunMapReduceProcessContext(activeProcess);
+        // } else {
         return new RunProcessContext(activeProcess);
+        // }
     }
 
     public void removeProcess(IProcess process) {

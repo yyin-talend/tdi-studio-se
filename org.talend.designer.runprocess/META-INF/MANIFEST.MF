@@ -33,11 +33,13 @@ Require-Bundle: org.talend.model,
  org.eclipse.ui.workbench,
  org.eclipse.jface.text,
  org.talend.libraries.mozilla;resolution:=optional,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.repository
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.i18n,
  org.talend.designer.runprocess.java,
+ org.talend.designer.runprocess.mapreduce,
  org.talend.designer.runprocess.prefs,
  org.talend.designer.runprocess.shadow,
  org.talend.designer.runprocess.ui,

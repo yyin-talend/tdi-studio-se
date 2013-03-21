@@ -39,6 +39,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -47,6 +48,7 @@ import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
+import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.runprocess.data.PerformanceData;
@@ -149,7 +151,11 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @return
      */
     protected IProcessor createJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
-        return new JavaProcessor(process, property, filenameFromLabel);
+        if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
+            return new MapReduceJavaProcessor(process, property, filenameFromLabel);
+        } else {
+            return new JavaProcessor(process, property, filenameFromLabel);
+        }
     }
 
     @Override
