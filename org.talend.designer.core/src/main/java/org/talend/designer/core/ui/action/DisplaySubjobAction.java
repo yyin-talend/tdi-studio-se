@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.DisplaySubjobCommand;
@@ -64,6 +65,14 @@ public class DisplaySubjobAction extends SelectionAction {
             if (o instanceof NodePart) {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
+                
+                //fix TESB-8326
+                if(node != null && node.getComponent() != null){
+                    if(ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getPaletteType())){
+                        return false;
+                    }
+                }//end Fix of TESB-8326 
+                
                 if (node.getJobletNode() != null) {
                     node = (Node) node.getJobletNode();
                 }
