@@ -488,13 +488,28 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
         addElementParameter(tmpParam);
+
+        tmpParam = new ElementParameter(this);
+        tmpParam.setName(EParameterName.REPARTITIONER.getName());
+        tmpParam.setValue(Boolean.FALSE);
+        tmpParam.setDisplayName(EParameterName.REPARTITIONER.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.RADIO);
+        tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
+        tmpParam.setNumRow(3);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
+        tmpParam.setShow(true);
+        tmpParam.setGroup("TYPE"); //$NON-NLS-1$
+        tmpParam.setGroupDisplayName("Type");
+        addElementParameter(tmpParam);
+
         tmpParam = new ElementParameter(this);
         tmpParam.setName(EParameterName.NONE.getName());
         tmpParam.setValue(Boolean.TRUE);
         tmpParam.setDisplayName(EParameterName.NONE.getDisplayName());
         tmpParam.setFieldType(EParameterFieldType.RADIO);
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setNumRow(3);
+        tmpParam.setNumRow(4);
         tmpParam.setReadOnly(false);
         tmpParam.setRequired(false);
         tmpParam.setShow(true);
@@ -508,7 +523,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         tmpParam = tmpNode.getElementParameter("NUM_PARTITIONS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("PARTITIONER == 'true'");
+        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
 
         tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
@@ -518,12 +533,12 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         tmpParam = tmpNode.getElementParameter("HASH_PARTITION");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("PARTITIONER == 'true'");
+        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
 
         tmpParam = tmpNode.getElementParameter("HASH_KEYS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("PARTITIONER == 'true'");
+        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
         ColumnListController.updateColumnList(tmpNode, null, true);
         addElementParameter(tmpParam);
 
@@ -532,7 +547,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("DEPARTITIONER == 'true'");
+        tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
 
         IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
@@ -541,7 +556,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         tmpParam = tmpNode1.getElementParameter("IS_SORTING");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("DEPARTITIONER == 'true'");
+        tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
 
     }
@@ -1191,8 +1206,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (id.equals(NUMBER_PARALLEL) || id.equals(ENABLE_PARALLEL) || id.equals(EParameterName.LABEL.getName())) {
             updateName();
         }
-        if (EParameterName.PARTITIONER.getName().equals(id) || EParameterName.DEPARTITIONER.getName().equals(id)
-                || EParameterName.NONE.getName().equals(id)) {
+        if (EParameterName.REPARTITIONER.getName().equals(id) || EParameterName.PARTITIONER.getName().equals(id)
+                || EParameterName.DEPARTITIONER.getName().equals(id) || EParameterName.NONE.getName().equals(id)) {
             firePropertyChange(id, null, value);
         }
     }

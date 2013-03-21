@@ -31,6 +31,7 @@ public class DisableParallelizationCommand extends Command {
                 EConnectionType lineStyle = con.getLineStyle();
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
                         || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+                    con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
                     con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
                     con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
                     con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);

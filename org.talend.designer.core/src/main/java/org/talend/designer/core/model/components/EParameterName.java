@@ -330,6 +330,7 @@ public enum EParameterName {
     // Automatic Parlization
     PARTITIONER(Messages.getString("Connection.paral_partitioner")), //$NON-NLS-1$
     DEPARTITIONER(Messages.getString("Connection.paral_departitioner")), //$NON-NLS-1$
+    REPARTITIONER(Messages.getString("Connection.paral_repartitioner")), //$NON-NLS-1$
     NONE(Messages.getString("Connection.paral_none")), //$NON-NLS-1$
 
     SUBTREE_START("SUBTREE_START"), //$NON-NLS-1$

@@ -205,7 +205,8 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         }
 
         if (EParameterName.NONE.getName().equals(property) || EParameterName.PARTITIONER.getName().equals(property)
-                || EParameterName.DEPARTITIONER.getName().equals(property)) {
+                || EParameterName.DEPARTITIONER.getName().equals(property)
+                || EParameterName.REPARTITIONER.getName().equals(property)) {
             connectionFigure.updateStatus();
             connectionFigure.repaint();
             refreshChildren();

@@ -47,6 +47,10 @@ public class ConnectionFigure extends PolylineConnection {
 
     private ParallelFigure dparallelFigure;
 
+    private ParallelFigure reparallelFigureBefore;
+
+    private ParallelFigure reparallelFigureAfter;
+
     /**
      * Used for standard connections.
      * 
@@ -70,12 +74,23 @@ public class ConnectionFigure extends PolylineConnection {
         dparallelFigure.setVisible(false);
         add(dparallelFigure, new DparallelLocator(this, 0));
 
+        reparallelFigureBefore = new ParallelFigure();
+        reparallelFigureBefore.setImage(ImageProvider.getImage(EImage.PARTITIONER_ICON));
+        reparallelFigureBefore.setVisible(false);
+        add(reparallelFigureBefore, new DparallelLocator(this, 0));
+
+        reparallelFigureAfter = new ParallelFigure();
+        reparallelFigureAfter.setImage(ImageProvider.getImage(EImage.DEPARTITIONER_ICON));
+        reparallelFigureAfter.setVisible(false);
+        add(reparallelFigureAfter, new ParallelLocator(this, 0));
+
     }
 
     public void updateStatus() {
         IElementParameter enableParatitoner = connection.getElementParameter(EParameterName.PARTITIONER.getName());
         IElementParameter enableDepatitoner = connection.getElementParameter(EParameterName.DEPARTITIONER.getName());
         IElementParameter none = connection.getElementParameter(EParameterName.NONE.getName());
+        IElementParameter enableRepatitoner = connection.getElementParameter(EParameterName.REPARTITIONER.getName());
         if (enableParatitoner != null && enableParatitoner.getValue().equals(true)) {
             if (parallelFigure != null)
                 parallelFigure.setVisible(true);
@@ -85,11 +100,22 @@ public class ConnectionFigure extends PolylineConnection {
             if (dparallelFigure != null)
                 dparallelFigure.setVisible(true);
         }
+        if (enableRepatitoner != null && enableRepatitoner.getValue().equals(true)) {
+            if (reparallelFigureBefore != null)
+                reparallelFigureBefore.setVisible(true);
+            if (reparallelFigureAfter != null)
+                reparallelFigureAfter.setVisible(true);
+        }
         if (none != null && none.getValue().equals(true)) {
             if (parallelFigure != null)
                 parallelFigure.setVisible(false);
             if (dparallelFigure != null)
                 dparallelFigure.setVisible(false);
+
+            if (reparallelFigureBefore != null)
+                reparallelFigureBefore.setVisible(false);
+            if (reparallelFigureAfter != null)
+                reparallelFigureAfter.setVisible(false);
         }
     }
 
