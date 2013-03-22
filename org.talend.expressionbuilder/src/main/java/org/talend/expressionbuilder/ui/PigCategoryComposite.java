@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.i18n.Messages;
@@ -124,8 +125,11 @@ public class PigCategoryComposite extends CategoryComposite {
                     VirtualMetadataColumn column = new VirtualMetadataColumn();
                     column.setTalendType(function.getTalendType().getName());
                     column.setFunction(function);
-
-                    event.data = (FunctionManagerExt.getOneColData(column, false));
+                    if (function.isUserDefined()) {
+                        event.data = (JavaUtils.JAVA_PIGUDF_DIRECTORY + "." + function.getName() + "()");
+                    } else {
+                        event.data = (FunctionManagerExt.getOneColData(column, false));
+                    }
                 }
             }
 

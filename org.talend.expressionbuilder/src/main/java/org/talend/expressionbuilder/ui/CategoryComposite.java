@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.i18n.Messages;
@@ -306,7 +307,12 @@ public class CategoryComposite extends Composite {
 
                             ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
                             if (expressionComposite != null && expressionComposite instanceof PigExpressionComposite) {
-                                expressionComposite.setExpression(function.getName() + "()", true);
+                                if (function.isUserDefined()) {
+                                    expressionComposite.setExpression(JavaUtils.JAVA_PIGUDF_DIRECTORY + "." + function.getName()
+                                            + "()", true);
+                                } else {
+                                    expressionComposite.setExpression(function.getName() + "()", true);
+                                }
                             } else
                                 expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
                         } else {

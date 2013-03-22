@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Group;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.ui.proposal.PigProposalProvider;
@@ -189,10 +190,11 @@ public class PigExpressionComposite extends ExpressionComposite {
                 if (textTransfer.isSupportedType(event.currentDataType)) {
                     String str = (String) event.data;
                     ExpressionComposite expressionComposite = PigExpressionBuilderDialog.getExpressionComposite();
-                    if (str != null && str.endsWith("()")) {
+                    if (str != null && str.endsWith("()") && !str.startsWith(JavaUtils.JAVA_PIGUDF_DIRECTORY + ".")) {
                         expressionComposite.setExpression(str.substring(str.indexOf(".") + 1), true);
-                    } else
+                    } else {
                         expressionComposite.setExpression(str, true);
+                    }
                 }
             }
         });
