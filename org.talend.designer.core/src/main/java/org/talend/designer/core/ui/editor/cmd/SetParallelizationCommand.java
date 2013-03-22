@@ -81,7 +81,7 @@ public class SetParallelizationCommand extends Command {
                         if (conColumnListMap.get(clumnKeyListName) instanceof String) {
                             parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
                         }
-                        if (conColumnListMap.get(clumnKeyListName) instanceof Integer) {
+                        if (conElemForList != null && conColumnListMap.get(clumnKeyListName) instanceof Integer) {
                             Integer index = (Integer) conColumnListMap.get(clumnKeyListName);
                             parKeyValues.add((String) conElemForList.getListItemsValue()[index]);
                         }
@@ -208,7 +208,7 @@ public class SetParallelizationCommand extends Command {
                     Integer index = (Integer) conColumnListMap.get(clumnKeyListName);
                     parKeyValues.add((String) conElemForList.getListItemsValue()[index]);
                     // if the value of key is Integer index,need to set it back to the value
-                    conColumnListMap.put(clumnKeyListName, (String) conElemForList.getListItemsValue()[index]);
+                    conColumnListMap.put(clumnKeyListName, conElemForList.getListItemsValue()[index]);
                 }
             }
         }
@@ -330,8 +330,9 @@ public class SetParallelizationCommand extends Command {
         boolean hasInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
-                    .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)))
+                    .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+            }
         }
         return hasInPreviousCon;
     }
@@ -341,8 +342,9 @@ public class SetParallelizationCommand extends Command {
         boolean hasInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             if ((con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null && con
-                    .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)))
+                    .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+            }
         }
         return hasInPreviousCon;
     }
@@ -352,8 +354,9 @@ public class SetParallelizationCommand extends Command {
         boolean hasInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             if ((con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
-                    .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true)))
+                    .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+            }
         }
         return hasInPreviousCon;
     }
@@ -363,8 +366,9 @@ public class SetParallelizationCommand extends Command {
         boolean hasInPreviousCon = false;
         for (IConnection con : currentNode.getIncomingConnections()) {
             if ((con.getElementParameter(EParameterName.NONE.getName()) != null && con
-                    .getElementParameter(EParameterName.NONE.getName()).getValue().equals(true)))
+                    .getElementParameter(EParameterName.NONE.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+            }
         }
         return hasInPreviousCon;
     }
