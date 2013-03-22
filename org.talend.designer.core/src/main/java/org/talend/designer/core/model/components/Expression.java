@@ -61,9 +61,9 @@ public final class Expression {
     private static final String EQUALS = "=="; //$NON-NLS-1$
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
-    
+
     private static final String GREAT_THAN = ">"; //$NON-NLS-1$
-    
+
     private static final String LESS_THAN = "<"; //$NON-NLS-1$
 
     private Expression(String expressionString) {
@@ -326,35 +326,35 @@ public final class Expression {
                         if (varNames.length > 2 && varNames[1] != null && varNames[2] != null) {
                             // read in/out connection type accounts
                             List<? extends IConnection> connections = new ArrayList<IConnection>();
-                            if("IN".equals(varNames[1]) || "OUT".equals(varNames[1])){
-                                if("IN".equals(varNames[1])){
-                                    if("ANY".equals(varNames[2])){
+                            if ("IN".equals(varNames[1]) || "OUT".equals(varNames[1])) {
+                                if ("IN".equals(varNames[1])) {
+                                    if ("ANY".equals(varNames[2])) {
                                         connections = node.getIncomingConnections();
                                     } else {
                                         connections = node.getIncomingConnections(EConnectionType.valueOf(varNames[2]));
                                     }
                                 } else {
-                                    if("ANY".equals(varNames[2])){
+                                    if ("ANY".equals(varNames[2])) {
                                         connections = node.getOutgoingConnections();
-                                    }else{
+                                    } else {
                                         connections = node.getOutgoingConnections(EConnectionType.valueOf(varNames[2]));
                                     }
                                 }
-                                try{
+                                try {
                                     int connSize = connections.size();
                                     int targetNumber = Integer.parseInt(variableValue);
-                                    if(GREAT_THAN.equals(test)){
+                                    if (GREAT_THAN.equals(test)) {
                                         return connSize > targetNumber;
-                                    }else if(LESS_THAN.equals(test)){
+                                    } else if (LESS_THAN.equals(test)) {
                                         return connSize < targetNumber;
-                                    }else if(EQUALS.equals(test)){
+                                    } else if (EQUALS.equals(test)) {
                                         return connSize == targetNumber;
-                                    }else if(NOT_EQUALS.equals(test)){
+                                    } else if (NOT_EQUALS.equals(test)) {
                                         return connSize != targetNumber;
                                     }
-                                }catch(Exception e){
+                                } catch (Exception e) {
                                 }
-                            }else{
+                            } else {
                                 // read specific connection parameter
                                 connections = node.getOutgoingConnections(EConnectionType.valueOf(varNames[1]));
                                 for (IConnection c : connections) {
@@ -369,6 +369,29 @@ public final class Expression {
                 }
                 return false;
             }// End of TESB-6240
+            else if ("#NODE@IN".equals(varNames[0])) {
+                if (listParam != null && listParam.size() > 0) {
+                    IElement element = listParam.get(0).getElement();
+                    if (element != null && element instanceof IConnection) {
+                        INode sourceNode = ((IConnection) element).getSource();
+                        // change from: #NODE@IN.SUBTREE_START == 'false'
+                        // to: SUBTREE_START == 'false'
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        return evaluate(simpleExpression, sourceNode.getElementParameters());
+                    }
+                }
+            } else if ("#NODE@OUT".equals(varNames[0])) {
+                if (listParam != null && listParam.size() > 0) {
+                    IElement element = listParam.get(0).getElement();
+                    if (element != null && element instanceof IConnection) {
+                        INode sourceNode = ((IConnection) element).getTarget();
+                        // change from: #NODE@OUT.END_OF_FLOW == 'false'
+                        // to: END_OF_FLOW == 'false'
+                        simpleExpression = simpleExpression.replace(varNames[0] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$                       
+                        return evaluate(simpleExpression, sourceNode.getElementParameters());
+                    }
+                }
+            }
         }
 
         if ((variableName != null) && (variableValue != null)) {

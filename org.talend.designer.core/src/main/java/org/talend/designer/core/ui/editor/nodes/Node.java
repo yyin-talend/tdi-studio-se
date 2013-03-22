@@ -561,7 +561,7 @@ public class Node extends Element implements IGraphicalNode {
             size.width = DEFAULT_SIZE;
         }
         if (!getProcess().isDuplicate()) { // only for graphical process
-            calculateSubtreeStart();
+            calculateSubtreeStartAndEnd();
         }
     }
 
@@ -1086,6 +1086,7 @@ public class Node extends Element implements IGraphicalNode {
             Connection connection = (Connection) conn;
 
             if (!ConnectionCreateCommand.isCreatingConnection()) {
+                calculateSubtreeStartAndEnd();
                 return;
             }
 
@@ -1265,7 +1266,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             }
-            calculateSubtreeStart();
+            calculateSubtreeStartAndEnd();
         }
     }
 
@@ -1356,6 +1357,7 @@ public class Node extends Element implements IGraphicalNode {
                 } else {
                     outputs.add(order, conn);
                 }
+                calculateSubtreeStartAndEnd();
                 fireStructureChange(OUTPUTS, conn);
                 return;
             }
@@ -1392,7 +1394,7 @@ public class Node extends Element implements IGraphicalNode {
                 vlist.add(map);
             }
         }
-        calculateSubtreeStart();
+        calculateSubtreeStartAndEnd();
         fireStructureChange(OUTPUTS, conn);
     }
 
@@ -1501,7 +1503,7 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         removeTargetMetaData(connection);
-        calculateSubtreeStart();
+        calculateSubtreeStartAndEnd();
         fireStructureChange(INPUTS, connection);
     }
 
@@ -1559,7 +1561,7 @@ public class Node extends Element implements IGraphicalNode {
         ((Connection) connection).updateAllId();
         removeSourceMatadata(connection);
         removeTargetMetaData(connection);
-        calculateSubtreeStart();
+        calculateSubtreeStartAndEnd();
         fireStructureChange(OUTPUTS, connection);
     }
 
@@ -4027,8 +4029,16 @@ public class Node extends Element implements IGraphicalNode {
         firePropertyChange(ICON_CHANGE, null, null);
     }
 
-    public void calculateSubtreeStart() {
+    public void calculateSubtreeStartAndEnd() {
         setSubtreeStart(isDesignSubjobStartNode() && !isThereLinkWithHash());
+        IElementParameter param = getElementParameter(EParameterName.END_OF_FLOW.getName());
+        if (param != null) {
+            if (NodeUtil.getOutgoingConnections(this, IConnectionCategory.DATA).isEmpty()) {
+                param.setValue(Boolean.TRUE);
+            } else {
+                param.setValue(Boolean.FALSE);
+            }
+        }
     }
 
     /**

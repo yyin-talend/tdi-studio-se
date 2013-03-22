@@ -473,8 +473,9 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setRequired(false);
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
-        tmpParam.setShow(true);
+        tmpParam.setShowIf("#NODE@OUT.END_OF_FLOW == 'false'");
         addElementParameter(tmpParam);
+
         tmpParam = new ElementParameter(this);
         tmpParam.setName(EParameterName.DEPARTITIONER.getName());
         tmpParam.setValue(Boolean.FALSE);
@@ -484,7 +485,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setNumRow(2);
         tmpParam.setReadOnly(false);
         tmpParam.setRequired(false);
-        tmpParam.setShow(true);
+        tmpParam.setShowIf("#NODE@IN.SUBTREE_START == 'false'");
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
         addElementParameter(tmpParam);
@@ -498,7 +499,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setNumRow(3);
         tmpParam.setReadOnly(false);
         tmpParam.setRequired(false);
-        tmpParam.setShow(true);
+        tmpParam.setShowIf("(#NODE@IN.SUBTREE_START == 'false' AND #NODE@OUT.END_OF_FLOW == 'false')");
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
         addElementParameter(tmpParam);

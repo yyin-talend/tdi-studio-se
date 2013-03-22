@@ -334,6 +334,7 @@ public enum EParameterName {
     NONE(Messages.getString("Connection.paral_none")), //$NON-NLS-1$
 
     SUBTREE_START("SUBTREE_START"), //$NON-NLS-1$
+    END_OF_FLOW("END_OF_FLOW"), //$NON-NLS-1$
 
     // tFlowToIterator
     DEFAULT_MAP("DEFAULT_MAP");

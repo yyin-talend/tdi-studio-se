@@ -71,7 +71,6 @@ public class SetParallelizationCommand extends Command {
                 IElementParameter parTableCon = getPreviousParCon(needToPar).getElementParameter("HASH_KEYS");
                 IElementParameter parTableNode = needToPar.getElementParameter(partitionKey[0]);
                 if (parTableNode != null) {
-                    ElementParameter conElemForList = null;
                     String clumnKeyListName = "KEY_COLUMN";// for the partition key
                     String clumnNodeListName = partitionKey[1];
 
@@ -80,10 +79,6 @@ public class SetParallelizationCommand extends Command {
                     for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
                         if (conColumnListMap.get(clumnKeyListName) instanceof String) {
                             parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
-                        }
-                        if (conElemForList != null && conColumnListMap.get(clumnKeyListName) instanceof Integer) {
-                            Integer index = (Integer) conColumnListMap.get(clumnKeyListName);
-                            parKeyValues.add((String) conElemForList.getListItemsValue()[index]);
                         }
                     }
                     for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
@@ -145,9 +140,9 @@ public class SetParallelizationCommand extends Command {
                                 con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
 
                                 // the first flow,should not show departitioner row.
-                                if (con.getSource().isStart()) {
-                                    deparElem.setShow(false);
-                                }
+                                // if (con.getSource().isStart()) {
+                                // deparElem.setShow(false);
+                                // }
                                 // set the keys for hash keys
                                 setHashKeysForCon(con);
 
@@ -315,16 +310,6 @@ public class SetParallelizationCommand extends Command {
         return columnKeyValues;
     }
 
-    private boolean existPreviousParCon(Node currentNode) {
-        // To judge if there has par/col on previous connection
-        boolean hasParInPreviousCon = false;
-        for (IConnection con : currentNode.getIncomingConnections()) {
-            Node sourceNode = (Node) con.getSource();
-            hasParInPreviousCon = isExistPreviousParCon(sourceNode);
-        }
-        return hasParInPreviousCon;
-    }
-
     private boolean existPreviousPar(Node currentNode) {
         // To judge if there has par/col on previous connection
         boolean hasInPreviousCon = false;
@@ -440,9 +425,9 @@ public class SetParallelizationCommand extends Command {
                 con.setPropertyValue(EParameterName.DEPARTITIONER.getName(), Boolean.TRUE);
 
                 // the last flow,should not show partitioner row.
-                if (node.getOutgoingConnections().size() < 0) {
-                    parElem.setShow(false);
-                }
+                // if (node.getOutgoingConnections().size() == 0) {
+                // parElem.setShow(false);
+                // }
             }
         }
         if (node.getOutgoingConnections().size() > 0) {

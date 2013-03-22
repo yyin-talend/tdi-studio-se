@@ -974,6 +974,18 @@ public class EmfComponent extends AbstractComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
+        param.setName(EParameterName.END_OF_FLOW.getName());
+        param.setValue(new Boolean(canStart()));
+        param.setDisplayName(EParameterName.END_OF_FLOW.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setNumRow(5);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
         param.setName(EParameterName.ACTIVATE.getName());
         param.setValue(new Boolean(true));
         param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
