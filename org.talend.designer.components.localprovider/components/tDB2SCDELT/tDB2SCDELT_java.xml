@@ -209,14 +209,6 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="FIELD_VALUE_INC_NULL"
-      FIELD="CHECK"
-      NUM_ROW="65"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
       NUM_ROW="70"
@@ -328,6 +320,14 @@
       SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="FIELD_VALUE_INC_NULL"
+      FIELD="CHECK"
+      NUM_ROW="15"
+    >
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
