@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -113,12 +114,16 @@ public class MapperManager extends AbstractMapperManager {
 
     private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
 
+    private boolean isMRProcess;
+
     public MapperManager(MapperComponent mapperComponent) {
         super(mapperComponent);
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager();
         linkManager = new LinkManager();
         problemsManager = new ProblemsManager(this);
+        IProcess process = getAbstractMapComponent().getProcess();
+        isMRProcess = ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType());
         getDefaultSetting();
     }
 
@@ -426,6 +431,7 @@ public class MapperManager extends AbstractMapperManager {
         }
     }
 
+    @Override
     public UIManager getUiManager() {
         if (this.uiManager == null) {
             uiManager = new UIManager(this, tableManager);
@@ -458,7 +464,7 @@ public class MapperManager extends AbstractMapperManager {
             dataMapTableEntry = new InputColumnTableEntry(abstractDataMapTable, metadataColumn);
         } else if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             String expression = metadataColumn.getExpression();
-            if (expression != null && !"".equals(expression)) { //$NON-NLS-N$
+            if (expression != null && !"".equals(expression)) {
                 dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn, expression);
             } else {
                 dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn);
@@ -771,8 +777,7 @@ public class MapperManager extends AbstractMapperManager {
         while (exists) {
             exists = retrieveTableEntry(tableEntryLocation) != null;
             if (!exists) {
-                for (int i = 0; i < columnsBeingCreated.length; i++) {
-                    String columnBeingCreated = columnsBeingCreated[i];
+                for (String columnBeingCreated : columnsBeingCreated) {
                     if (columnBeingCreated.equals(tableEntryLocation.columnName)) {
                         exists = true;
                         break;
@@ -852,8 +857,8 @@ public class MapperManager extends AbstractMapperManager {
     public void updateEmfParameters(String... parametersToUpdate) {
 
         HashSet<String> hParametersToUpdate = new HashSet<String>();
-        for (int i = 0; i < parametersToUpdate.length; i++) {
-            hParametersToUpdate.add(parametersToUpdate[i]);
+        for (String element : parametersToUpdate) {
+            hParametersToUpdate.add(element);
         }
 
         List<? extends IElementParameter> elementParameters = getAbstractMapComponent().getElementParameters();
@@ -926,8 +931,7 @@ public class MapperManager extends AbstractMapperManager {
         String currentExpression = entry.getExpression();
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
         // loop on all locations of current expression
-        for (int i = 0; i < tableEntryLocations.length; i++) {
-            TableEntryLocation currentLocation = tableEntryLocations[i];
+        for (TableEntryLocation currentLocation : tableEntryLocations) {
             if (currentLocation.equals(previousLocation)) {
                 currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation, newLocation);
                 expressionHasChanged = true;
@@ -1105,8 +1109,13 @@ public class MapperManager extends AbstractMapperManager {
     public Map<String, Object> getDefaultSetting() {
         if (defaultSettingMap.isEmpty()) {
             defaultSettingMap.put(DataMapTableView.LOOKUP_MODEL_SETTING, TMAP_LOOKUP_MODE.LOAD_ONCE);
-            defaultSettingMap.put(DataMapTableView.MATCH_MODEL_SETTING, new IUIMatchingMode[] { TMAP_MATCHING_MODE.ALL_ROWS,
-                    TMAP_MATCHING_MODE.UNIQUE_MATCH });
+            if (isMRProcess) {
+                defaultSettingMap.put(DataMapTableView.MATCH_MODEL_SETTING, new IUIMatchingMode[] { TMAP_MATCHING_MODE.ALL_ROWS,
+                        TMAP_MATCHING_MODE.ALL_MATCHES });
+            } else {
+                defaultSettingMap.put(DataMapTableView.MATCH_MODEL_SETTING, new IUIMatchingMode[] { TMAP_MATCHING_MODE.ALL_ROWS,
+                        TMAP_MATCHING_MODE.UNIQUE_MATCH });
+            }
             defaultSettingMap.put(DataMapTableView.JOIN_MODEL_SETTING, false);
             defaultSettingMap.put(DataMapTableView.PERSISTENCE_MODEL_SETTING, false);
             defaultSettingMap.put(DataMapTableView.OUTPUT_REJECT, false);
@@ -1139,6 +1148,10 @@ public class MapperManager extends AbstractMapperManager {
 
     public boolean isTracesActive() {
         return DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
+    }
+
+    public boolean isMRProcess() {
+        return this.isMRProcess;
     }
 
 }

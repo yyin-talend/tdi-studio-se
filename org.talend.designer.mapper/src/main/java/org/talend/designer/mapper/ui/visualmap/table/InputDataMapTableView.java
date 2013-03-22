@@ -95,7 +95,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private IUIMatchingMode previousMatchingModeSelected = getInputTable().getMatchingMode() != null
             && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS ? getInputTable().getMatchingMode()
-            : TMAP_MATCHING_MODE.UNIQUE_MATCH;
+            : (getMapperManager().isMRProcess() ? TMAP_MATCHING_MODE.ALL_MATCHES : TMAP_MATCHING_MODE.UNIQUE_MATCH);
 
     private boolean previousStateAtLeastOneHashKey;
 
@@ -157,10 +157,14 @@ public class InputDataMapTableView extends DataMapTableView {
 
         if (tableMapSettingEntriesModel != null) {
             if (!getInputTable().isMainConnection()) {
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOKUP_MODEL_SETTING, null));
+                if (!getMapperManager().isMRProcess()) {
+                    tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOKUP_MODEL_SETTING, null));
+                }
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, MATCH_MODEL_SETTING, null));
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, JOIN_MODEL_SETTING, null));
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, PERSISTENCE_MODEL_SETTING, null));
+                if (!getMapperManager().isMRProcess()) {
+                    tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, PERSISTENCE_MODEL_SETTING, null));
+                }
                 // remove schema type in input tables
                 // tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
             } else {
@@ -737,6 +741,9 @@ public class InputDataMapTableView extends DataMapTableView {
             if (matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
                 continue;
             }
+            if (getMapperManager().isMRProcess() && matchingMode == TMAP_MATCHING_MODE.FIRST_MATCH) {
+                continue;
+            }
             if (text.length() != 0) {
 
                 if (matchingMode == TMAP_MATCHING_MODE.ALL_ROWS
@@ -745,7 +752,12 @@ public class InputDataMapTableView extends DataMapTableView {
                         && getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
                     // avilable.add(matchingMode);
                 } else {
-                    avilable.add(matchingMode);
+                    if (getMapperManager().isMRProcess() && matchingMode == TMAP_MATCHING_MODE.ALL_MATCHES) {
+                        // set ALL_MATCHES as default value for m/r process
+                        avilable.add(0, matchingMode);
+                    } else {
+                        avilable.add(matchingMode);
+                    }
                 }
 
             }
