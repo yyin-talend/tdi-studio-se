@@ -711,14 +711,16 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 	if ( java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches() ){
 	///////////////////
 	
-		for(int i=0;i <	metadata.getListColumns().size();i++){
-			if(i >=positions.length){
+	    List<IMetadataColumn> columnList = metadata.getListColumns();
+		for(int i=0;i <	columnList.size();i++){
+		    IMetadataColumn column = columnList.get(i);
+		    if(i >=positions.length){
 %>	
 				columnValue<%=cid %>[<%=i%>]="";
 <%
 				continue;
 			}
-			if(i==(metadata.getListColumns().size()-1) && useExistingDynamic){
+			if("id_Dynamic".equals(column.getTalendType()) && useExistingDynamic){
 				String paddingChar = formats.get(i).get("PADDING_CHAR");
 				String align = formats.get(i).get("ALIGN");
 %> 
@@ -764,6 +766,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 					substringBegin<%=cid %> = substringEnd<%=cid %>;
 				}
 <%
+                continue;
 			}
 %>
 		    if(substringBegin<%=cid %> >= rowLen_<%=cid %>){
@@ -807,6 +810,13 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 				
 	///////////////
 	} else{
+	    List<IMetadataColumn> listColumns = metadata.getListColumns();
+	    int column_index=listColumns.size()-1;
+	    for(int i = 0;i<listColumns.size();i++){
+	        if("id_Dynamic".equals(listColumns.get(i).getTalendType())){
+	            column_index = i;
+	        }
+	    }
 %>
 		for (int i_<%=cid %> = 0; i_<%=cid %> < <%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
 			if (i_<%=cid %> >= arrFieldSeparator<%=cid%>.length ){
@@ -819,7 +829,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 				String paddingChar = formats.get(formats.size()-1).get("PADDING_CHAR");
 				String align = formats.get(formats.size()-1).get("ALIGN");
 %>
-				if(i_<%=cid %>==<%=metadata.getListColumns().size()%>-1){
+				if(i_<%=cid %>==<%=column_index%>){
 					dynamic_<%=cid %>.clearColumnValues();
 			 		for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
 						routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);

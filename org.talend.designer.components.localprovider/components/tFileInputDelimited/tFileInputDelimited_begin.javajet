@@ -144,8 +144,12 @@
 				int sizeListColumns = listColumns.size();
 				boolean noStringTypeExist = false;
 				int dynamic_index = -1;
+				if(metadata.isDynamicSchema()){
 				%>
 				int dynamic_column_count_<%=cid%>=<%if(this.isBehindDynamic){%><%=dynamicName%>.getColumnCount()<%}else{%>1<%}%>;
+				<%
+				}
+				%>
 				int columnIndexWithD_<%=cid%> = 0;
 				<%
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -177,9 +181,16 @@
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%>
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					if(metadata.isDynamicSchema()){
+					%>
 					columnIndexWithD_<%=cid%> = <%=valueN-1%>+dynamic_column_count_<%=cid%>;
 					<%
+					}else{
+					%>
+					columnIndexWithD_<%=cid%> = <%=valueN%>;
+					<%
+					}
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
 						String defaultValue = column.getDefault();
 						if(defaultValue!=null && defaultValue.length()>0){
@@ -267,9 +278,9 @@
 				%>
 				<%if(checkNum) {%>
 				 	int filedsum = <%=sourceValueName%>.getColumnsCountOfCurrentRow();
-				 	if(filedsum < <%=metadata.getListColumns().size() %>){
+				 	if(filedsum < (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)){
 					 	throw new RuntimeException("Column(s) missing");
-					 } else if(filedsum > <%=metadata.getListColumns().size() %>) {
+					 } else if(filedsum > (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)) {
 					 	throw new RuntimeException("Too many columns");
 					 }     
 				<%
@@ -572,7 +583,12 @@
 				
 				List<IMetadataColumn> columns=metadata.getListColumns();
 				int columnSize = columns.size();
+				if(metadata.isDynamicSchema()){
 				%>				
+	                int dynamic_column_count_<%=cid%>=<%if(this.isBehindDynamic){%><%=dynamicName%>.getColumnCount()<%}else{%>1<%}%>;
+				<%
+				}
+				%>
 				if(<%=sourceValueName%>.length == 1 && ("\015").equals(<%=sourceValueName%>[0])){//empty line when row separator is '\n'
 					<%
 					for(int colNo=start;colNo<end;colNo++) {
@@ -603,16 +619,23 @@
 					}
 					int dynamic_index = 1;
 	                %>
-	                int dynamic_column_count_<%=cid%>=<%if(this.isBehindDynamic){%><%=dynamicName%>.getColumnCount()<%}else{%>1<%}%>;
-	                int columnIndexWithD_<%=cid%> = 0; //Column Index with dynamic
+	                int columnIndexWithD_<%=cid%> = 0; //Column Index 
 	                <%
 					for (int i=start;i<end;i++) {
 						IMetadataColumn column=columns.get(i);
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						if(metadata.isDynamicSchema()){
 						%>
 						columnIndexWithD_<%=cid%> = <%=i-1 %> + dynamic_column_count_<%=cid%>;
+						<%
+						}else{
+						%>
+						columnIndexWithD_<%=cid%> = <%=i%>;
+						<%
+						}
+						%>
 						if(columnIndexWithD_<%=cid%> < <%=sourceValueName%>.length){				
 							<%
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -695,9 +718,9 @@
 				}
 				<%if(checkNum) {%>
  					int filedsum = <%=sourceValueName%>.length;
- 					if(filedsum < <%=metadata.getListColumns().size() %>){
+ 					if(filedsum < (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%>-1<%}%>)){
  						throw new java.lang.Exception("Column(s) missing");
- 					} else if(filedsum > <%=metadata.getListColumns().size() %>) {
+ 					} else if(filedsum > (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)) {
  						throw new RuntimeException("Too many columns");
  					}     
 				<%

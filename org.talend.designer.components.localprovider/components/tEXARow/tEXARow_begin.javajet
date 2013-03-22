@@ -15,7 +15,6 @@ imports="
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbschema= ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-	String dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
@@ -25,7 +24,7 @@ imports="
         if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
             url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=dbschema%>; 
         } else {
-            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
+            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ";" + <%=dbproperties%>;
         }
         String dbUser_<%=cid %> = <%=dbuser%>;
         String dbPwd_<%=cid %> = <%=dbpwd%>;

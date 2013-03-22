@@ -30,7 +30,7 @@ imports="
 <%
             } else {
 %>
-                String url_<%=cid%> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
+                String url_<%=cid%> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ";" + <%=dbproperties%>;
 <%
             }       
         }

@@ -48,7 +48,7 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	IMetadataTable metadata = metadatas.get(0);
 	boolean hasDynamic = metadata.isDynamicSchema();
-	if(hasDynamic){
+	if(hasDynamic && ("true").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))){
 %>
         int dynamic_column_count_<%=cid%> = 1;
 <%
@@ -112,9 +112,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 <%
     				    } 
     				    if(column.getTalendType().equals("id_Dynamic")){
+    				        if(advancedSeparator){
+%>
+    				            routines.system.DynamicUtils.writeValuesToStringBuilder(<%=conn.getName() %>.<%=column.getLabel() %>, sb_<%=cid %>, OUT_DELIM_<%=cid %>, <%=thousandsSeparator%>, <%=decimalSeparator%>);
+<%
+    				        }else{
 %>
     				    		routines.system.DynamicUtils.writeValuesToStringBuilder(<%=conn.getName() %>.<%=column.getLabel() %>, sb_<%=cid %>, OUT_DELIM_<%=cid %>);
 <%
+    				        }
     				    }else{
 %>
 								sb_<%=cid %>.append(
@@ -179,17 +185,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %><%}%>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,int dynamic_column_count_<%=cid%> <%}%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
+							    if(hasDynamic){
+%>
+									headColu<%=cid%>[<%=i-1%>+dynamic_column_count_<%=cid%>]="<%=column.getLabel() %>";
+<%
+							    }else{
 %>
 									headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
 <%
+							    }
 							}else{
 %>
-									for(int mi=0;mi<<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount();mi++){
-        	    		     			headColu<%=cid%>[<%=i%>+mi]=<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnMetadata(mi).getName();
+                                dynamic_column_count_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>.getColumnCount();
+									for(int mi=0;mi<dynamic_column_count_<%=cid%>;mi++){
+        	    		     			headColu<%=cid%>[<%=i%>+mi]=<%=conn.getName()%>.<%=column.getLabel()%>.getColumnMetadata(mi).getName();
         	    		     		}
 <%
 							}
@@ -212,19 +225,36 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
     					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 	                    if(i%schemaOptNum==0){
 %>
-		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,String[] row<%=cid%>){
+		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,String[] row<%=cid%><%if(hasDynamic){%>,int dynamic_column_count_<%=cid%> <%}%>){
 <%
 						}
     					if(("id_Dynamic").equals(column.getTalendType())) {
 %>
 							if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
+							    dynamic_column_count_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>.getColumnCount();
+							    <%
+                                if(advancedSeparator){
+%>
+                                    routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>, <%=thousandsSeparator%>, <%=decimalSeparator%>);
+<%
+                                }else{
+%>
                             	routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>);
+<%
+                                }
+%>
                             }
 <%
                 		}else{
+                		    if(hasDynamic){
 %> 
+                		    row<%=cid%>[<%=i-1%>+dynamic_column_count_<%=cid%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%>
+<%
+                		    }else{
+%>
                 			row<%=cid%>[<%=i%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%>
 <%					
+                		    }
                 			if(javaType == JavaTypesManager.STRING ){
 %>
 							<%=conn.getName() %>.<%=column.getLabel() %>;

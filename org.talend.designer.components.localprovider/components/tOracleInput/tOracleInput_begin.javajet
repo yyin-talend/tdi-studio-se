@@ -283,7 +283,7 @@ imports="
 <%
 				if (needConvert && "String".equals(convertToJavaType)) {
 %>
-					<%=firstConnName%>.<%=column.getLabel()%> = oracle.xdb.XMLType.createXML((oracle.sql.OPAQUE) tmpObj_column_index_<%=cid%>_<%=cid %>).getStringVal();
+					<%=firstConnName%>.<%=column.getLabel()%> = oracle.xdb.XMLType.createXML((oracle.sql.OPAQUE) tmpObj_<%=currentColNo%>_<%=cid %>).getStringVal();
 <%
 				} else {
 %>
