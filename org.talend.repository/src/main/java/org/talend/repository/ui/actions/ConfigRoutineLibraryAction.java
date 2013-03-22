@@ -52,10 +52,11 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = selection.size() == 1;
         if (canWork) {
-            for (Object o : ((IStructuredSelection) selection).toArray()) {
+            for (Object o : selection.toArray()) {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
                     switch (node.getType()) {
@@ -76,6 +77,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
                         }
 
                         if (node.getObjectType() == ERepositoryObjectType.ROUTINES
+                                || node.getObjectType() == ERepositoryObjectType.PIG_UDF
                                 || (beanType != null && node.getObjectType() == beanType)) {
                             IRepositoryViewObject repObj = node.getObject();
                             IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
@@ -101,6 +103,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
      * 
      * @see org.talend.repository.ui.actions.AContextualAction#isVisible()
      */
+    @Override
     public boolean isVisible() {
         return isEnabled();
     }
@@ -110,6 +113,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         ConfigExternalLibWizard wizard = new ConfigExternalLibWizard();
         IWorkbench workbench = getWorkbench();

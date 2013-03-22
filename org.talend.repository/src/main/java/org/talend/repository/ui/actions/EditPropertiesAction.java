@@ -190,7 +190,11 @@ public class EditPropertiesAction extends AContextualAction {
         if (originalName.equals(node.getObject().getProperty().getLabel())) {
             return;
         }
+        processRename(node, originalName);
 
+    }
+
+    protected void processRename(RepositoryNode node, String originalName) {
         try {
             IJavaProject javaProject = CorePlugin.getDefault().getRunProcessService().getJavaProject();
             if (javaProject == null) {
@@ -202,7 +206,7 @@ public class EditPropertiesAction extends AContextualAction {
             IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
 
             // qli modified to fix the bug 5400 and 6185.
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            IPackageFragment routinesPkg = getPackageFragment(root);
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {
@@ -218,9 +222,11 @@ public class EditPropertiesAction extends AContextualAction {
 
             IRunnableWithProgress r = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             try {
                                 operation.run(monitor);
@@ -273,6 +279,10 @@ public class EditPropertiesAction extends AContextualAction {
         }
     }
 
+    protected IPackageFragment getPackageFragment(IPackageFragmentRoot rootPackageFragment) {
+        return rootPackageFragment.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+    }
+
     /**
      * Find the editor that is related to the node.
      * 
@@ -303,6 +313,7 @@ public class EditPropertiesAction extends AContextualAction {
         return null;
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = selection.size() == 1;
         if (canWork) {

@@ -212,10 +212,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
             }
+
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
-            if (libResource != null) {
-                list.add(libResource);
-            }
+            list.add(libResource);
+
+
             ExportFileResource providedLibResources = getProvidedLibExportFileResource(processes);
             if (providedLibResources != null) {
                 list.add(providedLibResources);
@@ -266,6 +267,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(processes);
         libResource.addResources(userRoutineList);
+        // pigudf
+        // libResource.addResource(getPigudf(processes))
     }
 
     protected ExportFileResource getProvidedLibExportFileResource(ExportFileResource[] processes) {
@@ -273,7 +276,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -281,9 +284,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             *
+             * 
              * If empty, nothing will be added.
-             *
+             * 
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -308,9 +311,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     *
+     * 
      * If empty, nothing will be added. @see isExcludedLib
-     *
+     * 
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -353,7 +356,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     *
+     * 
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -364,21 +367,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         IPath srcPath = srcFolder.getLocation();
 
         // http://jira.talendforge.org/browse/TESB-6437
-        //https://jira.talendforge.org/browse/TESB-7893
+        // https://jira.talendforge.org/browse/TESB-7893
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 ICamelDesignerCoreService.class);
-        if(camelService != null){
+        if (camelService != null) {
             List<IPath> paths = camelService.synchronizeRouteResource(processItem);
             for (IPath path : paths) {
-                osgiResource
-                        .addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI().toURL());
+                osgiResource.addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI()
+                        .toURL());
             }
         }
     }
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     *
+     * 
      * @param resource
      * @param process
      * @throws IOException
@@ -411,7 +414,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
+     * 
      * @param processItem
      * @author rzubairov
      * @return
@@ -500,15 +503,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
 
-        boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR",restRequestComponent);
-        boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR",restRequestComponent);
-        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem,isSlEnable,isSamEnable);
+        boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent);
+        boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent);
+        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem, isSlEnable, isSamEnable);
         String jaxrsSamImport = isSamEnable ? "<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />" : "";
         String serviceNamespace = "";
         String serviceName = "";
-        if(isSlEnable){
-            serviceNamespace = "xmlns:tns=\"" + EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent) + "\"";
-            serviceName = "serviceName=\"tns:" + EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent) + "\"";
+        if (isSlEnable) {
+            serviceNamespace = "xmlns:tns=\"" + EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)
+                    + "\"";
+            serviceName = "serviceName=\"tns:" + EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent)
+                    + "\"";
         }
 
         BufferedReader br = null;
@@ -529,7 +534,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JAXRS_FEATURES@", jaxrsFeature) //$NON-NLS-1$
                         .replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
                         .replace("@LOCATOR_SERVICE_NAME@", serviceName) //$NON-NLS-1$
-                        .replace("@JAXRS_SAM_IMPORT@",jaxrsSamImport); //$NON-NLS-1$
+                        .replace("@JAXRS_SAM_IMPORT@", jaxrsSamImport); //$NON-NLS-1$
                 bw.write(line);
                 bw.newLine();
                 line = br.readLine();
@@ -546,21 +551,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * Gets the jaxrs feature config.
-     * Currently, support SL&SAM feature config.
+     * Gets the jaxrs feature config. Currently, support SL&SAM feature config.
+     * 
      * @param component the component
      * @param processItem the process item
      * @param isSamEnable
      * @param isSlEnable
      * @return the jaxrs feature config
      */
-    private static String getJaxrsFeatureConfig(NodeType component,
-            ProcessItem processItem, boolean isSlEnable, boolean isSamEnable) {
+    private static String getJaxrsFeatureConfig(NodeType component, ProcessItem processItem, boolean isSlEnable,
+            boolean isSamEnable) {
         if (isSamEnable || isSlEnable) {
             StringBuilder sb = new StringBuilder();
             sb.append("<jaxrs:features>\n");
             if (isSlEnable) {
-                //add SL support
+                // add SL support
                 sb.append("\t\t\t<bean id=\"");
                 sb.append(processItem.getProperty().getLabel().toLowerCase());
                 sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
@@ -577,18 +582,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             if (size <= i + 1) {
                                 break;
                             }
-                            ElementValueType name = (ElementValueType) elementValue
-                                    .get(i);
-                            ElementValueType value = (ElementValueType) elementValue
-                                    .get(i + 1);
+                            ElementValueType name = (ElementValueType) elementValue.get(i);
+                            ElementValueType value = (ElementValueType) elementValue.get(i + 1);
                             sb.append("\n\t\t\t\t\t\t<entry>");
                             sb.append("\n\t\t\t\t\t\t\t<key><value>");
-                            sb.append(name.getValue() == null ? "" : name
-                                    .getValue());
+                            sb.append(name.getValue() == null ? "" : name.getValue());
                             sb.append("</value></key>");
                             sb.append("\n\t\t\t\t\t\t\t<value>");
-                            sb.append(value.getValue() == null ? "" : value
-                                    .getValue());
+                            sb.append(value.getValue() == null ? "" : value.getValue());
                             sb.append("</value>");
                             sb.append("\n\t\t\t\t\t\t</entry>");
                         }
@@ -601,8 +602,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 sb.append("\n\t\t\t</bean>\n");
             }
 
-            if(isSamEnable) {
-                //add sam support
+            if (isSamEnable) {
+                // add sam support
                 sb.append("\t\t\t<ref bean=\"eventFeature\"/>\n");
             }
             sb.append("\t\t</jaxrs:features>");
@@ -611,11 +612,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             return "";
         }
 
-
     }
+
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     *
+     * 
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -821,24 +822,27 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
-                if (null != restRequestComponent && "".equals(importPackages)){
-                    if(EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
+                if (null != restRequestComponent && "".equals(importPackages)) {
+                    if (EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
                         importPackages = "org.apache.cxf.jaxrs.security,";
                     }
-                    if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
+                    if (EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
                         importPackages += "org.talend.esb.servicelocator.cxf,";
                     }
                 }
-                if(null != restRequestComponent && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
+                if (null != restRequestComponent
+                        && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
                     importPackages += "org.talend.esb.sam.agent.feature,";
-                    analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
-                }else{
+                    analyzer.setProperty(Analyzer.REQUIRE_BUNDLE,
+                            "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                } else {
                     Collection<NodeType> tRESTClientComps = EmfModelUtils.getComponentsByName(pi, "tRESTClient");
-                    for (NodeType node : tRESTClientComps) { //$NON-NLS-1$
+                    for (NodeType node : tRESTClientComps) {
                         // https://jira.talendforge.org/browse/TESB-8066
                         if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
                             importPackages += "org.talend.esb.sam.agent.feature,";
-                            analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                            analyzer.setProperty(Analyzer.REQUIRE_BUNDLE,
+                                    "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
                             break;
                         }
                     }
@@ -867,8 +871,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-
-
 
         // } else {
         //            String additionalImports = ""; //$NON-NLS-1$
@@ -1061,8 +1063,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 listModulesReallyNeeded.addAll(neededLibraries);
             }
         }
-
-        collectRoutines.addAll(collectRoutines(process, useBeans));
+        String includePath;
+        if (useBeans) {
+            includePath = "beans"; //$NON-NLS-1$
+        } else {
+            includePath = "routines"; //$NON-NLS-1$
+        }
+        collectRoutines.addAll(collectRoutines(process, includePath));
 
         for (IRepositoryViewObject object : collectRoutines) {
             Item item = object.getProperty().getItem();
@@ -1112,7 +1119,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     *
+     * 
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {

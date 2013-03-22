@@ -13,6 +13,7 @@
 		org.talend.core.ui.branding.AbstractBrandingService
 		org.talend.core.GlobalServiceRegister
 		org.talend.designer.codegen.ITalendSynchronizer
+		org.talend.designer.codegen.PigTemplate
 		java.util.List
 		java.util.ArrayList
 		java.util.Vector
@@ -49,10 +50,21 @@ if(service instanceof AbstractBrandingService){
 %>
 package <%= packageName %>;
 
+<%for (String routine : CodeGeneratorRoutine.getRequiredPigudfName(process)) {
+      boolean isTemplate =false;
+       for(PigTemplate template:PigTemplate.values()){
+            if(routine.equals(template.getFileName())){
+                isTemplate = true;
+            }
+        }
+    if(!isTemplate){%>
+import pigudf.<%=routine%>;
+<%  }
+}%>
 <%for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
-	if(!routine.equals(ITalendSynchronizer.TEMPLATE)){%>
+    if(!routine.equals(ITalendSynchronizer.TEMPLATE)){%>
 import routines.<%=routine%>;
-<%	}
+<%  }
 }%>
 import routines.system.*;
 import routines.system.api.*;

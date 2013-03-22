@@ -84,6 +84,7 @@ public class DetecteViewImpactAction extends AContextualAction {
      * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
@@ -147,8 +148,9 @@ public class DetecteViewImpactAction extends AContextualAction {
                         canWork = true;
                     } else if (objectType == ERepositoryObjectType.BUSINESS_PROCESS
                             || objectType == ERepositoryObjectType.PROCESS || objectType == ERepositoryObjectType.ROUTINES
-                            || objectType == ERepositoryObjectType.JOB_SCRIPT || objectType == ERepositoryObjectType.SQLPATTERNS
-                            || objectType == ERepositoryObjectType.JOB_DOC || objectType == ERepositoryObjectType.JOBLET_DOC
+                            || objectType == ERepositoryObjectType.PIG_UDF || objectType == ERepositoryObjectType.JOB_SCRIPT
+                            || objectType == ERepositoryObjectType.SQLPATTERNS || objectType == ERepositoryObjectType.JOB_DOC
+                            || objectType == ERepositoryObjectType.JOBLET_DOC
                             || objectType == ERepositoryObjectType.DOCUMENTATION) {
                         canWork = false;
                     } else {
@@ -221,7 +223,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                 }
             }
         } else if (node.getObject() instanceof IRepositoryViewObject) {
-            IRepositoryViewObject object = (IRepositoryViewObject) node.getObject();
+            IRepositoryViewObject object = node.getObject();
             if (object != null) {
                 Item item = object.getProperty().getItem();
                 if (item != null) {

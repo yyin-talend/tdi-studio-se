@@ -174,6 +174,7 @@ public abstract class JobScriptsManager {
         needLauncher,
         needSystemRoutine,
         needUserRoutine,
+        needPigudf,
         needTalendLibraries,
         needJobItem,
         needJobScript,
@@ -226,6 +227,16 @@ public abstract class JobScriptsManager {
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException;
+
+    /**
+     * 
+     * DOC wchen Comment method "getExportPigudfResources". only for run job in studio
+     * 
+     * @param process
+     * @return
+     * @throws ProcessorException
+     */
+    public abstract URL getExportPigudfResources(ExportFileResource[] process) throws ProcessorException;
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();

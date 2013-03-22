@@ -170,7 +170,6 @@ public class DataProcess implements IGeneratingProcess {
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
             IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
             if (targetParam != null) {
-
                 if (sourceParam.getName().equals(EParameterName.DB_TYPE.getName())
                         && sourceParam.getValue().toString().matches("^.*[a|A][c|C][c|C][e|E][s|S][s|S].*$")) {
 
@@ -180,7 +179,12 @@ public class DataProcess implements IGeneratingProcess {
 
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
+                if (sourceParam.getValue() instanceof List) {
+                    targetParam.setValue(new ArrayList((List) sourceParam.getValue()));
+                }
                 if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
+
+                    // targetParam.setValue( sourceParam.getValue());
                     targetParam.setListItemsValue(ArrayUtils.clone(sourceParam.getListItemsValue()));
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
                 }
@@ -1771,6 +1775,7 @@ public class DataProcess implements IGeneratingProcess {
         }
     }
 
+    @Override
     public void buildFromGraphicalProcess(List<INode> graphicalNodeList) {
         initialize();
         if (graphicalNodeList.size() == 0) {
@@ -1873,6 +1878,8 @@ public class DataProcess implements IGeneratingProcess {
                     ((AbstractNode) dataNode).setDesignSubjobStartNode(currentDataNode);
                 }
             }
+
+            checkPigLoadComponent();
 
             // if there is at least 2 merge components in the same flow, then use hash to keep temporary datas.
             // if only one merge in the same flow, don't use any hash system, to keep best performances / memory
@@ -2054,6 +2061,34 @@ public class DataProcess implements IGeneratingProcess {
             checkMapReduceMap = null;
             checkRefMRList = null;
         }
+    }
+
+    private void checkPigLoadComponent() {
+        // if (PluginChecker.isPigudfPluginLoaded()) {
+        // for (INode dataNode : dataNodeList) {
+        // if (dataNode instanceof AbstractNode && "tPigLoad".equals(dataNode.getComponent().getName())) {
+        // IElementParameter elementParameter = dataNode.getElementParameter("DRIVER_JAR");
+        // if (elementParameter != null && elementParameter.getValue() instanceof List) {
+        // List value = (List) elementParameter.getValue();
+        // String jarName = "pigudf.jar";
+        // boolean alreadyExist = false;
+        // for (Object obj : value) {
+        // if (obj instanceof Map) {
+        // if (jarName.equals(((Map) obj).get("JAR_NAME"))) {
+        // alreadyExist = true;
+        // }
+        // }
+        // }
+        // if (!alreadyExist) {
+        // Map udfJar = new HashMap();
+        // udfJar.put("JAR_NAME", jarName);
+        // value.add(udfJar);
+        // }
+        // }
+        // }
+        // }
+        // }
+
     }
 
     public void checkFlowRefLinkForMR(final INode dataNode) {
@@ -3322,6 +3357,7 @@ public class DataProcess implements IGeneratingProcess {
         ((Process) duplicatedProcess).setGeneratingProcess(this);
         ((Process) duplicatedProcess).setProcessModified(false);
         ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
+        ((Process) duplicatedProcess).setNeededPigudf(process.getNeededPigudf());
         List<RoutinesParameterType> routines = null;
         if (process instanceof Process) {
             routines = ((Process) process).getRoutineDependencies();
@@ -3396,6 +3432,7 @@ public class DataProcess implements IGeneratingProcess {
         return dataNode;
     }
 
+    @Override
     public List<INode> getNodeList() {
         return dataNodeList;
     }

@@ -21,12 +21,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryService;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -90,32 +88,14 @@ public class NewRoutineWizardPage extends PropertiesWizardPage {
         List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
 
         // List for common process
-        if (ERepositoryObjectType.PROCESS != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
-
-                List<IRepositoryViewObject> mrList = service.getProxyRepositoryFactory().getAll(ERepositoryObjectType.PROCESS,
-                        true, false);
-                if (mrList != null && mrList.size() > 0) {
-                    list.addAll(mrList);
-                }
-            }
-        }
+        list.addAll(loadRepViewObjectWithOtherTypes(ERepositoryObjectType.PROCESS));
 
         // List for m/r process
         ERepositoryObjectType mrRepObjType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "PROCESS_MR");//$NON-NLS-1$
-        if (mrRepObjType != null) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IProxyRepositoryService.class)) {
-                IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                        IProxyRepositoryService.class);
+        list.addAll(loadRepViewObjectWithOtherTypes(mrRepObjType));
 
-                List<IRepositoryViewObject> mrList = service.getProxyRepositoryFactory().getAll(mrRepObjType, true, false);
-                if (mrList != null && mrList.size() > 0) {
-                    list.addAll(mrList);
-                }
-            }
-        }
+        // pig udf
+        list.addAll(loadRepViewObjectWithOtherTypes(ERepositoryObjectType.PIG_UDF));
         return list;
     }
 

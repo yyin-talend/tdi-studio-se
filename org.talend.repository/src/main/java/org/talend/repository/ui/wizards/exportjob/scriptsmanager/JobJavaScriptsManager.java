@@ -128,6 +128,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
+    private static final String USER_PIGUDF_PATH = "pigudf"; //$NON-NLS-1$
+
     private static final String SYSTEM_ROUTINES_PATH = "routines/system"; //$NON-NLS-1$
 
     public static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
@@ -135,6 +137,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
     protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
+
+    public static final String USERPIGUDF_JAR = "pigudf.jar"; //$NON-NLS-1$
 
     private boolean needMappingInSystemRoutine = false;
 
@@ -1058,8 +1062,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected void addRoutinesSourceCodes(ExportFileResource[] process, ExportFileResource resource, IProject javaProject,
             boolean useBeans) throws Exception {
         List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
-
-        collectRoutines.addAll(collectRoutines(process, useBeans));
+        String include;
+        if (useBeans) {
+            include = USER_BEANS_PATH;
+        } else {
+            include = USER_ROUTINES_PATH;
+        }
+        collectRoutines.addAll(collectRoutines(process, include));
+        collectRoutines.addAll(collectRoutines(process, USER_PIGUDF_PATH));
 
         Set<String> dependedRoutines = new HashSet<String>();
         for (IRepositoryViewObject obj : collectRoutines) {
@@ -1266,8 +1276,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 useBeans = true;
             }
         }
-
-        collectRoutines.addAll(collectRoutines(process, useBeans));
+        String include = null;
+        if (useBeans) {
+            include = USER_BEANS_PATH;
+        } else {
+            include = USER_ROUTINES_PATH;
+        }
+        collectRoutines.addAll(collectRoutines(process, include));
+        collectRoutines.addAll(collectRoutines(process, USER_PIGUDF_PATH));
 
         for (IRepositoryViewObject object : collectRoutines) {
             Item item = object.getProperty().getItem();
@@ -1488,7 +1504,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
             jarbuilder.setIncludeDir(include);
-            jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, false));
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, USER_ROUTINES_PATH));
             jarbuilder.buildJar();
 
             return Collections.singletonList(jarFile.toURI().toURL());
@@ -1514,43 +1530,68 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     useBeans = true;
                 }
             }
-            String include;
+            String includePath;
             String jar;
             if (useBeans) {
-                include = USER_BEANS_PATH;
+                includePath = USER_BEANS_PATH;
                 jar = USERBEANS_JAR;
             } else {
-                include = USER_ROUTINES_PATH;
+                includePath = USER_ROUTINES_PATH;
                 jar = USERROUTINE_JAR;
             }
+            List<URL> urlList = new ArrayList<URL>();
 
             File jarFile = new File(getTmpFolder() + File.separatorChar + jar);
 
-            // make a jar file of user routine classes
+            // make a jar file of user routine or bean classes
             JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
-            jarbuilder.setIncludeDir(Collections.singleton(include));
-            jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, useBeans));
+            jarbuilder.setIncludeDir(Collections.singleton(includePath));
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, includePath));
             jarbuilder.setExcludeDir(Arrays.asList(SYSTEM_ROUTINES_PATH, USER_ROUTINES_PATH, // remove all
-                    USER_BEANS_PATH));
+                    USER_BEANS_PATH, USER_PIGUDF_PATH));
             jarbuilder.buildJar();
+            urlList.add(jarFile.toURI().toURL());
 
-            return Collections.singletonList(jarFile.toURI().toURL());
+            return urlList;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return Collections.emptyList();
         }
     }
 
-    private Collection<File> getRoutineDependince(ExportFileResource[] process, boolean system, boolean useBeans) {
+    protected List<URL> getPigudfResource(ExportFileResource[] process, boolean needResouece) {
+        List<URL> urlList = new ArrayList<URL>();
+        if (PluginChecker.isPigudfPluginLoaded() && needResouece) {
+            // make a jar file of PIG UDF classes
+            try {
+                Collection<File> routineDependince = getRoutineDependince(process, false, USER_PIGUDF_PATH);
+                if (!routineDependince.isEmpty()) {
+
+                    File jarFile = new File(getSystemTempFolder().getAbsolutePath() + File.separatorChar + USERPIGUDF_JAR);
+
+                    JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+
+                    jarbuilder.setIncludeDir(Collections.singleton(USER_PIGUDF_PATH));
+                    jarbuilder.setIncludeRoutines(routineDependince);
+                    jarbuilder.setExcludeDir(Arrays.asList(SYSTEM_ROUTINES_PATH, USER_ROUTINES_PATH, // remove all
+                            USER_BEANS_PATH, USER_PIGUDF_PATH));
+                    jarbuilder.buildJar();
+                    urlList.add(jarFile.toURI().toURL());
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return Collections.emptyList();
+            }
+        }
+        return urlList;
+    }
+
+    private Collection<File> getRoutineDependince(ExportFileResource[] process, boolean system, String type) {
         Collection<File> userRoutines = null;
         try {
-            if (useBeans) {
-                userRoutines = getAllFiles(getClassRootFileLocation(), USER_BEANS_PATH);
-            } else {
-                userRoutines = getAllFiles(getClassRootFileLocation(), USER_ROUTINES_PATH);
-            }
+            userRoutines = getAllFiles(getClassRootFileLocation(), type);
 
-            Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, useBeans);
+            Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, type);
 
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
@@ -1581,9 +1622,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     }
 
-    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system, boolean useBeans) {
+    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system, String type) {
         Collection<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
-        for (IRepositoryViewObject object : collectRoutines(process, useBeans)) {
+        for (IRepositoryViewObject object : collectRoutines(process, type)) {
             Item item = object.getProperty().getItem();
             if (item instanceof RoutineItem && (((RoutineItem) item).isBuiltIn() == system)) {
                 allRoutines.add(object);
@@ -1593,9 +1634,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return allRoutines;
     }
 
-    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean useBeans) {
+    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, String type) {
         List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
-        if (useBeans) {
+        if (USER_BEANS_PATH.equals(type)) {
             ERepositoryObjectType beansType = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -1611,49 +1652,74 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         } else {
             Set<String> allRoutinesNames = new HashSet<String>();
-            for (ExportFileResource resource : process) {
-                if (resource.getItem() instanceof ProcessItem) {
-                    Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
-                            resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
-                    if (routinesNeededForJob != null) {
-                        allRoutinesNames.addAll(routinesNeededForJob);
-                    }
-                }
-
+            ERepositoryObjectType objectType = ERepositoryObjectType.ROUTINES;
+            if (USER_PIGUDF_PATH.equals(type)) {
+                objectType = ERepositoryObjectType.PIG_UDF;
             }
 
-            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+            if (ERepositoryObjectType.ROUTINES == objectType) {
+                for (ExportFileResource resource : process) {
+                    if (resource.getItem() instanceof ProcessItem) {
+                        Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
+                                resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
+                        if (routinesNeededForJob != null) {
+                            allRoutinesNames.addAll(routinesNeededForJob);
+                        }
+                    }
+
+                }
+            } else {
+                for (ExportFileResource resource : process) {
+                    if (resource.getItem() instanceof ProcessItem) {
+                        Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getPigudfNeededWithSubjobPerJob(
+                                resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
+                        if (routinesNeededForJob != null) {
+                            allRoutinesNames.addAll(routinesNeededForJob);
+                        }
+                    }
+
+                }
+            }
             if (allRoutinesNames.isEmpty()) {
                 toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
             } else {
-                try {
-                    List<IRepositoryViewObject> availableRoutines = factory.getAll(ProjectManager.getInstance()
-                            .getCurrentProject(), ERepositoryObjectType.ROUTINES);
-                    for (IRepositoryViewObject object : availableRoutines) {
-                        if (allRoutinesNames.contains(object.getLabel())) {
-                            allRoutinesNames.remove(object.getLabel());
-                            toReturn.add(object);
-                        }
-                    }
-                    if (allRoutinesNames.isEmpty()) {
-                        return toReturn;
-                    }
-                    for (org.talend.core.model.general.Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
-                        for (IRepositoryViewObject object : factory.getAll(project, ERepositoryObjectType.ROUTINES)) {
-                            if (allRoutinesNames.contains(object.getLabel())) {
-                                allRoutinesNames.remove(object.getLabel());
-                                toReturn.add(object);
-                            }
-                        }
-                        if (allRoutinesNames.isEmpty()) {
-                            return toReturn;
-                        }
-                    }
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                    toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
+                toReturn.addAll(collectRoutinesFromRepository(allRoutinesNames, objectType));
+            }
+
+        }
+        return toReturn;
+    }
+
+    private Collection<IRepositoryViewObject> collectRoutinesFromRepository(Set<String> allRoutinesNames,
+            ERepositoryObjectType type) {
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
+        try {
+            List<IRepositoryViewObject> availableRoutines = factory
+                    .getAll(ProjectManager.getInstance().getCurrentProject(), type);
+            for (IRepositoryViewObject object : availableRoutines) {
+                if (allRoutinesNames.contains(object.getLabel())) {
+                    allRoutinesNames.remove(object.getLabel());
+                    toReturn.add(object);
                 }
             }
+            if (allRoutinesNames.isEmpty()) {
+                return toReturn;
+            }
+            for (org.talend.core.model.general.Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                for (IRepositoryViewObject object : factory.getAll(project, type)) {
+                    if (allRoutinesNames.contains(object.getLabel())) {
+                        allRoutinesNames.remove(object.getLabel());
+                        toReturn.add(object);
+                    }
+                }
+                if (allRoutinesNames.isEmpty()) {
+                    return toReturn;
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
         }
         return toReturn;
     }
@@ -1865,4 +1931,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return false; // default, no exclued lib
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getExportPigudfResources(org.talend
+     * .repository.documentation.ExportFileResource[])
+     */
+    @Override
+    public URL getExportPigudfResources(ExportFileResource[] process) throws ProcessorException {
+        List<ExportFileResource> list = new ArrayList<ExportFileResource>();
+        ExportFileResource libResource = new ExportFileResource(null, "");
+        // for pigudf
+        List<URL> resource = getPigudfResource(process, isOptionChoosed(ExportChoice.needPigudf));
+        if (!resource.isEmpty()) {
+            return resource.get(0);
+        }
+        return null;
+
+    }
 }

@@ -798,6 +798,12 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         return null;
     }
 
+    @Override
+    public Set<String> getNeededPigudf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 

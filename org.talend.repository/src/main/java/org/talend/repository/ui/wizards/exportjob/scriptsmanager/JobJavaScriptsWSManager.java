@@ -205,6 +205,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         List<URL> userRoutineList = getUserRoutine(process);
         libResource.addResources(userRoutineList);
 
+
         // Gets axis libraries
         List<String> newAxisLib = new ArrayList<String>(axisLib);
         for (URL libUrl : talendLibraries) {

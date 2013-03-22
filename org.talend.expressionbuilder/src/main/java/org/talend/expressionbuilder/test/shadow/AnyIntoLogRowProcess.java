@@ -771,6 +771,12 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return null;
     }
 
+    @Override
+    public Set<String> getNeededPigudf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 

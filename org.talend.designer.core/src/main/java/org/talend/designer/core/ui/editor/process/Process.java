@@ -231,6 +231,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private Set<String> neededRoutines;
 
+    private Set<String> neededPigudf;
+
     private String componentsType;
 
     public Process(Property property) {
@@ -1466,8 +1468,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             List<IRepositoryViewObject> routines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
                     ERepositoryObjectType.ROUTINES);
+            routines.addAll(factory.getAll(ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.PIG_UDF));
             for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
                 List<IRepositoryViewObject> refRoutines = factory.getAll(project, ERepositoryObjectType.ROUTINES);
+                refRoutines.addAll(factory.getAll(project, ERepositoryObjectType.PIG_UDF));
                 for (IRepositoryViewObject object : refRoutines) {
                     if (!((RoutineItem) object.getProperty().getItem()).isBuiltIn()) {
                         if (!possibleRoutines.contains(object.getLabel()) && !routinesAlreadySetup.contains(object.getLabel())) {
@@ -1494,6 +1498,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
             for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
                 List<IRepositoryViewObject> refRoutines = factory.getAll(project, ERepositoryObjectType.ROUTINES);
+                refRoutines.addAll(factory.getAll(project, ERepositoryObjectType.PIG_UDF));
                 for (IRepositoryViewObject object : refRoutines) {
                     if (!((RoutineItem) object.getProperty().getItem()).isBuiltIn()) {
                         if (!possibleRoutines.contains(object.getLabel()) && !routinesAlreadySetup.contains(object.getLabel())) {
@@ -3870,10 +3875,20 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     @Override
+    public Set<String> getNeededPigudf() {
+        return getNeededCodeItem(neededPigudf, ERepositoryObjectType.PIG_UDF);
+    }
+
+    @Override
     public Set<String> getNeededRoutines() {
+        return getNeededCodeItem(neededRoutines, ERepositoryObjectType.ROUTINES);
+    }
+
+    private Set<String> getNeededCodeItem(Set<String> neededCodeItem, ERepositoryObjectType itemType) {
+
         // this value is initialized only for a duplicate process (for code generation)
-        if (neededRoutines != null && duplicate) {
-            return neededRoutines;
+        if (neededCodeItem != null && duplicate) {
+            return neededCodeItem;
         }
         if (routinesDependencies == null || routinesDependencies.isEmpty()) {
             checkRoutineDependencies();
@@ -3909,11 +3924,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // verify to remove non-existing routines from the list, just in case some have been deleted.
         List<IRepositoryViewObject> routines;
         try {
-            routines = ProxyRepositoryFactory.getInstance().getAll(ProjectManager.getInstance().getCurrentProject(),
-                    ERepositoryObjectType.ROUTINES);
+            routines = ProxyRepositoryFactory.getInstance().getAll(ProjectManager.getInstance().getCurrentProject(), itemType);
             for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
-                List<IRepositoryViewObject> routinesFromRef = ProxyRepositoryFactory.getInstance().getAll(project,
-                        ERepositoryObjectType.ROUTINES);
+                List<IRepositoryViewObject> routinesFromRef = ProxyRepositoryFactory.getInstance().getAll(project, itemType);
                 for (IRepositoryViewObject routine : routinesFromRef) {
                     if (!((RoutineItem) routine.getProperty().getItem()).isBuiltIn()) {
                         routines.add(routine);
@@ -3940,6 +3953,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             ExceptionHandler.process(e);
         }
         return listRoutines;
+
     }
 
     private Set<String> getJobletRoutines(ProcessType processType) {
@@ -3965,6 +3979,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     public void setNeededRoutines(Set<String> neededRoutines) {
         this.neededRoutines = neededRoutines;
+    }
+
+    public void setNeededPigudf(Set<String> neededPigudf) {
+        this.neededPigudf = neededPigudf;
     }
 
     public List<RoutinesParameterType> getRoutineDependencies() {

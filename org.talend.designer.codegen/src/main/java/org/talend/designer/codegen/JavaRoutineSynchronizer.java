@@ -68,8 +68,23 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * 
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
+    @Override
     public void syncAllRoutines() throws SystemException {
-        for (IRepositoryViewObject routine : getRoutines()) {
+        syncRoutineItems(getRoutines());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.AbstractRoutineSynchronizer#syncAllPigudf()
+     */
+    @Override
+    public void syncAllPigudf() throws SystemException {
+        syncRoutineItems(getAllPigudf());
+    }
+
+    private void syncRoutineItems(List<IRepositoryViewObject> routineObjects) throws SystemException {
+        for (IRepositoryViewObject routine : routineObjects) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem, true);
         }
@@ -94,35 +109,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+
     }
 
+    @Override
     public void syncAllBeans() throws SystemException {
-        // for (IRepositoryViewObject routine : getBeans()) {
-        // BeanItem beanItem = (BeanItem) routine.getProperty().getItem();
-        // // syncRoutine(routineItem, true);
-        // syncBean(beanItem, true);
-        // }
-
-        // try {
-        // ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
-        // List<URL> urls = jms.getTalendBeansFolder();
-        //
-        // for (URL systemModuleURL : urls) {
-        // if (systemModuleURL != null) {
-        // String fileName = systemModuleURL.getPath();
-        //                    if (fileName.startsWith("/")) { //$NON-NLS-1$
-        // fileName = fileName.substring(1);
-        // }
-        // File f = new File(systemModuleURL.getPath());
-        // if (f.isDirectory()) {
-        // syncModule(f.listFiles());
-        // }
-        // }
-        // }
-        // } catch (IOException e) {
-        // // e.printStackTrace();
-        // ExceptionHandler.process(e);
-        // }
     }
 
     /*
@@ -191,28 +182,6 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     }
 
-    /**
-     * add project name in package declaration.
-     * 
-     * @param routineItem
-     * @param routineContent
-     * @return
-     */
-    private String renameRoutinePackage(RoutineItem routineItem, String routineContent) {
-        if (!routineItem.isBuiltIn()) { // only for user created routines
-            ProjectManager pManager = ProjectManager.getInstance();
-            org.talend.core.model.properties.Project project = pManager.getProject(routineItem);
-            // for create new routine
-            String oldPackage = "package(\\s)+" //$NON-NLS-1$
-                    + JavaUtils.JAVA_ROUTINES_DIRECTORY + "(\\s)*;"; //$NON-NLS-1$
-            String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY //$NON-NLS-1$
-                    + "." + project.getTechnicalLabel().toLowerCase() + ";"; //$NON-NLS-1$ //$NON-NLS-2$
-
-            routineContent = routineContent.replaceAll(oldPackage, newPackage);
-        }
-        return routineContent;
-    }
-
     private IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -232,25 +201,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-    private IFile getBeanFile(Item beanItem) throws SystemException {
-        try {
-            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            ProjectManager projectManager = ProjectManager.getInstance();
-            org.talend.core.model.properties.Project project = projectManager.getProject(beanItem);
-            initBeanFolder(javaProject, project);
-            String beansFolder = getBeansFolder(null);
-            // if (!beanItem.isBuiltIn()) {
-            beansFolder = getBeansFolder(project);
-            // }
-            IFile file = javaProject.getFile(beansFolder + "/" //$NON-NLS-1$
-                    + beanItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
-            return file;
-        } catch (CoreException e) {
-            throw new SystemException(e);
-        }
-    }
-
+    @Override
     public IFile getProcessFile(JobInfo jobInfo) throws SystemException {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         try {
@@ -306,26 +257,10 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         // }
     }
 
-    private void initBeanFolder(IProject javaProject, org.talend.core.model.properties.Project project) throws CoreException {
-        IFolder rep = javaProject.getFolder(getBeansFolder(null));
-        if (!rep.exists()) {
-            rep.create(true, true, null);
-        }
-    }
-
     private String getRoutinesFolder(RoutineItem routineItem) {
         String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
                 + routineItem.getPackageType();
-        // if (project != null) {
-        // // add project name in package path
-        // routinesPath += "/" + project.getTechnicalLabel().toLowerCase();
-        // }
-        return routinesPath;
-    }
 
-    private String getBeansFolder(org.talend.core.model.properties.Project project) {
-        String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                + JavaUtils.JAVA_BEANS_DIRECTORY;
         return routinesPath;
     }
 
@@ -394,6 +329,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * 
      * @see org.talend.designer.codegen.ITalendSynchronizer#getFile(org.talend.core .model.properties.Item)
      */
+    @Override
     public IFile getFile(Item item) throws SystemException {
         if (item instanceof RoutineItem) {
             return getRoutineFile((RoutineItem) item);
@@ -437,11 +373,13 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     }
 
+    @Override
     public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
+        Item item = objToDelete.getProperty().getItem();
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + ((RoutineItem) item).getPackageType() + "/" //$NON-NLS-1$ //$NON-NLS-2$
                     + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
             /*
              * File f = file.getLocation().toFile(); f.delete();
@@ -453,6 +391,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
     public void deleteBeanfile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -469,6 +408,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
     public IFile getRoutinesFile(Item item) throws SystemException {
         try {
             if (item instanceof RoutineItem) {

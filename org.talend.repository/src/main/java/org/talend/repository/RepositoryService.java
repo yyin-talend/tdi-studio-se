@@ -13,7 +13,11 @@
 package org.talend.repository;
 
 import java.beans.PropertyChangeEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,6 +47,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -64,6 +70,8 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
@@ -85,7 +93,10 @@ import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ModelElementHelper;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.designer.runprocess.ProcessorException;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -109,6 +120,11 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
 
 ;
 
@@ -126,6 +142,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#getComponentsFactory()
      */
+    @Override
     public IComponentsFactory getComponentsFactory() {
         return ComponentsFactoryProvider.getInstance();
     }
@@ -135,6 +152,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#getPathFileName(java.lang.String, java.lang.String)
      */
+    @Override
     public IPath getPathFileName(String folderName, String fileName) {
         return RepositoryPathProvider.getPathFileName(folderName, fileName);
     }
@@ -144,10 +162,12 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#getProxyRepositoryFactory()
      */
+    @Override
     public IProxyRepositoryFactory getProxyRepositoryFactory() {
         return ProxyRepositoryFactory.getInstance();
     }
 
+    @Override
     public IPath getRepositoryPath(IRepositoryNode node) {
         return RepositoryNodeUtilities.getPath((RepositoryNode) node);
     }
@@ -158,6 +178,7 @@ public class RepositoryService implements IRepositoryService {
      * @seeorg.talend.repository.model.IRepositoryService#registerRepositoryChangedListener(org.talend.repository.
      * IRepositoryChangedListener)
      */
+    @Override
     public void registerRepositoryChangedListener(IRepositoryChangedListener listener) {
         CoreRepositoryPlugin.getDefault().registerRepositoryChangedListener(listener);
     }
@@ -169,6 +190,7 @@ public class RepositoryService implements IRepositoryService {
      * org.talend.repository.model.IRepositoryService#registerRepositoryChangedListenerAsFirst(org.talend.repository
      * .IRepositoryChangedListener)
      */
+    @Override
     public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
         CoreRepositoryPlugin.getDefault().registerRepositoryChangedListenerAsFirst(listener);
     }
@@ -179,6 +201,7 @@ public class RepositoryService implements IRepositoryService {
      * @seeorg.talend.repository.model.IRepositoryService#removeRepositoryChangedListener(org.talend.repository.
      * IRepositoryChangedListener)
      */
+    @Override
     public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
         CoreRepositoryPlugin.getDefault().removeRepositoryChangedListener(listener);
     }
@@ -189,12 +212,14 @@ public class RepositoryService implements IRepositoryService {
      * @see
      * org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
      */
+    @Override
     public void repositoryChanged(IRepositoryElementDelta delta) {
         CoreRepositoryPlugin.getDefault().repositoryChanged(delta);
     }
 
     // This method is used for the Action in RepositoryView to synchronize the sqlBuilder.
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
+    @Override
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
         IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
         removeRepositoryChangedListener(listener);
@@ -209,6 +234,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#validateColumnName(java.lang.String, int)
      */
+    @Override
     public String validateColumnName(String columnName, int index) {
         return ColumnNameValidator.validateColumnNameFormat(columnName, index);
     }
@@ -218,6 +244,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#openLoginDialog()
      */
+    @Override
     public void openLoginDialog() {
         if (isloginDialogDisabled()) {
             return;
@@ -257,6 +284,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#openLoginDialog(org.eclipse.swt.widgets.Shell, boolean)
      */
+    @Override
     public boolean openLoginDialog(Shell shell, boolean inuse) {
         if (isloginDialogDisabled()) {
             return true;
@@ -440,6 +468,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#initializeForTalendStartupJob()
      */
+    @Override
     public void initializeForTalendStartupJob() {
         // do nothing now.
 
@@ -450,6 +479,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#initializeTalend()
      */
+    @Override
     public void initializePluginMode() {
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
@@ -463,6 +493,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#isRCPMode()
      */
+    @Override
     public boolean isRCPMode() {
         return CoreRepositoryPlugin.getDefault().isRCPMode();
     }
@@ -472,27 +503,33 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#setRCPMode()
      */
+    @Override
     public void setRCPMode() {
         CoreRepositoryPlugin.getDefault().setRCPMode();
     }
 
+    @Override
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn);
     }
 
+    @Override
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, null);
     }
 
+    @Override
     public void setMetadataConnectionParameter(DatabaseConnection dbConn, IMetadataConnection metaConn) {
         DBConnectionContextUtils.setMetadataConnectionParameter(dbConn, metaConn);
     }
 
+    @Override
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
             String selectedContext) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, selectedContext);
     }
 
+    @Override
     public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) {
         IEditorPart openSQLPatternEditor = null;
         try {
@@ -510,6 +547,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#createSqlpattern()
      */
+    @Override
     public void createSqlpattern(String path, boolean isFromSqlPatternComposite) {
         new CreateSqlpatternAction(path, isFromSqlPatternComposite).run();
     }
@@ -519,6 +557,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#addRepositoryViewListener(org.eclipse.ui.ISelectionListener)
      */
+    @Override
     public void addRepositoryTreeViewListener(ISelectionChangedListener listener) {
         IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
         if (repositoryView != null) {
@@ -537,6 +576,7 @@ public class RepositoryService implements IRepositoryService {
      * @seeorg.talend.repository.model.IRepositoryService#removeRepositoryTreeViewListener(org.eclipse.jface.viewers.
      * ISelectionChangedListener)
      */
+    @Override
     public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
         IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
         if (repositoryView != null) {
@@ -547,10 +587,12 @@ public class RepositoryService implements IRepositoryService {
         }
     }
 
+    @Override
     public IPreferenceStore getRepositoryPreferenceStore() {
         return RepositoryPlugin.getDefault().getPreferenceStore();
     }
 
+    @Override
     public RepositoryNode getRepositoryNode(String id, boolean expanded) {
         return RepositoryNodeUtilities.getRepositoryNode(id, expanded);
     }
@@ -561,6 +603,7 @@ public class RepositoryService implements IRepositoryService {
      * @seeorg.talend.repository.model.IRepositoryService#openRepositoryReviewDialog(org.talend.core.model.repository.
      * ERepositoryObjectType, java.lang.String)
      */
+    @Override
     public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params,
             IContextManager contextManager) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
@@ -573,6 +616,7 @@ public class RepositoryService implements IRepositoryService {
      * @param type
      * @return
      */
+    @Override
     public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
         IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
         if (view != null) {
@@ -582,6 +626,7 @@ public class RepositoryService implements IRepositoryService {
         return null;
     }
 
+    @Override
     public void setInternalNodeHTMLMap(INode node, Map<String, Object> internalNodeHTMLMap) {
         IElementParameter propertyParam = null;
         IElementParameter functionParam = null;
@@ -631,24 +676,29 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    @Override
     public IDialogSettings getDialogSettings() {
         return RepositoryPlugin.getDefault().getDialogSettings();
     }
 
+    @Override
     public Set<MetadataTable> getTablesFromSpecifiedDataPackage(DatabaseConnection dbconn) {
         return ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbconn);
     }
 
+    @Override
     public Class getClassForSalesforceModule() {
         return SalesforceModuleRepositoryObject.class;
     }
 
+    @Override
     public AContextualAction getCreateRoutineAction(IRepositoryView repositoryView) {
         CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
         createRoutineAction.setWorkbenchPart(repositoryView);
         return createRoutineAction;
     }
 
+    @Override
     public String getRulesProviderPath(RulesItem currentRepositoryItem) {
         IRulesProviderService rulesService = null;
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -664,6 +714,7 @@ public class RepositoryService implements IRepositoryService {
         return "";
     }
 
+    @Override
     public boolean openReadOnlyDialog(Shell shell) {
         String branchSelection = ProjectManager.getInstance().getMainProjectBranch(
                 ProjectManager.getInstance().getCurrentProject());
@@ -674,6 +725,52 @@ public class RepositoryService implements IRepositoryService {
             }
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#exportPigudf(org.talend.designer.runprocess.IProcessor,
+     * org.talend.core.model.properties.Property, int, int)
+     */
+    @Override
+    public String exportPigudf(IProcessor processor, Property property, boolean isExport) throws ProcessorException {
+        // build java project
+        try {
+            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                    .build(IncrementalProjectBuilder.AUTO_BUILD, null);
+        } catch (CoreException e) {
+            throw new ProcessorException(e);
+        }
+
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.needPigudf, true);
+        ProcessItem processItem = (ProcessItem) property.getItem();
+        ExportFileResource fileResource = new ExportFileResource(processItem, property.getLabel());
+        ExportFileResource[] exportFileResources = new ExportFileResource[] { fileResource };
+
+        JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, processor
+                .getContext().getName(), JobScriptsManager.ALL_ENVIRONMENTS, -1, -1, JobExportType.POJO);
+        URL url = jobScriptsManager.getExportPigudfResources(exportFileResources);
+
+        if (url == null) {
+            return null;
+        }
+        File file = new File(url.getFile());
+        // String librariesPath = LibrariesManagerUtils.getLibrariesPath(ECodeLanguage.JAVA) + "/";
+        String librariesPath = processor.getCodeProject().getLocation() + "/lib/";
+        String targetFileName = JobJavaScriptsManager.USERPIGUDF_JAR;
+        if (!isExport) {
+            targetFileName = property.getLabel() + "_" + property.getVersion() + "_" + JobJavaScriptsManager.USERPIGUDF_JAR;
+        }
+        File target = new File(librariesPath + targetFileName);
+        try {
+            FilesUtils.copyFile(file, target);
+        } catch (IOException e) {
+            throw new ProcessorException(e.getMessage());
+        }
+        return targetFileName;
+
     }
 
 }

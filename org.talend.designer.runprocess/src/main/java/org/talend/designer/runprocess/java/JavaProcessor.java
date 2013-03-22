@@ -921,18 +921,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             libPath.append(".").append(classPathSeparator);
         }
 
-        // init project_path
-        String projectPath;
+        // init routine path
+        String routinePath;
         if (exportingJob) {
-            projectPath = getCodeLocation();
-            if (projectPath != null) {
-                projectPath = projectPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+            routinePath = getCodeLocation();
+            if (routinePath != null) {
+                routinePath = routinePath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
             IFolder classesFolder = JavaProcessorUtilities.getJavaProject().getProject()
                     .getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
+            routinePath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
                     + classPathSeparator;
         }
 
@@ -981,7 +981,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
 
         String portableCommand = new Path(command).toPortableString();
-        String portableProjectPath = new Path(projectPath).toPortableString();
+        String portableProjectPath = new Path(routinePath).toPortableString();
 
         if (!win32 && exportingJob) {
             portableProjectPath = unixRootPathVar + classPathSeparator + portableProjectPath;
@@ -1612,4 +1612,5 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
         return property;
     }
+
 }

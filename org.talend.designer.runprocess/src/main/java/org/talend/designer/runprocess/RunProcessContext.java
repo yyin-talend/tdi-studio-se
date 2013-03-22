@@ -596,6 +596,9 @@ public class RunProcessContext {
      * @return
      */
     protected IProcessor getProcessor(IProcess process, Property property) {
+        // if (ComponentCategory.CATEGORY_4_DI.getName().equals(process.getComponentsType())) {
+        // return new ExportModelJavaProcessor(process, property, true);
+        // }
         return ProcessorUtilities.getProcessor(process, property);
     }
 

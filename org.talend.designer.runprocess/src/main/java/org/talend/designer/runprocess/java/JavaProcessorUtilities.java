@@ -240,7 +240,11 @@ public class JavaProcessorUtilities {
                     // }
                 }
             } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider
+                        .getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
@@ -257,14 +261,23 @@ public class JavaProcessorUtilities {
             }
         } else {
             if (property != null && property.getItem() instanceof ProcessItem) {
-                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
-                        .getItem());
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.ROUTINES);
                 for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+                List<ModuleNeeded> modulesForPigudf = ModulesNeededProvider.getModulesNeededForRoutines(
+                        (ProcessItem) property.getItem(), ERepositoryObjectType.PIG_UDF);
+                for (ModuleNeeded moduleNeeded : modulesForPigudf) {
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
 
             } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider
+                        .getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
@@ -416,7 +429,11 @@ public class JavaProcessorUtilities {
             listModulesReallyNeeded = new HashSet<String>();
         }
         // only for wizards or additional jars only to make the java project compile without any error.
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
+            optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
+        }
+
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
             optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
         }
         // list contains all routines linked to job as well as routines not used in the job

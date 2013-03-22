@@ -102,6 +102,7 @@ public class JobExportAction implements IRunnableWithProgress {
         this(nodes, jobVersion, jobVersion, manager, directoryName);
     }
 
+    @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
@@ -223,10 +224,11 @@ public class JobExportAction implements IRunnableWithProgress {
         clean();
         ProcessorUtilities.resetExportConfig();
 
-        boolean generated = generatedCodes(version, monitor, processes);
-        if (!generated) {
-            return false;
-        }
+        // no need to regenerate if run in export model
+        // boolean generated = generatedCodes(version, monitor, processes);
+        // if (!generated) {
+        // return false;
+        // }
 
         monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
         if (addClasspathJar) {

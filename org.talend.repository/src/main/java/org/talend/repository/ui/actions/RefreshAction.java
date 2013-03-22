@@ -41,12 +41,14 @@ public class RefreshAction extends Action {
         this.setActionDefinitionId("refresh"); //$NON-NLS-1$
     }
 
+    @Override
     public void run() {
         ProjectRepositoryNode.refProjectBool = true;
         view.refreshView();
         ProjectRepositoryNode.refProjectBool = false;
         // qli modified to fix the bug 6659.
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
+        RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.PIG_UDF);
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.JOBLET);
         RepositoryManager.syncUserComponents();
 
