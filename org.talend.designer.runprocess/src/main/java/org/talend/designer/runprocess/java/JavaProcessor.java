@@ -107,7 +107,6 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -134,7 +133,7 @@ import org.talend.repository.ProjectManager;
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
  * 
  */
-public class JavaProcessor extends Processor implements IJavaBreakpointListener {
+public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpointListener {
 
     /** The compiled code path. */
     private IPath compiledCodePath;
@@ -556,6 +555,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         this.checkableEditor = checkableEditor;
     }
 
+    @Override
     public void syntaxCheck() {
         if (checkableEditor != null) {
             checkableEditor.validateSyntax();
@@ -847,22 +847,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         return this.contextPath;
     }
 
-    protected List<String> getJavaCommandSegments() {
-        return null;
-    }
-
-    protected List<String> extractCPCommandSegments() {
-        return null;
-    }
-
-    protected String extractMainClassSegments() {
-        return null;
-    }
-
-    protected List<String> extractArgumentSegments() {
-        return null;
-    }
-
     @Override
     public String[] getCommandLine() throws ProcessorException {
         // java -cp libdirectory/*.jar;project_path classname;
@@ -1053,7 +1037,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         if (libNames != null && libNames.size() > 0) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
-                libJars.append(getLibFolderInWorkingDir() + File.separator + itLibNames.next()).append(",");
+                libJars.append(getLibFolderInWorkingDir() + itLibNames.next()).append(",");
             }
         }
         list.add(libJars.substring(0, libJars.length() - 1));
