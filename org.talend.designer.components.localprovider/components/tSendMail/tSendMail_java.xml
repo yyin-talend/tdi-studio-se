@@ -205,7 +205,7 @@ COMPATIBILITY="ALL"
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JavaMail" MODULE="mail.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+      <IMPORT NAME="JavaMail" MODULE="mail-1.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail-1.4.jar" REQUIRED="true" />
       <IMPORT NAME="JAF" MODULE="activation.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
   </IMPORTS>
   </CODEGENERATION>
