@@ -65,6 +65,8 @@ public class InputTable extends AbstractInOutTable {
         super(mapperManager, connection, name);
         this.tableGlobalMapEntriesModel = new ExtendedTableModel<GlobalMapEntry>(
                 name + " : model for globalMap variables", globalMapEntries); //$NON-NLS-1$
+        // default match model
+        matchingMode = mapperManager.isMRProcess() ? TMAP_MATCHING_MODE.ALL_MATCHES : TMAP_MATCHING_MODE.UNIQUE_MATCH;
 
     }
 
@@ -84,13 +86,14 @@ public class InputTable extends AbstractInOutTable {
             this.matchingMode = TMAP_MATCHING_MODE.parse(externalMapperTable.getMatchingMode());
             if (matchingMode == null) {
                 if (mapperManager.isTableHasAtLeastOneHashKey(this)) {
-                    matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
+                    matchingMode = mapperManager.isMRProcess() ? TMAP_MATCHING_MODE.ALL_MATCHES : TMAP_MATCHING_MODE.UNIQUE_MATCH;
                 } else {
                     matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
                 }
             }
             if (matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
-                matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
+                matchingMode = mapperManager.isMRProcess() ? TMAP_MATCHING_MODE.ALL_MATCHES : TMAP_MATCHING_MODE.UNIQUE_MATCH;
+                ;
             }
 
             this.lookupMode = TMAP_LOOKUP_MODE.parse(externalMapperTable.getLookupMode());
@@ -101,8 +104,8 @@ public class InputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> globalMapEntries = externalMapperTable.getGlobalMapKeysValues();
             if (globalMapEntries != null) {
                 for (ExternalMapperTableEntry externalMapperTableEntry : globalMapEntries) {
-                    GlobalMapEntry entry = new GlobalMapEntry(this, externalMapperTableEntry.getName(), externalMapperTableEntry
-                            .getExpression());// , externalMapperTableEntry.getType());
+                    GlobalMapEntry entry = new GlobalMapEntry(this, externalMapperTableEntry.getName(),
+                            externalMapperTableEntry.getExpression());// , externalMapperTableEntry.getType());
                     // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     // varTableEntry.setNullable(externalMapperTableEntry.isNullable());
                     // }
