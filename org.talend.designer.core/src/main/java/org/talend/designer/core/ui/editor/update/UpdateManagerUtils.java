@@ -344,12 +344,10 @@ public final class UpdateManagerUtils {
                                     continue; // not the current job we need to update
                                 }
                                 if (closedItem) {
-                                    if (result.getUpdateType() == EUpdateItemType.JOBLET_RENAMED) {
-                                        if (result.getJob() == null) {
-                                            result.setJob(process);
-                                        } else {
-                                            process = (IProcess) result.getJob();
-                                        }
+                                    if (result.getJob() == null) {
+                                        result.setJob(process);
+                                    } else {
+                                        process = (IProcess) result.getJob();
                                     }
 
                                     if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
