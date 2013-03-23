@@ -51,10 +51,10 @@ import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.ZipToFile;
-import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.MapReduceJobJavaScriptsManager;
 
 /**
  * <pre>
@@ -100,27 +100,30 @@ public class MapReduceJavaProcessor extends JavaProcessor {
     protected String getLibFolderInWorkingDir() {
         boolean isExported = ProcessorUtilities.isExportConfig();
         if (!isExported) {
-            return unzipFolder + File.separator + ProcessorConstants.CMD_KEY_WORD_LIB + File.separator;
+            return unzipFolder + ProcessorConstants.CMD_KEY_WORD_SLASH + ProcessorConstants.CMD_KEY_WORD_LIB
+                    + ProcessorConstants.CMD_KEY_WORD_SLASH;
         } else {
             if (targetPlatform == null) {
                 if (Platform.getOS().contains(Platform.WS_WIN32)) {
                     // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + File.separator + ProcessorConstants.CMD_KEY_WORD_LIB
-                            + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 } else {
                     // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + File.separator + ProcessorConstants.CMD_KEY_WORD_TWO_DOT
-                            + File.separator + ProcessorConstants.CMD_KEY_WORD_LIB + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 }
             } else {
                 if (Platform.OS_WIN32.equals(targetPlatform)) {
                     // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + File.separator + ProcessorConstants.CMD_KEY_WORD_LIB
-                            + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 } else {
                     // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + File.separator + ProcessorConstants.CMD_KEY_WORD_TWO_DOT
-                            + File.separator + ProcessorConstants.CMD_KEY_WORD_LIB + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 }
             }
 
@@ -135,7 +138,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
     protected String getRootWorkingDir() {
         boolean isExported = ProcessorUtilities.isExportConfig();
         if (!isExported) {
-            return unzipFolder + File.separator;
+            return unzipFolder + ProcessorConstants.CMD_KEY_WORD_SLASH;
         } else {
             if (targetPlatform == null) {
                 if (Platform.getOS().contains(Platform.WS_WIN32)) {
@@ -143,7 +146,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
                     return ""; //$NON-NLS-1$
                 } else {
                     // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 }
             } else {
                 if (Platform.OS_WIN32.equals(targetPlatform)) {
@@ -151,7 +154,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
                     return ""; //$NON-NLS-1$
                 } else {
                     // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + File.separator;
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
                 }
             }
         }
@@ -177,9 +180,14 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         if (progressMonitor.isCanceled()) {
             throw new ProcessorException(new InterruptedException());
         }
-        JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, processItem
-                .getProcess().getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS,
-                IProcessor.NO_TRACES, JobExportType.POJO);
+        // JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap,
+        // processItem
+        // .getProcess().getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS,
+        // IProcessor.NO_TRACES, JobExportType.POJO);
+
+        // Now only support the JobExportType.POJO, means "Autonomous job".
+        JobScriptsManager jobScriptsManager = new MapReduceJobJavaScriptsManager(exportChoiceMap, processItem.getProcess()
+                .getDefaultContext(), JobScriptsManager.ALL_ENVIRONMENTS, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         String codeOptions = null;
         List<ExportFileResource> exportResources = jobScriptsManager.getExportResources(exportFileResources, codeOptions);
 
@@ -416,7 +424,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         // Append job jar to class path.
         sb.append(getRootWorkingDir());
         if (!ProcessorUtilities.isExportConfig()) {
-            sb.append(process.getName()).append(File.separator);
+            sb.append(process.getName()).append(ProcessorConstants.CMD_KEY_WORD_SLASH);
         }
         sb.append(makeupJobJarName());
 
