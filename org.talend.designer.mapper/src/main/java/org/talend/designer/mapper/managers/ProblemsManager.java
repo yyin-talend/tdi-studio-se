@@ -14,8 +14,10 @@ package org.talend.designer.mapper.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
@@ -39,6 +41,7 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
@@ -67,6 +70,8 @@ public class ProblemsManager {
     private Boolean hasProblems;
 
     private boolean refreshTableEntries;
+
+    Problem lookupProblem = new Problem(null, "All lookup tables must have the same expressions", ProblemStatus.ERROR);
 
     /**
      * DOC amaumont ProblemsManager constructor comment.
@@ -97,7 +102,7 @@ public class ProblemsManager {
 
                     IODataComponentContainer dataComponents = mapperNode.getIODataComponents();
 
-                    List<IODataComponent> mapperInputsDataComponent = (List<IODataComponent>) dataComponents.getInputs();
+                    List<IODataComponent> mapperInputsDataComponent = dataComponents.getInputs();
                     HashMap<String, IMetadataTable> connectionNameToInputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperInputsDataComponent) {
                         connectionNameToInputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent.getTable());
@@ -113,7 +118,7 @@ public class ProblemsManager {
 
                     List<IMetadataTable> metadataListOut = new ArrayList<IMetadataTable>();
 
-                    List<IODataComponent> mapperOutputsDataComponent = (List<IODataComponent>) dataComponents.getOuputs();
+                    List<IODataComponent> mapperOutputsDataComponent = dataComponents.getOuputs();
                     HashMap<String, IMetadataTable> connectionNameToOutputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperOutputsDataComponent) {
                         connectionNameToOutputMetadataTable
@@ -224,7 +229,7 @@ public class ProblemsManager {
      * @param forceRefreshData
      * @return true if has errors
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public boolean checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
             mapperManager.getAbstractMapComponent().restoreMapperModelFromInternalData();
@@ -313,15 +318,7 @@ public class ProblemsManager {
 
     }
 
-    /**
-     * 
-     * DOC amaumont Comment method "checkProblemsForTableEntry".
-     * 
-     * @param tableEntry
-     * @param forceRefreshData
-     * @return true if at least one problem has been detected
-     */
-    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
+    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData, boolean checkLookupProblem) {
 
         if (!mapperManager.isCheckSyntaxEnabled()) {
             return false;
@@ -376,11 +373,148 @@ public class ProblemsManager {
             tableEntry.setProblems(problems);
         }
 
+        // check problem for M/R process , only needed if modify lookup expressions
+        if (checkLookupProblem) {
+            checkLookupExpressionProblem();
+        }
+        // no need to update again
         TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
         DataMapTableView retrieveDataMapTableView = mapperManager.retrieveDataMapTableView(tableEntry);
         mapperManager.getUiManager().applyActivatedCellEditors(tableViewerCreator);
-
         return problems != null;
+
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "checkProblemsForTableEntry".
+     * 
+     * @param tableEntry
+     * @param forceRefreshData
+     * @return true if at least one problem has been detected
+     */
+    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
+        return checkProblemsForTableEntry(tableEntry, forceRefreshData, false);
+    }
+
+    public boolean checkLookupExpressionProblem() {
+        if (mapperManager.isMRProcess()) {
+            List<DataMapTableView> inputsTablesView = mapperManager.getUiManager().getInputsTablesView();
+            Set<String> expressionsInCommon = new HashSet<String>();
+            List<DataMapTableView> lookupTables = new ArrayList<DataMapTableView>();
+            boolean isFirst = true;
+            int minEmptyExp = 100;
+            for (int i = 0; i < inputsTablesView.size(); i++) {
+                int emptyExpColumns = 0;
+                Set<String> expressions = new HashSet<String>();
+                DataMapTableView inputTableView = inputsTablesView.get(i);
+                InputTable dataMapTable = (InputTable) inputTableView.getDataMapTable();
+                boolean mainConnection = dataMapTable.isMainConnection();
+                if (mainConnection) {
+                    continue;
+                }
+                List<IColumnEntry> columnEntries = dataMapTable.getColumnEntries();
+                lookupTables.add(inputTableView);
+                if (isFirst) {
+                    isFirst = false;
+                    // the first lookup table
+                    for (IColumnEntry inputEntity : columnEntries) {
+                        String expression = inputEntity.getExpression();
+                        if (expression == null || expression.trim().equals("")) {
+                            expression = "";//$NON-NLS-1$
+                            emptyExpColumns++;
+                        }
+                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
+                        expressionsInCommon.add(expression);
+                    }
+                    minEmptyExp = Math.min(minEmptyExp, emptyExpColumns);
+                } else {
+                    for (IColumnEntry inputEntity : columnEntries) {
+                        String expression = inputEntity.getExpression();
+                        if (expression == null || expression.trim().equals("")) {
+                            expression = "";//$NON-NLS-1$
+                            emptyExpColumns++;
+                        }
+                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
+                        expressions.add(expression);
+                    }
+                    minEmptyExp = Math.min(minEmptyExp, emptyExpColumns);
+                    Iterator<String> iterator = expressionsInCommon.iterator();
+                    for (; iterator.hasNext();) {
+                        String next = iterator.next();
+                        if (!expressions.contains(next)) {
+                            iterator.remove();
+                        }
+                    }
+
+                }
+
+            }
+
+            if (expressionsInCommon.isEmpty()) {
+                // no common expressions in lookup tables , then show red background color for all
+                for (DataMapTableView lookupTable : lookupTables) {
+                    List<IColumnEntry> columnEntries = lookupTable.getDataMapTable().getColumnEntries();
+                    for (IColumnEntry entity : columnEntries) {
+                        addLookupProblem(entity);
+                    }
+                    lookupTable.getTableViewerCreatorForColumns().refresh();
+                }
+            } else {
+                for (DataMapTableView lookupTable : lookupTables) {
+                    boolean needRefresh = false;
+                    int emptyExpColumns = 0;
+                    List<IColumnEntry> columnEntries = lookupTable.getDataMapTable().getColumnEntries();
+                    for (IColumnEntry entity : columnEntries) {
+                        String expression = entity.getExpression();
+                        if (expression == null || expression.trim().equals("")) {
+                            expression = "";//$NON-NLS-1$
+                            emptyExpColumns++;
+                        }
+                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
+                        if (!expressionsInCommon.contains(expression)) {
+                            addLookupProblem(entity);
+                            needRefresh = true;
+                        } else if (emptyExpColumns > minEmptyExp) {
+                            // to check if all lookup tables have the same empty expression columns
+                            addLookupProblem(entity);
+                            needRefresh = true;
+                        } else {
+                            if (entity.getProblems() != null) {
+                                needRefresh = entity.getProblems().remove(lookupProblem);
+                                entity.getProblems().isEmpty();
+                                entity.setProblems(null);
+                            }
+                        }
+                    }
+                    if (needRefresh) {
+                        lookupTable.getTableViewerCreatorForColumns().refresh();
+                    }
+                }
+
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void addLookupProblem(IColumnEntry entity) {
+        List<Problem> problems = entity.getProblems();
+        if (problems == null) {
+            problems = new ArrayList<Problem>();
+            entity.setProblems(problems);
+        }
+        // incase other entities already have this problem in list.
+        boolean exist = false;
+        for (Problem problem : problems) {
+            if (problem.equals(lookupProblem)) {
+                exist = true;
+            }
+        }
+        if (!exist) {
+            problems.add(lookupProblem);
+        }
+
     }
 
     /**

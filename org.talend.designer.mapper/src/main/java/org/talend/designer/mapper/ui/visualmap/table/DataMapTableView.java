@@ -2196,11 +2196,13 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
          * @param expression
          */
         public Color getForegroundColor(boolean validCell) {
-            if (validCell) {
-                return null;
-            } else {
-                return ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL);
-            }
+            // if (validCell) {
+            // return null;
+            // } else {
+            // return ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL);
+            // }
+
+            return null;
 
         }
 

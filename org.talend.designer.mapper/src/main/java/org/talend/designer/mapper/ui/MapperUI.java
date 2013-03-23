@@ -413,6 +413,7 @@ public class MapperUI {
 
         uiManager.parseAllExpressionsForAllTables();
         mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+        mapperManager.getProblemsManager().checkLookupExpressionProblem();
 
         this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell());
 

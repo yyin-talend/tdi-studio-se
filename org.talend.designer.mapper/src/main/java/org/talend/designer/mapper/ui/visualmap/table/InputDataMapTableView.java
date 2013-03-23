@@ -532,7 +532,7 @@ public class InputDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumnsOfTableColumns(TableViewerCreator tableViewerCreatorForColumns) {
+    public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
         TableViewerCreatorColumn column = null;
         if (!isMainConnection) {
@@ -550,10 +550,15 @@ public class InputDataMapTableView extends DataMapTableView {
                 public void set(InputColumnTableEntry bean, String value) {
                     // System.out.println("value='" + value + "'");
                     bean.setExpression(value);
-                    mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+                    mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true, true);
+                    if (!mapperManager.isCheckSyntaxEnabled()) {
+                        mapperManager.getUiManager().applyActivatedCellEditors(tableViewerCreatorForColumns);
+                        mapperManager.getProblemsManager().checkLookupExpressionProblem();
+                    }
                 }
 
             });
+
             column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setDefaultInternalValue(""); //$NON-NLS-1$
             column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);

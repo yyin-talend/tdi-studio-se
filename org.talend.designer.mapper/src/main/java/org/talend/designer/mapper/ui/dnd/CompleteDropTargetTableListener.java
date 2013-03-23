@@ -84,11 +84,13 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
         return (UIManager) super.getUiManager();
     }
 
+    @Override
     public void dragEnter(DropTargetEvent event) {
         super.dragEnter(event);
         draggableTargetControl.setFocus();
     }
 
+    @Override
     public void dragOver(DropTargetEvent event) {
 
         super.dragOver(event);
@@ -267,6 +269,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
         return insertionIndicator;
     }
 
+    @Override
     public void dragLeave(DropTargetEvent event) {
         // System.out.println("\n>>dragLeave");
         // System.out.println(event);
@@ -286,6 +289,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
         uiManager.setDragging(false);
     }
 
+    @Override
     public void dragOperationChanged(DropTargetEvent event) {
         // System.out.println("\n>>dragOperationChanged");
         // showInfos(event);
@@ -317,6 +321,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
     // System.out.println("DND.DROP_TARGET_MOVE=" + DND.DROP_TARGET_MOVE);
     // }
     //
+    @Override
     public void drop(DropTargetEvent event) {
 
         super.drop(event);
@@ -488,7 +493,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
             metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
         }
 
-        int[] selection = ArrayUtils.toPrimitive((Integer[]) columnIndicesToSelect.toArray(new Integer[0]));
+        int[] selection = ArrayUtils.toPrimitive(columnIndicesToSelect.toArray(new Integer[0]));
         tableViewerCreatorTarget.getSelectionHelper().setSelection(selection);
         ISelection iselection = tableViewerCreatorTarget.getTableViewer().getSelection();
         List<ITableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
@@ -499,6 +504,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
         uiManager.parseAllExpressionsForAllTables();
         getMapperManager().getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+        getMapperManager().getProblemsManager().checkLookupExpressionProblem();
 
         uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, true, false);
         dataMapTableViewTarget.checkChangementsAfterEntryModifiedOrAdded(false);
@@ -520,7 +526,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
      * @param metadataColumnsBeingAdded
      * @param metadataEditorEvent
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateExpressionsOfInsertedEntries(ILanguage currentLanguage, MetadataTableEditorView metadataEditorView,
             int currentIndex, ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
@@ -570,7 +576,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
         // mapperManager.get
         // currentEntryTarget.getParent()
@@ -679,6 +685,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
     }
 
+    @Override
     public void dropAccept(DropTargetEvent event) {
         // System.out.println("\n>>dropAccept");
         // System.out.println(event);

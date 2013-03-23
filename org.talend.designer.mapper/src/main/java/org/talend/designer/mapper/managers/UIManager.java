@@ -375,6 +375,7 @@ public class UIManager extends AbstractUIManager {
                                     }
                                 }
                             }
+
                             dataMapTableViewer.refresh();
                             if (dataMapTableView.canBeResizedAtPreferedSize()) {
                                 dataMapTableView.resizeAtExpandedSize();
@@ -644,6 +645,7 @@ public class UIManager extends AbstractUIManager {
      * 
      * @param firstExecutionAfterTime
      */
+    @Override
     public void refreshBackground(boolean forceRecalculate, boolean firstExecutionAfterTime) {
         if (forceRecalculate) {
             mapperUI.getBackgroundRefreshLimiterForceRecalculate().startIfExecutable(firstExecutionAfterTime, null);
@@ -1000,7 +1002,7 @@ public class UIManager extends AbstractUIManager {
      * @param selectedMetadataTableEntries, source or targets entries which must be highlighted, can be null to select
      * all links of a same DataMapTableView
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void selectLinks(DataMapTableView dataMapTableView, List<ITableEntry> selectedTableEntries,
             boolean forceResetHighlightLinksForOtherTables, boolean selectAllTableLinks) {
 
@@ -1188,7 +1190,7 @@ public class UIManager extends AbstractUIManager {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<ITableEntry> extractSelectedTableEntries(ISelection selection) {
         StructuredSelection currentSelection = (StructuredSelection) selection;
         return currentSelection.toList();
@@ -1288,7 +1290,7 @@ public class UIManager extends AbstractUIManager {
     /**
      * DOC amaumont Comment method "processAllExpressions".
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void parseAllExpressionsForAllTables() {
         List<DataMapTableView> tablesView = tableManager.getInputsTablesView();
         tablesView.addAll(tableManager.getVarsTablesView());
@@ -1303,7 +1305,7 @@ public class UIManager extends AbstractUIManager {
      * 
      * @param newLinksMustHaveSelectedState TODO
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void parseAllExpressions(DataMapTableView dataMapTableView, boolean newLinksMustHaveSelectedState) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
@@ -1369,8 +1371,8 @@ public class UIManager extends AbstractUIManager {
 
         ECodeLanguage codeLanguage = LanguageProvider.getCurrentLanguage().getCodeLanguage();
 
-        for (int i = 0; i < tableEntriesLocationsSources.length; i++) {
-            TableEntryLocation location = tableEntriesLocationsSources[i];
+        for (TableEntryLocation tableEntriesLocationsSource : tableEntriesLocationsSources) {
+            TableEntryLocation location = tableEntriesLocationsSource;
 
             // tests to know if link must be removed if key is unchecked
             boolean dontRemoveLink = (!isInputEntry || isInputEntry
@@ -1764,6 +1766,7 @@ public class UIManager extends AbstractUIManager {
         return this.mapperUI.getDropTargetOperationListener();
     }
 
+    @Override
     public DraggingInfosPopup getDraggingInfosPopup() {
         return this.mapperUI.getDraggingInfosPopup();
     }
@@ -1838,6 +1841,7 @@ public class UIManager extends AbstractUIManager {
         refreshBackground(true, false);
     }
 
+    @Override
     public void openPropertySetDialog() {
         new PropertySetDialog(getShell(), mapperManager).open();
     }
