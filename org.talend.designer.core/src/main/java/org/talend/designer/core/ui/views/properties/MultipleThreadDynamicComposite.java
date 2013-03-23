@@ -536,6 +536,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * @return
      */
     protected boolean isNeedRedraw() {
+        Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
+        if (updateNeeded) {
+            return true;
+        }
         boolean needRedraw = false;
         for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
             if (elementParameter.getCategory().equals(section)

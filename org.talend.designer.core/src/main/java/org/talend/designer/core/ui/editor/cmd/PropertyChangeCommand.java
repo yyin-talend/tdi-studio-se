@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -39,6 +40,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.Expression;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -251,20 +253,6 @@ public class PropertyChangeCommand extends Command {
                 }
             }
         }
-        if (propName.equals("DISTRIBUTION")) {
-            if (elem instanceof INode) {
-                if (((INode) elem).getComponent().getRepositoryType().equals("HDFS")) {
-                    String[] dbVers = elem.getElementParameter(EParameterName.DB_VERSION.getName()).getListItemsShowIf();
-                    for (int i = 0; i < dbVers.length; i++) {
-                        if (dbVers[i].contains((CharSequence) elem.getElementParameter(propName).getValue())) {
-                            elem.getElementParameter(EParameterName.DB_VERSION.getName()).setValue(
-                                    elem.getElementParameter(EParameterName.DB_VERSION.getName()).getListItemsValue()[i]);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
         String dbType = "";
         if (newValue instanceof String) {
             dbType = (String) newValue;
@@ -444,6 +432,51 @@ public class PropertyChangeCommand extends Command {
                 }
             }
         }
+        if (!contains && testedParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
+            // check if current parameter for combo is valid for new parameters value
+            // if not, it will try to choose another value from combo box list.
+            boolean isCurrentComboValid = true;
+            if (testedParam.getListItemsShowIf() != null || testedParam.getListItemsNotShowIf() != null) {
+                String value = (String) testedParam.getValue();
+                int index = ArrayUtils.indexOf(testedParam.getListItemsValue(), value);
+                if (testedParam.getListItemsShowIf() != null) {
+                    String conditionShowIf = testedParam.getListItemsShowIf()[index];
+                    if (conditionShowIf != null) {
+                        isCurrentComboValid = Expression.evaluate(conditionShowIf, elem.getElementParameters());
+                    }
+                }
+                if (testedParam.getListItemsNotShowIf() != null) {
+                    String conditionNotShowIf = testedParam.getListItemsNotShowIf()[index];
+                    if (conditionNotShowIf != null) {
+                        isCurrentComboValid = !Expression.evaluate(conditionNotShowIf, elem.getElementParameters());
+                    }
+                }
+            }
+            if (!isCurrentComboValid && testedParam.getListItemsShowIf() != null) {
+                for (String condition : testedParam.getListItemsShowIf()) {
+                    if (condition != null && condition.contains(currentParam.getName())) {
+                        boolean isValid = Expression.evaluate(condition, elem.getElementParameters());
+                        if (isValid) {
+                            int index = ArrayUtils.indexOf(testedParam.getListItemsShowIf(), condition);
+                            testedParam.setValue(testedParam.getListItemsValue()[index]);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!isCurrentComboValid && !contains && testedParam.getListItemsNotShowIf() != null) {
+                for (String condition : testedParam.getListItemsNotShowIf()) {
+                    if (condition != null && condition.contains(currentParam.getName())) {
+                        boolean isValid = !Expression.evaluate(condition, elem.getElementParameters());
+                        if (isValid) {
+                            int index = ArrayUtils.indexOf(testedParam.getListItemsNotShowIf(), condition);
+                            testedParam.setValue(testedParam.getListItemsValue()[index]);
+                            break;
+                        }
+                    }
+                }
+            }
+        } else
 
         if (testedParam.getDefaultValues().size() > 0 && contains) {
             oldElementValues.put(testedParam, testedParam.getValue());
