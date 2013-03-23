@@ -1447,7 +1447,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return getClassRootFileLocation().toURI().toURL().getPath();
     }
 
-    private File getClassRootFileLocation() throws CoreException {
+    protected File getClassRootFileLocation() throws CoreException {
         return getClassRootPath().toFile();
     }
 

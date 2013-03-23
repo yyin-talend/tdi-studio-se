@@ -33,7 +33,7 @@ import org.talend.repository.utils.ZipFileUtils;
  * $Id: MakeJarRunnable.java Mar 30, 200712:49:05 PM bqian $
  * 
  */
-class JarBuilder {
+public class JarBuilder {
 
     final File dir;
 
@@ -47,7 +47,7 @@ class JarBuilder {
 
     Collection<File> includeRoutines = null;
 
-//    private static final String SYSTEM = "system"; //$NON-NLS-1$
+    //    private static final String SYSTEM = "system"; //$NON-NLS-1$
 
     private static final String CONTEXT = "context"; //$NON-NLS-1$
 
@@ -61,7 +61,7 @@ class JarBuilder {
      * @param jarName
      * @param includeDirs
      */
-    JarBuilder(File root, File jarFile) {
+    public JarBuilder(File root, File jarFile) {
         this.dir = root;
         this.jarFile = jarFile;
     }
@@ -119,6 +119,7 @@ class JarBuilder {
             File subFile = new File(dir, subDir);
             subFile.listFiles(new java.io.FilenameFilter() {
 
+                @Override
                 public boolean accept(java.io.File dir, String name) {
                     File file = new java.io.File(dir, name);
                     if (file.isFile()) {
