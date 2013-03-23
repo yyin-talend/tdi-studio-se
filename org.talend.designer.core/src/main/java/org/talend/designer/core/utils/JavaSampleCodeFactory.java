@@ -46,6 +46,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
      * @see
      * org.talend.designer.core.utils.ISampleCodeFactory#generateCode(org.talend.designer.core.ui.editor.nodes.Node)
      */
+    @Override
     public Command generateCodeForParameters(final Node node) {
 
         String uniqueName = node.getUniqueName();
@@ -71,9 +72,9 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
      * @return
      */
     private String generateJavaRowCode(final Node node) {
-        String primeVlue = "// code sample:\r\n" + "//\r\n" + "// multiply by 2 the row identifier\r\n"
-                + "// output_row.id = input_row.id * 2;\r\n" + "//\r\n" + "// lowercase the name\r\n"
-                + "// output_row.name = input_row.name.toLowerCase();";
+        String primeVlue = "// code sample:\r\n" + "//\r\n" + "// multiply by 2 the row identifier\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "// output_row.id = input_row.id * 2;\r\n" + "//\r\n" + "// lowercase the name\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "// output_row.name = input_row.name.toLowerCase();"; //$NON-NLS-1$
         if (node.getMetadataList() == null || node.getMetadataList().get(0) == null) {
             return primeVlue;
         }
@@ -97,8 +98,9 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
         String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder();
-        MessageDialog mgd = new MessageDialog(null, null, null, null, 0, null, 0);
-        boolean isSelect = mgd.openConfirm(null, null, "Are you sure to replace use'code to generate code ?");
+        boolean isSelect = MessageDialog
+                .openQuestion(null, null,
+                        Messages.getString("JavaSampleCodeFactory.askRegenerateCode")); //$NON-NLS-1$
         if (isSelect) {
             // Add simple comment
             builder.append(Messages.getString("JavaSampleCodeFactory.schema")).append(lineSeparator); //$NON-NLS-1$
@@ -123,8 +125,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                         outputLabel = outputColumns.get(i).getLabel();
                     }
 
-                    builder
-                            .append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     javaEnding);
 
                     builder.append(lineSeparator);
@@ -141,8 +142,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                         inputLabel = inputColumns.get(i).getLabel();
                     }
 
-                    builder
-                            .append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     javaEnding);
                     builder.append(lineSeparator);
                 }
