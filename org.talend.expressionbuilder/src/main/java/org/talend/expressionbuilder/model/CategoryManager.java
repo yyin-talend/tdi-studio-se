@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.designer.rowgenerator.data.AbstractFunctionParser;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
@@ -38,7 +39,7 @@ public class CategoryManager {
 
     public java.util.List<Category> getInputCategory(String type) {
         FunctionManager functionManager = null;
-        if ("pig".equals(type)) {
+        if (JavaUtils.JAVA_PIG_DIRECTORY.equals(type)) {
             functionManager = new FunctionManager(type);
         } else {
             functionManager = new FunctionManager();
@@ -70,7 +71,7 @@ public class CategoryManager {
         }
 
         List<Category> input = new ArrayList<Category>();
-        if (!"pig".equals(type)) {
+        if (!JavaUtils.JAVA_PIG_DIRECTORY.equals(type)) {
             input.add(allCategories);
             input.add(userDefined);
         }
@@ -106,6 +107,9 @@ public class CategoryManager {
                 if (funcs == null) {
                     funcs = new ArrayList<Function>();
                     map.put(func.getCategory(), funcs);
+                }
+                if ("StoreFunc".equals(func.getPreview()) || "LoadFunc".equals(func.getPreview())) {
+                    continue;
                 }
                 funcs.add(func);
             }

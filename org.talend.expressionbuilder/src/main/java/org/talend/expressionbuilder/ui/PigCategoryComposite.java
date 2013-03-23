@@ -172,6 +172,6 @@ public class PigCategoryComposite extends CategoryComposite {
     }
 
     private void initializeData(ListViewer categoryViewer) {
-        categoryViewer.setInput(manager.getInputCategory("pig"));
+        categoryViewer.setInput(manager.getInputCategory(JavaUtils.JAVA_PIG_DIRECTORY));
     }
 }

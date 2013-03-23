@@ -251,7 +251,7 @@ public class PigExpressionComposite extends ExpressionComposite {
             // create KeyStroke use Ctrl+Space
             KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
             IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
-            IContentProposalProvider contentProposalProvider = new PigProposalProvider(null);
+            IContentProposalProvider contentProposalProvider = new PigProposalProvider(null, null);
             new ContentProposalAdapter(textControl, controlContentAdapter, contentProposalProvider, keyStroke, new char[] { ' ',
                     '.' });
         } catch (Exception e) {
