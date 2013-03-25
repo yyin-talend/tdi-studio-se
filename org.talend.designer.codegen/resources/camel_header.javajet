@@ -809,7 +809,8 @@ if (isProvider) {
         		   context = ElementParameterParser.getProcessSelectedContext(id);
         	   }
         	   
-	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
+	           String jobName = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("SELECTED_JOB_NAME"));
+//	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
 	           String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
 	           String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 	           typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
