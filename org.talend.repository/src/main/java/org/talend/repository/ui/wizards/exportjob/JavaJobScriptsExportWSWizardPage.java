@@ -243,7 +243,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         } else {
             IDialogSettings settings = getDialogSettings();
             if (settings != null && settings.get(STORE_EXPORTTYPE_ID) != null) {
-                return JobExportType.getTypeFromString(settings.get(STORE_EXPORTTYPE_ID));
+                JobExportType type = JobExportType.getTypeFromString(settings.get(STORE_EXPORTTYPE_ID));
+                for (JobExportType exportType : extractExportJobTypes()) {
+                    if (!Boolean.getBoolean("talend.export.job.2." + exportType.toString() + ".hide")) { //$NON-NLS-1$//$NON-NLS-2$
+                        if (type.equals(exportType)) {
+                            return type; // check if at least the type is included in the list or not, if not, just get
+                                         // the default one (POJO)
+                        }
+                    }
+                }
             }
         }
         return JobExportType.POJO;

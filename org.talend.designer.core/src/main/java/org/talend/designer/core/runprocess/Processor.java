@@ -315,6 +315,19 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         }
     }
 
+    protected Process execFrom(String path, Level level, int statOption, int traceOption, String... codeOptions)
+            throws ProcessorException {
+
+        String[] cmd = getCommandLine(true, false, statOption, traceOption, codeOptions);
+
+        logCommandLine(cmd, level);
+        try {
+            return Runtime.getRuntime().exec(cmd, null, new File(path));
+        } catch (IOException ioe) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
+        }
+    }
+
     public static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
             final StringBuffer out, final StringBuffer err) {
         Thread thread = new Thread() {

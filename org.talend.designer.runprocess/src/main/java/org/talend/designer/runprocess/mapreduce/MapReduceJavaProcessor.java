@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -90,43 +89,34 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         String archive = buildExportZip(processItem, new NullProgressMonitor());
         // Step 2: Deploy in local(Maybe just unpack)
         unzipFolder = unzipAndDeploy(archive);
-        // Step 3: Run Map/Reduce job.
-
-        return super.exec(Level.INFO, statisticsPort, tracePort);
-
+        // Step 3: Run Map/Reduce job from given folder.
+        return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort);
     }
 
     @Override
     protected String getLibFolderInWorkingDir() {
-        boolean isExported = ProcessorUtilities.isExportConfig();
-        if (!isExported) {
-            return unzipFolder + ProcessorConstants.CMD_KEY_WORD_SLASH + ProcessorConstants.CMD_KEY_WORD_LIB
-                    + ProcessorConstants.CMD_KEY_WORD_SLASH;
-        } else {
-            if (targetPlatform == null) {
-                if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                    // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                } else {
-                    // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
+        if (targetPlatform == null) {
+            if (Platform.getOS().contains(Platform.WS_WIN32)) {
+                // ../lib
+                return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
             } else {
-                if (Platform.OS_WIN32.equals(targetPlatform)) {
-                    // ../lib
-                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                } else {
-                    // "$ROOT_PATH/../lib";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
+                // "$ROOT_PATH/../lib";
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
             }
-
+        } else {
+            if (Platform.OS_WIN32.equals(targetPlatform)) {
+                // ../lib
+                return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+            } else {
+                // "$ROOT_PATH/../lib";
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+            }
         }
     }
 
@@ -136,26 +126,21 @@ public class MapReduceJavaProcessor extends JavaProcessor {
      * @return
      */
     protected String getRootWorkingDir() {
-        boolean isExported = ProcessorUtilities.isExportConfig();
-        if (!isExported) {
-            return unzipFolder + ProcessorConstants.CMD_KEY_WORD_SLASH;
-        } else {
-            if (targetPlatform == null) {
-                if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                    // empty
-                    return ""; //$NON-NLS-1$
-                } else {
-                    // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
+        if (targetPlatform == null) {
+            if (Platform.getOS().contains(Platform.WS_WIN32)) {
+                // empty
+                return ""; //$NON-NLS-1$
             } else {
-                if (Platform.OS_WIN32.equals(targetPlatform)) {
-                    // empty
-                    return ""; //$NON-NLS-1$
-                } else {
-                    // "$ROOT_PATH/";
-                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
-                }
+                // "$ROOT_PATH/";
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
+            }
+        } else {
+            if (Platform.OS_WIN32.equals(targetPlatform)) {
+                // empty
+                return ""; //$NON-NLS-1$
+            } else {
+                // "$ROOT_PATH/";
+                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
             }
         }
     }
@@ -330,21 +315,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         String[] vmArgs = vmArgsString.trim().split(" "); //$NON-NLS-1$
 
         vmArgsSegments.addAll(Arrays.asList(vmArgs));
-        if (!ProcessorUtilities.isExportConfig()) {
-            String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
-            String encodingFromIni = ProcessorConstants.CMD_KEY_WORD_FILEEMNCODING + "=" + fileEncoding; //$NON-NLS-1$
-
-            if (fileEncoding != null) {
-                Iterator<String> vmIt = vmArgsSegments.iterator();
-                while (vmIt.hasNext()) {
-                    String vmArg = vmIt.next();
-                    if (vmArg.startsWith(ProcessorConstants.CMD_KEY_WORD_FILEEMNCODING)) {
-                        vmIt.remove();
-                    }
-                }
-                vmArgsSegments.add(encodingFromIni);
-            }
-        }
         return vmArgsSegments;
     }
 
@@ -407,25 +377,20 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         sb.append(getJavaClassSeparator());
 
         // Append root path to class path.
-        if (ProcessorUtilities.isExportConfig()) {
-            if (targetPlatform == null) {
-                if (!Platform.getOS().contains(Platform.WS_WIN32)) {
-                    sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
-                    sb.append(getJavaClassSeparator());
-                }
-            } else {
-                if (!Platform.OS_WIN32.equals(targetPlatform)) {
-                    sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
-                    sb.append(getJavaClassSeparator());
-                }
+        if (targetPlatform == null) {
+            if (!Platform.getOS().contains(Platform.WS_WIN32)) {
+                sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
+                sb.append(getJavaClassSeparator());
+            }
+        } else {
+            if (!Platform.OS_WIN32.equals(targetPlatform)) {
+                sb.append(ProcessorConstants.CMD_KEY_WORD_ROOTPATH);
+                sb.append(getJavaClassSeparator());
             }
         }
 
         // Append job jar to class path.
         sb.append(getRootWorkingDir());
-        if (!ProcessorUtilities.isExportConfig()) {
-            sb.append(process.getName()).append(ProcessorConstants.CMD_KEY_WORD_SLASH);
-        }
         sb.append(makeupJobJarName());
 
         return sb.toString();
@@ -445,20 +410,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
 
-        if (!ProcessorUtilities.isExportConfig()) {
-            File libDir = new File(getLibFolderInWorkingDir());
-            File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
-            if (jarFiles != null && jarFiles.length > 0) {
-                for (File jarFile : jarFiles) {
-                    if (jarFile.isFile() && neededLibraries.contains(jarFile.getName())) {
-                        libsRequiredByJob.add(jarFile.getName());
-                    }
-                }
-            }
-
-        } else {
-            libsRequiredByJob.addAll(neededLibraries);
-        }
+        libsRequiredByJob.addAll(neededLibraries);
 
         libsRequiredByJob.add("systemRoutines.jar"); //$NON-NLS-1$
         libsRequiredByJob.add("userRoutines.jar"); //$NON-NLS-1$
