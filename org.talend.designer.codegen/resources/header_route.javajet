@@ -220,7 +220,7 @@ for (INode node : graphicalNodes) {
 	if ("cMessagingEndpoint".equals(componentName)) {
 		uri = ElementParameterParser.getValue(node, "__URI__");
 	}else if("cDirect".equals(componentName)){
-		if(node.getOutgoingConnections().size()==0){
+		if(node.getOutgoingConnections().size()==0||node.getIncomingConnections().size()>0){
 			continue;//is productor node. use exist endpoint.
 		}
 		String directName=ElementParameterParser.getValue(node, "__NAME__");
@@ -237,7 +237,7 @@ for (INode node : graphicalNodes) {
 			uri = uri + sb.toString();
 		}
 	}else if("cVM".equals(componentName)||"cSEDA".equals(componentName)){
-		if(node.getOutgoingConnections().size()==0){
+		if(node.getOutgoingConnections().size()==0||node.getIncomingConnections().size()>0){
 			continue;//is productor node. use exist endpoint.
 		}
 		String endpointName=ElementParameterParser.getValue(node, "__NAME__");
