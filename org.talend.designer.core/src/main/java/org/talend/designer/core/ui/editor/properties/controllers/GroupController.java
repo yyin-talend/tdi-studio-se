@@ -67,6 +67,7 @@ public class GroupController extends AbstractElementPropertySectionController {
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 widgetFactory = getWidgetFactory();
                 return widgetFactory.createGroup(parent, param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName()); //$NON-NLS-1$
@@ -90,6 +91,7 @@ public class GroupController extends AbstractElementPropertySectionController {
         Group group = (Group) dField.getControl();
         group.setLayout(new FormLayout());
         // group.setEnabled(!param.isReadOnly());
+        group.setBackground(subComposite.getBackground());
 
         hashCurControls.put(param.getGroup(), group);
 
@@ -108,6 +110,7 @@ public class GroupController extends AbstractElementPropertySectionController {
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return getWidgetFactory().createGroup(parent, param.getDisplayName());
             }
@@ -136,6 +139,7 @@ public class GroupController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }

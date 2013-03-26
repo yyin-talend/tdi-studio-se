@@ -260,8 +260,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
             dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
                     .getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
-        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)) {
-            dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, (Element) data, true);
         }
 
         if (dynamicComposite != null) {
@@ -443,9 +441,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
             if (!isJoblet && process.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
                 category.add(EComponentCategory.STATSANDLOGS);
-            }
-            if (process.getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
-                category.add(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP);
             }
             if (allowVerchange) {
                 category.add(EComponentCategory.VERSIONS);

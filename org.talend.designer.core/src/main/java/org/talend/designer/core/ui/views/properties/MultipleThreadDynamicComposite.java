@@ -26,6 +26,7 @@ import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -772,13 +773,18 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         this.isCompactView = isCompactView;
     }
 
+    public MultipleThreadDynamicComposite(Composite parentComposite, int styles, final EComponentCategory section,
+            Element element, boolean isCompactView) {
+        this(parentComposite, styles, section, element, isCompactView, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+    }
+
     /**
      * Set the section of the tabbed property.
      * 
      * @param section
      */
     public MultipleThreadDynamicComposite(Composite parentComposite, int styles, final EComponentCategory section,
-            Element element, boolean isCompactView) {
+            Element element, boolean isCompactView, Color backgroundColor) {
         super(parentComposite, styles);
         setCompactView(isCompactView);
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
@@ -789,12 +795,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         d.bottom = new FormAttachment(100, 0);
         setLayoutData(d);
 
-        setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+        setBackground(backgroundColor);
 
         setExpandHorizontal(true);
         // setExpandVertical(true);
         composite = widgetFactory.createComposite(this, SWT.NO_FOCUS);
         setContent(composite);
+        composite.setBackground(backgroundColor);
 
         generator = new DynamicPropertyGenerator();
         this.section = section;

@@ -62,7 +62,8 @@ public class CheckController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private Command createCommand(SelectionEvent event) {
         Control ctrl = (Control) event.getSource();
@@ -88,13 +89,15 @@ public class CheckController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.CHECK);
             }
@@ -110,6 +113,7 @@ public class CheckController extends AbstractElementPropertySectionController {
         Control cLayout = dField.getLayoutControl();
         cLayout.setBackground(subComposite.getBackground());
         Button checkBtn = (Button) dField.getControl();
+        checkBtn.setBackground(subComposite.getBackground());
 
         FormData data = new FormData();
         data.top = new FormAttachment(0, top);
@@ -135,13 +139,15 @@ public class CheckController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, final IElementParameter param) {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.CHECK);
             }
@@ -158,6 +164,7 @@ public class CheckController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -165,6 +172,7 @@ public class CheckController extends AbstractElementPropertySectionController {
 
     SelectionListener listenerSelection = new SelectionAdapter() {
 
+        @Override
         public void widgetSelected(SelectionEvent event) {
             Command cmd = createCommand(event);
             executeCommand(cmd);

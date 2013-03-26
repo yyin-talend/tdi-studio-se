@@ -15,10 +15,10 @@ package org.talend.designer.runprocess.ui.views;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -60,6 +61,7 @@ import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProv
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.properties.tab.HorizontalTabFactory;
@@ -67,6 +69,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ui.views.properties.EElementType;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -256,6 +259,7 @@ public class ProcessView extends ViewPart {
         tabFactory.getTabbedPropertyComposite().pack();
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -273,8 +277,8 @@ public class ProcessView extends ViewPart {
                 if (currentSelectedTab == null || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
 
                     currentSelectedTab = descriptor;
-                    createDynamicComposite(tabFactory.getTabComposite(), (Element) descriptor.getData(), descriptor.getCategory());
                     selectedPrimary = false;
+                    createDynamicComposite(tabFactory.getTabComposite(), (Element) descriptor.getData(), descriptor.getCategory());
                 }
             }
         });
@@ -295,6 +299,7 @@ public class ProcessView extends ViewPart {
 
         FocusListener fl = new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
                 IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
@@ -302,6 +307,7 @@ public class ProcessView extends ViewPart {
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
@@ -317,6 +323,7 @@ public class ProcessView extends ViewPart {
 
         contextManagerListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
                     // rubjobManager.setBooleanTrace(false);
@@ -335,6 +342,7 @@ public class ProcessView extends ViewPart {
         // TODO Auto-generated method stub
         moveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 23, 1 });
@@ -367,7 +375,11 @@ public class ProcessView extends ViewPart {
     }
 
     public void createDynamicComposite(Composite parent, Element element, EComponentCategory category) {
-        // jcomposite = this.processViewHelper.getProcessComposite(parent.getShell());
+        if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
+            sash.setWeights(new int[] { 18, 5 });
+        } else if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
+            sash.setWeights(new int[] { 23, 1 });
+        }
         if (category == EComponentCategory.BASICRUN) {
             processComposite = new ProcessComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = processComposite;
@@ -380,6 +392,10 @@ public class ProcessView extends ViewPart {
         } else if (category == EComponentCategory.TARGET) {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
+        } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)) {
+            dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
+                    (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+            sash.setWeights(new int[] { 24, 0 });
         }
         refresh();
         if (dc != null) {
@@ -406,22 +422,27 @@ public class ProcessView extends ViewPart {
         tabFactory.setInput(descriptors);
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -439,6 +460,7 @@ public class ProcessView extends ViewPart {
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -448,7 +470,14 @@ public class ProcessView extends ViewPart {
 
     private EComponentCategory[] getCategories() {
         EComponentCategory[] categories = EElementType.RUN_PROCESS.getCategories();
-        final List<EComponentCategory> list = new ArrayList<EComponentCategory>(Arrays.asList(categories));
+        if (processContext != null && processContext.getProcess() != null) {
+            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
+                categories = (EComponentCategory[]) ArrayUtils.remove(categories,
+                        ArrayUtils.indexOf(categories, EComponentCategory.DEBUGRUN));
+                categories = (EComponentCategory[]) ArrayUtils.add(categories, 1,
+                        EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP);
+            }
+        }
         return categories;
     }
 
@@ -506,13 +535,15 @@ public class ProcessView extends ViewPart {
         refresh();
     }
 
+    String oldJobType = null;
+
     public void refresh() {
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         boolean disableAll = false;
         if (activeContext != null) {
             disableAll = activeContext.getProcess().disableRunJobView();
         }
-        this.processContext = activeContext;
+        processContext = activeContext;
         rubjobManager.setProcessContext(processContext);
         // if (processContext != null) {
         // activeContext.setSaveBeforeRun(rubjobManager.getSaveJobBeforeRun());
@@ -522,6 +553,10 @@ public class ProcessView extends ViewPart {
         // }
         if (contextComposite.isDisposed()) {
             return;
+        }
+        if (activeContext != null && !activeContext.getProcess().getComponentsType().equals(oldJobType)) {
+            oldJobType = activeContext.getProcess().getComponentsType();
+            setElement();
         }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
@@ -536,8 +571,9 @@ public class ProcessView extends ViewPart {
         if (dc == advanceComposite) {
             advanceComposite.setProcessContext(activeContext);
         }
-        if (dc == targetComposite)
+        if (dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
+        }
         if (activeContext != null) {
             String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
             if (activeContext.getProcess().disableRunJobView()) { // ?? joblet
@@ -698,6 +734,7 @@ public class ProcessView extends ViewPart {
         }
         tabFactory.setSelection(new StructuredSelection() {
 
+            @Override
             public List toList() {
                 return selection;
             }
