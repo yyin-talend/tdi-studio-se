@@ -104,28 +104,34 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     @Override
     protected String getLibFolderInWorkingDir() {
-        if (targetPlatform == null) {
-            if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                // ../lib
-                return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+        if (ProcessorUtilities.isExportConfig()) {
+            if (targetPlatform == null) {
+                if (Platform.getOS().contains(Platform.WS_WIN32)) {
+                    // ../lib
+                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                } else {
+                    // "$ROOT_PATH/../lib";
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                }
             } else {
-                // "$ROOT_PATH/../lib";
-                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                if (Platform.OS_WIN32.equals(targetPlatform)) {
+                    // ../lib
+                    return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                } else {
+                    // "$ROOT_PATH/../lib";
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                            + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                }
             }
         } else {
-            if (Platform.OS_WIN32.equals(targetPlatform)) {
-                // ../lib
-                return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-            } else {
-                // "$ROOT_PATH/../lib";
-                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
-                        + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
-            }
+            // ../lib
+            return ProcessorConstants.CMD_KEY_WORD_TWO_DOT + ProcessorConstants.CMD_KEY_WORD_SLASH
+                    + ProcessorConstants.CMD_KEY_WORD_LIB + ProcessorConstants.CMD_KEY_WORD_SLASH;
         }
     }
 
@@ -135,22 +141,26 @@ public class MapReduceJavaProcessor extends JavaProcessor {
      * @return
      */
     protected String getRootWorkingDir() {
-        if (targetPlatform == null) {
-            if (Platform.getOS().contains(Platform.WS_WIN32)) {
-                // empty
-                return ""; //$NON-NLS-1$
+        if (ProcessorUtilities.isExportConfig()) {
+            if (targetPlatform == null) {
+                if (Platform.getOS().contains(Platform.WS_WIN32)) {
+                    // empty
+                    return ""; //$NON-NLS-1$
+                } else {
+                    // "$ROOT_PATH/";
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                }
             } else {
-                // "$ROOT_PATH/";
-                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                if (Platform.OS_WIN32.equals(targetPlatform)) {
+                    // empty
+                    return ""; //$NON-NLS-1$
+                } else {
+                    // "$ROOT_PATH/";
+                    return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
+                }
             }
         } else {
-            if (Platform.OS_WIN32.equals(targetPlatform)) {
-                // empty
-                return ""; //$NON-NLS-1$
-            } else {
-                // "$ROOT_PATH/";
-                return ProcessorConstants.CMD_KEY_WORD_ROOTPATH + ProcessorConstants.CMD_KEY_WORD_SLASH;
-            }
+            return ""; //$NON-NLS-1$
         }
     }
 
