@@ -393,8 +393,13 @@ public class ProcessView extends ViewPart {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
         } else if (EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP.equals(category)) {
-            dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
-                    (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+            if (processContext != null) {
+                dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
+                        (Element) processContext.getProcess(), true, Display.getCurrent().getSystemColor(
+                                SWT.COLOR_WIDGET_BACKGROUND));
+            } else {
+                dc = null;
+            }
             sash.setWeights(new int[] { 24, 0 });
         }
         refresh();
@@ -560,18 +565,18 @@ public class ProcessView extends ViewPart {
         }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
-        if (dc == processComposite) {
+        if (dc != null && dc == processComposite) {
             processComposite.setProcessContext(activeContext);
         }
         rubjobManager.setSelectContext(contextComposite.getSelectedContext());
-        if (dc == debugTisProcessComposite) {
+        if (dc != null && dc == debugTisProcessComposite) {
             debugTisProcessComposite.setProcessContext(activeContext);
             debugTisProcessComposite.setContextComposite(this.contextComposite);
         }
-        if (dc == advanceComposite) {
+        if (dc != null && dc == advanceComposite) {
             advanceComposite.setProcessContext(activeContext);
         }
-        if (dc == targetComposite) {
+        if (dc != null && dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
         }
         if (activeContext != null) {
