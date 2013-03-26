@@ -363,12 +363,21 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         list.add(ProcessorConstants.CMD_KEY_WORD_JT);
         list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$ 
 
-        IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
-        if (propertiesParam != null) {
-            for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
-                String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
-                String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
-                list.add("-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
+        IElementParameter usePropertiesParam = process.getElementParameter("USE_HADOOP_PROPERTIES"); //$NON-NLS-1$
+        if (usePropertiesParam != null) {
+            boolean useProperties = false;
+            if (usePropertiesParam.getValue() instanceof Boolean) {
+                useProperties = (Boolean) usePropertiesParam.getValue();
+            } else if (Boolean.valueOf((String) usePropertiesParam.getValue())) {
+                useProperties = true;
+            }
+            if (useProperties) {
+                IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
+                for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
+                    String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
+                    String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
+                    list.add("-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }
 
