@@ -372,6 +372,20 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             }
         }
 
+        IElementParameter kerbParam = process.getElementParameter("USE_KRB"); //$NON-NLS-1$
+        if (kerbParam != null) {
+            boolean useKrb = false;
+            if (kerbParam.getValue() instanceof Boolean && (Boolean) kerbParam.getValue()) {
+                useKrb = true;
+            } else if (Boolean.valueOf((String) kerbParam.getValue())) {
+                useKrb = true;
+            }
+            if (useKrb) {
+                IElementParameter nameNodePrincipal = process.getElementParameter("NAMENODE_PRINCIPAL"); //$NON-NLS-1$
+                list.add("-D dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes((String) nameNodePrincipal.getValue())); //$NON-NLS-1$ 
+            }
+        }
+
         return list;
     }
 
