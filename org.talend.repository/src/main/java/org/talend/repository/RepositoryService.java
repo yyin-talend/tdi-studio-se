@@ -36,6 +36,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
@@ -115,6 +116,7 @@ import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
+import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
@@ -125,8 +127,6 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
-
-;
 
 /**
  * DOC qian class global comment. Detailled comment <br/>
@@ -771,6 +771,15 @@ public class RepositoryService implements IRepositoryService {
         }
         return targetFileName;
 
+    }
+
+    public RepositoryNode getRepNodeFromRepReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType) {
+        RepositoryReviewDialog dialog = new RepositoryReviewDialog(parentShell, type, repositoryType);
+        if (dialog.open() == Window.OK) {
+            return dialog.getResult();
+        }
+
+        return null;
     }
 
 }
