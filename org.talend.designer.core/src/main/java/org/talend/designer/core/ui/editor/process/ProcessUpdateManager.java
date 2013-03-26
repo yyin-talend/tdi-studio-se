@@ -1231,9 +1231,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                      * should ignore the db type column. because database component can use other
                                      * database schema.
                                      */
-                                    boolean isAddColumn = isAddColumn(copyOfrepositoryMetadata, metadataTable);
-
-                                    if (isAddColumn) {
+                                    if (this.isAddColumn) {
                                         Display.getDefault().syncExec(new Runnable() {
 
                                             @Override
@@ -1246,9 +1244,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             }
 
                                         });
+                                        this.isAddColumn = false;
                                     } else {
                                         copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, false);
                                     }
+
                                     if (onlySimpleShow
                                             || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
                                                     IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
@@ -1285,23 +1285,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         return schemaResults;
-    }
-
-    private boolean isAddColumn(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess) {
-        boolean isHaveAddColumn = false;
-        for (IMetadataColumn columnFromMetadata : tableFromMetadata.getListColumns()) {
-            boolean flag = false;
-            for (IMetadataColumn columnFromProcess : tableFromProcess.getListColumns(true)) {
-                if (columnFromMetadata.getLabel().equals(columnFromProcess.getLabel())) {
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                isHaveAddColumn = true;
-                break;
-            }
-        }
-        return isHaveAddColumn;
     }
 
     private void copyUsefulAttribute(IMetadataTable tableFromMetadata, IMetadataTable tableFromProcess, boolean isMustUsed) {
