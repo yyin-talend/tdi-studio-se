@@ -47,6 +47,8 @@ java.sql.Connection conn_<%=cid%> = null;
 		String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
 		String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 		String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+		String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
+		
 		boolean setMapredJT = "true".equals(ElementParameterParser.getValue(node, "__SET_MAPRED_JT__"));
 		boolean setNamenode = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 		List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
@@ -55,7 +57,13 @@ java.sql.Connection conn_<%=cid%> = null;
     	String zookeeperQuorumForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_QUORUM__");
     	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
     	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
-    	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");		
+    	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
+		
+		if(hiveServer==null || "".equals(hiveServer.trim())) {
+			hiveServer = "hive";
+		} else {
+			hiveServer = hiveServer.toLowerCase();
+		}
 		
 		boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 		
@@ -94,11 +102,11 @@ java.sql.Connection conn_<%=cid%> = null;
 			System.setProperty("hive.metastore.local", "false");
 			System.setProperty("hive.metastore.uris", "thrift://" + <%=dbhost%> + ":" + <%=dbport%>);
 			System.setProperty("hive.metastore.execute.setugi", "true");
-			String url_<%=cid%> = "jdbc:hive://";
+			String url_<%=cid%> = "jdbc:<%=hiveServer%>://";
 <%
 		} else {
 %>
-			String url_<%=cid%> = "jdbc:hive://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+			String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 <%
 		}
 %>
