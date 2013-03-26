@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,6 +38,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.IProcessor;
@@ -96,8 +98,22 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         // Step 2: Deploy in local(Maybe just unpack)
         unzipFolder = unzipAndDeploy(archive);
         // Step 3: Run Map/Reduce job from given folder.
+
+        String[] finalOptionsParam = optionsParam;
+        IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
+        if (propertiesParam != null) {
+            if (finalOptionsParam == null) {
+                finalOptionsParam = new String[] {};
+            }
+            for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
+                String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
+                String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
+                finalOptionsParam = (String[]) ArrayUtils.add(finalOptionsParam, "-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
         return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
-                optionsParam);
+                finalOptionsParam);
     }
 
     @Override
