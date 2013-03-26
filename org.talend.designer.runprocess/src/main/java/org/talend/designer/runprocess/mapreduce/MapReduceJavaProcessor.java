@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -99,21 +98,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         unzipFolder = unzipAndDeploy(archive);
         // Step 3: Run Map/Reduce job from given folder.
 
-        String[] finalOptionsParam = optionsParam;
-        IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
-        if (propertiesParam != null) {
-            if (finalOptionsParam == null) {
-                finalOptionsParam = new String[] {};
-            }
-            for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
-                String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
-                String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
-                finalOptionsParam = (String[]) ArrayUtils.add(finalOptionsParam, "-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-
         return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
-                finalOptionsParam);
+                optionsParam);
     }
 
     @Override
@@ -373,9 +359,18 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         }
         list.add(libJars.substring(0, libJars.length() - 1));
         list.add(ProcessorConstants.CMD_KEY_WORD_FS);
-        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$
+        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$ 
         list.add(ProcessorConstants.CMD_KEY_WORD_JT);
-        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$
+        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$ 
+
+        IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
+        if (propertiesParam != null) {
+            for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
+                String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
+                String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
+                list.add("-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
 
         return list;
     }
