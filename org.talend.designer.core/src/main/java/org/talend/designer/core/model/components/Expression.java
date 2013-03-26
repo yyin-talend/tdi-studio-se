@@ -20,6 +20,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -287,6 +288,18 @@ public final class Expression {
         }
         if (listParam == null) {
             return false;
+        }
+        
+        /*
+         * this only used to check is EE version or not
+         */
+        if("IS_STUDIO_EE_VERSION".equals(variableName)){
+            boolean isTIS = PluginChecker.isTIS();
+            if("true".equals(variableValue)){
+                return isTIS;
+            }else{
+                return !isTIS;
+            }
         }
 
         // 3 levels of variable name accepted maximum (ex: MY_VAR.TABLE.FIELD == 'test')
