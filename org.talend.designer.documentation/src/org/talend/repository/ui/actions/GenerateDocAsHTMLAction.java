@@ -44,11 +44,19 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         ProjectManager instance = ProjectManager.getInstance();
         boolean canWork = false;
-        List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
+        List<RepositoryNode> nodes = selection.toList();
         for (RepositoryNode node : nodes) {
+            if (ERepositoryObjectType.PROCESS_MR != null) {
+                if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS_MR) {
+                    if (node.getObject() != null && instance.isInCurrentMainProject(node)) {
+                        canWork = true;
+                    }
+                }
+            }
             if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
                 if (node.getObject() != null && instance.isInCurrentMainProject(node)) {
                     canWork = true;
@@ -68,6 +76,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      * 
      * @see org.talend.repository.ui.actions.AContextualAction#isVisible()
      */
+    @Override
     public boolean isVisible() {
         return isEnabled();
     }
@@ -87,6 +96,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         GenerateDocAsHTMLWizard processWizard = new GenerateDocAsHTMLWizard();
         IWorkbench workbench = getWorkbench();
