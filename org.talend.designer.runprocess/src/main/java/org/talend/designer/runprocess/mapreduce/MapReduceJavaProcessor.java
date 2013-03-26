@@ -375,8 +375,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         IElementParameter kerbParam = process.getElementParameter("USE_KRB"); //$NON-NLS-1$
         if (kerbParam != null) {
             boolean useKrb = false;
-            if (kerbParam.getValue() instanceof Boolean && (Boolean) kerbParam.getValue()) {
-                useKrb = true;
+            if (kerbParam.getValue() instanceof Boolean) {
+                useKrb = (Boolean) kerbParam.getValue();
             } else if (Boolean.valueOf((String) kerbParam.getValue())) {
                 useKrb = true;
             }
