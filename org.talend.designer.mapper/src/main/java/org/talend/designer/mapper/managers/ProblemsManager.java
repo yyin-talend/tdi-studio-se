@@ -14,10 +14,9 @@ package org.talend.designer.mapper.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
@@ -71,7 +70,9 @@ public class ProblemsManager {
 
     private boolean refreshTableEntries;
 
-    Problem lookupProblem = new Problem(null, "All lookup tables must have the same expressions", ProblemStatus.ERROR);
+    Problem lookupProblem = new Problem(null,
+            "All lookup tables must have the same expressions,this expression does not exist in other lookups",
+            ProblemStatus.ERROR);
 
     /**
      * DOC amaumont ProblemsManager constructor comment.
@@ -400,91 +401,96 @@ public class ProblemsManager {
     public boolean checkLookupExpressionProblem() {
         if (mapperManager.isMRProcess()) {
             List<DataMapTableView> inputsTablesView = mapperManager.getUiManager().getInputsTablesView();
-            Set<String> expressionsInCommon = new HashSet<String>();
             List<DataMapTableView> lookupTables = new ArrayList<DataMapTableView>();
-            boolean isFirst = true;
-            int minEmptyExp = 100;
+            List<IColumnEntry> entityWithoutProblem = new ArrayList<IColumnEntry>();
+            DataMapTableView firstLookup = null;
             for (int i = 0; i < inputsTablesView.size(); i++) {
-                int emptyExpColumns = 0;
-                Set<String> expressions = new HashSet<String>();
                 DataMapTableView inputTableView = inputsTablesView.get(i);
                 InputTable dataMapTable = (InputTable) inputTableView.getDataMapTable();
                 boolean mainConnection = dataMapTable.isMainConnection();
                 if (mainConnection) {
                     continue;
                 }
-                List<IColumnEntry> columnEntries = dataMapTable.getColumnEntries();
-                lookupTables.add(inputTableView);
-                if (isFirst) {
-                    isFirst = false;
-                    // the first lookup table
-                    for (IColumnEntry inputEntity : columnEntries) {
-                        String expression = inputEntity.getExpression();
-                        if (expression == null || expression.trim().equals("")) {
-                            expression = "";//$NON-NLS-1$
-                            emptyExpColumns++;
-                        }
-                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
-                        expressionsInCommon.add(expression);
-                    }
-                    minEmptyExp = Math.min(minEmptyExp, emptyExpColumns);
-                } else {
-                    for (IColumnEntry inputEntity : columnEntries) {
-                        String expression = inputEntity.getExpression();
-                        if (expression == null || expression.trim().equals("")) {
-                            expression = "";//$NON-NLS-1$
-                            emptyExpColumns++;
-                        }
-                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
-                        expressions.add(expression);
-                    }
-                    minEmptyExp = Math.min(minEmptyExp, emptyExpColumns);
-                    Iterator<String> iterator = expressionsInCommon.iterator();
-                    for (; iterator.hasNext();) {
-                        String next = iterator.next();
-                        if (!expressions.contains(next)) {
-                            iterator.remove();
-                        }
-                    }
 
+                if (firstLookup == null) {
+                    firstLookup = inputTableView;
+                } else {
+                    lookupTables.add(inputTableView);
                 }
 
             }
+            if (firstLookup == null) {
+                return false;
+            }
 
-            if (expressionsInCommon.isEmpty()) {
+            List<List<IColumnEntry>> otherLookupEntities = new ArrayList<List<IColumnEntry>>();
+            for (DataMapTableView otherLookup : lookupTables) {
+                otherLookupEntities.add(new ArrayList<IColumnEntry>(otherLookup.getDataMapTable().getColumnEntries()));
+
+            }
+
+            List<IColumnEntry> lookupEntity = firstLookup.getDataMapTable().getColumnEntries();
+            for (IColumnEntry firstLookupEntity : lookupEntity) {
+                String expression = firstLookupEntity.getExpression();
+                if (expression == null || expression.trim().equals("")) {
+                    continue;
+                }
+                expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
+                Map<List<IColumnEntry>, IColumnEntry> entitiesFound = new HashMap<List<IColumnEntry>, IColumnEntry>();
+                for (List<IColumnEntry> tableEntities : otherLookupEntities) {
+                    for (IColumnEntry entityInOtherLookup : tableEntities) {
+                        String expressionInOtherLookup = entityInOtherLookup.getExpression();
+                        if (expressionInOtherLookup == null || expressionInOtherLookup.trim().equals("")) {
+                            continue;
+                        }
+                        expressionInOtherLookup = expressionInOtherLookup.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
+                        // only match the first one
+                        if (expression.equals(expressionInOtherLookup)) {
+                            entitiesFound.put(tableEntities, entityInOtherLookup);
+                            break;
+                        }
+                    }
+                }
+
+                if (entitiesFound.size() == otherLookupEntities.size()) {
+                    for (List<IColumnEntry> tableEntities : entitiesFound.keySet()) {
+                        entityWithoutProblem.add(entitiesFound.get(tableEntities));
+                        entityWithoutProblem.add(firstLookupEntity);
+                        tableEntities.remove(entitiesFound.get(tableEntities));
+                    }
+                }
+            }
+            // add back the first lookup table
+            lookupTables.add(firstLookup);
+            if (entityWithoutProblem.isEmpty()) {
                 // no common expressions in lookup tables , then show red background color for all
                 for (DataMapTableView lookupTable : lookupTables) {
                     List<IColumnEntry> columnEntries = lookupTable.getDataMapTable().getColumnEntries();
                     for (IColumnEntry entity : columnEntries) {
+                        if (entity.getExpression() == null || entity.getExpression().trim().equals("")) {
+                            continue;
+                        }
                         addLookupProblem(entity);
                     }
                     lookupTable.getTableViewerCreatorForColumns().refresh();
                 }
             } else {
+
                 for (DataMapTableView lookupTable : lookupTables) {
                     boolean needRefresh = false;
-                    int emptyExpColumns = 0;
                     List<IColumnEntry> columnEntries = lookupTable.getDataMapTable().getColumnEntries();
                     for (IColumnEntry entity : columnEntries) {
-                        String expression = entity.getExpression();
-                        if (expression == null || expression.trim().equals("")) {
-                            expression = "";//$NON-NLS-1$
-                            emptyExpColumns++;
-                        }
-                        expression = expression.replaceAll("\\s*", "").trim();//$NON-NLS-1$//$NON-NLS-2$
-                        if (!expressionsInCommon.contains(expression)) {
-                            addLookupProblem(entity);
-                            needRefresh = true;
-                        } else if (emptyExpColumns > minEmptyExp) {
-                            // to check if all lookup tables have the same empty expression columns
-                            addLookupProblem(entity);
-                            needRefresh = true;
-                        } else {
+                        if (entity.getExpression() == null || entity.getExpression().trim().equals("")
+                                || entityWithoutProblem.contains(entity)) {
                             if (entity.getProblems() != null) {
                                 needRefresh = entity.getProblems().remove(lookupProblem);
-                                entity.getProblems().isEmpty();
-                                entity.setProblems(null);
+                                if (entity.getProblems().isEmpty()) {
+                                    entity.setProblems(null);
+                                }
                             }
+                        } else {
+                            addLookupProblem(entity);
+                            needRefresh = true;
                         }
                     }
                     if (needRefresh) {
