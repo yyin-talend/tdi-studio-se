@@ -81,8 +81,14 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         super(process, property, filenameFromLabel);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.runprocess.Processor#run(java.lang.String[], int, int,
+     * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
+     */
     @Override
-    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+    public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
         ProcessItem processItem = (ProcessItem) property.getItem();
         // Step 1: Export Map/Reduce job
@@ -90,7 +96,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         // Step 2: Deploy in local(Maybe just unpack)
         unzipFolder = unzipAndDeploy(archive);
         // Step 3: Run Map/Reduce job from given folder.
-        return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort);
+        return super.execFrom(unzipFolder + File.separatorChar + process.getName(), Level.INFO, statisticsPort, tracePort,
+                optionsParam);
     }
 
     @Override

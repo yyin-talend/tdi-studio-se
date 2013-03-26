@@ -117,9 +117,20 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String)
      */
+    @Deprecated
     @Override
     public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
-        return run(statisticsPort, tracePort, watchParam, null, null);
+        return run(new String[] { watchParam }, statisticsPort, tracePort, null, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#run(java.lang.String[], int, int)
+     */
+    @Override
+    public Process run(String[] optionsParam, int statisticsPort, int tracePort) throws ProcessorException {
+        return run(optionsParam, statisticsPort, tracePort, null, null);
     }
 
     /*
@@ -128,8 +139,21 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String,
      * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
      */
+    @Deprecated
     @Override
     public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+            IProcessMessageManager processMessageManager) throws ProcessorException {
+        return run(new String[] { watchParam }, statisticsPort, tracePort, monitor, processMessageManager);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#run(java.lang.String[], int, int,
+     * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
+     */
+    @Override
+    public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
@@ -156,12 +180,12 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
                 }
             }
         }
-        if (watchParam == null) {
+        if (optionsParam == null) {
             // only works with context name and remove context interpereter
             // option
             return exec(Level.INFO, statisticsPort, tracePort);
         }
-        return exec(Level.INFO, statisticsPort, tracePort, watchParam);
+        return exec(Level.INFO, statisticsPort, tracePort, optionsParam);
     }
 
     /**
