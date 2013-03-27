@@ -28,6 +28,7 @@
             alias="JSON"
             class="org.talend.repository.json.node.JSONExtendNode"
             folder="metadata/json"
+            icon="icons/JsonFile_icon16.png"
             isResouce="true"
             label="File Json"
             ordinal="49"
@@ -85,7 +86,7 @@
       <navigatorContent
             appearsBefore="org.talend.repository.viewer.metadata.ldap"
             contentProvider="org.talend.repository.json.ui.MetadataJSONContentProvider"
-            icon="icons/unknown.gif"
+            icon="icons/JsonFile_icon16.png"
             id="org.talend.repository.viewer.metadata.json"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="JSON"

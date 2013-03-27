@@ -18,12 +18,12 @@ import org.talend.commons.ui.runtime.image.IImage;
  * DOC wanghong class global comment. Detailled comment
  */
 public enum JSONImage implements IImage {
-    JSON_ICON("/icons/unknown.gif");
+    JSON_ICON("/icons/JsonFile_icon16.png");
 
     private String path;
 
     JSONImage() {
-        this.path = "/icons/unknown.gif"; //$NON-NLS-1$
+        this.path = "/icons/JsonFile_icon16.png"; //$NON-NLS-1$
     }
 
     JSONImage(String path) {
