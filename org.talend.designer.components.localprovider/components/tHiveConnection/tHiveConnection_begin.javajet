@@ -11,6 +11,7 @@ imports="
 <%
 
 	class ConnectionUtil extends DefaultConnectionUtil{
+		private String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
 	
 		public void createURL(INode node) {
 			super.createURL(node);
@@ -24,10 +25,13 @@ imports="
 			
 			boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 			
-			if(hiveServer==null || "".equals(hiveServer.trim())) {
-				hiveServer = "hive";
-			} else {
+			if(hiveServer!=null && !"".equals(hiveServer.trim()) && (isCustom || "HDP_1_2".equals(hiveVersion))) {
 				hiveServer = hiveServer.toLowerCase();
+				if ("hive2".equals(hiveServer)) {
+					javaDbDriver = "org.apache.hive.jdbc.HiveDriver";
+				}
+			} else {
+				hiveServer = "hive";
 			}
 			if(!isCustom && (("HDP_1_0".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("HDP_1_2".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("APACHE_0_20_203".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("MAPR1".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("MapR_EMR".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("Cloudera_CDH3".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)))) {
 %>
@@ -84,7 +88,7 @@ imports="
 		}
 		
 		public String getDirverClassName(INode node){
-			return "org.apache.hadoop.hive.jdbc.HiveDriver";
+			return javaDbDriver;
 		}
 	}//end class
 	
