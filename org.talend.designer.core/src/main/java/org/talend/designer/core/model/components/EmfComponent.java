@@ -1166,18 +1166,16 @@ public class EmfComponent extends AbstractComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROPERTY_TYPE.getName());
             newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
-            if (node.getComponent() != null) {
-                if (node.getComponent().getName().equals("tOracleConnection")
-                        && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-                    newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
-                    newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-                    newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-                } else {
-                    newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-                    newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-                    newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-                }
+            if (node.getComponent() != null && node.getComponent().getName().equals("tOracleConnection")) {
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
+            } else {
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             }
+
             // if(xmlParam.isUSETNSFILE){
             //
             // }

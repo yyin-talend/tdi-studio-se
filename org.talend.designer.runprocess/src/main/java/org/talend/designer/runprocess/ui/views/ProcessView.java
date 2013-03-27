@@ -565,19 +565,35 @@ public class ProcessView extends ViewPart {
         }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
+        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
         if (dc != null && dc == processComposite) {
             processComposite.setProcessContext(activeContext);
-        }
-        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
-        if (dc != null && dc == debugTisProcessComposite) {
+        } else if (dc != null && dc == debugTisProcessComposite) {
             debugTisProcessComposite.setProcessContext(activeContext);
             debugTisProcessComposite.setContextComposite(this.contextComposite);
-        }
-        if (dc != null && dc == advanceComposite) {
+        } else if (dc != null && dc == advanceComposite) {
             advanceComposite.setProcessContext(activeContext);
-        }
-        if (dc != null && dc == targetComposite) {
+        } else if (dc != null && dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
+        } else if (dc != null) {
+            if (processContext != null && processContext.getProcess() != null) {
+                if (dc instanceof MultipleThreadDynamicComposite) {
+                    if (dc.getElement() != processContext.getProcess()) {
+                        for (Control curControl : tabFactory.getTabComposite().getChildren()) {
+                            curControl.dispose();
+                        }
+                        dc = new MultipleThreadDynamicComposite(tabFactory.getTabComposite(), SWT.H_SCROLL | SWT.V_SCROLL
+                                | SWT.NO_FOCUS, currentSelectedTab.getCategory(), (Element) processContext.getProcess(), true,
+                                Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+                        dc.refresh();
+                    }
+                }
+            }
+            if (processContext == null || processContext.getProcess() == null) {
+                for (Control curControl : tabFactory.getTabComposite().getChildren()) {
+                    curControl.dispose();
+                }
+            }
         }
         if (activeContext != null) {
             String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
