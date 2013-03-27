@@ -698,7 +698,7 @@ public class PropertyChangeCommand extends Command {
     }
 
     private void refreshTraceConnections() {
-        if (propName.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName()) || this.elem instanceof Connection) {
+        if (propName.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName()) && this.elem instanceof Connection) {
             // TDI-8003:if the connection's style is RunIf,its trace should be null here
             if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION)) {
                 ((Connection) this.elem).getConnectionTrace().setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), true);
@@ -707,7 +707,7 @@ public class PropertyChangeCommand extends Command {
     }
 
     private void refreshResumingConnections() {
-        if (propName.equals(EParameterName.RESUMING_CHECKPOINT.getName()) || this.elem instanceof Connection) {
+        if (propName.equals(EParameterName.RESUMING_CHECKPOINT.getName()) && this.elem instanceof Connection) {
             if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION)) {
                 ((Connection) this.elem).getConnectionTrace()
                         .setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), true);

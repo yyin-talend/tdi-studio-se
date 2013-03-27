@@ -133,18 +133,22 @@ public class SetParallelizationCommand extends Command {
                                 con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
                                 setParallelization(con.getTarget());
                             } else {
+                                INode firstPartionerNode = null;
                                 IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER.getName());
                                 deparElem.setValue(Boolean.FALSE);
                                 con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
                                 con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                                 con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
 
-                                // the first flow,should not show departitioner row.
-                                // if (con.getSource().isStart()) {
-                                // deparElem.setShow(false);
-                                // }
-                                // set the keys for hash keys
-                                setHashKeysForCon(con);
+                                if (isStartRow) {
+                                    firstPartionerNode = getFirstPartionerTargetNode(con);
+                                }
+                                // set the keys from target node keys
+                                if (firstPartionerNode != null) {
+                                    setHashKeysFromTarget(con, (Node) firstPartionerNode);
+                                } else {
+                                    setHashKeysForCon(con);
+                                }
 
                                 if (con.getTarget() != null) {
                                     setParallelization(con.getTarget());
@@ -168,6 +172,24 @@ public class SetParallelizationCommand extends Command {
                 setDeparallelization(node);
             }
         }
+    }
+
+    private INode getFirstPartionerTargetNode(IConnection con) {
+        INode targetNode = null;
+        if (con.getTarget() != null) {
+            String partitioning = con.getTarget().getComponent().getPartitioning();
+            if (!(partitioning.equals("NONE") || partitioning.equals("AUTO"))) {
+                targetNode = con.getTarget();
+            } else {
+                for (IConnection nextCon : con.getTarget().getOutgoingConnections()) {
+                    if (nextCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
+                            || nextCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
+                        return getFirstPartionerTargetNode(nextCon);
+                    }
+                }
+            }
+        }
+        return targetNode;
     }
 
     private boolean isPartitionKeysExist(IConnection con) {
@@ -245,12 +267,12 @@ public class SetParallelizationCommand extends Command {
     }
 
     private void setHashKeysFromTarget(IConnection con, Node target) {
-        List<String> conKeyColumnList = getColumnListFromTargetNode(target);
+        List<String> targetKeyColumnList = getColumnListFromTargetNode(target);
         IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
         boolean isExistHashValue = false;
         if (parTableCon != null) {
             ((List) parTableCon.getValue()).clear();
-            if (conKeyColumnList.size() > 0) {
+            if (targetKeyColumnList.size() > 0) {
                 con.getElementParameter("HASH_PARTITION").setValue(true);
 
                 Object[] itemCon = parTableCon.getListItemsValue();
@@ -261,7 +283,7 @@ public class SetParallelizationCommand extends Command {
                         clumnKeyListName = ((ElementParameter) itemList).getName();
                     }
                 }
-                for (String partionValue : conKeyColumnList) {
+                for (String partionValue : targetKeyColumnList) {
                     for (Object keyParMap : ((List) parTableCon.getValue())) {
                         Map existKeyMap = (Map) keyParMap;
                         if (existKeyMap.get(clumnKeyListName).equals(partionValue)) {
