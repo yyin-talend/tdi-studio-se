@@ -41,6 +41,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
@@ -106,14 +107,24 @@ public class TabFolderEditors extends CTabFolder {
         item.setControl(inOutMetaEditorContainer);
 
         CommandStack commandStack = mapperManager.getCommandStack();
+        // check component use from mapreduce
+        boolean isMapreduce = false;
+        if (mapperManager.getAbstractMapComponent() != null) {
+            IComponent component = mapperManager.getAbstractMapComponent().getComponent();
+            if (component != null && component.getPaletteType() != null && component.getPaletteType().equals("MR")) {
+                isMapreduce = true;
+            }
+        }
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        inputMetaEditor.setMapreduce(isMapreduce);
         inputMetaEditor.initGraphicComponents();
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         addListenersToInputButtons();
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        outputMetaEditor.setMapreduce(isMapreduce);
         outputMetaEditor.initGraphicComponents();
         outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
