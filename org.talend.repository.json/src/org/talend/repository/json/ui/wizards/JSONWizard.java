@@ -304,7 +304,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
         jsonFileSelectPage = new JSONFileSelectWizardPage(creation, connectionItem, isRepositoryObjectEditable(), existingNames);
 
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(JSONImage.JSON_ICON));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(JSONImage.JSON_ICON32));
         if (connection != null) {
             List schemas = connection.getSchema();
             if (!schemas.isEmpty()) {
