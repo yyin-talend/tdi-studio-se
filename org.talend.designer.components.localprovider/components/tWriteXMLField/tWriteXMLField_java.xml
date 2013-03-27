@@ -5,6 +5,7 @@
 		STARTABLE="false"  EXTENSION="org.talend.designer.fileoutputxml" 
 		    SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
+	PARTITIONING="NONE"
 	>
 		<SIGNATURE></SIGNATURE>
 	</HEADER>

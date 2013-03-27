@@ -14,6 +14,7 @@
    	SCHEMA_AUTO_PROPAGATE="true"
 
     STARTABLE="false"
+	PARTITIONING="AUTO"
   >
     <SIGNATURE/>
   </HEADER>

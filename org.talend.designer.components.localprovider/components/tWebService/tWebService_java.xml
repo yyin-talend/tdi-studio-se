@@ -10,7 +10,8 @@
 			STARTABLE="true"
 			DATA_AUTO_PROPAGATE="false"
 			IS_MULTIPLYING_OUTPUTS="true"
-			EXTENSION="org.talend.designer.webservice">
+			EXTENSION="org.talend.designer.webservice"
+			PARTITIONING="AUTO">
 		<SIGNATURE />
 	</HEADER>
 

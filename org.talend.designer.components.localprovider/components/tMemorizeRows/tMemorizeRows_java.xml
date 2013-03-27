@@ -12,7 +12,8 @@
     STARTABLE="false" 
     STATUS="ALPHA" 
     VERSION="0.102" 
-    VISIBLE="true"> 
+    VISIBLE="true"
+	PARTITIONING="NONE"> 
     <SIGNATURE/> 
   </HEADER>
   

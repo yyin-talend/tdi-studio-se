@@ -8,6 +8,7 @@
 	AUTHOR="stefeclipse.free.fr/blog"
 	RELEASE_DATE="20070611A"
 	STARTABLE="true"
+	PARTITIONING="NONE"
 	>
 	<SIGNATURE/>
 </HEADER>

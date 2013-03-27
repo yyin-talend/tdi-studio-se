@@ -8,7 +8,9 @@
      AUTHOR="Talend" 
      RELEASE_DATE="20050320A" 
      STARTABLE="false"
-     SCHEMA_AUTO_PROPAGATE="false">
+     SCHEMA_AUTO_PROPAGATE="false"
+	 PARTITIONING="AUTO"
+	 >
       <SIGNATURE></SIGNATURE>
    </HEADER>
    

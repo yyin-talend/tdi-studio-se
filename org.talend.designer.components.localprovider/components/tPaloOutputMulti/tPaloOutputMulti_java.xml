@@ -10,6 +10,7 @@
     STARTABLE="false"
 	DATA_AUTO_PROPAGATE="false"
     PARALLELIZE="true"
+	PARTITIONING="AUTO"
 	>
     <SIGNATURE/>
   </HEADER>

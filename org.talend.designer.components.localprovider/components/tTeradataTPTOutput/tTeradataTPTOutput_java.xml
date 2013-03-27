@@ -11,6 +11,7 @@
     STARTABLE="false"
     VISIBLE="false"
     TECHNICAL="true"
+	PARTITIONING="NONE"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>

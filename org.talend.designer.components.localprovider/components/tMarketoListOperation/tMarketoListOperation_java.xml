@@ -13,6 +13,7 @@
     HAS_CONDITIONAL_OUTPUTS="true"
 
     STARTABLE="false"
+	PARTITIONING="AUTO"
   >
     <SIGNATURE/>
   </HEADER>
