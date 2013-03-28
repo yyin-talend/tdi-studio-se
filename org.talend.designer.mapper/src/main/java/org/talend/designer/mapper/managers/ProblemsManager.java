@@ -419,7 +419,7 @@ public class ProblemsManager {
                 }
 
             }
-            if (firstLookup == null) {
+            if (firstLookup == null || lookupTables.isEmpty()) {
                 return false;
             }
 
