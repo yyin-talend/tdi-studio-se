@@ -407,17 +407,17 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             super.setTitleToolTip(title);
         }
         if (tabFactory != null && icon == null) {
-            Image image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+            icon = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
             if (this.element != null && this.element instanceof IProcess) {
                 if (((IProcess2) this.element).disableRunJobView()) { // ?? joblet
-                    image = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+                    icon = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+                } else if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
+                    icon = ImageProvider.getImage(EJobSettingImage.PROCESS_MR_ICON_X16);
                 }
             }
-            tabFactory.setTitle(title, image);
-        } else {
-            tabFactory.setTitle(title, icon);
         }
-
+        tabFactory.setTitle(title, icon);
+        super.setTitleImage(icon);
         super.setPartName(viewName);
     }
 
