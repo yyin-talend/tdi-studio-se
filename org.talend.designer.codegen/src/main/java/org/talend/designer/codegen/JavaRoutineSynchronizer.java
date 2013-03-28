@@ -21,6 +21,12 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.PatternMatcherInput;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
+import org.apache.oro.text.regex.Util;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -41,6 +47,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.PigudfItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -358,6 +365,58 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         String regexp = "public(\\s)+class(\\s)+\\w+(\\s)+\\{";//$NON-NLS-1$
         routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
         routineItem.getContent().setInnerContent(routineContent.getBytes());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.AbstractRoutineSynchronizer#renamePigudfClass(org.talend.core.model.properties.
+     * RoutineItem)
+     */
+    @Override
+    public void renamePigudfClass(PigudfItem pigudfItem, String oldLabel) {
+        if (pigudfItem == null) {
+            return;
+        }
+        String routineContent = new String(pigudfItem.getContent().getInnerContent());
+        String label = pigudfItem.getProperty().getLabel();
+        //
+        Perl5Matcher matcher = new Perl5Matcher();
+
+        Perl5Compiler compiler = new Perl5Compiler();
+        PatternMatcherInput patternMatcherInput = new PatternMatcherInput(routineContent);
+        String regx = "public(\\s)+class(\\s)+" + oldLabel + "(\\s)(.+)\\{";//$NON-NLS-1$//$NON-NLS-2$
+        String extendsText = "";
+        try {
+            org.apache.oro.text.regex.Pattern pattern = compiler.compile(regx);
+            boolean contains = matcher.contains(patternMatcherInput, pattern);
+            if (contains) {
+                org.apache.oro.text.regex.MatchResult matchResult = matcher.getMatch();
+                extendsText = matchResult.group(matchResult.groups() - 1);
+
+            }
+
+            String regexp = "public(\\s)+class(\\s)+\\w+(\\s)\\{";//$NON-NLS-1$
+            if (extendsText != null) {
+                extendsText = extendsText.trim();
+                regexp = "public(\\s)+class(\\s)+\\w+(\\s)+" + extendsText + "(\\s)*\\{";//$NON-NLS-1$//$NON-NLS-2$
+            }
+
+            // rename class name
+            routineContent = routineContent.replaceFirst(regexp, "public class " + label + " " + extendsText + " {");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+
+            // rename constructor
+            String constructorRegx = "(\\s+)" + oldLabel + "(\\((.*)\\))";
+            String toReplace = "$1" + label + "$1$2";
+            pattern = compiler.compile(constructorRegx);
+            Perl5Substitution substitution = new Perl5Substitution(toReplace, Perl5Substitution.INTERPOLATE_ALL);
+            routineContent = Util.substitute(matcher, pattern, substitution, routineContent, Util.SUBSTITUTE_ALL);
+        } catch (MalformedPatternException e) {
+            ExceptionHandler.process(new Exception("Rename pigudf failed"));
+        }
+
+        pigudfItem.getContent().setInnerContent(routineContent.getBytes());
+
     }
 
     /*

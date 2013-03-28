@@ -70,6 +70,10 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
                         }
                         if (beanType != null && node.getObjectType() == beanType) {
                             setText("Edit Bean Libraries");
+                        } else if (ERepositoryObjectType.PIG_UDF == node.getObjectType()) {
+                            String label = org.talend.repository.i18n.Messages
+                                    .getString("ConfigRoutineLibraryAction.pigudf.actionLabel"); //$NON-NLS-1$
+                            setText(label);
                         } else {
                             String label = org.talend.repository.i18n.Messages
                                     .getString("ConfigRoutineLibraryAction.actionLabel"); //$NON-NLS-1$
