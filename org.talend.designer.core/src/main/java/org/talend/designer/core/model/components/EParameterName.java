@@ -337,7 +337,9 @@ public enum EParameterName {
     END_OF_FLOW("END_OF_FLOW"), //$NON-NLS-1$
 
     // tFlowToIterator
-    DEFAULT_MAP("DEFAULT_MAP");
+    DEFAULT_MAP("DEFAULT_MAP"), //$NON-NLS-1$
+
+    HADOOP_CUSTOM_JARS("HADOOP_CUSTOM_JARS"); //$NON-NLS-1$
 
     private String displayName;
 

@@ -340,7 +340,6 @@ public class JavaProcessUtil {
      * @param curParam
      */
     public static void findMoreLibraries(final IProcess process, List<ModuleNeeded> modulesNeeded, IElementParameter curParam) {
-
         Object value = curParam.getValue();
         String name = curParam.getName();
         if (name.equals("DRIVER_JAR")) { //$NON-NLS-1$
@@ -407,6 +406,17 @@ public class JavaProcessUtil {
                 }
                 if (text != null) {
                     ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(text), null, true);
+                    modulesNeeded.add(module);
+                }
+            }
+        } else if (name.equals(EParameterName.HADOOP_CUSTOM_JARS.getDisplayName())) {
+            String jarsName = (String) value;
+            if (StringUtils.isNotEmpty(jarsName)) {
+                String jars = jarsName.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                        TalendTextUtils.SINGLE_QUOTE, ""); //$NON-NLS-1$
+                String separator = ";"; //$NON-NLS-1$
+                for (String jar : jars.split(separator)) {
+                    ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                     modulesNeeded.add(module);
                 }
             }
