@@ -34,6 +34,8 @@ public class SetParallelizationCommand extends Command {
 
     INode node;
 
+    private static final String HASH_KEYS = "HASH_KEYS";
+
     public SetParallelizationCommand(INode node) {
         this.node = node;
     }
@@ -66,9 +68,10 @@ public class SetParallelizationCommand extends Command {
         } else {
             // compare the target node's key with the previous tPartitioner's hashKeys to see if need repartitioning.
             boolean needRepar = false;
-            if (getPreviousParCon(needToPar) != null) {
+            IConnection previousParCon = getPreviousParCon(needToPar);
+            if (previousParCon != null) {
                 String[] partitionKey = partitioning.split("\\.");
-                IElementParameter parTableCon = getPreviousParCon(needToPar).getElementParameter("HASH_KEYS");
+                IElementParameter parTableCon = previousParCon.getElementParameter(HASH_KEYS);
                 IElementParameter parTableNode = needToPar.getElementParameter(partitionKey[0]);
                 if (parTableNode != null) {
                     String clumnKeyListName = "KEY_COLUMN";// for the partition key
@@ -124,7 +127,7 @@ public class SetParallelizationCommand extends Command {
                             setParallelization(con.getTarget());
 
                         } else {
-                            // when pervious con is par/repar,keep current is none
+                            // when pervious con is par/repar/none,keep current is none
                             if (existPreviousPar((Node) con.getSource()) || existPreviousNone((Node) con.getSource())
                                     || existPreviousRepar((Node) con.getSource())) {
                                 con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
@@ -193,7 +196,7 @@ public class SetParallelizationCommand extends Command {
     }
 
     private boolean isPartitionKeysExist(IConnection con) {
-        IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
+        IElementParameter parTableCon = con.getElementParameter(HASH_KEYS);
         if (parTableCon != null) {
             Object[] itemParKey = parTableCon.getListItemsValue();
             if (((List<Map>) parTableCon.getValue()).size() > 0) {
@@ -204,7 +207,7 @@ public class SetParallelizationCommand extends Command {
     }
 
     private void reSetParKeyValuesForCon(IConnection parConnection) {
-        IElementParameter parTableCon = parConnection.getElementParameter("HASH_KEYS");
+        IElementParameter parTableCon = parConnection.getElementParameter(HASH_KEYS);
         if (parTableCon != null) {
             Object[] itemCon = parTableCon.getListItemsValue();
             ElementParameter conElemForList = null;
@@ -233,7 +236,7 @@ public class SetParallelizationCommand extends Command {
 
     private void setHashKeysForCon(IConnection con) {
         List<String> conKeyColumnList = getKeyColumnList(con.getMetadataTable());
-        IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
+        IElementParameter parTableCon = con.getElementParameter(HASH_KEYS);
         boolean isExistHashValue = false;
         if (parTableCon != null) {
             ((List) parTableCon.getValue()).clear();
@@ -268,7 +271,7 @@ public class SetParallelizationCommand extends Command {
 
     private void setHashKeysFromTarget(IConnection con, Node target) {
         List<String> targetKeyColumnList = getColumnListFromTargetNode(target);
-        IElementParameter parTableCon = con.getElementParameter("HASH_KEYS");
+        IElementParameter parTableCon = con.getElementParameter(HASH_KEYS);
         boolean isExistHashValue = false;
         if (parTableCon != null) {
             ((List) parTableCon.getValue()).clear();
@@ -399,8 +402,10 @@ public class SetParallelizationCommand extends Command {
         IConnection previousCon = null;
         if (previousNode.getIncomingConnections().size() > 0) {
             for (IConnection con : previousNode.getIncomingConnections()) {
-                if (con.getElementParameter(EParameterName.PARTITIONER.getName()) != null
-                        && con.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)) {
+                if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
+                        .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))
+                        || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
+                                .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
                     previousCon = con;
                 } else {
                     previousCon = getPreviousParCon((Node) con.getSource());
@@ -445,11 +450,6 @@ public class SetParallelizationCommand extends Command {
                 con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
                 con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                 con.setPropertyValue(EParameterName.DEPARTITIONER.getName(), Boolean.TRUE);
-
-                // the last flow,should not show partitioner row.
-                // if (node.getOutgoingConnections().size() == 0) {
-                // parElem.setShow(false);
-                // }
             }
         }
         if (node.getOutgoingConnections().size() > 0) {

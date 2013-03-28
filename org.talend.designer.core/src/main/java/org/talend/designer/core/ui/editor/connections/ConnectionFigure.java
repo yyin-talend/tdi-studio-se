@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
@@ -19,6 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
@@ -43,13 +49,21 @@ public class ConnectionFigure extends PolylineConnection {
 
     private IConnection connection;
 
-    private ParallelFigure parallelFigure;
+    private ParallelFigure pationerFigure;
 
-    private ParallelFigure dparallelFigure;
+    private ParallelFigure collectorFigure;
 
-    private ParallelFigure reparallelFigureBefore;
+    private ParallelFigure departionerFigure;
 
-    private ParallelFigure reparallelFigureAfter;
+    private ParallelFigure recollectorFigure;
+
+    private ParallelFigure collectorFigureAfter;
+
+    private ParallelFigure repartionerFigureBefore;
+
+    private ParallelFigure repartionerFigureAfter;
+
+    Map<IElementParameter, Set<ParallelFigure>> figureMap = new HashMap<IElementParameter, Set<ParallelFigure>>();
 
     /**
      * Used for standard connections.
@@ -64,58 +78,118 @@ public class ConnectionFigure extends PolylineConnection {
         setTargetDecoration(new PolygonDecoration());
         setConnectionProperty(connectionProperty);
 
-        parallelFigure = new ParallelFigure();
-        parallelFigure.setImage(ImageProvider.getImage(EImage.PARTITIONER_ICON));
-        parallelFigure.setVisible(false);
-        add(parallelFigure, new ParallelLocator(this, 0));
-
-        dparallelFigure = new ParallelFigure();
-        dparallelFigure.setImage(ImageProvider.getImage(EImage.DEPARTITIONER_ICON));
-        dparallelFigure.setVisible(false);
-        add(dparallelFigure, new DparallelLocator(this, 0));
-
-        reparallelFigureBefore = new ParallelFigure();
-        reparallelFigureBefore.setImage(ImageProvider.getImage(EImage.PARTITIONER_ICON));
-        reparallelFigureBefore.setVisible(false);
-        add(reparallelFigureBefore, new DparallelLocator(this, 0));
-
-        reparallelFigureAfter = new ParallelFigure();
-        reparallelFigureAfter.setImage(ImageProvider.getImage(EImage.DEPARTITIONER_ICON));
-        reparallelFigureAfter.setVisible(false);
-        add(reparallelFigureAfter, new ParallelLocator(this, 0));
-
+        if (PluginChecker.isAutoParalelPluginLoaded()) {
+            addParallelFigure();
+            initFigureMap();
+        }
     }
 
-    public void updateStatus() {
+    private void initFigureMap() {
+        Set<ParallelFigure> parFigures = new HashSet<ParallelFigure>();
+        Set<ParallelFigure> keepParFigures = new HashSet<ParallelFigure>();
+        Set<ParallelFigure> deparFigures = new HashSet<ParallelFigure>();
+        Set<ParallelFigure> reparFigures = new HashSet<ParallelFigure>();
         IElementParameter enableParatitoner = connection.getElementParameter(EParameterName.PARTITIONER.getName());
         IElementParameter enableDepatitoner = connection.getElementParameter(EParameterName.DEPARTITIONER.getName());
         IElementParameter none = connection.getElementParameter(EParameterName.NONE.getName());
         IElementParameter enableRepatitoner = connection.getElementParameter(EParameterName.REPARTITIONER.getName());
-        if (enableParatitoner != null && enableParatitoner.getValue().equals(true)) {
-            if (parallelFigure != null)
-                parallelFigure.setVisible(true);
-        }
+        parFigures.add(pationerFigure);
+        parFigures.add(collectorFigure);
+        keepParFigures.add(collectorFigureAfter);
+        deparFigures.add(departionerFigure);
+        deparFigures.add(recollectorFigure);
+        reparFigures.add(repartionerFigureBefore);
+        reparFigures.add(repartionerFigureAfter);
+        figureMap.put(enableParatitoner, parFigures);
+        figureMap.put(enableDepatitoner, deparFigures);
+        figureMap.put(none, keepParFigures);
+        figureMap.put(enableRepatitoner, reparFigures);
+    }
 
-        if (enableDepatitoner != null && enableDepatitoner.getValue().equals(true)) {
-            if (dparallelFigure != null)
-                dparallelFigure.setVisible(true);
-        }
-        if (enableRepatitoner != null && enableRepatitoner.getValue().equals(true)) {
-            if (reparallelFigureBefore != null)
-                reparallelFigureBefore.setVisible(true);
-            if (reparallelFigureAfter != null)
-                reparallelFigureAfter.setVisible(true);
-        }
-        if (none != null && none.getValue().equals(true)) {
-            if (parallelFigure != null)
-                parallelFigure.setVisible(false);
-            if (dparallelFigure != null)
-                dparallelFigure.setVisible(false);
+    private void addParallelFigure() {
+        pationerFigure = new ParallelFigure();
+        pationerFigure.setImage(ImageProvider.getImage(EImage.PARTITIONER_ICON));
+        pationerFigure.setVisible(false);
+        add(pationerFigure, new ParallelLocator(this, 0));
 
-            if (reparallelFigureBefore != null)
-                reparallelFigureBefore.setVisible(false);
-            if (reparallelFigureAfter != null)
-                reparallelFigureAfter.setVisible(false);
+        collectorFigure = new ParallelFigure();
+        collectorFigure.setImage(ImageProvider.getImage(EImage.COLLECTOR_ICON));
+        collectorFigure.setVisible(false);
+        add(collectorFigure, new DparallelLocator(this, 0));
+
+        collectorFigureAfter = new ParallelFigure();
+        collectorFigureAfter.setImage(ImageProvider.getImage(EImage.COLLECTOR_ICON));
+        collectorFigureAfter.setVisible(false);
+        add(collectorFigureAfter, new DparallelLocator(this, 0));
+
+        departionerFigure = new ParallelFigure();
+        departionerFigure.setImage(ImageProvider.getImage(EImage.DEPARTITIONER_ICON));
+        departionerFigure.setVisible(false);
+        add(departionerFigure, new ParallelLocator(this, 0));
+
+        recollectorFigure = new ParallelFigure();
+        recollectorFigure.setImage(ImageProvider.getImage(EImage.RECOLLECTOR_ICON));
+        recollectorFigure.setVisible(false);
+        add(recollectorFigure, new DparallelLocator(this, 0));
+
+        repartionerFigureBefore = new ParallelFigure();
+        repartionerFigureBefore.setImage(ImageProvider.getImage(EImage.REPARTITION_ICON));
+        repartionerFigureBefore.setVisible(false);
+        add(repartionerFigureBefore, new ParallelLocator(this, 0));
+
+        repartionerFigureAfter = new ParallelFigure();
+        repartionerFigureAfter.setImage(ImageProvider.getImage(EImage.COLLECTOR_ICON));
+        repartionerFigureAfter.setVisible(false);
+        add(repartionerFigureAfter, new DparallelLocator(this, 0));
+
+    }
+
+    private boolean isExistPreviousParCon(Node previousNode) {
+        boolean hasParInPreviousCon = false;
+        if (previousNode.getIncomingConnections().size() > 0) {
+            for (IConnection con : previousNode.getIncomingConnections()) {
+                if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
+                        .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))
+                        || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
+                                .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
+                    hasParInPreviousCon = true;
+                } else {
+                    hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
+                }
+            }
+        }
+        return hasParInPreviousCon;
+    }
+
+    public void updateStatus() {
+        for (IElementParameter enableParallel : figureMap.keySet()) {
+            if (enableParallel != null) {
+                if (enableParallel.getValue().equals(true)) {
+                    // For NONE ,maybe its icon need to keep partitioning
+                    if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
+                        boolean isDisplayKeepPartion = false;
+                        isDisplayKeepPartion = isExistPreviousParCon((Node) connection.getSource());
+                        if (isDisplayKeepPartion) {
+                            // one connection need to display two icons maybe
+                            for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                                pf.setVisible(true);
+                            }
+                        } else {
+                            for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                                pf.setVisible(false);
+                            }
+                        }
+                    } else {
+                        for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                            pf.setVisible(true);
+                        }
+                    }
+                } else {
+                    for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                        pf.setVisible(false);
+                    }
+                }
+            }
         }
     }
 

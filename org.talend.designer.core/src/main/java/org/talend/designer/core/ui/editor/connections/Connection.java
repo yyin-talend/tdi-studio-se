@@ -539,7 +539,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         tmpParam = tmpNode.getElementParameter("HASH_KEYS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
+        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true') and (HASH_PARTITION=='true')");
         ColumnListController.updateColumnList(tmpNode, null, true);
         addElementParameter(tmpParam);
 

@@ -25,8 +25,8 @@ public class ParallelLocator extends ConnectionLocator {
         Point p2 = conn.getPoints().getPoint(getIndex() + 1);
         conn.translateToAbsolute(p1);
         conn.translateToAbsolute(p2);
-        p.x = ((p2.x - p1.x) / 4) * 1 + p1.x;
-        p.y = ((p2.y - p1.y) / 4) * 1 + p1.y;
+        p.x = ((p2.x - p1.x) / 9) * 1 + p1.x;
+        p.y = ((p2.y - p1.y) / 9) * 1 + p1.y;
         return p;
     }
 
