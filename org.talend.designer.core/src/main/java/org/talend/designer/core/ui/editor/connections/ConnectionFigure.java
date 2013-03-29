@@ -85,6 +85,7 @@ public class ConnectionFigure extends PolylineConnection {
     }
 
     private void initFigureMap() {
+        figureMap.clear();
         Set<ParallelFigure> parFigures = new HashSet<ParallelFigure>();
         Set<ParallelFigure> keepParFigures = new HashSet<ParallelFigure>();
         Set<ParallelFigure> deparFigures = new HashSet<ParallelFigure>();
@@ -100,10 +101,18 @@ public class ConnectionFigure extends PolylineConnection {
         deparFigures.add(recollectorFigure);
         reparFigures.add(repartionerFigureBefore);
         reparFigures.add(repartionerFigureAfter);
-        figureMap.put(enableParatitoner, parFigures);
-        figureMap.put(enableDepatitoner, deparFigures);
-        figureMap.put(none, keepParFigures);
-        figureMap.put(enableRepatitoner, reparFigures);
+        if (enableParatitoner != null) {
+            figureMap.put(enableParatitoner, parFigures);
+        }
+        if (enableDepatitoner != null) {
+            figureMap.put(enableDepatitoner, deparFigures);
+        }
+        if (none != null) {
+            figureMap.put(none, keepParFigures);
+        }
+        if (enableRepatitoner != null) {
+            figureMap.put(enableRepatitoner, reparFigures);
+        }
     }
 
     private void addParallelFigure() {

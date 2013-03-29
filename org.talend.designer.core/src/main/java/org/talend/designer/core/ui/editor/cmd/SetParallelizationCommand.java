@@ -68,7 +68,7 @@ public class SetParallelizationCommand extends Command {
         } else {
             // compare the target node's key with the previous tPartitioner's hashKeys to see if need repartitioning.
             boolean needRepar = false;
-            IConnection previousParCon = getPreviousParCon(needToPar);
+            IConnection previousParCon = getPreviousParCon((Node) con.getSource());
             if (previousParCon != null) {
                 String[] partitionKey = partitioning.split("\\.");
                 IElementParameter parTableCon = previousParCon.getElementParameter(HASH_KEYS);
@@ -79,14 +79,31 @@ public class SetParallelizationCommand extends Command {
 
                     List<String> parKeyValues = new ArrayList<String>();
                     List<String> columnKeyValues = new ArrayList<String>();
+
+                    ElementParameter nodeElemForList = null;
                     for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
                         if (conColumnListMap.get(clumnKeyListName) instanceof String) {
                             parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
                         }
                     }
-                    for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
-                        if ((String) nodeColumnListMap.get(clumnNodeListName) != null) {
-                            columnKeyValues.add((String) nodeColumnListMap.get(clumnNodeListName));
+
+                    for (Object nodeItemList : parTableNode.getListItemsValue()) {
+                        if (((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
+                                || ((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
+                            nodeElemForList = (ElementParameter) nodeItemList;
+                        }
+                    }
+                    if (nodeElemForList != null) {
+                        for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
+                            Object value = nodeColumnListMap.get(clumnNodeListName);
+                            if (nodeColumnListMap.get(clumnNodeListName) instanceof String) {
+                                columnKeyValues.add((String) value);
+                            } else if (value instanceof Integer) {
+                                Integer index = (Integer) value;
+                                if (nodeElemForList.getListItemsDisplayName().length > index) {
+                                    columnKeyValues.add((String) nodeElemForList.getListItemsDisplayName()[index]);
+                                }
+                            }
                         }
                     }
                     if (columnKeyValues.size() > 0) {
@@ -220,15 +237,19 @@ public class SetParallelizationCommand extends Command {
                 }
             }
             List<String> parKeyValues = new ArrayList<String>();
-            for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
-                if (conColumnListMap.get(clumnKeyListName) instanceof String) {
-                    parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
-                }
-                if (conColumnListMap.get(clumnKeyListName) instanceof Integer) {
-                    Integer index = (Integer) conColumnListMap.get(clumnKeyListName);
-                    parKeyValues.add((String) conElemForList.getListItemsValue()[index]);
-                    // if the value of key is Integer index,need to set it back to the value
-                    conColumnListMap.put(clumnKeyListName, conElemForList.getListItemsValue()[index]);
+            if (conElemForList != null) {
+                for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
+                    if (conColumnListMap.get(clumnKeyListName) instanceof String) {
+                        parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
+                    }
+                    if (conColumnListMap.get(clumnKeyListName) instanceof Integer) {
+                        Integer index = (Integer) conColumnListMap.get(clumnKeyListName);
+                        parKeyValues.add((String) conElemForList.getListItemsValue()[index]);
+                        // if the value of key is Integer index,need to set it back to the value
+                        if (conElemForList.getListItemsDisplayName().length > index) {
+                            conColumnListMap.put(clumnKeyListName, conElemForList.getListItemsDisplayName()[index]);
+                        }
+                    }
                 }
             }
         }
@@ -321,17 +342,27 @@ public class SetParallelizationCommand extends Command {
         List<String> columnKeyValues = new ArrayList<String>();
         IElementParameter parTableNode = target.getElementParameterFromField(EParameterFieldType.TABLE);
         Object[] itemNode = parTableNode.getListItemsValue();
-        String clumnNodeListName = "";
+        ElementParameter clumnNodeList = null;
         for (Object itemList : itemNode) {
             if (((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
                     || ((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
-                clumnNodeListName = ((ElementParameter) itemList).getName();
+                clumnNodeList = ((ElementParameter) itemList);
+            }
+        }
+        if (clumnNodeList != null) {
+            for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
+                Object value = nodeColumnListMap.get(clumnNodeList.getName());
+                if (nodeColumnListMap.get(clumnNodeList.getName()) instanceof String) {
+                    columnKeyValues.add((String) value);
+                } else if (value instanceof Integer) {
+                    Integer index = (Integer) value;
+                    if (clumnNodeList.getListItemsDisplayName().length > index) {
+                        columnKeyValues.add((String) clumnNodeList.getListItemsDisplayName()[index]);
+                    }
+                }
             }
         }
 
-        for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
-            columnKeyValues.add((String) nodeColumnListMap.get(clumnNodeListName));
-        }
         return columnKeyValues;
     }
 

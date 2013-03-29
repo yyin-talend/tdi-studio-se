@@ -200,6 +200,11 @@ public class Connection extends Element implements IConnection, IPerformance {
             resuming.setOffset(label.getOffset());
         }
 
+        if (PluginChecker.isAutoParalelPluginLoaded()
+                && source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
+            this.source = source;
+            createParallelizeParameters();
+        }
         reconnect(source, target, lineStyle);
         updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
@@ -454,10 +459,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
         }
-        if (PluginChecker.isAutoParalelPluginLoaded()
-                && source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
-            createParallelizeParameters();
-        }
     }
 
     private void createParallelizeParameters() {
@@ -559,7 +560,6 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
-
     }
 
     /**
