@@ -1,4 +1,4 @@
-<%@ jet
+<%@ jet skeleton="header_route.skeleton"
 	package="org.talend.designer.codegen.translators"
 	imports="
 		java.util.List
@@ -223,83 +223,60 @@ for (INode node : graphicalNodes) {
 		if(node.getIncomingConnections().size()>0){
 			continue;//is productor node. use exist endpoint.
 		}
-		String directName=ElementParameterParser.getValue(node, "__NAME__");
+		String directName=getValue(node, "__NAME__");
 		uri="\"direct:\"+"+directName;
 		StringBuilder sb=new StringBuilder();
-		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
-		for (Map<String, String> map : tableValues) {
-			String argName = map.get("NAME").trim();
-			String argValue = map.get("VALUE").trim();
-			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
-		}
+		List<Map<String, String>> tableValues = getObjectValue(node, "__ADVARGUMENTS__");
+		appendTableParams(sb,tableValues);
 		if(sb.length()>0){
 			sb.setCharAt(sb.indexOf("&"),'?');
 			uri = uri + sb.toString();
 		}
 	}else if("cVM".equals(componentName)||"cSEDA".equals(componentName)){
-		if(node.getIncomingConnections().size()>0){
-			continue;//is productor node. use exist endpoint.
+		boolean inputName=getBoolValue(node, "____INPUT_ENDPOINT_NAME____");
+		if(node.getIncomingConnections().size()>0 && (!inputName)){
+			continue;//is productor node. and use exist endpoint.
 		}
-		String endpointName=ElementParameterParser.getValue(node, "__NAME__");
+		String endpointName=getValue(node, "__NAME__");
 		uri="\""
 			+ ("cVM".equals(componentName) ? "vm":"seda" )
 			+ ":\"+" + endpointName;
-		StringBuilder sb=new StringBuilder();
-		boolean  specifySize="true".equals(ElementParameterParser.getValue(node, "__SPECIFY_SIZE__"));
-		if(specifySize){
-			String size=ElementParameterParser.getValue(node, "__SIZE__");
-			if(size!=null && !size.trim().equals("") && !"0".equals(size)){
-				sb.append("+\"&size=\"+");
-				//the first '&' should replace to '?' later.
-				sb.append(size);
+		if(!inputName){
+			//consumer
+			StringBuilder sb=new StringBuilder();
+			boolean  specifySize=getBoolValue(node, "__SPECIFY_SIZE__");
+			if(specifySize){
+				String size=getValue(node, "__SIZE__");
+				appendParamWhenNotDefaultNorEmpty(sb,"size",size,"0");
 			}
-		}
-		String concurCnsmrs=ElementParameterParser.getValue(node, "__CONCURRENT_CONSUMERS__");
-		if(concurCnsmrs!=null && !concurCnsmrs.trim().equals("") && !"1".equals(concurCnsmrs)){
-			sb.append("+\"&concurrentConsumers=\"+");
-			sb.append(concurCnsmrs);
-		}
-		String waitForTaskToComplete=ElementParameterParser.getValue(node, "__WAIT_FOR_TASK_TO_COMPLETE__");
-		if(waitForTaskToComplete!=null && !waitForTaskToComplete.trim().equals("") && !"IfReplyExpected".equals(waitForTaskToComplete)){
-			sb.append("+\"&waitForTaskToComplete=\"+");
-			sb.append('\"');
-			sb.append(waitForTaskToComplete);
-			sb.append('\"');
-		}
-		String timeout=ElementParameterParser.getValue(node, "__TIMEOUT__");
-		if(timeout!=null && !timeout.trim().equals("") && !"30000".equals(timeout)){
-			sb.append("+\"&timeout=\"+");
-			sb.append(timeout);
-		}
-		String multipleConsumers=ElementParameterParser.getValue(node, "__MULTIPLE_CONSUMERS__");
-		if(multipleConsumers!=null && !multipleConsumers.trim().equals("") && !"false".equals(multipleConsumers)){
-			sb.append("+\"&multipleConsumers=\"+");
-			sb.append(multipleConsumers);
-		}
-		String limitConcurrentConsumers=ElementParameterParser.getValue(node, "__LIMIT_CONCURRENT_CONSUMERS__");
-		if(limitConcurrentConsumers!=null && !limitConcurrentConsumers.trim().equals("") && !"true".equals(limitConcurrentConsumers)){
-			sb.append("+\"&limitConcurrentConsumers=\"+");
-			sb.append(limitConcurrentConsumers);
-		}
-		String blockWhenFull=ElementParameterParser.getValue(node, "__BLOCK_WHEN_FULL__");
-		if(blockWhenFull!=null && !blockWhenFull.trim().equals("") && !"false".equals(blockWhenFull)){
-			sb.append("+\"&blockWhenFull=\"+");
-			sb.append(blockWhenFull);
-		}
-		String pollTimeout=ElementParameterParser.getValue(node, "__POLLTIMEOUT__");
-		if(pollTimeout!=null && !pollTimeout.trim().equals("") && !"1000".equals(pollTimeout)){
-			sb.append("+\"&pollTimeout=\"+");
-			sb.append(pollTimeout);
-		}
-		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
-		for (Map<String, String> map : tableValues) {
-			String argName = map.get("NAME").trim();
-			String argValue = map.get("VALUE").trim();
-			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
-		}
-		if(sb.length()>0){
-			sb.setCharAt(sb.indexOf("&"),'?');
-			uri = uri + sb.toString();
+			String concurCnsmrs=getValue(node, "__CONCURRENT_CONSUMERS__");
+			appendParamWhenNotDefaultNorEmpty(sb,"concurrentConsumers",concurCnsmrs,"1");
+
+			String waitForTaskToComplete=getValue(node, "__WAIT_FOR_TASK_TO_COMPLETE__");
+			appendParamWhenNotDefaultNorEmpty(sb,"waitForTaskToComplete",waitForTaskToComplete,"IfReplyExpected");
+
+			String timeout=getValue(node, "__TIMEOUT__");
+			appendParamWhenNotDefaultNorEmpty(sb,"timeout",timeout,"30000");
+
+			String multipleConsumers=getValue(node, "__MULTIPLE_CONSUMERS__");
+			appendParamWhenNotDefaultNorEmpty(sb,"multipleConsumers",multipleConsumers,"false");
+
+			String limitConcurrentConsumers=getValue(node, "__LIMIT_CONCURRENT_CONSUMERS__");
+			appendParamWhenNotDefaultNorEmpty(sb,"limitConcurrentConsumers",limitConcurrentConsumers,"true");
+
+			String blockWhenFull=getValue(node, "__BLOCK_WHEN_FULL__");
+			appendParamWhenNotDefaultNorEmpty(sb,"blockWhenFull",blockWhenFull,"false");
+
+			String pollTimeout=getValue(node, "__POLLTIMEOUT__");
+			appendParamWhenNotDefaultNorEmpty(sb,"pollTimeout",pollTimeout,"1000");
+
+			List<Map<String, String>> tableValues = getObjectValue(node, "__ADVARGUMENTS__");
+			appendTableParams(sb,tableValues);
+			
+			if(sb.length()>0){
+				sb.setCharAt(sb.indexOf("&"),'?');
+				uri = uri + sb.toString();
+			}
 		}
 	}else if("cTimer".equals(componentName)){
 		uri = "\"timer:\"+\""+node.getUniqueName()+"\"";
@@ -536,7 +513,7 @@ for (INode node : graphicalNodes) {
 		fragments.append("+\"");
 		fragments.append("ftpServer");
 		fragments.append("\"");
-		
+
 /*		if (username.trim().length() > 0) {
 			fragments.append("+" + username.trim()).append("+\"@\"");
 		}
