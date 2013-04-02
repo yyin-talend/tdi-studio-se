@@ -407,10 +407,13 @@ public class ImportItemUtil {
 
             @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
-                if (o1.getProperty().getItem() instanceof RoutineItem) {
-                    return -1;
-                } else if (o1.getProperty().getItem() instanceof ContextItem) {
+                if (o1.getProperty().getItem() instanceof RoutineItem && o2.getProperty().getItem() instanceof RoutineItem) {
                     return 0;
+                } else if (!(o1.getProperty().getItem() instanceof RoutineItem)
+                        && !(o2.getProperty().getItem() instanceof RoutineItem)) {
+                    return 0;
+                } else if (o1.getProperty().getItem() instanceof RoutineItem) {
+                    return -1;
                 } else {
                     return 1;
                 }
