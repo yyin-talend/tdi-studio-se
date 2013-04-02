@@ -17,10 +17,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.VersionUtils;
@@ -89,13 +95,40 @@ public class OpenExistVersionProcessPage extends WizardPage {
         setControl(versionListComposite);
         versionListComposite.refresh();
 
-        createNewVersionButton = new Button(parent, SWT.CHECK);
+        Composite createNewVersionButtonComposite = new Composite(parent, SWT.NONE);
+        createNewVersionButtonComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        createNewVersionButtonComposite.setLayout(new FormLayout());
+
+        createNewVersionButton = new Button(createNewVersionButtonComposite, SWT.CHECK);
         createNewVersionButton.setText(Messages.getString("OpenExistVersionProcessPage.textContent")); //$NON-NLS-1$
         createNewVersionButton.setEnabled(!alreadyEditedByUser && !isContainedRefProject());
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
             createNewVersionButton.setEnabled(false);
         }
+        GC gc = new GC(createNewVersionButton);
+        Point labelSize = gc.stringExtent(Messages.getString("OpenExistVersionProcessPage.textContent")); //$NON-NLS-1$
+        gc.dispose();
+        FormData date = new FormData();
+        date.left = new FormAttachment(0, 0);
+        date.right = new FormAttachment(0, labelSize.x);
+        date.top = new FormAttachment(0, 0);
+        date.bottom = new FormAttachment(100, 0);
+        createNewVersionButton.setLayoutData(date);
+
+        Label redLabel = new Label(createNewVersionButtonComposite, SWT.NONE);
+        redLabel.setText(Messages.getString("OpenExistVersionProcessPage.labelContent"));
+        gc = new GC(redLabel);
+        labelSize = gc.stringExtent(Messages.getString("OpenExistVersionProcessPage.labelContent")); //$NON-NLS-1$
+        gc.dispose();
+        date = new FormData();
+        date.left = new FormAttachment(createNewVersionButton, 10, SWT.RIGHT);
+        date.right = new FormAttachment(createNewVersionButton, 10 + labelSize.x, SWT.RIGHT);
+        date.top = new FormAttachment(0, 0);
+        date.bottom = new FormAttachment(100, 0);
+        redLabel.setLayoutData(date);
+        redLabel.setForeground(redLabel.getDisplay().getSystemColor(SWT.COLOR_RED));
+        redLabel.setVisible(!createNewVersionButton.getEnabled());
 
         Composite bc = new Composite(parent, SWT.NULL);
         bc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
