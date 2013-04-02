@@ -38,7 +38,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.bridge.ReponsitoryContextBridge;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
@@ -795,10 +796,10 @@ public abstract class JobScriptsManager {
         Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
                 Arrays.asList(new Item[] { processItem }), false);
 
-        for (IRepositoryViewObject object : allDependencies) {
-            Item item = object.getProperty().getItem();
+        try {
+            for (IRepositoryViewObject object : allDependencies) {
+                Item item = object.getProperty().getItem();
 
-            try {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
                 IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
                 String itemName = item.getProperty().getLabel();
@@ -814,7 +815,7 @@ public abstract class JobScriptsManager {
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                 IPath itemFilePath;
-                if (item.getFileExtension() == null || "".equals(item.getFileExtension())) {
+                if (item.getFileExtension() == null || "".equals(item.getFileExtension())) { //$NON-NLS-1$
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
                             .append(itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
@@ -837,9 +838,27 @@ public abstract class JobScriptsManager {
                     basePath = basePath + PATH_SEPARATOR + itemPath;
                 }
                 resource.addResources(basePath, metadataNameFileUrls);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+
             }
+
+            if (org.talend.commons.utils.platform.PluginChecker.isTDQLoaded()) {
+                // add .Talend.definition file
+
+                String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
+                String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
+                IProject project = ReponsitoryContextBridge.getRootProject();
+                IFile defIdxFile = project.getFile(defIdxFolderName + PATH_SEPARATOR + defIdxFileName);
+                if (defIdxFile.exists()) {
+                    String defIdxBasePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + project.getName().toLowerCase()
+                            + PATH_SEPARATOR + defIdxFolderName;
+                    List<URL> defIdxUrls = new ArrayList<URL>();
+                    defIdxUrls.add(FileLocator.toFileURL(project.getLocation().makeAbsolute().append(defIdxFolderName)
+                            .append(defIdxFileName).toFile().toURL()));
+                    resource.addResources(defIdxBasePath, defIdxUrls);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
 
     }
