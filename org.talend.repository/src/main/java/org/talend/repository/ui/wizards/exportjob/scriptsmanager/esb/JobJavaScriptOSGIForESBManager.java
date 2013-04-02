@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -85,6 +87,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
+import org.talend.repository.utils.TemplateProcessor;
 
 import aQute.bnd.osgi.Analyzer;
 import aQute.bnd.osgi.FileResource;
@@ -276,7 +279,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -284,9 +287,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             * 
+             *
              * If empty, nothing will be added.
-             * 
+             *
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -311,9 +314,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     * 
+     *
      * If empty, nothing will be added. @see isExcludedLib
-     * 
+     *
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -356,7 +359,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     * 
+     *
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -381,7 +384,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     * 
+     *
      * @param resource
      * @param process
      * @throws IOException
@@ -414,7 +417,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     * 
+     *
      * @param processItem
      * @author rzubairov
      * @return
@@ -452,10 +455,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private URL generateRestJobSpringFiles(ProcessItem processItem) throws IOException {
-        String inputFile = getPluginResourceUri("resources/job-rest-beans-template.xml"); //$NON-NLS-1$
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "beans.xml"); //$NON-NLS-1$
 
-        createRestJobBundleSpringConfig(processItem, inputFile, targetFile, jobName, jobClassName);
+        createRestJobBundleSpringConfig(processItem, targetFile, jobName, jobClassName);
 
         return targetFile.toURI().toURL();
     }
@@ -465,158 +467,133 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     }
 
-    private void createRestJobBundleSpringConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
-            String jobClassName) throws IOException {
+    private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-beans-template.xml"; //$NON-NLS-1$
+
+    private void createRestJobBundleSpringConfig(ProcessItem processItem,
+            File targetFile, String jobName, String jobClassName) throws IOException {
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
-        String endpointUri = EmfModelUtils.computeTextElementValue("REST_ENDPOINT", restRequestComponent);
-        if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) {
-            endpointUri = "/" + endpointUri;
+        // velocity template context
+        Map<String, Object> endpointInfo = new HashMap<String, Object>();
+        endpointInfo.put("jobName", jobName); //$NON-NLS-1$
+        endpointInfo.put("jobClassName", jobClassName); //$NON-NLS-1$
+
+        // REST endpoint address
+        final String runtimeServicesContext = "/services"; //$NON-NLS-1$
+        final String runtimeServicesContextFull = runtimeServicesContext + "/"; //$NON-NLS-1$
+        String endpointUri = EmfModelUtils.computeTextElementValue("REST_ENDPOINT", restRequestComponent); //$NON-NLS-1$
+        if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) { //$NON-NLS-1$ //$NON-NLS-2$
+            endpointUri = "/" + endpointUri; //$NON-NLS-1$
         }
         // TESB-5916: Rest service can't be deployed in the Runtime on the port said in the studio
         // if (endpointUri.contains("://")) {
-        // endpointUri = new URL(endpointUri).getPath();
+        //     endpointUri = new URL(endpointUri).getPath();
         // }
-        if (endpointUri.equals("/services/") || endpointUri.equals("/services")) {
+        if (runtimeServicesContextFull.equals(endpointUri) || runtimeServicesContext.equals(endpointUri)) {
             // pass as is
-        } else if (endpointUri.startsWith("/services/")) {
-            // remove forwarding "/services/" context as required by runtime
-            endpointUri = endpointUri.substring("/services/".length() - 1); // leave forwarding slash
+        } else if (endpointUri.startsWith(runtimeServicesContextFull)) {
+            // remove forwarding "/services/" context as required by runtime (but leave forwarding slash)
+            endpointUri = endpointUri.substring(runtimeServicesContextFull.length() - 1);
         }
+        endpointInfo.put("address", endpointUri); //$NON-NLS-1$
 
-        String jaxrsServiceProviders = "";
-        String additionalBeansConfig = "";
-        String additionalJobBeanParams = "";
-        String additionalJsonProviderBeanParams = "";
-        boolean useHttpBasicAuth = EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent);
-        if (useHttpBasicAuth) {
-            jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
-            additionalBeansConfig = "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
-                    + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
+        // use HTTP Basic Authentication
+        endpointInfo.put("useHttpBasicAuth", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)); //$NON-NLS-1$
+
+        // wrap JSON request
+        endpointInfo.put("wrapJsonRequest", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("WRAP_JSON_REQUEST", restRequestComponent)); //$NON-NLS-1$
+
+        // unwrap JSON response (drop root element)
+        endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
+
+        // use Service Activity Monitoring
+        endpointInfo.put("useSAM", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)); //$NON-NLS-1$
+
+        // use Service Locator
+        endpointInfo.put("useSL", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)); //$NON-NLS-1$
+
+        // Service Locator custom properties
+        Map<String, String> slCustomProperties = new HashMap<String, String>();
+        ElementParameterType customPropsType = EmfModelUtils.findElementParameterByName(
+                "SERVICE_LOCATOR_CUSTOM_PROPERTIES", restRequestComponent); //$NON-NLS-1$
+        if (null != customPropsType) {
+            EList<?> elementValues = customPropsType.getElementValue();
+            final int size = elementValues.size();
+            for (int i = 0; i < size; i += 2) {
+                if (size <= i + 1) {
+                    break;
+                }
+                ElementValueType name = (ElementValueType) elementValues.get(i);
+                ElementValueType value = (ElementValueType) elementValues.get(i + 1);
+                if (null != name && null != value) {
+                    if (null != name.getValue() && null != value.getValue()) {
+                        slCustomProperties.put(unquote(name.getValue()), unquote(value.getValue()));
+                    }
+                }
+            }
         }
-        boolean wrapJsonRequest = EmfModelUtils.computeCheckElementValue("WRAP_JSON_REQUEST", restRequestComponent);
-        if (wrapJsonRequest) {
-            additionalJsonProviderBeanParams = "<property name=\"supportUnwrapped\" value=\"true\"/>"
-                    + "\n\t\t<property name=\"wrapperName\" value=\"root\"/>";
-        }
+        endpointInfo.put("slCustomProps", slCustomProperties); //$NON-NLS-1$
+
+        // service name & namespace
+        endpointInfo.put("serviceName", //$NON-NLS-1$
+                EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent)); //$NON-NLS-1$
+        endpointInfo.put("serviceNamespace", //$NON-NLS-1$
+                EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)); //$NON-NLS-1$
+
         // OSGi DataSource
-        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
+        endpointInfo.put("jobDataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
 
-        boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent);
-        boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent);
-        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem, isSlEnable, isSamEnable);
-        String jaxrsSamImport = isSamEnable ? "<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />" : "";
-        String serviceNamespace = "";
-        String serviceName = "";
-        if (isSlEnable) {
-            serviceNamespace = "xmlns:tns=\"" + EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)
-                    + "\"";
-            serviceName = "serviceName=\"tns:" + EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent)
-                    + "\"";
-        }
+        // velocity template context
+        Map<String, Object> contextParams = new HashMap<String, Object>();
+        contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
 
-        BufferedReader br = null;
-        BufferedWriter bw = null;
+        FileWriter fileWriter = null;
         try {
-            br = new BufferedReader(new FileReader(inputFile));
-            bw = new BufferedWriter(new FileWriter(targetFile));
-
-            String line = br.readLine();
-            while (line != null) {
-                line = line.replace("@ENDPOINT_URI@", endpointUri) //$NON-NLS-1$
-                        .replace("@JOBNAME@", jobName) //$NON-NLS-1$
-                        .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
-                        .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JSON_PROVIDER_BEAN_PARAMS@", additionalJsonProviderBeanParams) //$NON-NLS-1$
-                        .replace("@JAXRS_FEATURES@", jaxrsFeature) //$NON-NLS-1$
-                        .replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
-                        .replace("@LOCATOR_SERVICE_NAME@", serviceName) //$NON-NLS-1$
-                        .replace("@JAXRS_SAM_IMPORT@", jaxrsSamImport); //$NON-NLS-1$
-                bw.write(line);
-                bw.newLine();
-                line = br.readLine();
-            }
-            bw.flush();
+            fileWriter = new FileWriter(targetFile);
+            TemplateProcessor.processTemplate(TEMPLATE_SPRING_JOB_REST, contextParams, fileWriter);
+        } catch (SystemException e) {
+            // something wrong with template processing
+            throw new IOException(e.getLocalizedMessage(), e);
+        // } catch (IOException e) {
+        //     // something wrong with output file
+        //     //LOG.error(e.getLocalizedMessage(), e);
         } finally {
-            if (null != br) {
-                br.close();
-            }
-            if (null != bw) {
-                bw.close();
+            if (null != fileWriter) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    //LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
         }
     }
 
     /**
-     * Gets the jaxrs feature config. Currently, support SL&SAM feature config.
-     * 
-     * @param component the component
-     * @param processItem the process item
-     * @param isSamEnable
-     * @param isSlEnable
-     * @return the jaxrs feature config
-     */
-    private static String getJaxrsFeatureConfig(NodeType component, ProcessItem processItem, boolean isSlEnable,
-            boolean isSamEnable) {
-        if (isSamEnable || isSlEnable) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("<jaxrs:features>\n");
-            if (isSlEnable) {
-                // add SL support
-                sb.append("\t\t\t<bean id=\"");
-                sb.append(processItem.getProperty().getLabel().toLowerCase());
-                sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
-                for (Object obj : component.getElementParameter()) {
-                    ElementParameterType cpType = (ElementParameterType) obj;
-                    if ("SL_META_DATA".equals(cpType.getName())) {
-                        EList<?> elementValue = cpType.getElementValue();
-                        int size = elementValue.size();
-                        if (size > 0) {
-                            sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
-                            sb.append("\n\t\t\t\t\t<map>");
-                        }
-                        for (int i = 0; i < size; i += 2) {
-                            if (size <= i + 1) {
-                                break;
-                            }
-                            ElementValueType name = (ElementValueType) elementValue.get(i);
-                            ElementValueType value = (ElementValueType) elementValue.get(i + 1);
-                            sb.append("\n\t\t\t\t\t\t<entry>");
-                            sb.append("\n\t\t\t\t\t\t\t<key><value>");
-                            sb.append(name.getValue() == null ? "" : name.getValue());
-                            sb.append("</value></key>");
-                            sb.append("\n\t\t\t\t\t\t\t<value>");
-                            sb.append(value.getValue() == null ? "" : value.getValue());
-                            sb.append("</value>");
-                            sb.append("\n\t\t\t\t\t\t</entry>");
-                        }
-                        if (elementValue.size() > 0) {
-                            sb.append("\n\t\t\t\t\t</map>");
-                            sb.append("\n\t\t\t\t</property>");
-                        }
-                    }
-                }
-                sb.append("\n\t\t\t</bean>\n");
+    *
+    * Ensure that the value is not surrounded by quotes.
+    *
+    * @param value
+    * @return
+    */
+    private static final String unquote(String value) {
+        String result = value;
+        if (null != value && 1 < value.length()) {
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                result = value.substring(1, value.length() - 1);
             }
-
-            if (isSamEnable) {
-                // add sam support
-                sb.append("\t\t\t<ref bean=\"eventFeature\"/>\n");
-            }
-            sb.append("\t\t</jaxrs:features>");
-            return sb.toString();
-        } else {
-            return "";
         }
-
+        return result;
     }
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     * 
+     *
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -659,7 +636,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if(!"SAML".equals(securityType)){
                 	continue;
                 }
-                
+
                 String uniquename = ElementParameterParser.getUNIQUENAME(node);
                 EList connections = processItem.getProcess().getConnection();
                 boolean found = false;
@@ -675,7 +652,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 	hasCXFSamlProvider = true;
                 }
             }
-            
+
             if(hasCXFSamlConsumer || hasCXFSamlProvider ){
             	additionalJobBeanParams += readFileContent("ccxf_saml_bean.txt");
             	additionalJobBundleConfig += readFileContent("ccxf_saml_bundle.txt");
@@ -752,7 +729,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     	is.close();
     	return s;
     }
-    
+
     private static String getOSGIInfFolder() {
         return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
     }
@@ -1119,7 +1096,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     * 
+     *
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {

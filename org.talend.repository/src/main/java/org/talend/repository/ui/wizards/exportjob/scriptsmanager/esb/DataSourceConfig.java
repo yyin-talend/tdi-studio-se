@@ -46,7 +46,7 @@ public class DataSourceConfig {
         return additionalJobBeanParams;
     }
 
-    private static Set<String> getAliases(ProcessItem processItem) {
+    public static Set<String> getAliases(ProcessItem processItem) {
         return getAliases(processItem, new HashSet<String>());
     }
 

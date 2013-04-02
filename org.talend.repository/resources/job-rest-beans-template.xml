@@ -9,42 +9,87 @@
 			http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<!--import resource="classpath:META-INF/cxf/cxf.xml"/-->
-	@JAXRS_SAM_IMPORT@
-	<jaxrs:server id="service" address="@ENDPOINT_URI@"
-			@LOCATOR_SERVICE_NS@
-			@LOCATOR_SERVICE_NAME@>
+#if ($endpoint.useSAM)
+	<import resource="classpath:META-INF/tesb/agent-osgi.xml" />
+#end
+
+	<jaxrs:server id="service"
+#if ($endpoint.useSL)
+			xmlns:tns="${endpoint.serviceNamespace}"
+			serviceName="tns:${endpoint.serviceName}"
+#end
+			address="${endpoint.address}">
 		<jaxrs:serviceBeans>
-			<ref bean="serviceBean"/>
+			<ref bean="serviceBean" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="wrongCallHandler"/>
-			<ref bean="jsonProvider"/>
-			<ref bean="dom4jProvider"/>
-			@JAXRS_SERVICE_PROVIDERS@
+			<ref bean="wrongCallHandler" />
+			<ref bean="jsonProvider" />
+			<ref bean="dom4jProvider" />
+#if ($endpoint.useHttpBasicAuth)
+			<ref bean="authenticationFilter" />
+#end
 		</jaxrs:providers>
-		@JAXRS_FEATURES@
+		<jaxrs:features>
+#if ($endpoint.useSAM)
+			<ref bean="eventFeature"/>
+#end
+
+#if ($endpoint.useSL)
+			<bean class="org.talend.esb.servicelocator.cxf.LocatorFeature">
+#if (!$endpoint.slCustomProps.isEmpty())
+				<property name="availableEndpointProperties">
+					<map>
+#foreach ($entry in $endpoint.slCustomProps.entrySet())
+						<entry>
+							<key><value>${entry.key}</value></key>
+							<value>${entry.value}</value>
+						</entry>
+#end ## end SL custom properties loop
+					</map>
+				</property>
+#end ## end not empty SL custom properties
+			</bean>
+#end
+		</jaxrs:features>
 	</jaxrs:server>
 
-@ADDITIONAL_BEANS_CONFIG@
+#if ($endpoint.useHttpBasicAuth)
+	<bean id="authenticationFilter" class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+		<property name="contextName" value="karaf" />
+	</bean>
+#end
 
-	<bean id="serviceBean" class="@JOBCLASSNAME@.RestServiceProviderImpl4TalendJob">
-		<constructor-arg ref="job"/>
+	<bean id="serviceBean" class="${endpoint.jobClassName}.RestServiceProviderImpl4TalendJob">
+		<constructor-arg ref="job" />
 	</bean>
 
-	<bean id="wrongCallHandler" class="@JOBCLASSNAME@.ExceptionMapper4TalendJobRestService">
-		<constructor-arg ref="serviceBean"/>
+	<bean id="wrongCallHandler" class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
+		<constructor-arg ref="serviceBean" />
 	</bean>
 
-	<bean id="dom4jProvider" class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider"/>
+	<bean id="dom4jProvider" class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider" />
 
 	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
-		<property name="ignoreNamespaces" value="true"/>
-		@ADDITIONAL_JSON_PROVIDER_BEAN_PARAMS@
+		<property name="ignoreNamespaces" value="true" />
+		<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
+		<property name="wrapperName" value="root" />
+		<property name="dropRootElement" value="${endpoint.unwrapJsonResponse}" />
 	</bean>
 
-	<bean id="job" class="@JOBCLASSNAME@" destroy-method="destroy" >
+	<bean id="job" class="${endpoint.jobClassName}" destroy-method="destroy">
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
-		@ADDITIONAL_JOB_BEAN_PARAMS@
+#if (!$endpoint.jobDataSources.isEmpty())
+		<property name="dataSources">
+			<map>
+#foreach ($alias in $endpoint.jobDataSources)
+				<entry key="${alias}">
+					<osgi:reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
+				</entry>
+#end ## end data sources aliases loop
+			</map>
+		</property>
+#end
 	</bean>
 
 	<osgi:service ref="job">
@@ -52,7 +97,7 @@
 			<value>routines.system.api.TalendJob</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
-			<entry key="name" value="@JOBNAME@" />
+			<entry key="name" value="${endpoint.jobName}" />
 			<entry key="type" value="job" />
 		</osgi:service-properties>
 	</osgi:service>

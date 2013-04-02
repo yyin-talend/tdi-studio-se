@@ -86,4 +86,5 @@ Export-Package: org.talend.repository,
  org.talend.repository.ui.wizards.sqlpattern,
  org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
-
+Bundle-ClassPath: .,
+ lib/velocity-1.7.jar

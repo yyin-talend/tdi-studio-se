@@ -21,38 +21,38 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 
 /**
- * 
+ *
  * DOC zshen class global comment. Detailled comment
  */
 public class EmfModelUtils {
 
-	private EmfModelUtils() {
-	}
+    private EmfModelUtils() {
+    }
 
-	public static final NodeType getComponentByName(ProcessItem processItem, String... names) {
+    public static final NodeType getComponentByName(ProcessItem processItem, String... names) {
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
-            	NodeType node = (NodeType) o;
-            	for (String name : names) {
+                NodeType node = (NodeType) o;
+                for (String name : names) {
                     if (node.getComponentName().equals(name) && isComponentActive(node)) {
                         return node;
                     }
-            	}
+                }
             }
         }
         return null;
     }
 
-	public static final Collection<NodeType> getComponentsByName(ProcessItem processItem, String... names) {
+    public static final Collection<NodeType> getComponentsByName(ProcessItem processItem, String... names) {
         List<NodeType> result = new ArrayList<NodeType>();
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
-            	NodeType node = (NodeType) o;
-            	for (String name : names) {
+                NodeType node = (NodeType) o;
+                for (String name : names) {
                     if (node.getComponentName().equals(name) && isComponentActive(node)) {
                         result.add(node);
                     }
-            	}
+                }
             }
         }
         return result;
@@ -65,7 +65,7 @@ public class EmfModelUtils {
      * @param elementParameterTypes
      * @return
      */
-	public static final String computeTextElementValue(String paramName, NodeType node) {
+    public static final String computeTextElementValue(String paramName, NodeType node) {
         ElementParameterType cpType = findElementParameterByName(paramName, node);
         if (cpType == null) {
             return "";
@@ -80,7 +80,7 @@ public class EmfModelUtils {
      * @param elementParameterTypes
      * @return
      */
-	public static final boolean computeCheckElementValue(String paramName, NodeType node) {
+    public static final boolean computeCheckElementValue(String paramName, NodeType node) {
         ElementParameterType cpType = findElementParameterByName(paramName, node);
         if (cpType == null) {
             return false;
@@ -88,7 +88,14 @@ public class EmfModelUtils {
         return Boolean.parseBoolean(cpType.getValue());
     }
 
-	private static final ElementParameterType findElementParameterByName(String paramName, NodeType node) {
+    /**
+     * Find element parameter with a given parameter name
+     *
+     * @param paramName
+     * @param elementParameterTypes
+     * @return
+     */
+    public static final ElementParameterType findElementParameterByName(String paramName, NodeType node) {
         for (Object obj : node.getElementParameter()) {
             ElementParameterType cpType = (ElementParameterType) obj;
             if (paramName.equals(cpType.getName())) {
@@ -109,12 +116,12 @@ public class EmfModelUtils {
     * @param string
     * @return
     */
-	private static final String unquote(String string) {
+    private static final String unquote(String string) {
        if (string.startsWith("\"")) {
-    	   string = string.substring(1);
+           string = string.substring(1);
        }
        if (string.endsWith("\"")) {
-    	   string = string.substring(0, string.length() - 1);
+           string = string.substring(0, string.length() - 1);
        }
        return string;
     }
