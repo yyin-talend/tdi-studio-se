@@ -1210,6 +1210,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         setScreenshot(null); // once be saved, set the screenshot to null to free memory
         contextManager.saveToEmf(processType.getContext());
+        // fixe for TDI-24876
+        EmfHelper.removeProxy(processType);
         return processType;
     }
 
@@ -1287,6 +1289,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         setScreenshot(null); // once be saved, set the screenshot to null to free memory
         contextManager.saveToEmf(processType.getContext());
+        // fixe for TDI-24876
+        EmfHelper.removeProxy(processType);
         return processType;
 
     }
