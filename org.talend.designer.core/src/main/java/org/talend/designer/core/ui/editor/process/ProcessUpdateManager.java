@@ -539,6 +539,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     private List<UpdateResult> checkMainParameters(EUpdateItemType type, boolean onlySimpleShow) {
         List<UpdateResult> mainResults = new ArrayList<UpdateResult>();
         switch (type) {
+        case JOB_PROPERTY_MAPREDUCE:
+            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type,
+                    onlySimpleShow));
+            break;
         case JOB_PROPERTY_EXTRA:
             mainResults.addAll(checkJobSettingsParameters(EComponentCategory.EXTRA, type, onlySimpleShow));
             break;
@@ -744,7 +748,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         final Item item = lastVersion.getProperty().getItem();
                         if (item != null && item instanceof ConnectionItem) {
                             source = UpdateRepositoryUtils.getRepositorySourceName(item);
-                            repositoryConnection = ((DatabaseConnectionItem) item).getConnection();
+                            repositoryConnection = ((ConnectionItem) item).getConnection();
                         }
                     }
                     UpdateCheckResult result = null;
@@ -834,27 +838,31 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     @SuppressWarnings("unchecked")
     private List<UpdateResult> checkNodesParameters(EUpdateItemType type, boolean onlySimpleShow) {
         List<UpdateResult> nodesResults = new ArrayList<UpdateResult>();
-        for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
-            switch (type) {
-            case NODE_SCHEMA:
-                nodesResults.addAll(checkNodeSchemaFromRepository(node, onlySimpleShow));
-                break;
-            case NODE_PROPERTY:
-                nodesResults.addAll(checkNodePropertiesFromRepository(node, onlySimpleShow));
-                break;
-            case NODE_QUERY:
-                nodesResults.addAll(checkNodeQueryFromRepository(node, onlySimpleShow));
-            case NODE_SAP_FUNCTION:
-                nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
-                break;
-            case NODE_SAP_IDOC:
-                nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
-                break;
-            case NODE_VALIDATION_RULE:
-                nodesResults.addAll(checkNodeValidationRuleFromRepository(node, onlySimpleShow));
-                break;
-            default:
-                return Collections.emptyList();
+        IProcess2 process = getProcess();
+        if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
+        } else {
+            for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
+                switch (type) {
+                case NODE_SCHEMA:
+                    nodesResults.addAll(checkNodeSchemaFromRepository(node, onlySimpleShow));
+                    break;
+                case NODE_PROPERTY:
+                    nodesResults.addAll(checkNodePropertiesFromRepository(node, onlySimpleShow));
+                    break;
+                case NODE_QUERY:
+                    nodesResults.addAll(checkNodeQueryFromRepository(node, onlySimpleShow));
+                case NODE_SAP_FUNCTION:
+                    nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
+                    break;
+                case NODE_SAP_IDOC:
+                    nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
+                    break;
+                case NODE_VALIDATION_RULE:
+                    nodesResults.addAll(checkNodeValidationRuleFromRepository(node, onlySimpleShow));
+                    break;
+                default:
+                    return Collections.emptyList();
+                }
             }
         }
         getSchemaRenamedMap().clear();
@@ -1620,7 +1628,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                            .isUseCustomModuleName())) {
+                                                .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -2362,6 +2370,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case JOB_PROPERTY_EXTRA:
         case JOB_PROPERTY_STATS_LOGS:
         case JOB_PROPERTY_HEADERFOOTER:
+        case JOB_PROPERTY_MAPREDUCE:
             tmpResults = checkMainParameters(type, onlySimpleShow);
             break;
         case CONTEXT:

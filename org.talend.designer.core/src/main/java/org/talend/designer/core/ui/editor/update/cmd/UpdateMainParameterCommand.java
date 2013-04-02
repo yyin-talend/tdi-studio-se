@@ -69,6 +69,9 @@ public class UpdateMainParameterCommand extends Command {
             case JOB_PROPERTY_HEADERFOOTER:
                 category = EComponentCategory.HEADERFOOTER;
                 break;
+            case JOB_PROPERTY_MAPREDUCE:
+                category = EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP;
+                break;
             default:
             }
             if (category == EComponentCategory.HEADERFOOTER) {
