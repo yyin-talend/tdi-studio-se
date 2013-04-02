@@ -235,7 +235,7 @@
       <Action
             class="org.talend.designer.core.ui.action.CreateProcess"
             id="org.talend.designer.core.actions.createprocess"
-            level="10"
+            level="9"
             name="Create process"/>
       <Action
             class="org.talend.designer.core.ui.hierarchy.OpenRepositoryJobHierarchyAction"
