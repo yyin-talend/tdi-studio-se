@@ -533,27 +533,30 @@ for (INode node : graphicalNodes) {
 
 		StringBuffer fragments = new StringBuffer();
 		fragments.append("\"" + type + "://\"");
-
-		if (username.trim().length() > 0) {
+		fragments.append("+\"");
+		fragments.append("ftpServer");
+		fragments.append("\"");
+		
+/*		if (username.trim().length() > 0) {
 			fragments.append("+" + username.trim()).append("+\"@\"");
 		}
 
 		fragments.append("+" + server.trim());
-
+*/
 		if (port.trim().length() > 0) {
 			fragments.append("+\":\"").append("+" + port.trim());
 		}
-
+/*
 		if (directory.trim().length() > 0) {
 			fragments.append("+\"/\"").append("+" + directory.trim());
 		}
-
+*/
 		boolean hasArg = false;
-		if (password.trim().length() > 0) {
+/*		if (password.trim().length() > 0) {
 			hasArg = true;
 			fragments.append("+\"?password=\"+" + password);
 		}
-
+*/
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
 		for (Map<String, String> map : tableValues) {
 			String argName = map.get("NAME").trim();
@@ -663,7 +666,7 @@ for (INode node : graphicalNodes) {
 		}
 
 		boolean hasParam = false;
-		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
+/*		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 		if (!"\"\"".equals(userName)) {
 			sb.append("+\"?username=\"+").append(userName);
 			hasParam = true;
@@ -712,6 +715,7 @@ for (INode node : graphicalNodes) {
 			sb.append(to);
 			hasParam = true;
 		}
+*/
 
 		String contentType = ElementParameterParser.getValue(node, "__CONTENTTYPE__");
 		if (!"\"\"".equals(contentType)) {
@@ -724,7 +728,7 @@ for (INode node : graphicalNodes) {
 			hasParam = true;
 		}
 
-		String cc = ElementParameterParser.getValue(node, "__CC__");
+/*		String cc = ElementParameterParser.getValue(node, "__CC__");
 		if (!"\"\"".equals(cc)) {
 			if (hasParam) {
 				sb.append("+\"&CC=\"+");
@@ -745,7 +749,7 @@ for (INode node : graphicalNodes) {
 			sb.append(bcc);
 			hasParam = true;
 		}
-
+*/
 		List<Map<String, String>> formatValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ARGUMENTS__");
 		for (Map<String, String> map : formatValues) {
 			String argName = map.get("NAME").trim();
