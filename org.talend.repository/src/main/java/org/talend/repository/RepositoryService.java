@@ -66,6 +66,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
@@ -749,8 +750,13 @@ public class RepositoryService implements IRepositoryService {
         ExportFileResource fileResource = new ExportFileResource(processItem, property.getLabel());
         ExportFileResource[] exportFileResources = new ExportFileResource[] { fileResource };
 
-        JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, processor
-                .getContext().getName(), JobScriptsManager.ALL_ENVIRONMENTS, -1, -1, JobExportType.POJO);
+        IContext context = processor.getContext();
+        String contextName = "Default";//$NON-NLS-1$
+        if (context != null) {
+            contextName = context.getName();
+        }
+        JobScriptsManager jobScriptsManager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, contextName,
+                JobScriptsManager.ALL_ENVIRONMENTS, -1, -1, JobExportType.POJO);
         URL url = jobScriptsManager.getExportPigudfResources(exportFileResources);
 
         if (url == null) {
@@ -773,6 +779,7 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    @Override
     public RepositoryNode getRepNodeFromRepReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType) {
         RepositoryReviewDialog dialog = new RepositoryReviewDialog(parentShell, type, repositoryType);
         if (dialog.open() == Window.OK) {
