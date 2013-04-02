@@ -3006,7 +3006,7 @@ public class Node extends Element implements IGraphicalNode {
                         && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (table.getListColumns().size() == 0) {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
                         noSchema = true;
                     }
                 }
