@@ -41,7 +41,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -307,15 +306,7 @@ public class LoginComposite extends Composite {
         this.inuse = inuse;
         this.tosLoginComposite = tosLoginComposite;
         this.stackLayout = stackLayout;
-
         perReader = ConnectionUserPerReader.getInstance();
-        try {
-            Browser browser = new Browser(parent, SWT.BORDER);
-            System.setProperty("USE_BROWSER", "yes"); //$NON-NLS-1$ //$NON-NLS-2$
-            browser.dispose();
-        } catch (Throwable t) {
-            System.setProperty("USE_BROWSER", "no"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -1556,6 +1547,7 @@ public class LoginComposite extends Composite {
         if (connectionsViewer != null) {
             connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     try {
                         final ConnectionBean connection = getConnection();
@@ -1593,6 +1585,7 @@ public class LoginComposite extends Composite {
 
             ModifyListener modifyListener = new ModifyListener() {
 
+                @Override
                 public void modifyText(ModifyEvent e) {
                     unpopulateProjectList();
                     dialog.updateButtons();
@@ -1622,6 +1615,7 @@ public class LoginComposite extends Composite {
 
             branchesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
                             .getPreferenceStore());
@@ -1637,6 +1631,7 @@ public class LoginComposite extends Composite {
         if (projectViewer != null) {
             projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
                             .getPreferenceStore());
@@ -2180,6 +2175,7 @@ public class LoginComposite extends Composite {
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
 
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().initialize();
@@ -2207,6 +2203,7 @@ public class LoginComposite extends Composite {
                 projects = repositoryFactory.readProject();
                 Arrays.sort(projects, new Comparator<Project>() {
 
+                    @Override
                     public int compare(Project p1, Project p2) {
                         return p1.getLabel().compareTo(p2.getLabel());
                     }
@@ -2319,6 +2316,7 @@ public class LoginComposite extends Composite {
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
 
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().initialize();
