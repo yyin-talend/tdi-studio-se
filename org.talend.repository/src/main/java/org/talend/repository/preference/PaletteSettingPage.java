@@ -49,7 +49,6 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -153,6 +152,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
         hiddenViewer.expandToLevel(2);
         hiddenViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 displayComponentsButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -170,6 +170,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
         displayViewer.expandToLevel(2);
         displayViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 hideCompnentsButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -398,6 +399,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String family = names[0];
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject(project);
+            if (label.equals("tCouchDBConnection")) {
+                System.out.println();
+            }
             for (ComponentSetting componentSetting : components) {
                 if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
                         && componentSetting.getName().equals(label)) {
@@ -458,7 +462,6 @@ public class PaletteSettingPage extends ProjectSettingPage {
             prf.saveProject(project);
             ShowStandardAction.getInstance().doRun();
             if (needCodeGen) {
-                IComponentsFactory components = ComponentsFactoryProvider.getInstance();
                 Job refreshTemplates = CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
                 refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
 

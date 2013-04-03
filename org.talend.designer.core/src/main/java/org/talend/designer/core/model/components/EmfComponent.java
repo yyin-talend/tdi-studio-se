@@ -147,7 +147,7 @@ public class EmfComponent extends AbstractComponent {
 
     private COMPONENTType compType;
 
-    private Map<String, ImageDescriptor> imageRegistry;
+    private Map<String, ImageDescriptor> imageRegistry = new HashMap<String, ImageDescriptor>();
 
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
@@ -278,15 +278,7 @@ public class EmfComponent extends AbstractComponent {
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (!isLoaded) {
-            String applicationPath;
-            try {
-                applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
-                applicationPath = (new Path(applicationPath)).toPortableString();
-            } catch (IOException e2) {
-                ExceptionHandler.process(e2);
-                return;
-            }
-            File file = new File(applicationPath + uriString);
+            File file = new File(ComponentBundleToPath.getPathFromBundle(bundleName) + uriString);
             URI createURI = URI.createURI(file.toURI().toString());
             Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
@@ -2321,21 +2313,23 @@ public class EmfComponent extends AbstractComponent {
             }
             info.setTranslatedFamilyName(transFamilyNames);
         } else {
-            translatedFamilyName = "";
-            if (info != null) {
-                IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
-                String transName = info.getTranslatedFamilyName();
-                String[] transNames = transName.split(";");
-                for (String toTranslate : transNames) {
-                    if (toTranslate.equals("/") || toTranslate.equals("|")) {
-                        translatedFamilyName += toTranslate;
-                    } else {
-                        String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_"));
-                        if (translated.startsWith("!!")) { //$NON-NLS-1$
-                            // no key to translate, so use original
+            if (translatedFamilyName == null) {
+                translatedFamilyName = "";
+                if (info != null) {
+                    IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
+                    String transName = info.getTranslatedFamilyName();
+                    String[] transNames = transName.split(";");
+                    for (String toTranslate : transNames) {
+                        if (toTranslate.equals("/") || toTranslate.equals("|")) {
                             translatedFamilyName += toTranslate;
                         } else {
-                            translatedFamilyName += translated;
+                            String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_"));
+                            if (translated.startsWith("!!")) { //$NON-NLS-1$
+                                // no key to translate, so use original
+                                translatedFamilyName += toTranslate;
+                            } else {
+                                translatedFamilyName += translated;
+                            }
                         }
                     }
                 }
@@ -2680,9 +2674,11 @@ public class EmfComponent extends AbstractComponent {
 
         List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
         for (ComponentSetting componentSetting : components) {
-
-            if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
-                    && componentSetting.getName().equals(getName())) {
+            // remove the check of family since in all case the GUI won't care about the name of family in
+            // PaletteSettingPage, the components will be hidden in each family
+            if (/*
+                 * componentSetting.getFamily() != null && componentSetting.getFamily().equals(family) &&
+                 */componentSetting.getName().equals(getName())) {
                 return !componentSetting.isHidden();
             }
 
@@ -3067,6 +3063,16 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon16() {
+        if (!this.imageRegistry.containsKey(getName() + "_16")) {
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
+                    .toPortableString();
+            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
+
+            // only call to initialize the icons in the registry
+            cil.getImage32();
+            cil.getImage16();
+            cil.getImage24();
+        }
         return this.imageRegistry.get(getName() + "_16");
     }
 
@@ -3077,6 +3083,16 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon24() {
+        if (!this.imageRegistry.containsKey(getName() + "_24")) {
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
+                    .toPortableString();
+            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
+
+            // only call to initialize the icons in the registry
+            cil.getImage32();
+            cil.getImage16();
+            cil.getImage24();
+        }
         return this.imageRegistry.get(getName() + "_24");
     }
 
@@ -3087,6 +3103,16 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public ImageDescriptor getIcon32() {
+        if (!this.imageRegistry.containsKey(getName() + "_32")) {
+            String path = new Path(ComponentBundleToPath.getPathFromBundle(bundleName)).append(this.pathSource).append(this.name)
+                    .toPortableString();
+            ComponentIconLoading cil = new ComponentIconLoading(imageRegistry, new File(path));
+
+            // only call to initialize the icons in the registry
+            cil.getImage32();
+            cil.getImage16();
+            cil.getImage24();
+        }
         return this.imageRegistry.get(getName() + "_32");
     }
 

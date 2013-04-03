@@ -42,6 +42,7 @@ import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -126,13 +127,22 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
                 TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
 
-                TimeMeasure.begin("initialize Jet Emitters");
+                TimeMeasure.begin("initialize Jet Emitters"); //$NON-NLS-1$
                 ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                 jetFilesCompileFail.clear();
 
                 IProgressMonitor monitorWrap = null;
-                if (!CommonsPlugin.isHeadless()) {
+                boolean headless = CommonsPlugin.isHeadless();
+                if (!headless) {
+                    try {
+                        Display.getDefault();
+                    } catch (SWTError e) {
+                        headless = true;
+                    }
+                }
+
+                if (headless) {
                     monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
                 } else {
                     monitorWrap = new NullProgressMonitor();
@@ -194,15 +204,20 @@ public final class CodeGeneratorEmittersPoolFactory {
                 monitorWrap.done();
 
                 if (!CommonsPlugin.isHeadless()) {
-                    Display.getDefault().asyncExec(new Runnable() {
+                    Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
 
                         @Override
-                        public void run() {
+                        protected IStatus run(IProgressMonitor monitor) {
                             CorePlugin.getDefault().getDesignerCoreService()
                                     .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+                            return Status.OK_STATUS;
                         }
 
-                    });
+                    };
+                    job.setUser(true);
+                    job.setPriority(Job.INTERACTIVE);
+                    job.schedule();
+                    job.wakeUp(); // start as soon as possible
                 }
                 log.debug(Messages.getString(
                         "CodeGeneratorEmittersPoolFactory.componentCompiled", (System.currentTimeMillis() - startTime))); //$NON-NLS-1$
@@ -213,7 +228,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             } catch (Exception e) {
                 log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
-                TimeMeasure.end("initialize Jet Emitters");
+                TimeMeasure.end("initialize Jet Emitters"); //$NON-NLS-1$
                 TimeMeasure.display = false;
                 TimeMeasure.displaySteps = false;
                 TimeMeasure.measureActive = false;
@@ -228,7 +243,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     ExceptionHandler.process(e);
                 }
             }
-            TimeMeasure.end("initialize Jet Emitters");
+            TimeMeasure.end("initialize Jet Emitters"); //$NON-NLS-1$
             TimeMeasure.display = false;
             TimeMeasure.displaySteps = false;
             TimeMeasure.measureActive = false;
@@ -336,16 +351,16 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             JetBean jetBean = new JetBean(componentsPath, templateURI, component.getName(), component.getVersion(),
                     codeLanguage.getName(), codePart.getName());
-            jetBean.addClassPath("EMF_ECORE", "org.eclipse.emf.ecore");
-            jetBean.addClassPath("EMF_COMMON", "org.eclipse.emf.common");
+            jetBean.addClassPath("EMF_ECORE", "org.eclipse.emf.ecore"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("EMF_COMMON", "org.eclipse.emf.common"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
-            jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$
+            jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
 
             if (PluginChecker.isGEFAbstractMapLoaded()) {
-                jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$
+                jetBean.addClassPath("GEF_MAP", "org.talend.designer.gefabstractmap"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             for (String pluginDependency : component.getPluginDependencies()) {

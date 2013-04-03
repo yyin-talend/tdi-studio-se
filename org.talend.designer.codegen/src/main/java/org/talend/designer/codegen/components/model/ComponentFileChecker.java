@@ -30,6 +30,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.xml.XSDValidator;
 import org.talend.core.model.ModelPlugin;
+import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.xml.sax.SAXException;
 
 /**

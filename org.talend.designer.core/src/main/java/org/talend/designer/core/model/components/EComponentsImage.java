@@ -10,10 +10,10 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.codegen.components.ui;
+package org.talend.designer.core.model.components;
 
 import org.talend.commons.ui.runtime.image.IImage;
-import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.core.DesignerPlugin;
 
 /**
  * 
@@ -43,6 +43,7 @@ public enum EComponentsImage implements IImage {
      * 
      * @return the path
      */
+    @Override
     public String getPath() {
         return this.path;
     }
@@ -52,8 +53,9 @@ public enum EComponentsImage implements IImage {
      * 
      * @return the clazz
      */
+    @Override
     public Class getLocation() {
-        return CodeGeneratorActivator.class;
+        return DesignerPlugin.class;
     }
 
 }

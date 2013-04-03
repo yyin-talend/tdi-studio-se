@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 
@@ -42,11 +41,9 @@ import org.talend.designer.codegen.i18n.Messages;
  */
 public class XsdValidationCacheManager {
 
-    private Map<String, Long> alreadyCheckedXsd;
+    private Map<String, Long> alreadyCheckedXsd = new HashMap<String, Long>();
 
     private static XsdValidationCacheManager instance;
-
-    private final boolean forceXSDAlreadyChecked = ComponentCompilations.getMarkers();
 
     private XsdValidationCacheManager() {
     }
@@ -60,7 +57,10 @@ public class XsdValidationCacheManager {
 
     public void load() {
         try {
-            deserializeAlreadyChecked();
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
+            if (project.exists()) {
+                deserializeAlreadyChecked();
+            }
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
                     Messages.getString("XsdValidationCacheManager.unableLoadxsd"), e); //$NON-NLS-1$
@@ -101,7 +101,9 @@ public class XsdValidationCacheManager {
         if (!project.exists()) {
             project.create(new NullProgressMonitor());
         }
-        project.open(new NullProgressMonitor());
+        if (!project.isOpen()) {
+            project.open(new NullProgressMonitor());
+        }
         IFile file = project.getFile("XsdValidationCache"); //$NON-NLS-1$
         if (!file.exists()) {
             file.create(null, true, new NullProgressMonitor());

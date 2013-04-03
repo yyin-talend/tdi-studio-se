@@ -47,7 +47,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -77,6 +76,8 @@ import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
+import org.talend.designer.core.model.components.ComponentBundleToPath;
+import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -373,7 +374,6 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws BusinessException
      */
     private void reloadComponentsFromCache() throws BusinessException {
-        Map<String, String> bundleIdToPath = new HashMap<String, String>();
         ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
         while (it.hasNext()) {
@@ -409,24 +409,11 @@ public class ComponentsFactory implements IComponentsFactory {
                     currentComp.setTechnical(true);
                 }
                 currentComp.setPaletteType(currentComp.getType());
-                String applicationPath = bundleIdToPath.get(info.getSourceBundleName());
-                if (applicationPath == null) {
-                    try {
-                        applicationPath = FileLocator.getBundleFile(Platform.getBundle(info.getSourceBundleName())).getPath();
-                        applicationPath = (new Path(applicationPath)).toPortableString();
-                    } catch (IOException e2) {
-                        ExceptionHandler.process(e2);
-                        return;
-                    }
-                    bundleIdToPath.put(info.getSourceBundleName(), applicationPath);
-                }
 
                 if (!componentList.contains(currentComp)) {
-                    currentComp.setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(),
+                    currentComp.setResourceBundle(getComponentResourceBundle(currentComp,
+                            ComponentBundleToPath.getPathFromBundle(info.getSourceBundleName()) + info.getUriString(),
                             info.getPathSource(), null));
-
-                    File currentFile = new File(applicationPath + info.getUriString());
-                    loadIcons(currentFile.getParentFile(), currentComp);
                     componentList.add(currentComp);
                 }
             }
@@ -673,16 +660,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         }
                         String pathName = xmlMainFile.getAbsolutePath();
 
-                        String applicationPath;
-                        try {
-                            applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
-                            // applicationPath= C:\myapp\plugins\myplugin
-                            applicationPath = (new Path(applicationPath)).toPortableString();
-                            // applicationPath= C:/myapp/plugins/myplugin
-                        } catch (IOException e2) {
-                            ExceptionHandler.process(e2);
-                            return;
-                        }
+                        String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
 
                         // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
                         pathName = (new Path(pathName)).toPortableString();
@@ -737,7 +715,6 @@ public class ComponentsFactory implements IComponentsFactory {
                         } else {
                             currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(), null,
                                     provider));
-                            loadIcons(currentFolder, currentComp);
                             componentList.add(currentComp);
                             if (isCustom) {
                                 customComponentList.add(currentComp);
@@ -900,20 +877,6 @@ public class ComponentsFactory implements IComponentsFactory {
         return LanguageManager.getCurrentLanguage().getName();
     }
 
-    private Map<String, ImageDescriptor> componentsImageRegistry = new HashMap<String, ImageDescriptor>();
-
-    private void loadIcons(File folder, IComponent component) {
-
-        ComponentIconLoading cil = new ComponentIconLoading(componentsImageRegistry, folder);
-
-        // only call to initialize the icons in the registry
-        cil.getImage32();
-        cil.getImage24();
-        cil.getImage16();
-
-        component.setImageRegistry(componentsImageRegistry);
-    }
-
     @Override
     public int size() {
         if (componentList == null) {
@@ -1030,7 +993,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
     @Override
     public void reset() {
-        componentsImageRegistry.clear();
         componentList = null;
         skeletonList = null;
         customComponentList = null;
@@ -1040,7 +1002,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
     @Override
     public void resetCache() {
-        componentsImageRegistry.clear();
         componentList = null;
         skeletonList = null;
         customComponentList = null;
@@ -1136,8 +1097,6 @@ public class ComponentsFactory implements IComponentsFactory {
                             File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                                     currentFolder.getName(), getCodeLanguageSuffix()));
                             List<String> families = getComponentsFamilyFromXML(xmlMainFile);
-                            ComponentIconLoading cil = new ComponentIconLoading(componentsImageRegistry, currentFolder);
-                            cil.getImage32();
                             if (families != null) {
                                 for (String family : families) {
                                     allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(),
@@ -1254,11 +1213,6 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         return list;
-    }
-
-    @Override
-    public Map<String, ImageDescriptor> getComponentsImageRegistry() {
-        return componentsImageRegistry;
     }
 
     /*

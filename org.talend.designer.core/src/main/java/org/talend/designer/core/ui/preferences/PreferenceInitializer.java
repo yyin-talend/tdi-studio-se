@@ -20,6 +20,7 @@ import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
@@ -150,8 +151,17 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, false);
 
-        if (!CommonsPlugin.isHeadless()) {
-            Display display = Display.getCurrent();
+        boolean headless = CommonsPlugin.isHeadless();
+        Display display = null;
+        if (!headless) {
+            try {
+                display = Display.getCurrent();
+            } catch (SWTError e) {
+                headless = true;
+            }
+        }
+
+        if (headless) {
             if (display == null) {
                 display = Display.getDefault();
             }

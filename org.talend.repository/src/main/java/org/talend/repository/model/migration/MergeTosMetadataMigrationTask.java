@@ -34,7 +34,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
@@ -52,7 +51,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.model.migration.TosMetadataMigrationFrom400to410;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
-import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.RelationalFactory;
@@ -65,9 +63,7 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
 
     private static Logger log = Logger.getLogger(MergeTosMetadataMigrationTask.class);
 
-    TosMetadataMigrationFrom400to410 metadata400to410 = new TosMetadataMigrationFrom400to410();
-
-    IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+    private TosMetadataMigrationFrom400to410 metadata400to410;
 
     static final HashMap<String, Object> XML_SAVE_OTIONS_1_0 = new HashMap<String, Object>(2);
 
@@ -88,6 +84,9 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 URI itemURI = getItemURI(item);
                 if (itemURI != null) {
                     URI itemResourceURI = getItemResourceURI(itemURI);
+                    if (metadata400to410 == null) {
+                        metadata400to410 = new TosMetadataMigrationFrom400to410();
+                    }
                     Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
                     HashMap<String, Object> xmlSaveOtions = XML_SAVE_OTIONS_1_0;
                     if (migratedResource != null) {
@@ -315,6 +314,7 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
     // return itemResource;
     // }
 
+    @Override
     public Date getOrder() {
         // TODO Auto-generated method stub
         GregorianCalendar gc = new GregorianCalendar(2000, 6, 29, 10, 20, 0);

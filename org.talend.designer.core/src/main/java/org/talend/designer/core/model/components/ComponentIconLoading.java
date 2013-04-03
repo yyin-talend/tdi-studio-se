@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.codegen.components.model;
+package org.talend.designer.core.model.components;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -21,7 +21,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.designer.codegen.components.ui.EComponentsImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
