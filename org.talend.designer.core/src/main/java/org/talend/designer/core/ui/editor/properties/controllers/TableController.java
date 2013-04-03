@@ -597,7 +597,7 @@ public class TableController extends AbstractElementPropertySectionController {
         IElementParameter processTypeParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
         if (processTypeParam == null) {
             processTypeParam = elem.getElementParameterFromField(EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE);
-            if(processTypeParam == null){
+            if (processTypeParam == null) {
                 return;
             }
         }
@@ -623,6 +623,9 @@ public class TableController extends AbstractElementPropertySectionController {
         // get context list
         String processId = (String) jobElemParam.getValue();
         String contextName = (String) contextElemParam.getValue();
+        if (contextName == null) {
+            contextName = new String();
+        }
 
         if (processId == null || contextName == null) {
             revertToolBarButtonState(false);
