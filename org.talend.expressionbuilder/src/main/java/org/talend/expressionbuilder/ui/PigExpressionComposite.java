@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -40,11 +39,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
+import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.ui.proposal.PigProposalProvider;
+import org.talend.core.service.IPigMapService;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -55,10 +57,13 @@ import org.talend.expressionbuilder.i18n.Messages;
  */
 public class PigExpressionComposite extends ExpressionComposite {
 
+    private IExpressionDataBean dataBean;
+
     public PigExpressionComposite(TrayDialog expressionBuilderDialog, Composite parent, int style, IExpressionDataBean dataBean) {
         super(parent, style);
         setLayout(new FillLayout());
         this.trayDialog = expressionBuilderDialog;
+        this.dataBean = dataBean;
         final Group expressionGroup = new Group(this, SWT.NONE);
         GridLayout groupLayout = new GridLayout();
         expressionGroup.setLayout(groupLayout);
@@ -251,9 +256,16 @@ public class PigExpressionComposite extends ExpressionComposite {
             // create KeyStroke use Ctrl+Space
             KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
             IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
-            IContentProposalProvider contentProposalProvider = new PigProposalProvider(null, null);
-            new ContentProposalAdapter(textControl, controlContentAdapter, contentProposalProvider, keyStroke, new char[] { ' ',
-                    '.' });
+            // TDI-25309 :expression builder UDF autocompletion need add the inputTable node
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IPigMapService.class)) {
+                final IPigMapService service = (IPigMapService) GlobalServiceRegister.getDefault().getService(
+                        IPigMapService.class);
+                ContentProposalAdapterExtended proposalAdaptor = ProposalUtils.getCommonProposal(textControl,
+                        service.createExpressionProposalProvider(dataBean));
+                new ContentProposalAdapter(textControl, controlContentAdapter,
+                        service.createExpressionProposalProvider(dataBean), keyStroke, new char[] { ' ', '.' });
+            }
+
         } catch (Exception e) {
             //
         }
