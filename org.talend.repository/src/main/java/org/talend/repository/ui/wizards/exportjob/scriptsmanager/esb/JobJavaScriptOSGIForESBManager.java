@@ -204,7 +204,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
                     osgiResource.addResources(getMetaInfSpringFolder(),
-                            Collections.singletonList(generateRestJobSpringFiles(processItem)));
+                            Collections.singletonList(generateRestJobSpringConfig(processItem)));
                 } else {
                     osgiResource
                             .addResources(getOSGIInfFolder(), Collections.singletonList(generateBlueprintConfig(processItem)));
@@ -415,13 +415,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-    /**
-     * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
-     * @param processItem
-     * @author rzubairov
-     * @return
-     */
     private static boolean isTalendESBJob(ProcessItem processItem) {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer", "tRouteInput");
     }
@@ -437,8 +430,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private static String getPackageName(ProcessItem processItem) {
         return JavaResourcesHelper.getProjectFolderName(processItem)
                 + PACKAGE_SEPARATOR
-                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                        .getVersion());
+                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(),
+                        processItem.getProperty().getVersion());
     }
 
     private URL generateBlueprintConfig(ProcessItem processItem) throws IOException {
@@ -446,18 +439,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             itemType = JOB;
         }
 
-        String inputFile = getPluginResourceUri("resources/" + itemType + "-template.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "job.xml"); //$NON-NLS-1$
 
-        createJobBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType);
-
-        return targetFile.toURI().toURL();
-    }
-
-    private URL generateRestJobSpringFiles(ProcessItem processItem) throws IOException {
-        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "beans.xml"); //$NON-NLS-1$
-
-        createRestJobBundleSpringConfig(processItem, targetFile, jobName, jobClassName);
+        if (ROUTE.equals(itemType)) {
+            String inputFile = getPluginResourceUri("resources/route-template.xml"); //$NON-NLS-1$
+            createRouteBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType);
+        } else {
+            createJobBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
+        }
 
         return targetFile.toURI().toURL();
     }
@@ -469,13 +458,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-beans-template.xml"; //$NON-NLS-1$
 
-    private void createRestJobBundleSpringConfig(ProcessItem processItem,
-            File targetFile, String jobName, String jobClassName) throws IOException {
+    private URL generateRestJobSpringConfig(ProcessItem processItem) throws IOException {
+        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "beans.xml"); //$NON-NLS-1$
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
         // velocity template context
         Map<String, Object> endpointInfo = new HashMap<String, Object>();
+
+        // job name and class name
         endpointInfo.put("jobName", jobName); //$NON-NLS-1$
         endpointInfo.put("jobClassName", jobClassName); //$NON-NLS-1$
 
@@ -546,32 +537,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         endpointInfo.put("serviceNamespace", //$NON-NLS-1$
                 EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)); //$NON-NLS-1$
 
-        // OSGi DataSource
+        // job OSGi DataSources
         endpointInfo.put("jobDataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
 
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
 
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(targetFile);
-            TemplateProcessor.processTemplate(TEMPLATE_SPRING_JOB_REST, contextParams, fileWriter);
-        } catch (SystemException e) {
-            // something wrong with template processing
-            throw new IOException(e.getLocalizedMessage(), e);
-        // } catch (IOException e) {
-        //     // something wrong with output file
-        //     //LOG.error(e.getLocalizedMessage(), e);
-        } finally {
-            if (null != fileWriter) {
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    //LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
+        processVelocityTemplate(TEMPLATE_SPRING_JOB_REST, targetFile, contextParams);
+
+        return targetFile.toURI().toURL();
     }
 
     /**
@@ -591,19 +566,68 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return result;
     }
 
-    /**
-     * Created OSGi Blueprint configuration for job bundle.
-     *
-     * @param processItem
-     * @param inputFile
-     * @param targetFile
-     * @param jobName
-     * @param jobClassName
-     * @param itemType
-     * @param isESBJob
-     * @throws IOException
-     */
-    private void createJobBundleBlueprintConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
+    private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
+
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile,
+            String jobName, String jobClassName) throws IOException {
+
+        // velocity template context
+        Map<String, Object> jobInfo = new HashMap<String, Object>();
+
+        // job name and class name
+        jobInfo.put("name", jobName); //$NON-NLS-1$
+        jobInfo.put("className", jobClassName); //$NON-NLS-1$
+
+        // additional Talend job interfaces (ESB related)
+        boolean isESBJob = isTalendESBJob(processItem);
+        jobInfo.put("isESBJob", isESBJob); //$NON-NLS-1$
+        jobInfo.put("isESBJobFactory", isESBJob && isTalendESBJobFactory(processItem)); //$NON-NLS-1$
+
+        // job components use SAM
+        boolean useSAM = false;
+        for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
+            if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+                useSAM = true;
+                break;
+            }
+        }
+        jobInfo.put("useSAM", useSAM); //$NON-NLS-1$
+
+        // job OSGi DataSources
+        jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
+
+
+        // velocity template context
+        Map<String, Object> contextParams = new HashMap<String, Object>();
+        contextParams.put("job", jobInfo); //$NON-NLS-1$
+
+        processVelocityTemplate(TEMPLATE_BLUEPRINT_JOB, targetFile, contextParams);
+    }
+
+    private void processVelocityTemplate(String template, File target, Map<String, Object> context)
+            throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(target);
+            TemplateProcessor.processTemplate(template, context, fileWriter);
+        } catch (SystemException e) {
+            // something wrong with template processing
+            throw new IOException(e.getLocalizedMessage(), e);
+        // } catch (IOException e) {
+        //     // something wrong with output file
+        //     //LOG.error(e.getLocalizedMessage(), e);
+        } finally {
+            if (null != fileWriter) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    //LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+    }
+
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
             String jobClassName, String itemType) throws IOException {
 
         String additionalJobInterfaces = "";
@@ -613,74 +637,55 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         boolean hasSAM = false;
 
-        // http://jira.talendforge.org/browse/TESB-3677
-        if (ROUTE.equals(itemType)) {
-        	boolean hasCXFSamlConsumer = false;
-        	boolean hasCXFSamlProvider = false;
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
-                // http://jira.talendforge.org/browse/TESB-3850
-                String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-                if (!"RAW".equals(format) && !hasSAM) { //$NON-NLS-1$
-                    hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node);
-                }
-                if("CXF_MESSAGE".equals(format) || "RAW".equals(format)){
-                	continue;
-                }
-                if(hasCXFSamlConsumer && hasCXFSamlProvider){
-                	continue;
-                }
-                if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
-                	continue;
-                }
-                String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
-                if(!"SAML".equals(securityType)){
-                	continue;
-                }
-
-                String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                EList connections = processItem.getProcess().getConnection();
-                boolean found = false;
-                for(Object c:connections){
-                	String target = ((ConnectionType)c).getTarget();
-                	if(uniquename.equals(target)){
-                		hasCXFSamlConsumer = true;
-                		found = true;
-                		break;
-                	}
-                }
-                if(!found){
-                	hasCXFSamlProvider = true;
-                }
+        boolean hasCXFSamlConsumer = false;
+        boolean hasCXFSamlProvider = false;
+        for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
+            // http://jira.talendforge.org/browse/TESB-3850
+            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
+            if (!"RAW".equals(format) && !hasSAM) { //$NON-NLS-1$
+                hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node);
+            }
+            if("CXF_MESSAGE".equals(format) || "RAW".equals(format)){
+                continue;
+            }
+            if(hasCXFSamlConsumer && hasCXFSamlProvider){
+                continue;
+            }
+            if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
+                continue;
+            }
+            String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
+            if(!"SAML".equals(securityType)){
+                continue;
             }
 
-            if(hasCXFSamlConsumer || hasCXFSamlProvider ){
-            	additionalJobBeanParams += readFileContent("ccxf_saml_bean.txt");
-            	additionalJobBundleConfig += readFileContent("ccxf_saml_bundle.txt");
-            }
-            if(hasCXFSamlProvider){
-            	additionalJobBeanParams += readFileContent("ccxf_saml_provider_bean.txt");
-            	additionalJobBundleConfig += readFileContent("ccxf_saml_provider_bundle.txt");
-            }
-            if(hasCXFSamlConsumer){
-            	additionalJobBeanParams += readFileContent("ccxf_saml_consumer_bean.txt");
-            	additionalJobBundleConfig += readFileContent("ccxf_saml_consumer_bundle.txt");
-            }
-        } else { // JOB
-            if (isTalendESBJob(processItem)) {
-                additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
-                if (isTalendESBJobFactory(processItem)) {
-
-                    additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
-                    additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
-                }
-            }
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
-                // https://jira.talendforge.org/browse/TESB-8066
-                if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-                    hasSAM = true;
+            String uniquename = ElementParameterParser.getUNIQUENAME(node);
+            EList connections = processItem.getProcess().getConnection();
+            boolean found = false;
+            for(Object c:connections){
+                String target = ((ConnectionType)c).getTarget();
+                if(uniquename.equals(target)){
+                    hasCXFSamlConsumer = true;
+                    found = true;
                     break;
                 }
             }
+            if(!found){
+                hasCXFSamlProvider = true;
+            }
+        }
+
+        if(hasCXFSamlConsumer || hasCXFSamlProvider ){
+            additionalJobBeanParams += readFileContent("ccxf_saml_bean.txt");
+            additionalJobBundleConfig += readFileContent("ccxf_saml_bundle.txt");
+        }
+        if(hasCXFSamlProvider){
+            additionalJobBeanParams += readFileContent("ccxf_saml_provider_bean.txt");
+            additionalJobBundleConfig += readFileContent("ccxf_saml_provider_bundle.txt");
+        }
+        if(hasCXFSamlConsumer){
+            additionalJobBeanParams += readFileContent("ccxf_saml_consumer_bean.txt");
+            additionalJobBundleConfig += readFileContent("ccxf_saml_consumer_bundle.txt");
         }
 
         if (hasSAM) {
@@ -724,10 +729,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private String readFileContent(String path) throws IOException{
-    	InputStream is = getClass().getResourceAsStream(path);
-    	String s = new Scanner(is).useDelimiter("\\A").next();
-    	is.close();
-    	return s;
+        InputStream is = getClass().getResourceAsStream(path);
+        String s = new Scanner(is).useDelimiter("\\A").next();
+        is.close();
+        return s;
     }
 
     private static String getOSGIInfFolder() {
@@ -935,17 +940,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return StringUtils.join(pkgs.toArray(), ",");
     }
-
-    // private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
-    // if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
-    // String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
-    // // check if we need add ',' after already existing bundles
-    // requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
-    // requiredBundles = requiredBundles + bundlesToAdd;
-    // }
-    //
-    // return requiredBundles;
-    // }
 
     private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
             List<ProcessItem> itemToBeExport) throws IOException {
