@@ -155,7 +155,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         Display display = null;
         if (!headless) {
             try {
-                display = Display.getCurrent();
+                display = Display.getDefault();
             } catch (SWTError e) {
                 headless = true;
             }
@@ -163,7 +163,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         if (!headless) {
             if (display == null) {
-                display = Display.getDefault();
+                display = Display.getCurrent();
             }
             if (display != null) {
                 display.syncExec(new Runnable() {
