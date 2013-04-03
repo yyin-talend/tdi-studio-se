@@ -161,7 +161,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             }
         }
 
-        if (headless) {
+        if (!headless) {
             if (display == null) {
                 display = Display.getDefault();
             }
