@@ -339,7 +339,11 @@ public enum EParameterName {
     // tFlowToIterator
     DEFAULT_MAP("DEFAULT_MAP"), //$NON-NLS-1$
 
-    HADOOP_CUSTOM_JARS("HADOOP_CUSTOM_JARS"); //$NON-NLS-1$
+    HADOOP_CUSTOM_JARS("HADOOP_CUSTOM_JARS"), //$NON-NLS-1$
+
+    // Added for Hadoop properties
+    USE_HADOOP_PROPERTIES("USE_HADOOP_PROPERTIES"),
+    HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES");
 
     private String displayName;
 

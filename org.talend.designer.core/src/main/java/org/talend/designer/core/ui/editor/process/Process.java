@@ -541,6 +541,29 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setReadOnly(true);
         addElementParameter(param);
 
+        param = new ElementParameter(this);
+        param.setName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getName()); //$NON-NLS-1$
+        param.setCategory(EComponentCategory.MAIN);
+        param.setFieldType(EParameterFieldType.TABLE);
+        param.setListItemsDisplayCodeName(new String[] { "PROPERTY", "VALUE" });
+        ElementParameter newParam1 = new ElementParameter(this);
+        newParam1.setFieldType(EParameterFieldType.TEXT);
+        newParam1.setName("PROPERTY");
+        newParam1.setValue("");
+        ElementParameter newParam2 = new ElementParameter(this);
+        newParam2.setFieldType(EParameterFieldType.TEXT);
+        newParam2.setName("VALUE");
+        newParam2.setValue("");
+        Object[] items = new Object[2];
+        items[0] = newParam1;
+        items[1] = newParam2;
+        param.setListItemsValue(items);
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setDisplayName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getDisplayName()); //$NON-NLS-1$
+        param.setValue(new ArrayList<Map<String, Object>>());
+        addElementParameter(param);
+
     }
 
     /**
@@ -1000,7 +1023,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             }
         }
-
         listParamType.add(pType);
     }
 
