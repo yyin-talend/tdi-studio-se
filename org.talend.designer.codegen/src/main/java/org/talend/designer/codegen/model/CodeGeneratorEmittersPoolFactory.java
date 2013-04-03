@@ -142,7 +142,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     }
                 }
 
-                if (headless) {
+                if (!headless) {
                     monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
                 } else {
                     monitorWrap = new NullProgressMonitor();
