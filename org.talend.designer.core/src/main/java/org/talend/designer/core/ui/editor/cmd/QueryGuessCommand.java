@@ -367,7 +367,7 @@ public class QueryGuessCommand extends Command {
                 && (dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
                 && conn != null) {
             schema = "";
-            realTableName = getMssqlCatalog(realTableName) + "." + realTableName;
+            realTableName = getMssqlCatalog(realTableName);
         }
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
@@ -380,7 +380,6 @@ public class QueryGuessCommand extends Command {
     }
 
     private String getMssqlCatalog(String realTableName) {
-        String schema = "";
         Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(this.conn);
         for (Catalog cata : catalog) {
             for (ModelElement ele : cata.getOwnedElement()) {
@@ -393,15 +392,19 @@ public class QueryGuessCommand extends Command {
                             childeleName = childeleName.substring(1, childeleName.length() - 1);
                         }
                         if (childeleName.equals(realTableName)) {
-                            return cata.getName() + "." + ele.getName();
+                            if (cata.getName().contains("-")) {
+                                return realTableName;
+                            } else {
+                                return cata.getName() + "." + ele.getName() + "." + realTableName;
+                            }
                         } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
-                            return cata.getName();
+                            return cata.getName() + "." + realTableName;
                         }
                     }
                 }
             }
         }
-        return schema;
+        return realTableName;
     }
 
     // Added TDQ-5616 yyin 20121206
