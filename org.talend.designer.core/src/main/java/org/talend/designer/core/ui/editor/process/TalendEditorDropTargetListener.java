@@ -68,9 +68,11 @@ import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.hadoop.IOozieService;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -1772,6 +1774,23 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
         }
+
+        // special handle hbase to support tpigLoad
+        String hbaseName = EDatabaseTypeName.HBASE.getDisplayName().toUpperCase();
+        if (rcSetting != null && (hbaseName).equals(rcSetting.toString())) {
+            IComponentsService service = (IComponentsService) GlobalServiceRegister.getDefault().getService(
+                    IComponentsService.class);
+            String componentProductname = null;
+            Set<IComponent> components = service.getComponentsFactory().getComponents();
+            for (IComponent component : components) {
+                componentProductname = component.getRepositoryType();
+                if (componentProductname != null && componentProductname.contains(hbaseName)
+                        && !neededComponents.contains(component)) {
+                    neededComponents.add(component);
+                }
+            }
+        }
+
         // Check if the components in the list neededComponents have the same category that is required by Process.
         IComponent component = chooseOneComponent(extractComponents(neededComponents), rcSetting, quickCreateInput,
                 quickCreateOutput);

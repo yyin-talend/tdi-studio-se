@@ -285,6 +285,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 specialRepositoryValue = "HDFS";
             } else if (("HCatLoader".equals(paramLoad.getValue()))) {
                 specialRepositoryValue = "HCATALOG";
+            } else if (("HBaseStorage".equals(paramLoad.getValue()))) {
+                specialRepositoryValue = "DATABASE:HBASE";
             }
         }
         Object data = button.getData(NAME);
