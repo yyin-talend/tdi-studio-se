@@ -404,12 +404,15 @@ public class ImportItemUtil {
 
         Collections.sort(itemRecords, new Comparator<ItemRecord>() {
 
-            @Override
+           
             public int compare(ItemRecord o1, ItemRecord o2) {
-                if (o1.getProperty().getItem() instanceof RoutineItem) {
-                    return -1;
-                } else if (o1.getProperty().getItem() instanceof ContextItem) {
+                if (o1.getProperty().getItem() instanceof RoutineItem && o2.getProperty().getItem() instanceof RoutineItem) {
                     return 0;
+                } else if (!(o1.getProperty().getItem() instanceof RoutineItem)
+                        && !(o2.getProperty().getItem() instanceof RoutineItem)) {
+                    return 0;
+                } else if (o1.getProperty().getItem() instanceof RoutineItem) {
+                    return -1;
                 } else {
                     return 1;
                 }
@@ -424,7 +427,7 @@ public class ImportItemUtil {
             public void run() throws PersistenceException {
                 final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-                    @Override
+                  
                     public void run(IProgressMonitor monitor) throws CoreException {
 
                         final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
@@ -1236,7 +1239,7 @@ public class ImportItemUtil {
 
         Collections.sort(items, new Comparator<ItemRecord>() {
 
-            @Override
+         
             public int compare(ItemRecord o1, ItemRecord o2) {
                 return VersionUtils.compareTo(o1.getProperty().getVersion(), o2.getProperty().getVersion());
             }
