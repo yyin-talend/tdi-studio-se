@@ -399,9 +399,6 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String family = names[0];
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject(project);
-            if (label.equals("tCouchDBConnection")) {
-                System.out.println();
-            }
             for (ComponentSetting componentSetting : components) {
                 if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
                         && componentSetting.getName().equals(label)) {
