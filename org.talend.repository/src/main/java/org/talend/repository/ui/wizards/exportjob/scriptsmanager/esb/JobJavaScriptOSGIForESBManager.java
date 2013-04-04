@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -50,7 +51,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -544,7 +544,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
 
-        processVelocityTemplate(TEMPLATE_SPRING_JOB_REST, targetFile, contextParams);
+        TemplateProcessor.processTemplate("REST_JOB_SPRING_CONFIG", contextParams, targetFile,
+                new InputStreamReader(this.getClass().getResourceAsStream(TEMPLATE_SPRING_JOB_REST)));
 
         return targetFile.toURI().toURL();
     }
@@ -601,30 +602,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("job", jobInfo); //$NON-NLS-1$
 
-        processVelocityTemplate(TEMPLATE_BLUEPRINT_JOB, targetFile, contextParams);
-    }
-
-    private void processVelocityTemplate(String template, File target, Map<String, Object> context)
-            throws IOException {
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(target);
-            TemplateProcessor.processTemplate(template, context, fileWriter);
-        } catch (SystemException e) {
-            // something wrong with template processing
-            throw new IOException(e.getLocalizedMessage(), e);
-        // } catch (IOException e) {
-        //     // something wrong with output file
-        //     //LOG.error(e.getLocalizedMessage(), e);
-        } finally {
-            if (null != fileWriter) {
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    //LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
+        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile,
+                new InputStreamReader(this.getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB)));
     }
 
     private void createRouteBundleBlueprintConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
