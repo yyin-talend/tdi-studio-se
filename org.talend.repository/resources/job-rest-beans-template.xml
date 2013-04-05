@@ -51,6 +51,9 @@
 #end ## end not empty SL custom properties
 			</bean>
 #end
+#if ($endpoint.logMessages)
+			<bean class="org.apache.cxf.feature.LoggingFeature" />
+#end
 		</jaxrs:features>
 	</jaxrs:server>
 

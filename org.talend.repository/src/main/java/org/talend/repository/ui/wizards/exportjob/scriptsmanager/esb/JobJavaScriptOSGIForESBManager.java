@@ -489,9 +489,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         endpointInfo.put("address", endpointUri); //$NON-NLS-1$
 
-        // use HTTP Basic Authentication
-        endpointInfo.put("useHttpBasicAuth", //$NON-NLS-1$
-                EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)); //$NON-NLS-1$
+        // log messages
+        endpointInfo.put("logMessages", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("LOG_MESSAGES", restRequestComponent)); //$NON-NLS-1$
 
         // wrap JSON request
         endpointInfo.put("wrapJsonRequest", //$NON-NLS-1$
@@ -500,6 +500,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // unwrap JSON response (drop root element)
         endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
+
+        // use HTTP Basic Authentication
+        endpointInfo.put("useHttpBasicAuth", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)); //$NON-NLS-1$
 
         // use Service Activity Monitoring
         endpointInfo.put("useSAM", //$NON-NLS-1$
