@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.preference;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -26,7 +29,9 @@ import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -399,14 +404,21 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String family = names[0];
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject(project);
+            List<ComponentSetting> toRemoveFromSettings = new ArrayList<ComponentSetting>();
             for (ComponentSetting componentSetting : components) {
-                if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
-                        && componentSetting.getName().equals(label)) {
+                if (/*
+                     * componentSetting.getFamily() != null && componentSetting.getFamily().equals(family) &&
+                     */componentSetting.getName().equals(label)) {
+                    if (visible) {
+                        toRemoveFromSettings.add(componentSetting);
+                    }
                     componentSetting.setHidden(!visible);
-                    return;
                 }
             }
-            if (!restore) {
+            if (visible) {
+                components.removeAll(toRemoveFromSettings);
+            }
+            if (toRemoveFromSettings.isEmpty() && !restore) {
                 ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
                 cs.setName(label);
                 cs.setHidden(!visible);
@@ -454,25 +466,39 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     protected void okPressed() {
-        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
-        try {
-            prf.saveProject(project);
-            ShowStandardAction.getInstance().doRun();
-            if (needCodeGen) {
-                Job refreshTemplates = CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
-                refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
+        ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
+        IRunnableWithProgress rwp = new IRunnableWithProgress() {
 
-                    @Override
-                    public void done(IJobChangeEvent event) {
-                        CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+                try {
+                    prf.saveProject(project);
+                    ShowStandardAction.getInstance().doRun();
+                    if (needCodeGen) {
+                        Job refreshTemplates = CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
+                        refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
+
+                            @Override
+                            public void done(IJobChangeEvent event) {
+                                CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+                            }
+                        });
+
                     }
-                });
 
+                    // ComponentUtilities.updatePalette();
+                } catch (Exception ex) {
+                    ExceptionHandler.process(ex);
+                }
             }
-
-            // ComponentUtilities.updatePalette();
-        } catch (Exception ex) {
-            ExceptionHandler.process(ex);
+        };
+        try {
+            pmd.run(true, false, rwp);
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            ExceptionHandler.process(e);
         }
     }
 
