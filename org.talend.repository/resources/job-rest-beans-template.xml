@@ -23,18 +23,26 @@
 			<ref bean="serviceBean" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="wrongCallHandler" />
-			<ref bean="jsonProvider" />
-			<ref bean="dom4jProvider" />
+			<bean class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
+				<constructor-arg ref="serviceBean" />
+			</bean>
+			<bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+				<property name="ignoreNamespaces" value="true" />
+				<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
+				<property name="wrapperName" value="root" />
+				<property name="dropRootElement" value="${endpoint.unwrapJsonResponse}" />
+			</bean>
+			<bean class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider" />
 #if ($endpoint.useHttpBasicAuth)
-			<ref bean="authenticationFilter" />
+			<bean class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+				<property name="contextName" value="karaf" />
+			</bean>
 #end
 		</jaxrs:providers>
 		<jaxrs:features>
 #if ($endpoint.useSAM)
-			<ref bean="eventFeature"/>
+			<ref bean="eventFeature" />
 #end
-
 #if ($endpoint.useSL)
 			<bean class="org.talend.esb.servicelocator.cxf.LocatorFeature">
 #if (!$endpoint.slCustomProps.isEmpty())
@@ -50,34 +58,15 @@
 				</property>
 #end ## end not empty SL custom properties
 			</bean>
-#end
+#end ## end use SL
 #if ($endpoint.logMessages)
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 #end
 		</jaxrs:features>
 	</jaxrs:server>
 
-#if ($endpoint.useHttpBasicAuth)
-	<bean id="authenticationFilter" class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
-		<property name="contextName" value="karaf" />
-	</bean>
-#end
-
 	<bean id="serviceBean" class="${endpoint.jobClassName}.RestServiceProviderImpl4TalendJob">
 		<constructor-arg ref="job" />
-	</bean>
-
-	<bean id="wrongCallHandler" class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
-		<constructor-arg ref="serviceBean" />
-	</bean>
-
-	<bean id="dom4jProvider" class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider" />
-
-	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
-		<property name="ignoreNamespaces" value="true" />
-		<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
-		<property name="wrapperName" value="root" />
-		<property name="dropRootElement" value="${endpoint.unwrapJsonResponse}" />
 	</bean>
 
 	<bean id="job" class="${endpoint.jobClassName}" destroy-method="destroy">
