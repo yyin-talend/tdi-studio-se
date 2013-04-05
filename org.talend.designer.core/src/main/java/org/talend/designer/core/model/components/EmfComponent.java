@@ -191,6 +191,8 @@ public class EmfComponent extends AbstractComponent {
 
     private Boolean visible = null;
 
+    private Boolean visibleFromComponentDefinition = null;
+
     private Boolean technical = null;
 
     private Map<String, String> translatedMap = new HashMap<String, String>();
@@ -2693,17 +2695,21 @@ public class EmfComponent extends AbstractComponent {
         if (visible != null) {
             return visible;
         }
+        if (visibleFromComponentDefinition != null) {
+            return visibleFromComponentDefinition;
+        }
 
-        if (!isAlreadyLoad) {
+        if (compType != null) {
             boolean isVisible = compType.getHEADER().isVISIBLE();
             info.setIsVisibleInComponentDefinition(isVisible);
+            visibleFromComponentDefinition = isVisible;
             return isVisible;
+        }
+        if (info != null) {
+            visibleFromComponentDefinition = info.isIsVisibleInComponentDefinition();
+            return visibleFromComponentDefinition;
         } else {
-            if (info != null) {
-                return info.isIsVisibleInComponentDefinition();
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
