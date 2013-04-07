@@ -103,8 +103,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public void addPages() {
         mainPage = new OpenExistVersionProcessPage(alreadyEditedByUser, processObject);
         addPage(mainPage);
-        ERepositoryObjectType repositoryObjectType = processObject.getRepositoryObjectType();
-        setWindowTitle(Messages.getString("OpenExistVersionProcessWizard.windowTitle1", repositoryObjectType.toString())); //$NON-NLS-1$
+        setWindowTitle(Messages.getString("OpenExistVersionProcessWizard.windowTitle1")); //$NON-NLS-1$
     }
 
     /**
