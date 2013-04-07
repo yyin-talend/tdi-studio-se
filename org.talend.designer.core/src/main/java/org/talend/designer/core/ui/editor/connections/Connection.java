@@ -200,8 +200,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             resuming.setOffset(label.getOffset());
         }
 
-        if (PluginChecker.isAutoParalelPluginLoaded()
-                && source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
+        if (source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())
+                && ComponentsFactoryProvider.getInstance().get("tPartitioner", ComponentCategory.CATEGORY_4_DI.getName()) != null) {
             this.source = source;
             createParallelizeParameters();
         }

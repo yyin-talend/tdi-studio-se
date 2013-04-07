@@ -83,10 +83,8 @@ import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.designer.core.CheckNodeManager;
-import org.talend.designer.core.CheckParallelManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
-import org.talend.designer.core.ICheckParallelService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -3318,10 +3316,6 @@ public class Node extends Element implements IGraphicalNode {
             checkStartLinks();
             checkParallelizeStates();
 
-            List<ICheckParallelService> checkParallelServices = CheckParallelManager.getCheckParallelService();
-            for (ICheckParallelService checkParallelService : checkParallelServices) {
-                checkParallelService.checkParallel(this);
-            }
             // TDI-21298
             checkHasMultiPrejobOrPostJobComponents();
             // feature 2,add a new extension point to intercept the validation action for Uniserv
