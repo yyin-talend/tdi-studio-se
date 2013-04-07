@@ -71,6 +71,7 @@ import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.utils.TalendCacheUtils;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
@@ -81,7 +82,6 @@ import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
-import org.talend.designer.core.ui.editor.palette.TalendEntryEditPart;
 import org.talend.repository.ProjectManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -1008,7 +1008,7 @@ public class ComponentsFactory implements IComponentsFactory {
         allComponents = null;
         isReset = true;
         if (!CommonsPlugin.isHeadless()) {
-            TalendEntryEditPart.resetImageCache();
+            CoreImageProvider.clearComponentIconImages();
         }
     }
 
