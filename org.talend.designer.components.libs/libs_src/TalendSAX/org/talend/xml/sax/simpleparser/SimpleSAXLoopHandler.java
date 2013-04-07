@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.talend.xml.sax.EscapeEntityHelper;
+import org.talend.xml.sax.exception.EnoughDataException;
 import org.talend.xml.sax.simpleparser.model.XMLNode;
 import org.talend.xml.sax.simpleparser.model.XMLNodes;
 import org.xml.sax.Attributes;
@@ -33,6 +34,8 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
     private String currentPath = "";
 
     private DataBufferCache bufferCache = null;
+    
+    private boolean stop = false;
 
     public SimpleSAXLoopHandler(XMLNodes nodes, DataBufferCache bcache) {
         super();
@@ -176,8 +179,10 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                     // ---------------------------------------------
                 }
                 bufferCache.writeData(map);
-                // System.out.println();
-
+                
+                if (stop) {
+                    throw new EnoughDataException("Get enough data,now stop the xml parse action");
+                }
             }
             nodes.resetAll();
         }
@@ -221,6 +226,13 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
             }
         }
 	}
+
+    /**
+     * stop the read action asap
+     */
+    public void stopRead() {
+        stop = true;
+    }
 
 
 }

@@ -42,6 +42,8 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     
     private boolean ignoreDTD = false;
     
+    SimpleSAXLoopHandler hd = null;
+    
     public SimpleSAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
     	futureTask = new FutureTask(this);
     	task = new Thread(futureTask);
@@ -116,7 +118,7 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     public Object call() throws Exception {
         Reader reader = null;
 		try {
-            DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
+		    hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = null;
             if(!ignoreDTD) { //orginal code
             	saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -211,5 +213,11 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
 		this.ignoreDTD=ignoreDTD;
 		
 	}
+
+    public void stopRead() {
+        if(hd != null) {
+            hd.stopRead();
+        }
+    }
 
 }

@@ -156,6 +156,17 @@ public class SAXLooper {
     	} 
     }
     
+    /**
+     * stop the read action asap
+     * 
+     */
+    public void stopRead() {
+        if(this.isSimpleParse) {
+            SimpleSAXLooper ssl = (SimpleSAXLooper)this.looper;
+            ssl.stopRead();
+        }
+    }
+    
     public static void main(String args[]) {
 
         try {
