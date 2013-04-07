@@ -39,11 +39,22 @@ public class CheckParallelService implements ICheckParallelService {
      */
     @Override
     public void checkParallel(Node node) {
-        // for the case component support partion/repar,but has a depar before.
+        // for the case component support partion/repar,but has a depar row before.
         if (!(node.getComponent().getPartitioning().equals("AUTO") || node.getComponent().getPartitioning().equals("NONE"))) {
             for (IConnection sourceCon : node.getIncomingConnections()) {
                 if (sourceCon.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
                     String warningMessage = Messages.getString("Node.notSupportDepartition"); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.WARNING, node, warningMessage);
+                }
+            }
+        }
+
+        // for the case component do not support partitioning,but has partion/repartion row before.
+        if (node.getComponent().getPartitioning().equals("NONE")) {
+            for (IConnection sourceCon : node.getIncomingConnections()) {
+                if (sourceCon.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)
+                        || sourceCon.getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true)) {
+                    String warningMessage = Messages.getString("Node.notSupportPartitioning"); //$NON-NLS-1$
                     Problems.add(ProblemStatus.WARNING, node, warningMessage);
                 }
             }
@@ -71,7 +82,7 @@ public class CheckParallelService implements ICheckParallelService {
                 }
             }
         }
-        // for the case repeat partitioning
+        // for the case repeat partitioning row
         if (!node.getComponent().getPartitioning().equals("NONE")) {
             for (IConnection sourceCon : node.getIncomingConnections()) {
                 if (sourceCon.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)) {
@@ -82,7 +93,7 @@ public class CheckParallelService implements ICheckParallelService {
                 }
             }
         }
-        // for the case repeat departitioning
+        // for the case repeat departitioning row
         if (!node.getComponent().getPartitioning().equals("NONE")) {
             for (IConnection sourceCon : node.getIncomingConnections()) {
                 if (sourceCon.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
