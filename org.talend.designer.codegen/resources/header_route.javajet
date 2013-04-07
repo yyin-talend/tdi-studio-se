@@ -253,7 +253,7 @@ for (INode node : graphicalNodes) {
 			appendParamWhenNotDefaultNorEmpty(sb,"concurrentConsumers",concurCnsmrs,"1");
 
 			String waitForTaskToComplete=getValue(node, "__WAIT_FOR_TASK_TO_COMPLETE__");
-			appendParamWhenNotDefaultNorEmpty(sb,"waitForTaskToComplete",waitForTaskToComplete,"IfReplyExpected");
+			appendParamWhenNotDefaultNorEmpty(sb,"waitForTaskToComplete",waitForTaskToComplete,"\"IfReplyExpected\"");
 
 			String timeout=getValue(node, "__TIMEOUT__");
 			appendParamWhenNotDefaultNorEmpty(sb,"timeout",timeout,"30000");
