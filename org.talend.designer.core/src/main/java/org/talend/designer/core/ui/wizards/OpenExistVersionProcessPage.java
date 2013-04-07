@@ -26,7 +26,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.VersionUtils;
@@ -43,7 +42,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class OpenExistVersionProcessPage extends WizardPage {
 
-    private final static String TITLE = Messages.getString("OpenExistVersionProcess.open.title"); //$NON-NLS-1$
+    private final static String TITLE = Messages.getString("OpenExistVersionProcess.open.title1"); //$NON-NLS-1$
 
     private final IRepositoryViewObject processObject;
 
@@ -76,7 +75,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
     protected OpenExistVersionProcessPage(final boolean alreadyEditedByUser, final IRepositoryViewObject processObject) {
         super("OpenExistVersionProcessPage"); //$NON-NLS-1$
         setTitle(TITLE);
-        setMessage(Messages.getString("OpenExistVersionProcessPage.messageCreated")); //$NON-NLS-1$
+        setMessage(Messages.getString("OpenExistVersionProcessPage.messageCreated1")); //$NON-NLS-1$
         this.processObject = processObject;
         originVersion = getProperty().getVersion();
         this.alreadyEditedByUser = alreadyEditedByUser;
