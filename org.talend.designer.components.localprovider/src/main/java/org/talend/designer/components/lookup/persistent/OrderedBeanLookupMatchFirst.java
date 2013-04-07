@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -86,6 +86,7 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
                 compareResult = lookupInstance.compareTo(currentSearchedKey);
 
                 if (compareResult == 0) {
+                    localSkip -= previousValuesSize;
                     sizeDataToRead = currentValuesSize;
                     lookupInstance.copyKeysDataTo(resultLookupInstance);
                 }
@@ -108,9 +109,9 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
                             lookupInstance.copyKeysDataTo(resultLookupInstance);
                             previousValuesSize = 0;
                             currentValuesSize = 0;
-                        } else if (compareResult > 0) {
-                            // localSkip += previousValuesSize;
+                        } else {
                             previousValuesSize = currentValuesSize;
+                            localSkip += currentValuesSize;
                         }
 
                         break;
