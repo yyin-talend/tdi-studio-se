@@ -410,8 +410,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     /**
      * Makes up the class path string that should be like this
-     * "[rootPath]/../lib/a.jar:[rootPath]/../lib/b.jar:[rootPath]/job.jar" in linux. In windows, ":" should be replaced
-     * by ";". About the root path it depends on {@link #getRootWorkingDir()}. The job jar can be gotton by
+     * "[rootPath]/../lib/a.jar:[rootPath]/../lib/b.jar:[rootPath]/job.jar:" in linux. In windows, ":" should be
+     * replaced by ";". About the root path it depends on {@link #getRootWorkingDir()}. The job jar can be gotton by
      * {@link #makeupJobJarName()}. Added by Marvin Wang on Mar 21, 2013.
      * 
      * @return
@@ -440,9 +440,10 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             }
         }
 
-        // Append job jar to class path.
+        // Append job jar to class path with ";" or ":".
         sb.append(getRootWorkingDir());
         sb.append(makeupJobJarName());
+        sb.append(getJavaClassSeparator());
 
         return sb.toString();
     }
