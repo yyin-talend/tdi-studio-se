@@ -26,8 +26,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -142,7 +144,25 @@ public class OpenExistVersionProcessWizard extends Wizard {
     @Override
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
+            try {
+                ProxyRepositoryFactory.getInstance().updateLockStatus();
+            } catch (PersistenceException e1) {
+                ExceptionHandler.process(e1);
+            }
+            ERepositoryStatus repositoryStatus = ProxyRepositoryFactory.getInstance().getStatus(processObject);
+            if ((repositoryStatus.equals(ERepositoryStatus.READ_ONLY)) || repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER
+                    || repositoryStatus.equals(ERepositoryStatus.LOCK_BY_USER)) {
+                Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
+                    public void run() {
+                        MessageDialog.openWarning(getShell(), "Warning",
+                                Messages.getString("OpenExistVersionProcessWizard.labelContent"));
+                    }
+
+                });
+                return false;
+            }
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
                 @Override
