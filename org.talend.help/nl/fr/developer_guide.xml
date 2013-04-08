@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="Guide Developpeur">
-    <topic label="Ressources en ligne">
-	    <topic label="Parcourir Subversion" href="http://www.talendforge.org/trac/tos/" />
-        <topic label="API Reference" href="http://talendforge.org/tos-trunk/api/index.html?overview-summary.html" />
-     </topic>
-</toc>
