@@ -383,12 +383,10 @@ public class QueryGuessCommand extends Command {
                                 && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
                             childeleName = childeleName.substring(1, childeleName.length() - 1);
                         }
-                        if (childeleName.equals(realTableName)) {
-                            if (cata.getName().contains("-")) {
-                                return realTableName;
-                            } else {
-                                return cata.getName() + "." + ele.getName()+ "." + realTableName;
-                            }
+                        if (cata.getName().contains("-")) {
+                            return realTableName;
+                        }else if (childeleName.equals(realTableName)) {
+                            return cata.getName() + "." + ele.getName()+ "." + realTableName;
                         } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
                             return cata.getName()+ "." + realTableName;
                         }
