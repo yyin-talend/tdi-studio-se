@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070323A"
@@ -37,7 +37,7 @@
         NUM_ROW="1" GROUP="MODE">
         <DEFAULT>true</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER NAME="IS_VIRTUAL_COMPONENT" FIELD="RADIO" REQUIRED="true"
         NUM_ROW="2" GROUP="MODE">
         <DEFAULT>false</DEFAULT>
@@ -100,7 +100,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -108,8 +108,8 @@
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>   
-     
+    </PARAMETER>
+
      <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -117,7 +117,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_QUERY"
       FIELD="CHECK"
@@ -126,17 +126,17 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER 
+
+    <PARAMETER
     	NAME="QUERY"
-    	FIELD="MEMO_SQL" 
+    	FIELD="MEMO_SQL"
     	NUM_ROW="40"
     	REQUIRED_IF="IS_VIRTUAL_COMPONENT=='true'"
     	SHOW_IF="(USE_QUERY=='true') or (IS_VIRTUAL_COMPONENT=='true')"
     >
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
-    
+
     <PARAMETER
       NAME="LOG_DB"
       FIELD="TEXT"
@@ -145,7 +145,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="LOG_TABLE"
       FIELD="TEXT"
@@ -154,7 +154,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SCRIPT_PATH"
       FIELD="DIRECTORY"
@@ -163,7 +163,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>
-    
+
 	<PARAMETER
       NAME="EXPORTED_FILE"
       FIELD="FILE"
@@ -214,7 +214,7 @@
         SHOW="false">
         <DEFAULT>teradata_id</DEFAULT>
     </PARAMETER>
-    
+
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
@@ -275,7 +275,7 @@
                 REQUIRED_IF="IS_VIRTUAL_COMPONENT=='true'" />
     </IMPORTS>
   </CODEGENERATION>
-   
+
   <RETURNS>
   </RETURNS>
 </COMPONENT>

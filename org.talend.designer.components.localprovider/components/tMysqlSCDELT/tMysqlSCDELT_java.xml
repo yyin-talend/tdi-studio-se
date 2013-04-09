@@ -312,7 +312,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="FIELD_VALUE_INC_NULL"
       FIELD="CHECK"

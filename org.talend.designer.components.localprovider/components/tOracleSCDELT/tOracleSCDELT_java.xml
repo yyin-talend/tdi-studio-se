@@ -253,7 +253,7 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"

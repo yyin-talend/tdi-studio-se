@@ -208,7 +208,7 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
@@ -322,7 +322,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="FIELD_VALUE_INC_NULL"
       FIELD="CHECK"
