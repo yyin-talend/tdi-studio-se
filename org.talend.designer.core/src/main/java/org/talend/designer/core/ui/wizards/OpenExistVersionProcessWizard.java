@@ -238,6 +238,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             }
 
             // Only latest version can be editted
+            restoreVersion();
             openAnotherVersion(node, !lastVersion || !isLocked);
         }
         return true;
