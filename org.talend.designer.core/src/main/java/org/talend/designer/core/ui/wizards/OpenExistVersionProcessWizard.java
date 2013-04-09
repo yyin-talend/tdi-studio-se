@@ -162,6 +162,35 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                 });
                 return false;
+            } else {
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+                    public void run(final IProgressMonitor monitor) throws CoreException {
+                        try {
+                            Item newCreated = null;
+                            if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
+                                newCreated = processObject.getProperty().getItem();
+                            }
+                            if (!(newCreated instanceof BusinessProcessItem)) {
+                                ProxyRepositoryFactory.getInstance().lock(processObject);
+                            }
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                        } catch (LoginException e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+                };
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace
+                    // runnable to avoid all notification
+                    // of changes before the end of the modifications.
+                    workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                } catch (CoreException e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
             }
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
@@ -174,20 +203,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
                         }
-                    }
-
-                    try {
-                        Item newCreated = null;
-                        if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
-                            newCreated = processObject.getProperty().getItem();
-                        }
-                        if (!(newCreated instanceof BusinessProcessItem)) {
-                            ProxyRepositoryFactory.getInstance().lock(processObject);
-                        }
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
-                    } catch (LoginException e) {
-                        ExceptionHandler.process(e);
                     }
 
                     boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
