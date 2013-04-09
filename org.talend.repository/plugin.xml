@@ -1875,6 +1875,15 @@
             name="ChangePigVersionOfPigLoadMigrationTask"
             version="5.3.0">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="5.3.0"
+            class="org.talend.repository.model.migration.ChangeHadoopVersionsOfReferenceComponentsMigrationTask"
+            description="change hadoop versions to make all the hadoop components the same version name when they are same version"
+            id="org.talend.repository.model.migration.ChangeHadoopVersionsOfReferenceComponentsMigrationTask"
+            name="ChangeHadoopVersionsOfReferenceComponentsMigrationTask"
+            version="5.3.0">
+        </projecttask>
    </extension>
    
    <extension
