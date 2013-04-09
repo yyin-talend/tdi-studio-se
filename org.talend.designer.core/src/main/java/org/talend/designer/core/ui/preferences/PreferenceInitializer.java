@@ -13,18 +13,25 @@
 package org.talend.designer.core.ui.preferences;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -79,18 +86,33 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         // see feature 7758 add project dir to COMP_DEFAULT_PROJECT_DIR.
         if (ProjectManager.getInstance().getCurrentProject() != null) {
             store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString()
-                    + "/" + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel());
+                    + "/" + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel()); //$NON-NLS-1$
         }
         // ADD sizhaoliu TDQ-6698
         Bundle refBundle = Platform.getBundle("org.talend.dataquality.reporting"); //$NON-NLS-1$
         if (refBundle != null) {
-            String bundlePath = refBundle.getLocation();
-            String prefix = "reference:file:"; //$NON-NLS-1$
-            int prefixPos = bundlePath.lastIndexOf(prefix);
-            if (prefixPos >= 0) {
-                bundlePath = bundlePath.substring(prefixPos + prefix.length(), bundlePath.length() - 1);
+            URL entry = refBundle.getEntry("."); //$NON-NLS-1$
+            if (entry != null) {
+                try {
+                    URLConnection connection = entry.openConnection();
+                    if (connection instanceof BundleURLConnection) {
+                        URL fileURL = ((BundleURLConnection) connection).getFileURL();
+                        URI uri = new URI(fileURL.toString());
+                        String path = new File(uri).getAbsolutePath();
+                        String bundlePath = refBundle.getLocation();
+                        String prefix = "reference:file:"; //$NON-NLS-1$
+                        int prefixPos = bundlePath.lastIndexOf(prefix);
+                        if (prefixPos >= 0) {
+                            bundlePath = bundlePath.substring(prefixPos + prefix.length(), bundlePath.length() - 1);
+                        }
+                        store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, path);
+                    }
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                } catch (URISyntaxException e) {
+                    ExceptionHandler.process(e);
+                }
             }
-            store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, bundlePath);
         }
 
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
