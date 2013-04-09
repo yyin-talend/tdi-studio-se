@@ -20,6 +20,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -134,6 +135,7 @@ public class EditQueriesAction extends AContextualAction {
         }
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -150,8 +152,17 @@ public class EditQueriesAction extends AContextualAction {
                         || repositoryNode.getObject().getRepositoryStatus() == ERepositoryStatus.LOCK_BY_OTHER) {
                     canWork = false;
                 }
+                // Studio does not support this action for hive, TDI-25365.
                 if (!isUnderDBConnection(repositoryNode)) {
                     canWork = false;
+                } else {
+                    DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
+                    DatabaseConnection dbConn = (DatabaseConnection) item.getConnection();
+                    String dbType = dbConn.getDatabaseType();
+                    if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
+                        canWork = false;
+                        break;
+                    }
                 }
                 if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY

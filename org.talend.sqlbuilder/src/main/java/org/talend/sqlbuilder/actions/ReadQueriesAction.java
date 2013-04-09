@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -127,6 +128,19 @@ public class ReadQueriesAction extends AContextualAction {
                 if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
                     canWork = false;
+                }
+                // Studio does not support this action for hive, TDI-25365.
+                if (canWork) {
+                    if (isUnderDBConnection(repositoryNode)) {
+                        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
+                        DatabaseConnection dbConn = (DatabaseConnection) item.getConnection();
+                        String dbType = dbConn.getDatabaseType();
+                        if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
+                            canWork = false;
+                            break;
+                        }
+                    }
+
                 }
                 break;
             default:
