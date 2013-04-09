@@ -17,13 +17,13 @@ Require-Bundle: org.apache.commons.beanutils,
  org.eclipse.gef,
  org.talend.libraries.apache,
  org.talend.metadata.managment.ui,
+ javax.wsdl;bundle-version="1.6.2",
  org.apache.commons.httpclient,
- javax.wsdl;bundle-version="1.6.2"
+ org.talend.libraries.esb
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/cxf-2.2.2.jar,
+ lib/talend-ws-1.0.jar,
+ lib/XmlSchema-1.4.5.jar,
  lib/jaxrpc.jar,
  lib/xerces-1.2.3.jar,
- lib/xercesImpl.jar,
- lib/XmlSchema-1.4.5.jar,
- lib/talend-ws-1.0.jar
+ lib/xercesImpl.jar
