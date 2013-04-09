@@ -62,9 +62,9 @@ public class ParallelExecutionUtils {
             }
             if (columnKeyValues.size() > 0) {
                 if (columnKeyValues.equals(parKeyValues)) {
-                    isSame = false;
-                } else {
                     isSame = true;
+                } else {
+                    isSame = false;
                 }
             }
         }
@@ -269,6 +269,18 @@ public class ParallelExecutionUtils {
         return hasInPreviousCon;
     }
 
+    public static boolean existNextDepar(Node currentNode) {
+        // To judge if there has par/col on previous connection
+        boolean hasNextCon = false;
+        for (IConnection con : currentNode.getOutgoingConnections()) {
+            if ((con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null && con
+                    .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true))) {
+                hasNextCon = true;
+            }
+        }
+        return hasNextCon;
+    }
+
     public static boolean existPreviousRepar(Node currentNode) {
         // To judge if there has par/col on previous connection
         boolean hasInPreviousCon = false;
@@ -310,12 +322,14 @@ public class ParallelExecutionUtils {
         return previousCon;
     }
 
-    private boolean isExistPreviousParCon(Node previousNode) {
+    public static boolean isExistPreviousParCon(Node previousNode) {
         boolean hasParInPreviousCon = false;
         if (previousNode.getIncomingConnections().size() > 0) {
             for (IConnection con : previousNode.getIncomingConnections()) {
                 if (con.getElementParameter(EParameterName.PARTITIONER.getName()) != null
-                        && con.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)) {
+                        && con.getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true)
+                        || con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null
+                        && con.getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true)) {
                     hasParInPreviousCon = true;
                 } else {
                     hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
@@ -323,16 +337,6 @@ public class ParallelExecutionUtils {
             }
         }
         return hasParInPreviousCon;
-    }
-
-    private boolean existPreviousDeparCon(Node currentNode) {
-        // To judge if there has depar/recol on previous connection
-        boolean hasDeparInPreviousCon = false;
-        for (IConnection con : currentNode.getIncomingConnections()) {
-            Node sourceNode = (Node) con.getSource();
-            hasDeparInPreviousCon = isExistPreviouDeparCon(sourceNode);
-        }
-        return hasDeparInPreviousCon;
     }
 
     public static boolean isExistPreviouDeparCon(Node previousNode) {

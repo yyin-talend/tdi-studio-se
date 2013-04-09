@@ -37,6 +37,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.repository.model.ILocalRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.DesignerPlugin;
@@ -1210,6 +1211,11 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (EParameterName.REPARTITIONER.getName().equals(id) || EParameterName.PARTITIONER.getName().equals(id)
                 || EParameterName.DEPARTITIONER.getName().equals(id) || EParameterName.NONE.getName().equals(id)) {
             firePropertyChange(id, null, value);
+            // in case user change manual,need to check warning on time
+            IProcess process = this.getSource().getProcess();
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).checkProcess();
+            }
         }
     }
 
