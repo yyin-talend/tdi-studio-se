@@ -166,6 +166,15 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
                     public void run(final IProgressMonitor monitor) throws CoreException {
+                        if (!alreadyEditedByUser) {
+                            refreshNewJob();
+                            try {
+                                ProxyRepositoryFactory.getInstance()
+                                        .saveProject(ProjectManager.getInstance().getCurrentProject());
+                            } catch (Exception e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
                         try {
                             Item newCreated = null;
                             if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
@@ -196,15 +205,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                 @Override
                 public void run(final IProgressMonitor monitor) throws CoreException {
-                    if (!alreadyEditedByUser) {
-                        refreshNewJob();
-                        try {
-                            ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-                        } catch (Exception e) {
-                            ExceptionHandler.process(e);
-                        }
-                    }
-
                     boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
                     openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
                     try {
