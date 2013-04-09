@@ -303,6 +303,7 @@ if(outConns!=null){
                                 continue;
                             }
                             if(javaType == JavaTypesManager.STRING){
+								if(column.isNullable()){
 %>
                                     if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
                                         <%=firstConnName %>.<%=column.getLabel() %> = null;
@@ -311,30 +312,51 @@ if(outConns!=null){
                                     }else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
                                         <%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
                                     }else{
-                                        <%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
-                                    }    
 <%
+								}else{ // column.isNullable()
+%>
+									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=firstConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+									}else{
+<%
+								}
                             }else{ // other type
+								if(column.isNullable()){
 %>  
-                                if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
-                                    <%=firstConnName %>.<%=column.getLabel() %> = null;
-                                }else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
-                                    <%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
-                                }else{
+                                	if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+                                    	<%=firstConnName %>.<%=column.getLabel() %> = null;
+                                	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+                                    	<%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
+                                	}else{
 <%
-                                    if (javaType == JavaTypesManager.DATE) {
+								}else{ // column.isNullable()
 %>
-                                        <%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
+										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+										}else{
 <%
-                                    } else {
+								}
+							}
+							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-                                        <%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
+								<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
 <%
-                                    }
+							} else {
+								if (javaType == JavaTypesManager.DATE) {
 %>
-                                }
+									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
 <%
-                            }
+								} else {
+%>
+									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
+<%
+								}
+							}
+%>
+									}
+<%
                             break;
                         } // if S_0_0_0_0_1
                     } // if S_0_0_0_1
