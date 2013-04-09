@@ -424,6 +424,7 @@
             folder="code/routines"
             icon="icons/routines.gif"
             isResouce="true"
+            key="repository.routine"
             label="%NavigatorContent.routines"
             ordinal="1"
             parentNodeType="CODE"
@@ -434,6 +435,7 @@
             folder="context"
             icon="icons/contexts.gif"
             isResouce="true"
+            key="repository.context"
             label="%NavigatorContent.contexts"
             products="DI"
             type="CONTEXT">
@@ -442,6 +444,7 @@
             folder="process"
             icon="icons/jobDesigns.gif"
             isResouce="true"
+            key="repository.job"
             label="%NavigatorContent.jobDesigns"
             ordinal="4"
             products="DI"
