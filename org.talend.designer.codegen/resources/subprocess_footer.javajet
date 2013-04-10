@@ -237,7 +237,7 @@
 	%>
 				<%if(firstIn){%> finally{ <% firstIn = false;}%>
 				//free memory for "<%=node.getUniqueName() %>"
-				globalMap.put("<%=origin %>", null);
+				globalMap.remove("<%=origin %>");
 	<%
 		}
 	}else{
@@ -251,7 +251,7 @@
      %>
      			<%if(firstIn){%> finally{ <% firstIn = false;}%>
      			//free memory for "<%=node.getUniqueName() %>"
-     			globalMap.put("tHash_Lookup_<%=connection.getName() %>", null); 
+     			globalMap.remove("tHash_Lookup_<%=connection.getName() %>"); 
      <%
             	}
             }else{
@@ -259,7 +259,7 @@
       %>      	
       			<%if(firstIn){%> finally{ <% firstIn = false;}%>
       			//free memory for "<%=node.getUniqueName() %>"
-				globalMap.put("tHash_<%=connection.getName() %>", null);
+				globalMap.remove("tHash_<%=connection.getName() %>");
       <%      		 
 				} 
 			} 
