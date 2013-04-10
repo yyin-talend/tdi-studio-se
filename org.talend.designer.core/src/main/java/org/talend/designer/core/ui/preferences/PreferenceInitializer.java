@@ -26,11 +26,10 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
-import org.talend.commons.CommonsPlugin;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -173,17 +172,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, false);
 
-        boolean headless = CommonsPlugin.isHeadless();
-        Display display = null;
-        if (!headless) {
-            try {
-                display = Display.getDefault();
-            } catch (SWTError e) {
-                headless = true;
-            }
-        }
-
-        if (!headless) {
+        if (!CommonUIPlugin.isFullyHeadless()) {
+            Display display = Display.getDefault();
             if (display == null) {
                 display = Display.getCurrent();
             }

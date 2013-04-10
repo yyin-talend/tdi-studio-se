@@ -46,6 +46,7 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.io.IOUtils;
@@ -203,7 +204,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                 monitorWrap.done();
 
-                if (!CommonsPlugin.isHeadless()) {
+                if (!CommonUIPlugin.isFullyHeadless()) {
                     Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
 
                         @Override
@@ -487,7 +488,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         dummyEmitter.getTalendEclipseHelper());
                 // wzhang modified to fix bug 11439
                 if (monitorWrap.isCanceled()) {
-                    if (!CommonsPlugin.isHeadless()) {
+                    if (!CommonUIPlugin.isFullyHeadless()) {
                         Display.getDefault().syncExec(new Runnable() {
 
                             @Override
