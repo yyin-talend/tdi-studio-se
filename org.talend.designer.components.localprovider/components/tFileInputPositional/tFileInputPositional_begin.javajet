@@ -234,8 +234,8 @@ if (conns!=null) {
 							dynamic_<%=cid %>.clearColumnValues();
 							int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
 							int substringBegin<%=cid %> = begins_<%=cid %>[begins_<%=cid %>.length-1]; int substringEnd<%=cid %> =0;
-							for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
-								routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+							for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
+								routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
 								int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 								substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
 								if(substringEnd<%=cid %> > rowLen_<%=cid %>){
@@ -622,11 +622,11 @@ if ( !(java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches()
 
 Integer star_<%=cid %> = Integer.valueOf(-1);																				
 Integer[] tmpAry_<%=cid %> = new Integer[arrFieldSeparator<%=cid %>.length];																						
-for (int i = 0; i < arrFieldSeparator<%=cid %>.length; i++ ){																						
-	if (("*").equals(arrFieldSeparator<%=cid %>[i])) {																					
-		tmpAry_<%=cid %>[i] = star_<%=cid %>;																				
+for (int i<%=cid%> = 0; i<%=cid%> < arrFieldSeparator<%=cid %>.length; i<%=cid%>++ ){																						
+	if (("*").equals(arrFieldSeparator<%=cid %>[i<%=cid%>])) {																					
+		tmpAry_<%=cid %>[i<%=cid%>] = star_<%=cid %>;																				
 	}else{																					
-		tmpAry_<%=cid %>[i] = Integer.parseInt(arrFieldSeparator<%=cid %>[i]);																				
+		tmpAry_<%=cid %>[i<%=cid%>] = Integer.parseInt(arrFieldSeparator<%=cid %>[i<%=cid%>]);																				
 	}																					
 }	
 <%
@@ -723,8 +723,8 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 				String align = formats.get(i).get("ALIGN");
 %> 
 				dynamic_<%=cid %>.clearColumnValues();
-				for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
-					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+				for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
+					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
 					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
 					if(substringEnd<%=cid %> > rowLen_<%=cid %>){
@@ -821,8 +821,8 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 %>
 				if(i_<%=cid %>==<%=metadata.getListColumns().size()%>-1){
 					dynamic_<%=cid %>.clearColumnValues();
-			 		for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
-						routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+			 		for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
+						routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
 						int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 						substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
 						if(substringEnd<%=cid %> > rowLen_<%=cid %>){
