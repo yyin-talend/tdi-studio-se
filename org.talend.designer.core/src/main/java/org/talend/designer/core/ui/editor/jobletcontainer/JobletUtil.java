@@ -800,10 +800,12 @@ public class JobletUtil {
             return false;
         }
         for (IEditorPart editor : editors) {
-            RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
-            String jobletId = editorInput.getId();
-            if (jobletId.equals(jobletProcess.getId())) {
-                return true;
+            if (editor.getEditorInput() instanceof RepositoryEditorInput) {
+                RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
+                String jobletId = editorInput.getId();
+                if (jobletId.equals(jobletProcess.getId())) {
+                    return true;
+                }
             }
         }
 
