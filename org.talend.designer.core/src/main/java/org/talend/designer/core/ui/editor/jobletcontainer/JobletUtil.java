@@ -213,7 +213,8 @@ public class JobletUtil {
         if (tempComponent != null) {
             String tempComponentName = tempComponent.getName();
             if (tempComponentName != null) {
-                IComponent component = ComponentsFactoryProvider.getInstance().get(tempComponentName, ComponentCategory.CATEGORY_4_DI.getName());
+                IComponent component = ComponentsFactoryProvider.getInstance().get(tempComponentName,
+                        ComponentCategory.CATEGORY_4_DI.getName());
                 if (component != null) {
                     cloneNode.setComponent(component);
                 }
@@ -801,10 +802,12 @@ public class JobletUtil {
             return false;
         }
         for (IEditorPart editor : editors) {
-            RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
-            String jobletId = editorInput.getId();
-            if (jobletId.equals(jobletProcess.getId())) {
-                return true;
+            if (editor.getEditorInput() instanceof RepositoryEditorInput) {
+                RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
+                String jobletId = editorInput.getId();
+                if (jobletId.equals(jobletProcess.getId())) {
+                    return true;
+                }
             }
         }
 
