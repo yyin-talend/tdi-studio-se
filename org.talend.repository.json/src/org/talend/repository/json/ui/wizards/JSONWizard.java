@@ -336,6 +336,9 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             jsonFileSelectPage.setDescription("Select input or output model to create json metadata connection");
             addPage(jsonFileSelectPage);
             jsonFileSelectPage.setPageComplete(true);
+            if (!isRepositoryObjectEditable()) {
+                creation = true;
+            }
         }
     }
 
