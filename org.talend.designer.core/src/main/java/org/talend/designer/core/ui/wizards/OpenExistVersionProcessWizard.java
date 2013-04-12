@@ -166,7 +166,15 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
                     public void run(final IProgressMonitor monitor) throws CoreException {
-
+                        if (!alreadyEditedByUser) {
+                            refreshNewJob();
+                            try {
+                                ProxyRepositoryFactory.getInstance()
+                                        .saveProject(ProjectManager.getInstance().getCurrentProject());
+                            } catch (Exception e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
                         try {
                             Item newCreated = null;
                             if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
@@ -178,6 +186,13 @@ public class OpenExistVersionProcessWizard extends Wizard {
                         } catch (PersistenceException e) {
                             ExceptionHandler.process(e);
                         } catch (LoginException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
+                        openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
+                        try {
+                            ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+                        } catch (Exception e) {
                             ExceptionHandler.process(e);
                         }
                     }
@@ -192,37 +207,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 } catch (CoreException e) {
                     MessageBoxExceptionHandler.process(e);
                 }
-            }
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-                @Override
-                public void run(final IProgressMonitor monitor) throws CoreException {
-                    if (!alreadyEditedByUser) {
-                        refreshNewJob();
-                        try {
-                            ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-                        } catch (Exception e) {
-                            ExceptionHandler.process(e);
-                        }
-                    }
-
-                    boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
-                    openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
-                    try {
-                        ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            };
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            try {
-                ISchedulingRule schedulingRule = workspace.getRoot();
-                // the update the project files need to be done in the workspace runnable to avoid all notification
-                // of changes before the end of the modifications.
-                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
-            } catch (CoreException e) {
-                MessageBoxExceptionHandler.process(e);
             }
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
@@ -239,7 +223,9 @@ public class OpenExistVersionProcessWizard extends Wizard {
             }
 
             // Only latest version can be editted
-            restoreVersion();
+            if (!getProperty().getVersion().equals(getOriginVersion())) {
+                restoreVersion();
+            }
             openAnotherVersion(node, !lastVersion || !isLocked);
         }
         return true;
