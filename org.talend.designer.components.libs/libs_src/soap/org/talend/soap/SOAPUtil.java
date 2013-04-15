@@ -22,10 +22,8 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -33,6 +31,7 @@ import org.jdom.input.DOMBuilder;
 import org.jdom.output.XMLOutputter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class SOAPUtil {
 
@@ -170,15 +169,15 @@ public class SOAPUtil {
         DocumentBuilder builder = factory.newDocumentBuilder();
         document = builder.newDocument();
 
-        Element element;
+        Node content;
         Element headerRootElem = document.createElement("Header");
 
         Iterator childElements = header.getChildElements();
         org.w3c.dom.Node domNode = null;
         while (childElements.hasNext()) {
             domNode = (org.w3c.dom.Node) childElements.next();
-            element = (Element) document.importNode(domNode, true);
-            headerRootElem.appendChild(element);
+            content = (Node) document.importNode(domNode, true);
+            headerRootElem.appendChild(content);
         }
         document.appendChild(headerRootElem);
         return document;
