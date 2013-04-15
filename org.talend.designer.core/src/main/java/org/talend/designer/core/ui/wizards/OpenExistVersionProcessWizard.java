@@ -119,9 +119,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     @Override
     public boolean performCancel() {
-        if (!getProperty().getVersion().equals(getOriginVersion())) {
-            restoreVersion();
-        }
         return super.performCancel();
     }
 
@@ -167,6 +164,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                     public void run(final IProgressMonitor monitor) throws CoreException {
                         if (!alreadyEditedByUser) {
+                            getProperty().setVersion(mainPage.getNewVersion());
                             refreshNewJob();
                             try {
                                 ProxyRepositoryFactory.getInstance()
@@ -223,9 +221,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
             }
 
             // Only latest version can be editted
-            if (!getProperty().getVersion().equals(getOriginVersion())) {
-                restoreVersion();
-            }
             openAnotherVersion(node, !lastVersion || !isLocked);
         }
         return true;
@@ -341,10 +336,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     public String getOriginVersion() {
         return this.originalVersion;
-    }
-
-    public void restoreVersion() {
-        getProperty().setVersion(getOriginVersion());
     }
 
     private void openXtextEditor(RepositoryNode repositoryNode, IProject fsProject, boolean readonly) {

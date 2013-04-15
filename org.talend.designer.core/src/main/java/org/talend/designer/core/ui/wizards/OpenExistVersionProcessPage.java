@@ -67,6 +67,8 @@ public class OpenExistVersionProcessPage extends WizardPage {
 
     private boolean alreadyEditedByUser = false;
 
+    private String newVersion;
+
     /**
      * DOC xye OpenExistVersionProcessPage constructor comment.
      * 
@@ -193,7 +195,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
                 String version = getProperty().getVersion();
                 version = VersionUtils.upMajor(version);
                 versionText.setText(version);
-                getProperty().setVersion(version);
+                newVersion = version;
                 updatePageStatus();
             }
         });
@@ -205,7 +207,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
                 String version = getProperty().getVersion();
                 version = VersionUtils.upMinor(version);
                 versionText.setText(version);
-                getProperty().setVersion(version);
+                newVersion = version;
                 updatePageStatus();
             }
         });
@@ -243,5 +245,13 @@ public class OpenExistVersionProcessPage extends WizardPage {
     public boolean isContainedRefProject() {
         return !ProjectManager.getInstance().getProject(this.getProperty()).getTechnicalLabel()
                 .equals(ProjectManager.getInstance().getCurrentProject().getEmfProject().getTechnicalLabel());
+    }
+
+    public String getNewVersion() {
+        return this.newVersion;
+    }
+
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
     }
 }
