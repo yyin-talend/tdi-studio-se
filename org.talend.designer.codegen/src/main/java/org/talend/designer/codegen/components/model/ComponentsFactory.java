@@ -945,7 +945,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
     @Override
-    public Set<IComponent> getComponents() {
+    public synchronized Set<IComponent> getComponents() {
         if (componentList == null) {
             init(false);
         }
@@ -953,7 +953,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     @Override
-    public List<IComponent> getCustomComponents() {
+    public synchronized List<IComponent> getCustomComponents() {
         if (customComponentList == null) {
             init(false);
         }

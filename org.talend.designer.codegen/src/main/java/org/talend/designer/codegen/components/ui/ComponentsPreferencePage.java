@@ -16,6 +16,8 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -42,11 +44,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.i18n.Messages;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -87,6 +87,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         /**
          * @see org.eclipse.jface.preference.FieldEditor#refreshValidState()
          */
+        @Override
         protected void refreshValidState() {
             super.refreshValidState();
         }
@@ -95,6 +96,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
          * Clears the error message from the message line if the error message is the error message from this field
          * editor.
          */
+        @Override
         protected void clearErrorMessage() {
             if (canClearErrorMessage()) {
                 super.clearErrorMessage();
@@ -122,6 +124,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(dbTypeField);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
 
         if (event.getSource() == filePathTemp) {
@@ -242,6 +245,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(doNotShowJobletAfterDoubleClickCheckBoxField);
     }
 
+    @Override
     public void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
         filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER,
@@ -253,6 +257,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
             String oldPath = getPreferenceStore().getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String newPath = filePathTemp.getTextControl(parent).getText();
                 File file = new File(newPath);
@@ -287,6 +292,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     }
 
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -295,10 +301,17 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         boolean flag = super.performOk();
         String newPath = CodeGeneratorActivator.getDefault().getPreferenceStore()
                 .getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
+        if ("".equals(oldPath)) {
+            oldPath = null;
+        }
+        if ("".equals(newPath)) {
+            newPath = null;
+        }
         if (this.oldPath != newPath) {
 
             final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Loading user component ......", 100);
                     Display display = Display.getCurrent();
@@ -308,19 +321,26 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
                     if (display != null) {
                         display.syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
-                                IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-
-                                components.loadUserComponentsFromComponentsProviderExtension();
-                                CorePlugin.getDefault().getLibrariesService().syncLibraries(monitor);
-                                monitor.worked(50);
+                                // components will be reloaded when refreshTemplates;
+                                // IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+                                // components.loadUserComponentsFromComponentsProviderExtension();
                                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-                                ComponentUtilities.updatePalette();
+                                monitor.worked(50);
+                                // ComponentUtilities.updatePalette();
                                 ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
                                         .getService(ICodeGeneratorService.class);
-                                service.refreshTemplates();
-                                monitor.worked(100);
-                                monitor.done();
+                                Job refreshTemplates = service.refreshTemplates();
+                                refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
+
+                                    @Override
+                                    public void done(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
+                                        ComponentUtilities.updatePalette();
+                                        monitor.worked(100);
+                                        monitor.done();
+                                    };
+                                });
 
                             }
                         });
