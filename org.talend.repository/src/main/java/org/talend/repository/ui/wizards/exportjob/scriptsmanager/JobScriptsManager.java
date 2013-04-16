@@ -40,6 +40,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.bridge.ReponsitoryContextBridge;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQItemService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
@@ -843,31 +845,37 @@ public abstract class JobScriptsManager {
             }
 
             if (org.talend.commons.utils.platform.PluginChecker.isTDQLoaded()) {
-                // add .Talend.definition file
-                String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
-                String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
-                IProject project = ReponsitoryContextBridge.getRootProject();
-                IFile defIdxFile = project.getFile(defIdxFolderName + PATH_SEPARATOR + defIdxFileName);
-                if (defIdxFile.exists()) {
-                    String defIdxBasePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + project.getName().toLowerCase()
-                            + PATH_SEPARATOR + defIdxFolderName;
-                    List<URL> defIdxUrls = new ArrayList<URL>();
-                    defIdxUrls.add(project.getLocation().makeAbsolute().append(defIdxFolderName).append(defIdxFileName).toFile()
-                            .toURI().toURL());
-                    resource.addResources(defIdxBasePath, defIdxUrls);
+                ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
+                        ITDQItemService.class);
+                if (tdqItemService != null
+                        && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { processItem }))) {
+                    // add .Talend.definition file
+                    String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
+                    String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
+                    IProject project = ReponsitoryContextBridge.getRootProject();
+                    IFile defIdxFile = project.getFile(defIdxFolderName + PATH_SEPARATOR + defIdxFileName);
+                    if (defIdxFile.exists()) {
+                        String defIdxBasePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + project.getName().toLowerCase()
+                                + PATH_SEPARATOR + defIdxFolderName;
+                        List<URL> defIdxUrls = new ArrayList<URL>();
+                        defIdxUrls.add(project.getLocation().makeAbsolute().append(defIdxFolderName).append(defIdxFileName)
+                                .toFile().toURI().toURL());
+                        resource.addResources(defIdxBasePath, defIdxUrls);
+                    }
+                    // add report header image & template files
+                    String reportingBundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
+                    List<URL> reportResourceUrls = new ArrayList<URL>();
+                    File imageFolder = new File(reportingBundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
+                    if (imageFolder.exists()) {
+                        reportResourceUrls.add(imageFolder.toURI().toURL());
+                    }
+                    File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$ 
+                    if (templateFolder.exists() && templateFolder.isDirectory()) {
+                        reportResourceUrls.add(templateFolder.toURI().toURL());
+                    }
+                    // include all added resources
+                    resource.addResources(JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR, reportResourceUrls);
                 }
-                // add report header image & template files
-                String bundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
-                List<URL> reportResourceUrls = new ArrayList<URL>();
-                File imageFolder = new File(bundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
-                if (imageFolder.exists()) {
-                    reportResourceUrls.add(imageFolder.toURI().toURL());
-                }
-                File templateFolder = new File(bundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$ 
-                if (templateFolder.exists() && templateFolder.isDirectory()) {
-                    reportResourceUrls.add(templateFolder.toURI().toURL());
-                }
-                resource.addResources(JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR, reportResourceUrls);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
