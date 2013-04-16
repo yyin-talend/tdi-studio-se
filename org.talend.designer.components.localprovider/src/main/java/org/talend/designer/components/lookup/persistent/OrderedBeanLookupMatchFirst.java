@@ -74,6 +74,10 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
         if (currentSearchedKey == null) {
             return false;
         }
+        
+        if(nextWithPreviousLookup) {
+            return previousCompareResultMatch;
+        }
 
         if (nextDirty) {
             int compareResult = -1;
