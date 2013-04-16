@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -104,38 +103,22 @@ public class JobExportAction implements IRunnableWithProgress {
 
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-    	final NullProgressMonitor progressMonitor = new NullProgressMonitor();
-
-        progressMonitor.beginTask(
+        monitor.beginTask(
                 Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         try {
             if (nodes != null && nodes.size() > 0) {
-                int size = nodes.size();
-                if (size == 1) {
-                    if (jobVersion != null && jobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)) {
-                        ProcessItem item = ItemCacheManager.getProcessItem(nodes.get(0).getId(),
-                                RelationshipItemBuilder.LATEST_VERSION);
-                        String version = item.getProperty().getVersion();
-                        if (!exportJobScript(nodes, version, version, progressMonitor)) {
-                            return;
-                        }
-                    } else {
-                        if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
-                            return;
-                        }
-                        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type, nodes.get(0)
-                                .getLabel(), jobVersion));
-                    }
-                } else if (size > 1) {
-                    if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
-                        return;
-                    }
-                    monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", "all"));
+                if (nodes.size() == 1
+                        && RelationshipItemBuilder.LATEST_VERSION.equals(jobVersion)) {
+                    ProcessItem item = ItemCacheManager.getProcessItem(nodes.get(0).getId(),
+                            RelationshipItemBuilder.LATEST_VERSION);
+                    String version = item.getProperty().getVersion();
+                    exportJobScript(nodes, version, version, monitor);
+                } else {
+                    exportJobScript(nodes, jobVersion, bundleVersion, monitor);
                 }
             }
-
         } finally {
-            progressMonitor.done();
+            monitor.done();
             ProcessorUtilities.resetExportConfig();
         }
     }
