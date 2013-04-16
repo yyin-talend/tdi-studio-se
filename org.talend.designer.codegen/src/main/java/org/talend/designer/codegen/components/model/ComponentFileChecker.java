@@ -55,7 +55,7 @@ public class ComponentFileChecker {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(xmlMainFile);
-            currentCRC = IOUtils.computeCRC(fis);
+            currentCRC = IOUtils.computeCRConTextFile(fis);
             // do not check anymore XSD when be in headless mode.
             // check is mainly usefull for GUI to be able to check why component is not loaded after be developped.
             // if be in headless mode (like commandline), it's supposed to use only stable components

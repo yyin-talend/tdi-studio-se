@@ -86,8 +86,8 @@ public final class JetSkeletonManager {
         try {
             deserializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
-                    .getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
+                    Messages.getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -96,8 +96,8 @@ public final class JetSkeletonManager {
         try {
             serializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
-                    .getString("JetSkeletonManager.unableSave"), e); //$NON-NLS-1$
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
+                    Messages.getString("JetSkeletonManager.unableSave"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -106,7 +106,7 @@ public final class JetSkeletonManager {
         String path = file.getAbsolutePath();
         long currentCRC = 0;
         try {
-            currentCRC = IOUtils.computeCRC(new FileInputStream(file));
+            currentCRC = IOUtils.computeCRConTextFile(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             // ignore here, only print
             // e.printStackTrace();
@@ -221,8 +221,8 @@ public final class JetSkeletonManager {
                     // System.out.println("need check:" + jetSkeleton);
                 }
             } catch (Exception e) {
-                IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
-                        .getString("JetSkeletonManager.updateProblem"), e); //$NON-NLS-1$
+                IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
+                        Messages.getString("JetSkeletonManager.updateProblem"), e); //$NON-NLS-1$
                 CodeGeneratorActivator.getDefault().getLog().log(status);
                 localInstance.save();
                 return true;
@@ -246,6 +246,7 @@ public final class JetSkeletonManager {
         // here add the skeleton file in org.talend.designer.codegen\resources
         FileFilter skeletonFilter = new FileFilter() {
 
+            @Override
             public boolean accept(final File file) {
                 String fileName = file.getName();
                 return file.isFile() && fileName.charAt(0) != '.'

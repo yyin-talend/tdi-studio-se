@@ -561,7 +561,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         URL url;
         try {
             url = new URL(uri.toString());
-            unitCRC = IOUtils.computeCRC(url.openStream());
+            unitCRC = IOUtils.computeCRConTextFile(url.openStream());
         } catch (Exception e) {
             // ignore me even if i'm null
         }
