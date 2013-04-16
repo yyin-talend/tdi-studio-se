@@ -94,7 +94,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   			}
 			if (useProxy) {
 			%>  
-				org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>); 
+				org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>);
+				System.setProperty("http.proxyHost", <%=proxuHost %>);
+				System.setProperty("http.proxyPort", <%=proxyPort %>);
+				System.setProperty("http.proxyUser", <%=proxuUser %>);
+				System.setProperty("http.proxyPassword", <%=proxyPassword%>);
+					
+				java.net.Authenticator.setDefault(
+				new java.net.Authenticator() {
+					public java.net.PasswordAuthentication getPasswordAuthentication() {
+						return new java.net.PasswordAuthentication(
+						   <%=proxuUser %>, <%=proxyPassword %>.toCharArray());
+					}
+				}
+				);
 			<%
   			}
 			%> 
