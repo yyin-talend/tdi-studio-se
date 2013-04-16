@@ -32,6 +32,7 @@
 	globalMap.put("<%=cid %>_DIE_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	globalMap.put("<%=cid %>_DIE_MESSAGE", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+	globalMap.put("<%=cid %>_DIE_MESSAGES", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
 	status = "failure";
     <%
