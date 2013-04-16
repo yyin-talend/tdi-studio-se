@@ -191,10 +191,8 @@
 						<xsl:value-of select="/project/@i18n.job.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
-							<pre>
 								<xsl:value-of
 									select="/project/pro-description" disable-output-escaping="yes" />
-							</pre>
 						</td>
 					</tr>
 				</table>
@@ -252,9 +250,7 @@
 						<xsl:value-of select="/project/@i18n.job.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
-								<pre>
 								<xsl:value-of select="$job/description"  disable-output-escaping="yes"/>
-								</pre>
 							
 						</td>
 					</tr>
