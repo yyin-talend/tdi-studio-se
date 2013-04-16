@@ -32,6 +32,15 @@ imports="
             
             System.setProperty("http.proxyUser", <%=proxyUser %>);
             System.setProperty("http.proxyPassword", <%=proxyPassword %>);
+			
+			java.net.Authenticator.setDefault(
+				new java.net.Authenticator() {
+					public java.net.PasswordAuthentication getPasswordAuthentication() {
+						return new java.net.PasswordAuthentication(
+						   <%=proxyUser %>, <%=proxyPassword %>.toCharArray());
+					}
+				}
+			);
 <%
 			} else if ("SOCKS_PROXY".equals(proxyType)) {
 %>
