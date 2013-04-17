@@ -218,6 +218,9 @@ public class ImportItemUtil {
             String itemPath = null;
             if (item.getState() != null) {
                 itemPath = item.getState().getPath();
+            } else {
+                itemRecord.addError(Messages.getString("ImportItemUtil.unsupportItem"));
+                return false;
             }
 
             boolean nameAvailable = true;
@@ -1167,6 +1170,28 @@ public class ImportItemUtil {
         routineExtModulesMap.clear();
         List<ItemRecord> items = new ArrayList<ItemRecord>();
 
+        List<String> localFolderList = new ArrayList<String>();
+        for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+            if (type.getFolder() != null && !type.getFolder().equals("")) {
+                localFolderList.add(type.getFolder());
+            }
+        }
+
+        Iterator it = collector.getPaths().iterator();
+        while (it.hasNext()) {
+            IPath path = (IPath) it.next();
+            boolean flag = false;
+            for (String folderName : localFolderList) {
+                if (path.toOSString().contains(folderName) || path.toOSString().contains(xmiResourceManager.getProjectFilename())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                it.remove();
+            }
+        }
+
         int nbItems = 0;
 
         for (IPath path : collector.getPaths()) {
@@ -1189,7 +1214,8 @@ public class ImportItemUtil {
                             if (StringUtils.equals(currentItemRecord.getProperty().getId(), itemRecord.getProperty().getId())
                                     && StringUtils.equals(currentItemRecord.getProperty().getVersion(), itemRecord.getProperty()
                                             .getVersion())) {
-                                // if have any duplicate item from same project & same folder, just don't do anything,
+                                // if have any duplicate item from same project & same folder, just don't do
+                                // anything,
                                 // no need to display.
                                 alreadyInList = true;
                                 break;
