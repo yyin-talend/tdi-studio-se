@@ -217,7 +217,11 @@ public class ImportItemUtil {
             String itemPath = null;
             if (item.getState() != null) {
                 itemPath = item.getState().getPath();
+            }else {
+                itemRecord.addError(Messages.getString("ImportItemUtil.unsupportItem"));
+                return false;
             }
+
 
             boolean nameAvailable = true;
             IRepositoryViewObject itemWithSameId = null;
@@ -1165,6 +1169,28 @@ public class ImportItemUtil {
         projects.clear();
         routineExtModulesMap.clear();
         List<ItemRecord> items = new ArrayList<ItemRecord>();
+        
+        List<String> localFolderList = new ArrayList<String>();
+        for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+            if (type.getFolder() != null && !type.getFolder().equals("")) {
+                localFolderList.add(type.getFolder());
+            }
+        }
+
+        Iterator it = collector.getPaths().iterator();
+        while (it.hasNext()) {
+            IPath path = (IPath) it.next();
+            boolean flag = false;
+            for (String folderName : localFolderList) {
+                if (path.toOSString().contains(folderName) || path.toOSString().contains(xmiResourceManager.getProjectFilename())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                it.remove();
+            }
+        }
 
         int nbItems = 0;
 
