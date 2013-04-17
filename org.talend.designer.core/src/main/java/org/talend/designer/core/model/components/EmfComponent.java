@@ -2859,8 +2859,8 @@ public class EmfComponent extends AbstractComponent {
                     true, new ArrayList<String>(), null);
             componentImportNeedsList.add(componentImportNeeds);
 
-            // <IMPORT NAME="jts-1.9" MODULE="jts-1.9.jar" REQUIRED="true" />
-            componentImportNeeds = new ModuleNeeded("jts-1.9", "jts-1.9.jar", Messages.getString("modules.required"), true,
+            // <IMPORT NAME="jts-1.12" MODULE="jts-1.12.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("jts-1.12", "jts-1.12.jar", Messages.getString("modules.required"), true,
                     new ArrayList<String>(), null);
             componentImportNeedsList.add(componentImportNeeds);
 
