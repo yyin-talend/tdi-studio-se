@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -466,7 +467,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     protected void okPressed() {
-        ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
+        ProgressMonitorDialog pmd = new ProgressMonitorDialog(DisplayUtils.getDefaultShell());
         IRunnableWithProgress rwp = new IRunnableWithProgress() {
 
             @Override
