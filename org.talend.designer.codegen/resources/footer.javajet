@@ -48,6 +48,12 @@
         exist_tMOM = true;
     }
 
+    boolean exist_tSCP = false;
+    List<INode> scpComponentsList = (List<INode>)process.getNodesOfType("tSCPConnection");
+    if (scpComponentsList.size() > 0) {
+        exist_tSCP = true;
+    }
+
     boolean hasSAM4RS = false;
     for (INode node : process.getNodesOfType("tRESTClient")) {
         if (Boolean.valueOf(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
@@ -537,13 +543,13 @@ this.globalResumeTicket = true;//to run tPostJob
     }
 %>
 
-<%
-    if (exist_tMOM) {
-%>
+<% if (exist_tMOM) { %>
     closeJmsConnections();
-<%
-    }
-%>
+<% } %>
+
+<% if (exist_tSCP) { %>
+    closeScpConnections();
+<% } %>
 
 <%
     if (hasSAM4RS || hasSAM4WS) {
@@ -588,13 +594,13 @@ if (execStat) {
   }
 
     public void destroy() {
-<%
-    if(exist_tMOM) {
-%>
+<% if(exist_tMOM) { %>
     closeJmsConnections();
-<%
-    }
-%>
+<% } %>
+
+<% if(exist_tSCP) { %>
+    closeScpConnections();
+<% } %>
     }
 
 <%
@@ -606,7 +612,7 @@ if (execStat) {
 <%
             for (INode momNode : momComponentsList) {
 %>
-            obj_conn = globalMap.get("connection_<%=momNode.getUniqueName() %>");
+            obj_conn = globalMap.remove("connection_<%=momNode.getUniqueName() %>");
             if (null != obj_conn) {
                 ((javax.jms.Connection) obj_conn).close();
             }
@@ -620,18 +626,28 @@ if (execStat) {
     }
 %>
 
-    private java.util.Map<String, Object> getJmsConnections() {
-        java.util.Map<String, Object> jmsConnections = new java.util.HashMap<String, Object>();
 <%
-        for (INode momNode : momComponentsList) {
+    if(exist_tSCP) {
 %>
-            jmsConnections.put("connection_<%=momNode.getUniqueName() %>", globalMap.get("connection_<%=momNode.getUniqueName() %>"));
-            jmsConnections.put("session_<%=momNode.getUniqueName() %>", globalMap.get("session_<%=momNode.getUniqueName() %>"));
+    private void closeScpConnections() {
+        try {
+            Object obj_conn;
 <%
+            for (INode scpNode : scpComponentsList) {
+%>
+            obj_conn = globalMap.remove("conn_<%=scpNode.getUniqueName() %>");
+            if (null != obj_conn) {
+                ((ch.ethz.ssh2.Connection) obj_conn).close();
+            }
+<%
+            }
+%>
+        } catch (java.lang.Exception e) {
         }
-%>
-        return jmsConnections;
     }
+<%
+    }
+%>
 
     private void evalParam(String arg) {
         if (arg.startsWith("--resuming_logs_dir_path")) {
