@@ -1210,6 +1210,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         if (!findTable) {
                             repositoryMetadata = new MetadataTable();
                         }
+                    } else {
+                        repositoryMetadata = new MetadataTable();
                     }
                 } else { // value only got a empty string
                     repositoryMetadata = new MetadataTable();
