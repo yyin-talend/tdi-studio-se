@@ -49,6 +49,7 @@ import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.commons.utils.io.SHA1Util;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentUtilities;

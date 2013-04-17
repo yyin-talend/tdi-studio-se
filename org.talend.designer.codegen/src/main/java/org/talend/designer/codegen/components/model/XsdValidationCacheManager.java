@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,7 +42,7 @@ import org.talend.designer.codegen.i18n.Messages;
  */
 public class XsdValidationCacheManager {
 
-    private Map<String, Long> alreadyCheckedXsd = new HashMap<String, Long>();
+    private Map<String, String> alreadyCheckedXsd = new HashMap<String, String>();
 
     private static XsdValidationCacheManager instance;
 
@@ -51,11 +52,12 @@ public class XsdValidationCacheManager {
     public synchronized static XsdValidationCacheManager getInstance() {
         if (instance == null) {
             instance = new XsdValidationCacheManager();
+            instance.load();
         }
         return instance;
     }
 
-    public void load() {
+    private void load() {
         try {
             IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
             if (project.exists()) {
@@ -78,22 +80,20 @@ public class XsdValidationCacheManager {
         }
     }
 
-    public boolean needCheck(java.io.File file, long currentCRC) {
-        String path = file.getAbsolutePath();
-        Long lastCheckedCRC = alreadyCheckedXsd.get(path);
-
-        if (lastCheckedCRC == null) {
+    public boolean needCheck(java.io.File file, String sha1) {
+        String name = file.getName();
+        String oldName = alreadyCheckedXsd.get(sha1);
+        if (oldName == null) {
             return true;
         }
 
-        boolean isChanged = currentCRC != lastCheckedCRC;
+        boolean isChanged = !StringUtils.equals(name, oldName);
         return isChanged;
     }
 
-    public void setChecked(File file, long currentCRC) {
-        // System.out.println(file);
-        String path = file.getAbsolutePath();
-        alreadyCheckedXsd.put(path, currentCRC);
+    public void setChecked(File file, String sha1) {
+        String name = file.getName();
+        alreadyCheckedXsd.put(sha1, name);
     }
 
     private File getSerializationFilePath() throws CoreException {
@@ -130,7 +130,7 @@ public class XsdValidationCacheManager {
 
     @SuppressWarnings("unchecked")
     private void deserializeAlreadyChecked() throws Exception {
-        alreadyCheckedXsd = new HashMap<String, Long>();
+        alreadyCheckedXsd = new HashMap<String, String>();
 
         File file = getSerializationFilePath();
         if (!file.exists()) {
@@ -141,7 +141,17 @@ public class XsdValidationCacheManager {
         try {
             bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
             ObjectInputStream objectIn = new ObjectInputStream(bufferedInputStream);
-            alreadyCheckedXsd = (Map<String, Long>) objectIn.readObject();
+            Object object = objectIn.readObject();
+            if (object instanceof Map) {
+                Map<?, ?> map = (Map<?, ?>) (object);
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    String key = entry.getKey().toString();
+                    Object value = entry.getValue();
+                    if (value instanceof String) {
+                        alreadyCheckedXsd.put(key, (String) value);
+                    }
+                }
+            }
         } catch (Exception e) {
             throw e;
         } finally {

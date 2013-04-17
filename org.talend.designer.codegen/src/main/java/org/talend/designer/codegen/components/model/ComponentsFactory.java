@@ -292,7 +292,6 @@ public class ComponentsFactory implements IComponentsFactory {
             isCreated = false;
         }
 
-        XsdValidationCacheManager.getInstance().load();
         // 1.Load Component from extension point: components_provider
         if (isCreated) {
             try {
