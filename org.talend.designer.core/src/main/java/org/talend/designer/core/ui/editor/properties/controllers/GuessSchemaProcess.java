@@ -122,14 +122,15 @@ public class GuessSchemaProcess {
         process.getContextManager().getListContext().addAll(node.getProcess().getContextManager().getListContext());
         process.getContextManager().setDefaultContext(this.selectContext);
         outputComponent = ComponentsFactoryProvider.getInstance().get(
-                EDatabaseComponentName.FILEDELIMITED.getOutPutComponentName(),ComponentCategory.CATEGORY_4_DI.getName());
+                EDatabaseComponentName.FILEDELIMITED.getOutPutComponentName(), ComponentCategory.CATEGORY_4_DI.getName());
 
         // create the tLibraryLoad for the input node
 
         if (node.getComponent().getModulesNeeded().size() > 0) {
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
                 if (module.isRequired(node.getElementParameters())) {
-                    Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,ComponentCategory.CATEGORY_4_DI.getName()), process);
+                    Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
+                            ComponentCategory.CATEGORY_4_DI.getName()), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     NodeContainer nc = null;
                     if (libNode1.isJoblet()) {
@@ -144,7 +145,8 @@ public class GuessSchemaProcess {
             if (node.getComponent().getName().equals("tJDBCInput")) {
                 List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
                 String moduleNeedName = "";
-                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE, ComponentCategory.CATEGORY_4_DI.getName()), process);
+                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
+                        ComponentCategory.CATEGORY_4_DI.getName()), process);
                 if (drivers.size() > 0) {
                     // use the first driver as defalult.
                     // added for bug 13592
@@ -211,7 +213,7 @@ public class GuessSchemaProcess {
         memoSQL = memoSQL.replace("\r", " ");// ISO-8859-15
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement(java.sql.ResultSet.TYPE_SCROLL_SENSITIVE,java.sql.ResultSet.CONCUR_UPDATABLE);\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "try {\r\nstm.setFetchSize(" + fetchSize + ");\r\n} catch (Exception e) {\r\n// Exception is thrown if db don't support, no need to catch exception here\r\n} \r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSet rs = stm.executeQuery(" + memoSQL + ");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n" //$NON-NLS-1$ //$NON-NLS-2$
