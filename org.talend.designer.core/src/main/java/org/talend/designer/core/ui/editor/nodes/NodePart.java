@@ -45,8 +45,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
@@ -66,6 +66,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -74,9 +75,9 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ETalendSelectionType;
-import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.designer.core.ui.editor.IJobEditorHandler;
+import org.talend.designer.core.ui.editor.JobEditorHandlerManager;
 import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -564,7 +565,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                                         .getLastVersion(new Project(ProjectManager.getInstance().getProject(processItem)),
                                                 processName).getProperty();
                             } catch (PersistenceException e) {
-                                ExceptionHandler.process(e);
+                                CommonExceptionHandler.process(e);
                             }
                             // update the property of the node repository object
                             // node.getObject().setProperty(updatedProperty);
@@ -572,15 +573,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             processItem = (ProcessItem) updatedProperty.getItem();
 
                             if (processItem != null) {
-                                ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
-
-                                IEditorPart editorPart = page.findEditor(fileEditorInput);
-
-                                if (editorPart == null) {
-                                    page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                                } else {
-                                    page.activate(editorPart);
-                                }
+                                ERepositoryObjectType repObjType = ERepositoryObjectType.getItemType(processItem);
+                                IJobEditorHandler editorInputFactory = JobEditorHandlerManager.getInstance()
+                                        .extractEditorInputFactory(repObjType.getType());
+                                editorInputFactory.openJobEditor(editorInputFactory.createJobEditorInput(processItem, true));
                             }
                         } catch (PartInitException e) {
                             MessageBoxExceptionHandler.process(e);
@@ -592,7 +588,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             // modified for feature 2454.
                             page.showView(ComponentSettingsView.ID);
                         } catch (PartInitException e) {
-                            ExceptionHandler.process(e);
+                            CommonExceptionHandler.process(e);
                         }
                     }
                 }

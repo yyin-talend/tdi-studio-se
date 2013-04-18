@@ -781,4 +781,13 @@
              priority="normal">
        </linker>
     </extension>
+    <extension
+          point="org.talend.designer.core.ui.editorHandler">
+       <EditorHandler
+             RepositoryObjectType="PROCESS"
+             class="org.talend.designer.core.ui.editor.CommonJobEditorHandler"
+             id="org.talend.designer.core.job.editorHandler"
+             name="Common Job Editor Handler">
+       </EditorHandler>
+    </extension>
 </plugin>
