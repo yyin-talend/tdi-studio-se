@@ -57,6 +57,7 @@ public class ExportProcessorHelper {
             final IProgressMonitor progressMonitor) throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = JobScriptsManagerFactory.getDefaultExportChoiceMap();
         ProcessItem processItem = (ProcessItem) processor.getProperty().getItem();
+        processName = processor.getProperty().getLabel();
         ExportFileResource fileResource = new ExportFileResource(processItem, processName);
         ExportFileResource[] exportFileResources = new ExportFileResource[] { fileResource };
 

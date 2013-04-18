@@ -794,9 +794,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     public static String getDefaultInterpreter() throws ProcessorException {
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
         String javaInterpreter = prefStore.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
+
         if (javaInterpreter == null || javaInterpreter.length() == 0) {
             throw new ProcessorException(Messages.getString("Processor.configureJava")); //$NON-NLS-1$
         }
+        Path path = new Path(javaInterpreter);
+        javaInterpreter = path.toPortableString();
         return javaInterpreter;
     }
 
