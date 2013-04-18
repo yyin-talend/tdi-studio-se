@@ -354,8 +354,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     @Override
     public List<String> extractArgumentSegments() {
-        String nameNodeURI = (String) process.getElementParameter("NAMENODE").getValue();//$NON-NLS-1$
-        String jobTrackerURI = (String) process.getElementParameter("JOBTRACKER").getValue();//$NON-NLS-1$
+        String nameNodeURI = TalendQuoteUtils.removeQuotes((String) process.getElementParameter("NAMENODE").getValue());//$NON-NLS-1$
+        String jobTrackerURI = TalendQuoteUtils.removeQuotes((String) process.getElementParameter("JOBTRACKER").getValue());//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
 
         list.add(ProcessorConstants.CMD_KEY_WORD_LIBJAR);
@@ -386,7 +386,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
                 for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
                     String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
                     String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
-                    list.add("-D " + propertyParam + "=" + valueParam); //$NON-NLS-1$ //$NON-NLS-2$
+                    list.add("-D"); //$NON-NLS-1$
+                    list.add(propertyParam + "=" + valueParam); //$NON-NLS-1$
                 }
             }
         }
@@ -401,7 +402,8 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             }
             if (useKrb) {
                 IElementParameter nameNodePrincipal = process.getElementParameter("NAMENODE_PRINCIPAL"); //$NON-NLS-1$
-                list.add("-D dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes((String) nameNodePrincipal.getValue())); //$NON-NLS-1$ 
+                list.add("-D"); //$NON-NLS-1$
+                list.add("dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes((String) nameNodePrincipal.getValue())); //$NON-NLS-1$
             }
         }
 
