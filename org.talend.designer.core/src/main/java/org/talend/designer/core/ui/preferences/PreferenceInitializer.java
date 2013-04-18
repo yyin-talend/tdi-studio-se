@@ -14,8 +14,6 @@ package org.talend.designer.core.ui.preferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -29,8 +27,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -96,19 +94,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                     URLConnection connection = entry.openConnection();
                     if (connection instanceof BundleURLConnection) {
                         URL fileURL = ((BundleURLConnection) connection).getFileURL();
-                        URI uri = new URI(fileURL.toString());
-                        String path = new File(uri).getAbsolutePath();
-                        String bundlePath = refBundle.getLocation();
-                        String prefix = "reference:file:"; //$NON-NLS-1$
-                        int prefixPos = bundlePath.lastIndexOf(prefix);
-                        if (prefixPos >= 0) {
-                            bundlePath = bundlePath.substring(prefixPos + prefix.length(), bundlePath.length() - 1);
-                        }
+                        String path = fileURL.getPath();
                         store.setDefault(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR, path);
                     }
                 } catch (IOException e) {
-                    ExceptionHandler.process(e);
-                } catch (URISyntaxException e) {
                     ExceptionHandler.process(e);
                 }
             }
