@@ -210,7 +210,7 @@ public class GuessSchemaProcess {
         memoSQL = memoSQL.replace("\r", " ");// ISO-8859-15
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement(java.sql.ResultSet.TYPE_SCROLL_SENSITIVE,java.sql.ResultSet.CONCUR_UPDATABLE);\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "try {\r\nstm.setFetchSize(" + fetchSize + ");\r\n} catch (Exception e) {\r\n// Exception is thrown if db don't support, no need to catch exception here\r\n} \r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSet rs = stm.executeQuery(" + memoSQL + ");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n" //$NON-NLS-1$ //$NON-NLS-2$
