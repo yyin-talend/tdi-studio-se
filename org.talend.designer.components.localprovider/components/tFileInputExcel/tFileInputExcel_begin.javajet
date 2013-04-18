@@ -765,7 +765,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%=firstConnName %>.<%=column.getLabel() %> = row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>).getDateCellValue();
 						}
 						else{
-							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
+                            java.util.Date tempDate_<%=cid%> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
+                            if(tempDate_<%=cid%>.after((new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS")).parse("9999/12/31 23:59:59.999"))||tempDate_<%=cid%>.before((new SimpleDateFormat("yyyy/MM/dd")).parse("1900/01/01"))){
+                                throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
+                            }else{
+                                <%=firstConnName %>.<%=column.getLabel() %> = tempDate_<%=cid%>;
+                            }
 						}
 					}catch(java.lang.Exception e){
 						<% // for bug TDI-19404 %>
