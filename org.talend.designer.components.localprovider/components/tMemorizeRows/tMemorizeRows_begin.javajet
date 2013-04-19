@@ -9,6 +9,7 @@
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager   
     java.util.List
+	org.talend.core.model.process.IConnectionCategory
   "
 %>
 <%
@@ -19,8 +20,10 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 
   IMetadataTable metadata = metadatas.get(0);
-  List<? extends IConnection> connsIn = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
-  IMetadataTable preMetadata = connsIn.get(0).getMetadataTable();
+  List<? extends IConnection> connsIn = node.getIncomingConnections();
+    	for(IConnection conn:connsIn){//-----111
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//-----222
+  IMetadataTable preMetadata = conn.getMetadataTable();
   List<IMetadataColumn> preColumns = preMetadata.getListColumns();
   String sRowsCount = ElementParameterParser.getValue(node, "__ROW_COUNT__");
   %>
@@ -43,5 +46,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     globalMap.put("<%=cid%>_<%=sColumnName%>", <%=sColumnName%>_<%=cid%>);
     <%
   }
+  			}//-----222
+  		}//-----111
 }
 %>
