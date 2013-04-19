@@ -118,7 +118,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		java.lang.Class.forName("<%=javaDbDriver %>");
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
 		
-		<%if("true".equalsIgnoreCase(storeByHBase)) {%>
+		<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
     		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
     		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
     			statement_<%=cid%>.execute("SET hbase.zookeeper.quorum="+<%=zookeeperQuorumForHBase%>);
