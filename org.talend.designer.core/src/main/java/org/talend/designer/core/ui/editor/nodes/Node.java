@@ -75,10 +75,12 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.service.IMRProcessService;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
@@ -3318,6 +3320,10 @@ public class Node extends Element implements IGraphicalNode {
 
             // TDI-21298
             checkHasMultiPrejobOrPostJobComponents();
+
+            // TDI-25573
+            checkTRunjobwithMRProcess();
+
             // feature 2,add a new extension point to intercept the validation action for Uniserv
             List<ICheckNodesService> checkNodeServices = CheckNodeManager.getCheckNodesService();
             for (ICheckNodesService checkService : checkNodeServices) {
@@ -3331,6 +3337,46 @@ public class Node extends Element implements IGraphicalNode {
                         Problems.add(current);
                     }
                 }
+            }
+
+        }
+    }
+
+    private void checkTRunjobwithMRProcess() {
+        // check tRunJob
+        if (getComponent() != null && "tRunJob".equals(getComponent().getName())) { //$NON-NLS-1$;
+            try {
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                    IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                            IMRProcessService.class);
+                    IElementParameter elementParameter = getElementParameter("PROCESS:PROCESS_TYPE_PROCESS"); //$NON-NLS-1$;
+                    if (elementParameter != null) {
+                        Object value = elementParameter.getValue();
+                        if (value != null && !"".equals(value)) { //$NON-NLS-1$;
+                            IRepositoryViewObject lastVersion;
+                            lastVersion = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                                    .getLastVersion(value.toString());
+
+                            if (lastVersion != null) {
+                                boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
+                                if (hasMrSubProcess) {
+                                    IElementParameter indepedentElement = getElementParameter("USE_INDEPENDENT_PROCESS"); //$NON-NLS-1$;
+                                    if (indepedentElement != null
+                                            && !Boolean.valueOf(String.valueOf(indepedentElement.getValue()))) {
+                                        String message = Messages.getString(
+                                                "Node.checkTRunjobwithMRProcess", indepedentElement.getDisplayName()); //$NON-NLS-1$;
+                                        Problems.add(ProblemStatus.ERROR, this, message);
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
         }
     }
