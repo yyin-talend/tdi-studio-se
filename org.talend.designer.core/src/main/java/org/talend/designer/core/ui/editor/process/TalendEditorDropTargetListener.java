@@ -965,6 +965,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
                     } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
                         LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
+                    } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS_MR) {
+                        LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
                     } else if (CorePlugin.getDefault().getDesignerCoreService()
                             .getPreferenceStore(TalendDesignerPrefConstants.DEFAULT_LABEL)
                             .equals(node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
@@ -1155,7 +1157,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                            .isHL7PluginLoaded())) {
+                                .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1199,7 +1201,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                            .isBRMSPluginLoaded())) {
+                                .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();

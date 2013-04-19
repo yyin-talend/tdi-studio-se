@@ -35,7 +35,7 @@ import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
  */
 public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
 
-    private String[] repositoryTypes;
+    protected String[] repositoryTypes;
 
     public MultiTypesProcessor(String[] repositoryTypes) {
         super();

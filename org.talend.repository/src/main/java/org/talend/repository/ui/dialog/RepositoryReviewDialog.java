@@ -63,6 +63,7 @@ import org.talend.repository.ui.processor.QueryTypeProcessor;
 import org.talend.repository.ui.processor.RepositoryTypeProcessor;
 import org.talend.repository.ui.processor.SAPFunctionProcessor;
 import org.talend.repository.ui.processor.SchemaTypeProcessor;
+import org.talend.repository.ui.processor.SingleSelectedInMultiTypesProcessor;
 import org.talend.repository.ui.processor.ValidationRuleTypeProcessor;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.viewer.ui.provider.RepositoryViewerProvider;
@@ -77,6 +78,8 @@ import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
 public class RepositoryReviewDialog extends Dialog {
 
     ERepositoryObjectType type;
+
+    private List<ERepositoryObjectType> repObjectTypes;
 
     String repositoryType;
 
@@ -116,6 +119,18 @@ public class RepositoryReviewDialog extends Dialog {
         TimeMeasure.measureActive = debugMode;
 
         TimeMeasure.begin(RepositoryReviewDialog.class.getSimpleName());
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, List<ERepositoryObjectType> repObjectTypes, String processId) {
+        this(parentShell);
+        this.repObjectTypes = repObjectTypes;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
+        this.repositoryType = processId;
+        typeProcessor = createMultiTypesProcessor();
     }
 
     /**
@@ -205,6 +220,18 @@ public class RepositoryReviewDialog extends Dialog {
             repView = RepositoryManagerHelper.findRepositoryView();
         }
         return repView;
+    }
+
+    /**
+     * Creates a processor which provides multiple types of process. Added by Marvin Wang on Apr 19, 2013.
+     * 
+     * @return
+     */
+    private IRepositoryTypeProcessor createMultiTypesProcessor() {
+        if (repObjectTypes != null && !repObjectTypes.isEmpty()) {
+            return new SingleSelectedInMultiTypesProcessor(repositoryType, repObjectTypes);
+        }
+        throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
 
     /**

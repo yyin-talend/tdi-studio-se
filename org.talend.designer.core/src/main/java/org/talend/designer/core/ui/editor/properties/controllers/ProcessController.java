@@ -43,6 +43,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EParameterFieldType;
@@ -180,7 +181,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         IElementParameter useDynamicJobParameter = param.getElement().getElementParameter(
                 EParameterName.USE_DYNAMIC_JOB.getName());
         if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
-            Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+            Object useDynamicJobValue = useDynamicJobParameter.getValue();
             if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
                 isSelectUseDynamic = (Boolean) useDynamicJobValue;
             }
@@ -204,6 +205,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
     IControlCreator cbCtrl = new IControlCreator() {
 
+        @Override
         public Control createControl(final Composite parent, final int style) {
             CCombo cb = new CCombo(parent, style);
             return cb;
@@ -377,8 +379,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 }
             }
         } else {
-            for (int i = 0; i < originalList.length; i++) {
-                stringToDisplay.add(originalList[i]);
+            for (String element : originalList) {
+                stringToDisplay.add(element);
             }
         }
         return stringToDisplay.toArray(new String[0]);
@@ -386,10 +388,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // do nothing.
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
             executeCommand(cmd);
@@ -447,7 +451,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         boolean isSelectUseDynamic = false;
         IElementParameter useDynamicJobParameter = elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName());
         if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
-            Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+            Object useDynamicJobValue = useDynamicJobParameter.getValue();
             if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
                 isSelectUseDynamic = (Boolean) useDynamicJobValue;
             }
@@ -479,8 +483,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
             }
             return null;
         } else {
-            RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS,
-                    procssId);
+            List<ERepositoryObjectType> repObjectTypes = new ArrayList<ERepositoryObjectType>();
+            repObjectTypes.add(ERepositoryObjectType.PROCESS);
+            if (PluginChecker.isMapReducePluginLoader()) {
+                repObjectTypes.add(ERepositoryObjectType.PROCESS_MR);
+            }
+            RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), repObjectTypes, procssId);
 
             // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful
             // to
@@ -568,6 +576,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return getWidgetFactory().createButton(parent, EParameterName.PROCESS_TYPE.getDisplayName(), SWT.None);
             }
@@ -579,6 +588,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
         // TODO Auto-generated method stub
 
@@ -603,6 +613,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                      * 
                      * @see java.lang.Runnable#run()
                      */
+                    @Override
                     public void run() {
                         updateContextList(param);
                         if (hashCurControls == null) {
@@ -681,8 +692,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
      * @param processParam
      */
     private void updateContextList(IElementParameter processParam) {
-        if (processParam == null || (processParam.getFieldType() != EParameterFieldType.PROCESS_TYPE
-                && processParam.getFieldType() != EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE)) {
+        if (processParam == null
+                || (processParam.getFieldType() != EParameterFieldType.PROCESS_TYPE && processParam.getFieldType() != EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE)) {
             return;
         }
         // for context type
