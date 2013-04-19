@@ -226,17 +226,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 %>
 							if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
 							    dynamic_column_count_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>.getColumnCount();
-							    <%
-                                if(advancedSeparator){
-%>
-                                    routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>, <%=thousandsSeparator%>, <%=decimalSeparator%>);
-<%
-                                }else{
-%>
                             	routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>);
-<%
-                                }
-%>
                             }
 <%
                 		}else{
