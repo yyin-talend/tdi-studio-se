@@ -26,7 +26,7 @@
 			<bean class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
 				<constructor-arg ref="serviceBean" />
 			</bean>
-			<bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+            <bean class="${endpoint.jobClassName}.CustomJSONProvider">
 				<property name="ignoreNamespaces" value="true" />
 				<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
 				<property name="wrapperName" value="root" />
