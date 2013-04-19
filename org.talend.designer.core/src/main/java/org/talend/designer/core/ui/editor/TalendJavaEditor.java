@@ -32,6 +32,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
@@ -151,7 +152,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     }
 
     private void placeCursorToSelection() {
-        String mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        String mainPart;
+        if (process != null && (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType()))) {
+            mainPart = "[" + currentSelection + " mrconfig ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
         String assignmentPart = "currentComponent = \"" + currentSelection + "\";"; //$NON-NLS-1$ //$NON-NLS-2$
         if (getDocumentProvider() == null) {
             return;
