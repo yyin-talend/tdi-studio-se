@@ -103,12 +103,23 @@ imports="
 		}
 		
 		
-		public void generateClass(){
+		public void generateClass(String delim1){
 		  	if(isOptimizeCode){
 				cid = node.getUniqueName();
 				int methodNum=(columnListSize%schemaOptNum==0?columnListSize/schemaOptNum:(columnListSize/schemaOptNum)+1);
 				%>
 				class RowHelper_<%=cid%>{
+                <%if(delim1!=null){%>
+                    char fieldSeparator_<%=cid %>[] = null;
+                    public RowHelper_<%=cid%>(){
+                        //support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
+                        if ( ((String)<%=delim1%>).length() > 0 ){
+                            fieldSeparator_<%=cid %> = ((String)<%=delim1%>).toCharArray();
+                        }else {         
+                            throw new IllegalArgumentException("Field Separator must be assigned a char."); 
+                        }
+                    }
+                <%}%>
 				<%
 				int start=0;
 				int end=0;
