@@ -248,8 +248,14 @@ public class ExternalNodeChangeCommand extends Command {
                     }
 
                     connection.getMetadataTable().setListColumns(newListColumns);
+                    // some pig component have FLOW_MAIN && PIGCOMBINE two connector type
+                    if (connection.getConnectorName() != null && connection.getConnectorName().equals("PIGCOMBINE")) {
+                        IMetadataTable table = sourceNode.getMetadataFromConnector(EConnectionType.FLOW_MAIN.getName());
+                        if (table != null) {
+                            table.setListColumns(newListColumns);
+                        }
+                    }
                     ColumnListController.updateColumnList(sourceNode, columnNameChangeds, false);
-
                     if (empty) { // trace init
                         connection.initTraceParamters();
                     }
