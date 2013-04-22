@@ -193,6 +193,9 @@ public class OpenExistVersionProcessPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 String version = getProperty().getVersion();
+                if (newVersion != null) {
+                    version = newVersion;
+                }
                 version = VersionUtils.upMajor(version);
                 versionText.setText(version);
                 newVersion = version;
@@ -205,6 +208,9 @@ public class OpenExistVersionProcessPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 String version = getProperty().getVersion();
+                if (newVersion != null) {
+                    version = newVersion;
+                }
                 version = VersionUtils.upMinor(version);
                 versionText.setText(version);
                 newVersion = version;
