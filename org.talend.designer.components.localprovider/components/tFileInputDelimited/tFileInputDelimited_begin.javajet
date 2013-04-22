@@ -381,7 +381,7 @@
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass();
+						rowUtil.generateClass(null);
 					}
 				}
 				%>
@@ -830,7 +830,7 @@
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass();
+						rowUtil.generateClass(delim1);
 					}
 				}	
 				%>
