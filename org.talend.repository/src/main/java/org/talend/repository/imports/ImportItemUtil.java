@@ -52,6 +52,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -127,6 +128,7 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.RestoreFolderUtil;
 import org.talend.repository.utils.FileCopyUtils;
+import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 
 /**
  */
@@ -1414,7 +1416,27 @@ public class ImportItemUtil {
         InputStream stream = null;
         try {
             stream = manager.getStream(itemRecord.getPath());
-            Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            final Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            resource.getResourceSet().setURIConverter(new ExtensibleURIConverterImpl() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl#createInputStream(org.eclipse.
+                 * emf.common.util.URI, java.util.Map)
+                 */
+                @Override
+                public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
+                    InputStream inputStream = null;
+                    EPackage ePackage = resource.getResourceSet().getPackageRegistry().getEPackage(uri.toString());
+                    if (ePackage != null || !"http".equals(uri.scheme())) {
+                        inputStream = super.createInputStream(uri, options);
+                    } else {
+                        inputStream = null;
+                    }
+                    return inputStream;
+                }
+            });
             resource.load(stream, null);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
