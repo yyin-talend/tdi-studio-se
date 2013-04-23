@@ -673,7 +673,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         if (hasSAM) {
             additionalJobBeanParams += "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-            additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
+            additionalJobBundleConfig += "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
                     + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
         }
 
