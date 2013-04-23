@@ -61,6 +61,7 @@ import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.token.TokenCollectorFactory;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -159,6 +160,7 @@ public class TalendForgeDialog extends TrayDialog {
         }
     }
 
+    @Override
     protected void initializeBounds() {
         super.initializeBounds();
         Point location = getInitialLocation(getShell().getSize());
@@ -548,8 +550,12 @@ public class TalendForgeDialog extends TrayDialog {
         }
         improveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 preferenceStore.setValue(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED, improveButton.getSelection());
+                if (!improveButton.getSelection()) {
+                    TokenCollectorFactory.getFactory().send();
+                }
             }
         });
 
@@ -787,6 +793,7 @@ public class TalendForgeDialog extends TrayDialog {
     private void addListener() {
         createAccountButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean success = false;
                 String email = emailText.getText().trim();
@@ -819,6 +826,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         proxySettingButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 NetworkSettingDialog netSettingDialog = new NetworkSettingDialog(getParentShell());
                 if (netSettingDialog.open() == Dialog.OK) {
@@ -827,7 +835,7 @@ public class TalendForgeDialog extends TrayDialog {
                     proxyPort = proxyString[1];
                     proxyUser = proxyString[2];
                     proxyPassword = proxyString[3];
-                    if (proxyHost != null && !"".equals(proxyHost)) {//$NON-NLS-N$
+                    if (proxyHost != null && !"".equals(proxyHost)) {
                         isProxyEnable = true;
                     }
                 } else {
@@ -842,6 +850,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         proxySettingButtonForConnect.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 NetworkSettingDialog netSettingDialog = new NetworkSettingDialog(getParentShell());
                 if (netSettingDialog.open() == Dialog.OK) {
@@ -850,7 +859,7 @@ public class TalendForgeDialog extends TrayDialog {
                     proxyPort = proxyString[1];
                     proxyUser = proxyString[2];
                     proxyPassword = proxyString[3];
-                    if (proxyHost != null && !"".equals(proxyHost)) {//$NON-NLS-N$
+                    if (proxyHost != null && !"".equals(proxyHost)) {
                         isProxyEnable = true;
                     }
                 } else {
@@ -865,6 +874,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         skipButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                 int count = prefStore.getInt(LOGINCOUNT);
@@ -876,6 +886,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         skipButtonForConnect.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                 int count = prefStore.getInt(LOGINCOUNT);
@@ -887,6 +898,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         userNameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String password = passwordText.getText();
                 String password2 = passwordAgainText.getText();
@@ -904,6 +916,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         passwordText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
 
                 String password = passwordText.getText();
@@ -928,6 +941,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         passwordAgainText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String password = passwordText.getText();
                 String password2 = passwordAgainText.getText();
@@ -952,6 +966,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         emailText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String password = passwordText.getText();
                 String password2 = passwordAgainText.getText();
@@ -968,6 +983,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         agreeButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (agreeButton.getSelection()) {
                     String password = passwordText.getText();
@@ -987,6 +1003,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         link.addHyperlinkListener(new HyperlinkAdapter() {
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                 stackLayout.topControl = connectAccount;
                 downComposite.layout();
@@ -995,6 +1012,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         linkToCreate.addHyperlinkListener(new HyperlinkAdapter() {
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                 stackLayout.topControl = createAccount;
                 downComposite.layout();
@@ -1004,6 +1022,7 @@ public class TalendForgeDialog extends TrayDialog {
         //
         usernameTextForConnect.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String email = usernameTextForConnect.getText();
                 String password = passwordTextForconnect.getText();
@@ -1017,6 +1036,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         passwordTextForconnect.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String email = usernameTextForConnect.getText();
                 String password = passwordTextForconnect.getText();
@@ -1030,6 +1050,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         connectButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String username = usernameTextForConnect.getText().trim();
                 String password = passwordTextForconnect.getText().trim();
@@ -1139,6 +1160,7 @@ public class TalendForgeDialog extends TrayDialog {
                 img = imgDesc.createImage();
                 addPaintListener(new PaintListener() {
 
+                    @Override
                     public void paintControl(PaintEvent e) {
                         e.gc.drawImage(img, 0, 0);
                     }
