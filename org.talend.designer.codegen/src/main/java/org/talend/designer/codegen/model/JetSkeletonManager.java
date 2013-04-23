@@ -106,7 +106,7 @@ public final class JetSkeletonManager {
         String path = file.getAbsolutePath();
         long currentCRC = 0;
         try {
-            currentCRC = IOUtils.computeCRConTextFile(new FileInputStream(file));
+            currentCRC = IOUtils.computeCRC(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             // ignore here, only print
             // e.printStackTrace();
