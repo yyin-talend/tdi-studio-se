@@ -52,9 +52,12 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.osgi.framework.FrameworkUtil;
@@ -218,6 +221,9 @@ public class ImportItemUtil {
             String itemPath = null;
             if (item.getState() != null) {
                 itemPath = item.getState().getPath();
+            } else {
+                itemRecord.addError(Messages.getString("ImportItemUtil.unsupportItem"));
+                return false;
             }
 
             boolean nameAvailable = true;
@@ -1482,12 +1488,32 @@ public class ImportItemUtil {
         InputStream stream = null;
         try {
             stream = manager.getStream(itemRecord.getPath());
-            Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            final Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            resource.getResourceSet().setURIConverter(new ExtensibleURIConverterImpl() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl#createInputStream(org.eclipse.
+                 * emf.common.util.URI, java.util.Map)
+                 */
+                @Override
+                public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
+                    InputStream inputStream = null;
+                    EPackage ePackage = resource.getResourceSet().getPackageRegistry().getEPackage(uri.toString());
+                    if (ePackage != null || !"http".equals(uri.scheme())) {
+                        inputStream = super.createInputStream(uri, options);
+                    } else {
+                        inputStream = null;
+                    }
+                    return inputStream;
+                }
+            });
             resource.load(stream, null);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
-        } catch (IOException e) {
-            // ignore
+        } catch (Exception e) {
+            // ignore, must be one invalid or unknown item
         } finally {
             if (stream != null) {
                 try {
