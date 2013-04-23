@@ -819,6 +819,7 @@ public class ImportItemUtil {
                         } finally {
                             is.close();
                         }
+                        repFactory.unloadResources(tmpItem.getProperty());
                     } else {
                         // connections from migrations (from 4.0.x or previous version) doesn't support reference or
                         // screenshots
