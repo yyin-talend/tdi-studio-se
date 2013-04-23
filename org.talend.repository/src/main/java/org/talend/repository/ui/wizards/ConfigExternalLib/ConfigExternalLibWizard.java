@@ -43,6 +43,7 @@ public class ConfigExternalLibWizard extends Wizard {
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
+    @Override
     public void addPages() {
         super.addPages();
 
@@ -55,8 +56,8 @@ public class ConfigExternalLibWizard extends Wizard {
             mainPage = new ConfigExternalPerlModulePage(selection);
             break;
         }
-
         addPage(mainPage);
+        mainPage.setPageComplete(!mainPage.isReadOnly());
     }
 
     /*
@@ -72,6 +73,7 @@ public class ConfigExternalLibWizard extends Wizard {
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
+    @Override
     public boolean performFinish() {
         return mainPage.finish();
     }

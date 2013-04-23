@@ -47,6 +47,10 @@ public class LibraryField extends TableField {
         super(name, parent);
     }
 
+    public LibraryField(String name, Composite parent, boolean isReadOnly) {
+        super(name, parent, isReadOnly);
+    }
+
     @Override
     protected Table createTable(Composite parent) {
         Table contextTable = new Table(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
@@ -72,13 +76,16 @@ public class LibraryField extends TableField {
     protected IStructuredContentProvider createContentProvider() {
         return new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return ((List) inputElement).toArray();
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
@@ -89,6 +96,7 @@ public class LibraryField extends TableField {
     protected ITableLabelProvider createLabelProvider() {
         return new ITableLabelProvider() {
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 if (element instanceof IMPORTType) {
                     IMPORTType type = (IMPORTType) element;
@@ -103,6 +111,7 @@ public class LibraryField extends TableField {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 if (element instanceof IMPORTType) {
                     IMPORTType type = (IMPORTType) element;
@@ -118,16 +127,20 @@ public class LibraryField extends TableField {
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
         };

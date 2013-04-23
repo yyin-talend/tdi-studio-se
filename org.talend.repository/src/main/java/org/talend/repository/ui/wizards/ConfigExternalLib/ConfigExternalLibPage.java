@@ -16,6 +16,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -47,6 +50,17 @@ public abstract class ConfigExternalLibPage extends WizardPage {
     public ConfigExternalLibPage(String name, IStructuredSelection selection) {
         super(name);
         this.selection = selection;
+    }
+
+    public boolean isReadOnly() {
+        boolean readonly = false;
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        ERepositoryStatus status = repFactory.getStatus(getSelectedRepositoryNode().getObject());
+        if (!repFactory.isPotentiallyEditable(getSelectedRepositoryNode().getObject())
+                || status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
+            readonly = true;
+        }
+        return readonly;
     }
 
     /**
