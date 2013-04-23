@@ -476,6 +476,9 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                 org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
                 IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project.getTechnicalLabel());
                 String repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES);
+                if (item instanceof PigudfItem) {
+                    repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.PIG_UDF);
+                }
                 String folderPath = RepositoryNodeUtilities.getPath(routineItem.getProperty().getId()).toString();
                 String fileName = routineItem.getProperty().getLabel() + "_" + routineItem.getProperty().getVersion()
                         + JavaUtils.ITEM_EXTENSION;
