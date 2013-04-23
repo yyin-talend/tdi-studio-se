@@ -289,7 +289,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
             if (typeNameRadioButton.getSelection()) {
                 modelName = nameText.getText();
-                if (libManager.contains(modelName)) {
+                if (!libManager.contains(modelName)) {
                     final String name = modelName;
                     libExists = false;
                     Display.getDefault().asyncExec(new Runnable() {
@@ -387,7 +387,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 }
             };
 
-            nameText = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+            nameText = new Text(composite, SWT.BORDER);
             nameText.addModifyListener(modifyListener);
             GridDataFactory.fillDefaults().span(3, 1).applyTo(nameText);
 
