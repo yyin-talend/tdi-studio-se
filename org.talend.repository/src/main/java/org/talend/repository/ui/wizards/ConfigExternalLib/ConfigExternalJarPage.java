@@ -18,7 +18,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +76,13 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
      */
     public ConfigExternalJarPage(IStructuredSelection selection) {
         super(Messages.getString("ImportExternalJarPage.pageTitle"), selection); //$NON-NLS-1$
-        this.setMessage(Messages.getString("ImportExternalJarPage.pageMessage")); //$NON-NLS-1$
+        String message = null;
+        if (isReadOnly()) {
+            message = Messages.getString("ImportExternalJarPage.pageMessagelock");//$NON-NLS-1$
+        } else {
+            message = Messages.getString("ImportExternalJarPage.pageMessage");//$NON-NLS-1$
+        }
+        this.setMessage(message);
     }
 
     /*
@@ -87,6 +92,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
      */
     EList routines = null;
 
+    @Override
     public void createControl(Composite parent) {
         initializeDialogUnits(parent);
 
@@ -96,7 +102,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         composite.setFont(parent.getFont());
 
         libField = new EditJavaRoutineExternalJarField(Messages.getString("ImportExternalJarPage.fileField.label"), //$NON-NLS-1$
-                composite);
+                composite, isReadOnly());
 
         RoutineItem routine = getSelectedRoutine();
         routines = routine.getImports();
@@ -105,10 +111,12 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         button.setText(Messages.getString("ConfigExternalJarPage.reloadLibrary")); //$NON-NLS-1$
         button.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 for (int i = 0; i < routines.size(); i++) {
                     String value = ((IMPORTType) routines.get(i)).getUrlPath();
@@ -141,12 +149,13 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
      * 
      * @see org.talend.repository.ui.wizards.importExternalLib.ImportExternalLibPage#finish()
      */
+    @Override
     public boolean finish() {
         BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
 
+            @Override
             public void run() {
-                for (Iterator<File> iter = newJarFiles.values().iterator(); iter.hasNext();) {
-                    File file = iter.next();
+                for (File file : newJarFiles.values()) {
                     try {
                         CorePlugin.getDefault().getLibrariesService().deployLibrary(file.toURL());
                     } catch (Exception e) {
@@ -190,8 +199,8 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          * @param name
          * @param parent
          */
-        public EditJavaRoutineExternalJarField(String name, Composite parent) {
-            super(name, parent);
+        public EditJavaRoutineExternalJarField(String name, Composite parent, boolean isReadOnly) {
+            super(name, parent, isReadOnly);
         }
 
         /*
@@ -199,6 +208,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          * 
          * @see org.talend.repository.ui.wizards.importExternalLib.TableField#afterDeleteSelection(java.util.List)
          */
+        @Override
         protected void afterDeleteSelection(List list) {
             for (int i = 0; i < list.size(); i++) {
                 newJarFiles.remove(list.get(i));
@@ -210,6 +220,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          * 
          * @see org.talend.repository.ui.wizards.importExternalLib.LibraryField#getNewInputObject()
          */
+        @Override
         protected List<IMPORTType> getNewInputObject() {
             List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
             ModulePropertyDialog dialog = new ModulePropertyDialog(this.getShell());
@@ -294,6 +305,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                     libExists = false;
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             MessageDialog.openError(getParentShell(),
                                     Messages.getString("ConfigExternalJarPage.error"), Messages.getString( //$NON-NLS-1$
@@ -347,6 +359,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          * 
          * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
          */
+        @Override
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
             // shell.setSize(400, 300);
@@ -372,6 +385,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             GridDataFactory.fillDefaults().span(3, 1).applyTo(typeNameRadioButton);
             typeNameRadioButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     nameText.setEnabled(true);
                     fileField.setEnabled(false, composite);
@@ -382,6 +396,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
             ModifyListener modifyListener = new ModifyListener() {
 
+                @Override
                 public void modifyText(ModifyEvent e) {
                     checkEnable();
                 }
@@ -397,6 +412,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
             fileRadioButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     nameText.setEnabled(false);
                     fileField.setEnabled(true, composite);
@@ -410,7 +426,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             Text filePathText = fileField.getTextControl(composite);
             filePathText.addModifyListener(modifyListener);
 
-            fileField.setFileExtensions(FilesUtils.getAcceptJARFilesSuffix()); //$NON-NLS-1$
+            fileField.setFileExtensions(FilesUtils.getAcceptJARFilesSuffix());
             composite.setLayout(copyLayout);
 
             GridData data = new GridData();
@@ -446,6 +462,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          * 
          * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
          */
+        @Override
         protected void createButtonsForButtonBar(Composite parent) {
             super.createButtonsForButtonBar(parent);
             checkEnable();

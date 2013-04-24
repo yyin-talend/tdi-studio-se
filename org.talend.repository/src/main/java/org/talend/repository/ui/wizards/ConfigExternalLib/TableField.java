@@ -86,7 +86,14 @@ public abstract class TableField {
      */
     private SelectionListener selectionListener;
 
+    private boolean isReadOnly;
+
     public TableField(String name, Composite parent) {
+        this(name, parent, false);
+    }
+
+    public TableField(String name, Composite parent, boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
         createControl(name, parent);
     }
 
@@ -139,6 +146,8 @@ public abstract class TableField {
     private void createButtons(Composite box) {
         addButton = createPushButton(box, "ListEditor.add"); //$NON-NLS-1$
         removeButton = createPushButton(box, "ListEditor.remove"); //$NON-NLS-1$
+        addButton.setEnabled(!isReadOnly);
+        removeButton.setEnabled(!isReadOnly);
         // upButton = createPushButton(box, "ListEditor.up"); //$NON-NLS-1$
         // downButton = createPushButton(box, "ListEditor.down"); //$NON-NLS-1$
     }
@@ -168,6 +177,7 @@ public abstract class TableField {
     public void createSelectionListener() {
         selectionListener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 Widget widget = event.widget;
                 if (widget == addButton) {
@@ -226,6 +236,7 @@ public abstract class TableField {
         createButtons(buttonBox);
         buttonBox.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent event) {
                 addButton = null;
                 removeButton = null;
@@ -254,6 +265,7 @@ public abstract class TableField {
         table.setFont(parent.getFont());
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 TableField.this.selectionChanged();
             }
@@ -353,7 +365,7 @@ public abstract class TableField {
         int index = viewer.getTable().getSelectionIndex();
         int size = viewer.getTable().getItemCount();
 
-        removeButton.setEnabled(index >= 0);
+        removeButton.setEnabled(index >= 0 && !isReadOnly);
         // upButton.setEnabled(size > 1 && index > 0);
         // downButton.setEnabled(size > 1 && index >= 0 && index < size - 1);
     }

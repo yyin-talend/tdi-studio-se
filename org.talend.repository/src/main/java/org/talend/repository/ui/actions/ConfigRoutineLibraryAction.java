@@ -22,11 +22,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
-import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalLibWizard;
 
@@ -77,11 +73,11 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
 
                         if (node.getObjectType() == ERepositoryObjectType.ROUTINES
                                 || (beanType != null && node.getObjectType() == beanType)) {
-                            IRepositoryViewObject repObj = node.getObject();
-                            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-                            ERepositoryStatus status = repFactory.getStatus(repObj);
-                            boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
-                            canWork = isEditable;
+                            // IRepositoryViewObject repObj = node.getObject();
+                            // IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                            // ERepositoryStatus status = repFactory.getStatus(repObj);
+                            // boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
+                            canWork = true;
                         } else {
                             canWork = false;
                         }
