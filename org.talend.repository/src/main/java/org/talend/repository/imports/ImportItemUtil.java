@@ -56,7 +56,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
@@ -1489,6 +1489,7 @@ public class ImportItemUtil {
         try {
             stream = manager.getStream(itemRecord.getPath());
             final Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            URIConverter uriConverter = resource.getResourceSet().getURIConverter();
             resource.getResourceSet().setURIConverter(new ExtensibleURIConverterImpl() {
 
                 /*
@@ -1510,6 +1511,7 @@ public class ImportItemUtil {
                 }
             });
             resource.load(stream, null);
+            resource.getResourceSet().setURIConverter(uriConverter);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
         } catch (Exception e) {
