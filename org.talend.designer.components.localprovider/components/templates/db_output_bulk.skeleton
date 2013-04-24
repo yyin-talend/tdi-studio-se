@@ -2994,6 +2994,107 @@ public class CLASS {
             }
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
         }        
+
+        /**
+         * This method is added for differences between sybase and common databases on BigDecimal.
+         * Reference issue is TDI-7505.
+         * */
+        public String generateSetStmt(String typeToGenerate, Column column, int index, 
+                String incomingConnName, String cid, int actionType, String dynamic) {
+            
+            if(dynamic==null) {
+                dynamic="";
+            } else {
+                dynamic+=cid;
+            }
+            
+            boolean isObject = false;
+            String prefix = null;
+            if(actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if(actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if(actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            if(typeToGenerate.equals("Character")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");                
+            } else if(typeToGenerate.equals("Date")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");                
+            } else if(typeToGenerate.equals("byte[]")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                if(column.column != null && ("BINARY".equals(column.column.getType()) || "VARBINARY".equals(column.column.getType()))) {
+                    setStmt.append(prefix + cid + ".setBytes(" + index + dynamic + ", null);\r\n");
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.ARRAY);\r\n");                
+                }
+            } else if(typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.INTEGER);\r\n");                
+            } else if(typeToGenerate.equals("String")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.VARCHAR);\r\n");                
+            } else if(typeToGenerate.equals("Object")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                if(column.column != null && ("BINARY".equals(column.column.getType()) || "VARBINARY".equals(column.column.getType()))) {
+                    setStmt.append(prefix + cid + ".setBytes(" + index + dynamic + ", null);\r\n");
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.OTHER);\r\n");                
+                }               
+            } else if(typeToGenerate.equals("Boolean")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.BOOLEAN);\r\n");                
+            } else if(typeToGenerate.equals("Double")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DOUBLE);\r\n");                
+            } else if(typeToGenerate.equals("Float")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.FLOAT);\r\n");                
+            }
+            if(isObject) {
+                setStmt.append("} else {");
+            }
+            typeToGenerate = getGenerateType(typeToGenerate);
+            if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                if(isObject) {
+                    setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
+                } else {
+                    setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
+                }
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", \"\");\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append("}");
+            } else if(typeToGenerate.equals("Date")) {
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
+                setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");
+                setStmt.append("}\r\n");
+            } else if(typeToGenerate.equals("BigDecimal") && column.getColumn().getPrecision()!=null && column.getColumn().getLength()!=null){
+                setStmt.append("((com.sybase.jdbc3.jdbc.SybPreparedStatement)"+prefix + cid + ").set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() +","+column.getColumn().getLength() +","+column.getColumn().getPrecision()+ ");\r\n");
+            } else {
+                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+            }
+            if(isObject) {
+                setStmt.append("}\r\n");
+            }
+            return setStmt.toString();
+        }
     }
     
     public class TeradataManager extends Manager {
