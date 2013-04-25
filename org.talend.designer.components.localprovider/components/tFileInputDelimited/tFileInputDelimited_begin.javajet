@@ -565,7 +565,12 @@
 					}
 					%>
 				}else{
+					<%if(isTrimAll){%>
+					for(int i_<%=cid%>=0;i_<%=cid%><<%=sourceValueName%>.length;i_<%=cid%>++){
+						<%=sourceValueName%>[i_<%=cid%>]=<%=sourceValueName%>[i_<%=cid%>].trim();
+					}
 					<%
+					}
 					boolean hasStringDefault = false;
 					for (int valueM=0; valueM<columnSize; valueM++) {
 						IMetadataColumn column = columns.get(valueM);
@@ -590,12 +595,15 @@
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						%>
 						if(<%=i %> < <%=sourceValueName%>.length){				
+							<%if((!isTrimAll && (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))){%>	
+							<%=sourceValueName%>[<%=i %>]=<%=sourceValueName%>[<%=i %>].trim();			
 							<%
+							}
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 								String defaultValue = column.getDefault();
 								if(defaultValue!=null && defaultValue.length()>0){
 								%>
-									temp = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
+									temp = <%=sourceValueName%>[<%=i %>];
 									if(temp.length() > 0){
 										<%=targetConnName %>.<%=column.getLabel() %> = temp;
 									}else{
@@ -604,7 +612,7 @@
 								<%
 								}else{
 								%>
-									<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
+									<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>];
 								<%
 								}
 							} else {
@@ -614,24 +622,24 @@
 									if(javaType == JavaTypesManager.DATE) {
 										if(checkNum || checkDate){
 										%>
-											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>, false);
+											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>], <%= patternValue %>, false);
 										<%
 										}else{
 										%>
-											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
+											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>], <%= patternValue %>);
 										<%
 										}
 									} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 									%>
-										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(<%=sourceValueName%>[<%=i %>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
 									<%
 									}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 									%>							
-		    							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
+		    							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>].getBytes(<%=encoding %>);
                                     <%
                                     }else if(javaType == JavaTypesManager.LIST){ 
                                     %>                          
-                                        <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>,String.valueOf(fieldSeparator_<%=cid %>[0]));
+                                        <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[<%=i %>],String.valueOf(fieldSeparator_<%=cid %>[0]));
                                     <%
 									}else if(column.getTalendType().equals("id_Dynamic")){
 									%>
@@ -641,7 +649,7 @@
 										int fieldCount = <%=sourceValueName%>.length;	
 										for (int i = 0; i < <%=dynamicName%>.getColumnCount(); i++) {
 											if ((<%=columnSize%>-1+i) < fieldCount)
-												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=columnSize%>-1+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
+												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=columnSize%>-1+i]);
 											else
 												<%=dynamicName%>.addColumnValue("");
 										}
@@ -649,7 +657,7 @@
 									<%
 									}else {
 									%>
-										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[<%=i %>]);
 									<%
 									}
 									%>					
