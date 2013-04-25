@@ -80,6 +80,20 @@
 					checkedType = "only"
 					filtervalue = document.getElementById(checkedType).value;
 				}
+				
+				<!-- validate the createNewExtension text  start-->
+				var labelValidate = document.getElementById("extension_label").value;
+				var lastVersionAvailableValidate = document.getElementById("lastVersionAvailable").value;
+				if(labelValidate==0){  
+        			alert("Extension Title is empty");  
+    			}else if(labelValidate=="null"){  
+        			alert("Extension Title can not be null");  
+    			}else if(lastVersionAvailableValidate==0){  
+        			alert("Initial Version is empty");  
+    			}else if(lastVersionAvailableValidate=="null"){  
+        			alert("Initial Version can not be null");  
+    			}
+    			<!-- validate the createNewExtension text  end-->
 			
 				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
 				var filter = "filter:" + "'" + filtervalue + "'";
@@ -116,6 +130,15 @@
 					checkedType = "only"
 					filtervalue = document.getElementById(checkedType + "_update").value;
 				}
+				
+				<!-- validate the updateExtension text  start-->
+				var lastVersionAvailable_updateValidate = document.getElementById("lastVersionAvailable_update").value;
+				if(lastVersionAvailable_updateValidate==0){  
+        			alert("New Version is empty");  
+    			}else if(lastVersionAvailable_updateValidate=="null"){  
+        			alert("New Version can not be null");  
+    			}
+    			<!-- validate the updateExtension text  end-->
 			
 				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
 				var filter = "filter:" + "'" + filtervalue + "'";
