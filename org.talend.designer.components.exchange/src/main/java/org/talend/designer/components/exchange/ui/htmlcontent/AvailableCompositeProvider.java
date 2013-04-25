@@ -173,7 +173,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                         style = style + ";background:#F7F7F7";
                     }
                     tdExtension.setAttribute("style", style);
-                    tdExtension.appendChild(dom.createTextNode(extension.getLabel()));
+                    tdExtension.appendChild(dom.createTextNode(extension.getLabel().replace("null", "")));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
@@ -185,7 +185,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                         style = style + ";background:#F7F7F7";
                     }
                     tdExtension.setAttribute("style", style);
-                    tdExtension.appendChild(dom.createTextNode(extension.getVersionExtension()));
+                    tdExtension.appendChild(dom.createTextNode(extension.getVersionExtension().replace("null", "")));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
