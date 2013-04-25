@@ -56,6 +56,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.osgi.framework.FrameworkUtil;
@@ -128,7 +130,6 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.RestoreFolderUtil;
 import org.talend.repository.utils.FileCopyUtils;
-import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 
 /**
  */
@@ -406,7 +407,6 @@ public class ImportItemUtil {
 
         Collections.sort(itemRecords, new Comparator<ItemRecord>() {
 
-           
             public int compare(ItemRecord o1, ItemRecord o2) {
                 if (o1.getProperty().getItem() instanceof RoutineItem && o2.getProperty().getItem() instanceof RoutineItem) {
                     return 0;
@@ -429,7 +429,6 @@ public class ImportItemUtil {
             public void run() throws PersistenceException {
                 final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-                  
                     public void run(IProgressMonitor monitor) throws CoreException {
 
                         final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
@@ -1241,7 +1240,6 @@ public class ImportItemUtil {
 
         Collections.sort(items, new Comparator<ItemRecord>() {
 
-         
             public int compare(ItemRecord o1, ItemRecord o2) {
                 return VersionUtils.compareTo(o1.getProperty().getVersion(), o2.getProperty().getVersion());
             }
@@ -1417,6 +1415,7 @@ public class ImportItemUtil {
         try {
             stream = manager.getStream(itemRecord.getPath());
             final Resource resource = createResource(itemRecord, itemRecord.getPath(), false);
+            URIConverter uriConverter = resource.getResourceSet().getURIConverter();
             resource.getResourceSet().setURIConverter(new ExtensibleURIConverterImpl() {
 
                 /*
@@ -1438,6 +1437,7 @@ public class ImportItemUtil {
                 }
             });
             resource.load(stream, null);
+            resource.getResourceSet().setURIConverter(uriConverter);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
         } catch (IOException e) {
