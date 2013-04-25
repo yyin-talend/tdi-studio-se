@@ -258,6 +258,11 @@ public class ExcelTool {
 		curCell.setCellValue(stringValue);
 		curCell.setCellStyle(getNormalCellStyle());
 	}
+	
+	public void addCellNullValue() {
+        addCell();
+        curCell.setCellStyle(getNormalCellStyle());
+    }
 
 	public void setColAutoSize(int colNum) {
 		sheet.autoSizeColumn(startX + colNum, true);
