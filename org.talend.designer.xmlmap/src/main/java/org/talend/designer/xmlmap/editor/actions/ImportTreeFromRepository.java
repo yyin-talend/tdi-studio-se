@@ -52,6 +52,7 @@ import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescri
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -953,7 +954,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (object instanceof TreeNodeEditPart) {
                     TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
                     schemaNode = (TreeNode) parentPart.getModel();
-                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())) {
+                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())
+                            && ERepositoryObjectType.METADATA_MDMCONNECTION != null) {
                         return true;
                     }
                 }
