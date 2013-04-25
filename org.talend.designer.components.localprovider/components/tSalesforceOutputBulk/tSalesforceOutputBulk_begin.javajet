@@ -53,12 +53,16 @@ com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new j
 	                			boolean reference = false;
 	                			String lookupFieldName = null;
 	                			String externalIdFromLookupField = null;
+	                			boolean polymorphic = false;
+	                			String lookupFieldModuleName = null;
 	                			
 	                			for(Map<String,String> row : relationshipMappings) {
 	                				String columnName = row.get("COLUMN_NAME");
 	                				if(columnName.equals(column.getLabel())) {
 	                					lookupFieldName = row.get("LOOKUP_FIELD_NAME");
 										externalIdFromLookupField = row.get("LOOKUP_FIELD_EXTERNAL_ID_NAME");
+										polymorphic = "true".equals(row.get("POLYMORPHIC"));
+										lookupFieldModuleName = row.get("LOOKUP_FIELD_MODULE_NAME");
 	                					reference = true;
 										break;
 									}
@@ -70,7 +74,7 @@ com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new j
 <%
 								} else {
 %>
-								header_<%=cid%>[<%=i%>] = <%=lookupFieldName %> + "." + <%=externalIdFromLookupField %>;
+								header_<%=cid%>[<%=i%>] = <%if(polymorphic) {%> <%=lookupFieldModuleName%> + ":" + <%}%><%=lookupFieldName %> + "." + <%=externalIdFromLookupField %>;
 <%
 								}
 							}
