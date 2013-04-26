@@ -1,7 +1,0 @@
-
-        <property name="policies">
-             <map>
-	            <entry key="policy.token" value="$job{policy.token}"/>
-	            <entry key="policy.saml" value="$job{policy.saml}"/>
-	        </map>
-        </property>

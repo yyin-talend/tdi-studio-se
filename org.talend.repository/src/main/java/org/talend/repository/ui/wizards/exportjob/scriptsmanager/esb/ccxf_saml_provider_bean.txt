@@ -1,8 +1,0 @@
-
-		<property name="samlProps" >
-		   <map>  
-	        <entry key="ws-security.signature.username" value="${ws-security.signature.username}" />
-			<entry key="ws-security.signature.properties" value="${ws-security.signature.properties}" />
-			<entry key="ws-security.signature.password" value="${ws-security.signature.password}" />
-	       </map>  
-		</property>

@@ -12,14 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -31,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.jar.Manifest;
 
@@ -41,15 +35,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -98,8 +88,8 @@ import aQute.bnd.osgi.Jar;
  */
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
-    public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
-            int statisticPort, int tracePort) {
+    public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName,
+            String launcher, int statisticPort, int tracePort) {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
@@ -198,7 +188,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 // generate jar file for job
                 getJobScriptsUncompressed(jobScriptResource, processItem);
 
-                // dynamic db xml mapping
+                // dynamic DB XML mapping
                 addXmlMapping(process, isOptionChoosed(ExportChoice.needSourceCode));
 
                 // restJob
@@ -206,8 +196,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     osgiResource.addResources(getMetaInfSpringFolder(),
                             Collections.singletonList(generateRestJobSpringConfig(processItem)));
                 } else {
-                    osgiResource
-                            .addResources(getOSGIInfFolder(), Collections.singletonList(generateBlueprintConfig(processItem)));
+                    osgiResource.addResources(getOSGIInfFolder(),
+                            Collections.singletonList(generateBlueprintConfig(processItem)));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -237,8 +227,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     @Override
     protected void analysisModules(String processId, String processVersion) {
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(processId,
-                processVersion);
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                processId, processVersion);
         for (ModuleNeeded module : neededModules) {
             if (isCompiledLib(module)) {
                 addModuleNeededsInMap(getCompiledModules(), processId, processVersion, module);
@@ -364,20 +354,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param processItem
      * @throws MalformedURLException
      */
-    protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) throws Exception {
+    protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem)
+            throws Exception {
         IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
         IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
         IPath srcPath = srcFolder.getLocation();
 
         // http://jira.talendforge.org/browse/TESB-6437
         // https://jira.talendforge.org/browse/TESB-7893
-        ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                ICamelDesignerCoreService.class);
+        ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
+                .getDefault().getService(ICamelDesignerCoreService.class);
         if (camelService != null) {
             List<IPath> paths = camelService.synchronizeRouteResource(processItem);
             for (IPath path : paths) {
-                osgiResource.addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI()
-                        .toURL());
+                osgiResource.addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(),
+                        path.toFile().toURI().toURL());
             }
         }
     }
@@ -389,7 +380,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param process
      * @throws IOException
      */
-    private void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) throws IOException {
+    private void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process)
+            throws IOException {
         String projectName = getCorrespondingProjectName(process);
         final URI classRootURI = classesLocation.toURI();
         List<String> jobFolderNames = getRelatedJobFolderNames(process);
@@ -397,15 +389,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             final String classRootLocation = getClassRootLocation() + projectName + File.separator;
             for (String jobFolderName : jobFolderNames) {
                 String classRoot = FilesUtils.getFileRealPath(classRootLocation + jobFolderName);
-                String targetPath = FilesUtils.getFileRealPath(classesLocation + File.separator + projectName + File.separator
-                        + jobFolderName);
+                String targetPath = FilesUtils.getFileRealPath(
+                        classesLocation + File.separator + projectName + File.separator + jobFolderName);
                 File sourceFile = new File(classRoot);
                 File targetFile = new File(targetPath);
                 FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
 
                 List<URL> fileURLs = FilesUtils.getFileURLs(targetFile);
                 for (URL url : fileURLs) {
-                    resource.addResource(classRootURI.relativize(new File(url.toURI()).getParentFile().toURI()).toString(), url);
+                    resource.addResource(
+                            classRootURI.relativize(new File(url.toURI()).getParentFile().toURI()).toString(),
+                            url);
                 }
             }
         } catch (IOException e) {
@@ -442,8 +436,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "job.xml"); //$NON-NLS-1$
 
         if (ROUTE.equals(itemType)) {
-            String inputFile = getPluginResourceUri("resources/route-template.xml"); //$NON-NLS-1$
-            createRouteBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType);
+            createRouteBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
         } else {
             createJobBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
         }
@@ -451,10 +444,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return targetFile.toURI().toURL();
     }
 
-    private String getPluginResourceUri(String resourcePath) throws IOException {
-        final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-        return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
-    }
+//    private String getPluginResourceUri(String resourcePath) throws IOException {
+//        final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+//        return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
+//    }
 
     private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-beans-template.xml"; //$NON-NLS-1$
 
@@ -606,116 +599,78 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("job", jobInfo); //$NON-NLS-1$
 
-        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile,
+        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
                 new InputStreamReader(this.getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_JOB)));
     }
 
-    private void createRouteBundleBlueprintConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
-            String jobClassName, String itemType) throws IOException {
+    private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
-        String additionalJobInterfaces = "";
-        String additionalServiceProps = "";
-        String additionalJobBundleConfig = "";
-        String additionalJobBeanParams = "";
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile,
+            String jobName, String jobClassName) throws IOException {
 
-        boolean hasSAM = false;
+        // velocity template context
+        Map<String, Object> routeInfo = new HashMap<String, Object>();
 
+        // route name and class name
+        routeInfo.put("name", jobName); //$NON-NLS-1$
+        routeInfo.put("className", jobClassName); //$NON-NLS-1$
+
+
+        boolean useSAM = false;
         boolean hasCXFSamlConsumer = false;
         boolean hasCXFSamlProvider = false;
         for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
             // http://jira.talendforge.org/browse/TESB-3850
             String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-            if (!"RAW".equals(format) && !hasSAM) { //$NON-NLS-1$
-                hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node);
+
+            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
+                useSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
             }
-            if("CXF_MESSAGE".equals(format) || "RAW".equals(format)){
+
+            if ("CXF_MESSAGE".equals(format) || "RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
                 continue;
             }
-            if(hasCXFSamlConsumer && hasCXFSamlProvider){
+            if (hasCXFSamlConsumer && hasCXFSamlProvider) {
                 continue;
             }
-            if(!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)){
+            if (!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
                 continue;
             }
-            String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node);
-            if(!"SAML".equals(securityType)){
+            String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node); //$NON-NLS-1$
+            if (!"SAML".equals(securityType)) { //$NON-NLS-1$
                 continue;
             }
 
             String uniquename = ElementParameterParser.getUNIQUENAME(node);
-            EList connections = processItem.getProcess().getConnection();
+            @SuppressWarnings("unchecked")
+            EList<ConnectionType> connections = processItem.getProcess().getConnection();
             boolean found = false;
-            for(Object c:connections){
-                String target = ((ConnectionType)c).getTarget();
-                if(uniquename.equals(target)){
+            for (ConnectionType conn : connections) {
+                String target = conn.getTarget();
+                if (uniquename.equals(target)) {
                     hasCXFSamlConsumer = true;
                     found = true;
                     break;
                 }
             }
-            if(!found){
+            if (!found) {
                 hasCXFSamlProvider = true;
             }
         }
+        routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
+        routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
+        routeInfo.put("hasCXFSamlProvider", hasCXFSamlProvider); //$NON-NLS-1$
 
-        if(hasCXFSamlConsumer || hasCXFSamlProvider ){
-            additionalJobBeanParams += readFileContent("ccxf_saml_bean.txt");
-            additionalJobBundleConfig += readFileContent("ccxf_saml_bundle.txt");
-        }
-        if(hasCXFSamlProvider){
-            additionalJobBeanParams += readFileContent("ccxf_saml_provider_bean.txt");
-            additionalJobBundleConfig += readFileContent("ccxf_saml_provider_bundle.txt");
-        }
-        if(hasCXFSamlConsumer){
-            additionalJobBeanParams += readFileContent("ccxf_saml_consumer_bean.txt");
-            additionalJobBundleConfig += readFileContent("ccxf_saml_consumer_bundle.txt");
-        }
+        // route OSGi DataSources
+        routeInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
 
-        if (hasSAM) {
-            additionalJobBeanParams += "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-            additionalJobBundleConfig += "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
-                    + "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
-        }
 
-        // OSGi DataSource
-        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, false);
+        // velocity template context
+        Map<String, Object> contextParams = new HashMap<String, Object>();
+        contextParams.put("route", routeInfo); //$NON-NLS-1$
 
-        BufferedReader br = null;
-        BufferedWriter bw = null;
-        try {
-            br = new BufferedReader(new FileReader(inputFile));
-            bw = new BufferedWriter(new FileWriter(targetFile));
-
-            String line = br.readLine();
-            while (line != null) {
-                line = line.replace("@JOBNAME@", jobName) //$NON-NLS-1$
-                        .replace("@TYPE@", itemType) //$NON-NLS-1$
-                        .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobInterfaces) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_BUNDLE_CONFIG@", additionalJobBundleConfig) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_SERVICE_PROPERTIES@", additionalServiceProps); //$NON-NLS-1$
-
-                bw.write(line);
-                bw.newLine();
-                line = br.readLine();
-            }
-            bw.flush();
-        } finally {
-            if (null != br) {
-                br.close();
-            }
-            if (null != bw) {
-                bw.close();
-            }
-        }
-    }
-
-    private String readFileContent(String path) throws IOException{
-        InputStream is = getClass().getResourceAsStream(path);
-        String s = new Scanner(is).useDelimiter("\\A").next();
-        is.close();
-        return s;
+        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
+                new InputStreamReader(this.getClass().getResourceAsStream(TEMPLATE_BLUEPRINT_ROUTE)));
     }
 
     private static String getOSGIInfFolder() {
@@ -726,8 +681,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return FileConstants.META_INF_FOLDER_NAME.concat(PATH_SEPARATOR).concat(SPRING);
     }
 
-    private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport)
-            throws IOException {
+    private ExportFileResource genMetaInfoFolder(ExportFileResource libResource,
+            List<ProcessItem> itemToBeExport) throws IOException {
+
         ExportFileResource metaInfoResource = new ExportFileResource(null, FileConstants.META_INF_FOLDER_NAME);
 
         // generate the MANIFEST.MF file in the temp folder
@@ -749,8 +705,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    private Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName)
-            throws IOException {
+    private Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport,
+            String bundleName) throws IOException {
+
         Analyzer analyzer = new Analyzer();
         Jar bin = new Jar(classesLocation);
         analyzer.setJar(bin);
@@ -769,8 +726,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         analyzer.setProperty(Analyzer.BUNDLE_VERSION, getBundleVersion());
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName() + " (" + brandingService.getAcronym()
-                + "_" + RepositoryPlugin.getDefault().getBundle().getVersion().toString() + ")");
+        analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName() + " ("
+                + brandingService.getAcronym() + "_"
+                + RepositoryPlugin.getDefault().getBundle().getVersion().toString() + ")");
 
         String importPackages = "";
         StringBuilder sb = new StringBuilder();
@@ -799,7 +757,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
                     importPackages += "org.talend.esb.sam.agent.feature,";
                     analyzer.setProperty(Analyzer.REQUIRE_BUNDLE,
-                            "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                            "org.apache.cxf.bundle" +
+                            ",org.springframework.beans" +
+                            ",org.springframework.context" +
+                            ",org.springframework.osgi.core" +
+                            ",sam-agent" +
+                            ",sam-common");
                 } else {
                     Collection<NodeType> tRESTClientComps = EmfModelUtils.getComponentsByName(pi, "tRESTClient");
                     for (NodeType node : tRESTClientComps) {
@@ -807,7 +770,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
                             importPackages += "org.talend.esb.sam.agent.feature,";
                             analyzer.setProperty(Analyzer.REQUIRE_BUNDLE,
-                                    "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                                    "org.apache.cxf.bundle" +
+                                    ",org.springframework.beans" +
+                                    ",org.springframework.context" +
+                                    ",org.springframework.osgi.core" +
+                                    ",sam-agent" +
+                                    ",sam-common");
                             break;
                         }
                     }
@@ -926,14 +894,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
             List<ProcessItem> itemToBeExport) throws IOException {
-        IPath libPath = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME).getLocation()
-                .append(JavaUtils.JAVA_LIB_DIRECTORY);
+
+        IPath libPath = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME)
+                .getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
         for (ProcessItem pi : itemToBeExport) {
-            IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
-                    .getService(IOsgiDependenciesService.class);
+            IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister
+                    .getDefault().getService(IOsgiDependenciesService.class);
             if (dependenciesService != null) {
-                Map<String, String> bundleDependences = dependenciesService.getBundleDependences(pi, pi.getProperty()
-                        .getAdditionalProperties());
+                Map<String, String> bundleDependences = dependenciesService.getBundleDependences(pi,
+                        pi.getProperty().getAdditionalProperties());
                 // process external libs
                 String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
                 String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
@@ -966,7 +935,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     @Override
-    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
+    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process,
+            Set<String> neededLibraries) {
+
         if (!needLibraries) {
             return Collections.emptyList();
         }
@@ -974,8 +945,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
         boolean useBeans = false;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
+                    .getDefault().getService(ICamelDesignerCoreService.class);
             if (camelService.isInstanceofCamel(process[0].getItem())) {
                 useBeans = true;
             }
@@ -1001,8 +972,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     }
                     ProcessItem selectedProcessItem;
                     if (resource.getNode() != null) {
-                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
-                                .getProperty().getId(), version);
+                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot()
+                                .getProject(), item.getProperty().getId(), version);
                     } else {
                         // if no node given, take in the current project only
                         selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
@@ -1029,9 +1000,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             Item item = object.getProperty().getItem();
             if (item instanceof RoutineItem) {
                 RoutineItem routine = (RoutineItem) item;
-                EList imports = routine.getImports();
-                for (Object o : imports) {
-                    IMPORTType type = (IMPORTType) o;
+                @SuppressWarnings("unchecked")
+                EList<IMPORTType> imports = routine.getImports();
+                for (IMPORTType type : imports) {
                     listModulesReallyNeeded.add(type.getMODULE());
                 }
             }

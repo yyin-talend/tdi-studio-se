@@ -8,7 +8,6 @@
 			http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
 			http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-	<!--import resource="classpath:META-INF/cxf/cxf.xml"/-->
 #if ($endpoint.useSAM)
 	<import resource="classpath:META-INF/tesb/agent-osgi.xml" />
 #end
@@ -26,7 +25,7 @@
 			<bean class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
 				<constructor-arg ref="serviceBean" />
 			</bean>
-            <bean class="${endpoint.jobClassName}.CustomJSONProvider">
+			<bean class="${endpoint.jobClassName}.CustomJSONProvider">
 				<property name="ignoreNamespaces" value="true" />
 				<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
 				<property name="wrapperName" value="root" />

@@ -1,3 +1,0 @@
-
-<cm:property-placeholder xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" id="stsProperties" persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{" />
-<cm:property-placeholder xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" id="clientProperties" persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{" />
