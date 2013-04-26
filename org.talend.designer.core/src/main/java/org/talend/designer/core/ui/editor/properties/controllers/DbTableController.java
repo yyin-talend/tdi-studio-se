@@ -534,7 +534,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
                             if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(con.getDatabaseType())) {
                                 if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equalsIgnoreCase(
                                         con.getDbVersionString())) {
-                                    JavaSqlFactory.doHivePreSetup(con);
+                                    JavaSqlFactory
+                                            .doHivePreSetup((DatabaseConnection) iMetadataConnection.getCurrentConnection());
                                     returnTablesFormConnection = ExtractMetaDataFromDataBase
                                             .fetchAllTablesForHiveEmbeddedModel(iMetadataConnection);
                                     JavaSqlFactory.doHiveConfigurationClear();
