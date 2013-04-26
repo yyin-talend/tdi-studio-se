@@ -201,7 +201,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
-                if (ROUTE.equals(itemType)) {
+                if (isRoute()) {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
             }
@@ -428,14 +428,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         processItem.getProperty().getVersion());
     }
 
+    private boolean isRoute() {
+        return ROUTE.equals(itemType);
+    }
+
     private URL generateBlueprintConfig(ProcessItem processItem) throws IOException {
-        if (itemType == null) {
-            itemType = JOB;
-        }
 
-        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "job.xml"); //$NON-NLS-1$
+        String configName = (isRoute()) ? "route.xml" : "job.xml"; //$NON-NLS-1$ //$NON-NLS-2$
+        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + configName);
 
-        if (ROUTE.equals(itemType)) {
+        if (isRoute()) {
             createRouteBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
         } else {
             createJobBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
@@ -738,7 +740,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             delim = ",";
             // Add Route Resource Export packages
             // http://jira.talendforge.org/browse/TESB-6227
-            if (ROUTE.equals(itemType)) {
+            if (isRoute()) {
                 String routeResourcePackages = addRouteResourcePackages(pi);
                 if (!routeResourcePackages.isEmpty()) {
                     sb.append(delim).append(routeResourcePackages);
@@ -784,7 +786,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         analyzer.setProperty(Analyzer.EXPORT_PACKAGE, sb.toString());
 
-        if (ROUTE.equals(itemType)) {
+        if (isRoute()) {
             addRouteOsgiDependencies(analyzer, libResource, itemToBeExport);
         } else {
             importPackages += "routines.system.api,org.apache.cxf.management.counters,*;resolution:=optional";
