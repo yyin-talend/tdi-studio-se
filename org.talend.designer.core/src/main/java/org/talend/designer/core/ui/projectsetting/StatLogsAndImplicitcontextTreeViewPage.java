@@ -80,7 +80,6 @@ import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
-import org.talend.repository.viewer.ui.provider.RepositoryNameSorter;
 import org.talend.repository.viewer.ui.viewer.CheckboxRepositoryTreeViewer;
 
 /**
@@ -173,7 +172,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         contentProvider = new AllJobContentProvider(repositoryView);
         viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new RepositoryLabelProvider(repositoryView));
-        viewer.setSorter(new RepositoryNameSorter());
+        viewer.setSorter(repositoryView.getViewer().getSorter());
         IViewSite viewSite = repositoryView.getViewSite();
         viewer.setInput(viewSite);
 
@@ -257,7 +256,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         statContentProvider = new AllJobContentProvider(repositoryView);
         statViewer.setContentProvider(statContentProvider);
         statViewer.setLabelProvider(new RepositoryLabelProvider(repositoryView));
-        statViewer.setSorter(new RepositoryNameSorter());
+        statViewer.setSorter(repositoryView.getViewer().getSorter());
         IViewSite viewSite = repositoryView.getViewSite();
         statViewer.setInput(viewSite);
 

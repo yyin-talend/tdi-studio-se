@@ -138,7 +138,6 @@ import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
-import org.talend.repository.viewer.ui.provider.RepositoryNameSorter;
 import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
 
 /**
@@ -205,6 +204,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @see org.talend.core.ui.repository.views.IRepositoryView#getSystemFolders()
      */
+    @Override
     public IProjectRepositoryNode getRoot() {
         if (rootProjectNode == null) {
             rootProjectNode = createRootNode();
@@ -297,7 +297,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         setContentProviderForView();
         setLabelProviderForView();
-        viewer.setSorter(new RepositoryNameSorter());
+        // viewer.setSorter(new RepositoryNameSorter());
         setupInput();
         getSite().setSelectionProvider(viewer);
         addFilters();
@@ -308,6 +308,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -318,6 +319,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -340,6 +342,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         viewer.getTree().addFocusListener(new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
                 IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
@@ -347,6 +350,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
@@ -404,6 +408,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             final IWorkbenchWindow activedWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             activedWorkbenchWindow.getPartService().addPartListener(new IPartListener() {
 
+                @Override
                 public void partActivated(IWorkbenchPart part) {
                     if (part instanceof RepositoryView) {
                         String title = activedWorkbenchWindow.getShell().getText();
@@ -414,18 +419,22 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     }
                 }
 
+                @Override
                 public void partBroughtToTop(IWorkbenchPart part) {
 
                 }
 
+                @Override
                 public void partClosed(IWorkbenchPart part) {
 
                 }
 
+                @Override
                 public void partDeactivated(IWorkbenchPart part) {
 
                 }
 
+                @Override
                 public void partOpened(IWorkbenchPart part) {
                     if (part instanceof RepositoryView) {
                         String title = activedWorkbenchWindow.getShell().getText();
@@ -890,6 +899,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.addDropSupport(ops | DND.DROP_DEFAULT, transfers, adapter);
         dragDetectListener = new Listener() {
 
+            @Override
             public void handleEvent(Event event) {
                 // dragDetected = true;
             }
@@ -935,6 +945,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     protected void hookDoubleClickAction() {
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 doubleClickAction.run();
             }
@@ -947,6 +958,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 RepositoryView.this.fillContextMenu(manager);
             }
@@ -1044,10 +1056,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @see org.talend.core.ui.repository.views.IRepositoryView#getViewer()
      */
+    @Override
     public TreeViewer getViewer() {
         return viewer;
     }
 
+    @Override
     public void refresh() {
         this.refresh(false);
     }
@@ -1120,6 +1134,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         }
     }
 
+    @Override
     public void refreshView() {
         refresh(true);
 
@@ -1143,6 +1158,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @see org.talend.repository.ui.views.IRepositoryView#refresh(java.lang.Object)
      */
+    @Override
     public void refresh(Object object) {
 
         if (object != null) {
@@ -1192,6 +1208,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     /**
      * only refresh the child of root node.
      */
+    @Override
     public void refreshAllChildNodes(RepositoryNode rootNode) {
         if (rootNode != null) {
             rootNode.setInitialized(false);
@@ -1218,6 +1235,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         }
     }
 
+    @Override
     public void expand(Object object) {
         if (object == null) {
             return;
@@ -1226,6 +1244,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         expand(object, !state);
     }
 
+    @Override
     public boolean getExpandedState(Object object) {
         if (object == null) {
             return false;
@@ -1234,6 +1253,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return state;
     }
 
+    @Override
     public void expand(Object object, boolean state) {
         if (object == null) {
             return;
@@ -1290,6 +1310,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @see org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor#getContributorId()
      */
+    @Override
     public String getContributorId() {
         return getSite().getId();
     }
@@ -1307,6 +1328,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return super.getAdapter(adapter);
     }
 
+    @Override
     public void repositoryChanged(RepositoryChangedEvent event) {
         refresh();
     }
@@ -1316,6 +1338,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return null;
     }
 
+    @Override
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         if (part == this && selection instanceof TreeSelection) {
             CopyAction.getInstance().init(getViewer(), (IStructuredSelection) selection);
@@ -1334,6 +1357,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @seeorg.talend.repository.ui.views.IRepositoryView#containsRepositoryType(org.talend.core.model.repository.
      * ERepositoryObjectType)
      */
+    @Override
     public boolean containsRepositoryType(ERepositoryObjectType type) {
         return researchRootRepositoryNode(type) != null;
     }
@@ -1352,6 +1376,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
          * 
          * @see org.eclipse.swt.events.MouseTrackListener#mouseEnter(org.eclipse.swt.events.MouseEvent)
          */
+        @Override
         public void mouseEnter(MouseEvent e) {
             // TODO Auto-generated method stub
 
@@ -1362,6 +1387,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
          * 
          * @see org.eclipse.swt.events.MouseTrackListener#mouseExit(org.eclipse.swt.events.MouseEvent)
          */
+        @Override
         public void mouseExit(MouseEvent e) {
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
@@ -1381,6 +1407,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
          * 
          * @see org.eclipse.swt.events.MouseTrackListener#mouseHover(org.eclipse.swt.events.MouseEvent)
          */
+        @Override
         public void mouseHover(MouseEvent e) {
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
