@@ -1116,6 +1116,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	
 	if (nb_line_<%=cid %>><%=limit %>) {
+	<%if(("SAX").equals(mode)) {%>
+			looper_<%=cid%>.stopRead();
+	<%}%>
 		break;
 	}
 <% 

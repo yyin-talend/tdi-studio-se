@@ -25,6 +25,7 @@ if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 	try {
 		looper_<%=cid%>.handleTaskResponse();
 	} catch(java.lang.Exception e) {
+		if(!(e.getCause() instanceof org.talend.xml.sax.exception.EnoughDataException))
 	<% if(dieOnError) { %>
 		throw(e);
 	<% } else { %>
