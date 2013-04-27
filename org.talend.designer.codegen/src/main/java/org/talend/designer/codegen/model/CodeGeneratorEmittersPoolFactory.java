@@ -129,7 +129,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
 
                 TimeMeasure.begin("initialize Jet Emitters"); //$NON-NLS-1$
-                ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                 jetFilesCompileFail.clear();
 
@@ -156,8 +155,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                 templatesFactory.init();
 
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                // do not call init because it may be already loaded by
-                // ComponentsFactoryProvider.saveComponentVisibilityStatus
                 componentsFactory.getComponents();
 
                 long startTime = System.currentTimeMillis();
@@ -187,11 +184,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
                     for (IComponent component : new ArrayList<IComponent>(components)) {
-                        // if (component.isTechnical() || component.isVisible()) {
                         if (component.getAvailableCodeParts().size() > 0) {
                             initComponent(codeLanguage, jetBeans, codePart, component);
                         }
-                        // }
                         monitorBuffer++;
                         if (monitorBuffer % 100 == 0) {
                             monitorWrap.worked(100);

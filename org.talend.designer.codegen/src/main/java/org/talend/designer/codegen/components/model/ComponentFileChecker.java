@@ -27,7 +27,6 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.io.SHA1Util;
 import org.talend.commons.xml.XSDValidator;
 import org.talend.core.model.ModelPlugin;
 import org.talend.designer.core.model.components.ComponentFilesNaming;
@@ -49,18 +48,14 @@ public class ComponentFileChecker {
         checkFiles(currentFolder, languageSuffix);
         File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(currentFolder.getName(),
                 languageSuffix));
-        XsdValidationCacheManager xsdValidationCacheManager = XsdValidationCacheManager.getInstance();
-
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(xmlMainFile);
-            String sha1 = SHA1Util.calculateFromTextStream(fis);
             // do not check anymore XSD when be in headless mode.
             // check is mainly usefull for GUI to be able to check why component is not loaded after be developped.
             // if be in headless mode (like commandline), it's supposed to use only stable components
-            if (!CommonsPlugin.isHeadless() && xsdValidationCacheManager.needCheck(xmlMainFile, sha1)) {
+            if (!CommonsPlugin.isHeadless()) {
                 checkXSD(xmlMainFile);
-                xsdValidationCacheManager.setChecked(xmlMainFile, sha1);
             }
         } catch (FileNotFoundException e) {
             ExceptionHandler.process(e);

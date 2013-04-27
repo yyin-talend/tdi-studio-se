@@ -240,6 +240,16 @@ public class EmfComponent extends AbstractComponent {
                 cache.getComponentEntryMap().put(getName(), new BasicEList<ComponentInfo>());
             }
             EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
+            Iterator<ComponentInfo> it = componentsInfo.iterator();
+            while (it.hasNext()) {
+                ComponentInfo cInfo = it.next();
+                if (cInfo.getSourceBundleName().equals(bundleId)) {
+                    it.remove();
+                    // in case we already had in the cache the same component
+                    // just remove it to force to reload all from cache.
+                    break;
+                }
+            }
             componentsInfo.add(info);
             isAlreadyLoad = true;
         } else {
