@@ -45,6 +45,7 @@ List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean isSourceKeyIncNull = ("true").equals(ElementParameterParser.getValue(node, "__SOURCE_KEY_INC_NULL__"));
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     String inConnectionName = null;
     List<? extends IConnection> incomingConnections = node.getIncomingConnections();
@@ -70,9 +71,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         int paramIndex = 1;
         for(Column sourceKey : sourceKeys) {
             %>
-            <%=scdManager.genSetStatement("searchingStmt_" + cid, inConnectionName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),true)%>
+            <%=scdManager.genSetStatement("searchingStmt_" + cid, inConnectionName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),isSourceKeyIncNull)%>
             <%
-            paramIndex=paramIndex+2;
+             if(isSourceKeyIncNull){
+            	paramIndex=paramIndex+2;
+             }else{
+             	paramIndex++;
+             }
         }
         List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
         %>
@@ -257,9 +262,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+                    <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
                     <%
-                    index=index+2;
+                     if(isSourceKeyIncNull){
+                    	index=index+2;
+                    }else{
+                    	index++;
+                    }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType1_<%=cid%>.executeUpdate();
@@ -310,9 +319,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+                    <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
                     <%
-                    index=index+2;
+                     if(isSourceKeyIncNull){
+                    	index=index+2;
+                    }else{
+                    	index++;
+                    }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType2_<%=cid%>.executeUpdate();
@@ -436,9 +449,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType3_" + cid,  inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
+                    <%=scdManager.genSetStatement("updateForType3_" + cid,  inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),isSourceKeyIncNull)%>
                     <%
-                    index=index+2;
+                    if(isSourceKeyIncNull){
+                    	index=index+2;
+                    }else{
+                    	index++;
+                    }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType3_<%=cid%>.executeUpdate();
