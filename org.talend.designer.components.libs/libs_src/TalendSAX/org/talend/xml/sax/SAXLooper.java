@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -154,6 +154,17 @@ public class SAXLooper {
     		SimpleSAXLooper ssl = (SimpleSAXLooper)this.looper;
     		ssl.handleException();
     	} 
+    }
+    
+    /**
+     * stop the read action asap
+     * 
+     */
+    public void stopRead() {
+        if(this.isSimpleParse) {
+            SimpleSAXLooper ssl = (SimpleSAXLooper)this.looper;
+            ssl.stopRead();
+        }
     }
     
     public static void main(String args[]) {

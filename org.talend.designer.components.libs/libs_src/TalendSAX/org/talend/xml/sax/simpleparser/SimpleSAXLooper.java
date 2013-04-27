@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -41,6 +41,8 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     private FutureTask futureTask;
     
     private boolean ignoreDTD = false;
+    
+    SimpleSAXLoopHandler hd = null;
     
     public SimpleSAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
     	futureTask = new FutureTask(this);
@@ -116,7 +118,7 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     public Object call() throws Exception {
         Reader reader = null;
 		try {
-            DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
+		    hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = null;
             if(!ignoreDTD) { //orginal code
             	saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -211,5 +213,11 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
 		this.ignoreDTD=ignoreDTD;
 		
 	}
+
+    public void stopRead() {
+        if(hd != null) {
+            hd.stopRead();
+        }
+    }
 
 }
