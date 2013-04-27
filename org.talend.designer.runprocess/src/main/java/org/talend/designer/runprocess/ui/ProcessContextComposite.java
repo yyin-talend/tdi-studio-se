@@ -34,13 +34,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**
@@ -158,8 +162,10 @@ public class ProcessContextComposite extends Composite {
         // Select the first context
         if (process != null) {
             if (process.equals(this.process)) {
-                // avoid to set two times the same object
-                return;
+                // check the ContextParameter is same or not , avoid to set two times the same object .
+                if (checkIsSameContextParameter()) {
+                    return;
+                }
             }
             this.process = process;
             contextComboViewer.getControl().setEnabled(true);
@@ -239,6 +245,25 @@ public class ProcessContextComposite extends Composite {
             contextTableViewer.setInput(element.getContextParameterList());
         }
 
+    }
+
+    /*
+     * check same ContextParameter or not.
+     */
+    private boolean checkIsSameContextParameter() {
+        List<ContextItem> allContextItem = ContextUtils.getAllContextItem();
+        for (IContext context : process.getContextManager().getListContext()) {
+            for (IContextParameter param : context.getContextParameterList()) {
+                if (allContextItem != null) {
+                    ContextItem contextItem = ContextUtils.getContextItemById(allContextItem, param.getSource());
+                    ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(), true);
+                    ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(contextType,
+                            param.getName());
+                    return ContextUtils.samePropertiesForContextParameter(param, contextParameterType);
+                }
+            }
+        }
+        return false;
     }
 
     /**
