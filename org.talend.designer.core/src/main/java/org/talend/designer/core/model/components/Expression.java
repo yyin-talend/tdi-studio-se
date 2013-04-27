@@ -183,7 +183,7 @@ public final class Expression {
                     }
                     for (IMetadataTable table : node.getMetadataList()) {
                         for (IMetadataColumn column : table.getListColumns()) {
-                            if (column.getType().equals(value)) {
+                            if (column.getType() != null && column.getType().equals(value)) {
                                 return true;
                             }
                         }
