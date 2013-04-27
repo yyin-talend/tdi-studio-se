@@ -220,7 +220,7 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="USE_TRANSACTION"
+      NAME="SOURCE_KEY_INC_NULL"
       FIELD="CHECK"
       NUM_ROW="63"
     >       
