@@ -119,8 +119,8 @@ public class JavaProcessUtil {
             if (value != null) {
                 String headerLibraries = (String) value;
                 if (headerLibraries.indexOf(File.separatorChar) > 0
-                        && headerLibraries.length() > headerLibraries.lastIndexOf(File.separatorChar) + 2) {
-                    String substring = headerLibraries.substring(headerLibraries.lastIndexOf(File.separatorChar) + 2);
+                        && headerLibraries.length() > headerLibraries.lastIndexOf(File.separatorChar) + 1) {
+                    String substring = headerLibraries.substring(headerLibraries.lastIndexOf(File.separatorChar) + 1);
                     if (!"".equals(substring)) {//$NON-NLS-1$
                         modulesNeeded.add(getModuleValue(process, substring));
                     }
@@ -133,8 +133,8 @@ public class JavaProcessUtil {
             if (value != null) {
                 String footerLibraries = (String) value;
                 if (footerLibraries.indexOf(File.separatorChar) > 0
-                        && footerLibraries.length() > footerLibraries.lastIndexOf(File.separatorChar) + 2) {
-                    String substring = footerLibraries.substring(footerLibraries.lastIndexOf(File.separatorChar) + 2);
+                        && footerLibraries.length() > footerLibraries.lastIndexOf(File.separatorChar) + 1) {
+                    String substring = footerLibraries.substring(footerLibraries.lastIndexOf(File.separatorChar) + 1);
                     if (!"".equals(substring)) {//$NON-NLS-1$
                         modulesNeeded.add(getModuleValue(process, substring));
                     }
