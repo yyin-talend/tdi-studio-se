@@ -52,7 +52,6 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.io.SHA1Util;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCachePackage;
@@ -178,7 +177,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         ComponentManager.saveResource(); // will save only if needed.
 
-        TimeMeasure.step("initComponents", "createCache");
+        // TimeMeasure.step("initComponents", "createCache");
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // TimeMeasure.end("initComponents");

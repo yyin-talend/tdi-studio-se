@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.codegen.config;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,8 +40,6 @@ public class JetBean {
 
     private String className = ""; //$NON-NLS-1$
 
-    private Method method = null;
-
     private String version = null;
 
     private String language = null;
@@ -54,6 +51,8 @@ public class JetBean {
     private static Map<String, String> pluginIdToBundle = new HashMap<String, String>();
 
     private long crc = 0;
+
+    private String methodName;
 
     /**
      * Getter for crc.
@@ -294,24 +293,6 @@ public class JetBean {
     }
 
     /**
-     * Getter for method.
-     * 
-     * @return the method
-     */
-    public Method getMethod() {
-        return this.method;
-    }
-
-    /**
-     * Sets the method.
-     * 
-     * @param method the method to set
-     */
-    public void setMethod(Method method) {
-        this.method = method;
-    }
-
-    /**
      * Getter for className.
      * 
      * @return the className
@@ -389,6 +370,28 @@ public class JetBean {
 
     public void setFamily(String family) {
         this.family = family;
+    }
+
+    /**
+     * Getter for methodName.
+     * 
+     * @return the methodName
+     */
+    public String getMethodName() {
+        return this.methodName;
+    }
+
+    /**
+     * Sets the methodName.
+     * 
+     * @param methodName the methodName to set
+     */
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getFullTemplatePath() {
+        return Platform.getPlugin(getJetPluginRepository()).getDescriptor().getInstallURL().toString() + getTemplateRelativeUri();
     }
 
 }

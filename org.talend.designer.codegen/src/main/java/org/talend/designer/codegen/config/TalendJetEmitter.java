@@ -18,6 +18,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -55,7 +56,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.talend.commons.debug.TalendDebugHandler;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.codegen.i18n.Messages;
 
 /**
@@ -78,6 +79,10 @@ public class TalendJetEmitter extends JETEmitter {
 
     private static Logger log = Logger.getLogger(TalendJetEmitter.class);
 
+    private JetBean jetbean;
+
+    private boolean classAvailable = true;
+
     /**
      * DOC mhirt TalendJetEmitter constructor comment.
      * 
@@ -96,17 +101,16 @@ public class TalendJetEmitter extends JETEmitter {
         this.talendEclipseHelper = new TalendEclipseHelper(progressMonitor, this, rebuild);
     }
 
-    public TalendJetEmitter(String arg0, ClassLoader arg1, String componentFamily, String templateName, String templateLanguage,
-            String codePart, TalendEclipseHelper teh) {
-        super(arg0, arg1);
+    public TalendJetEmitter(JetBean jetbean, TalendEclipseHelper teh) {
+        super(jetbean.getFullTemplatePath(), jetbean.getClassLoader());
+        this.jetbean = jetbean;
+        this.templateName = jetbean.getClassName();
+        this.componentFamily = jetbean.getFamily();
+        this.templateLanguage = jetbean.getLanguage();
+        this.codePart = jetbean.getCodePart();
         if (templateName.endsWith(codePart + "" + templateLanguage)) { //$NON-NLS-1$
             this.templateName = templateName.substring(templateName.lastIndexOf(".") + 1, templateName.lastIndexOf(codePart)); //$NON-NLS-1$
-        } else {
-            this.templateName = templateName;
         }
-        this.componentFamily = componentFamily;
-        this.templateLanguage = templateLanguage;
-        this.codePart = codePart;
         this.talendEclipseHelper = teh;
     }
 
@@ -350,7 +354,10 @@ public class TalendJetEmitter extends JETEmitter {
                 // if jetEmitter.getMethod() == null, means the class file doesn't exist anymore
                 // it should be impossible to have only the class file deleted and the .java never modified, but still
                 // handle this case.
-                if (needRebuild || jetEmitter.getMethod() == null) {
+                // we could optimize the speed at this point by removing the method call here.
+                // but since this part is only called when there is a change detected in the jet emitters, it should be
+                // ok.
+                if (needRebuild || jetEmitter.method == null) {
                     subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message", //$NON-NLS-1$
                             new Object[] { project.getName() }));
 
@@ -371,6 +378,7 @@ public class TalendJetEmitter extends JETEmitter {
                                             marker.getAttribute(IMarker.MESSAGE),
                                             (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
                                                     targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) }))));
+                            classAvailable = false;
                         }
                     }
 
@@ -421,5 +429,102 @@ public class TalendJetEmitter extends JETEmitter {
                 progressMonitor.done();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.emf.codegen.jet.JETEmitter#getMethod()
+     */
+    @Override
+    public Method getMethod() {
+        Method localMethod = super.getMethod();
+        if (localMethod == null) {
+            try {
+                localMethod = loadMethod();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            // add this part in case there is any problem in the project (should never be called in normal use)
+            // but if there is any problem, it will force to regenerate again this component.
+            // This might be also called for custom components.
+            if (localMethod == null) {
+                try {
+                    talendEclipseHelper.initialize(BasicMonitor.toMonitor(new NullProgressMonitor()), this, componentFamily,
+                            templateName, templateLanguage, codePart);
+                    localMethod = super.getMethod();
+                } catch (JETException e) {
+                    ExceptionHandler.process(e);
+                }
+            } else {
+                setMethod(localMethod);
+            }
+        }
+        return localMethod;
+    }
+
+    /**
+     * DOC mhirt Comment method "loadMethod".
+     * 
+     * @param methodName
+     * @return
+     * @throws MalformedURLException
+     * @throws ClassNotFoundException
+     */
+    private Method loadMethod() throws ClassNotFoundException, MalformedURLException {
+        if (jetbean == null) {
+            return null;
+        }
+        if (currentClassLoader != jetbean.getClassLoader()) {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            IProject project = workspace.getRoot().getProject(projectName);
+
+            URL url = new File(project.getLocation() + "/runtime").toURL(); //$NON-NLS-1$
+            currentClassLoader = jetbean.getClassLoader();
+            theClassLoader = new URLClassLoader(new URL[] { url }, jetbean.getClassLoader());
+        }
+        Class theClass;
+        try {
+            theClass = theClassLoader.loadClass(jetbean.getClassName());
+        } catch (Error e) {
+            throw new ClassNotFoundException(e.getMessage(), e);
+        }
+        // TDI-23079
+        try {
+            Method[] methods = theClass.getDeclaredMethods();
+            for (int i = 0; i < methods.length; ++i) {
+                if (methods[i].getName().equals(jetbean.getMethodName())) {
+                    return methods[i];
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    private static ClassLoader currentClassLoader = null;
+
+    private static URLClassLoader theClassLoader = null;
+
+    /**
+     * Getter for classAvailable.
+     * 
+     * @return the classAvailable
+     */
+    public boolean isClassAvailable() {
+        return this.classAvailable;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.emf.codegen.jet.JETEmitter#generate(org.eclipse.emf.common.util.Monitor, java.lang.Object[],
+     * java.lang.String)
+     */
+    @Override
+    public String generate(Monitor progressMonitor, Object[] arguments, String lineDelimiter) throws JETException {
+        getMethod(); // force to load the method before generate in case it was not set before.
+        return super.generate(progressMonitor, arguments, lineDelimiter);
     }
 }

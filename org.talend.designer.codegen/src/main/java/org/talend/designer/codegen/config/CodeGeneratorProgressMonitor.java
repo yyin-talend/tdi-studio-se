@@ -19,6 +19,9 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -60,6 +63,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#beginTask
      */
+    @Override
     public void beginTask(String name, int totalWork) {
         super.beginTask(name, totalWork);
         taskName = name;
@@ -71,6 +75,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      * 
      * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
      */
+    @Override
     public void clearBlocked() {
         Dialog.getBlockedHandler().clearBlocked();
     }
@@ -78,6 +83,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#done
      */
+    @Override
     public void done() {
         super.done();
         taskName = null;
@@ -87,6 +93,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#internalWorked
      */
+    @Override
     public void internalWorked(double work) {
         super.internalWorked(work);
         runEventLoop();
@@ -95,6 +102,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#isCanceled
      */
+    @Override
     public boolean isCanceled() {
         runEventLoop();
         return super.isCanceled();
@@ -106,33 +114,42 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     private void runEventLoop() {
         // Only run the event loop so often, as it is expensive on some platforms
         // (namely Motif).
-        long t = System.currentTimeMillis();
+        final long t = System.currentTimeMillis();
         if (t - lastTime < tTHRESH) {
             return;
         }
         lastTime = t;
         // Run the event loop.
-        Display disp = Display.getDefault();
+        if (CommonUIPlugin.isFullyHeadless()) {
+            return;
+        }
+        final Display disp = DisplayUtils.getDisplay();
         if (disp == null) {
             return;
         }
+        disp.syncExec(new Runnable() {
 
-        for (;;) {
-            try {
-                if (!disp.readAndDispatch()) {
-                    break;
+            @Override
+            public void run() {
+                for (;;) {
+                    try {
+                        if (!disp.readAndDispatch()) {
+                            break;
+                        }
+                    } catch (SWTException se) {
+                        // do nothing;
+                    }
+
+                    // Only run the event loop for so long.
+                    // Otherwise, this would never return if some other thread was
+                    // constantly generating events.
+                    if (System.currentTimeMillis() - t > tMAX) {
+                        break;
+                    }
                 }
-            } catch (SWTException se) {
-                // do nothing;
             }
 
-            // Only run the event loop for so long.
-            // Otherwise, this would never return if some other thread was
-            // constantly generating events.
-            if (System.currentTimeMillis() - t > tMAX) {
-                break;
-            }
-        }
+        });
     }
 
     /*
@@ -140,13 +157,29 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      * 
      * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
      */
-    public void setBlocked(IStatus reason) {
-        Dialog.getBlockedHandler().showBlocked(this, reason, taskName);
+    @Override
+    public void setBlocked(final IStatus reason) {
+        // Run the event loop.
+        if (CommonUIPlugin.isFullyHeadless()) {
+            ExceptionHandler.process(reason.getException());
+            return;
+        }
+        final Display disp = DisplayUtils.getDisplay();
+
+        disp.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                Dialog.getBlockedHandler().showBlocked(CodeGeneratorProgressMonitor.this, reason, taskName);
+            }
+
+        });
     }
 
     /**
      * @see IProgressMonitor#setCanceled
      */
+    @Override
     public void setCanceled(boolean b) {
         super.setCanceled(b);
         taskName = null;
@@ -156,6 +189,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#setTaskName
      */
+    @Override
     public void setTaskName(String name) {
         super.setTaskName(name);
         taskName = name;
@@ -165,6 +199,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#subTask
      */
+    @Override
     public void subTask(String name) {
         // Be prepared in case the first task was null
         if (taskName == null) {
@@ -177,6 +212,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
     /**
      * @see IProgressMonitor#worked
      */
+    @Override
     public void worked(int work) {
         super.worked(work);
         runEventLoop();

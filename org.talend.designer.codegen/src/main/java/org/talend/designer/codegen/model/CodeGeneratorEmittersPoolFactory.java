@@ -15,17 +15,18 @@ package org.talend.designer.codegen.model;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -33,16 +34,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -97,6 +98,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static String defaultTemplate = null;
 
+    public static final String JET_PROJECT = ".JETEmitters"; //$NON-NLS-1$
+
     /**
      * Default Constructor. Must not be used.
      */
@@ -133,21 +136,15 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetFilesCompileFail.clear();
 
                 IProgressMonitor monitorWrap = null;
-                boolean headless = CommonsPlugin.isHeadless();
-                if (!headless) {
-                    try {
-                        Display.getDefault();
-                    } catch (SWTError e) {
-                        headless = true;
-                    }
-                }
-
+                boolean headless = CommonUIPlugin.isFullyHeadless();
                 if (!headless) {
                     monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
                 } else {
                     monitorWrap = new NullProgressMonitor();
                 }
                 ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+
+                initializeJetEmittersProject(monitorWrap);
 
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
                         .getInstance();
@@ -233,7 +230,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             } finally {
                 try {
                     IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    IProject project = workspace.getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
+                    IProject project = workspace.getRoot().getProject(JET_PROJECT);
                     project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
@@ -258,6 +255,48 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
             return Status.OK_STATUS;
+        }
+
+        /**
+         * DOC nrousseau Comment method "initializeJetEmittersProject".
+         * 
+         * @throws CoreException
+         */
+        private void initializeJetEmittersProject(IProgressMonitor progressMonitor) throws CoreException {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+            IProject project = workspace.getRoot().getProject(JET_PROJECT);
+            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
+                    new Object[] { project.getName() }));
+            File file = new File(workspace.getRoot().getLocation().append(JET_PROJECT).toPortableString());
+            if (file.exists() && !project.isAccessible()) {
+                // .metadata missing, so need to reimport project to add it in the metadata.
+                progressMonitor.subTask("Reinitilializing project " + project.getName()); //$NON-NLS-1$
+                project.create(new SubProgressMonitor(progressMonitor, 1));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                        new Object[] { project.getName() }));
+            }
+            if (!project.isAccessible()) {
+                // project was deleted manually on the disk. The delete here will remove infos from metadata
+                // then we'll be able to create a new clean project.
+                project.delete(true, progressMonitor);
+            }
+            if (!project.exists()) {
+                progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
+                project.create(new SubProgressMonitor(progressMonitor, 1));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                        new Object[] { project.getName() }));
+            }
+            if (!project.isOpen()) {
+                project.open(new SubProgressMonitor(progressMonitor, 5));
+                project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+            }
+            IProjectDescription description = project.getDescription();
+            // only in case it's one old workspace and got no nature defined.
+            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
+                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+            }
         }
 
     };
@@ -436,10 +475,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
                         .loadEmittersPool(), components, monitorWrap);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
-                    TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(),
-                            jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                            dummyEmitter.getTalendEclipseHelper());
-                    emitter.setMethod(jetBean.getMethod());
+                    TalendJetEmitter emitter = new TalendJetEmitter(jetBean, dummyEmitter.getTalendEclipseHelper());
                     emitterPool.put(jetBean, emitter);
                     monitorBuffer++;
                     if (monitorBuffer % 100 == 0) {
@@ -466,11 +502,6 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
     }
 
-    private static String getFullTemplatePath(JetBean jetBean) {
-        return Platform.getPlugin(jetBean.getJetPluginRepository()).getDescriptor().getInstallURL().toString()
-                + jetBean.getTemplateRelativeUri();
-    }
-
     private static void synchronizedComponent(List<JetBean> components, IProgressMonitor sub,
             List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer, IProgressMonitor monitorWrap) {
         for (JetBean jetBean : components) {
@@ -478,9 +509,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 ComponentCompilations.deleteMarkers();
 
                 // System.out.println("The new file is not in JetPersistence* cache:" + getFullTemplatePath(jetBean));
-                TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(),
-                        jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                        dummyEmitter.getTalendEclipseHelper());
+                TalendJetEmitter emitter = new TalendJetEmitter(jetBean, dummyEmitter.getTalendEclipseHelper());
                 // wzhang modified to fix bug 11439
                 if (monitorWrap.isCanceled()) {
                     if (!CommonUIPlugin.isFullyHeadless()) {
@@ -506,9 +535,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     continue;
                 }
 
-                if (emitter.getMethod() != null) {
-                    jetBean.setMethod(emitter.getMethod());
-                    jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
+                if (emitter.isClassAvailable()) {
                     alreadyCompiledEmitters.add(jetBean);
                 } else {
                     jetFilesCompileFail.add(jetBean);
@@ -534,7 +561,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         for (JetBean unit : alreadyCompiledEmitters) {
             // long unitCRC = extractTemplateHashCode(unit);
             long unitCRC = unit.getCrc();
-            toReturn.add(new LightJetBean(unit.getTemplateRelativeUri(), unit.getClassName(), unit.getMethod().getName(), unit
+            toReturn.add(new LightJetBean(unit.getTemplateRelativeUri(), unit.getClassName(), unit.getMethodName(), unit
                     .getVersion(), unit.getLanguage(), unitCRC));
         }
         return toReturn;
@@ -606,15 +633,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                     }
                     if (lightBean != null && lightBean.getCrc() == unit.getCrc()) {
                         unit.setClassName(lightBean.getClassName());
-                        try {
-                            Method method = loadMethod(url, lightBean.getMethodName(), unit);
-                            if (method != null) {
-                                unit.setMethod(method);
-                                toReturn.add(unit);
-                            }
-                        } catch (ClassNotFoundException e) {
-                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName())); //$NON-NLS-1$
-                        }
+                        unit.setMethodName(lightBean.getMethodName());
+                        toReturn.add(unit);
                     }
                 }
             }
@@ -625,43 +645,6 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         return toReturn;
     }
-
-    /**
-     * DOC mhirt Comment method "loadMethod".
-     * 
-     * @param methodName
-     * @return
-     * @throws MalformedURLException
-     * @throws ClassNotFoundException
-     */
-    private static Method loadMethod(URL url, String methodName, JetBean unit) throws ClassNotFoundException {
-        if (currentClassLoader != unit.getClassLoader()) {
-            currentClassLoader = unit.getClassLoader();
-            theClassLoader = new URLClassLoader(new URL[] { url }, unit.getClassLoader());
-        }
-        Class theClass;
-        try {
-            theClass = theClassLoader.loadClass(unit.getClassName());
-        } catch (Error e) {
-            throw new ClassNotFoundException(e.getMessage(), e);
-        }
-        // TDI-23079
-        try {
-            Method[] methods = theClass.getDeclaredMethods();
-            for (int i = 0; i < methods.length; ++i) {
-                if (methods[i].getName().equals(methodName)) {
-                    return methods[i];
-                }
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return null;
-    }
-
-    private static ClassLoader currentClassLoader = null;
-
-    private static URLClassLoader theClassLoader = null;
 
     /**
      * Getter for emitterPool.
