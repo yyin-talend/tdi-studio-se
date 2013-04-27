@@ -275,8 +275,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 project.create(new SubProgressMonitor(progressMonitor, 1));
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
                         new Object[] { project.getName() }));
-            }
-            if (!project.isAccessible()) {
+            } else if (!project.isAccessible()) {
                 // project was deleted manually on the disk. The delete here will remove infos from metadata
                 // then we'll be able to create a new clean project.
                 project.delete(true, progressMonitor);
