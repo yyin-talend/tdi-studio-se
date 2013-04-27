@@ -44,6 +44,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean isSourceKeyIncNull = ("true").equals(ElementParameterParser.getValue(node, "__SOURCE_KEY_INC_NULL__"));
     String dbType = POSTGRESQL;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -86,7 +87,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     <%
     if(isEnableSaveMemMode) {
         %>
-        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger)%>";
+        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement searchingStmt_<%=cid%> = connection_<%=cid%>.prepareStatement(searching_<%=cid%>);
         java.sql.ResultSet searchingResult_<%=cid%> = null;
         <%
@@ -241,13 +242,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType1()) {
         %>
-        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger)%>";
+        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType1_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType1_<%=cid%>);        
         <%
     }
     if(scdConfiger.isEnableType2()) {
         %>
-        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger)%>";
+        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType2_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
         <%
         if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
@@ -258,7 +259,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType3()) {
         %>
-        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger)%>";
+        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger,isSourceKeyIncNull)%>";
         java.sql.PreparedStatement updateForType3_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType3_<%=cid%>);
         <%
     }
