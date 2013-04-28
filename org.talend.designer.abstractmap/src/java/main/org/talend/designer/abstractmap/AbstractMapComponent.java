@@ -26,16 +26,16 @@ import org.apache.oro.text.regex.Substitution;
 import org.apache.oro.text.regex.Util;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.designer.abstractmap.ui.prefs.MapPrefsConstants;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-public abstract class AbstractMapComponent extends AbstractExternalNode {
+public abstract class AbstractMapComponent extends MapperExternalNode {
 
     /**
      * DOC amaumont AbstractMapComponent constructor comment.
@@ -49,6 +49,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.IExternalNode#initialize()
      */
+    @Override
     public void initialize() {
         initElementParameters();
     }
@@ -90,6 +91,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.INode#useData(java.lang.String)
      */
+    @Override
     public boolean useData(String name) {
         if (super.useData(name)) {
             return true;
@@ -106,17 +108,18 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.INode#renameData(java.lang.String, java.lang.String)
      */
+    @Override
     public void renameData(String oldName, String newName) {
         super.renameData(oldName, newName);
 
         hasOrRenameData(oldName, newName, true);
 
     }
-    
+
     private static Map<String, Pattern> patternsCache = new HashMap<String, Pattern>();
 
     protected final Pattern getRenamePattern(String oldName) {
-    	if (patternsCache.containsKey(oldName)) {
+        if (patternsCache.containsKey(oldName)) {
             return patternsCache.get(oldName);
         }
         PatternCompiler compiler = new Perl5Compiler();
@@ -130,7 +133,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
             return null;
         }
     }
-    
+
     private static Map<String, Perl5Substitution> substitutionsCache = new HashMap<String, Perl5Substitution>();
 
     protected final Perl5Substitution getRenameSubstitution(String newName) {

@@ -147,6 +147,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
@@ -1527,10 +1528,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // TDI-22977:need judge the current Drag/Drop node's outputs for update the target
                                 // Setting,such as the target is TMap
                                 if (node.getOutgoingConnections().size() > 0) {
-                                    if (node.getComponent().getName().equals("tMap")) {
+                                    if (node.getExternalNode() instanceof MapperExternalNode) {
                                         CreateComponentOnLinkHelper.setupTMap(node);
                                     }
-                                    if (originalTarget.getComponent().getName().equals("tMap")) {
+                                    if (originalTarget.getExternalNode() instanceof MapperExternalNode) {
                                         CreateComponentOnLinkHelper.updateTMap(originalTarget, targetConnection, node
                                                 .getOutgoingConnections().get(0));
                                     }
