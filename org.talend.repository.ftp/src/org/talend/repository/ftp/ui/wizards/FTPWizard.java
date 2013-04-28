@@ -215,7 +215,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
 
     @Override
     public void addPages() {
-        setWindowTitle("");//$NON-NLS-1$
+        setWindowTitle(Messages.getString("FTPWizard.CreateNewFTPWizard"));//$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.UNKNOWN));
         if (isToolBar) {
             pathToSave = null;
