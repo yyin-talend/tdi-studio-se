@@ -107,5 +107,19 @@
             name="FTP">
       </seeker>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_node_provider">
+      <repositoryNode
+            alias="repository.metadataFileFTP.alias"
+            folder="metadata/FTPconnections"
+            isResouce="true"
+            key="repository.metadataFileFTP"
+            label="file Ftp"
+            ordinal="36"
+            parentNodeType="METADATA"
+            products="DI"
+            type="METADATA_FILE_FTP">
+      </repositoryNode>
+   </extension>
 
 </plugin>
