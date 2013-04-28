@@ -44,13 +44,15 @@ public class CreateComponentOnLinkHelper {
         if (!GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
             return;
         }
-        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
-                IDesignerMapperService.class);
         IConnection inputConnection = node.getIncomingConnections().get(0);
         IConnection outputConnection = node.getOutgoingConnections().get(0);
         outputConnection.getMetadataTable().setListColumns(inputConnection.getMetadataTable().clone(false).getListColumns());
         ((Process) node.getProcess()).checkProcess();
-        service.createAutoMappedNode(node, inputConnection, outputConnection);
+        if ("tMap".equals(node.getComponent().getName())) {
+            IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
+                    IDesignerMapperService.class);
+            service.createAutoMappedNode(node, inputConnection, outputConnection);
+        }
     }
 
     public static void updateTMap(INode node, IConnection oldConnection, IConnection newConnection) {

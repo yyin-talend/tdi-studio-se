@@ -26,6 +26,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.node.IExternalMapTable;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
@@ -184,7 +185,7 @@ public class DesignerMapperService implements IDesignerMapperService {
         // }
         //
         // ((MapperComponent) node.getExternalNode()).buildExternalData(data);
-        ((MapperComponent) node.getExternalNode()).renameInputConnection(oldConnection.getName(), newConnection.getName());
+        ((MapperExternalNode) node.getExternalNode()).renameInputConnection(oldConnection.getName(), newConnection.getName());
     }
 
     public List<String> getRepositorySchemaIds(AbstractExternalData nodeData) {
@@ -270,8 +271,9 @@ public class DesignerMapperService implements IDesignerMapperService {
     }
 
     public void renameMapperTable(IExternalNode externalNode, String schemaId, String newSchemaId, IMetadataTable metadataTable) {
-        if (externalNode == null || schemaId == null || metadataTable == null)
+        if (externalNode == null || schemaId == null || metadataTable == null) {
             return;
+        }
         if (externalNode instanceof MapperComponent) {
             MapperComponent component = (MapperComponent) externalNode;
             IExternalData nodeData = externalNode.getExternalData();
@@ -294,8 +296,9 @@ public class DesignerMapperService implements IDesignerMapperService {
 
     public boolean isSameMetadata(IExternalNode externalNode, String schemaId, IMetadataTable metadataTable) {
         boolean isSame = true;
-        if (externalNode == null || schemaId == null || metadataTable == null)
+        if (externalNode == null || schemaId == null || metadataTable == null) {
             return false;
+        }
 
         if (externalNode instanceof MapperComponent) {
             MapperComponent component = (MapperComponent) externalNode;
@@ -392,8 +395,9 @@ public class DesignerMapperService implements IDesignerMapperService {
     }
 
     public boolean isMetacolumnSame(ExternalMapperTableEntry extColumn, IMetadataColumn column) {
-        if (extColumn == null || column == null)
+        if (extColumn == null || column == null) {
             return false;
+        }
         if (!sameStringValue(extColumn.getName(), column.getLabel())) {
             return false;
         }
@@ -433,7 +437,7 @@ public class DesignerMapperService implements IDesignerMapperService {
         List<String> ret = new ArrayList<String>();
         if (nodeData instanceof ExternalMapperData) {
             ExternalMapperData mapperData = (ExternalMapperData) nodeData;
-            List<ExternalMapperTable> mapperTables = (List<ExternalMapperTable>) mapperData.getInputTables();
+            List<ExternalMapperTable> mapperTables = mapperData.getInputTables();
             for (ExternalMapperTable mapperTable : mapperTables) {
                 ret.add(mapperTable.getExpressionFilter());
             }

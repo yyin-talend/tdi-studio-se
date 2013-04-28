@@ -105,6 +105,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -1940,10 +1941,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // TDI-22977:need judge the current Drag/Drop node's outputs for update the target
                 // Setting,such as the target is TMap
                 if (node.getOutgoingConnections().size() > 0) {
-                    if (node.getComponent().getName().equals("tMap")) {
+                    if (node.getExternalNode() instanceof MapperExternalNode) {
                         CreateComponentOnLinkHelper.setupTMap(node);
                     }
-                    if (originalTarget.getComponent().getName().equals("tMap")) {
+                    if (originalTarget.getExternalNode() instanceof MapperExternalNode) {
                         CreateComponentOnLinkHelper.updateTMap(originalTarget, targetConnection, node.getOutgoingConnections()
                                 .get(0));
                     }

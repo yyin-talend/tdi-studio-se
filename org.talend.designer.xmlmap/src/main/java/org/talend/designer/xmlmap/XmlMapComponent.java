@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.HashConfiguration;
@@ -37,6 +36,7 @@ import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.ILookupMode;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
@@ -60,7 +60,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlMapComponent extends AbstractExternalNode implements IHashableInputConnections {
+public class XmlMapComponent extends MapperExternalNode implements IHashableInputConnections {
 
     private AbstractExternalData emfMapData;
 

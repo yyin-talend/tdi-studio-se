@@ -26,16 +26,16 @@ import org.apache.oro.text.regex.Substitution;
 import org.apache.oro.text.regex.Util;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.designer.abstractmap.ui.prefs.MapPrefsConstants;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-public abstract class AbstractMapComponent extends AbstractExternalNode {
+public abstract class AbstractMapComponent extends MapperExternalNode {
 
     /**
      * DOC amaumont AbstractMapComponent constructor comment.
