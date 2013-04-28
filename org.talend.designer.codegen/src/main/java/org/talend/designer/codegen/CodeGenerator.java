@@ -457,29 +457,7 @@ public class CodeGenerator implements ICodeGenerator {
     	if(!process2.needsSpring() || process2.getSpringContent() == null){
     		return null;
     	}
-    	CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
-    	codeGenArgument.setJobName(jobName);
-
-    	codeGenArgument.setJobVersion(jobVersion);
-    	codeGenArgument.setNode(process);
-    	codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
-    	codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
-
-    	JetBean jetBean = initializeJetBean(codeGenArgument);
-
-    	jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
-    			+ EInternalTemplate.SPRING + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
-
-    	JetProxy proxy = new JetProxy(jetBean);
-    	try {
-    		return proxy.generate();
-    	} catch (JETException e) {
-    		log.error(e.getMessage(), e);
-    		throw new CodeGeneratorException(e);
-    	} catch (CoreException e) {
-    		log.error(e.getMessage(), e);
-    		throw new CodeGeneratorException(e);
-    	}
+    	return process2.getSpringContent();
     }
 
     /**
