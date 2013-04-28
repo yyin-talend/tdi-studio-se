@@ -48,8 +48,6 @@ public class ChangeHadoopVersionsOfReferenceComponentsMigrationTask extends Abst
         String[] componentsName = new String[] { "tPigLoad", //$NON-NLS-1$
                 "tHDFSCompare", //$NON-NLS-1$
                 "tHDFSConnection",//$NON-NLS-1$
-                "tHDFSCopy,tHDFSCompare",//$NON-NLS-1$
-                "tHDFSConnection",//$NON-NLS-1$
                 "tHDFSCopy",//$NON-NLS-1$
                 "tHDFSDelete",//$NON-NLS-1$
                 "tHDFSExist",//$NON-NLS-1$
