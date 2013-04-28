@@ -443,7 +443,8 @@ public class TalendJetEmitter extends JETEmitter {
             try {
                 localMethod = loadMethod();
             } catch (Exception e) {
-                ExceptionHandler.process(e);
+                // nothing since if got exception here, the method will be reloaded bellow. (normal case)
+                // real error should be logged if the initialize fail.
             }
             // add this part in case there is any problem in the project (should never be called in normal use)
             // but if there is any problem, it will force to regenerate again this component.
