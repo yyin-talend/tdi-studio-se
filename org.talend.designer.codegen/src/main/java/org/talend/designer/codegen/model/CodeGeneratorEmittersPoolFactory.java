@@ -651,7 +651,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return the emitterPool
      */
     public static HashMap<JetBean, JETEmitter> getEmitterPool() {
-        if (!isInitialized() && !isInitializeStart()) {
+        if (emitterPool == null || (!isInitialized() && !isInitializeStart())) {
             initialize();
         }
         return emitterPool;
@@ -664,7 +664,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return
      */
     public static JETEmitter getJETEmitter(JetBean jetBean) {
-        if (!isInitialized() && !isInitializeStart()) {
+        if (emitterPool == null || (!isInitialized() && !isInitializeStart())) {
             initialize();
         }
 
