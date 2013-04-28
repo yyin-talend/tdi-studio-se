@@ -49,7 +49,7 @@ public class SaveJobBeforeRunAction extends Action {
             return;
         }
         IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (part.isDirty()) {
+        if (part != null && part.isDirty()) {
             if (part != null && part instanceof AbstractMultiPageTalendEditor) {
                 AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
                 editor.doSave(new NullProgressMonitor());
