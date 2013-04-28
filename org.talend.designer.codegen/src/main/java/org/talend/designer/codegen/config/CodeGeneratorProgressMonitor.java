@@ -77,7 +77,20 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      */
     @Override
     public void clearBlocked() {
-        Dialog.getBlockedHandler().clearBlocked();
+        // Run the event loop.
+        if (CommonUIPlugin.isFullyHeadless()) {
+            return;
+        }
+        final Display disp = DisplayUtils.getDisplay();
+
+        disp.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                Dialog.getBlockedHandler().clearBlocked();
+            }
+
+        });
     }
 
     /**
