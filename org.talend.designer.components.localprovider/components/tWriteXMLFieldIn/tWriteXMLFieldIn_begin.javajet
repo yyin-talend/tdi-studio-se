@@ -73,7 +73,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							try {
 								<%=startNodeCid%>Process(globalMap);
 							} catch (TalendException te) {
-								te.printStackTrace();
+								this.lastException = te.getException();
+								this.currentComponent = te.getCurrentComponent();
 							}
 						}
 					}
