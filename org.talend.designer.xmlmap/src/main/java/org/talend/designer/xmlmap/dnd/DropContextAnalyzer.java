@@ -151,32 +151,31 @@ public class DropContextAnalyzer {
     }
 
     private boolean checkDropInputValid(Object target) {
-        if (!(target instanceof TreeNode) && !(target instanceof InputXmlTree))
-            if (objects.getType() == TransferdType.INPUT) {
-                for (Object obj : objects.getToTransfer()) {
-                    TreeNodeEditPart part = (TreeNodeEditPart) obj;
-                    AbstractInOutTree srouceTree = XmlMapUtil.getAbstractInOutTree((TreeNode) part.getModel());
-                    AbstractInOutTree targetTree = null;
-                    if (target instanceof InputXmlTree) {
-                        targetTree = (InputXmlTree) target;
-                    } else {
+        if (objects.getType() == TransferdType.INPUT) {
+            for (Object obj : objects.getToTransfer()) {
+                TreeNodeEditPart part = (TreeNodeEditPart) obj;
+                AbstractInOutTree srouceTree = XmlMapUtil.getAbstractInOutTree((TreeNode) part.getModel());
+                AbstractInOutTree targetTree = null;
+                if (target instanceof InputXmlTree) {
+                    targetTree = (InputXmlTree) target;
+                } else {
 
-                        targetTree = XmlMapUtil.getAbstractInOutTree((TreeNode) target);
-                    }
-                    if (srouceTree == targetTree) {
+                    targetTree = XmlMapUtil.getAbstractInOutTree((TreeNode) target);
+                }
+                if (srouceTree == targetTree) {
+                    return false;
+                }
+                if (srouceTree.eContainer() instanceof XmlMapData) {
+                    XmlMapData mapdata = ((XmlMapData) srouceTree.eContainer());
+                    int indexSource = mapdata.getInputTrees().indexOf(srouceTree);
+                    int indexTarget = mapdata.getInputTrees().indexOf(targetTree);
+                    if (indexTarget < indexSource) {
                         return false;
                     }
-                    if (srouceTree.eContainer() instanceof XmlMapData) {
-                        XmlMapData mapdata = ((XmlMapData) srouceTree.eContainer());
-                        int indexSource = mapdata.getInputTrees().indexOf(srouceTree);
-                        int indexTarget = mapdata.getInputTrees().indexOf(targetTree);
-                        if (indexTarget < indexSource) {
-                            return false;
-                        }
-                    }
                 }
-
             }
+
+        }
         return true;
     }
 

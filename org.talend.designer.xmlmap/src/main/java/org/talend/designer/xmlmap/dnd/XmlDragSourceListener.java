@@ -32,6 +32,7 @@ import org.talend.designer.gefabstractmap.part.MapperTablePart;
 import org.talend.designer.gefabstractmap.part.TableEntityPart;
 import org.talend.designer.gefabstractmap.utils.MapperUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -77,7 +78,7 @@ public class XmlDragSourceListener extends MapperDragSourceListener {
         TransferdType type = null;
         List<TableEntityPart> partList = new ArrayList<TableEntityPart>();
         EditPart lastSelection = filtedSelection.get(filtedSelection.size() - 1);
-        if (lastSelection instanceof TreeNodeEditPart) {
+        if (lastSelection instanceof TreeNodeEditPart && !(lastSelection instanceof OutputTreeNodeEditPart)) {
             type = TransferdType.INPUT;
         } else if (lastSelection instanceof VarNodeEditPart) {
             type = TransferdType.VAR;
