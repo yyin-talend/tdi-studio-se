@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -517,8 +518,20 @@ public class TOSLoginComposite extends Composite {
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
                     project = newPrjWiz.getProject();
+                    refresh();
+                    ArrayList<String> allProjects = (ArrayList<String>) projectListViewer.getInput();
+                    int index = 0;
+                    Collections.sort(allProjects);
+                    for (int i = 0; i < allProjects.size(); i++) {
+                        String projectName = (String) allProjects.get(i);
+                        if (project.getLabel().equals(projectName)) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    projectListViewer.getList().select(index);
+                    projectListViewer.refresh();
                 }
-                refresh();
             }
         });
 
