@@ -1177,8 +1177,17 @@ public class Node extends Element implements IGraphicalNode {
                         }
                     }
                 } else {
-                    if ((mainTargetTable == null)
-                            || (mainTargetTable.getListColumns().size() == 0)
+                    if (mainTargetTable == null) {
+                        return;
+                    }
+                    boolean haveNonCustomColumn = false;
+                    for (IMetadataColumn column : mainTargetTable.getListColumns()) {
+                        if (!column.isCustom()) {
+                            haveNonCustomColumn = true;
+                            break;
+                        }
+                    }
+                    if ((!haveNonCustomColumn)
                             || mainTargetTable.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
                                     | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
