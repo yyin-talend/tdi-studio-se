@@ -122,7 +122,7 @@ public class spssComponent extends AbstractExternalNode {
             for (int i = 0; i < spssVars.getNumberOfVariables(); i++) {
                 spssVar = spssVars.getVariabelAtPos(i);
                 IMetadataColumn column = tableEditor.createNewMetadataColumn();
-                String lableName = MetadataToolHelper.validateTableName(spssVar.getName());
+                String lableName = MetadataToolHelper.validateColumnName(spssVar.getName(), i);
                 column.setLabel(lableName);
                 column.setOriginalDbColumnName(spssVar.getName());
 
