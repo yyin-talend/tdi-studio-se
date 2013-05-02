@@ -85,19 +85,8 @@ class ThreadXMLField_<%=cid%> extends Thread {
 		try {
 			<%=virtualTargetCid%>Process(globalMap);
 		} catch (TalendException te) {
-<%
-			boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-			if(dieOnError) {
-%>
-				this.lastException = te.getException();
-				this.currentComponent = te.getCurrentComponent();
-<%
-			} else {
-%>
-				te.printStackTrace();
-<%
-			}
-%>
+			this.lastException = te.getException();
+			this.currentComponent = te.getCurrentComponent();
 		}
 	}
 }
