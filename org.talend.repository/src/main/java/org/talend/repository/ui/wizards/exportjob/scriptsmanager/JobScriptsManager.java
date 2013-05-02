@@ -818,16 +818,17 @@ public abstract class JobScriptsManager {
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                 IPath itemFilePath;
+                String itemVersionString = (itemVersion == null) ? "" : "_" + itemVersion;
                 if (item.getFileExtension() == null || "".equals(item.getFileExtension())) { //$NON-NLS-1$
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                            .append(itemName + itemVersionString + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + "_" + itemVersion + "." + item.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$
+                            .append(itemName + itemVersionString + "." + item.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
                 IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                        .append(itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                        .append(itemName + itemVersionString + "." //$NON-NLS-1$ //$NON-NLS-2$
                                 + FileConstants.PROPERTIES_EXTENSION);
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();
