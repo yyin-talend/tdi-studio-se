@@ -575,7 +575,6 @@ public final class TalendEditorPaletteFactory {
         } else {
             value = PaletteDrawer.INITIAL_STATE_CLOSED;
         }
-        paletteItem.setInitialState(value);
         preferenceStore.setValue(PALETTE_STATE + family, value);
 
         for (Iterator iter = paletteItem.getChildren().iterator(); iter.hasNext();) {
