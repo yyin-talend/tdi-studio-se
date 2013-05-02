@@ -121,95 +121,110 @@ public class SetParallelizationCommand extends Command {
     }
 
     private void setParallelization(INode node) {
-        if (node.getOutgoingConnections().size() > 0) {
-            for (IConnection con : node.getOutgoingConnections()) {
-                EConnectionType lineStyle = con.getLineStyle();
-                if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
-                        || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
-                    boolean isEndRow = con.getTarget().getOutgoingConnections().size() == 0;
-                    boolean isStartRow = node.isStart();
-                    if (ParallelExecutionUtils.isPartitionKeysExist(con)) {
-                        ParallelExecutionUtils.reSetParKeyValuesForCon(con);
-                    }
-                    if (!isEndRow && isComponentCanParlization(con, (Node) con.getTarget())) {
-                        // For those component support tPartitioner,but its keys not same as previous tPartitioner,need
-                        // do Repartitioner automaticlly
-                        if (!isStartRow && isComponentNeedRepartion(con, (Node) con.getTarget())) {
-                            con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
-                            con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
-                            con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
-                            con.setPropertyValue(EParameterName.REPARTITIONER.getName(), Boolean.TRUE);
+        if (node.isActivate()) {
+            if (node.getOutgoingConnections().size() > 0) {
+                for (IConnection con : node.getOutgoingConnections()) {
+                    EConnectionType lineStyle = con.getLineStyle();
+                    if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
+                            || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+                        if (con.isActivate()) {
+                            boolean isEndRow = con.getTarget().getOutgoingConnections().size() == 0;
+                            boolean isStartRow = node.isStart();
+                            if (ParallelExecutionUtils.isPartitionKeysExist(con)) {
+                                ParallelExecutionUtils.reSetParKeyValuesForCon(con);
+                            }
+                            if (!isEndRow && isComponentCanParlization(con, (Node) con.getTarget())) {
+                                // For those component support tPartitioner,but its keys not same as previous
+                                // tPartitioner,need
+                                // do Repartitioner automaticlly
+                                if (!isStartRow && isComponentNeedRepartion(con, (Node) con.getTarget())) {
+                                    con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
+                                    con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
+                                    con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
+                                    con.setPropertyValue(EParameterName.REPARTITIONER.getName(), Boolean.TRUE);
 
-                            // set the keys for hash keys
-                            ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) con.getTarget());
-                            setParallelization(con.getTarget());
-
-                        } else {
-                            // when pervious con is par/repar/none,keep current is none
-                            if (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
-                                    || ParallelExecutionUtils.existPreviousNone((Node) con.getSource())
-                                    || ParallelExecutionUtils.existPreviousRepar((Node) con.getSource())) {
-                                con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
-                                setParallelization(con.getTarget());
-                            } else {
-                                INode firstPartionerNode = null;
-                                IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER.getName());
-                                deparElem.setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
-                                con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
-
-                                if (isStartRow) {
-                                    firstPartionerNode = ParallelExecutionUtils.getFirstPartionerTargetNode(con);
-                                }
-                                // set the keys from target node keys
-                                if (firstPartionerNode != null) {
-                                    ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) firstPartionerNode);
-                                } else {
-                                    ParallelExecutionUtils.setHashKeysForCon(con);
-                                }
-
-                                if (con.getTarget() != null) {
+                                    // set the keys for hash keys
+                                    ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) con.getTarget());
                                     setParallelization(con.getTarget());
+
+                                } else {
+                                    // when pervious con is par/repar/none,keep current is none
+                                    if (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
+                                            || ParallelExecutionUtils.existPreviousNone((Node) con.getSource())
+                                            || ParallelExecutionUtils.existPreviousRepar((Node) con.getSource())) {
+                                        con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
+                                        con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
+                                        con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
+                                        con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
+                                        setParallelization(con.getTarget());
+                                    } else {
+                                        INode firstPartionerNode = null;
+                                        IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER
+                                                .getName());
+                                        deparElem.setValue(Boolean.FALSE);
+                                        con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
+                                        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
+                                        con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
+
+                                        if (isStartRow) {
+                                            firstPartionerNode = ParallelExecutionUtils.getFirstPartionerTargetNode(con);
+                                        }
+                                        // set the keys from target node keys
+                                        if (firstPartionerNode != null) {
+                                            if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) firstPartionerNode)
+                                                    .size() > 0) {
+                                                ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) firstPartionerNode);
+                                            } else {
+                                                ParallelExecutionUtils.setHashKeysForCon(con);
+                                            }
+                                        } else {
+                                            ParallelExecutionUtils.setHashKeysForCon(con);
+                                        }
+
+                                        if (con.getTarget() != null) {
+                                            setParallelization(con.getTarget());
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!con.getSource().isStart()) {
+                                    if (!ParallelExecutionUtils.existPreviousDepar((Node) con.getSource())) {
+                                        setDeparallelization(con.getTarget());
+                                    }
                                 }
                             }
                         }
                     } else {
-                        if (!con.getSource().isStart()) {
-                            if (!ParallelExecutionUtils.existPreviousDepar((Node) con.getSource())) {
-                                setDeparallelization(con.getTarget());
-                            }
-                        }
+                        node = con.getTarget();
+                        setParallelization(node);
                     }
-                } else {
-                    node = con.getTarget();
-                    setParallelization(node);
                 }
-            }
-        } else {
-            if (!node.isStart()) {
-                setDeparallelization(node);
+            } else {
+                if (!node.isStart()) {
+                    setDeparallelization(node);
+                }
             }
         }
     }
 
     private void setDeparallelization(INode node) {
-        for (IConnection con : node.getIncomingConnections()) {
-            EConnectionType lineStyle = con.getLineStyle();
-            if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
-                    || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
-                IElementParameter parElem = con.getElementParameter(EParameterName.PARTITIONER.getName());
-                parElem.setValue(Boolean.FALSE);
-                con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
-                con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
-                con.setPropertyValue(EParameterName.DEPARTITIONER.getName(), Boolean.TRUE);
+        if (node.isActivate()) {
+            for (IConnection con : node.getIncomingConnections()) {
+                if (con.isActivate()) {
+                    EConnectionType lineStyle = con.getLineStyle();
+                    if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
+                            || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+                        IElementParameter parElem = con.getElementParameter(EParameterName.PARTITIONER.getName());
+                        parElem.setValue(Boolean.FALSE);
+                        con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
+                        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
+                        con.setPropertyValue(EParameterName.DEPARTITIONER.getName(), Boolean.TRUE);
+                    }
+                }
             }
-        }
-        if (node.getOutgoingConnections().size() > 0) {
-            setParallelization(node);
+            if (node.getOutgoingConnections().size() > 0) {
+                setParallelization(node);
+            }
         }
     }
 }

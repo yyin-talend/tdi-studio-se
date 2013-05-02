@@ -75,7 +75,7 @@ public class ParallelExecutionUtils {
         INode targetNode = null;
         if (con.getTarget() != null) {
             String partitioning = con.getTarget().getComponent().getPartitioning();
-            if (!(partitioning.equals("NONE") || partitioning.equals("AUTO"))) {
+            if (!(partitioning.equals("NONE"))) {
                 targetNode = con.getTarget();
             } else {
                 for (IConnection nextCon : con.getTarget().getOutgoingConnections()) {
@@ -125,27 +125,29 @@ public class ParallelExecutionUtils {
         }
     }
 
-    private static List<String> getColumnListFromTargetNode(Node target) {
+    public static List<String> getColumnListFromTargetNode(Node target) {
         List<String> columnKeyValues = new ArrayList<String>();
         IElementParameter parTableNode = target.getElementParameterFromField(EParameterFieldType.TABLE);
-        Object[] itemNode = parTableNode.getListItemsValue();
-        ElementParameter clumnNodeList = null;
-        for (Object itemList : itemNode) {
-            if (((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
-                    || ((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
-                clumnNodeList = ((ElementParameter) itemList);
-                break;
+        if (parTableNode != null) {
+            Object[] itemNode = parTableNode.getListItemsValue();
+            ElementParameter clumnNodeList = null;
+            for (Object itemList : itemNode) {
+                if (((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
+                        || ((ElementParameter) itemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
+                    clumnNodeList = ((ElementParameter) itemList);
+                    break;
+                }
             }
-        }
-        if (clumnNodeList != null) {
-            for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
-                Object value = nodeColumnListMap.get(clumnNodeList.getName());
-                if (nodeColumnListMap.get(clumnNodeList.getName()) instanceof String) {
-                    columnKeyValues.add((String) value);
-                } else if (value instanceof Integer) {
-                    Integer index = (Integer) value;
-                    if (clumnNodeList.getListItemsDisplayName().length > index) {
-                        columnKeyValues.add((String) clumnNodeList.getListItemsDisplayName()[index]);
+            if (clumnNodeList != null) {
+                for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
+                    Object value = nodeColumnListMap.get(clumnNodeList.getName());
+                    if (nodeColumnListMap.get(clumnNodeList.getName()) instanceof String) {
+                        columnKeyValues.add((String) value);
+                    } else if (value instanceof Integer) {
+                        Integer index = (Integer) value;
+                        if (clumnNodeList.getListItemsDisplayName().length > index) {
+                            columnKeyValues.add((String) clumnNodeList.getListItemsDisplayName()[index]);
+                        }
                     }
                 }
             }

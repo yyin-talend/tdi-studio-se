@@ -33,6 +33,7 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
 
 /**
@@ -153,49 +154,34 @@ public class ConnectionFigure extends PolylineConnection {
 
     }
 
-    private boolean isExistPreviousParCon(Node previousNode) {
-        boolean hasParInPreviousCon = false;
-        if (previousNode.getIncomingConnections().size() > 0) {
-            for (IConnection con : previousNode.getIncomingConnections()) {
-                if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
-                        .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))
-                        || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
-                                .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
-                    hasParInPreviousCon = true;
-                } else {
-                    hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
-                }
-            }
-        }
-        return hasParInPreviousCon;
-    }
-
     public void updateStatus() {
-        for (IElementParameter enableParallel : figureMap.keySet()) {
-            if (enableParallel != null) {
-                if (enableParallel.getValue().equals(true)) {
-                    // For NONE ,maybe its icon need to keep partitioning
-                    if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
-                        boolean isDisplayKeepPartion = false;
-                        isDisplayKeepPartion = isExistPreviousParCon((Node) connection.getSource());
-                        if (isDisplayKeepPartion) {
-                            // one connection need to display two icons maybe
-                            for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                                pf.setVisible(true);
+        if (connection.isActivate()) {
+            for (IElementParameter enableParallel : figureMap.keySet()) {
+                if (enableParallel != null) {
+                    if (enableParallel.getValue().equals(true)) {
+                        // For NONE ,maybe its icon need to keep partitioning
+                        if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
+                            boolean isDisplayKeepPartion = false;
+                            isDisplayKeepPartion = ParallelExecutionUtils.isExistPreviousParCon((Node) connection.getSource());
+                            if (isDisplayKeepPartion) {
+                                // one connection need to display two icons maybe
+                                for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                                    pf.setVisible(true);
+                                }
+                            } else {
+                                for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                                    pf.setVisible(false);
+                                }
                             }
                         } else {
                             for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                                pf.setVisible(false);
+                                pf.setVisible(true);
                             }
                         }
                     } else {
                         for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                            pf.setVisible(true);
+                            pf.setVisible(false);
                         }
-                    }
-                } else {
-                    for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                        pf.setVisible(false);
                     }
                 }
             }
