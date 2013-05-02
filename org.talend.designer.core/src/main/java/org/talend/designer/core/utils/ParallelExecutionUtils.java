@@ -75,7 +75,7 @@ public class ParallelExecutionUtils {
         INode targetNode = null;
         if (con.getTarget() != null) {
             String partitioning = con.getTarget().getComponent().getPartitioning();
-            if (!(partitioning.equals("NONE"))) {
+            if (!(partitioning.equals("NONE") || partitioning.equals("AUTO"))) {
                 targetNode = con.getTarget();
             } else {
                 for (IConnection nextCon : con.getTarget().getOutgoingConnections()) {
@@ -203,8 +203,8 @@ public class ParallelExecutionUtils {
         IElementParameter parTableCon = con.getElementParameter(HASH_KEYS);
         boolean isExistHashValue = false;
         if (parTableCon != null) {
-            ((List) parTableCon.getValue()).clear();
             if (conKeyColumnList.size() > 0) {
+                ((List) parTableCon.getValue()).clear();
                 con.getElementParameter("HASH_PARTITION").setValue(true);
 
                 Object[] itemCon = parTableCon.getListItemsValue();
@@ -230,6 +230,8 @@ public class ParallelExecutionUtils {
                         ((List) parTableCon.getValue()).add(partionKeyMap);
                     }
                 }
+            } else {
+                con.getElementParameter("HASH_PARTITION").setValue(false);
             }
         }
     }
