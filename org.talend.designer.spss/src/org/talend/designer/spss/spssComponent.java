@@ -12,6 +12,7 @@ import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
@@ -121,7 +122,8 @@ public class spssComponent extends AbstractExternalNode {
             for (int i = 0; i < spssVars.getNumberOfVariables(); i++) {
                 spssVar = spssVars.getVariabelAtPos(i);
                 IMetadataColumn column = tableEditor.createNewMetadataColumn();
-                column.setLabel(spssVar.getName());
+                String lableName = MetadataToolHelper.validateColumnName(spssVar.getName(), i);
+                column.setLabel(lableName);
                 column.setOriginalDbColumnName(spssVar.getName());
 
                 if (spssVar.hasLabels() && strTranslateLabels.toLowerCase().equals("true")) {
