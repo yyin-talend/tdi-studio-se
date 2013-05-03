@@ -279,6 +279,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
         String paramName = (String) button.getData(PARAMETER_NAME);
         IElementParameter param = elem.getElementParameter(paramName);
         IElementParameter paramLoad = elem.getElementParameter("LOAD");
+        if (paramLoad == null) {
+            paramLoad = elem.getElementParameter("STORE");
+        }
         String specialRepositoryValue = null;
         if (paramLoad != null && elem instanceof Node && ((Node) elem).getComponent().getName().contains("Pig")) {
             if (("PigStorage".equals(paramLoad.getValue()))) {
