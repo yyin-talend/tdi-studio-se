@@ -9,6 +9,7 @@ imports="
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.utils.NodeUtil
 "
 %>
 //tWriteXMLFieldOut_begin
@@ -41,61 +42,75 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 boolean storeFlow = ("true").equals(ElementParameterParser.getValue(node, "__STORE_FLOW__"));
                 boolean isCompactFormat = ("true").equals(ElementParameterParser.getValue(node, "__COMPACT_FORMAT__"));
-%>
-int nb_line_<%=cid%> = 0;
-boolean needRoot_<%=cid%>  = true;
-
-String  strCompCache_<%=cid %>= null;		
-
-java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
-<%if(storeFlow){%>
-java.util.List<java.util.Map<String,String>> flows_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<java.util.Map<String,String>>());
-java.util.Map<String,String> flowValues_<%=cid%> = null;
-<%}%>
-
-class ThreadXMLField_<%=cid%> extends Thread {
-	java.util.Queue<String> queue;
-	java.util.List<java.util.Map<String,String>> flows;
-	java.lang.Exception lastException;
-	String currentComponent;
+				%>
+				int nb_line_<%=cid%> = 0;
+				boolean needRoot_<%=cid%>  = true;
+				
+				String  strCompCache_<%=cid %>= null;		
+				<%
+				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+				if(nextMergeConn == null || nextMergeConn.getInputId()==1){
+				%>
+				    java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+					<%
+					if(storeFlow){
+					%>
+						java.util.List<java.util.Map<String,String>> flows_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<java.util.Map<String,String>>());
+						java.util.Map<String,String> flowValues_<%=cid%> = null;
+					<%
+					}
+					%>
 	
-	ThreadXMLField_<%=cid%>(java.util.Queue q) {
-		this.queue = q;
-		globalMap.put("queue_<%=virtualTargetCid%>", queue);
-		lastException = null;
-	}
+					class ThreadXMLField_<%=cid%> extends Thread {
+						java.util.Queue<String> queue;
+						java.util.List<java.util.Map<String,String>> flows;
+						java.lang.Exception lastException;
+						String currentComponent;
+						
+						ThreadXMLField_<%=cid%>(java.util.Queue q) {
+							this.queue = q;
+							globalMap.put("queue_<%=virtualTargetCid%>", queue);
+							lastException = null;
+						}
+						
+						ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+							this.queue = q;
+							this.flows = l;
+							lastException = null;
+							globalMap.put("queue_<%=virtualTargetCid%>", queue);
+							globalMap.put("flows_<%=virtualTargetCid%>", flows);
+						}
+						
+						public java.lang.Exception getLastException() {
+							return this.lastException;
+						}
+						public String getCurrentComponent() {
+							return this.currentComponent;
+						}
 	
-	ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
-		this.queue = q;
-		this.flows = l;
-		lastException = null;
-		globalMap.put("queue_<%=virtualTargetCid%>", queue);
-		globalMap.put("flows_<%=virtualTargetCid%>", flows);
-	}
-	
-	public java.lang.Exception getLastException() {
-		return this.lastException;
-	}
-	public String getCurrentComponent() {
-		return this.currentComponent;
-	}
-
-	@Override
-	public void run() {
-		try {
-			<%=virtualTargetCid%>Process(globalMap);
-		} catch (TalendException te) {
-			this.lastException = te.getException();
-			this.currentComponent = te.getCurrentComponent();
-		}
-	}
-}
-<%if(!storeFlow){%>
-	ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>);
-<%} else {%>
-	ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>, flows_<%=cid%>);
-<%}%>
-txf_<%=cid%>.start();
+						@Override
+						public void run() {
+							try {
+								<%=virtualTargetCid%>Process(globalMap);
+							} catch (TalendException te) {
+								this.lastException = te.getException();
+								this.currentComponent = te.getCurrentComponent();
+							}
+						}
+					}
+					<%if(!storeFlow){%>
+						ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>);
+					<%} else {%>
+						ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>, flows_<%=cid%>);
+					<%}%>
+					txf_<%=cid%>.start();
+				<%
+				}else{
+				%>
+					java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+				<%
+				}
+				%>
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
