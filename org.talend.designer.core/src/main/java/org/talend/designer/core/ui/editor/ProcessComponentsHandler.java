@@ -54,4 +54,14 @@ public class ProcessComponentsHandler implements IComponentsHandler {
         return filteredComponents;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsHandler#extractComponentsCategory()
+     */
+    @Override
+    public ComponentCategory extractComponentsCategory() {
+        return ComponentCategory.CATEGORY_4_DI;
+    }
+
 }

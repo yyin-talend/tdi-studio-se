@@ -362,6 +362,24 @@ public final class TalendEditorPaletteFactory {
         boolean noteAeeded = false;
         boolean needAddNote = true;
         boolean needToAdd = false;
+
+        // For bug TDI-25745, to add "note" entry to Misc drawer for m/r job and common job editor. It should create
+        // Misc drawer first if there is not the drawer in palette.
+        PaletteDrawer drawer = ht.get("Misc");
+        if (drawer == null) {
+            drawer = createComponentDrawer(ht, "Misc");
+            if (drawer instanceof IPaletteFilter) {
+                ((IPaletteFilter) drawer).setOriginalName("Misc");
+            }
+        }
+
+        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+                new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
+                ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
+        noteCreationToolEntry.setParent(drawer);
+        drawer.add(noteCreationToolEntry);
+
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
@@ -379,32 +397,6 @@ public final class TalendEditorPaletteFactory {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
-            // if (isFavorite == false) {
-            if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
-                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
-                        Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
-                        Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
-                        ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
-                if (a == 0) {
-                    PaletteDrawer drawer = ht.get(family);
-                    if (drawer != null) {
-                        noteCreationToolEntry.setParent(drawer);
-                        drawer.add(noteCreationToolEntry);
-                    }
-                } else if ((a == 1)) {
-                    for (String s : families) {
-                        if (s.equals(family)) {
-                            needToAdd = true;
-                        }
-                    }
-                    if (needToAdd == true) {
-                        nodeList.add(0, noteCreationToolEntry);
-                    }
-                }
-                noteAeeded = true;
-            }
-            // }
 
             if (filter != null) {
                 Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
