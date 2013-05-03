@@ -114,7 +114,7 @@
             folder="metadata/FTPconnections"
             isResouce="true"
             key="repository.metadataFileFTP"
-            label="file Ftp"
+            label="FTP"
             ordinal="36"
             parentNodeType="METADATA"
             products="DI"
