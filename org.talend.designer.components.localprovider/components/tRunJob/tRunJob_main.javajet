@@ -292,8 +292,10 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
       globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
     }else{
       globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
-    }  
-    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+    }
+    if (childJob_<%=cid %>.getExceptionStackTrace() != null) { 
+    	globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+    }
   
     <%if (dieOnError) { %> 
       if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
