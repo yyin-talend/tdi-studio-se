@@ -340,7 +340,8 @@ class ExportItemWizardPage extends WizardPage {
         RepositoryNode parent = node.getParent();
         if (parent != null) {
             expandParent(viewer, parent);
-            if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(node.getObjectType())) {
+            if (ERepositoryObjectType.METADATA_CONNECTIONS != null
+                    && ERepositoryObjectType.METADATA_CONNECTIONS.equals(node.getObjectType())) {
                 viewer.expandToLevel(node, TreeViewer.ALL_LEVELS);
             } else {
                 viewer.setExpandedState(node, true);

@@ -79,7 +79,7 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
     @Override
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        if (!ERepositoryObjectType.METADATA_FILE_FTP.equals(nodeType)) {
+        if (ERepositoryObjectType.METADATA_FILE_FTP != null && !ERepositoryObjectType.METADATA_FILE_FTP.equals(nodeType)) {
             setEnabled(false);
             return;
         }
