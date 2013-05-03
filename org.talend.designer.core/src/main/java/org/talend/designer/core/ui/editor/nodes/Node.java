@@ -3370,11 +3370,13 @@ public class Node extends Element implements IGraphicalNode {
                                 boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
                                 if (hasMrSubProcess) {
                                     IElementParameter indepedentElement = getElementParameter("USE_INDEPENDENT_PROCESS"); //$NON-NLS-1$;
-                                    if (indepedentElement != null
-                                            && !Boolean.valueOf(String.valueOf(indepedentElement.getValue()))) {
-                                        String message = Messages.getString(
-                                                "Node.checkTRunjobwithMRProcess", indepedentElement.getDisplayName()); //$NON-NLS-1$;
-                                        Problems.add(ProblemStatus.ERROR, this, message);
+                                    if (indepedentElement != null) {
+                                        if (!indepedentElement.isShow(getElementParameters())
+                                                || !Boolean.valueOf(String.valueOf(indepedentElement.getValue()))) {
+                                            String message = Messages.getString(
+                                                    "Node.checkTRunjobwithMRProcess", indepedentElement.getDisplayName()); //$NON-NLS-1$;
+                                            Problems.add(ProblemStatus.ERROR, this, message);
+                                        }
                                     }
                                 }
 
