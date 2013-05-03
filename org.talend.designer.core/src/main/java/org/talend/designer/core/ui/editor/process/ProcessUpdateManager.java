@@ -838,31 +838,28 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     @SuppressWarnings("unchecked")
     private List<UpdateResult> checkNodesParameters(EUpdateItemType type, boolean onlySimpleShow) {
         List<UpdateResult> nodesResults = new ArrayList<UpdateResult>();
-        IProcess2 process = getProcess();
-        if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
-        } else {
-            for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
-                switch (type) {
-                case NODE_SCHEMA:
-                    nodesResults.addAll(checkNodeSchemaFromRepository(node, onlySimpleShow));
-                    break;
-                case NODE_PROPERTY:
-                    nodesResults.addAll(checkNodePropertiesFromRepository(node, onlySimpleShow));
-                    break;
-                case NODE_QUERY:
-                    nodesResults.addAll(checkNodeQueryFromRepository(node, onlySimpleShow));
-                case NODE_SAP_FUNCTION:
-                    nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
-                    break;
-                case NODE_SAP_IDOC:
-                    nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
-                    break;
-                case NODE_VALIDATION_RULE:
-                    nodesResults.addAll(checkNodeValidationRuleFromRepository(node, onlySimpleShow));
-                    break;
-                default:
-                    return Collections.emptyList();
-                }
+        for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
+            switch (type) {
+            case NODE_SCHEMA:
+                nodesResults.addAll(checkNodeSchemaFromRepository(node, onlySimpleShow));
+                break;
+            case NODE_PROPERTY:
+                nodesResults.addAll(checkNodePropertiesFromRepository(node, onlySimpleShow));
+                break;
+            case NODE_QUERY:
+                nodesResults.addAll(checkNodeQueryFromRepository(node, onlySimpleShow));
+                break;
+            case NODE_SAP_FUNCTION:
+                nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
+                break;
+            case NODE_SAP_IDOC:
+                nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
+                break;
+            case NODE_VALIDATION_RULE:
+                nodesResults.addAll(checkNodeValidationRuleFromRepository(node, onlySimpleShow));
+                break;
+            default:
+                return Collections.emptyList();
             }
         }
         getSchemaRenamedMap().clear();
