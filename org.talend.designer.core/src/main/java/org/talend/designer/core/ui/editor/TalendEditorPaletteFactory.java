@@ -365,11 +365,14 @@ public final class TalendEditorPaletteFactory {
 
         // For bug TDI-25745, to add "note" entry to Misc drawer for m/r job and common job editor. It should create
         // Misc drawer first if there is not the drawer in palette.
-        PaletteDrawer drawer = ht.get("Misc");
+        PaletteDrawer drawer = ht.get("Miscellaneous"); //$NON-NLS-1$
         if (drawer == null) {
-            drawer = createComponentDrawer(ht, "Misc");
-            if (drawer instanceof IPaletteFilter) {
-                ((IPaletteFilter) drawer).setOriginalName("Misc");
+            drawer = ht.get("Misc"); //$NON-NLS-1$
+            if (drawer == null) {
+                drawer = createComponentDrawer(ht, "Misc"); //$NON-NLS-1$
+                if (drawer instanceof IPaletteFilter) {
+                    ((IPaletteFilter) drawer).setOriginalName("Misc"); //$NON-NLS-1$
+                }
             }
         }
 
