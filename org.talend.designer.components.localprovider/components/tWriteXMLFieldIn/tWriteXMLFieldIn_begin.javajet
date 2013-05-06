@@ -7,7 +7,6 @@ imports="
     java.util.List
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
-	org.talend.core.model.utils.NodeUtil
 	org.talend.core.model.process.EConnectionType
 	org.talend.core.model.utils.NodeUtil
 "
