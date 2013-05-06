@@ -284,11 +284,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
         }
         String specialRepositoryValue = null;
         if (paramLoad != null && elem instanceof Node && ((Node) elem).getComponent().getName().contains("Pig")) {
-            if (("PigStorage".equals(paramLoad.getValue()))) {
+            if ("PigStorage".equals(paramLoad.getValue())) {
                 specialRepositoryValue = "HDFS";
-            } else if (("HCatLoader".equals(paramLoad.getValue()))) {
+            } else if ("HCatLoader".equals(paramLoad.getValue()) || "HCatStorer".equals(paramLoad.getValue())) {
                 specialRepositoryValue = "HCATALOG";
-            } else if (("HBaseStorage".equals(paramLoad.getValue()))) {
+            } else if ("HBaseStorage".equals(paramLoad.getValue())) {
                 specialRepositoryValue = "DATABASE:HBASE";
             }
         }
