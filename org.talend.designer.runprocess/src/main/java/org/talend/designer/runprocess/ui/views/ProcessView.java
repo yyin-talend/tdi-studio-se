@@ -585,8 +585,8 @@ public class ProcessView extends ViewPart {
                         dc = new MultipleThreadDynamicComposite(tabFactory.getTabComposite(), SWT.H_SCROLL | SWT.V_SCROLL
                                 | SWT.NO_FOCUS, currentSelectedTab.getCategory(), (Element) processContext.getProcess(), true,
                                 Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-                        dc.refresh();
                     }
+                    dc.refresh();
                 }
             }
             if (processContext == null || processContext.getProcess() == null) {
