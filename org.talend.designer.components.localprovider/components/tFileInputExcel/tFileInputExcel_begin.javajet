@@ -153,6 +153,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	throw new RuntimeException("Special sheets not exist!");
         }
         
+        java.util.List<jxl.Sheet> sheet_FilterNullList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
+        for(jxl.Sheet sheet_FilterNull_<%=cid%> : sheetList_<%= cid %>){
+        	if(sheet_FilterNull_<%=cid%>.getRows()>0){
+        		sheet_FilterNullList_<%= cid %>.add(sheet_FilterNull_<%=cid%>);
+        	}
+        }
+		sheetList_<%= cid %> = sheet_FilterNullList_<%= cid %>;
+	if(sheetList_<%= cid %>.size()>0){
         int nb_line_<%= cid %> = 0;            
 
         int begin_line_<%= cid %> = <%if(("").equals(header.trim())){%>0<%}else{%><%= header %><%}%>;
@@ -466,7 +474,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				            String sheetName = sheet.getSheetName();
 				            java.util.regex.Matcher matcher = pattern.matcher(sheetName);
 				            if (matcher.matches()) {
-				            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
+				            	if(sheet != null){
 				                	list.add(sheet);
 				                }	
 				            }
@@ -474,7 +482,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				        
 			        }else{	
 			        	org.apache.poi.xssf.usermodel.XSSFSheet sheet = workbook.getSheet(oneSheetName);
-		            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
+		            	if(sheet != null){
 		                	list.add(sheet);
 		                }
 			        	
@@ -486,7 +494,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			    public java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> getSheets(org.apache.poi.xssf.usermodel.XSSFWorkbook workbook, int index, boolean useRegex) {
 			    	java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> list =  new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
 			    	org.apache.poi.xssf.usermodel.XSSFSheet sheet = workbook.getSheetAt(index);
-	            	if(sheet != null && sheet.iterator()!=null && sheet.iterator().hasNext()){
+	            	if(sheet != null){
 	                	list.add(sheet);
 	                }
 			    	return list;
@@ -511,9 +519,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
     	java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> sheetList_<%= cid %> = new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
     	for(org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%=cid%>:workbook_<%=cid%>){
-			if(sheet_<%=cid%> != null && sheet_<%=cid%>.iterator()!=null && sheet_<%=cid%>.iterator().hasNext()){
-    			sheetList_<%= cid %>.add(sheet_<%=cid%>);
-    		}
+   			sheetList_<%= cid %>.add(sheet_<%=cid%>);
     	}
 <%
 		}else{
@@ -531,6 +537,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw new RuntimeException("Special sheets not exist!");
         }
 		
+		java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> sheetList_FilterNull_<%=cid%> = new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
+		for (org.apache.poi.xssf.usermodel.XSSFSheet sheet_FilterNull_<%=cid%> : sheetList_<%=cid%>) {
+			if(sheet_FilterNull_<%=cid%>!=null && sheetList_FilterNull_<%=cid%>.iterator()!=null && sheet_FilterNull_<%=cid%>.iterator().hasNext()){
+				sheetList_FilterNull_<%=cid%>.add(sheet_FilterNull_<%=cid%>);
+			}
+		}
+		sheetList_<%=cid%> = sheetList_FilterNull_<%=cid%>;
+	if(sheetList_<%= cid %>.size()>0){
 		int nb_line_<%= cid %> = 0;            
 
         int begin_line_<%= cid %> = <%if(("").equals(header.trim())){%>0<%}else{%><%= header %><%}%>;
