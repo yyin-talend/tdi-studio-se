@@ -770,86 +770,89 @@ public class Node extends Element implements IGraphicalNode {
             final String showInputRowName = inputRowName;
             if (useDefault) {
                 IMetadataTable metadata = inMainConn.getMetadataTable();
-                List<IMetadataColumn> listColumns = metadata.getListColumns();
+                // The if statement is added by Marvin Wang on May 7, 2013 for bug TDI-25659.
+                if (metadata != null) {
+                    List<IMetadataColumn> listColumns = metadata.getListColumns();
 
-                for (int i = 0; i < listColumns.size(); i++) {
+                    for (int i = 0; i < listColumns.size(); i++) {
 
-                    INodeReturn flowToIterateReturn = new NodeReturn() {
+                        INodeReturn flowToIterateReturn = new NodeReturn() {
 
-                        @Override
-                        public String getVarName() {
-                            String varName = super.getVarName();
-                            switch (LanguageManager.getCurrentLanguage()) {
-                            case PERL:
-                                varName = varName.replace(UNIQUE_NAME, showInputRowName + "."); //$NON-NLS-1$
-                                break;
-                            case JAVA:
-                                varName = varName.replace(UNIQUE_NAME + "_", showInputRowName + "."); //$NON-NLS-1$ //$NON-NLS-2$
+                            @Override
+                            public String getVarName() {
+                                String varName = super.getVarName();
+                                switch (LanguageManager.getCurrentLanguage()) {
+                                case PERL:
+                                    varName = varName.replace(UNIQUE_NAME, showInputRowName + "."); //$NON-NLS-1$
+                                    break;
+                                case JAVA:
+                                    varName = varName.replace(UNIQUE_NAME + "_", showInputRowName + "."); //$NON-NLS-1$ //$NON-NLS-2$
+                                }
+                                return varName;
                             }
-                            return varName;
-                        }
 
-                    };
-                    IMetadataColumn column = listColumns.get(i);
-                    String columnLabel = column.getLabel();
-                    String columnType = column.getTalendType();
-                    flowToIterateReturn.setName(columnLabel);
-                    flowToIterateReturn.setDisplayName(columnLabel);
-                    flowToIterateReturn.setType(columnType);
-                    flowToIterateReturn.setVarName(columnLabel);
-                    flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
+                        };
+                        IMetadataColumn column = listColumns.get(i);
+                        String columnLabel = column.getLabel();
+                        String columnType = column.getTalendType();
+                        flowToIterateReturn.setName(columnLabel);
+                        flowToIterateReturn.setDisplayName(columnLabel);
+                        flowToIterateReturn.setType(columnType);
+                        flowToIterateReturn.setVarName(columnLabel);
+                        flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
 
-                    allReturns.add(flowToIterateReturn);
+                        allReturns.add(flowToIterateReturn);
+                    }
                 }
             } else {
                 List<Map<String, String>> map = (List<Map<String, String>>) ElementParameterParser
                         .getObjectValue(this, "__MAP__"); //$NON-NLS-1$
                 IMetadataTable metadata = inMainConn.getMetadataTable();
-                List<IMetadataColumn> listColumns = metadata.getListColumns();
+                // The if statement is added by Marvin Wang on May 7, 2013 for bug TDI-25659.
+                if (metadata != null) {
+                    List<IMetadataColumn> listColumns = metadata.getListColumns();
 
-                for (int i = 0; i < map.size(); i++) {
-                    Map<String, String> line = map.get(i);
-                    String keyName = TalendTextUtils.removeQuotes(line.get("KEY")); //$NON-NLS-1$
+                    for (int i = 0; i < map.size(); i++) {
+                        Map<String, String> line = map.get(i);
+                        String keyName = TalendTextUtils.removeQuotes(line.get("KEY")); //$NON-NLS-1$
 
-                    INodeReturn flowToIterateReturn = new NodeReturn() {
+                        INodeReturn flowToIterateReturn = new NodeReturn() {
 
-                        @Override
-                        public String getVarName() {
-                            String varName = super.getVarName();
-                            switch (LanguageManager.getCurrentLanguage()) {
-                            case PERL:
-                                varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
-                                break;
-                            case JAVA:
-                                varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                            @Override
+                            public String getVarName() {
+                                String varName = super.getVarName();
+                                switch (LanguageManager.getCurrentLanguage()) {
+                                case PERL:
+                                    varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
+                                    break;
+                                case JAVA:
+                                    varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                }
+                                return varName;
                             }
-                            return varName;
-                        }
-                    };
+                        };
 
-                    String cueeName = line.get("VALUE"); //$NON-NLS-1$
-                    for (int j = 0; j < listColumns.size(); j++) {
-                        String columnName = listColumns.get(j).getLabel();
-                        if (columnName.equals(cueeName)) {
-                            String columnType = listColumns.get(j).getTalendType();
-                            flowToIterateReturn.setType(columnType);
+                        String cueeName = line.get("VALUE"); //$NON-NLS-1$
+                        for (int j = 0; j < listColumns.size(); j++) {
+                            String columnName = listColumns.get(j).getLabel();
+                            if (columnName.equals(cueeName)) {
+                                String columnType = listColumns.get(j).getTalendType();
+                                flowToIterateReturn.setType(columnType);
+                            }
+
                         }
+
+                        flowToIterateReturn.setName(keyName);
+                        flowToIterateReturn.setDisplayName(cueeName);
+                        flowToIterateReturn.setVarName(keyName);
+                        flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
+
+                        allReturns.add(flowToIterateReturn);
 
                     }
-
-                    flowToIterateReturn.setName(keyName);
-                    flowToIterateReturn.setDisplayName(cueeName);
-                    flowToIterateReturn.setVarName(keyName);
-                    flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
-
-                    allReturns.add(flowToIterateReturn);
-
                 }
-
             }
-
         }
-
     }
 
     /**
@@ -1562,7 +1565,7 @@ public class Node extends Element implements IGraphicalNode {
         removeTargetMetaData(connection);
         fireStructureChange(OUTPUTS, connection);
     }
-    
+
     private void removeSourceMatadata(IConnection connection) {
         Node source = (Node) connection.getSource();
         if (source.isELTMapComponent()) {
