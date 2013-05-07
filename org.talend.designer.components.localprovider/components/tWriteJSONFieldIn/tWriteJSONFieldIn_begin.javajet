@@ -43,11 +43,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				} 
 				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
 				if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
-				%>
-					java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
+					%>
+				        java.util.Queue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<java.util.Map>();
+					<%
+				    }else{
+					%>
+				        java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+					<%
+				    }
+					%>
 					
 					class ThreadXMLField_<%=cid%> extends Thread {
-						java.util.Queue<String> queue;
+						<%
+						if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
+						%>
+							java.util.Queue<java.util.Map> queue;
+						<%
+						}else{
+						%>
+						    java.util.Queue<String> queue;
+						<%
+						}
+						%>
 						java.util.List<java.util.Map<String,String>> flows;
 						java.lang.Exception lastException;
 						String currentComponent;

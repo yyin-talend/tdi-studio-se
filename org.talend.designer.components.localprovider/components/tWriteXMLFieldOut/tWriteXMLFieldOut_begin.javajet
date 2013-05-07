@@ -136,9 +136,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					txf_<%=cid%>.start();
 				<%
 				}else{
-				%>
-					java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
+					%>
+				        java.util.Queue<java.util.Map> listGroupby_<%=cid%> = (java.util.Queue<java.util.Map>) globalMap.get("queue_<%=cid%>");
 					<%
+				    }else{
+					%>
+						java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+					<%
+				    }
 					if(storeFlow){
 					%>
 						java.util.List<java.util.Map<String,String>> flows_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("flows_<%=cid%>");
