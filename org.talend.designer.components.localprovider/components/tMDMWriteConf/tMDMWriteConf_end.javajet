@@ -3,6 +3,10 @@ imports="
     	org.talend.core.model.process.INode    
     	org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection    
+		org.talend.core.model.process.IConnectionCategory
+    	org.talend.core.model.process.EConnectionType
+		org.talend.core.model.utils.NodeUtil  		
 		" 
 %>
 <%
@@ -30,6 +34,25 @@ imports="
 		}
 	}
 }
+<%
+INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
+String virtualSourceCid = sourceNode.getUniqueName();
+INode startNode = NodeUtil.getSpecificStartNode(sourceNode);
+String startNodeCid = null; 
+if(startNode != null){
+	startNodeCid = startNode.getUniqueName();
+} 
+IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
+%>
+	txf_<%=cid%>.join();
+	if(txf_<%=cid%>.getLastException()!=null) {
+		currentComponent = txf_<%=cid%>.getCurrentComponent();
+		throw txf_<%=cid%>.getLastException();
+	}
+<%
+}
+%>
 globalMap.remove("<%=virtualcid%>_FINISH");
 <%
 if(!usePartialUpdate){

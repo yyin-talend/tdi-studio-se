@@ -108,7 +108,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}else{
 				%>
 					java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
-				<%
+					<%
+					if(storeFlow){
+					%>
+						java.util.List<java.util.Map<String,String>> flows_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("flows_<%=cid%>");
+						java.util.Map<String,String> flowValues_<%=cid%> = null;
+					<%
+					}
 				}
 				%>
 
