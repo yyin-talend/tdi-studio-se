@@ -19,23 +19,15 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IService;
 import org.talend.designer.gefabstractmap.figures.manager.TableManager;
 import org.talend.designer.gefabstractmap.resource.ImageInfo;
 import org.talend.designer.gefabstractmap.resource.ImageProviderMapper;
-import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * wchen class global comment. Detailled comment
@@ -83,43 +75,7 @@ public abstract class FilterContainer extends Figure {
 
     protected abstract Command getFilterChangeCommand(Object model, String newValue);
 
-    protected void addButtonListener() {
-        IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
-                IExpressionBuilderDialogService.class);
-
-        final IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
-                .getExpressionBuilderInstance(parent, null, null);
-
-        button.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mousePressed(MouseEvent me) {
-                if (dialog instanceof TrayDialog) {
-                    TrayDialog parentDialog = (TrayDialog) dialog;
-                    dialog.setDefaultExpression(tableManager.getExpressionFilter());
-                    if (Window.OK == parentDialog.open()) {
-                        String expressionForTable = dialog.getExpressionForTable();
-                        tableManager.setExpressionFilter(expressionForTable);
-                        tableManager.getEditPart().getViewer().getEditDomain().getCommandStack()
-                                .execute(getFilterChangeCommand(tableManager.getModel(), expressionForTable));
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent me) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void mouseDoubleClicked(MouseEvent me) {
-                // TODO Auto-generated method stub
-
-            }
-
-        });
-    }
+    protected abstract void addButtonListener();
 
     public void update() {
         textArea.setText(tableManager.getExpressionFilter());
