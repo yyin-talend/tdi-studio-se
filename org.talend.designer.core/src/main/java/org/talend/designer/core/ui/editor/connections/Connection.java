@@ -146,6 +146,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
     }
 
+    @Override
     public void resetStatus() {
         performance.resetStatus();
     }
@@ -189,8 +190,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             createTraceParamters();
             IComponent component = ComponentsFactoryProvider.getInstance().get(
                     "tFlowMeter", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
-            if (component != null) { // only if tFlowMeter is available
-                createMeterParameters((Process) source.getProcess());
+            if (component != null) { // only if tFlowMeter is available and not M/R job
+                IProcess process = source.getProcess();
+                if (process instanceof IProcess2) {
+                    IProcess2 process2 = (IProcess2) process;
+                    if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process2.getComponentsType())) {
+                        createMeterParameters(process2);
+                    }
+                }
             }
         }
         setName(linkName);
@@ -242,7 +249,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setCategory(EComponentCategory.BASIC);
             param.setName(EParameterName.ROUTETYPE.getName());
             param.setDisplayName(EParameterName.ROUTETYPE.getDisplayName());
-            param.setListItemsValue(strList); //$NON-NLS-1$
+            param.setListItemsValue(strList);
             param.setListItemsDisplayName(strList);
             param.setListItemsDisplayCodeName(strList);
             param.setNbLines(1);
@@ -335,7 +342,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.UNIQUE_NAME.getName());
-        param.setValue(this.getUniqueName()); //$NON-NLS-1$
+        param.setValue(this.getUniqueName());
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -611,8 +618,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 values.add(line);
             }
         }
-        if (getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()) != null && values != null)
+        if (getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()) != null && values != null) {
             getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()).setValue(values);
+        }
         if (trace != null) {
             this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
         }
@@ -640,7 +648,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     // return enabled;
     // }
 
-    private void createMeterParameters(Process process) {
+    private void createMeterParameters(IProcess2 process) {
 
         IElementParameter param = new ElementParameter(this);
         param.setName(EParameterName.MONITOR_CONNECTION.getName());
@@ -694,6 +702,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return Connection Name
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -704,6 +713,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return
      */
+    @Override
     public String getUniqueName() {
         // if (source != null) {
         // if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
@@ -722,6 +732,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @param name
      */
+    @Override
     public void setName(String name) {
         boolean canModify = true;
         List connections;
@@ -772,6 +783,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public void updateName() {
         if (source == null) {
             return;
@@ -945,6 +957,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return trace;
     }
 
+    @Override
     public void setTraceData(Map<String, String> traceData) {
         Map<String, String> oldData = this.traceData;
         if (!ObjectUtils.equals(oldData, traceData)) {
@@ -958,10 +971,12 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public Map<String, String> getTraceData() {
         return this.traceData;
     }
 
+    @Override
     public INode getTarget() {
         // if (this.target.getJobletNode() != null) {
         // return this.target.getJobletNode();
@@ -969,6 +984,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return this.target;
     }
 
+    @Override
     public INode getSource() {
         // if (this.source.getJobletNode() != null) {
         // return this.source.getJobletNode();
@@ -984,6 +1000,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * Reconnect the connection Used after delete a connection, for the undo command and when the connection is
      * connected to new source or target.
      */
+    @Override
     public void reconnect() {
         if (!isConnected) {
             if (lineStyle.equals(EConnectionType.TABLE)) {
@@ -1057,6 +1074,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     /**
      * Disconnect the connection This function is used before delete or reconnect a connection.
      */
+    @Override
     public void disconnect() {
         if (isConnected) {
 
@@ -1102,6 +1120,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @param newSource
      * @param newTarget
      */
+    @Override
     public void reconnect(INode newSource, INode newTarget, EConnectionType newLineStyle) {
         disconnect();
         this.source = newSource;
@@ -1141,6 +1160,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getLineStyle()
      */
+    @Override
     public EConnectionType getLineStyle() {
         return lineStyle;
     }
@@ -1178,8 +1198,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (PluginChecker.isTraceDebugPluginLoaded()
                     && (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) || lineStyle
                             .hasConnectionCategory(IConnectionCategory.MERGE))) {
-                if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
+                if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id)) {
                     this.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).setValue(value);
+                }
                 if (this.trace != null) {
                     this.trace.setPropertyValue(EParameterName.ACTIVEBREAKPOINT.getName(), value);
                 }
@@ -1239,6 +1260,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getMetadataTable()
      */
+    @Override
     public IMetadataTable getMetadataTable() {
         if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             INodeConnector sourceNodeConnector = getSourceNodeConnector();
@@ -1269,10 +1291,12 @@ public class Connection extends Element implements IConnection, IPerformance {
         return null;
     }
 
+    @Override
     public void setMetaName(String metaName) {
         this.metaName = metaName;
     }
 
+    @Override
     public String getMetaName() {
         return metaName;
     }
@@ -1287,15 +1311,18 @@ public class Connection extends Element implements IConnection, IPerformance {
         return getUniqueName();
     }
 
+    @Override
     public boolean isActivate() {
         return this.activate;
     }
 
+    @Override
     public void setActivate(boolean activate) {
         this.activate = activate;
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
     }
 
+    @Override
     public String getCondition() {
         if (lineStyle.equals(EConnectionType.RUN_IF) || lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             return (String) getPropertyValue(EParameterName.CONDITION.getName());
@@ -1305,6 +1332,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     }
 
+    @Override
     public String getRouteConnectionType() {
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             return (String) getPropertyValue(EParameterName.ROUTETYPE.getName());
@@ -1314,6 +1342,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     // TESB-8043
+    @Override
     public String getEndChoice() {
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             Object propertyValue = getPropertyValue(EParameterName.ENDOFCHOICE.getName());
@@ -1323,6 +1352,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public String getExceptionList() {
         if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
             return (String) getPropertyValue(EParameterName.EXCEPTIONLIST.getName());
@@ -1331,10 +1361,12 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
 
+    @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
@@ -1363,6 +1395,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public void updateAllId() {
         if (source != null) {
             orderConnectionsByMetadata();
@@ -1379,6 +1412,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    @Override
     public int getOutputId() {
         if (source != null) {
             switch (lineStyle) {
@@ -1417,6 +1451,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     }
 
+    @Override
     public int getInputId() {
         if (target != null) {
             for (int i = 0; i < target.getIncomingConnections().size(); i++) {
@@ -1433,6 +1468,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @param id
      */
+    @Override
     public void setInputId(int id) {
         int newId = id - 1;
         int curId = 0;
@@ -1458,10 +1494,12 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return the nodeConnector
      */
+    @Override
     public INodeConnector getSourceNodeConnector() {
         return source.getConnectorFromName(connectorName);
     }
 
+    @Override
     public INodeConnector getTargetNodeConnector() {
         // INodeConnector targetNodeConnector =
         // target.getConnectorFromName(connectorName);
@@ -1476,6 +1514,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return the connectionType
      */
+    @Override
     public String getConnectorName() {
         return connectorName;
     }
@@ -1485,6 +1524,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @param connectionType the connectionType to set
      */
+    @Override
     public void setConnectorName(String connectorName) {
         this.connectorName = connectorName;
         updateName();
@@ -1505,15 +1545,18 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @see org.talend.core.model.process.IPerformance#setPerformanceData(java.lang.String)
      */
+    @Override
     public void setPerformanceData(String pefData) {
         performance.setLabel(pefData);
 
     }
 
+    @Override
     public void clearPerformanceDataOnUI() {
         this.performance.clearPerformanceDataOnUI();
     }
 
+    @Override
     public boolean isUseByMetter() {
         INode sourceNode = this.getSource();
         List<INode> metterNodes = (List<INode>) sourceNode.getProcess().getNodesOfType("tFlowMeter"); //$NON-NLS-1$
@@ -1526,7 +1569,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 String absolute = (String) node.getElementParameter("ABSOLUTE").getValue(); //$NON-NLS-1$
                 String reference = (String) node.getElementParameter("CONNECTIONS").getValue(); //$NON-NLS-1$
 
-                if (absolute.equals(Boolean.FALSE.toString()) && reference.equals(this.getUniqueName())) { //$NON-NLS-1$
+                if (absolute.equals(Boolean.FALSE.toString()) && reference.equals(this.getUniqueName())) {
                     return true;
                 }
             }
@@ -1539,6 +1582,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return the isSubjobConnection
      */
+    @Override
     public boolean isSubjobConnection() {
         return this.isSubjobConnection;
     }
@@ -1557,6 +1601,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @return the monitorConnection
      */
+    @Override
     public boolean isMonitorConnection() {
         return this.monitorConnection;
     }
@@ -1574,6 +1619,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     /**
      * feature 6355
      */
+    @Override
     public boolean isTraceConnection() {
         Object propertyValue = this.getPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName());
         if (propertyValue != null && propertyValue instanceof Boolean) {
@@ -1582,6 +1628,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return false;
     }
 
+    @Override
     public void setTraceConnection(boolean traceConnection) {
         final String parameterName = EParameterName.TRACES_CONNECTION_ENABLE.getName();
         Object propertyValue = this.getPropertyValue(parameterName);
@@ -1687,10 +1734,12 @@ public class Connection extends Element implements IConnection, IPerformance {
         return element != null;
     }
 
+    @Override
     public List<String> getEnabledTraceColumns() {
         return TracesConnectionUtils.getEnabledTraceColumns(this);
     }
 
+    @Override
     public String getTracesCondition() {
         return TracesConnectionUtils.getTracesConditionSet(this);
     }

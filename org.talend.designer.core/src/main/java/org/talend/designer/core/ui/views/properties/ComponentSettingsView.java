@@ -37,13 +37,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
@@ -54,7 +53,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
-import org.talend.core.service.IMRProcessService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -587,21 +585,19 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                         || propertyValue.equals(EConnectionType.ROUTE_WHEN) || propertyValue.equals(EConnectionType.ROUTE_CATCH)
                         || propertyValue.equals(EConnectionType.STARTS)) {
 
-                    boolean isMREditorActive = false;
-                    IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                            IMRProcessService.class);
-                    if (mrService != null) {
-                        IProcess process = ((Connection) elem).getSource().getProcess();
-                        if (process instanceof IProcess2) {
-                            IEditorPart editor = ((IProcess2) process).getEditor();
-                            isMREditorActive = mrService.isMapReduceEditor(editor);
+                    boolean isMRProcess = false;
+                    IProcess process = ((Connection) elem).getSource().getProcess();
+                    if (process instanceof IProcess2) {
+                        IProcess2 process2 = (IProcess2) process;
+                        if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process2.getComponentsType())) {
+                            isMRProcess = true;
                         }
                     }
                     int length = categories.length;
                     EComponentCategory[] newCategories;
                     // rusuming checkBox only for ON_SUBJOB_OK , modified by nma, order 8663
                     // dont display Recovery tab on M/R for TDI-25789
-                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK) && !isMREditorActive) {
+                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK) && !isMRProcess) {
                         newCategories = new EComponentCategory[length + 1];
                         for (int i = 0; i < length; i++) {
                             newCategories[i] = categories[i];
