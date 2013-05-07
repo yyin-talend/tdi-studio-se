@@ -3,6 +3,10 @@ imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser
     	org.talend.designer.codegen.config.CodeGeneratorArgument
+       	org.talend.core.model.process.IConnection    
+		org.talend.core.model.process.IConnectionCategory
+    	org.talend.core.model.process.EConnectionType
+		org.talend.core.model.utils.NodeUtil    	
 		"
 %>
 <%
@@ -95,12 +99,81 @@ String input_<%=cid %>;
 org.talend.mdm.webservice.WSItemPK[] wspks_<%=cid %>;
 org.talend.mdm.webservice.WSItemPK wspk_<%=cid %>;
 
-
-<%if(storeFlow){%>
-	java.util.List<java.util.Map<String,String>> xmlFlowList_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("flows_<%=virtualcid%>");
-	int flowNum_<%=cid%> = 0;
-<%}%>
-
+<%
+INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
+String virtualSourceCid = sourceNode.getUniqueName();
+INode startNode = NodeUtil.getSpecificStartNode(sourceNode);
+String startNodeCid = null; 
+if(startNode != null){
+	startNodeCid = startNode.getUniqueName();
+} 
+IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){	
+%>
+	java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+	<%
+	if(storeFlow){
+	%>
+		java.util.List<java.util.Map<String,String>> xmlFlowList_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<java.util.Map<String,String>>());
+		int flowNum_<%=cid%> = 0;
+	<%
+	}
+	%>
+	class ThreadXMLField_<%=cid%> extends Thread {
+		java.util.Queue<String> queue;
+		java.util.List<java.util.Map<String,String>> flows;
+		java.lang.Exception lastException;
+		String currentComponent;
+		
+		ThreadXMLField_<%=cid%>(java.util.Queue q) {
+			this.queue = q;
+			globalMap.put("queue_<%=virtualSourceCid%>", queue);
+			lastException = null;
+		}
+		
+		ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+			this.queue = q;
+			this.flows = l;
+			lastException = null;
+			globalMap.put("queue_<%=virtualSourceCid%>", queue);
+			globalMap.put("flows_<%=virtualSourceCid%>", flows);
+		}
+		
+		public java.lang.Exception getLastException() {
+			return this.lastException;
+		}
+		public String getCurrentComponent() {
+			return this.currentComponent;
+		}
+	
+		@Override
+		public void run() {
+			try {
+				<%=startNodeCid%>Process(globalMap);
+			} catch (TalendException te) {
+				this.lastException = te.getException();
+				this.currentComponent = te.getCurrentComponent();
+			}
+		}
+	}
+	<%if(storeFlow){%>
+		ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(queue_<%=cid%>, xmlFlowList_<%=cid%>);
+	<%}else{%>
+		ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(queue_<%=cid%>);
+	<%}%>
+	txf_<%=cid%>.start();
+<%
+}else{
+	if(storeFlow){
+	%>
+		java.util.List<java.util.Map<String,String>> xmlFlowList_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("flows_<%=virtualcid%>");
+		int flowNum_<%=cid%> = 0;
+	<%
+	}
+	%>
 	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=virtualcid%>"); 
+<%
+}
+%>
 	while(true) {
 		if (!queue_<%=cid%>.isEmpty()) {

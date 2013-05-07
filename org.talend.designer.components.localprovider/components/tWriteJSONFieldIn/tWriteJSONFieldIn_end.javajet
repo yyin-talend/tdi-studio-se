@@ -7,6 +7,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable
    	org.talend.core.model.process.IConnection
    	org.talend.core.model.process.IConnectionCategory
+   	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.EConnectionType
 "
 %>
 
@@ -23,16 +25,35 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		if(conns!=null && conns.size()>0){
 			if (conns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%>
-	}
-	if (globalMap.containsKey("<%=cid%>_FINISH") ) {
-		if (queue_<%=cid%>.isEmpty()) {
-			break;
-		}
-	}
-}
-globalMap.remove("<%=cid%>_FINISH");
-<%
+			%>
+					}
+					if (globalMap.containsKey("<%=cid%>_FINISH") ) {
+						if (queue_<%=cid%>.isEmpty()) {
+							break;
+						}
+					}
+				}
+				<%
+				INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
+				String virtualSourceCid = sourceNode.getUniqueName();
+				INode startNode = NodeUtil.getSpecificStartNode(sourceNode);
+				String startNodeCid = null; 
+				if(startNode != null){
+					startNodeCid = startNode.getUniqueName();
+				} 
+				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+				if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
+	   			%>
+					txf_<%=cid%>.join();
+					if(txf_<%=cid%>.getLastException()!=null) {
+						currentComponent = txf_<%=cid%>.getCurrentComponent();
+						throw txf_<%=cid%>.getLastException();
+					}
+    			<%
+    			}
+				%>
+				globalMap.remove("<%=cid%>_FINISH");
+			<%
 			}
 		}
 	}
