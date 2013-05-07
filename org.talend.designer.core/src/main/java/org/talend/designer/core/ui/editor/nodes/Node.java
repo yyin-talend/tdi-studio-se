@@ -3643,11 +3643,27 @@ public class Node extends Element implements IGraphicalNode {
         if (param != null) {
             param.setValue(Boolean.TRUE);
         }
+        boolean isJobletNode = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent(this)) {
+                isJobletNode = true;
+            }
+        }
 
         if (obj != null) {
             List<? extends IElementParameter> oldElementParameters = (List<? extends IElementParameter>) obj;
             for (IElementParameter sourceParam : oldElementParameters) {
                 IElementParameter targetParam = getElementParameter(sourceParam.getName());
+                // add for bug TDI-25654, each time should get the specific version or the joblet.
+                String sourceParamName = sourceParam.getName();
+                if (isJobletNode && (EParameterName.PROCESS_TYPE_VERSION.getName()).equals(sourceParamName)) {
+                    Object versionObj = storeValueMap.get(sourceParamName);
+                    if (versionObj != null && !versionObj.equals(sourceParam.getValue())) {
+                        sourceParam.setValue(versionObj);
+                    }
+                }
                 if (targetParam != null) {
                     if (sourceParam.getName().equals(EParameterName.LABEL.getName())
                             && (sourceParam.getValue() == null || "".equals(sourceParam.getValue()))) {
@@ -3695,14 +3711,6 @@ public class Node extends Element implements IGraphicalNode {
                 getExternalNode().setExternalData((IExternalData) obj);
             }
             getExternalNode().initialize();
-        }
-        boolean isJobletNode = false;
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                    IJobletProviderService.class);
-            if (service != null && service.isJobletComponent(this)) {
-                isJobletNode = true;
-            }
         }
         obj = parameters.get(INode.RELOAD_PARAMETER_CONNECTORS);
         if (obj != null) {
