@@ -1692,6 +1692,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param element
      */
     private void setSpecialParamsForHiveEmbedded(IElement element) {
+        // hive embedded model, all parameters below should not be null
+        String distroKey = getValueFromRepositoryName(elem, "DISTRIBUTION");
+        connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_HIVE_DISTRIBUTION, distroKey);
+
+        String distroVersion = getValueFromRepositoryName(elem, "HIVE_VERSION");
+        connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_HIVE_VERSION, distroVersion);
+
+        String hiveModel = getValueFromRepositoryName(elem, "CONNECTION_MODE");
+        connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_HIVE_MODE, hiveModel);
+
         String nameNodeURI = getValueFromRepositoryName(element, EParameterNameForComponent.PARA_NAME_FS_DEFAULT_NAME.getName());
         connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_NAME_NODE_URL, nameNodeURI);
 
