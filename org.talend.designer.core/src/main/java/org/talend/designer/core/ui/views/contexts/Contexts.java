@@ -42,6 +42,13 @@ public class Contexts {
         refreshView(cxtView);
     }
 
+    public static void refreshContextsView() {
+        ContextsView cxtView = getView();
+        if (cxtView != null) {
+            refreshView(cxtView);
+        }
+    }
+
     /**
      * qzhang Comment method "refreshView".
      */
