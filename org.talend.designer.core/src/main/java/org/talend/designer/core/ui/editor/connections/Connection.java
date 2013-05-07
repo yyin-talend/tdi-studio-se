@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.PluginChecker;
@@ -759,7 +760,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
                         EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH, EConnectionType.STARTS)
                         || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
-                    uniqueName = name;
+                    if (Pattern.matches("^[A-Za-z_][A-Za-z0-9_]*$", name)) {
+                        uniqueName = name;
+                    } else {
+                        uniqueName = lineStyle.getDefaultLinkName();
+                    }
                 }
             }
 

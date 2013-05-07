@@ -378,7 +378,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
             for (IConnection conn : ((Node) getModel()).getOutgoingConnections()) {
                 String connIdName = null;
-                String oldName = conn.getName();
+                String oldName = conn.getUniqueName();
                 node.getProcess().removeUniqueConnectionName(oldName);
                 if (node.getProcess().checkValidConnectionName(node.getConnectionName(), false)) {
                     connIdName = node.getProcess().generateUniqueConnectionName(node.getConnectionName());
