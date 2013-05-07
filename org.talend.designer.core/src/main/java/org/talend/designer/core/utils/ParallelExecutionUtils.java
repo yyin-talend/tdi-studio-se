@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.types.TypesManager;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -261,6 +263,21 @@ public class ParallelExecutionUtils {
         return hasInPreviousCon;
     }
 
+    public static boolean existPreviousOtherCon(Node currentNode) {
+        // To judge if there has a con such as ON_SUBJOB_OK
+        boolean hasInPreviousCon = false;
+        for (IConnection con : currentNode.getIncomingConnections()) {
+            if ((con.getLineStyle() == EConnectionType.ON_SUBJOB_OK || con.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
+                    || con.getLineStyle() == EConnectionType.RUN_IF || con.getLineStyle() == EConnectionType.ROUTE_WHEN
+                    || con.getLineStyle() == EConnectionType.ROUTE_CATCH || con.getLineStyle() == EConnectionType.ON_COMPONENT_OK || con
+                        .getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
+
+            }
+            hasInPreviousCon = true;
+        }
+        return hasInPreviousCon;
+    }
+
     public static boolean existPreviousDepar(Node currentNode) {
         // To judge if there has par/col on previous connection
         boolean hasInPreviousCon = false;
@@ -356,5 +373,61 @@ public class ParallelExecutionUtils {
             }
         }
         return hasDeparInPreviousCon;
+    }
+
+    public static void setDBType(IMetadataTable metaTable, String dbmsid) {
+        List<IMetadataColumn> listColumns = metaTable.getListColumns();
+        for (IMetadataColumn column : listColumns) {
+            String talendType = column.getTalendType();
+            String type = column.getType();
+            if (dbmsid != null) {
+                if (!TypesManager.checkDBType(dbmsid, talendType, type)) {
+                    column.setType(TypesManager.getDBTypeFromTalendType(dbmsid, talendType));
+                }
+            }
+        }
+    }
+
+    public static void copyTable(String dbmsId, IMetadataTable source, IMetadataTable target) {
+        setDBType(source, dbmsId);
+        copyTable(source, target);
+    }
+
+    public static void copyTable(IMetadataTable source, IMetadataTable target) {
+        if (source == null || target == null) {
+            return;
+        }
+        List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+        List<String> readOnlycolumns = new ArrayList<String>();
+        for (IMetadataColumn column : target.getListColumns(true)) {
+            if (!column.isCustom()) {
+                columnsToRemove.add(column);
+            }
+            if (column.isReadOnly()) {
+                readOnlycolumns.add(column.getLabel());
+            }
+        }
+        target.getListColumns().removeAll(columnsToRemove);
+        target.getListUnusedColumns().removeAll(columnsToRemove);
+
+        List<IMetadataColumn> columnsTAdd = new ArrayList<IMetadataColumn>();
+        for (IMetadataColumn column : source.getListColumns(true)) {
+            IMetadataColumn targetColumn = target.getColumn(column.getLabel());
+            IMetadataColumn newTargetColumn = column.clone();
+            if (targetColumn == null) {
+                columnsTAdd.add(newTargetColumn);
+                newTargetColumn.setReadOnly(target.isReadOnly() || readOnlycolumns.contains(newTargetColumn.getLabel()));
+            } else {
+                if (!targetColumn.isReadOnly()) {
+                    target.getListColumns().remove(targetColumn);
+                    newTargetColumn.setCustom(targetColumn.isCustom());
+                    newTargetColumn.setCustomId(targetColumn.getCustomId());
+                    columnsTAdd.add(newTargetColumn);
+                }
+            }
+        }
+        target.getListColumns().addAll(columnsTAdd);
+        target.sortCustomColumns();
+        target.setLabel(source.getLabel());
     }
 }
