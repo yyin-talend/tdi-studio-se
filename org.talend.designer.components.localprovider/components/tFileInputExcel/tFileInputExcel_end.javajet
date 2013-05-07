@@ -33,6 +33,9 @@
 			}
 			<%}%>
 			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+            <%if((version07 && !eventMode) || !version07) {%>
+                }
+            <%}//Bug TDI-25655%>
 		} finally { 
 				<%if(!version07){%>
 					if(!(source_<%=cid %> instanceof java.io.InputStream)){
