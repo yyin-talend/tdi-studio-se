@@ -276,10 +276,10 @@ public class TalendForgeDialog extends TrayDialog {
 
         Label labelMessageThree = new Label(parent, SWT.WRAP);
         data = new FormData();
-        data.top = new FormAttachment(imageLabelTree, 2, SWT.TOP);
+        data.top = new FormAttachment(imageLabelTree, 1, SWT.TOP);
         data.left = new FormAttachment(imageLabelTree, 7, SWT.RIGHT);
         data.right = new FormAttachment(labelMessageTwo, 0, SWT.RIGHT);
-        data.bottom = new FormAttachment(labelMessageTwo, 20, SWT.BOTTOM);
+        data.bottom = new FormAttachment(labelMessageTwo, 30, SWT.BOTTOM);
         labelMessageThree.setText(Messages.getString("TalendForgeDialog.labelMessageThree"));
         labelMessageThree.setFont(font);
         labelMessageThree.setLayoutData(data);
