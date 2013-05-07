@@ -14,6 +14,7 @@
 				nb_line_<%=cid%>++;
 			}
 			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+				}<%//Bug TDI-25655%>
 		} finally { 
 				<%if(!version07){%>
 					if(!(source_<%=cid %> instanceof java.io.InputStream)){
