@@ -1241,17 +1241,16 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                             @Override
                                             public void run() {
-                                                boolean isUsed = false;
-                                                isUsed = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+                                                isColumnUsed = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
                                                         Messages.getString("ProcessUpdateManager.Question"),
                                                         Messages.getString("ProcessUpdateManager.QuestionString"));
-                                                copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isUsed);
+                                                copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
                                             }
 
                                         });
                                         this.isAddColumn = false;
                                     } else {
-                                        copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, false);
+                                        copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
                                     }
 
                                     if (onlySimpleShow
