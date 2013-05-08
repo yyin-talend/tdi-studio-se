@@ -2303,6 +2303,45 @@ public class Node extends Element implements IGraphicalNode {
 
     @SuppressWarnings("unchecked")
     private void checkParameters() {
+        // Check whether or not we need check column existence.
+        // We just check the condition which just have one MetadataTable or Pre-MetadataTable.
+        boolean checkColumnExist = false;
+        IMetadataTable metadataTable = null;
+        List<IMetadataTable> tables = getMetadataList();
+        if (tables != null && tables.size() == 1) {
+            metadataTable = tables.get(0);
+            checkColumnExist = true;
+        }
+        boolean checkPreColumnExist = false;
+        IMetadataTable preMetadataTable = null;
+        int preTableCount = 0;
+        List<? extends IConnection> incomingConnections = getIncomingConnections();
+        if (incomingConnections != null && incomingConnections.size() > 0) {
+            for (IConnection incomingConnection : incomingConnections) {
+                if (incomingConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    IMetadataTable schemaTable = incomingConnection.getMetadataTable();
+                    if (schemaTable != null) {
+                        ++preTableCount;
+                        if (preTableCount > 1) {
+                            break;
+                        }
+                        preMetadataTable = schemaTable;
+                    }
+                }
+            }
+        }
+        if (preTableCount == 1) {
+            checkPreColumnExist = true;
+        }
+        List<String> currentColumns = new ArrayList<String>();
+        if (checkColumnExist) {
+            currentColumns = getColumnLabels(metadataTable);
+        }
+        List<String> preColumns = new ArrayList<String>();
+        if (checkPreColumnExist) {
+            preColumns = getColumnLabels(preMetadataTable);
+        }
+
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             if (param.getMaxlength() > 0) {
                 String paramValue = param.getValue().toString();
@@ -2353,6 +2392,53 @@ public class Node extends Element implements IGraphicalNode {
                         Problems.add(ProblemStatus.ERROR, this, "Unknown value in the list [" + param.getDisplayName()
                                 + "] / Value set not supported by the component");
                     }
+                }
+            }
+
+            if (param.getFieldType() == EParameterFieldType.TABLE) {
+                // Check columns which not existing.
+                Object[] tableItemsValue = param.getListItemsValue();
+                List<String> columnListParamNames = new ArrayList<String>();
+                List<String> preColumnListParamNames = new ArrayList<String>();
+                if (tableItemsValue != null && tableItemsValue.length > 0) {
+                    for (Object tabItemValue : tableItemsValue) {
+                        if (tabItemValue instanceof IElementParameter) {
+                            IElementParameter itemParameter = (IElementParameter) tabItemValue;
+                            if (itemParameter.getFieldType() == EParameterFieldType.COLUMN_LIST) {
+                                columnListParamNames.add(itemParameter.getName());
+                            }
+                            if (itemParameter.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST) {
+                                preColumnListParamNames.add(itemParameter.getName());
+                            }
+                        }
+                    }
+                }
+                StringBuffer inexistentColumns = new StringBuffer();
+                List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
+                for (Map<String, String> tabMap : tableValues) {
+                    int row = tableValues.indexOf(tabMap) + 1;
+                    if (checkColumnExist) {
+                        for (String paramName : columnListParamNames) {
+                            String columnLineValue = tabMap.get(paramName);
+                            if (!currentColumns.contains(columnLineValue)) {
+                                inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            }
+                        }
+                    }
+                    if (checkPreColumnExist) {
+                        for (String paramName : preColumnListParamNames) {
+                            String columnLineValue = tabMap.get(paramName);
+                            if (!preColumns.contains(columnLineValue)) {
+                                inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            }
+                        }
+                    }
+                }
+                if (inexistentColumns.length() > 0) {
+                    inexistentColumns.deleteCharAt(inexistentColumns.length() - 1);
+                    String warnMessage = Messages.getString(
+                            "Node.hasInexistentColumn", inexistentColumns.toString(), param.getDisplayName()); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.WARNING, this, warnMessage);
                 }
             }
 
@@ -2534,6 +2620,22 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+    }
+
+    private List<String> getColumnLabels(IMetadataTable metadataTable) {
+        List<String> columnLabels = new ArrayList<String>();
+        if (metadataTable == null) {
+            return columnLabels;
+        }
+        List<IMetadataColumn> columns = metadataTable.getListColumns();
+        for (IMetadataColumn column : columns) {
+            String columnLabel = column.getLabel();
+            if (!columnLabels.contains(columnLabel)) {
+                columnLabels.add(columnLabel);
+            }
+        }
+
+        return columnLabels;
     }
 
     private void checktAggregateRow(IElementParameter param) {
