@@ -231,7 +231,7 @@
             
 			<IMPORT NAME="stax2-api" MODULE="stax2-api-3.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/stax2-api-3.1.1.jar" REQUIRED="true"/>
 			<IMPORT NAME="velocity" MODULE="velocity-1.7.jar" REQUIRED="true"/>
-			<IMPORT NAME="woodstox-core-asl" MODULE="woodstox-core-asl-4.1.4.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/woodstox-core-asl-4.1.4.jar" REQUIRED="true"/>
+			<IMPORT NAME="woodstox-core-asl" MODULE="woodstox-core-asl-4.2.0.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/woodstox-core-asl-4.2.0.jar" REQUIRED="true"/>
 			<IMPORT NAME="xmlschema-core" MODULE="xmlschema-core-2.0.3.jar" UrlPath="platform:/plugin/org.talend.libraries.esb/lib/xmlschema-core-2.0.3.jar" REQUIRED="true"/>
 
 			<IMPORT NAME="commons-beanutils" MODULE="commons-beanutils-1.8.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.8.3.jar" REQUIRED="true"/>
