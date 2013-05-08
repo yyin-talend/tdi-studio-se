@@ -49,7 +49,6 @@ import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.VersionUtils;
-import org.talend.commons.utils.io.SHA1Util;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentUtilities;
@@ -328,22 +327,7 @@ public class ExchangeUtils {
 
     public static String getPasswordHash() {
         Project proj = ProjectManager.getInstance().getCurrentProject();
-        String passwordTemp = proj.getExchangeUser().getPassword();
-        try {
-            passwordTemp = SHA1Util.hex_sha1(passwordTemp);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return passwordTemp;
-    }
-
-    public static String getPasswordHash(String passwordTemp) {
-        try {
-            return SHA1Util.hex_sha1(passwordTemp);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return passwordTemp;
+        return proj.getExchangeUser().getPassword();
     }
 
     public static String getUserName() {

@@ -25,7 +25,6 @@ import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.ui.views.ExchangeEditorInput;
-import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 import org.talend.repository.ProjectManager;
 
@@ -82,7 +81,7 @@ public class ExchangeService implements IExchangeService {
         JSONObject tokenMessage = new JSONObject();
         try {
             tokenMessage.put("username", username);
-            tokenMessage.put("passwordHash", ExchangeUtils.getPasswordHash(password));
+            tokenMessage.put("passwordHash", password);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("contributedExtension", tokenMessage);
 

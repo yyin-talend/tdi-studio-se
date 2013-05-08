@@ -55,6 +55,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.utils.io.SHA1Util;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
@@ -810,7 +811,7 @@ public class TalendForgeDialog extends TrayDialog {
                         } else {
                             connectionEmail = "test@talend.com";
                         }
-                        prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
+                        prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + SHA1Util.hex_sha1(password));
                     }
                 } catch (BusinessException e1) {
                     ExceptionHandler.process(e1);
@@ -1069,7 +1070,7 @@ public class TalendForgeDialog extends TrayDialog {
                     if (PluginChecker.isExchangeSystemLoaded()) {
                         IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
                                 IExchangeService.class);
-                        String checkUserAndPass = service.checkUserAndPass(username, password);
+                        String checkUserAndPass = service.checkUserAndPass(username, SHA1Util.hex_sha1(password));
                         if (checkUserAndPass != null) {
                             isUserPassRight = false;
                             MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
@@ -1084,7 +1085,7 @@ public class TalendForgeDialog extends TrayDialog {
                         } else {
                             connectionEmail = "test@talend.com";
                         }
-                        prefStore.setValue(connectionEmail, "notused" + ":" + username + ":" + password);
+                        prefStore.setValue(connectionEmail, "notused" + ":" + username + ":" + SHA1Util.hex_sha1(password));
                         // bug TDI-19619,when connect correct,no need openInformation.
                         // MessageDialog.openInformation(getShell(),
                         // Messages.getString("TalendForgeDialog.MessageTitle"),
