@@ -476,6 +476,13 @@ public class ConnectionManager {
                 return false;
             }
         }
+
+        // TDI-25765 : avoid any connection for components not accepting PIG
+        if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && "PIGCOMBINE".equals(connectorName)) {
+            if (!newTarget.getComponent().getName().startsWith("tPig")) {
+                return false;
+            }
+        }
         // for bug 10378
         // if (PluginChecker.isJobLetPluginLoaded()) {
         // if (EComponentType.JOBLET_INPUT_OUTPUT.equals(newTarget.getComponent().getComponentType())) {
