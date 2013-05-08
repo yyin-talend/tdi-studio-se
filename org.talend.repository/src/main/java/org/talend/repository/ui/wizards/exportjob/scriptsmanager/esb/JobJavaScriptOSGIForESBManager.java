@@ -767,7 +767,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 for (NodeType node : EmfModelUtils.getComponentsByName(pi, "tESBConsumer")) { //$NON-NLS-1$
                     // https://jira.talendforge.org/browse/TESB-9574
-                    if (requireBundle.isEmpty() && EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", node)) { //$NON-NLS-1$
+                    if (requireBundle.isEmpty() && EmfModelUtils.computeCheckElementValue("USE_SR", node)) { //$NON-NLS-1$
                         requireBundle = "tesb-xacml-rt"; //$NON-NLS-1$
                     }
                 }
