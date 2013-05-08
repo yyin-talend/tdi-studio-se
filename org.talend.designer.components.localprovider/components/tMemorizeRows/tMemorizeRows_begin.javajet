@@ -46,6 +46,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     globalMap.put("<%=cid%>_<%=sColumnName%>", <%=sColumnName%>_<%=cid%>);
     <%
   }
+%>
+	globalMap.put("<%=cid %>_NB_LINE_ROWS", iRows_<%=cid%>);
+<%
   			}//-----222
   		}//-----111
 }
