@@ -19,12 +19,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.Path;
-import org.skife.csv.CSVReader;
-import org.skife.csv.SimpleReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
@@ -42,6 +39,7 @@ import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.utils.files.CSVFileColumnConnter;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -100,20 +98,12 @@ public class FileInputDelimitedNode extends FileInputNode {
                         EShadowProcessType.FILE_CSV);
                 this.setColumnNumber(max);
             } else {
-                CSVReader cr = null;
+                CSVFileColumnConnter cr = null;
                 try {
-                    cr = new SimpleReader();
+                    cr = new CSVFileColumnConnter();
                     cr.setSeperator(trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
-                    List items = cr.parse(new File(TalendTextUtils.removeQuotes(filename)));
                     int columnCount = 0;
-                    for (int i = 0; i < limitRows && i < items.size(); i++) {
-                        String[] item = (String[]) items.get(i);
-                        int temp = item.length;
-                        if (temp > columnCount) {
-                            columnCount = temp;
-                        }
-
-                    }
+                    columnCount = cr.countMaxColumnNumber(new File(TalendTextUtils.removeQuotes(filename)), limitRows);
                     if (columnCount > 0) {
                         this.setColumnNumber(columnCount);
                     }
