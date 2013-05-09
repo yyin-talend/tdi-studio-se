@@ -478,6 +478,13 @@
 		  <DEFAULT>true</DEFAULT>
 	</PARAMETER>
 	
+   <PARAMETER
+       NAME="TRIM_CHAR"
+       FIELD="CHECK"
+       NUM_ROW="90">
+         <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+	
   </ADVANCED_PARAMETERS>
  
   <CODEGENERATION>
