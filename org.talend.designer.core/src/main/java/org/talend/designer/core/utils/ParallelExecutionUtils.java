@@ -26,47 +26,50 @@ public class ParallelExecutionUtils {
         String partitioning = needToPar.getComponent().getPartitioning();
         boolean isSame = false;
         String[] partitionKey = partitioning.split("\\.");
-        IElementParameter parTableCon = parConnection.getElementParameter(HASH_KEYS);
-        IElementParameter parTableNode = needToPar.getElementParameter(partitionKey[0]);
-        if (parTableNode != null) {
-            String clumnKeyListName = "KEY_COLUMN";// for the partition key
-            String clumnNodeListName = partitionKey[1];
+        boolean canCompare = partitionKey.length > 1 ? true : false;
+        if (canCompare) {
+            IElementParameter parTableCon = parConnection.getElementParameter(HASH_KEYS);
+            IElementParameter parTableNode = needToPar.getElementParameter(partitionKey[0]);
+            if (parTableNode != null) {
+                String clumnKeyListName = "KEY_COLUMN";// for the partition key
+                String clumnNodeListName = partitionKey[1];
 
-            List<String> parKeyValues = new ArrayList<String>();
-            List<String> columnKeyValues = new ArrayList<String>();
+                List<String> parKeyValues = new ArrayList<String>();
+                List<String> columnKeyValues = new ArrayList<String>();
 
-            ElementParameter nodeElemForList = null;
-            for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
-                if (conColumnListMap.get(clumnKeyListName) instanceof String) {
-                    parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
+                ElementParameter nodeElemForList = null;
+                for (Map conColumnListMap : (List<Map>) parTableCon.getValue()) {
+                    if (conColumnListMap.get(clumnKeyListName) instanceof String) {
+                        parKeyValues.add((String) conColumnListMap.get(clumnKeyListName));
+                    }
                 }
-            }
 
-            for (Object nodeItemList : parTableNode.getListItemsValue()) {
-                if (((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
-                        || ((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
-                    nodeElemForList = (ElementParameter) nodeItemList;
-                    break;
+                for (Object nodeItemList : parTableNode.getListItemsValue()) {
+                    if (((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.PREV_COLUMN_LIST)
+                            || ((ElementParameter) nodeItemList).getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
+                        nodeElemForList = (ElementParameter) nodeItemList;
+                        break;
+                    }
                 }
-            }
-            if (nodeElemForList != null) {
-                for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
-                    Object value = nodeColumnListMap.get(clumnNodeListName);
-                    if (nodeColumnListMap.get(clumnNodeListName) instanceof String) {
-                        columnKeyValues.add((String) value);
-                    } else if (value instanceof Integer) {
-                        Integer index = (Integer) value;
-                        if (nodeElemForList.getListItemsDisplayName().length > index) {
-                            columnKeyValues.add((String) nodeElemForList.getListItemsDisplayName()[index]);
+                if (nodeElemForList != null) {
+                    for (Map nodeColumnListMap : (List<Map>) parTableNode.getValue()) {
+                        Object value = nodeColumnListMap.get(clumnNodeListName);
+                        if (nodeColumnListMap.get(clumnNodeListName) instanceof String) {
+                            columnKeyValues.add((String) value);
+                        } else if (value instanceof Integer) {
+                            Integer index = (Integer) value;
+                            if (nodeElemForList.getListItemsDisplayName().length > index) {
+                                columnKeyValues.add((String) nodeElemForList.getListItemsDisplayName()[index]);
+                            }
                         }
                     }
                 }
-            }
-            if (columnKeyValues.size() > 0) {
-                if (columnKeyValues.equals(parKeyValues)) {
-                    isSame = true;
-                } else {
-                    isSame = false;
+                if (columnKeyValues.size() > 0) {
+                    if (columnKeyValues.equals(parKeyValues)) {
+                        isSame = true;
+                    } else {
+                        isSame = false;
+                    }
                 }
             }
         }
