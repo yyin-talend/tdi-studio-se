@@ -344,7 +344,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 IFile linkedFile = createWorkspaceLink(
                         fsProject,
                         fsProject.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.JOB_SCRIPT))
-                                .getFolder(repositoryNode.getParent().toString())
+                                .getFolder(repositoryNode.getParent().getRepositoryPath())
                                 .getFile(repositoryNode.getObject().getProperty().getLabel()).getLocation(), repositoryNode
                                 .getObject().getProperty().getVersion());
                 IWorkbenchPage page = getActivePage();
