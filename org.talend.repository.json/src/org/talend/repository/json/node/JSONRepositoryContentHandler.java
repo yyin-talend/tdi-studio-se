@@ -33,6 +33,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.AbstractRepositoryContentHandler;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryTypeProcessor;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.utils.RepositoryNodeManager;
 import org.talend.core.repository.utils.XmiResourceManager;
@@ -46,6 +47,7 @@ import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
 import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.JsonPackage;
+import org.talend.repository.model.json.util.JsonXMLProcessor;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import orgomg.cwm.foundation.businessinformation.BusinessinformationPackage;
 
@@ -249,6 +251,21 @@ public class JSONRepositoryContentHandler extends AbstractRepositoryContentHandl
         }
         return null;
         // return new HDFSWizard(workbench, creation, node, existingNames);
+    }
+
+    @Override
+    public ERepositoryObjectType getProcessType() {
+        return JSONRepositoryNodeType.JSON;
+    }
+
+    @Override
+    public IRepositoryTypeProcessor getRepositoryTypeProcessor(String repositoryType) {
+        ERepositoryObjectType processType = getProcessType();
+        if (repositoryType != null && processType != null && repositoryType.contains(processType.getType())) {
+            return new JSONRepositoryTypeProcessor(repositoryType);
+        }
+
+        return null;
     }
 
 }
