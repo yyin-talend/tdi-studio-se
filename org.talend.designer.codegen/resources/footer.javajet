@@ -167,7 +167,9 @@
 
 
     public int runJobInTOS(String[] args) {
-
+	   	// reset status
+	   	status = "";
+	   	
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
