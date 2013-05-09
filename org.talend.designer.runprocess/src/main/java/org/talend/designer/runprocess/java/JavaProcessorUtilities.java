@@ -39,7 +39,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -593,9 +595,22 @@ public class JavaProcessorUtilities {
 
                         @Override
                         public void run() {
-                            MessageDialog.openWarning(Display.getDefault().getActiveShell(),
-                                    Messages.getString("JavaProcessorUtilities.msg.missingjar.warningtitle"), //$NON-NLS-1$
-                                    subForMsg(sb.toString()));
+                            // fix for TDI-24906
+                            MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), Messages
+                                    .getString("JavaProcessorUtilities.msg.missingjar.warningtitle"), null, subForMsg(sb
+                                    .toString()), 4, new String[] { IDialogConstants.OK_LABEL }, 0) {
+
+                                /*
+                                 * (non-Javadoc)
+                                 * 
+                                 * @see org.eclipse.jface.window.Window#setShellStyle(int)
+                                 */
+                                @Override
+                                protected void setShellStyle(int newShellStyle) {
+                                    super.setShellStyle(getShellStyle() | SWT.NONE);
+                                }
+                            };
+                            dialog.open();
                         }
 
                     });
