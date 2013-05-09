@@ -44,6 +44,7 @@ String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
 boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
 boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
 boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+boolean trimChar = ("true").equals(ElementParameterParser.getValue(node,"__TRIM_CHAR__"));
 
 if (useSpatialOptions) {
 	int targetSRID = -1;
@@ -349,7 +350,9 @@ if(columnList != null && columnList.size()>0) {
     %>
     <%@ include file="../templates/_tableActionForOutput.javajet"%>
     <%
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    OracleManager oracleManager = ((OracleManager)getManager(dbmsId, cid));
+    oracleManager.setTrimChar(trimChar);
+    Map<String, StringBuilder> actionSQLMap = oracleManager.createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
