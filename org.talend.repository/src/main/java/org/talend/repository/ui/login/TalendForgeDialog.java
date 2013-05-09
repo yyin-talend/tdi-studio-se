@@ -532,12 +532,32 @@ public class TalendForgeDialog extends TrayDialog {
         agreeButton.setBackground(createAccount.getBackground());
         agreeButton.setSelection(false);
 
+        Hyperlink readMore = new Hyperlink(createAccount, SWT.NONE);
+        data = new FormData();
+        data.top = new FormAttachment(agreeButton, 0, SWT.TOP);
+        data.left = new FormAttachment(agreeButton, 0, SWT.RIGHT);
+        data.bottom = new FormAttachment(agreeButton, 0, SWT.BOTTOM);
+        readMore.setText(Messages.getString("TalendForgeDialog.readMore"));
+        readMore.setBackground(createAccount.getBackground());
+        readMore.setLayoutData(data);
+        readMore.setFont(font);
+        Color blue = new Color(null, 0, 0, 255);
+        readMore.setForeground(blue);
+        blue.dispose();
+        readMore.addHyperlinkListener(new HyperlinkAdapter() {
+
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                String url = "http://www.talendforge.org/Talend_Contributor_Agreement.txt";
+                TalendBrowserLaunchHelper.openURL(url);
+            }
+        });
+
         improveButton = new Button(createAccount, SWT.CHECK);
         data = new FormData();
-        data.top = new FormAttachment(agreeButton, 0, SWT.BOTTOM);
+        data.top = new FormAttachment(agreeButton, 5, SWT.BOTTOM);
         data.left = new FormAttachment(agreeButton, 0, SWT.LEFT);
-        data.right = new FormAttachment(agreeButton, 500, SWT.LEFT);
-        data.bottom = new FormAttachment(agreeButton, 30, SWT.BOTTOM);
+        data.bottom = new FormAttachment(agreeButton, 20, SWT.BOTTOM);
         improveButton.setText(Messages.getString("TalendForgeDialog.improveButton"));
         improveButton.setLayoutData(data);
         improveButton.setBackground(createAccount.getBackground());
@@ -560,34 +580,12 @@ public class TalendForgeDialog extends TrayDialog {
             }
         });
 
-        Hyperlink readMore = new Hyperlink(createAccount, SWT.NONE);
-        data = new FormData();
-        data.top = new FormAttachment(improveButton, 0, SWT.BOTTOM);
-        data.left = new FormAttachment(improveButton, 5, SWT.LEFT);
-        data.right = new FormAttachment(improveButton, 100, SWT.LEFT);
-        data.bottom = new FormAttachment(improveButton, 20, SWT.BOTTOM);
-        readMore.setText(Messages.getString("TalendForgeDialog.readMore"));
-        readMore.setBackground(createAccount.getBackground());
-        readMore.setLayoutData(data);
-        readMore.setFont(font);
-        Color blue = new Color(null, 0, 0, 255);
-        readMore.setForeground(blue);
-        blue.dispose();
-        readMore.addHyperlinkListener(new HyperlinkAdapter() {
-
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-                String url = "http://www.talendforge.org/communitybenefits.php";
-                TalendBrowserLaunchHelper.openURL(url);
-            }
-        });
-
         createAccountButton = new Button(createAccount, SWT.PUSH);
         data = new FormData();
-        data.top = new FormAttachment(readMore, 10, SWT.BOTTOM);
+        data.top = new FormAttachment(improveButton, 10, SWT.BOTTOM);
         data.left = new FormAttachment(improveButton, 0, SWT.LEFT);
         data.right = new FormAttachment(improveButton, 180, SWT.LEFT);
-        data.bottom = new FormAttachment(readMore, 35, SWT.BOTTOM);
+        data.bottom = new FormAttachment(improveButton, 35, SWT.BOTTOM);
         createAccountButton.setLayoutData(data);
         createAccountButton.setText(Messages.getString("TalendForgeDialog.createAccountButton"));
         createAccountButton.setEnabled(false);
