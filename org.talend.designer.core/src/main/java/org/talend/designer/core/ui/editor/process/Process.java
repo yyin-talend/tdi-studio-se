@@ -542,7 +542,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         addElementParameter(param);
 
         param = new ElementParameter(this);
-        param.setName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getName()); //$NON-NLS-1$
+        param.setName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setFieldType(EParameterFieldType.TABLE);
         param.setListItemsDisplayCodeName(new String[] { "PROPERTY", "VALUE" });
@@ -560,7 +560,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setListItemsValue(items);
         param.setNumRow(99);
         param.setShow(false);
-        param.setDisplayName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getDisplayName()); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.HADOOP_ADVANCED_PROPERTIES.getDisplayName());
         param.setValue(new ArrayList<Map<String, Object>>());
         addElementParameter(param);
 
@@ -1935,6 +1935,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         loadElementParameters(nc, listParamType);
+        if (nodesHashtable.containsKey(nc.getUniqueName())) {
+            // if the uniquename is already in the list, there must be a problem with the job.
+            // simply don't load the component
+            return null;
+        }
 
         // update the value of process type
         IElementParameter processParam = nc.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
@@ -1980,42 +1985,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         nc.setNeedLoadLib(false);
         //
         return nc;
-    }
-
-    private void loadNodeContainer(ProcessType processType) {
-        EList nodeList = processType.getNode();
-        NodeType nType;
-        for (int i = 0; i < nodeList.size(); i++) {
-            nType = (NodeType) nodeList.get(i);
-            EList paras = nType.getElementParameter();
-            String uniquateName = null;
-            for (Object obj : paras) {
-                ElementParameterType para = (ElementParameterType) obj;
-                if (para.getName().equals("UNIQUE_NAME")) {
-                    uniquateName = para.getValue();
-                    break;
-                }
-            }
-            List<? extends INode> nodes = this.getGraphicalNodes();
-            for (INode node : nodes) {
-                if (((Node) node).isJoblet() && uniquateName != null && node.getUniqueName().equals(uniquateName)) {
-                    NodeContainer nodeContainer = ((Node) node).getNodeContainer();
-                    NodeContainerType nodeContainerType = nType.getNodeContainer();
-                    if (nodeContainerType != null) {
-                        EList listParamType = nodeContainerType.getElementParameter();
-                        loadElementParameters(nodeContainer, listParamType);
-                        break;
-                    }
-                }
-            }
-
-        }
-        // NodeContainerType nodeContainerType = nType.getNodeContainer();
-        // if (nodeContainerType != null) {
-        // EList listParamType = nodeContainerType.getElementParameter();
-        // loadElementParameters(nodeContainer, listParamType);
-        // }
-        // return nodeContainer;
     }
 
     private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
