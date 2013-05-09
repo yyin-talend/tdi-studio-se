@@ -71,6 +71,7 @@ import org.talend.designer.xmlmap.util.XmlMapConnectionBuilder;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
@@ -943,7 +944,8 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
-        if (getSelectedObjects().isEmpty()) {
+    	RepositoryNode rootNode = ((ProjectRepositoryNode) ProjectRepositoryNode.getInstance()).getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+        if (getSelectedObjects().isEmpty() || rootNode == null) {
             return false;
         } else {
             // get the last selection to run the action
@@ -954,8 +956,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (object instanceof TreeNodeEditPart) {
                     TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
                     schemaNode = (TreeNode) parentPart.getModel();
-                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())
-                    		&& ERepositoryObjectType.METADATA_MDMCONNECTION != null) {
+                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())) {
                         return true;
                     }
                 }
