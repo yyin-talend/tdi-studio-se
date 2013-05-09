@@ -2352,11 +2352,6 @@ public class CLASS {
             this.dbVersion = dbVersion;  
         }
         
-        private boolean trimChar = true;
-        public void setTrimChar(boolean trimChar){
-            this.trimChar = trimChar;  
-        }
-        
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
@@ -2569,6 +2564,7 @@ public class CLASS {
 			String dataType = column.getDataType();
 			if(dataType!=null)
 			{
+			boolean trimChar = ("true").equals(ElementParameterParser.getValue(node,"__TRIM_CHAR__"));
 			if(trimChar && "char".equals(dataType.toLowerCase()))
 			{
 				columnName = "trim("+columnName+")";

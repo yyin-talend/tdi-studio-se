@@ -31,7 +31,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
-	boolean trimChar = ("true").equals(ElementParameterParser.getValue(node,"__TRIM_CHAR__"));
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 
@@ -174,9 +173,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			%>
 			<%@ include file="../templates/_tableActionForOutput.javajet"%>
 			<%
-            OracleManager oracleManager = ((OracleManager)getManager(dbmsId, cid));
-            oracleManager.setTrimChar(trimChar);
-			Map<String, StringBuilder> actionSQLMap = oracleManager.createProcessSQL(stmtStructure);
+			Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
 			StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
 			StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
 			StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
