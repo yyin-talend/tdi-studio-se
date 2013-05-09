@@ -217,7 +217,7 @@
 <%
 	}
 %>
-		throw new java.lang.Error(error);
+		throw error;
 
 	}
 <%
