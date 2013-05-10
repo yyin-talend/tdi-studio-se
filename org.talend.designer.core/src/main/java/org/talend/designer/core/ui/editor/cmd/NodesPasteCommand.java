@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -348,7 +349,11 @@ public class NodesPasteCommand extends Command {
             IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(),
                     process.getComponentsType());
             if (component == null) {
-                component = new DummyComponent(copiedNode.getComponent().getName());
+                if ((ComponentCategory.CATEGORY_4_MAPREDUCE.getName()).equals(process.getComponentsType())) {
+                    component = new DummyComponent(copiedNode.getComponent().getName());
+                } else {
+                    component = copiedNode.getComponent();
+                }
             }
             IGraphicalNode pastedNode = new Node(component, process);
             if (nodeMap != null) {
