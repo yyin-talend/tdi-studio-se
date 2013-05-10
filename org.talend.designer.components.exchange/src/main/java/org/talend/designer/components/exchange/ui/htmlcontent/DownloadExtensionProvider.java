@@ -165,8 +165,13 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 while (ite.hasNext()) {
                     count++;
                     ComponentExtension object = (ComponentExtension) ite.next();
+                    // hide null entries directly
                     if (object.getLabel().equals("null")) {
                         continue;
+                    }
+                    // set 0.1 as a default version
+                    if (object.getDownloadedVersion().equals("") || object.getDownloadedVersion().equals("null")) {
+                        object.setDownloadedVersion("0.1");
                     }
                     Element trExtension = dom.createElement("tr");
 
@@ -191,7 +196,8 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                         style = style + ";background:#F7F7F7";
                     }
                     tdExtension.setAttribute("style", style);
-                    tdExtension.appendChild(dom.createTextNode(object.getDownloadedVersion().replace("null", "")));
+                    // set 0.1 as a default version
+                    tdExtension.appendChild(dom.createTextNode(object.getDownloadedVersion()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
