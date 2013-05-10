@@ -39,7 +39,6 @@ import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.utils.files.CSVFileColumnConnter;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
