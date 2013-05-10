@@ -28,6 +28,10 @@ public class ParallelExecutionUtils {
         String[] partitionKey = partitioning.split("\\.");
         boolean canCompare = partitionKey.length > 1 ? true : false;
         if (canCompare) {
+            // before compare,in case there is a Integer value exist in the column list
+            if (isPartitionKeysExist(parConnection)) {
+                reSetParKeyValuesForCon(parConnection);
+            }
             IElementParameter parTableCon = parConnection.getElementParameter(HASH_KEYS);
             IElementParameter parTableNode = needToPar.getElementParameter(partitionKey[0]);
             if (parTableNode != null) {
@@ -361,6 +365,23 @@ public class ParallelExecutionUtils {
             }
         }
         return hasParInPreviousCon;
+    }
+
+    public static boolean isExistNextDeparCon(Node nextNode) {
+        boolean hasDeparInNextCon = false;
+        if (nextNode.getOutgoingConnections().size() > 0) {
+            for (IConnection con : nextNode.getOutgoingConnections()) {
+                if (con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
+                        && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)
+                        || con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
+                        && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
+                    hasDeparInNextCon = true;
+                } else {
+                    hasDeparInNextCon = isExistNextDeparCon((Node) con.getTarget());
+                }
+            }
+        }
+        return hasDeparInNextCon;
     }
 
     public static boolean isExistPreviouDeparCon(Node previousNode) {
