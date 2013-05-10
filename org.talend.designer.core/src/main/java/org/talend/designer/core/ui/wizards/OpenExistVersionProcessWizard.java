@@ -60,6 +60,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.ui.IOpenJobScriptActionService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -341,12 +342,21 @@ public class OpenExistVersionProcessWizard extends Wizard {
     private void openXtextEditor(RepositoryNode repositoryNode, IProject fsProject, boolean readonly) {
         try {
             if (ProjectManager.getInstance().isInCurrentMainProject(repositoryNode)) {
-                IFile linkedFile = createWorkspaceLink(
-                        fsProject,
-                        fsProject.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.JOB_SCRIPT))
-                                .getFolder(repositoryNode.getParent().getRepositoryPath())
-                                .getFile(repositoryNode.getObject().getProperty().getLabel()).getLocation(), repositoryNode
-                                .getObject().getProperty().getVersion());
+                IFile linkedFile = null;
+                IOpenJobScriptActionService openJobScriptActionService = (IOpenJobScriptActionService) GlobalServiceRegister
+                        .getDefault().getService(IOpenJobScriptActionService.class);
+                if (openJobScriptActionService != null) {
+                    linkedFile = openJobScriptActionService.createWorkspaceLink(fsProject, repositoryNode.getObject()
+                            .getProperty().getItem());
+                } else {
+                    linkedFile = createWorkspaceLink(
+                            fsProject,
+                            fsProject.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.JOB_SCRIPT))
+                                    .getFolder(repositoryNode.getParent().getRepositoryPath())
+                                    .getFile(repositoryNode.getObject().getProperty().getLabel()).getLocation(), repositoryNode
+                                    .getObject().getProperty().getVersion());
+                }
+
                 IWorkbenchPage page = getActivePage();
                 IEditorPart editor = IDE.openEditor(page, linkedFile);
                 if (readonly) {
