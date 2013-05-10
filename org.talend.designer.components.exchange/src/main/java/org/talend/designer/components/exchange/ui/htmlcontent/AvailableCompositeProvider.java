@@ -162,6 +162,9 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
             if (fAvailableExtensions != null) {
                 for (int i = 0; i < fAvailableExtensions.size(); i++) {
                     ComponentExtension extension = fAvailableExtensions.get(i);
+                    if (extension.getLabel().equals("null")) {
+                        continue;
+                    }
                     Element trExtension = dom.createElement("tr");
 
                     Element tdExtension = dom.createElement("td");
@@ -173,7 +176,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                         style = style + ";background:#F7F7F7";
                     }
                     tdExtension.setAttribute("style", style);
-                    tdExtension.appendChild(dom.createTextNode(extension.getLabel().replace("null", "")));
+                    tdExtension.appendChild(dom.createTextNode(extension.getLabel()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");

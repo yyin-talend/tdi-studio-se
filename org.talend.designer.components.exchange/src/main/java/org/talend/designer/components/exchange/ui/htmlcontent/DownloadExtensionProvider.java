@@ -165,7 +165,9 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 while (ite.hasNext()) {
                     count++;
                     ComponentExtension object = (ComponentExtension) ite.next();
-
+                    if (object.getLabel().equals("null")) {
+                        continue;
+                    }
                     Element trExtension = dom.createElement("tr");
 
                     Element tdExtension = dom.createElement("td");
@@ -177,7 +179,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                         style = style + ";background:#F7F7F7";
                     }
                     tdExtension.setAttribute("style", style);
-                    tdExtension.appendChild(dom.createTextNode(object.getLabel().replace("null", "")));
+                    tdExtension.appendChild(dom.createTextNode(object.getLabel()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
