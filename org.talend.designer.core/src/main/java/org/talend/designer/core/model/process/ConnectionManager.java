@@ -483,6 +483,11 @@ public class ConnectionManager {
                 return false;
             }
         }
+        if (newTarget.getComponent() != null && newTarget.getComponent().getName().startsWith("tPig")) {
+            if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !"PIGCOMBINE".equals(connectorName)) {
+                return false;
+            }
+        }
         // for bug 10378
         // if (PluginChecker.isJobLetPluginLoaded()) {
         // if (EComponentType.JOBLET_INPUT_OUTPUT.equals(newTarget.getComponent().getComponentType())) {
