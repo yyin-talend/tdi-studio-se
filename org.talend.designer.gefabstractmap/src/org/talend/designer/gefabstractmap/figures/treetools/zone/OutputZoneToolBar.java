@@ -61,6 +61,7 @@ public abstract class OutputZoneToolBar extends ZoneToolBar {
         this.add(min_size);
 
         auto_map = new AutoMapButton();
+        auto_map.setEnabled(!isAutoMapEnable());
         this.add(auto_map);
         setTooltips();
     }
@@ -139,8 +140,7 @@ public abstract class OutputZoneToolBar extends ZoneToolBar {
     class AutoMapButton extends ToolBarButtonImageFigure {
 
         public AutoMapButton() {
-            super(null);
-            setText("Auto Map");
+            super(ImageProvider.getImage(EImage.AUTOMAP_ICON));
         }
 
         @Override
