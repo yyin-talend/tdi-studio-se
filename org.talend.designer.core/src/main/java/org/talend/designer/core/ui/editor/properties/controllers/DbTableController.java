@@ -195,6 +195,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
             openListTable.addSelectionListener(openTablesListener);
             openListTable.setToolTipText(Messages.getString("DbTableController.showTableList")); //$NON-NLS-1$
         }
+
+        // TDI-25576 : just hide this button in Component View for Hive components , maybe later will remove this .
+        IElementParameter typePara = elem.getElementParameter("TYPE"); //$NON-NLS-1$
+        if (typePara != null && "Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+            openListTable.setVisible(false);
+        }
+
         Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
