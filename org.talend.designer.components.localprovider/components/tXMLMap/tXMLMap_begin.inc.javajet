@@ -689,7 +689,23 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 //		if(<%//tool.getValue(node);%>!=null){
 			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
 			if(valueMap.get("<%=currEleName%>")!=null) {
-				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",FormatterUtils.format(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>,<%=tmpNode.getPattern()%>));
+				String content = FormatterUtils.format(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>,<%=tmpNode.getPattern()%>);
+<%
+    			boolean stringType = "id_String".equals(tmpNode.getType());
+    			if(!allowEmpty && stringType) {
+%>
+				if(!"".equals(content)) {
+<%
+				}
+%>
+				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",content);
+<%
+				if(!allowEmpty && stringType) {
+%>
+				}
+<%
+				}
+%>
 			}<% if(allowEmpty) { %> else {
 				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>","");
 			}
@@ -710,7 +726,23 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 %>
 		valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression()); %>);
 		if(valueMap.get("<%=currEleName%>")!=null) {
-			nestXMLTool.setText(<%=currEleName%>,FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>));
+			String content = FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>);
+<%
+			boolean stringType = "id_String".equals(node.getType());
+			if(!allowEmpty && stringType) {
+%>
+			if(!"".equals(content)) {
+<%
+			}
+%>
+			nestXMLTool.setText(<%=currEleName%>,content);
+<%
+			if(!allowEmpty && stringType) {
+%>
+			}
+<%
+			}
+%>
 		}
 <%
 		}
