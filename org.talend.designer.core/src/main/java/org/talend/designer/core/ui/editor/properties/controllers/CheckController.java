@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -34,13 +35,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusElementCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.IRepositoryNode;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -73,6 +77,26 @@ public class CheckController extends AbstractElementPropertySectionController {
         // before
         Command cmd = null;
         Boolean value = new Boolean(((Button) ctrl).getSelection());
+
+        // Empty EParameterName.PROCESS_TYPE_PROCESS parameter if the select job is a M/R job(TDI-25914).
+        if (value && paramName.equals(EParameterName.USE_DYNAMIC_JOB.getName())) {
+            if (elem instanceof Node) {
+                String processParamName = EParameterName.PROCESS_TYPE_PROCESS.getName();
+                IElementParameter processParameter = elem.getElementParameter(processParamName);
+                if (processParameter != null) {
+                    String processId = String.valueOf(processParameter.getValue());
+                    IRepositoryNode repNode = null;
+                    if (StringUtils.isNotEmpty(processId)) {
+                        repNode = RepositorySeekerManager.getInstance().searchRepoViewNode(processId);
+                    }
+                    if (repNode != null && ERepositoryObjectType.PROCESS_MR.equals(repNode.getObjectType())) {
+                        cmd = new PropertyChangeCommand(elem, processParamName, ""); //$NON-NLS-1$
+                        executeCommand(cmd);
+                    }
+                }
+            }
+        }
+
         if (paramName.equals(EParameterName.ACTIVATE.getName())) {
             if (elem instanceof Node) {
                 List<Node> nodeList = new ArrayList<Node>();
