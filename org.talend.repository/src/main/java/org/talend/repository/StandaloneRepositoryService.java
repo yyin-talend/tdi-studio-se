@@ -45,12 +45,8 @@ import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
- * DOC qian class global comment. Detailled comment <br/>
- * 
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
- * 
+ * Repository service for job runtime. Currently, the main purpose is to retrieve the job context.
  */
-
 public class StandaloneRepositoryService implements IRepositoryService {
 
     private Properties contextProperties;

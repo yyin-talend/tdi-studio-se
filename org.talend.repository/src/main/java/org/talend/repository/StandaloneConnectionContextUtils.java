@@ -33,12 +33,13 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 
 /**
- * DOC root class global comment. Detailled comment
+ * ADD sizhaoliu 2013-04-16
+ * 
  */
 public class StandaloneConnectionContextUtils {
 
     /**
-     * DOC root Comment method "cloneOriginalValueConnection".
+     * DOC sizhaoliu Comment method "cloneOriginalValueConnection".
      * 
      * @param dbConn
      * @param contextProperties
@@ -156,7 +157,7 @@ public class StandaloneConnectionContextUtils {
     }
 
     /**
-     * DOC root Comment method "getOriginalValue".
+     * DOC sizhaoliu Comment method "getOriginalValue".
      * 
      * @param contextProperties
      * @param dbmsId
@@ -188,7 +189,7 @@ public class StandaloneConnectionContextUtils {
     }
 
     /**
-     * DOC root Comment method "setMetadataConnectionParameter".
+     * DOC sizhaoliu Comment method "setMetadataConnectionParameter".
      * 
      * @param dbConn
      * @param metaConn
@@ -258,13 +259,6 @@ public class StandaloneConnectionContextUtils {
 
     }
 
-    /**
-     * DOC root Comment method "getContextTypeForContextMode".
-     * 
-     * @param conn
-     * @param contextName
-     * @return
-     */
     private static ContextType getContextTypeForContextMode(DatabaseConnection conn, String contextName) {
         return null;
     }
