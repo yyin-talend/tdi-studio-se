@@ -14,9 +14,10 @@ package org.talend.designer.fileoutputxml.ui.edit;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.fileoutputxml.i18n.Messages;
@@ -31,7 +32,11 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeU
  * $Id: FOXTargetTreeViewerProvider.java,v 1.1 2007/06/12 07:20:38 gke Exp $
  * 
  */
-public class FOXTargetTreeViewerProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider {
+public class FOXTargetTreeViewerProvider extends LabelProvider implements ITableLabelProvider, ILazyTreeContentProvider {
+
+    private TreeViewer viewer;
+
+    private List<FOXTreeNode> nodes;
 
     /*
      * (non-Javadoc)
@@ -49,6 +54,7 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
      */
+    @Override
     public Object getParent(Object element) {
         FOXTreeNode treeNode = (FOXTreeNode) element;
         return treeNode.getParent();
@@ -80,9 +86,10 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object,
      * java.lang.Object)
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        // TODO Auto-generated method stub
-
+        this.viewer = (TreeViewer) viewer;
+        nodes = (List<FOXTreeNode>) newInput;
     }
 
     /*
@@ -90,6 +97,7 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
      * 
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }
@@ -99,6 +107,7 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
      * 
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         FOXTreeNode treeNode = (FOXTreeNode) element;
         switch (columnIndex) {
@@ -125,6 +134,40 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
         default:
             return ""; //$NON-NLS-1$
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#updateElement(java.lang.Object, int)
+     */
+    @Override
+    public void updateElement(Object parent, int index) {
+        Object element;
+        if (parent instanceof FOXTreeNode) {
+            element = ((FOXTreeNode) parent).getChildren().get(index);
+        } else {
+            element = nodes.get(index);
+        }
+        viewer.replace(parent, index, element);
+        updateChildCount(element, -1);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#updateChildCount(java.lang.Object, int)
+     */
+    @Override
+    public void updateChildCount(Object element, int currentChildCount) {
+        int length = 0;
+        if (element instanceof FOXTreeNode) {
+            FOXTreeNode node = (FOXTreeNode) element;
+            length = node.getChildren().size();
+        } else if (element instanceof List) {
+            length = nodes.size();
+        }
+        viewer.setChildCount(element, length);
     }
 
 }

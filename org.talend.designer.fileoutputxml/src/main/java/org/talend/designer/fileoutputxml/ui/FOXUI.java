@@ -178,15 +178,8 @@ public class FOXUI {
         linker.setManager(foxManager);
         initSchemaTable();
         new FooterComposite(mainComposite, SWT.NONE, foxManager);
-        Tree xmlTree = xmlViewer.getTree();
-
-        if (xmlTree.getItems().length > 0) {
-            TreeItem root = xmlTree.getItem(0);
-            TableItem[] tableItems = schemaViewer.getTable().getItems();
-
-            initLinker(root, tableItems);
-        }
-
+        xmlViewer.expandToLevel(3);
+        linker.createLinks();
     }
 
     /**
@@ -222,29 +215,30 @@ public class FOXUI {
      */
     private void initLinker(TreeItem node, TableItem[] tableItems) {
         FOXTreeNode treeNode = (FOXTreeNode) node.getData();
-
         IMetadataColumn column = treeNode.getColumn();
         if (column != null) {
             if (this.getFoxManager().getFoxComponent().istFileOutputMSXML() && treeNode.getChildren().size() <= 0) {
-                for (int i = 0; i < tableItems.length; i++) {
-                    IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+                for (TableItem tableItem : tableItems) {
+                    IMetadataColumn mColumn = (IMetadataColumn) tableItem.getData();
                     if (mColumn.getLabel().equals(column.getLabel())) {
-                        linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
+                        linker.addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), treeNode);
+                        linker.getBackgroundRefresher().refreshBackground();
                         break;
                     }
                 }
             }
-            for (int i = 0; i < tableItems.length; i++) {
-                IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+            for (TableItem tableItem : tableItems) {
+                IMetadataColumn mColumn = (IMetadataColumn) tableItem.getData();
                 if (mColumn.getLabel().equals(column.getLabel())) {
-                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
+                    linker.addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), treeNode);
+                    linker.getBackgroundRefresher().refreshBackground();
                     break;
                 }
             }
         }
         TreeItem[] children = node.getItems();
-        for (int i = 0; i < children.length; i++) {
-            initLinker(children[i], tableItems);
+        for (TreeItem element : children) {
+            initLinker(element, tableItems);
         }
     }
 
@@ -252,26 +246,27 @@ public class FOXUI {
      * DOC ke Comment method "redrawLinkers".
      */
     public void redrawLinkers() {
-        linker.removeAllLinks();
-        TreeItem root = xmlViewer.getTree().getItem(0);
-        if (this.getFoxManager().getFoxComponent().istFileOutputMSXML()) {
-            List<FOXTreeNode> treeData = this.getFoxManager().getTreeData(this.getFoxManager().getCurrentSchema());
-            if (treeData != null && treeData.size() > 0) {
-                FOXTreeNode rootTreeData = treeData.get(0);
-                for (TreeItem item : xmlViewer.getTree().getItems()) {
-                    if (rootTreeData == item.getData()) {
-                        root = item;
-                        break;
-                    }
-                }
-            }
-        }
-
-        TableItem[] tableItems = schemaViewer.getTable().getItems();
-        initLinker(root, tableItems);
-        if (linker.linkSize() == 0) {
-            linker.updateLinksStyleAndControlsSelection(xmlViewer.getTree(), true);
-        }
+        linker.createLinks();
+        // linker.removeAllLinks();
+        // TreeItem root = xmlViewer.getTree().getItem(0);
+        // if (this.getFoxManager().getFoxComponent().istFileOutputMSXML()) {
+        // List<FOXTreeNode> treeData = this.getFoxManager().getTreeData(this.getFoxManager().getCurrentSchema());
+        // if (treeData != null && treeData.size() > 0) {
+        // FOXTreeNode rootTreeData = treeData.get(0);
+        // for (TreeItem item : xmlViewer.getTree().getItems()) {
+        // if (rootTreeData == item.getData()) {
+        // root = item;
+        // break;
+        // }
+        // }
+        // }
+        // }
+        //
+        // TableItem[] tableItems = schemaViewer.getTable().getItems();
+        // initLinker(root, tableItems);
+        // if (linker.linkSize() == 0) {
+        // linker.updateLinksStyleAndControlsSelection(xmlViewer.getTree(), true);
+        // }
     }
 
     public void refreshXMLViewer(FOXTreeNode targetNode) {
@@ -332,7 +327,7 @@ public class FOXUI {
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.0"), height); //$NON-NLS-1$
         // group.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.VIRTUAL);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         xmlViewer.getControl().setLayoutData(gridData);
         xmlViewer.setUseHashlookup(true);
@@ -367,6 +362,7 @@ public class FOXUI {
 
         xmlViewer.setCellModifier(new ICellModifier() {
 
+            @Override
             public boolean canModify(Object element, String property) {
                 FOXTreeNode node = (FOXTreeNode) element;
                 if (property.equals("C1")) { //$NON-NLS-1$
@@ -382,6 +378,7 @@ public class FOXUI {
                 return false;
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 FOXTreeNode node = (FOXTreeNode) element;
                 if (property.equals("C1")) { //$NON-NLS-1$
@@ -394,6 +391,7 @@ public class FOXUI {
                 return null;
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 TreeItem treeItem = (TreeItem) element;
                 FOXTreeNode node = (FOXTreeNode) treeItem.getData();
@@ -419,12 +417,12 @@ public class FOXUI {
 
         xmlViewer.setContentProvider(provider);
         xmlViewer.setInput(this.foxManager.getTreeData());
-        xmlViewer.expandAll();
         createAction();
         MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 FOXUI.this.fillContextMenu(manager);
             }
@@ -433,6 +431,7 @@ public class FOXUI {
         xmlViewer.getControl().setMenu(menu);
         xmlViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 // TODO Auto-generated method stub
 
@@ -548,14 +547,17 @@ public class FOXUI {
 
         Boolean validateLabel;
 
+        @Override
         public void applyEditorValue() {
             String text = getControl().getText();
             onValueChanged(text, true, property);
         }
 
+        @Override
         public void cancelEditor() {
         }
 
+        @Override
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
             onValueChanged(getControl().getText(), false, property);
         }

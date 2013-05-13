@@ -112,9 +112,9 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
 
         Object[] children = treeNode.getChildren();
         if (children != null) {
-            for (int i = 0; i < children.length; i++) {
-                if (children[i] instanceof ATreeNode) {
-                    ATreeNode child = (ATreeNode) children[i];
+            for (Object element : children) {
+                if (element instanceof ATreeNode) {
+                    ATreeNode child = (ATreeNode) element;
                     String newPath = currentPath + "/";
                     if (child.getValue() instanceof String) {
                         String elementName = (String) child.getValue();
@@ -205,7 +205,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             xmlViewer.setInput(foxui.getFoxManager().getTreeData());
             // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
             xmlViewer.refresh();
-            xmlViewer.expandAll();
+            xmlViewer.expandToLevel(3);
             foxui.updateStatus();
             foxui.redrawLinkers();
         }

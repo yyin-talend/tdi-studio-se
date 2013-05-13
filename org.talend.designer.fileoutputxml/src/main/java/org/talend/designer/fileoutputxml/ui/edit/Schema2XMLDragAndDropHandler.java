@@ -331,7 +331,6 @@ public class Schema2XMLDragAndDropHandler {
                 targetNode.setTable(table);
                 targetNode.setRow(row);
                 linker.getXMLViewer().refresh(targetNode);
-                linker.getXMLViewer().expandAll();
 
                 Display display = linker.getSource().getDisplay();
                 Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
@@ -449,7 +448,6 @@ public class Schema2XMLDragAndDropHandler {
                     }
                 }
                 linker.getXMLViewer().refresh();
-                linker.getXMLViewer().expandAll();
 
                 Display display = linker.getSource().getDisplay();
                 Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
@@ -467,7 +465,6 @@ public class Schema2XMLDragAndDropHandler {
                 }
             }
             linker.getXMLViewer().refresh();
-            linker.getXMLViewer().expandAll();
 
             linker.updateLinksStyleAndControlsSelection(control, true);
         }
