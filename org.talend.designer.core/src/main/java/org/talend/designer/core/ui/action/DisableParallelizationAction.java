@@ -13,6 +13,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
+import org.talend.designer.core.utils.ParallelExecutionUtils;
 
 public class DisableParallelizationAction extends SelectionAction {
 
@@ -38,8 +39,9 @@ public class DisableParallelizationAction extends SelectionAction {
             if (o instanceof SubjobContainerPart) {
                 SubjobContainerPart part = (SubjobContainerPart) o;
                 SubjobContainer subjob = (SubjobContainer) part.getModel();
+                Node subStartNode = subjob.getSubjobStartNode();
                 if (subjob.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
-                    if (subjob.isDisplayed()) {
+                    if (subjob.isDisplayed() && ParallelExecutionUtils.isExistPartitioningCon(subStartNode)) {
                         return true;
                     } else {
                         return false;
@@ -51,7 +53,7 @@ public class DisableParallelizationAction extends SelectionAction {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
                 if (node.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())) {
-                    if (node.isStart()) {
+                    if (node.isStart() && ParallelExecutionUtils.isExistPartitioningCon(node)) {
                         return true;
                     } else {
                         return false;

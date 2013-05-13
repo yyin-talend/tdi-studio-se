@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -34,6 +36,8 @@ public class SetParallelizationCommand extends Command {
 
     private static final String HASH_KEYS = "HASH_KEYS";
 
+    private boolean parallelForCon = false;
+
     public SetParallelizationCommand(INode node) {
         this.node = node;
     }
@@ -45,6 +49,9 @@ public class SetParallelizationCommand extends Command {
     @Override
     public void execute() {
         setParallelization(this.node);
+        if (!parallelForCon) {
+            MessageDialog.openInformation(new Shell(), "Set Parallelization", "Nothing to do for this job");
+        }
     }
 
     private boolean isComponentCanParlization(IConnection parConnection, Node needToPar) {
@@ -158,6 +165,8 @@ public class SetParallelizationCommand extends Command {
                                         con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
                                         setParallelization(con.getTarget());
                                     } else {
+                                        // add flag here is judge for if has did parallelization
+                                        parallelForCon = true;
                                         INode firstPartionerNode = null;
                                         IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER
                                                 .getName());

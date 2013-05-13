@@ -265,6 +265,7 @@ public class ParallelExecutionUtils {
             if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
                     .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+                break;
             }
         }
         return hasInPreviousCon;
@@ -281,6 +282,7 @@ public class ParallelExecutionUtils {
 
             }
             hasInPreviousCon = true;
+            break;
         }
         return hasInPreviousCon;
     }
@@ -292,6 +294,7 @@ public class ParallelExecutionUtils {
             if ((con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null && con
                     .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+                break;
             }
         }
         return hasInPreviousCon;
@@ -304,6 +307,7 @@ public class ParallelExecutionUtils {
             if ((con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null && con
                     .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true))) {
                 hasNextCon = true;
+                break;
             }
         }
         return hasNextCon;
@@ -316,6 +320,7 @@ public class ParallelExecutionUtils {
             if ((con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
                     .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+                break;
             }
         }
         return hasInPreviousCon;
@@ -328,6 +333,7 @@ public class ParallelExecutionUtils {
             if ((con.getElementParameter(EParameterName.NONE.getName()) != null && con
                     .getElementParameter(EParameterName.NONE.getName()).getValue().equals(true))) {
                 hasInPreviousCon = true;
+                break;
             }
         }
         return hasInPreviousCon;
@@ -342,6 +348,7 @@ public class ParallelExecutionUtils {
                         || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
                                 .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
                     previousCon = con;
+                    break;
                 } else {
                     previousCon = getPreviousParCon((Node) con.getSource());
                 }
@@ -359,6 +366,7 @@ public class ParallelExecutionUtils {
                         || con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null
                         && con.getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true)) {
                     hasParInPreviousCon = true;
+                    break;
                 } else {
                     hasParInPreviousCon = isExistPreviousParCon((Node) con.getSource());
                 }
@@ -376,6 +384,7 @@ public class ParallelExecutionUtils {
                         || con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
                         && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
                     hasDeparInNextCon = true;
+                    break;
                 } else {
                     hasDeparInNextCon = isExistNextDeparCon((Node) con.getTarget());
                 }
@@ -391,12 +400,31 @@ public class ParallelExecutionUtils {
                 if (con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null
                         && con.getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true)) {
                     hasDeparInPreviousCon = true;
+                    break;
                 } else {
                     hasDeparInPreviousCon = isExistPreviouDeparCon((Node) con.getSource());
                 }
             }
         }
         return hasDeparInPreviousCon;
+    }
+
+    public static boolean isExistPartitioningCon(Node startNode) {
+        boolean existPartitioningCon = false;
+        for (IConnection con : startNode.getOutgoingConnections()) {
+            if ((con.getElementParameter(EParameterName.DEPARTITIONER.getName()) != null && con
+                    .getElementParameter(EParameterName.DEPARTITIONER.getName()).getValue().equals(true))
+                    || (con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
+                            .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))
+                    || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
+                            .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
+                existPartitioningCon = true;
+                break;
+            } else {
+                existPartitioningCon = isExistPartitioningCon((Node) con.getTarget());
+            }
+        }
+        return existPartitioningCon;
     }
 
     public static void setDBType(IMetadataTable metaTable, String dbmsid) {
