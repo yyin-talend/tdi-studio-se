@@ -25,6 +25,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -50,7 +51,8 @@ public class SetParallelizationCommand extends Command {
     public void execute() {
         setParallelization(this.node);
         if (!parallelForCon) {
-            MessageDialog.openInformation(new Shell(), "Set Parallelization", "Nothing to do for this job");
+            MessageDialog.openInformation(new Shell(), Messages.getString("Node.setPartitioning"),
+                    Messages.getString("Node.nothingDoForPartitioning"));
         }
     }
 
