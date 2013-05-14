@@ -49,6 +49,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.io.SHA1Util;
@@ -76,6 +77,7 @@ import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -184,6 +186,11 @@ public class ComponentsFactory implements IComponentsFactory {
         // TimeMeasure.display = false;
         // TimeMeasure.displaySteps = false;
         // TimeMeasure.measureActive = false;
+
+        if (!CommonUIPlugin.isFullyHeadless()) {
+            ComponentsFactoryProvider.saveComponentVisibilityStatus();
+        }
+
     }
 
     /**
