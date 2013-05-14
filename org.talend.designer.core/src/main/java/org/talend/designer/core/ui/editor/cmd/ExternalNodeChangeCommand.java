@@ -300,7 +300,9 @@ public class ExternalNodeChangeCommand extends Command {
                             IMetadataTable dataTable = dataComponent.getTable();
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
                                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                                        && dataTable.getAttachedConnector().equals(connection.getConnectorName())) {
+                                        && param.getContext().equals(
+                                                connection.getTarget().getConnectorFromName(connection.getConnectorName())
+                                                        .getBaseSchema())) {
                                     schemaParam = param;
                                     break;
                                 }
@@ -314,7 +316,9 @@ public class ExternalNodeChangeCommand extends Command {
 
                             for (IElementParameter param : ((Node) connection.getSource()).getElementParameters()) {
                                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                                        && connTable.getAttachedConnector().equals(connection.getConnectorName())) {
+                                        && param.getContext().equals(
+                                                connection.getSource().getConnectorFromName(connection.getConnectorName())
+                                                        .getBaseSchema())) {
                                     schemaParam = param;
                                     break;
                                 }
