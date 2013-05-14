@@ -130,7 +130,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 							isOnlyOrPredicate = false;
 						}
 						%>
-						wc_<%=cid %> =new org.talend.mdm.webservice.WSWhereCondition(<%=xpath %>,org.talend.mdm.webservice.WSWhereOperator.<%=operator %>, <%=value %>, org.talend.mdm.webservice.WSStringPredicate.<%=predicate %>,false);
+						wc_<%=cid %> =new org.talend.mdm.webservice.WSWhereCondition(<%=xpath %>,org.talend.mdm.webservice.WSWhereOperator.<%=operator %>, <%="EMPTY_NULL".equals(operator)? null:value %>, org.talend.mdm.webservice.WSStringPredicate.<%=predicate %>,false);
 						org.talend.mdm.webservice.WSWhereItem wsItem_<%=i %>_<%=cid %>=new org.talend.mdm.webservice.WSWhereItem(wc_<%=cid %>,null,null);
 						conditions_<%=cid %>.add(wsItem_<%=i %>_<%=cid %>);
 					<%
