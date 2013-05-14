@@ -1912,6 +1912,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         } else {
             nodec = new NodeContainer(nc);
         }
+        loadSchema(nc, nType);
         addNodeContainer(nodec);
         nodesHashtable.put(nc.getUniqueName(), nc);
         return nc;
