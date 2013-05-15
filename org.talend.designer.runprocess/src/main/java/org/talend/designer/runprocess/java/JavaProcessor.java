@@ -882,6 +882,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
 
         StringBuffer libPath = new StringBuffer();
+        if (!win32 && exportingJob) {
+            libPath.append("\"");
+        }
         File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
         File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
         if (jarFiles != null && jarFiles.length > 0) {
@@ -950,6 +953,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 exportJar += (!win32 && exportingJob ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
+        if (!win32 && exportingJob) {
+            exportJar = exportJar + "\"";
+        }
         // TDI-17845:can't run job correctly in job Conductor
         String libFolder = ""; //$NON-NLS-1$
         // libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
@@ -1001,8 +1007,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } else {
             List<String> list = new ArrayList<String>();
             if (":".equals(classPathSeparator)) { //$NON-NLS-1$
-                list.add("cd `dirname $0`\n"); //$NON-NLS-1$
-                list.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$
+                list.add("cd \"`dirname \\\"$0\\\"`\"\n"); //$NON-NLS-1$
+                list.add("ROOT_PATH=\"`pwd`\"\n"); //$NON-NLS-1$
             } else {
                 list.add("%~d0\r\n"); //$NON-NLS-1$
                 list.add("cd %~dp0\r\n"); //$NON-NLS-1$
