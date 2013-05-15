@@ -3207,7 +3207,7 @@ public class Node extends Element implements IGraphicalNode {
                             String currentDbmsId = outputMeta.getDbms();
                             // TDI-21862:when drag/drop a special schema onto a component,need check if this schema's
                             // dbType compatible with this component
-                            if (currentDbmsId != null && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
+                            if (!typevalue.equals("id_Dynamic") && currentDbmsId != null && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
                                 String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
                                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
