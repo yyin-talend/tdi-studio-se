@@ -28,12 +28,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    String containerMode = ElementParameterParser.getValue(node, "__CONTAINER_MODE__");
         
 	    String resultLogFilenameString = ElementParameterParser.getValue(node, "__RESULT_LOG_FILENAME__");
+	    String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
         %>
         
       try {
          talendAcpXmlWriter_<%=cid%>.close();
       } catch (fr.openwide.talendalfresco.acpxml.AcpXmlException e) {
+<%
+		if (("true").equals(dieOnError)) {
+%>
          throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
+<%
+		} else {
+%>
+		 System.err.println("Error creating XML result.");
+<%
+		}
+%>
       }
       
       String content_<%=cid%> = talendAcpXmlWriter_<%=cid%>.toString();
@@ -44,13 +55,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       importCmd_<%=cid%>.setContainerMode("<%=containerMode%>");
    
       // Execute the command.
-      alfrescoRestClient_<%=cid%>.execute(importCmd_<%=cid%>);
+      try {
+      	alfrescoRestClient_<%=cid%>.execute(importCmd_<%=cid%>);
+      } catch (fr.openwide.talendalfresco.rest.client.RestClientException e_<%=cid%>) {
+<%
+		if (("true").equals(dieOnError)) {
+%>
+         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error execute import command", e_<%=cid%>);
+<%
+		} else {
+%>
+		 System.err.println("Error execute import command.");
+<%
+		}
+%>
+      }
     
       // logout
       try {
       	alfrescoRestClient_<%=cid%>.logout();
       } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
+<%
+		if (("true").equals(dieOnError)) {
+%>
          throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
+<%
+		} else {
+%>
+		 System.err.println("Error initing client.");
+<%
+		}
+%>
       }
       
       // setting global var NB_LINE for further components
