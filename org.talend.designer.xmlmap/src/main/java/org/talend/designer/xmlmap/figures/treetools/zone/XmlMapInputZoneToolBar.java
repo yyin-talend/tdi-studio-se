@@ -294,15 +294,4 @@ public class XmlMapInputZoneToolBar extends InputZoneToolBar {
         }
         return min;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.gefabstractmap.figures.treetools.zone.ZoneToolBar#isAutoMapEnable()
-     */
-    @Override
-    protected boolean isAutoMapEnable() {
-        return false;
-    }
-
 }

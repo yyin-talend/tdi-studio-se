@@ -80,8 +80,6 @@ public abstract class ZoneToolBar extends Figure {
 
     protected abstract void minSize();
 
-    protected abstract boolean isAutoMapEnable();
-
     class MoveUpButton extends ToolBarButtonImageFigure {
 
         public MoveUpButton() {

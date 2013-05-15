@@ -121,9 +121,6 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
                     if (!min_size.isEnabled()) {
                         min_size.setEnabled(true);
                     }
-                    if (!externalData.getOutputTrees().isEmpty() && !externalData.getInputTrees().isEmpty()) {
-                        auto_map.setEnabled(true);
-                    }
                     // check problem for created output incase input main is multiloop
                     mapperManger.getProblemsAnalyser().checkProblems(createOutputXmlTree);
                     mapperManger.getMapperUI().updateStatusBar();
@@ -175,9 +172,6 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
                 }
                 if (externalData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
                     min_size.setEnabled(false);
-                }
-                if (externalData.getOutputTrees().isEmpty() || externalData.getInputTrees().isEmpty()) {
-                    auto_map.setEnabled(false);
                 }
             }
         });
@@ -294,10 +288,5 @@ public class XmlMapOutputZoneToolBar extends OutputZoneToolBar {
     public void autoMap() {
         AutoMapper mapper = new AutoMapper(externalData);
         mapper.map();
-    }
-
-    @Override
-    protected boolean isAutoMapEnable() {
-        return externalData.getOutputTrees().isEmpty() || externalData.getInputTrees().isEmpty();
     }
 }
