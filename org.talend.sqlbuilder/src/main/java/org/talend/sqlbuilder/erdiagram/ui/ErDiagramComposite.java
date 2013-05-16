@@ -15,6 +15,7 @@ package org.talend.sqlbuilder.erdiagram.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,14 +34,17 @@ import org.eclipse.swt.widgets.Control;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
@@ -55,6 +59,9 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.UIUtils;
+import orgomg.cwm.objectmodel.core.ModelElement;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -338,6 +345,24 @@ public class ErDiagramComposite extends SashForm {
                 }
             }
         }
+        // Mssql query need add catalog and schema before the table, like this "catolog.schema.table"
+        Connection conn = null;
+        if (rootNode != null) {
+            Item connectionItem = rootNode.getObject().getProperty().getItem();
+            if (connectionItem instanceof ConnectionItem) {
+                conn = ((ConnectionItem) connectionItem).getConnection();
+            }
+        }
+        if (getCurrentDbType() != null
+                && (getCurrentDbType().equals(EDatabaseTypeName.MSSQL.getDisplayName()) || getCurrentDbType().equals(
+                        EDatabaseTypeName.MSSQL.name())) && conn != null) {
+            List<String> newTables = new ArrayList<String>();
+            for (String str : tables) {
+                newTables.add(getMssqlCatalog(str, conn));
+            }
+            tables = newTables;
+        }
+
         sql = getSelectStatement(tables, columns, wheres);
         if (sql.endsWith(",")) { //$NON-NLS-1$
             return sql.substring(0, sql.length() - 1);
@@ -346,6 +371,32 @@ public class ErDiagramComposite extends SashForm {
         }
         return ""; //$NON-NLS-1$
 
+    }
+
+    private String getMssqlCatalog(String realTableName, Connection conn) {
+        Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(conn);
+        for (Catalog cata : catalog) {
+            for (ModelElement ele : cata.getOwnedElement()) {
+                if (ele instanceof Schema) {
+                    for (ModelElement child : ((Schema) ele).getOwnedElement()) {
+                        String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                                TalendTextUtils.declareString(child.getName()), getCurrentDbType(), true);
+                        if (childeleName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                                && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
+                            childeleName = childeleName.substring(1, childeleName.length() - 1);
+                        }
+                        if (cata.getName().contains("-")) {
+                            return realTableName;
+                        } else if (childeleName.equals(realTableName)) {
+                            return cata.getName() + "." + ele.getName() + "." + realTableName;
+                        } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
+                            return cata.getName() + "." + realTableName;
+                        }
+                    }
+                }
+            }
+        }
+        return realTableName;
     }
 
     /**
