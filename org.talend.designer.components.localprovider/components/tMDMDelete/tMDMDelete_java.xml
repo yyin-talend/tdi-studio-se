@@ -108,7 +108,6 @@
                 <ITEM NAME="LOWER"    VALUE="LOWER_THAN"/>
                 <ITEM NAME="LOWEROREQUAL"    VALUE="LOWER_THAN_OR_EQUAL"/>
                 <ITEM NAME="FULLTEXTSEARCH" VALUE="FULLTEXTSEARCH" />
-                <ITEM NAME="CONTAINSTEXTOF" VALUE="CONTAINS_TEXT_OF" />
                 <ITEM NAME="EMPTYNULL" VALUE="EMPTY_NULL"/>
               </ITEMS>
             </ITEM>
