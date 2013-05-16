@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.dialog;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.processor.JobTypeProcessor;
@@ -65,9 +67,9 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
     @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
         if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
-
             try {
-                if (node.getContentType().equals(ERepositoryObjectType.PROCESS)) {
+                if (node.getContentType().equals(ERepositoryObjectType.PROCESS)
+                        || node.getContentType().equals(ERepositoryObjectType.PROCESS_MR)) {
                     return true;
                 }
             } catch (Exception e) { // ignore
@@ -75,7 +77,6 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
             return false;
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
             try {
-
                 String path = RepositoryNodeUtilities.getPath(node).toString();
                 return folders.contains(path);
             } catch (Exception e) {
@@ -86,7 +87,23 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
             return jobIds.contains(id);
         }
         return false;
-
     }
 
+    @Override
+    public boolean isSelectionValid(RepositoryNode node) {
+        ERepositoryObjectType type = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (getTypes().contains(type)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    protected List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> list = new ArrayList<ERepositoryObjectType>(50);
+        list.add(ERepositoryObjectType.PROCESS);
+        list.add(ERepositoryObjectType.PROCESS_MR);
+        return list;
+    }
 }

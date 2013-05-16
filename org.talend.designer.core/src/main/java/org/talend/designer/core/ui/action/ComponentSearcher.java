@@ -59,6 +59,7 @@ public class ComponentSearcher {
 
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 search(monitor, componentName, found);
             }
@@ -73,6 +74,7 @@ public class ComponentSearcher {
         if (found.size() > 0) {
             Display.getDefault().syncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     final RepositoryReviewDialog dialog = new RepositoryReviewDialog(shell, new JobSearchResultProcessor(found),
                             ERepositoryObjectType.PROCESS);
@@ -116,6 +118,7 @@ public class ComponentSearcher {
 
         try {
             List<IRepositoryViewObject> repositoryObjectList = factory.getAll(ERepositoryObjectType.PROCESS, false);
+            repositoryObjectList.addAll(factory.getAll(ERepositoryObjectType.PROCESS_MR, false));
             monitor.beginTask("Searching Component in Jobs ", repositoryObjectList.size()); //$NON-NLS-1$
             for (IRepositoryViewObject rObject : repositoryObjectList) {
                 if (monitor.isCanceled()) {
