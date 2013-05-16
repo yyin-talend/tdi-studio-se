@@ -966,6 +966,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                <%
 	                if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
 	                %>
+	                if(batchSizeCounter_<%=cid%> > 0){
     	                try {
                             <%
                             if (("INSERT").equals(dataAction)) {
@@ -1028,6 +1029,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                         }
                         %>     
+                        batchSizeCounter_<%=cid%> = 0;
+                    }
 	                <%
 	                }%>
                         conn_<%=cid%>.commit();                	

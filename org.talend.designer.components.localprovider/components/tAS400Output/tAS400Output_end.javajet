@@ -65,8 +65,8 @@ imports="
       <%
       if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     	%>                
+	if (pstmt_<%=cid %> != null && batchSizeCounter_<%=cid%> >0) { 
     try {
-        if (pstmt_<%=cid %> != null) { 
         <%
         if (("INSERT").equals(dataAction)) {
         %>
@@ -89,7 +89,6 @@ imports="
         <%
             }
         }%>
-        }
     }catch (java.sql.BatchUpdateException e_<%=cid%>){
         <%if(("true").equals(dieOnError)) {
         %>
@@ -124,13 +123,12 @@ imports="
     <%
     if (("INSERT").equals(dataAction)) {
     %>
-        if (pstmt_<%=cid %> != null) { 
             tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();
             insertedCount_<%=cid%>+= (tmp_batchUpdateCount_<%=cid%> >0 ? tmp_batchUpdateCount_<%=cid%>:0);
-        }
     <%
     }
     %> 
+    }
     <%
     }%>   
                 
