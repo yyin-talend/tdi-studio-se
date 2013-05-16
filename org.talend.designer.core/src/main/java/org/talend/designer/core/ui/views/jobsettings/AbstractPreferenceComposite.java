@@ -15,23 +15,14 @@ package org.talend.designer.core.ui.views.jobsettings;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceNode;
-import org.eclipse.jface.preference.IPreferencePage;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -55,12 +46,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -78,7 +66,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -95,14 +82,9 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProjectSettingNode;
-import org.talend.repository.preference.CustomComponentSettingPage;
 import org.talend.repository.ui.dialog.ProjectSettingDialog;
-import org.talend.repository.ui.dialog.ProjectSettingsPreferenceDialog;
-import java.util.*;
 
 /**
  * Add buttons for loading and saving values between preference page and job view.
@@ -215,6 +197,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             Control control = controls[i];
             if (control != topComposite) {
                 if (control instanceof Composite) {
+                    if (control instanceof CCombo) {
+                        setTextEnable(control, enabled, enabled);
+                    }
                     setEditable((Composite) control, enabled);
                 } else {
                     setTextEnable(control, enabled, enabled);
@@ -242,6 +227,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                 t.removeMouseListener(listenerSelection);
             }
         } else if (control instanceof Button) {
+            Button b = (Button) control;
             Object p = control.getData(TypedTextCommandExecutor.PARAMETER_NAME);
             Object n = control.getData("NAME");
             if (p != null && n != null && p instanceof String && n instanceof String) {
@@ -249,6 +235,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                     return;
                 }
             }
+            b.setEnabled(flag);
         } else {
             control.setEnabled(flag);
         }
@@ -258,7 +245,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         Control[] children = parent.getChildren();
         for (int i = 0; i < children.length; i++) {
             if (children[i] instanceof Composite) {
+                if (children[i] instanceof CCombo) {
+                    setTextEnable(children[i], editable, editable);
+                }
                 setEditable((Composite) children[i], editable);
+            } else if (children[i] instanceof Button) {
+                setTextEnable(children[i], editable, editable);
             } else {
                 setTextEnable(children[i], editable, true);
             }
