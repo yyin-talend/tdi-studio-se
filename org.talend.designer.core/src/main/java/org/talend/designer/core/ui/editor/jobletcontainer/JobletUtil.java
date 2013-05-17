@@ -281,6 +281,8 @@ public class JobletUtil {
                     list.addAll((List) paValue);
                     cloneElement.setValue(list);
                 } else {
+                    // TDI-25599
+                    cloneElement.setContextMode(elementPara.isContextMode());
                     cloneElement.setValue(elementPara.getValue());
                 }
 
