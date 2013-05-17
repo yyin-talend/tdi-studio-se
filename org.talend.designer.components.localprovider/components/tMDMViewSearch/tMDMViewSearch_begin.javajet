@@ -139,6 +139,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				org.talend.mdm.webservice.WSGetItems getitems_<%=cid %>=null;
 				
         		boolean continueFlag_<%=cid%> = true;
+        		int totalCount_<%=cid%> = 0;<%//For TDI-26039%>
         		while (continueFlag_<%=cid%>) {
 					wsViewSearch_<%=cid%> = new org.talend.mdm.webservice.WSViewSearch();       					                
 	                wsViewSearch_<%=cid%>.setWsDataClusterPK(dataCluster_<%=cid%>);
@@ -162,8 +163,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					
 					String[] items_<%=cid%> = xtentisWS_<%=cid%>.viewSearch(wsViewSearch_<%=cid%>);
 					
+					totalCount_<%=cid%> = Integer.valueOf(items_<%=cid%>[0].replaceAll("<totalCount>", "").replaceAll("</totalCount>", ""));
 					retrievedCount_<%=cid%> += items_<%=cid%>.length - 1; // for header
-					if (recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
+					if (totalCount_<%=cid%> == retrievedCount_<%=cid%> || recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
 	                    continueFlag_<%=cid%> = false;
 	                } else if (limit_<%=cid%> != -1 && limit_<%=cid%> < retrievedCount_<%=cid%> + readRecordsSize_<%=cid%>) {
 	                    readRecordsSize_<%=cid%> = limit_<%=cid%> - retrievedCount_<%=cid%>;
