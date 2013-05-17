@@ -97,7 +97,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
 						sfMgr_<%=cid%>.setClientID(<%=clientID%>);
 					<%}%>
-					boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+					boolean result_<%=cid%> = false;
+					try{
+						result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+					}catch(Exception e){
+						//ignore exception when login
+					}
 					if(!result_<%=cid%>){
 						throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 					}
