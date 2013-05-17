@@ -39,6 +39,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorConstants;
@@ -354,10 +355,11 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     @Override
     public List<String> extractArgumentSegments() {
-        String nameNodeURI = TalendQuoteUtils.removeQuotes((String) process.getElementParameter("NAMENODE").getValue());//$NON-NLS-1$
-        String jobTrackerURI = TalendQuoteUtils.removeQuotes((String) process.getElementParameter("JOBTRACKER").getValue());//$NON-NLS-1$
+        String nameNodeURI = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
+                (String) process.getElementParameter("NAMENODE").getValue()));//$NON-NLS-1$
+        String jobTrackerURI = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
+                (String) process.getElementParameter("JOBTRACKER").getValue()));//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
-
         list.add(ProcessorConstants.CMD_KEY_WORD_LIBJAR);
         StringBuffer libJars = new StringBuffer("");//$NON-NLS-1$
         Set<String> libNames = JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
@@ -384,8 +386,10 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             if (useProperties) {
                 IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
                 for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
-                    String propertyParam = TalendQuoteUtils.removeQuotes((String) line.get("PROPERTY")); //$NON-NLS-1$
-                    String valueParam = TalendQuoteUtils.removeQuotes((String) line.get("VALUE")); //$NON-NLS-1$
+                    String propertyParam = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
+                            (String) line.get("PROPERTY"))); //$NON-NLS-1$
+                    String valueParam = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
+                            (String) line.get("VALUE"))); //$NON-NLS-1$
                     list.add("-D"); //$NON-NLS-1$
                     list.add(propertyParam + "=" + valueParam); //$NON-NLS-1$
                 }
@@ -403,7 +407,7 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             if (useKrb) {
                 IElementParameter nameNodePrincipal = process.getElementParameter("NAMENODE_PRINCIPAL"); //$NON-NLS-1$
                 list.add("-D"); //$NON-NLS-1$
-                list.add("dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes((String) nameNodePrincipal.getValue())); //$NON-NLS-1$
+                list.add("dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process, (String) nameNodePrincipal.getValue()))); //$NON-NLS-1$
             }
         }
 

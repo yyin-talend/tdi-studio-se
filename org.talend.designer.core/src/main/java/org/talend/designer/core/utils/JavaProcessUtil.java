@@ -445,4 +445,61 @@ public class JavaProcessUtil {
         }
         return null;
     }
+
+    /**
+     * DOC ycbai Comment method "getRealParamValueByRunProcess".
+     * <p>
+     * Get the real parameter value by resolving the selected context on the run process view.
+     * </p>
+     * 
+     * @param process
+     * @param value
+     * @return
+     */
+    public static String getRealParamValueByRunProcess(IProcess process, String value) {
+        IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+        return getRealParamValue(process, value, selectedContext);
+    }
+
+    /**
+     * DOC ycbai Comment method "getRealParamValue".
+     * <p>
+     * Get the real parameter value by resolving the default context of process.
+     * </p>
+     * 
+     * @param process
+     * @param value
+     * @return
+     */
+    public static String getRealParamValue(IProcess process, String value) {
+        return getRealParamValue(process, value, null);
+    }
+
+    /**
+     * DOC ycbai Comment method "getRealParamValue".
+     * <p>
+     * Get the real parameter value by resolving the selected context.
+     * </p>
+     * 
+     * @param process
+     * @param value
+     * @param selectedContext
+     * @return
+     */
+    public static String getRealParamValue(IProcess process, String value, IContext selectedContext) {
+        if (ContextParameterUtils.isContainContextParam(value)) {
+            String var = ContextParameterUtils.getVariableFromCode(value);
+            if (var != null) {
+                if (selectedContext == null) {
+                    selectedContext = process.getContextManager().getDefaultContext();
+                }
+                IContextParameter param = selectedContext.getContextParameter(var);
+                if (param != null) {
+                    return param.getValue();
+                }
+            }
+        }
+        return value;
+    }
+
 }
