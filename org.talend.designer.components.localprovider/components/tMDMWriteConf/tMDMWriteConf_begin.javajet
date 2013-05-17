@@ -153,6 +153,7 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 			} catch (TalendException te) {
 				this.lastException = te.getException();
 				this.currentComponent = te.getCurrentComponent();
+				globalMap.put("<%=virtualcid%>_FINISH", "true");
 			}
 		}
 	}
