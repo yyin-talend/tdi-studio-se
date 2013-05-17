@@ -133,6 +133,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	                limit_<%=cid%> = -1;// no limit
 				
 	            int retrievedCount_<%=cid%> = 0;
+				int totalCount_<%=cid%> = 0;<%//For TDI-26039%>
        			int readRecordsSize_<%=cid%> = limit_<%=cid%> == -1 ? recordsPerPage_<%=cid%> : (recordsPerPage_<%=cid%> == -1 ? limit_<%=cid%> : (recordsPerPage_<%=cid%> > limit_<%=cid%> ? limit_<%=cid%>
                 : recordsPerPage_<%=cid%>));
 
@@ -161,9 +162,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					wsViewSearch_<%=cid%>.setWhereItem(wsItem_<%=cid%>); // OPTIONAL
 					
 					String[] items_<%=cid%> = xtentisWS_<%=cid%>.viewSearch(wsViewSearch_<%=cid%>);
+					totalCount_<%=cid%> = Integer.valueOf(items_<%=cid%>[0].replaceAll("<totalCount>", "").replaceAll("</totalCount>", ""));
 					
 					retrievedCount_<%=cid%> += items_<%=cid%>.length - 1; // for header
-					if (recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
+					if (totalCount_<%=cid%> == retrievedCount_<%=cid%> || recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
 	                    continueFlag_<%=cid%> = false;
 	                } else if (limit_<%=cid%> != -1 && limit_<%=cid%> < retrievedCount_<%=cid%> + readRecordsSize_<%=cid%>) {
 	                    readRecordsSize_<%=cid%> = limit_<%=cid%> - retrievedCount_<%=cid%>;
