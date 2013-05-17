@@ -289,15 +289,15 @@ public final class Expression {
         if (listParam == null) {
             return false;
         }
-        
+
         /*
          * this only used to check is EE version or not
          */
-        if("IS_STUDIO_EE_VERSION".equals(variableName)){
+        if ("IS_STUDIO_EE_VERSION".equals(variableName)) {
             boolean isTIS = PluginChecker.isTIS();
-            if("true".equals(variableValue)){
+            if ("true".equals(variableValue)) {
                 return isTIS;
-            }else{
+            } else {
                 return !isTIS;
             }
         }
@@ -442,7 +442,10 @@ public final class Expression {
                                     if (obj instanceof String) {
                                         columnName = (String) obj;
                                     } else if (obj instanceof Integer) {
-                                        columnName = testedParameter.getListItemsDisplayName()[(Integer) obj];
+                                        int index = (Integer) obj;
+                                        if (index < testedParameter.getListItemsDisplayName().length && index >= 0) {
+                                            columnName = testedParameter.getListItemsDisplayName()[(Integer) obj];
+                                        }
                                     }
                                     if (currentParam.getElement() instanceof INode) {
                                         node = (INode) currentParam.getElement();
