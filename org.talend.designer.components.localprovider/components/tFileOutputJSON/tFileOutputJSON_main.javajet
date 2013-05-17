@@ -6,6 +6,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 "
 %>
 
@@ -30,10 +32,18 @@ org.json.simple.JSONObject jsonRow<%=cid%> = new org.json.simple.JSONObject();
 							
 									IMetadataColumn column = columns.get(i);
 	
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+									if (javaType == JavaTypesManager.DATE && column.getPattern() != null && column.getPattern().trim().length() != 0) {
+										String pattern = column.getPattern();
+									%>
+									jsonRow<%=cid%>.put("<%=column.getLabel()%>",FormatterUtils.format_Date(<%=conn.getName()%>.<%=column.getLabel()%>,<%=pattern%>));
+									<%
+									}else{
 									%>
 									jsonRow<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName()%>.<%=column.getLabel()%>);
 								
 								<%
+									}
 								}
 							}
 		}
