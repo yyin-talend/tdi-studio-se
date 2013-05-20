@@ -439,16 +439,19 @@ public class PropertyChangeCommand extends Command {
             if (testedParam.getListItemsShowIf() != null || testedParam.getListItemsNotShowIf() != null) {
                 String value = (String) testedParam.getValue();
                 int index = ArrayUtils.indexOf(testedParam.getListItemsValue(), value);
-                if (testedParam.getListItemsShowIf() != null) {
-                    String conditionShowIf = testedParam.getListItemsShowIf()[index];
-                    if (conditionShowIf != null) {
-                        isCurrentComboValid = Expression.evaluate(conditionShowIf, elem.getElementParameters());
+                // TUP-671:if find this testParam's value,just do show if
+                if (index != -1) {
+                    if (testedParam.getListItemsShowIf() != null) {
+                        String conditionShowIf = testedParam.getListItemsShowIf()[index];
+                        if (conditionShowIf != null) {
+                            isCurrentComboValid = Expression.evaluate(conditionShowIf, elem.getElementParameters());
+                        }
                     }
-                }
-                if (testedParam.getListItemsNotShowIf() != null) {
-                    String conditionNotShowIf = testedParam.getListItemsNotShowIf()[index];
-                    if (conditionNotShowIf != null) {
-                        isCurrentComboValid = !Expression.evaluate(conditionNotShowIf, elem.getElementParameters());
+                    if (testedParam.getListItemsNotShowIf() != null) {
+                        String conditionNotShowIf = testedParam.getListItemsNotShowIf()[index];
+                        if (conditionNotShowIf != null) {
+                            isCurrentComboValid = !Expression.evaluate(conditionNotShowIf, elem.getElementParameters());
+                        }
                     }
                 }
             }
