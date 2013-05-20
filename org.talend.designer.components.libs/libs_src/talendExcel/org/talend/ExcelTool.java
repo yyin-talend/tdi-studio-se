@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ExcelTool {
 
@@ -107,6 +108,7 @@ public class ExcelTool {
 						if(sheet.getLastRowNum()!=0 || sheet.getRow(0)!=null){
 							curY = sheet.getLastRowNum() + 1;
 						}
+						((XSSFSheet)sheet).setForceFormulaRecalculation(true);
 					} else {
 						wb.removeSheetAt(wb.getSheetIndex(sheetName));
 						sheet = wb.createSheet(sheetName);
@@ -260,9 +262,9 @@ public class ExcelTool {
 	}
 	
 	public void addCellNullValue() {
-        addCell();
-        curCell.setCellStyle(getNormalCellStyle());
-    }
+		addCell();
+		curCell.setCellStyle(getNormalCellStyle());
+	}
 
 	public void setColAutoSize(int colNum) {
 		sheet.autoSizeColumn(startX + colNum, true);
