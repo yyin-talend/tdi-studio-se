@@ -53,7 +53,10 @@ import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.io.SHA1Util;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCachePackage;
 import org.talend.core.model.component_cache.ComponentInfo;
@@ -65,6 +68,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IComponentsHandler;
+import org.talend.core.model.general.Project;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.utils.TalendCacheUtils;
@@ -188,7 +192,23 @@ public class ComponentsFactory implements IComponentsFactory {
         // TimeMeasure.measureActive = false;
 
         if (!CommonUIPlugin.isFullyHeadless()) {
-            ComponentsFactoryProvider.saveComponentVisibilityStatus();
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            if (repositoryContext == null) {
+                return;
+            }
+            Project project = repositoryContext.getProject();
+            if (project == null) {
+                return;
+            }
+            org.talend.core.model.properties.Project emfProject = project.getEmfProject();
+            if (emfProject == null) {
+                return;
+            }
+            EList list = emfProject.getComponentsSettings();
+            if (list.isEmpty()) {
+                ComponentsFactoryProvider.saveComponentVisibilityStatus();
+            }
         }
 
     }
