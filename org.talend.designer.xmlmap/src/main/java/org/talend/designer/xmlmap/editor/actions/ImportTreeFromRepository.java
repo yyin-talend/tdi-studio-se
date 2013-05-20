@@ -944,7 +944,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
-    	RepositoryNode rootNode = ((ProjectRepositoryNode) ProjectRepositoryNode.getInstance()).getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+    	RepositoryNode rootNode = ((ProjectRepositoryNode) ProjectRepositoryNode.getInstance()).getRootRepositoryNode(ERepositoryObjectType.METADATA);
         if (getSelectedObjects().isEmpty() || rootNode == null) {
             return false;
         } else {
