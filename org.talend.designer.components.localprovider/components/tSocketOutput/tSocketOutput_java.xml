@@ -126,19 +126,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="SCHEMA_REJECT"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="50"
-      CONTEXT="REJECT"
-      SHOW="true">
-      <TABLE READONLY="true">
-        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-      </TABLE>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="ENCODING"
      FIELD="ENCODING_TYPE"
       NUM_ROW="70"
