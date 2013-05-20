@@ -23,6 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     	%>        
       fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter talendAcpXmlWriter_<%=cid%> = new fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter();
+      boolean whetherReject_<%=cid%> = false;
     	<%
     	
 	    // getting useful parameters
@@ -32,11 +33,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
         String restEncodingString = ElementParameterParser.getValue(node, "__REST_ENCODING__");
         
-	    String targetLocationBase = ElementParameterParser.getValue(node, "__TARGET_LOCATION_BASE__");
-	    boolean mapTargetLocationFromColumn = Boolean.valueOf(ElementParameterParser.getValue(node, "__MAP_TARGET_LOCATION_FROM_COLUMN__"));
-	    String targetLocationColumn = ElementParameterParser.getValue(node, "__TARGET_LOCATION_COLUMN__");
-	    String documentMode = ElementParameterParser.getValue(node, "__DOCUMENT_MODE__");
-	    String containerMode = ElementParameterParser.getValue(node, "__CONTAINER_MODE__");
 	    
 	    List<Map<String, String>> alfrescoNamespaces = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__AVAILABLE_ALFRESCO_NAMESPACES__");
 	    String alfrescoType = ElementParameterParser.getValue(node, "__ALFRESCO_TYPE_NAME__");
@@ -50,7 +46,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    String permissionsTarget = ElementParameterParser.getValue(node, "__PERMISSIONS_TARGET__");
 	    boolean permissionOnDocumentAndNotContainer = "Document".equals(permissionsTarget);
 	    boolean inheritPermissions = Boolean.valueOf(ElementParameterParser.getValue(node, "__INHERIT_PERMISSIONS__"));
-	    List<Map<String, String>> permissionMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__PERMISSIONS__");
 	    
         %>
       talendAcpXmlWriter_<%=cid%>.setRestEncoding(<%=restEncodingString%>);

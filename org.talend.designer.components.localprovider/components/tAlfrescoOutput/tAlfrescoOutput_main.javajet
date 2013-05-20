@@ -5,6 +5,7 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnectionCategory
     java.util.List
     java.util.Map
   	org.talend.core.model.process.IConnection    
@@ -37,6 +38,7 @@ imports="
 	    inConn = inConns.get(0);
 	    inConnName = inConn.getName();
 	}
+	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 	
 	// getting reject connection columnList and name
 	IConnection rejectConn = null;
@@ -64,9 +66,17 @@ imports="
 	    
 	    List<Map<String, String>> propertyMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__PROPERTY_MAPPING__");
 	    List<Map<String, String>> associationMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ASSOCIATION_MAPPING__");
-	    
-	    %>
+	    String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+		for(IConnection conn : outgoingConns) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+    		<%=conn.getName() %> = null;            
+<%      	
+			}
+		}
+%>
 	          
+	    whetherReject_<%=cid%> = false;
 	    try { // start reject exception handling
 	        
 	        // writing document
@@ -171,8 +181,15 @@ imports="
          nbLine_<%=cid%>++;
 	        
 	    } catch (java.lang.Exception mainEx_<%=cid%>) { // end reject exception handling
-	    
-	        <%
+<%
+		if (("true").equals(dieOnError)) {
+%>
+            throw(mainEx_<%=cid%>);
+<%
+		} else {
+%>
+			whetherReject_<%=cid%> = true;
+<%
 	        // handling exception as reject connection or std err
 	        if(rejectConnName != null && rejectColumns != null && rejectColumns.size() > 0) {
                 %>
@@ -194,9 +211,32 @@ imports="
                 System.err.println(mainEx_<%=cid%>.getMessage());
                 <%
             }
+		}
             %>
             
 	    }
 	    <%
+	   	if(outgoingConns != null && outgoingConns.size() > 0) {
+        %>
+		if(!whetherReject_<%=cid%>) {
+		<%
+			for(IConnection outgoingConn : outgoingConns) {
+				if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
+					if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					 %>
+			<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+						<%
+						for(IMetadataColumn column : columns) {
+						%>
+			<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+						<%                  
+						}
+					}
+				}
+			}
+			%>
+		}
+		<%
+		}
 	}
 %>
