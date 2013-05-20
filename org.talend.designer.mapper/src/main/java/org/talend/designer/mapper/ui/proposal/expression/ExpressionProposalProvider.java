@@ -140,7 +140,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                         boolean exist = false;
                         for (Variable v : variables) {
-                            if (v.getName().trim().equals(variable.trim())) {
+                            if (variable != null && v.getName() != null && v.getName().trim().equals(variable.trim())) {
                                 exist = true;
                                 break;
                             }
