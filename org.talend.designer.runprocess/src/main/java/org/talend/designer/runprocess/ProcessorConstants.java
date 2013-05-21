@@ -23,10 +23,6 @@ public interface ProcessorConstants {
 
     String CMD_KEY_WORD_LIBJAR = "-libjars";//$NON-NLS-1$
 
-    String CMD_KEY_WORD_JT = "-jt";//$NON-NLS-1$
-
-    String CMD_KEY_WORD_FS = "-fs";//$NON-NLS-1$
-
     String CMD_KEY_WORD_FILEEMNCODING = "-Dfile.encoding";//$NON-NLS-1$
 
     String CMD_KEY_WORD_ROOTPATH = "$ROOT_PATH";//$NON-NLS-1$

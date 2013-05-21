@@ -37,9 +37,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorConstants;
@@ -355,10 +353,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
 
     @Override
     public List<String> extractArgumentSegments() {
-        String nameNodeURI = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
-                (String) process.getElementParameter("NAMENODE").getValue()));//$NON-NLS-1$
-        String jobTrackerURI = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
-                (String) process.getElementParameter("JOBTRACKER").getValue()));//$NON-NLS-1$
         List<String> list = new ArrayList<String>();
         list.add(ProcessorConstants.CMD_KEY_WORD_LIBJAR);
         StringBuffer libJars = new StringBuffer("");//$NON-NLS-1$
@@ -370,47 +364,6 @@ public class MapReduceJavaProcessor extends JavaProcessor {
             }
         }
         list.add(libJars.substring(0, libJars.length() - 1));
-        list.add(ProcessorConstants.CMD_KEY_WORD_FS);
-        list.add(nameNodeURI == null ? "hdfs://localhost:8020" : nameNodeURI);//$NON-NLS-1$ 
-        list.add(ProcessorConstants.CMD_KEY_WORD_JT);
-        list.add(jobTrackerURI == null ? "localhost:50300" : jobTrackerURI);//$NON-NLS-1$ 
-
-        IElementParameter usePropertiesParam = process.getElementParameter("USE_HADOOP_PROPERTIES"); //$NON-NLS-1$
-        if (usePropertiesParam != null) {
-            boolean useProperties = false;
-            if (usePropertiesParam.getValue() instanceof Boolean) {
-                useProperties = (Boolean) usePropertiesParam.getValue();
-            } else if (Boolean.valueOf((String) usePropertiesParam.getValue())) {
-                useProperties = true;
-            }
-            if (useProperties) {
-                IElementParameter propertiesParam = process.getElementParameter("HADOOP_ADVANCED_PROPERTIES"); //$NON-NLS-1$
-                for (Map<String, Object> line : (List<Map<String, Object>>) propertiesParam.getValue()) {
-                    String propertyParam = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
-                            (String) line.get("PROPERTY"))); //$NON-NLS-1$
-                    String valueParam = TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process,
-                            (String) line.get("VALUE"))); //$NON-NLS-1$
-                    list.add("-D"); //$NON-NLS-1$
-                    list.add(propertyParam + "=" + valueParam); //$NON-NLS-1$
-                }
-            }
-        }
-
-        IElementParameter kerbParam = process.getElementParameter("USE_KRB"); //$NON-NLS-1$
-        if (kerbParam != null) {
-            boolean useKrb = false;
-            if (kerbParam.getValue() instanceof Boolean) {
-                useKrb = (Boolean) kerbParam.getValue();
-            } else if (Boolean.valueOf((String) kerbParam.getValue())) {
-                useKrb = true;
-            }
-            if (useKrb) {
-                IElementParameter nameNodePrincipal = process.getElementParameter("NAMENODE_PRINCIPAL"); //$NON-NLS-1$
-                list.add("-D"); //$NON-NLS-1$
-                list.add("dfs.namenode.kerberos.principal=" + TalendQuoteUtils.removeQuotes(JavaProcessUtil.getRealParamValueByRunProcess(process, (String) nameNodePrincipal.getValue()))); //$NON-NLS-1$
-            }
-        }
-
         return list;
     }
 
