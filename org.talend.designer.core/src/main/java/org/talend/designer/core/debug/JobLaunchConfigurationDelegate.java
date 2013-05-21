@@ -20,9 +20,12 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -46,10 +49,12 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         return DebugPlugin.getDefault().getLaunchManager();
     }
 
+    @Override
     public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
         return null;
     }
 
+    @Override
     public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
             throws CoreException {
         String jobId = configuration.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
@@ -71,9 +76,11 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         // Run job
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
                 service.setActiveProcess(p);
+                service.refreshView();
                 service.getRunProcessAction().run();
             }
         });
@@ -91,7 +98,16 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
             ItemCacheManager.clearCache();
             ProcessItem processItem = ItemCacheManager.getProcessItem(jobId, version);
             if (processItem != null) {
-                ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true, true, true);
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+                    IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            IDesignerCoreService.class);
+                    IProcess process = service.getProcessFromItem(processItem);
+                    if (process instanceof IProcess2) {
+                        return (IProcess2) process;
+                    }
+                }
+                // keep old code for now, but it should never be called.
+                ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true, true);
                 IProcess2 process = fileEditorInput.getLoadedProcess();
                 return process;
             }
