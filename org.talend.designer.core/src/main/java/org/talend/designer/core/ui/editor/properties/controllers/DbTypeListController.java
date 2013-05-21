@@ -340,8 +340,8 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                     if (((DatabaseConnection) connection).getDatabaseType().equals(
                             EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
                         // bug 7618 modify
-                        currentDbms = (DBConnectionContextUtils.cloneOriginalValueConnection((DatabaseConnection) connection))
-                                .getDbmsId();
+                        currentDbms = (DBConnectionContextUtils.cloneOriginalValueConnection((DatabaseConnection) connection,
+                                true, null)).getDbmsId();
                     } else {
                         currentDbms = ((DatabaseConnection) connection).getDbmsId();
                     }
