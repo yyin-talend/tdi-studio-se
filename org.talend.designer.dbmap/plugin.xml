@@ -31,5 +31,12 @@
             name="ETL Map Filter">
       </DragAndDropFilter>
    </extension>
+   <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.designer.dbmap.service.DbMapService"
+            serviceId="IDbMapService">
+      </Service>
+   </extension>
 
 </plugin>

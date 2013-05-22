@@ -39,6 +39,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IDbMapService;
 import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -431,12 +432,45 @@ public class ChangeMetadataCommand extends Command {
                 for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                     final Node target = (Node) outgoingConnection.getTarget();
                     if (target != null && target.getExternalNode() != null) {
+                        List<IMetadataColumn> oldListColumns = oldOutputMetadata.getListColumns();
+                        List<IMetadataColumn> newListColumns = newOutputMetadata.getListColumns();
+                        List<ColumnNameChanged> columnNameChanges = new ArrayList<ColumnNameChanged>();
+                        int size = oldListColumns.size();
+                        int newSize = newListColumns.size();
+                        if (newSize < size) {
+                            size = newSize;
+                        }
+
+                        for (int i = 0; i < size; i++) {
+                            IMetadataColumn metadataColumn = oldListColumns.get(i);
+                            IMetadataColumn newMetadataColumn = newListColumns.get(i);
+                            if (metadataColumn != null && newMetadataColumn != null) {
+                                String oldLabel = metadataColumn.getLabel();
+                                String newLabel = newMetadataColumn.getLabel();
+                                if (oldLabel != null && !oldLabel.equals(newLabel)) {
+                                    columnNameChanges.add(new ColumnNameChanged(oldLabel, newLabel));
+                                }
+                            }
+                        }
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
                             final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
                                     IXmlMapService.class);
                             if (service.isXmlMapComponent(target.getExternalNode())) {
                                 IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
-                                target.metadataInputChanged(output, outgoingConnection.getUniqueName());
+                                output.setColumnNameChanged(columnNameChanges);
+                                target.metadataInputChanged(output, outgoingConnection.getName());
+                            }
+                        }
+
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDbMapService.class)) {
+                            final IDbMapService service = (IDbMapService) GlobalServiceRegister.getDefault().getService(
+                                    IDbMapService.class);
+                            if (service.isDbMapComponent(target.getExternalNode())) {
+                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
+                                // TDI-25307:should setColumNameChanged here for ELtDbMap in case the propagate schema
+                                // does not affect it.
+                                output.setColumnNameChanged(columnNameChanges);
+                                target.metadataInputChanged(output, outgoingConnection.getName());
                             }
                         }
                     }
