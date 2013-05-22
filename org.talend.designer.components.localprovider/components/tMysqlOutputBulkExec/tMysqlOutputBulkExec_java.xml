@@ -155,6 +155,14 @@
       <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="130"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>
@@ -274,6 +282,7 @@
       <TEMPLATE_PARAM SOURCE="self.DATA_ACTION"  TARGET="tMBE.DATA_ACTION" />
 
       <TEMPLATE_PARAM SOURCE="self.DB_VERSION"  TARGET="tMBE.DB_VERSION" />
+      <TEMPLATE_PARAM SOURCE="self.DIE_ON_ERROR"  TARGET="tMBE.DIE_ON_ERROR" />
     </TEMPLATES>
     <IMPORTS>
       <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_5')" />

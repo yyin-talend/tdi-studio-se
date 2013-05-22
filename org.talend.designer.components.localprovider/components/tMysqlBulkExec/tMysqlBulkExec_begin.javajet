@@ -223,6 +223,24 @@ if(("UPDATE").equals(dataAction)) {
     );
 <%
 }
+%>
+java.sql.SQLWarning warn_<%=cid%> = stmt_<%=cid %>.getWarnings();
+<%
+String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+if (("true").equals(dieOnError)) {
+%>
+	if(warn_<%=cid%>!=null){
+		throw(warn_<%=cid%>);
+	}
+<%
+}else{
+%>
+	while (warn_<%=cid%> != null) {
+		System.err.println(warn_<%=cid%>.getMessage());
+		warn_<%=cid%> = warn_<%=cid%>.getNextWarning();
+	}
+<%
+}
 	if(!useExistingConnection) {
 %>
 conn_<%=cid %>.close();
