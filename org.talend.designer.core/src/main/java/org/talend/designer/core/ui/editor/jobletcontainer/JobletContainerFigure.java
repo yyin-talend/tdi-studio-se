@@ -23,12 +23,14 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.Project;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.repository.ProjectManager;
 
 public class JobletContainerFigure extends Figure {
 
@@ -168,6 +170,12 @@ public class JobletContainerFigure extends Figure {
 
     private void refreshNodes() {
         boolean isRed = new JobletUtil().isRed(this.jobletContainer);
+        Project refProject = ProjectManager.getInstance().getProject(this.jobletContainer.getProcess().getProperty().getItem());
+        if (!ProjectManager.getInstance().getCurrentProject().equals(refProject) && refProject.isReference()) {
+            if (!this.jobletContainer.isCollapsed()) {
+                isRed = true;
+            }
+        }
         if (lastJobletRedState == isRed) {
             return;
         }
