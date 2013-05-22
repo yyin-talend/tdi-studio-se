@@ -45,6 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
 					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 					%>
+						java.util.Map map_<%=cid%> = new java.util.HashMap();
 				        java.util.Queue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<java.util.Map>();
 					<%
 				    }else{
