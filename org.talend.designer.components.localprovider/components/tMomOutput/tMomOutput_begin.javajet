@@ -69,7 +69,11 @@ class="MomInput"
 		    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
 		}
 		
-		javax.jms.Destination des_<%=cid %>;
+		javax.jms.MessageProducer producer_<%=cid %> = (javax.jms.MessageProducer)globalMap.get("producer_<%=cid %>");
+		
+		if(producer_<%=cid %> == null) {
+		
+			javax.jms.Destination des_<%=cid %>;
 <%
 		if (("Queue").equals(msgType)) {
 %>
@@ -82,7 +86,7 @@ class="MomInput"
 		}
 %>
  
-		    javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+		 	producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
 		
 <%
 		if ("N_PERSISTENT".equals(deliverMode)) {
@@ -95,6 +99,7 @@ class="MomInput"
 <%
 		}
 %>
+		}
 			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 			globalMap.put("session_<%=cid %>",session_<%=cid %>);
 			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
