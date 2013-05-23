@@ -298,10 +298,9 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     public void removeDragItems(String data) {
         TableItem[] items = table.getItems();
         String[] toRemove = data.split("\\|"); //$NON-NLS-1$
-
-        for (TableItem item : items) {
+        for (int i = 1; i < toRemove.length; i++) { // skip items[0], which is the number of selected elements
             TableItem itemToRemove = null;
-            for (int i = 1; i < toRemove.length; i++) { // skip items[0], which is the number of selected elements
+            for (TableItem item : items) {
                 if (toRemove[i].equals(item.getText())) {
                     itemToRemove = item;
                     break;

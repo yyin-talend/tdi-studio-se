@@ -2415,21 +2415,23 @@ public class Node extends Element implements IGraphicalNode {
                 }
                 StringBuffer inexistentColumns = new StringBuffer();
                 List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                for (Map<String, Object> tabMap : tableValues) {
-                    int row = tableValues.indexOf(tabMap) + 1;
-                    if (checkColumnExist) {
-                        for (String paramName : columnListParamNames) {
-                            Object columnLineValue = tabMap.get(paramName);
-                            if (columnLineValue instanceof String && !currentColumns.contains(columnLineValue)) {
-                                inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                if (tableValues != null) {
+                    for (Map<String, Object> tabMap : tableValues) {
+                        int row = tableValues.indexOf(tabMap) + 1;
+                        if (checkColumnExist) {
+                            for (String paramName : columnListParamNames) {
+                                Object columnLineValue = tabMap.get(paramName);
+                                if (columnLineValue instanceof String && !currentColumns.contains(columnLineValue)) {
+                                    inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                }
                             }
                         }
-                    }
-                    if (checkPreColumnExist) {
-                        for (String paramName : preColumnListParamNames) {
-                            Object columnLineValue = tabMap.get(paramName);
-                            if (columnLineValue instanceof String && !preColumns.contains(columnLineValue)) {
-                                inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        if (checkPreColumnExist) {
+                            for (String paramName : preColumnListParamNames) {
+                                Object columnLineValue = tabMap.get(paramName);
+                                if (columnLineValue instanceof String && !preColumns.contains(columnLineValue)) {
+                                    inexistentColumns.append(columnLineValue).append("[Line:" + row + "]").append(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                }
                             }
                         }
                     }
