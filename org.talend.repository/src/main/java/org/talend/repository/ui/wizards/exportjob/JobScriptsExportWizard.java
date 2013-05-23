@@ -117,7 +117,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     public boolean performFinish() {
         boolean finish = mainPage.finish();
         if (!finish && !getShell().isDisposed()) {
-            getShell().close();
+            // getShell().close();
         } else {
             selection = null;
             mainPage = null;
