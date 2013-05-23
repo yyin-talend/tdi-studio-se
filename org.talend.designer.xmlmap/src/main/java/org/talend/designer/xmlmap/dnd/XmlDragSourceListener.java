@@ -121,6 +121,9 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                 }
 
             } else {
+                if (!XmlMapUtil.isDragable((TreeNode) lastSelection.getModel())) {
+                    return null;
+                }
                 toTransfer.add(lastSelection);
             }
             return new TransferedObject(toTransfer, type);
