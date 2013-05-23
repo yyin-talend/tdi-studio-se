@@ -111,23 +111,23 @@ public class JobLaunchShortcutManager {
             return;
         }
         try {
-            for (ILaunch launch : launchManager.getLaunches()) {
-                ILaunchConfiguration configuration = launch.getLaunchConfiguration();
-                if (configuration != null) {
-                    String jobId = configuration.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
-                    // String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
-                    String jobVersion = configuration.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
-                    String projectName = configuration.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
-                    ILaunchConfigurationType type = configuration.getType();
-                    if (type != null && TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE.equals(type.getIdentifier())
-                            && objProjectName.equals(projectName) && objId.equals(jobId) && objVersion.equals(jobVersion)) {
-                        configuration.delete();
-                        launchManager.removeLaunch(launch);
-                    }
-                } else {
-                    launchManager.removeLaunch(launch); // remove the not used
+            ILaunchConfiguration configuration = null;
+            for (ILaunchConfiguration config : launchManager.getLaunchConfigurations()) {
+                String jobId = config.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
+                // String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+                String jobVersion = config.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
+                String projectName = config.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
+                ILaunchConfigurationType type = config.getType();
+                if (type != null && TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE.equals(type.getIdentifier())
+                        && objProjectName.equals(projectName) && objId.equals(jobId) && objVersion.equals(jobVersion)) {
+                    configuration = config;
+                    break;
                 }
             }
+            if (configuration == null) {
+                return;
+            }
+            configuration.delete();
         } catch (CoreException e) {
             // nothing to do
         }

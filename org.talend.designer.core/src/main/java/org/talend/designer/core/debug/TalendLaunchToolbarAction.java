@@ -71,6 +71,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
      * 
      * @param menu the menu to fill
      */
+    @Override
     protected void fillMenu(Menu menu) {
         ILaunchConfiguration[] historyList = getHistory();
         ILaunchConfiguration[] favoriteList = getFavorites();
@@ -90,8 +91,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
 
     private int addToMenu(Menu menu, ILaunchConfiguration[] launchList, int accelerator, IRepositoryObject... allVersion) {
 
-        for (int i = 0; i < launchList.length; i++) {
-            ILaunchConfiguration launch = launchList[i];
+        for (ILaunchConfiguration launch : launchList) {
             try {
                 if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)
                         && isCurrentProject(launch)) {
@@ -154,47 +154,6 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     public void selectionChanged(IAction action, ISelection selection) {
         super.selectionChanged(action, selection);
         this.selection = selection;
-
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection sel = (IStructuredSelection) selection;
-            Object o = sel.getFirstElement();
-            if ((o instanceof RepositoryNode)) {
-                RepositoryNode node = (RepositoryNode) o;
-                if (node.getObject() != null && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.PROCESS)) {
-                    action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getLabel()); //$NON-NLS-1$
-                    return;
-                }
-            }
-        }
-        // launch the job that is open in editor
-        if (window != null) {
-            IWorkbenchPage page = window.getActivePage();
-            if (page != null) {
-                if (page.getActivePart() == page.getActiveEditor()) {
-                    IEditorPart editor = page.getActiveEditor();
-                    if (editor == null) {
-                        return;
-                    }
-                    IEditorInput input = editor.getEditorInput();
-                    if (input instanceof RepositoryEditorInput) {
-                        RepositoryEditorInput rInput = (RepositoryEditorInput) input;
-                        action.setToolTipText(RUN_LABEL + " current job " + rInput.getItem().getProperty().getLabel()); //$NON-NLS-1$
-                        return;
-                    }
-                }
-            }
-        }
-
-        ILaunchConfiguration configuration = getLastLaunch();
-        if (!isCurrentProject(configuration)) {
-            action.setToolTipText(RUN_LABEL);
-        } else {
-            try {
-                action.setToolTipText(RUN_LABEL + " " + configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, "")); //$NON-NLS-1$ //$NON-NLS-2$
-            } catch (Exception e) {
-            }
-        }
-
     }
 
     /*
@@ -204,7 +163,9 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
      */
     @Override
     protected ILaunchConfiguration getLastLaunch() {
+        getLaunchConfigurationManager().removeLaunchHistoryListener(this);
         LaunchHistory history = getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
+        getLaunchConfigurationManager().addLaunchHistoryListener(this);
         if (history != null) {
             try {
                 ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
@@ -225,6 +186,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
      * 
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
+    @Override
     public void run(IAction action) {
         // launch the job that is selected in the repository.
         if (selection instanceof IStructuredSelection) {
@@ -289,4 +251,49 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     private LaunchConfigurationManager getLaunchConfigurationManager() {
         return DebugUIPlugin.getDefault().getLaunchConfigurationManager();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.debug.ui.actions.AbstractLaunchHistoryAction#launchHistoryChanged()
+     */
+    @Override
+    public void launchHistoryChanged() {
+        updateTooltip();
+        super.launchHistoryChanged();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.debug.ui.actions.AbstractLaunchHistoryAction#updateTooltip()
+     */
+    @Override
+    protected void updateTooltip() {
+        getAction().setToolTipText(getToolTip());
+    }
+
+    private String getToolTip() {
+        ILaunchConfiguration launch = getLastLaunch();
+        if (launch != null) {
+            try {
+                String jobId = launch.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
+                String jobVersion = launch.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
+                if (jobId != null) {
+                    List<IRepositoryViewObject> all = factory.getAllVersion(jobId);
+                    for (IRepositoryViewObject obj : all) {
+                        if (obj.getProperty().getVersion().equals(jobVersion)) {
+                            return RUN_LABEL + " " + obj.getProperty().getLabel();
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return RUN_LABEL;
+    }
+
 }
