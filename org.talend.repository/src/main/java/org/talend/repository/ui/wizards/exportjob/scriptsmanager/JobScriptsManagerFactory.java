@@ -73,6 +73,7 @@ public class JobScriptsManagerFactory {
         exportChoiceMap.put(ExportChoice.needSourceCode, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, false);
         exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
+        exportChoiceMap.put(ExportChoice.needDependencies, true);
         return exportChoiceMap;
     }
 
