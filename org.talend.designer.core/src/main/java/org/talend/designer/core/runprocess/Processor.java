@@ -17,6 +17,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -307,10 +309,24 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
         logCommandLine(cmd, level);
         try {
-            return Runtime.getRuntime().exec(cmd);
+            return Runtime.getRuntime().exec(filterCommand(cmd));
         } catch (IOException ioe) {
             throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
         }
+    }
+    
+    private String[] filterCommand(String[] strs) {
+        if (strs.length > 0 && !"#!/bin/sh\n".equals(strs[0])) {
+            return strs;
+        }
+        List<String> list = new ArrayList<String>();
+        for (String str : strs) {
+            list.add(str);
+        }
+        if (list.size() > 0) {
+            list.remove(0);
+        }
+        return list.toArray(new String[0]);
     }
 
     public static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
