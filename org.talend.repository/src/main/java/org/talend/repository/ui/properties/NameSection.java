@@ -104,12 +104,11 @@ public class NameSection extends AbstractSection {
             return createOkStatus();
         }
         
-        
-
         String text = nameText.getText();
         if (text.length() == 0) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameEmpty")); //$NON-NLS-1$
-        } else if(ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTE_RESOURCES").equals(getObject().getRepositoryNode().getContentType())){
+        } else if(getObject().getRepositoryNode() != null
+        		&& ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTE_RESOURCES").equals(getObject().getRepositoryNode().getContentType())){
         	 return ResourcesPlugin.getWorkspace().validateName(text, IResource.FOLDER);
         }else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameIncorrect")); //$NON-NLS-1$
