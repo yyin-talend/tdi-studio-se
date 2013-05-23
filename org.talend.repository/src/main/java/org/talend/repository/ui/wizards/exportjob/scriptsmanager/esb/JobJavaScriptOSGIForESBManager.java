@@ -16,12 +16,10 @@ import aQute.bnd.osgi.Analyzer;
 import aQute.bnd.osgi.FileResource;
 import aQute.bnd.osgi.Jar;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -58,7 +56,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
@@ -111,8 +108,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private static final String OSGI_INF = "OSGI-INF"; //$NON-NLS-1$
 
     private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
-
-    private static final String SPRING = "spring"; //$NON-NLS-1$
 
     private MultiKeyMap requireBundleModules = new MultiKeyMap();
 
@@ -200,11 +195,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResources(getMetaInfSpringFolder(),
-                            Collections.singletonList(generateRestJobSpringConfig(processItem)));
+                    osgiResource.addResource(getOSGIInfFolder(),
+                            generateRestJobSpringConfig(processItem));
                 } else {
                     osgiResource
-                            .addResources(getOSGIInfFolder(), Collections.singletonList(generateBlueprintConfig(processItem)));
+                            .addResource(getOSGIInfFolder(), generateBlueprintConfig(processItem));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -453,10 +448,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     // return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     // }
 
-    private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-beans-template.xml"; //$NON-NLS-1$
+    private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
 
     private URL generateRestJobSpringConfig(ProcessItem processItem) throws IOException {
-        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "beans.xml"); //$NON-NLS-1$
+        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "blueprint.xml"); //$NON-NLS-1$
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
@@ -469,10 +464,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // REST endpoint address
         final String runtimeServicesContext = "/services"; //$NON-NLS-1$
-        final String runtimeServicesContextFull = runtimeServicesContext + "/"; //$NON-NLS-1$
+        final String runtimeServicesContextFull = runtimeServicesContext + '/';
         String endpointUri = EmfModelUtils.computeTextElementValue("REST_ENDPOINT", restRequestComponent); //$NON-NLS-1$
         if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) { //$NON-NLS-1$ //$NON-NLS-2$
-            endpointUri = "/" + endpointUri; //$NON-NLS-1$
+            endpointUri = '/' + endpointUri;
         }
         // TESB-5916: Rest service can't be deployed in the Runtime on the port said in the studio
         // if (endpointUri.contains("://")) {
@@ -682,10 +677,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static String getOSGIInfFolder() {
         return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
-    }
-
-    private static String getMetaInfSpringFolder() {
-        return FileConstants.META_INF_FOLDER_NAME.concat(PATH_SEPARATOR).concat(SPRING);
     }
 
     private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport)

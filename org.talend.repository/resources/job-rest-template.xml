@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:osgi="http://www.springframework.org/schema/osgi"
-		xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-		xsi:schemaLocation="
-			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-			http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
-			http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+>
 
 #if ($endpoint.useSAM)
-	<import resource="classpath:META-INF/tesb/agent-osgi.xml" />
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
+		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
 #end
 
 	<jaxrs:server id="service"
@@ -19,11 +15,11 @@
 #end
 			address="${endpoint.address}">
 		<jaxrs:serviceBeans>
-			<ref bean="serviceBean" />
+			<ref component-id="serviceBean" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<bean class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
-				<constructor-arg ref="serviceBean" />
+				<argument ref="serviceBean" />
 			</bean>
 			<bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
 				<property name="ignoreNamespaces" value="true" />
@@ -40,7 +36,7 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 #if ($endpoint.useSAM)
-			<ref bean="eventFeature" />
+			<ref component-id="eventFeature" />
 #end
 #if ($endpoint.useSL)
 			<bean class="org.talend.esb.servicelocator.cxf.LocatorFeature">
@@ -65,7 +61,7 @@
 	</jaxrs:server>
 
 	<bean id="serviceBean" class="${endpoint.jobClassName}.RestServiceProviderImpl4TalendJob">
-		<constructor-arg ref="job" />
+		<argument ref="job" />
 	</bean>
 
 	<bean id="job" class="${endpoint.jobClassName}" destroy-method="destroy">
@@ -75,7 +71,7 @@
 			<map>
 #foreach ($alias in $endpoint.jobDataSources)
 				<entry key="${alias}">
-					<osgi:reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
+					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
 				</entry>
 #end ## end data sources aliases loop
 			</map>
@@ -83,19 +79,19 @@
 #end
 	</bean>
 
-	<osgi:service ref="job">
-		<osgi:interfaces>
+	<service ref="job">
+		<interfaces>
 			<value>routines.system.api.TalendJob</value>
-		</osgi:interfaces>
-		<osgi:service-properties>
+		</interfaces>
+		<service-properties>
 			<entry key="name" value="${endpoint.jobName}" />
 			<entry key="type" value="job" />
-		</osgi:service-properties>
-	</osgi:service>
+		</service-properties>
+	</service>
 
 	<!-- Wiring the counter repository -->
 	<bean class="org.apache.cxf.management.counters.CounterRepository">
 		<property name="bus" ref="cxf" />
 	</bean>
 
-</beans>
+</blueprint>
