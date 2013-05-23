@@ -77,15 +77,34 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
     @Override
     public void init(IDynamicProperty dp) {
         super.init(dp);
+        initHadoopVersionType();
+    }
+
+    private void initHadoopVersionType() {
         if (elem instanceof Node) {
             Node node = (Node) elem;
             String compName = node.getComponent().getName();
-            compName = compName.substring(1).toUpperCase();
-            ECustomVersionType[] versions = ECustomVersionType.values();
-            for (ECustomVersionType version : versions) {
-                if (compName.startsWith(version.getName())) {
-                    versionType = version;
-                    break;
+
+            if (compName.startsWith("tPig")) { //$NON-NLS-1$
+                versionType = ECustomVersionType.PIG;
+                IElementParameter elementParameter = node.getElementParameter("LOAD"); //$NON-NLS-1$
+                if (elementParameter != null) {
+                    String value = elementParameter.getListItemsDisplayCodeName()[elementParameter.getIndexOfItemFromList(String
+                            .valueOf(elementParameter.getValue()))];
+                    if ("HCATLOADER".equals(value)) { //$NON-NLS-1$
+                        versionType = ECustomVersionType.PIG_HCATALOG;
+                    } else if ("HBASESTORAGE".equals(value)) { //$NON-NLS-1$
+                        versionType = ECustomVersionType.PIG_HBASE;
+                    }
+                }
+            } else {
+                compName = compName.substring(1).toUpperCase();
+                ECustomVersionType[] versions = ECustomVersionType.values();
+                for (ECustomVersionType version : versions) {
+                    if (compName.startsWith(version.getName())) {
+                        versionType = version;
+                        break;
+                    }
                 }
             }
         }
@@ -112,6 +131,7 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                initHadoopVersionType();
                 boolean readonly = false;
                 IElementParameter propertyParameter = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                 if (propertyParameter != null) {

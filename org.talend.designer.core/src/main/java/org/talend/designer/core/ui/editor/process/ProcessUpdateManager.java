@@ -1616,6 +1616,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             break;
                         }
                         String repositoryValue = param.getRepositoryValue();
+                        String relatedComponent = node.getComponent().getName();
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters())
                                         || (node instanceof INode && ((INode) node).getComponent().getName()
@@ -1632,7 +1633,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 table = node.getMetadataList().get(0);
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
-                                    table);
+                                    table, relatedComponent);
                             if (objectValue == null || "".equals(objectValue)) {
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                                     IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(

@@ -267,6 +267,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
+                String componentName = elem instanceof INode ? (((INode) elem).getComponent().getName()) : null;
                 boolean b = elem instanceof INode
                         && (((INode) elem).getComponent().getName().equals("tHL7Input") //$NON-NLS-1$
                                 || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML") //$NON-NLS-1$
@@ -317,7 +318,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                         }
                     } else {
-                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
+                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table, componentName);
                     }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
