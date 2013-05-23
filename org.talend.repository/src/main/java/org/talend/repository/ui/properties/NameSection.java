@@ -14,6 +14,8 @@ package org.talend.repository.ui.properties;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -101,11 +103,15 @@ public class NameSection extends AbstractSection {
         if (getObject().getRepositoryObjectType() == null) {
             return createOkStatus();
         }
+        
+        
 
         String text = nameText.getText();
         if (text.length() == 0) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameEmpty")); //$NON-NLS-1$
-        } else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
+        } else if(ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTE_RESOURCES").equals(getObject().getRepositoryNode().getContentType())){
+        	 return ResourcesPlugin.getWorkspace().validateName(text, IResource.FOLDER);
+        }else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameIncorrect")); //$NON-NLS-1$
         }
         // else if (!isValid(text)) {
