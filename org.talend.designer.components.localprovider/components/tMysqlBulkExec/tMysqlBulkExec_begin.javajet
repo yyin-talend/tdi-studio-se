@@ -140,9 +140,9 @@ if(("UPDATE").equals(dataAction)) {
         java.sql.Statement stmtTmpCreate_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtTmpCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         
-        java.sql.Statement stmtTmpBulk_<%=cid %> = conn_<%=cid %>.createStatement();
-        stmtTmpBulk_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
-        stmtTmpBulk_<%=cid %>.execute(
+        java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+        stmt_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
+        stmt_<%=cid %>.execute(
             "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' "  
             + " INTO TABLE " + tableName_<%=cid %>
             + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
