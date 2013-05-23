@@ -134,8 +134,7 @@ public class SetParallelizationCommand extends Command {
             if (node.getOutgoingConnections().size() > 0) {
                 for (IConnection con : node.getOutgoingConnections()) {
                     EConnectionType lineStyle = con.getLineStyle();
-                    if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
-                            || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+                    if (lineStyle.hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (con.isActivate()) {
                             boolean isEndRow = con.getTarget().getOutgoingConnections().size() == 0;
                             boolean isStartRow = node.isStart();
@@ -223,8 +222,7 @@ public class SetParallelizationCommand extends Command {
             for (IConnection con : node.getIncomingConnections()) {
                 if (con.isActivate()) {
                     EConnectionType lineStyle = con.getLineStyle();
-                    if (lineStyle.hasConnectionCategory(IConnectionCategory.MAIN)
-                            || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+                    if (lineStyle.hasConnectionCategory(IConnectionCategory.DATA)) {
                         IElementParameter parElem = con.getElementParameter(EParameterName.PARTITIONER.getName());
                         parElem.setValue(Boolean.FALSE);
                         con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
