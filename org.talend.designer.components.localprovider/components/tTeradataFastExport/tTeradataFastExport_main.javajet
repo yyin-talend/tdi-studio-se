@@ -34,6 +34,7 @@ String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
 String exportedFile= ElementParameterParser.getValue(node, "__EXPORTED_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
+String output= ElementParameterParser.getValue(node, "__OUTPUT__");
 
 //windows line separator as default
 String lineSeparator = "\\r\\n";
@@ -125,9 +126,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%
 	if("Windows".equals(execution)){
 	%>
-	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
+	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" <%if(!"OUTPUT_TO_CONSOLE".equals(output)){%>2>&1<%}%>"};
 	<%}else{%>
-	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+" > \""+<%=errorFile%>+"\" 2>&1"};
+	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+" > \""+<%=errorFile%>+"\" <%if(!"OUTPUT_TO_CONSOLE".equals(output)){%>2>&1<%}%>"};
 	<%}%>
 	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 	
@@ -158,6 +159,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String line = "";
 				try {
 					while((line = reader.readLine()) != null) {
+						<%if("OUTPUT_TO_CONSOLE".equals(output)){%>
+						globalMap.put("<%=cid%>_FEXP_ERROR", "true");	
+						<%}%>
 						System.err.println(line); 
 					}
 				} finally {
@@ -175,3 +179,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	normal_<%=cid %>.interrupt();
 	
 	error_<%=cid %>.interrupt();
+
+<%if("OUTPUT_TO_CONSOLE".equals(output)){%>
+if ("true".equals(globalMap.get("<%=cid%>_FEXP_ERROR"))) {
+	throw new TalendException(new java.lang.Exception() , "<%=cid%>" , globalMap);
+}
+<%}%>
