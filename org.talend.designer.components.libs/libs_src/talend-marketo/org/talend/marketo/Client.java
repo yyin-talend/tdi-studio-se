@@ -88,6 +88,7 @@ public class Client {
     public Client(String endpoint, String secretKey, String clientAccessID) throws ServiceException, MalformedURLException {
         // 1. change the endpoint.
         MktMktowsApiService service = new MktMktowsApiServiceLocator();
+        ((MktMktowsApiServiceLocator)service).setMktowsApiSoapPortEndpointAddress(endpoint);
         URL portAddress = new URL(endpoint);
         stub = service.getMktowsApiSoapPort(portAddress);
         // 2.assign secretKey and clientAccessID
