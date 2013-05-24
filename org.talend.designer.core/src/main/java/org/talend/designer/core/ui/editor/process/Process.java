@@ -234,6 +234,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private Set<String> neededPigudf;
 
+    private static final String SOURCE_JAVA_PIGUDF = "pigudf";
+
     private String componentsType;
 
     public Process(Property property) {
@@ -1558,8 +1560,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
                 for (IElementParameter param : (List<IElementParameter>) node.getElementParametersWithChildrens()) {
                     for (String routine : possibleRoutines) {
-                        if (!routinesToAdd.contains(routine) && param.getValue() != null && param.getValue() instanceof String
-                                && ((String) param.getValue()).contains(routine + additionalString)) {
+                        if (!routinesToAdd.contains(routine)
+                                && param.getValue() != null
+                                && param.getValue() instanceof String
+                                && (((String) param.getValue()).contains(routine + additionalString) || ((String) param
+                                        .getValue()).contains(SOURCE_JAVA_PIGUDF + additionalString + routine))) {
                             routinesToAdd.add(routine);
                         }
                         checkRoutinesInTable(routinesToAdd, additionalString, param, routine);
