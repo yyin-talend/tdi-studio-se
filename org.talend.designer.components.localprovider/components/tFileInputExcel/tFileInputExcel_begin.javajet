@@ -572,8 +572,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//for the number format        
         java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
         char decimalChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
-        org.apache.poi.hssf.usermodel.HSSFDataFormatter dataFormat_<%=cid%>=new org.apache.poi.hssf.usermodel.HSSFDataFormatter();
-		java.text.NumberFormat numberFormat_<%=cid%>=java.text.NumberFormat.getInstance();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
        
@@ -675,6 +673,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			else{
 				actual_end_column_<%= cid %> = end_column_<%= cid %> >	excel_end_column_<%=cid%> ? excel_end_column_<%=cid%> : end_column_<%= cid %>;
 			}
+			org.apache.poi.ss.formula.eval.NumberEval ne_<%=cid%> = null;
 			for(int i=0;i<<%=size%>;i++){
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
 					org.apache.poi.ss.usermodel.Cell cell_<%=cid%> = row_<%= cid %>.getCell(i + start_column_<%= cid %>);
@@ -730,7 +729,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 										}
 %>
                                     } else {
-                                         temp_row_<%= cid %>[i] = df_<%=cid %>.format(numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>,workbook_<%= cid %>.getCreationHelper().createFormulaEvaluator())));
+										ne_<%=cid %> = new org.apache.poi.ss.formula.eval.NumberEval(cell_<%=cid%>.getNumericCellValue()); 
+										temp_row_<%= cid %>[i] = ne_<%=cid%>.getStringValue();
                                     }
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
