@@ -309,24 +309,10 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
         logCommandLine(cmd, level);
         try {
-            return Runtime.getRuntime().exec(filterCommand(cmd));
+            return Runtime.getRuntime().exec(cmd);
         } catch (IOException ioe) {
             throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
         }
-    }
-    
-    private String[] filterCommand(String[] strs) {
-        if (strs.length > 0 && !"#!/bin/sh\n".equals(strs[0])) {
-            return strs;
-        }
-        List<String> list = new ArrayList<String>();
-        for (String str : strs) {
-            list.add(str);
-        }
-        if (list.size() > 0) {
-            list.remove(0);
-        }
-        return list.toArray(new String[0]);
     }
 
     public static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
