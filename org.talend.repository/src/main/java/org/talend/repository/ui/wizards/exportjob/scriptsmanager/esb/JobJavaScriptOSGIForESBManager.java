@@ -105,10 +105,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String JOB = "job"; //$NON-NLS-1$
 
-    private static final String OSGI_INF = "OSGI-INF"; //$NON-NLS-1$
-
-    private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
-
     private MultiKeyMap requireBundleModules = new MultiKeyMap();
 
     private String jobName;
@@ -195,11 +191,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResource(getOSGIInfFolder(),
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME,
                             generateRestJobSpringConfig(processItem));
                 } else {
                     osgiResource
-                            .addResource(getOSGIInfFolder(), generateBlueprintConfig(processItem));
+                            .addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -448,7 +444,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     // return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     // }
 
-    private static final String TEMPLATE_SPRING_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
+    private static final String TEMPLATE_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
 
     private URL generateRestJobSpringConfig(ProcessItem processItem) throws IOException {
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "blueprint.xml"); //$NON-NLS-1$
@@ -540,8 +536,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
 
-        TemplateProcessor.processTemplate("REST_JOB_SPRING_CONFIG", contextParams, targetFile, new InputStreamReader(this
-                .getClass().getResourceAsStream(TEMPLATE_SPRING_JOB_REST)));
+        TemplateProcessor.processTemplate("REST_JOB_CONFIG", contextParams, targetFile, new InputStreamReader(this
+                .getClass().getResourceAsStream(TEMPLATE_JOB_REST)));
 
         return targetFile.toURI().toURL();
     }
@@ -673,10 +669,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         final File file = new File(FileUrl.getPath());
         TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
                 new InputStreamReader(new FileInputStream(file)));
-    }
-
-    private static String getOSGIInfFolder() {
-        return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
     }
 
     private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport)
