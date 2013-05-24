@@ -575,8 +575,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//for the number format        
         java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
         char decimalChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
-        org.apache.poi.hssf.usermodel.HSSFDataFormatter dataFormat_<%=cid%>=new org.apache.poi.hssf.usermodel.HSSFDataFormatter();
-		java.text.NumberFormat numberFormat_<%=cid%>=java.text.NumberFormat.getInstance();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
        
