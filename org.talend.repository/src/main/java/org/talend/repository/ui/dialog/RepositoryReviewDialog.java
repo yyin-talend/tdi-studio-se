@@ -38,7 +38,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
@@ -246,6 +248,13 @@ public class RepositoryReviewDialog extends Dialog {
                 return processor;
             }
         }
+        if (repositoryType != null && repositoryType.contains("|")) { //$NON-NLS-1$
+            String[] repTypes = repositoryType.split("\\|"); //$NON-NLS-1$
+            IRepositoryTypeProcessor hadoopTypeProcessor = getHadoopSubMultiRepTypeProcessor(repTypes);
+            if (hadoopTypeProcessor != null) {
+                return hadoopTypeProcessor;
+            }
+        }
         if (type == null && repositoryTypes != null) {
             return new MetadataMultiTypeProcessor(repositoryTypes);
         }
@@ -282,6 +291,18 @@ public class RepositoryReviewDialog extends Dialog {
         }
 
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
+    }
+
+    private IRepositoryTypeProcessor getHadoopSubMultiRepTypeProcessor(String[] repTypes) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            IHadoopClusterService hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+            if (hadoopClusterService != null) {
+                return hadoopClusterService.getHadoopSubMultiRepTypeProcessor(repTypes);
+            }
+        }
+
+        return null;
     }
 
     /**

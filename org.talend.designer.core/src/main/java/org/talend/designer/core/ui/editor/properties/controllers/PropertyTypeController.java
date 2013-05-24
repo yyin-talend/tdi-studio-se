@@ -278,20 +278,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
         Map<String, LinkRulesItem> repositoryLinkRulesItemMap = null;
         String paramName = (String) button.getData(PARAMETER_NAME);
         IElementParameter param = elem.getElementParameter(paramName);
-        IElementParameter paramLoad = elem.getElementParameter("LOAD");
-        if (paramLoad == null) {
-            paramLoad = elem.getElementParameter("STORE");
-        }
-        String specialRepositoryValue = null;
-        if (paramLoad != null && elem instanceof Node && ((Node) elem).getComponent().getName().contains("Pig")) {
-            if ("PigStorage".equals(paramLoad.getValue())) {
-                specialRepositoryValue = "HDFS";
-            } else if ("HCatLoader".equals(paramLoad.getValue()) || "HCatStorer".equals(paramLoad.getValue())) {
-                specialRepositoryValue = "HCATALOG";
-            } else if ("HBaseStorage".equals(paramLoad.getValue())) {
-                specialRepositoryValue = "DATABASE:HBASE";
-            }
-        }
         Object data = button.getData(NAME);
         if (data != null && data.equals(REPOSITORY_CHOICE)) {
             IElementParameter dbTypeParam = null;
@@ -312,7 +298,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         param.getRepositoryValue(), listRepositoryItems);
             } else {
                 dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
-                        specialRepositoryValue == null ? param.getRepositoryValue() : specialRepositoryValue);
+                        param.getRepositoryValue());
             }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
