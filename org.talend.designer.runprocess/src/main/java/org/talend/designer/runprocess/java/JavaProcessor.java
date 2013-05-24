@@ -12,14 +12,17 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.eclipse.core.resources.IFile;
@@ -79,8 +84,8 @@ import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -133,6 +138,7 @@ import org.talend.repository.ProjectManager;
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
  * 
  */
+@SuppressWarnings("restriction")
 public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpointListener {
 
     /** The compiled code path. */
@@ -492,8 +498,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @param processCode
      * @return
      */
-    @SuppressWarnings("restriction")
-    private String formatCode(String processCode) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
         // we cannot make calls to Ui in headless mode
@@ -1271,22 +1277,44 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
             for (INode node : graphicalNodes) {
                 if ("tESBConsumer".equals(node.getComponent().getName()) && node.isActivate()) { //$NON-NLS-1$
-                    // retrieve WSDL content (compressed-n-encoded)
+                    // retrieve WSDL content (compressed-n-encoded) -> zip-content.-> wsdls.(first named main.wsdl)
                     String wsdlContent = (String) node.getPropertyValue("WSDL_CONTENT"); //$NON-NLS-1$
                     String uniqueName = node.getUniqueName();
                     if (null != uniqueName && null != wsdlContent && !wsdlContent.trim().isEmpty()) {
 
                         // configure decoding and uncompressing
-                        InputStream wsdlStream = new InflaterInputStream(new Base64InputStream(new ByteArrayInputStream(
-                                wsdlContent.getBytes())));
+                        InputStream wsdlStream = new BufferedInputStream(new InflaterInputStream(new Base64InputStream(new ByteArrayInputStream(
+                                wsdlContent.getBytes()))));
 
+                        
                         if (!wsdlsPackageFolder.exists()) {
                             wsdlsPackageFolder.create(true, true, null);
                         }
-
                         // generate WSDL file
-                        IFile wsdlFile = wsdlsPackageFolder.getFile(uniqueName + ".wsdl"); //$NON-NLS-1$
-                        wsdlFile.create(wsdlStream, true, null);
+                        if(checkIsZipStream(wsdlStream)) {
+                        	
+	                        ZipInputStream zipIn = new ZipInputStream(wsdlStream);
+	                        ZipEntry zipEntry=null;
+	                        
+	                        while ((zipEntry=zipIn.getNextEntry())!=null) {
+	                        	String outputName=zipEntry.getName();
+	                        	if(outputName.equals("main.wsdl")) { //$NON-NLS-1$
+	                        		outputName=uniqueName+".wsdl"; //$NON-NLS-1$
+	                        	}
+	                        	IFile wsdlFile = wsdlsPackageFolder.getFile(outputName); //$NON-NLS-1$
+	                        	//cause create file will do a close. add a warp to ignore close.
+	                        	InputStream unCloseIn = new FilterInputStream(zipIn) {
+	                        		public void close() throws IOException {};
+	                        	};
+	                        	
+                    			wsdlFile.create(unCloseIn, true, null);
+                    			zipIn.closeEntry();
+	                        }
+	                        zipIn.close();
+                        }else {
+                        	IFile wsdlFile = wsdlsPackageFolder.getFile(uniqueName + ".wsdl"); //$NON-NLS-1$
+                        	wsdlFile.create(wsdlStream, true, null);
+						}
                     }
                 }
             }
@@ -1295,7 +1323,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 ExceptionHandler.process(e.getStatus().getException());
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
-        }
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
 
         boolean samEnabled = false;
         boolean slEnabled = false;
@@ -1350,6 +1380,27 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
         }
     }
+
+	/**
+	 * Check current stream whether zip stream by check header signature.
+	 * Zip  header signature = 0x504B 0304(big endian)
+	 * @param wsdlStream the wsdl stream. <b>Must Support Mark&Reset . Must at beginning of stream.</b>
+	 * @return true, if is zip stream.
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	private boolean checkIsZipStream(InputStream wsdlStream) throws IOException {
+		boolean isZip=false;
+		byte[] headerB=new byte[4];
+		wsdlStream.mark(4);
+		wsdlStream.read(headerB);
+		int header=ByteBuffer.wrap(headerB).getInt();
+		
+		if(header==0x504B0304) {
+			isZip=true;
+		}
+		wsdlStream.reset();
+		return isZip;
+	}
 
     private void copyEsbConfigFile(File esbConfigsSourceFolder, IFolder esbConfigsTargetFolder, String configFile) {
         File esbConfig = new File(esbConfigsSourceFolder, configFile);
