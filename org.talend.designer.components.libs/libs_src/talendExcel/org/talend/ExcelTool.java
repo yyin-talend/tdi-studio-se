@@ -18,7 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 public class ExcelTool {
 
@@ -108,7 +108,6 @@ public class ExcelTool {
 						if(sheet.getLastRowNum()!=0 || sheet.getRow(0)!=null){
 							curY = sheet.getLastRowNum() + 1;
 						}
-						((XSSFSheet)sheet).setForceFormulaRecalculation(true);
 					} else {
 						wb.removeSheetAt(wb.getSheetIndex(sheetName));
 						sheet = wb.createSheet(sheetName);
@@ -287,8 +286,25 @@ public class ExcelTool {
 			}
 		}
 		FileOutputStream fileOutput = new FileOutputStream(fileName);
+		if(appendWorkbook && appendSheet){
+		    evaluateFormulaCell();
+		}
 		wb.write(fileOutput);
 		fileOutput.close();
+	}
+	
+	public void evaluateFormulaCell(){
+	    FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+        for(int sheetNum = 0; sheetNum < wb.getNumberOfSheets(); sheetNum++) {
+            sheet = wb.getSheetAt(sheetNum);
+            for(Row r : sheet) {
+                for(Cell c : r) {
+                    if(c.getCellType() == Cell.CELL_TYPE_FORMULA) {
+                        evaluator.evaluateFormulaCell(c);
+                    }
+                }
+            }
+        }
 	}
 
 	public void flushRowInMemory() throws Exception{
