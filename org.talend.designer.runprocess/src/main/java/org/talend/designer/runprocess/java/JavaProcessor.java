@@ -1019,7 +1019,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         } else {
             List<String> list = new ArrayList<String>();
             if (":".equals(classPathSeparator)) { //$NON-NLS-1$
-                list.add("#!/bin/sh\n"); //$NON-NLS-1$
                 list.add("cd \"`dirname \\\"$0\\\"`\"\n"); //$NON-NLS-1$
                 list.add("ROOT_PATH=\"`pwd`\"\n"); //$NON-NLS-1$
             } else {
