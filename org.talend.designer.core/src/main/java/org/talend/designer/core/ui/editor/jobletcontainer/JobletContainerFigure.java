@@ -171,12 +171,12 @@ public class JobletContainerFigure extends Figure {
     private void refreshNodes() {
         boolean isRed = new JobletUtil().isRed(this.jobletContainer);
         Project refProject = ProjectManager.getInstance().getProject(this.jobletContainer.getProcess().getProperty().getItem());
-        if (!ProjectManager.getInstance().getCurrentProject().equals(refProject) && refProject.isReference()) {
+        if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
             if (!this.jobletContainer.isCollapsed()) {
                 isRed = true;
             }
         }
-        if (lastJobletRedState == isRed) {
+        if (this.jobletContainer.isCollapsed() && lastJobletRedState == isRed) {
             return;
         }
         lastJobletRedState = isRed;
