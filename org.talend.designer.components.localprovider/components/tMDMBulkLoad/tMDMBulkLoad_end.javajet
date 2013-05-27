@@ -15,3 +15,7 @@ inputStreamMerger_<%=cid%>.close();
 } 
 bulkloadClient_<%=cid %>.waitForEndOfQueue();
 bulkloadClient_<%=cid %> = null;
+<%//TDI-26145%>
+if(inputStreamMerger_<%=cid%>!=null && inputStreamMerger_<%=cid%>.getLastReportedFailure()!=null){
+        throw new Exception(inputStreamMerger_<%=cid%>.getLastReportedFailure());
+}
