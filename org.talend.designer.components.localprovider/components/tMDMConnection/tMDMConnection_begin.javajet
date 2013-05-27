@@ -21,7 +21,6 @@ org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new o
 xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
 org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
 org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
-stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
 
 // Authentification
 <%if(universe==null || ("").equals(universe.trim())){%>
@@ -30,5 +29,6 @@ stub_<%=cid %>.setUsername(<%=username %>);
 stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
 <%}%>
 stub_<%=cid %>.setPassword(<%=password %>);
+stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
 
 globalMap.put("xtentisWS_<%=cid %>", xtentisWS_<%=cid %>);
