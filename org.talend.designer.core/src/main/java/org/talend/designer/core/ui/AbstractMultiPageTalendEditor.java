@@ -166,6 +166,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -572,6 +573,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         super.pageChange(newPageIndex);
         setName();
         if (newPageIndex == 1) {
+            // TDI-25866:In case select a component and switch to the code page,need clean its componentSetting view
+            IComponentSettingsView viewer = (IComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getActivePage().findView(IComponentSettingsView.ID);
+
+            if (viewer != null) {
+                viewer.cleanDisplay();
+            }
             if (codeEditor instanceof ISyntaxCheckableEditor) {
                 moveCursorToSelectedComponent();
 
