@@ -88,29 +88,60 @@ public class SAXLooper {
     }
 
     private void judegeMultiIsSimple() {
-        if (this.rootPath.indexOf("..") >= 0 || this.rootPath.indexOf("*") >= 0) {
-            this.isSimpleParse = false;
+        isSimpleParse = isSimplePath(rootPath);
+        
+        for(String path : arrOrigLoopPath) {
+            if(!isSimpleParse) {
+                break;
+            }
+            isSimpleParse = isSimplePath(path);
         }
-        for (int i = 0; isSimpleParse && i < arrOrigLoopPath.length; i++) {
-            if (arrOrigLoopPath[i].indexOf("..") >= 0 || arrOrigLoopPath[i].indexOf("*") >= 0) {
-                this.isSimpleParse = false;
+        
+        for(String[] arrNodePath : arrNodePaths) {
+            for(String path : arrNodePath) {
+                if(!isSimpleParse) {
+                    break;
+                }
+                isSimpleParse = isSimplePath(path);
+            }
+            if(!isSimpleParse) {
                 break;
             }
         }
-        for (int i = 0; isSimpleParse && i < arrNodePaths.length; i++) {
-            for (int j = 0; j < arrNodePaths[i].length; j++) {
-                if (arrNodePaths[i][j].indexOf("..") >= 0 || arrNodePaths[i][j].indexOf("*") >= 0) {
-                    this.isSimpleParse = false;
-                    break;
-                }
-            }
-        }
-        this.isSimpleParse = false;
+        
         if (this.isSimpleParse) {
             looper = new SimpleSAXLooper(rootPath, arrOrigLoopPath, arrNodePaths);
         } else {
             looper = new ComplexSAXLooper(rootPath, arrOrigLoopPath, arrNodePaths);
         }
+    }
+    
+    /**
+     * ../../../@attr also can read like a stream(now only consider the case)
+     * @param path
+     * @return
+     */
+    private boolean isSimplePath(String path) {
+        if(path == null || !path.contains("..") && !path.contains("*")) {
+            return true;
+        }
+        
+        boolean isSimplePath = true;
+        
+        String[] nodes = path.split("/");
+        
+        for(int i = 0;i<nodes.length;i++) {
+            String node = nodes[i];
+            
+            if(i < (nodes.length - 1)) {
+                isSimplePath = isSimplePath && "..".equals(node);
+            } else {
+                isSimplePath = isSimplePath && node.startsWith("@");
+            }
+        }
+        
+        return isSimplePath;
+        
     }
 
     private String charset = "UTF-8";

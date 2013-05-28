@@ -24,7 +24,9 @@ public class XMLNodes {
     private Map<String, XMLNode> nodes = new HashMap<String, XMLNode>();
 
     private String loopPath = null;
-
+    
+    private String originLoopPath = null;
+    
     public void addNode(XMLNode node) {
         if (node != null) {
             nodes.put(node.originPath, node);
@@ -70,6 +72,24 @@ public class XMLNodes {
 
     public int size() {
         return nodes.size();
+    }
+
+    /**
+     * DOC talend2 Comment method "getOriginalLoopPath".
+     * @return
+     */
+    public String getOriginalLoopPath() {
+        if (this.originLoopPath != null)
+            return this.originLoopPath;
+
+        for (XMLNode node : nodes.values()) {
+            if (node.originLoopPath != null) {
+                this.originLoopPath = node.originLoopPath;
+                return node.originLoopPath;
+            }
+        }
+
+        return null;
     }
 
 }

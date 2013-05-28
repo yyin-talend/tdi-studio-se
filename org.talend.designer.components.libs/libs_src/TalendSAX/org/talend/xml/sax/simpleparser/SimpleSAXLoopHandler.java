@@ -37,10 +37,18 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
     
     private boolean stop = false;
 
+    private DataBufferCache2 multiCache;
+
     public SimpleSAXLoopHandler(XMLNodes nodes, DataBufferCache bcache) {
         super();
         this.nodes = nodes;
         this.bufferCache = bcache;
+    }
+
+    public SimpleSAXLoopHandler(XMLNodes nodes, DataBufferCache2 multiCache) {
+        super();
+        this.nodes = nodes;
+        this.multiCache = multiCache;
     }
 
     /*
@@ -58,8 +66,11 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
      * @see org.xml.sax.helpers.DefaultHandler#endDocument()
      */
     public void endDocument() throws SAXException {
-        // DataCache.getInstance().setReadEnd(true);
-        bufferCache.setIsEnd();
+        if(multiCache!=null) {
+            multiCache.setIsEnd();
+        } else {
+            bufferCache.setIsEnd();
+        }
     }
 
     /*
@@ -112,6 +123,18 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                         }
                     }
 
+                }
+            } else {//process the attribute out of the loop
+                int index = node.nodePath.lastIndexOf("@");
+                if (index > 0) {
+                    if (currentPath.equals(node.nodePath.substring(0, index - 1))) {
+                        String attribute = attributes.getValue(node.nodePath.substring(index + 1));
+                        if (attribute != null) {
+                            node.addTextValue(attribute);
+                        } else {
+                            node.addTextValue("");
+                        }
+                    }
                 }
             }
         }
@@ -173,12 +196,14 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                 Map<String, String> map = new HashMap<String, String>();
                 for (XMLNode node : nodes.getNodesCollection()) {
                     map.put(node.originPath, node.getTextValue());
-                    // ---------------------------------------------
-
-                    // System.out.print("" + node.getTextValue() + "#");
-                    // ---------------------------------------------
                 }
-                bufferCache.writeData(map);
+                if(multiCache!=null) {
+                    HashMap<String, Map<String, String>> row = new HashMap<String, Map<String, String>>(1);
+                    row.put(nodes.getOriginalLoopPath(), map);
+                    multiCache.writeData(row);
+                } else {
+                    bufferCache.writeData(map);
+                }
                 
                 if (stop) {
                     throw new EnoughDataException("Get enough data,now stop the xml parse action");
