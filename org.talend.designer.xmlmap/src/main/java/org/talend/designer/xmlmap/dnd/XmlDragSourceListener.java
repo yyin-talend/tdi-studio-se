@@ -118,7 +118,7 @@ public class XmlDragSourceListener extends MapperDragSourceListener {
                 }
 
             } else {
-                if (!XmlMapUtil.isDragable((TreeNode) lastSelection.getModel())) {
+                if (lastSelection.getModel() instanceof TreeNode && !XmlMapUtil.isDragable((TreeNode) lastSelection.getModel())) {
                     return null;
                 }
                 toTransfer.add(lastSelection);
