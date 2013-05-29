@@ -71,6 +71,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.hadoop.IOozieService;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.IEbcdicConstant;
@@ -104,6 +105,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ConnectionItem;
@@ -196,6 +198,8 @@ import orgomg.cwm.objectmodel.core.ModelElement;
  * 
  */
 public class TalendEditorDropTargetListener extends TemplateTransferDropTargetListener {
+
+    private static final String MR_PROPERTY_PREFIX = "MR_PROPERTY:"; //$NON-NLS-1$
 
     private AbstractTalendEditor editor;
 
@@ -539,19 +543,82 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (containsSQLPatternSource(sources)) {
                     createSQLPattern(sources);
                 } else {
-                    createSchema(getSelection().getFirstElement(), getTargetEditPart());
-                    createQuery(getSelection().getFirstElement(), getTargetEditPart());
-                    createProperty(getSelection().getFirstElement(), getTargetEditPart());
-                    createChildJob(getSelection().getFirstElement(), getTargetEditPart());
-                    createValidationRule(getSelection().getFirstElement(), getTargetEditPart());
+                    Object obj = getSelection().getFirstElement();
+                    createSchema(obj, getTargetEditPart());
+                    createQuery(obj, getTargetEditPart());
+                    createProperty(obj, getTargetEditPart());
+                    createChildJob(obj, getTargetEditPart());
+                    createValidationRule(obj, getTargetEditPart());
+                    if (obj instanceof IRepositoryNode) {
+                        propaHadoopCfgChanges((IRepositoryNode) obj);
+                    }
                 }
             }
+
         }
         // in case after drag/drop the editor is dirty but can not get focus
         if (editor.isDirty()) {
             editor.setFocus();
         }
         this.eraseTargetFeedback();
+    }
+
+    /**
+     * DOC ycbai Comment method "propaHadoopCfgChanges".
+     * 
+     * <P>
+     * Propagate the changes from hadoop cluster to M/R process when drag&drop hadoop subnode from repository view to
+     * M/R process.
+     * </P>
+     * 
+     * @param repositoryNode
+     */
+    private void propaHadoopCfgChanges(IRepositoryNode repositoryNode) {
+        if (repositoryNode == null || repositoryNode.getObject() == null) {
+            return;
+        }
+
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService == null || !hadoopClusterService.isHadoopSubnode(repositoryNode)) {
+            return;
+        }
+
+        IProcess process = editor.getProcess();
+        if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType())) {
+            return;
+        }
+
+        Item subItem = repositoryNode.getObject().getProperty().getItem();
+        Item hadoopClusterItem = hadoopClusterService.getHadoopClusterBySubitemId(subItem.getProperty().getId());
+        String hadoopClusterId = hadoopClusterItem.getProperty().getId();
+
+        String propertyParamName = MR_PROPERTY_PREFIX + EParameterName.PROPERTY_TYPE.getName();
+        String propertyRepTypeParamName = MR_PROPERTY_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        IElementParameter propertyParam = process.getElementParameter(propertyParamName);
+        if (EmfComponent.REPOSITORY.equals(propertyParam.getValue())) {
+            // do nothing when select the same hadoop cluster.
+            String propertyId = (String) process.getElementParameter(propertyRepTypeParamName).getValue();
+            if (hadoopClusterId.equals(propertyId)) {
+                return;
+            }
+        }
+
+        Connection hcConnection = ((ConnectionItem) hadoopClusterItem).getConnection();
+        if (hadoopClusterService.hasDiffsFromClusterToProcess(((ConnectionItem) hadoopClusterItem).getConnection(), process)) {
+            boolean confirmUpdate = MessageDialog.openConfirm(editor.getSite().getShell(),
+                    Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.title"), //$NON-NLS-1$
+                    Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
+            if (confirmUpdate) {
+                propertyParam.setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, hcConnection,
+                        propertyRepTypeParamName, hadoopClusterId);
+                execCommandStack(command);
+            }
+        }
     }
 
     private void createSQLPattern(List<Object> sourceList) {
@@ -1001,6 +1068,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 for (Command command : commands) {
                     execCommandStack(command);
                 }
+
+                propaHadoopCfgChanges(selectedNode);
+
                 draw2dPosition = draw2dPosition.getCopy();
                 draw2dPosition.x += TalendEditor.GRID_SIZE;
                 draw2dPosition.y += TalendEditor.GRID_SIZE;
