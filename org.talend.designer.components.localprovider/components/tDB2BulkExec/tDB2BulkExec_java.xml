@@ -288,9 +288,9 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" REQUIRED="true" />
+      	<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 

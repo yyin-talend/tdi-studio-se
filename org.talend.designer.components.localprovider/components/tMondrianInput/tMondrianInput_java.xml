@@ -332,28 +332,28 @@
 		<IMPORT NAME="commons-httpclient"   MODULE="commons-httpclient-3.0.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.httpclient_3.0.1.v201005080501.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-codec"        MODULE="commons-codec-1.3.jar" UrlPath="platform:/base/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MySql"         MODULE="mysql-connector-java-5.1.22-bin.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.mysql/lib/mysql-connector-java-5.1.22-bin.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-DB2" 			MODULE="db2jcc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cisuz.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.db2/lib/db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" 			MODULE="db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver_MaxDB" 		MODULE="sapdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MSSQL" 		MODULE="jtds-1.2.5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.jtds/lib/jtds-1.2.5.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-POSTGRESQL" 	MODULE="postgresql-8.3-603.jdbc3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-FIREBIRD" 		MODULE="jaybird-full-2.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.firebird/lib/jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-HSQLDb" 		MODULE="hsqldb.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED="true"/>
-		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxjdbcx.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlang.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxlsupp.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxsqlj.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.informix/lib/ifxtools.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-INGRES" 		MODULE="iijdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.ingres/lib/iijdbc.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-Interbase" 	MODULE="interclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBY" 	MODULE="derby.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbyclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbynet.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sqlite3/lib/sqlitejdbc-v056.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
 		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/mondrian_2.jar" REQUIRED="false" />
 		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" UrlPath="platform:/plugin/org.talend.libraries.mondrian/lib/mondrian_3.jar" REQUIRED="false" />
      </IMPORTS>

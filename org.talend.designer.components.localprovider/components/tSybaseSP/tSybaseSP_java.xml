@@ -233,7 +233,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.sybase/lib/jconn3.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
