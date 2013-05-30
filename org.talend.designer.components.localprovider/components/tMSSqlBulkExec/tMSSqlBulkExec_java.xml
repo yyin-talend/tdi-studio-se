@@ -198,7 +198,7 @@
       REQUIRED="true"
       SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
-      <DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mssql_bulk.txt"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER 
@@ -208,7 +208,7 @@
     	REQUIRED="true"
     	SHOW_IF="ACTION=='EXPORT'"
     >
-    	<DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
+    	<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mssql_bulk.txt"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
