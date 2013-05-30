@@ -22,21 +22,21 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 
-import com.sybase.jdbc3.utils.UnimplementedOperationException;
-
 /**
  * @author Davy Vanherbergen
  * 
  */
 public class ConnectionInfoTab extends AbstractDataSetTab {
 
+    @Override
     public String getLabelText() {
         return Messages.getString("DatabaseDetailView.Tab.ConnectionInfo"); //$NON-NLS-1$
     }
 
+    @Override
     public String getStatusMessage() {
         return Messages.getString(
-                "DatabaseDetailView.Tab.ConnectionInfo.status", new String[] { getNode().getSession().toString() }); //$NON-NLS-1$ //$NON-NLS-2$
+                "DatabaseDetailView.Tab.ConnectionInfo.status", new String[] { getNode().getSession().toString() }); //$NON-NLS-1$ 
     }
 
     /*
@@ -44,6 +44,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
      * 
      * @see org.talend.sqlbuilder.dbdetail.tab.AbstractDataSetTab#getDataSet()
      */
+    @Override
     public DataSet getDataSet() throws Exception {
 
         INode node = getNode();
@@ -167,7 +168,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[114][0] = Messages.getString("ConnectionInfoTab.property14"); //$NON-NLS-1$
         try {
             data[114][1] = "" + jdbcMetaData.supportsNamedParameters(); //$NON-NLS-1$
-        } catch (UnimplementedOperationException exception) {
+        } catch (SQLException exception) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage13"), e); //$NON-NLS-1$
@@ -179,7 +180,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
             } else {
                 data[115][1] = "" + jdbcMetaData.supportsGetGeneratedKeys(); //$NON-NLS-1$
             }
-        } catch (UnimplementedOperationException unimplementedOperationException) {
+        } catch (SQLException unimplementedOperationException) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage14"), e); //$NON-NLS-1$
@@ -215,7 +216,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
             } else {
                 data[118][1] = "" + jdbcMetaData.getJDBCMinorVersion(); //$NON-NLS-1$
             }
-        } catch (UnimplementedOperationException operationException) {
+        } catch (SQLException operationException) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage17"), e); //$NON-NLS-1$
@@ -227,7 +228,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
             } else {
                 data[119][1] = "" + jdbcMetaData.getJDBCMajorVersion(); //$NON-NLS-1$
             }
-        } catch (UnimplementedOperationException exception) {
+        } catch (SQLException exception) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage18"), e); //$NON-NLS-1$
@@ -239,7 +240,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
             } else {
                 data[120][1] = "" + jdbcMetaData.getSQLStateType(); //$NON-NLS-1$
             }
-        } catch (UnimplementedOperationException unimplementedOperationException) {
+        } catch (SQLException unimplementedOperationException) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage19"), e); //$NON-NLS-1$
@@ -598,7 +599,7 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
             } else {
                 data[43][1] = "" + jdbcMetaData.supportsMultipleOpenResults(); //$NON-NLS-1$
             }
-        } catch (UnimplementedOperationException operationException) {
+        } catch (SQLException operationException) {
             // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage65"), e); //$NON-NLS-1$
