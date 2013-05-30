@@ -13,11 +13,14 @@
 package org.talend.designer.codegen;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentCompilations;
+import org.talend.core.model.process.Element;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -40,6 +43,16 @@ public class RefreshTemplatesAction extends Action {
      */
     @Override
     public void run() {
+        // TDI-25866:In case select a component and sctrl+shift+f3,need clean its componentSetting view
+        IComponentSettingsView viewer = (IComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().findView(IComponentSettingsView.ID);
+
+        Element oldComponent = null;
+
+        if (viewer != null) {
+            oldComponent = viewer.getElement();
+            viewer.cleanDisplay();
+        }
         ComponentCompilations.deleteMarkers();
         ComponentsFactoryProvider.getInstance().resetCache();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
@@ -48,6 +61,10 @@ public class RefreshTemplatesAction extends Action {
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
+
+        if (oldComponent != null) {
+            viewer.setElement(oldComponent);
+        }
     }
 
 }
