@@ -434,17 +434,6 @@ private class TalendException extends java.lang.Exception {
 			}
 		}
 		%>
-		} else {
-		<%
-		if (isRunInMultiThread ) {
-		%>
-		((java.util.Map)threadLocal.get()).put("status", "failure");
-		<%
-		 } else {%>
-		 status = "failure";
-		 <%
-		 }
-		 %>
 		}
 	}
 }
