@@ -123,8 +123,6 @@ public abstract class JobScriptsManager {
     protected int tracePort;
 
     private File tempExportFolder;
-    
-    private boolean filterUnixCmd;
 
     public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
             int tracePort) {
@@ -306,10 +304,6 @@ public abstract class JobScriptsManager {
             }
         }
         
-        if (isFilterUnixCmd() && (environment.equals(ALL_ENVIRONMENTS) || environment.equals(UNIX_ENVIRONMENT))) {
-            unixCmd = filterUnixCmd(unixCmd);
-        }
-
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
@@ -324,23 +318,6 @@ public abstract class JobScriptsManager {
         return list;
     }
     
-    /**
-     * 
-     * DOC wf Comment method "filterUnixCmd". for the bug TDI-24935, need add "#!/bin/sh" in unixCmd's starting
-     * position.
-     * 
-     * @param unixCmd
-     * @return
-     */
-    private String filterUnixCmd(String unixCmd) {
-        if (unixCmd == null) {
-            return unixCmd;
-        }
-        StringBuffer strBuffer = new StringBuffer(unixCmd);
-        strBuffer.insert(0, "#!/bin/sh\n");
-        return strBuffer.toString();
-    }
-
     private String getSettingContextParametersValue() {
         String contextParameterValues = "";//$NON-NLS-1$
         List<ContextParameterType> jobContextValues = getContextEditableResultValuesList();
@@ -921,11 +898,4 @@ public abstract class JobScriptsManager {
         return FileConstants.ZIP_FILE_SUFFIX;
     }
     
-    public boolean isFilterUnixCmd() {
-        return filterUnixCmd;
-    }
-
-    public void setFilterUnixCmd(boolean filterUnixCmd) {
-        this.filterUnixCmd = filterUnixCmd;
-    }
 }
