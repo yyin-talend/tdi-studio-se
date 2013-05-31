@@ -39,9 +39,9 @@ else
 {
 	%>
 
-    java.lang.Class.forName("com.paraccel.Driver");
+    java.lang.Class.forName("org.postgresql.Driver");
     
-    String url_<%=cid %> = "jdbc:paraccel://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+    String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
     
     String dbUser_<%=cid %> = <%=dbuser%>;
     

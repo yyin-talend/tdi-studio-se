@@ -26,14 +26,14 @@ imports="
 					java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
 					java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(output_<%=cid %>,true));
 				}				
-			com.paraccel.Driver.setLogLevel(<%= logLevel %>);
+			org.postgresql.Driver.setLogLevel(<%= logLevel %>);
 
-			String url_<%=cid %> = "jdbc:paraccel://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> +"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3";
+			String url_<%=cid %> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> +"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3";
 <%
 		}
 		
 		public String getDirverClassName(INode node){
-			return "com.paraccel.Driver";
+			return "org.postgresql.Driver";
 		}
 		
 		public void createConnection(INode node) {

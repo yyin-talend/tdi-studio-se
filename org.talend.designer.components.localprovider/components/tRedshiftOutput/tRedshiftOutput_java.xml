@@ -28,7 +28,7 @@
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
     <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW"
-    			NOT_SHOW_IF="(DIE_ON_ERROR == 'true')"/>
+    			NOT_SHOW_IF="(DATA_ACTION = 'true' AND EXTENDINSERT == 'true') OR (DIE_ON_ERROR == 'true')"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -218,6 +218,31 @@
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
+  	<PARAMETER
+    	NAME="EXTENDINSERT"
+    	FIELD="CHECK"
+    	NUM_ROW="8"
+    	SHOW_IF="DATA_ACTION == 'INSERT'"
+    >
+    	<DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="8"
+    	SHOW_IF="DATA_ACTION == 'INSERT'"
+    >
+    	<DEFAULT>(Not compatible with reject links)</DEFAULT>
+    </PARAMETER>
+	<PARAMETER
+      NAME="NB_ROWS_PER_INSERT"
+      FIELD="TEXT"
+      NUM_ROW="8"
+      REQUIRED="true"
+      SHOW_IF="(EXTENDINSERT == 'true' AND DATA_ACTION == 'INSERT')"
+    >
+      <DEFAULT>100</DEFAULT>
+    </PARAMETER>
   	    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
@@ -295,7 +320,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.paraccel/lib/paraccel-jdbc.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-Redshift" MODULE="postgresql-8.4-703.jdbc4.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.postgresql/lib/postgresql-8.4-703.jdbc4.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
