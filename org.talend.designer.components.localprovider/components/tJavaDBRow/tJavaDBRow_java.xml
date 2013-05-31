@@ -265,7 +265,6 @@
        <IMPORT NAME="Driver-JavaDB" MODULE="derby.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derby.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-JavaDB" MODULE="derbyclient.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbyclient.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-JavaDB" MODULE="derbynet.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.derby/lib/derbynet.jar" REQUIRED="true"/>
-       <IMPORT NAME="Driver-JavaDB" MODULE="db2jcc.jar" REQUIRED="true"/>
      </IMPORTS>
   </CODEGENERATION>
 
