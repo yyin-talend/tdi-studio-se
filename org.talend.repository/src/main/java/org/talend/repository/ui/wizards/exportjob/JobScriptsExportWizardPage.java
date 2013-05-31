@@ -1258,8 +1258,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             contextEditableResultValuesList = manager.getContextEditableResultValuesList();
         }
         manager = createJobScriptsManager();
-        // when export job, need handle unix command
-        manager.setFilterUnixCmd(true);
 
         // Save dirty editors if possible but do not stop if not all are saved
         // delete because it have been occurred before
