@@ -334,8 +334,8 @@
 
    <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
-       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
+       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
+       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
    </CODEGENERATION>
 
