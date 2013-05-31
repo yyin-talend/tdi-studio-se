@@ -487,6 +487,12 @@ public abstract class JobScriptsManager {
         PrintWriter pw = null;
         try {
 
+            // add for bug TDI-24935, add a string on comPrimary's start position.
+            if (cmdPrimary != null && UNIX_LAUNCHER.equals(fileName)) {
+                StringBuffer strBuffer = new StringBuffer(cmdPrimary);
+                strBuffer.insert(0, "#!/bin/sh\n");
+                cmdPrimary = strBuffer.toString();
+            }
             File file = new File(tmpFold, process.getProperty().getLabel() + "_" + fileName); //$NON-NLS-1$
             file.createNewFile();
             pw = new PrintWriter(new FileOutputStream(file));
