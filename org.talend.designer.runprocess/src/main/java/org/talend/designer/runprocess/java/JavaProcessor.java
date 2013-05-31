@@ -499,7 +499,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * @return
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	private String formatCode(String processCode) {
+    private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
         // we cannot make calls to Ui in headless mode
@@ -894,9 +894,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
 
         StringBuffer libPath = new StringBuffer();
-        if (!win32 && exportingJob) {
-            libPath.append("\"");
-        }
         File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
         File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
         if (jarFiles != null && jarFiles.length > 0) {
@@ -965,9 +962,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 exportJar += (!win32 && exportingJob ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
-        if (!win32 && exportingJob) {
-            exportJar = exportJar + "\"";
-        }
         // TDI-17845:can't run job correctly in job Conductor
         String libFolder = ""; //$NON-NLS-1$
         // libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
@@ -1025,8 +1019,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         } else {
             List<String> list = new ArrayList<String>();
             if (":".equals(classPathSeparator)) { //$NON-NLS-1$
-                list.add("cd \"`dirname \\\"$0\\\"`\"\n"); //$NON-NLS-1$
-                list.add("ROOT_PATH=\"`pwd`\"\n"); //$NON-NLS-1$
+                list.add("cd `dirname $0`\n"); //$NON-NLS-1$ 
+                list.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$ 
             } else {
                 list.add("%~d0\r\n"); //$NON-NLS-1$
                 list.add("cd %~dp0\r\n"); //$NON-NLS-1$
@@ -1283,38 +1277,39 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     if (null != uniqueName && null != wsdlContent && !wsdlContent.trim().isEmpty()) {
 
                         // configure decoding and uncompressing
-                        InputStream wsdlStream = new BufferedInputStream(new InflaterInputStream(new Base64InputStream(new ByteArrayInputStream(
-                                wsdlContent.getBytes()))));
+                        InputStream wsdlStream = new BufferedInputStream(new InflaterInputStream(new Base64InputStream(
+                                new ByteArrayInputStream(wsdlContent.getBytes()))));
 
-                        
                         if (!wsdlsPackageFolder.exists()) {
                             wsdlsPackageFolder.create(true, true, null);
                         }
                         // generate WSDL file
-                        if(checkIsZipStream(wsdlStream)) {
-                        	
-	                        ZipInputStream zipIn = new ZipInputStream(wsdlStream);
-	                        ZipEntry zipEntry=null;
-	                        
-	                        while ((zipEntry=zipIn.getNextEntry())!=null) {
-	                        	String outputName=zipEntry.getName();
-	                        	if(outputName.equals("main.wsdl")) { //$NON-NLS-1$
-	                        		outputName=uniqueName+".wsdl"; //$NON-NLS-1$
-	                        	}
-	                        	IFile wsdlFile = wsdlsPackageFolder.getFile(outputName); //$NON-NLS-1$
-	                        	//cause create file will do a close. add a warp to ignore close.
-	                        	InputStream unCloseIn = new FilterInputStream(zipIn) {
-	                        		public void close() throws IOException {};
-	                        	};
-	                        	
-                    			wsdlFile.create(unCloseIn, true, null);
-                    			zipIn.closeEntry();
-	                        }
-	                        zipIn.close();
-                        }else {
-                        	IFile wsdlFile = wsdlsPackageFolder.getFile(uniqueName + ".wsdl"); //$NON-NLS-1$
-                        	wsdlFile.create(wsdlStream, true, null);
-						}
+                        if (checkIsZipStream(wsdlStream)) {
+
+                            ZipInputStream zipIn = new ZipInputStream(wsdlStream);
+                            ZipEntry zipEntry = null;
+
+                            while ((zipEntry = zipIn.getNextEntry()) != null) {
+                                String outputName = zipEntry.getName();
+                                if (outputName.equals("main.wsdl")) { //$NON-NLS-1$
+                                    outputName = uniqueName + ".wsdl"; //$NON-NLS-1$
+                                }
+                                IFile wsdlFile = wsdlsPackageFolder.getFile(outputName); //$NON-NLS-1$
+                                // cause create file will do a close. add a warp to ignore close.
+                                InputStream unCloseIn = new FilterInputStream(zipIn) {
+
+                                    public void close() throws IOException {
+                                    };
+                                };
+
+                                wsdlFile.create(unCloseIn, true, null);
+                                zipIn.closeEntry();
+                            }
+                            zipIn.close();
+                        } else {
+                            IFile wsdlFile = wsdlsPackageFolder.getFile(uniqueName + ".wsdl"); //$NON-NLS-1$
+                            wsdlFile.create(wsdlStream, true, null);
+                        }
                     }
                 }
             }
@@ -1324,8 +1319,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         } catch (IOException e) {
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        }
 
         boolean samEnabled = false;
         boolean slEnabled = false;
@@ -1381,26 +1376,26 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
-	/**
-	 * Check current stream whether zip stream by check header signature.
-	 * Zip  header signature = 0x504B 0304(big endian)
-	 * @param wsdlStream the wsdl stream. <b>Must Support Mark&Reset . Must at beginning of stream.</b>
-	 * @return true, if is zip stream.
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private boolean checkIsZipStream(InputStream wsdlStream) throws IOException {
-		boolean isZip=false;
-		byte[] headerB=new byte[4];
-		wsdlStream.mark(4);
-		wsdlStream.read(headerB);
-		int header=ByteBuffer.wrap(headerB).getInt();
-		
-		if(header==0x504B0304) {
-			isZip=true;
-		}
-		wsdlStream.reset();
-		return isZip;
-	}
+    /**
+     * Check current stream whether zip stream by check header signature. Zip header signature = 0x504B 0304(big endian)
+     * 
+     * @param wsdlStream the wsdl stream. <b>Must Support Mark&Reset . Must at beginning of stream.</b>
+     * @return true, if is zip stream.
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private boolean checkIsZipStream(InputStream wsdlStream) throws IOException {
+        boolean isZip = false;
+        byte[] headerB = new byte[4];
+        wsdlStream.mark(4);
+        wsdlStream.read(headerB);
+        int header = ByteBuffer.wrap(headerB).getInt();
+
+        if (header == 0x504B0304) {
+            isZip = true;
+        }
+        wsdlStream.reset();
+        return isZip;
+    }
 
     private void copyEsbConfigFile(File esbConfigsSourceFolder, IFolder esbConfigsTargetFolder, String configFile) {
         File esbConfig = new File(esbConfigsSourceFolder, configFile);
