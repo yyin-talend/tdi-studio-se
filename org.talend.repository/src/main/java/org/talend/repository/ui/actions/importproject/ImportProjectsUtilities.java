@@ -428,7 +428,7 @@ public class ImportProjectsUtilities {
     }
 
     private static String getMDMDemoPluginId() {
-        if (!PluginChecker.isPluginLoaded("org.talend.mdm.workbench.enterprise")) {//CE //$NON-NLS-1$ 
+        if (PluginChecker.isPluginLoaded("org.talend.rcp.branding.tombundle")) {//CE //$NON-NLS-1$ 
             return "org.talend.mdm.repository"; //$NON-NLS-1$
         } else {// EE
             return "org.talend.mdm.repository.enterprise"; //$NON-NLS-1$
