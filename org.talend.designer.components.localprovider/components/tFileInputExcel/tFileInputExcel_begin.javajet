@@ -120,14 +120,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         Object source_<%=cid %> =<%=fileName%>;
         final jxl.Workbook workbook_<%= cid %>;
         
-        if(source_<%=cid %> instanceof java.io.InputStream){
-        	workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream((java.io.InputStream)source_<%=cid %>), workbookSettings_<%= cid %>);
-        }else if(source_<%=cid %> instanceof String){
-        	workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
-        							source_<%=cid %>.toString())), workbookSettings_<%= cid %>);
-        }else{
-        	workbook_<%= cid %> = null;
-        	throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
+        java.io.InputStream toClose_<%=cid%> = null;
+        try {
+            if(source_<%=cid %> instanceof java.io.InputStream){
+        		toClose_<%=cid%> = (java.io.InputStream)source_<%=cid %>;
+        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(toClose_<%=cid%>), workbookSettings_<%= cid %>);
+            }else if(source_<%=cid %> instanceof String){
+        		toClose_<%=cid%> = new java.io.FileInputStream(source_<%=cid %>.toString());
+        		workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(toClose_<%=cid%>), workbookSettings_<%= cid %>);
+            }else{
+            	workbook_<%= cid %> = null;
+            	throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
+            } 
+        } finally {
+			if(toClose_<%=cid%>!=null) {
+				toClose_<%=cid%>.close();
+    		}
         }
         try {
 <%      
@@ -501,9 +509,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		Object source_<%=cid %> = <%=fileName%>;
 		org.apache.poi.xssf.usermodel.XSSFWorkbook workbook_<%=cid%> = null;
 		
-		if(source_<%=cid %> instanceof java.io.InputStream || source_<%=cid %> instanceof String){
-			workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook(<%=fileName%>);
-		}else{
+		if(source_<%=cid %> instanceof String){
+			workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook((String)source_<%=cid %>);
+		} else if(source_<%=cid %> instanceof java.io.InputStream) {
+     		workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook((java.io.InputStream)source_<%=cid %>);
+		} else{
 			workbook_<%=cid%> = null;
 			throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
 		}
