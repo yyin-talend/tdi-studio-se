@@ -110,11 +110,11 @@
    <extension
          point="org.talend.core.repository.repository_node_provider">
       <repositoryNode
-            alias="repository.metadataFileFTP.alias"
+            alias="%repository.metadataFileFTP.alias"
             folder="metadata/FTPconnections"
             isResouce="true"
             key="repository.metadataFileFTP"
-            label="FTP"
+            label="%repository.metadataFileFTP"
             ordinal="36"
             parentNodeType="METADATA"
             products="DI"
