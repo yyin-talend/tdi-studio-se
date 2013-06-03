@@ -135,6 +135,7 @@
 	  FIELD="CHECK"
       NUM_ROW="60"
       REQUIRED="true"
+	  SHOW_IF="SPECIFY_DATASOURCE_ALIAS=='false'"
     >
     </PARAMETER>
 
@@ -143,7 +144,7 @@
 	  FIELD="TEXT"
       NUM_ROW="60"
       REQUIRED="true"
-	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+	  SHOW_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')"
     >
 	<DEFAULT></DEFAULT>
     </PARAMETER>
@@ -152,6 +153,7 @@
       FIELD="LABEL"
       NUM_ROW="63"
 	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_SHARED_CONNECTION=='false'"
     >
     	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
     </PARAMETER>
@@ -161,6 +163,7 @@
       NUM_ROW="64"
       REQUIRED="true"
 	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_SHARED_CONNECTION=='false'"
     >
     </PARAMETER>
 	<PARAMETER
@@ -169,7 +172,7 @@
       NUM_ROW="65"
       REQUIRED="true"
 	  GROUP="DATASOURCE"
-	  SHOW_IF="SPECIFY_DATASOURCE_ALIAS=='true'"
+	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_SHARED_CONNECTION=='false')"
     >
 	<DEFAULT>""</DEFAULT>
     </PARAMETER>
