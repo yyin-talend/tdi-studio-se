@@ -1884,6 +1884,15 @@
             name="ChangeHadoopVersionsOfReferenceComponentsMigrationTask"
             version="5.3.0">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="5.3.0"
+            class="org.talend.repository.model.migration.ChangeExtendedInsert2FALSE4tRedshiftOutput"
+            description="change extended insert checkbox to false for tRedshiftOutput"
+            id="org.talend.repository.model.migration.ChangeExtendedInsert2FALSE4tRedshiftOutput"
+            name="ChangeExtendedInsert2FALSE4tRedshiftOutput"
+            version="5.3.1">
+        </projecttask>
    </extension>
    
    <extension
