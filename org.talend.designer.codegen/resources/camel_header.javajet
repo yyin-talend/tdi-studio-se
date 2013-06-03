@@ -536,6 +536,10 @@ if(hasCXFComponentConsumerWithCXFMESSAGE){
 				cxfEndpoint.getBus().getInFaultInterceptors().add(new org.apache.cxf.interceptor.DocLiteralInInterceptor() {
 					@Override
 					public void handleMessage(org.apache.cxf.message.Message message) {
+						// if has List content, then return
+						if(message.getContent(java.util.List.class) != null){
+							return;
+						}
 						if (isFaultMessage(message)) {
 							org.apache.cxf.message.Message inFaultMessage = message
 									.getExchange().getInFaultMessage();
@@ -555,6 +559,13 @@ if(hasCXFComponentConsumerWithCXFMESSAGE){
 							return false;
 						}
 						org.apache.cxf.binding.soap.SoapMessage message = (org.apache.cxf.binding.soap.SoapMessage) msg;
+						
+						//if it's not a CXF_MESSAGE, then return false
+						Object dataFormat = message.getContextualProperty(org.apache.camel.component.cxf.common.message.CxfConstants.DATA_FORMAT_PROPERTY);
+						if(org.apache.camel.component.cxf.DataFormat.CXF_MESSAGE != dataFormat){
+							return false;
+						}
+						
 						javax.xml.stream.XMLStreamReader xmlReader = message
 								.getContent(javax.xml.stream.XMLStreamReader.class);
 						if (xmlReader == null) {
