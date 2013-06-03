@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class DataBufferCache {
+public class DataBufferCache2 {
 
     // private static DataBufferCache instance = new DataBufferCache();
 
@@ -34,11 +34,11 @@ public class DataBufferCache {
 
     private Buffer currentWriteBuff = null;
 
-    private DataBufferCache() {
+    private DataBufferCache2() {
     }
 
-    public static DataBufferCache getInstance() {
-        return new DataBufferCache();
+    public static DataBufferCache2 getInstance() {
+        return new DataBufferCache2();
     }
 
     public void setIsEnd() {
@@ -74,7 +74,7 @@ public class DataBufferCache {
         return this.currentReadBuff.hasNext();
     }
 
-    public Map<String, String> readData() {
+    public Map<String,Map<String,String>> readData() {
         return this.currentReadBuff.Next();
     }
 
@@ -99,7 +99,7 @@ public class DataBufferCache {
         }
     }
 
-    public void writeData(Map<String, String> map) {
+    public void writeData(Map<String,Map<String,String>> map) {
         if (currentWriteBuff == null) {
             currentWriteBuff = new Buffer();
         }
@@ -135,7 +135,7 @@ public class DataBufferCache {
 
     class Buffer {
 
-        private LinkedList<Map<String, String>> buffer = null;
+        private LinkedList<Map<String,Map<String,String>>> buffer = null;
 
         private boolean isForRead = false; // false for write, true for read
 
@@ -155,11 +155,11 @@ public class DataBufferCache {
             return buffer.size() > 0;
         }
 
-        public Map<String, String> Next() {
+        public Map<String,Map<String,String>> Next() {
             return buffer.remove();
         }
 
-        public void add(Map<String, String> o) {
+        public void add(Map<String,Map<String,String>> o) {
             this.buffer.add(o);
         }
 
@@ -172,8 +172,8 @@ public class DataBufferCache {
             buffer = null;
         }
 
-        private LinkedList<Map<String, String>> createNewBuffer() {
-            return new LinkedList<Map<String, String>>();
+        private LinkedList<Map<String,Map<String,String>>> createNewBuffer() {
+            return new LinkedList<Map<String,Map<String,String>>>();
         }
     }
 }
