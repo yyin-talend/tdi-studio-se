@@ -358,6 +358,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
     protected Color previewColor = null;
 
+    private boolean needInitProposals = false;
+
     /**
      * doc
      */
@@ -1864,15 +1866,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         }
 
         cellEditor.setOwnerId(id.toString());
-
-        StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
-
-        styledTextHandler.getStyledText().setEnabled(true);
-
-        ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
-        expressionProposalStyledText.setContentProposalProvider(this.expressionProposalProvider);
-        // System.out.println("init expression
-        // proposal:"+this.expressionProposal);
+        if (!needInitProposals) {
+            StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
+            styledTextHandler.getStyledText().setEnabled(true);
+            ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
+            expressionProposalStyledText.setContentProposalProvider(this.expressionProposalProvider);
+        }
     }
 
     /**
@@ -2002,7 +2001,6 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 // "'");
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
                         .getCurrentModifiedBean();
-                boolean needInit = false;
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                     if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
                         IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
@@ -2015,14 +2013,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                         cellEditor.setExpressionType(typeToGenerate);
                         // TDI-23838 : High CPU and hang when working on "Var" section on MacOS
                         if ("".equals(currentModifiedEntry.getExpression()) || currentModifiedEntry.getExpression() == null) {
-                            needInit = true;
+                            needInitProposals = true;
                         }
                     }
                 }
 
-                if (!needInit) {
-                    initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
-                }
+                initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
 
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
