@@ -104,6 +104,7 @@ public class ChangeConnTextCommand extends Command {
             connection.getSource().getProcess().removeUniqueConnectionName(newName);
             connection.getSource().getProcess().addUniqueConnectionName(oldName);
         }
+        ConnectionListController.renameConnectionInElement(newName, oldName, connection.getSource());
 
         IExternalNode externalNode = connection.getTarget().getExternalNode();
         if (externalNode != null) {
