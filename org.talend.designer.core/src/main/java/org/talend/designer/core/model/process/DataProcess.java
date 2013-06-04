@@ -180,7 +180,20 @@ public class DataProcess implements IGeneratingProcess {
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
                 if (sourceParam.getValue() instanceof List) {
-                    targetParam.setValue(new ArrayList((List) sourceParam.getValue()));
+                    List sourceList = (List) sourceParam.getValue();
+                    List targetList = new ArrayList();
+                    // if HashMap in List ,need clone deeply
+                    for (Object map : sourceList) {
+                        if (map instanceof HashMap) {
+                            HashMap oldMap = (HashMap) map;
+                            targetList.add(oldMap.clone());
+                        }
+                    }
+                    if (targetList.size() > 0) {
+                        targetParam.setValue(targetList);
+                    } else {
+                        targetParam.setValue(new ArrayList(sourceList));
+                    }
                 }
                 if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
 
