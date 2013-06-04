@@ -156,13 +156,15 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
         String[][] entryNamesAndValues = { { Locale.ENGLISH.getDisplayLanguage(Locale.ENGLISH), Locale.ENGLISH.getLanguage() },
                 { Locale.FRENCH.getDisplayLanguage(Locale.FRENCH), Locale.FRENCH.getLanguage() },
-                { Locale.CHINESE.getDisplayLanguage(Locale.CHINESE), Locale.CHINESE.getLanguage() },
+                { Locale.CHINESE.getDisplayLanguage(Locale.CHINESE), "zh_CN" },
                 { Locale.GERMAN.getDisplayLanguage(Locale.GERMAN), Locale.GERMAN.getLanguage() },
                 { Locale.JAPANESE.getDisplayLanguage(Locale.JAPANESE), Locale.JAPANESE.getLanguage() },
-                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ 
+                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() },
+                { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 { spanish, "es" }, { russian, "ru" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
-                { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ /$NON-NLS-7$ 
+                { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" },
+                { "Romanian", "ro" }, { "Netherlands", "nl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ /$NON-NLS-7$ 
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR,
                 Messages.getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
