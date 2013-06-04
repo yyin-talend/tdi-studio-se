@@ -82,7 +82,6 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
@@ -90,15 +89,12 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.JobletDocumentationItem;
 import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.TalendPropertiesUtil;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.documentation.IDocumentationService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
 import org.talend.repository.imports.TreeBuilder.ProjectNode;
@@ -185,6 +181,7 @@ class ImportItemWizardPage extends WizardPage {
         setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_IMPORT_WIZ));
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite workArea = new Composite(parent, SWT.NONE);
         setControl(workArea);
@@ -232,12 +229,15 @@ class ImportItemWizardPage extends WizardPage {
 
         errorsList.setContentProvider(new IStructuredContentProvider() {
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return errors.toArray();
             }
@@ -296,6 +296,7 @@ class ImportItemWizardPage extends WizardPage {
 
         viewer.setContentProvider(new ITreeContentProvider() {
 
+            @Override
             public Object[] getChildren(Object parentElement) {
                 if (parentElement instanceof IContainerNode) {
                     return ((IContainerNode) parentElement).getChildren().toArray();
@@ -303,11 +304,13 @@ class ImportItemWizardPage extends WizardPage {
                 return null;
             }
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 // return getValidItems();
                 return repositoryUtil.getTreeViewInput().toArray();
             }
 
+            @Override
             public boolean hasChildren(Object element) {
                 if (element instanceof IContainerNode) {
                     return ((IContainerNode) element).hasChildren();
@@ -315,14 +318,17 @@ class ImportItemWizardPage extends WizardPage {
                 return false;
             }
 
+            @Override
             public Object getParent(Object element) {
                 return null;
             }
 
+            @Override
             public void dispose() {
 
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
@@ -361,6 +367,7 @@ class ImportItemWizardPage extends WizardPage {
         viewer.setInput(this);
         viewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
@@ -559,6 +566,7 @@ class ImportItemWizardPage extends WizardPage {
         }
         directoryPathField.addTraverseListener(new TraverseListener() {
 
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
@@ -579,6 +587,7 @@ class ImportItemWizardPage extends WizardPage {
 
         archivePathField.addTraverseListener(new TraverseListener() {
 
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
@@ -724,6 +733,7 @@ class ImportItemWizardPage extends WizardPage {
         try {
             getContainer().run(true, true, new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) {
 
                     monitor.beginTask(DataTransferMessages.WizardProjectsImportPage_SearchingMessage, 100);
@@ -782,6 +792,7 @@ class ImportItemWizardPage extends WizardPage {
         final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 repositoryUtil.clearAllData();
                 items.addAll(totalItemRecords = repositoryUtil.populateItems(manager, overwrite, monitor));
@@ -930,6 +941,7 @@ class ImportItemWizardPage extends WizardPage {
         List<ItemRecord> list = new ArrayList<ItemRecord>(checkedElements);
         Collections.sort(list, new Comparator<ItemRecord>() {
 
+            @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
                 return TreeBuilder.compare(o1, o2);
             }
@@ -959,13 +971,12 @@ class ImportItemWizardPage extends WizardPage {
         final List<ItemRecord> checkedItemRecords = getCheckedElements();
         itemRecords.addAll(checkedItemRecords);
         itemRecords.addAll(getHadoopSubrecords(itemRecords));
+
         for (ItemRecord itemRecord : itemRecords) {
             Item item = itemRecord.getProperty().getItem();
             if (item instanceof JobletProcessItem) {
                 needToRefreshPalette = true;
             }
-
-            saveDocumention(item);
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (item.getState().isLocked()) {
@@ -991,6 +1002,7 @@ class ImportItemWizardPage extends WizardPage {
         try {
             IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     IPath destinationPath = null;
                     String contentType = "";
@@ -1033,30 +1045,6 @@ class ImportItemWizardPage extends WizardPage {
         selectedItems = null;
         itemRecords.clear();
         return true;
-    }
-
-    /**
-     * DOC Administrator Comment method "saveDocumention".
-     * 
-     * @param item
-     */
-    private void saveDocumention(Item item) {
-        if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
-            boolean isAutoSaveDocumentation = CorePlugin.getDefault().getPreferenceStore()
-                    .getBoolean(ITalendCorePrefConstants.DOC_GENERATION);
-            if (isAutoSaveDocumentation) {
-                if (GlobalServiceRegister.getDefault() != null
-                        && GlobalServiceRegister.getDefault().isServiceRegistered(IDocumentationService.class)) {
-                    IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
-                            IDocumentationService.class);
-                    try {
-                        service.createNodeDocumentationItemFromItem(item);
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            }
-        }
     }
 
     public boolean performCancel() {
