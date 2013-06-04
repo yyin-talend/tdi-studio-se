@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -52,7 +51,6 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
@@ -65,16 +63,13 @@ import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.xml.XmlArray;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.datatools.xml.utils.XPathPopulationUtil;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.json.ui.preview.JSONShadowProcessPreview;
 import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.ui.wizards.extraction.ExtractionFieldsWithJSONXPathEditorView;
@@ -225,6 +220,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     }
 
+    @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
         // adapt all the fields to enabled
@@ -323,6 +319,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         if (WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
             schemaTargetGroup.addListener(SWT.Paint, new Listener() {
 
+                @Override
                 public void handleEvent(Event event) {
                     Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), schemaTargetGroup, new Point(0, 0));
                     linker.setOffset(offsetPoint);
@@ -352,6 +349,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         if (WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
             loopTableEditorComposite.addListener(SWT.Paint, new Listener() {
 
+                @Override
                 public void handleEvent(Event event) {
                     Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), loopTableEditorComposite, new Point(0,
                             0));
@@ -377,6 +375,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         if (WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
             fieldTableEditorComposite.addListener(SWT.Paint, new Listener() {
 
+                @Override
                 public void handleEvent(Event event) {
                     Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), fieldTableEditorComposite, new Point(
                             0, 0));
@@ -512,7 +511,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         clearPreview();
 
         // if no file, the process don't be executed
-        if (getConnection().getJSONFilePath() == null || getConnection().getJSONFilePath().equals("")) { //$NON-NLS-1$
+        if (getConnection().getJSONFilePath() == null || !(new File(getConnection().getJSONFilePath()).exists())
+                && JSONUtil.tempJSONXsdPath == null) {
             previewInformationLabel.setText("   " + "The file path must be specified");
             return;
         }
@@ -554,6 +554,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
                     clearPreview();
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             handleErrorOutput(outputComposite, tabFolder, outputTabItem);
 
@@ -608,6 +609,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         // add listener to tableMetadata (listen the event of the toolbars)
         fieldsTableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
+            @Override
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
             }
@@ -615,6 +617,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
         fieldsTableEditorView.getExtendedTableModel().addModifiedBeanListener(new IModifiedBeanListener<SchemaTarget>() {
 
+            @Override
             public void handleEvent(ModifiedBeanEvent<SchemaTarget> event) {
                 checkFieldsValue();
                 // updateStatus(IStatus.OK, null);
@@ -716,12 +719,10 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals("Wait")) { //$NON-NLS-1$
                     previewButton.setText("Wait");
-                    if (getConnection().getJSONFilePath() != null
-                            && getConnection().getJSONFilePath().length() != 0 //$NON-NLS-1$
-                            && getConnection().getSchema() != null
-                            && !getConnection().getSchema().isEmpty()
+                    if (getConnection().getJSONFilePath() != null && getConnection().getJSONFilePath().length() != 0
+                            && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
                             && (getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
-                            && (getConnection().getSchema().get(0)).getAbsoluteXPathQuery().length() != 0 //$NON-NLS-1$
+                            && (getConnection().getSchema().get(0)).getAbsoluteXPathQuery().length() != 0
                             && (getConnection().getSchema().get(0)).getSchemaTargets() != null
                             && (getConnection().getSchema().get(0)).getSchemaTargets().size() != 0) {
                         refreshPreview();
@@ -735,6 +736,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
                             clearPreview();
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     handleErrorOutput(outputComposite, tabFolder, outputTabItem);
 
@@ -807,8 +809,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             String pathStr = ""; //$NON-NLS-1$
 
             try {
-                if (tempJSONXsdPath != null && getConnection().getFileContent() != null
-                        && getConnection().getFileContent().length > 0) {
+                if (tempJSONXsdPath != null) {
                     pathStr = tempJSONXsdPath;
                 } else {
                     pathStr = getConnection().getJSONFilePath();
@@ -896,9 +897,11 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
                         connectionItem.getConnection().getContextName());
                 pathStr = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
             }
-            if (!new File(pathStr).exists() && getConnection().getFileContent() != null
-                    && getConnection().getFileContent().length > 0) {
-                initFileContent();
+
+            // diffrent from xml , we do not save the content in item , find it in wizard temp
+            if (pathStr == null || !new File(pathStr).exists()) {
+                // initFileContent();
+                tempJSONXsdPath = JSONUtil.tempJSONXsdPath;
                 pathStr = tempJSONXsdPath;
             }
             String tempJson = this.wizard.getTempJsonPath();
@@ -978,58 +981,63 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
      * 
      * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
      */
+    @Override
     public void refresh() {
         refreshPreview();
     }
 
     private void initFileContent() {
-        byte[] bytes = getConnection().getFileContent();
-        Project project = ProjectManager.getInstance().getCurrentProject();
-        IProject fsProject = null;
-        try {
-            fsProject = ResourceModelUtils.getProject(project);
-        } catch (PersistenceException e2) {
-            ExceptionHandler.process(e2);
-        }
-        if (fsProject == null) {
-            return;
-        }
-        String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
-        String fileName = "";
+        // byte[] bytes = getConnection().getFileContent();
+        // Project project = ProjectManager.getInstance().getCurrentProject();
+        // IProject fsProject = null;
+        // try {
+        // fsProject = ResourceModelUtils.getProject(project);
+        // } catch (PersistenceException e2) {
+        // ExceptionHandler.process(e2);
+        // }
+        // if (fsProject == null) {
+        // return;
+        // }
+        // String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp" + File.separator +
+        // "jsonwizard"
+        // + File.separator;
+        // String fileName = "";
 
-        String pathStr = getConnection().getJSONFilePath();
-        if (isContextMode()) {
-            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
-            pathStr = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
-        }
-        if (pathStr != null) {
-            fileName = JSONUtil.TMP_JSON_FILE;
-        }
-        File temfile = new File(temPath + File.separator + fileName);
-        if (!temfile.exists()) {
-            try {
-                temfile.createNewFile();
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
-            }
-        }
+        // String pathStr = getConnection().getJSONFilePath();
+        // if (isContextMode()) {
+        // ContextType contextType =
+        // ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
+        // pathStr = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
+        // }
+        // if (pathStr != null) {
+        // fileName = JSONUtil.TMP_JSON_FILE;
+        // }
+        // tempJSONXsdPath = temPath + JSONUtil.TMP_JSON_FILE;
+        // if (!temfile.exists()) {
+        // try {
+        // temfile.createNewFile();
+        // } catch (IOException e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
 
-        FileOutputStream outStream;
-        try {
-            outStream = new FileOutputStream(temfile);
-            outStream.write(bytes);
-            outStream.close();
-        } catch (FileNotFoundException e1) {
-            ExceptionHandler.process(e1);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-        tempJSONXsdPath = temfile.getPath();
-        if (isContextMode()) {
-            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-            tempJSONXsdPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper
-                    .getOriginalValue(contextType, tempJSONXsdPath));
-        }
+        // FileOutputStream outStream;
+        // try {
+        // outStream = new FileOutputStream(temfile);
+        // outStream.write(bytes);
+        // outStream.close();
+        // } catch (FileNotFoundException e1) {
+        // ExceptionHandler.process(e1);
+        // } catch (IOException e) {
+        // ExceptionHandler.process(e);
+        // }
+        // tempJSONXsdPath = temfile.getPath();
+        // if (isContextMode()) {
+        // ContextType contextType =
+        // ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+        // tempJSONXsdPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper
+        // .getOriginalValue(contextType, tempJSONXsdPath));
+        // }
         // this.treePopulator.populateTree(tempJSONXsdPath, treeNode);
     }
 

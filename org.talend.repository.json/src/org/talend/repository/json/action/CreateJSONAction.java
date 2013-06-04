@@ -96,6 +96,7 @@ public class CreateJSONAction extends AbstractCreateAction {
         setEnabled(true);
     }
 
+    @Override
     public Class getClassForDoubleClick() {
         return JSONFileConnectionItem.class;
     }
@@ -117,18 +118,25 @@ public class CreateJSONAction extends AbstractCreateAction {
         }
 
         WizardDialog wizardDialog = null;
-        if (isToolbar()) {
-            init(repositoryNode);
-            JSONWizard hdfs = new JSONWizard(PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames());
-            // hdfs.setToolBar(true);
-            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), hdfs);
-        } else {
-            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new JSONWizard(PlatformUI.getWorkbench(),
-                    creation, repositoryNode, getExistingNames()));
+        JSONWizard jsonWizard = null;
+        try {
+            if (isToolbar()) {
+                init(repositoryNode);
+                jsonWizard = new JSONWizard(PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames());
+                // hdfs.setToolBar(true);
+                wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), jsonWizard);
+            } else {
+                jsonWizard = new JSONWizard(PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames());
+                wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), jsonWizard);
+            }
+            wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
+            wizardDialog.create();
+            wizardDialog.open();
+        } finally {
+            if (jsonWizard != null) {
+                jsonWizard.deleteTemFile();
+            }
         }
-        wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
-        wizardDialog.create();
-        wizardDialog.open();
 
     }
 

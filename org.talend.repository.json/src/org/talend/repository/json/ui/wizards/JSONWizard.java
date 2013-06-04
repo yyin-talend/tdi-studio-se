@@ -157,7 +157,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public JSONWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -388,7 +388,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
         if (finalPage == null) {
             finalPage = propertiesWizardPage;
         }
-        deleteTemFile();
+        // deleteTemFile();
         if (connection.isInputModel()) {
 
             if (finalPage instanceof JSONFileWizardPage) {
@@ -423,6 +423,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
@@ -526,6 +527,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             };
             IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     IWorkspace workspace = ResourcesPlugin.getWorkspace();
                     try {
@@ -577,7 +579,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             connectionItem.getProperty().setPurpose(this.originalPurpose);
             connectionItem.getProperty().setStatusCode(this.originalStatus);
         }
-        deleteTemFile();
+        // deleteTemFile();
         return super.performCancel();
     }
 
@@ -586,6 +588,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
      * 
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
+    @Override
     public void init(final IWorkbench workbench, final IStructuredSelection selection2) {
         this.selection = selection2;
     }
@@ -633,7 +636,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i;
 
                 if (firstRowToExtractMetadata == 0) {
                     if (schemaTarget.get(i).getTagName() != null && !schemaTarget.get(i).getTagName().equals("")) { //$NON-NLS-1$
@@ -832,7 +835,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
         this.currentPage = currentPage;
     }
 
-    private void deleteTemFile() {
+    public void deleteTemFile() {
         JSONUtil.deleteWizardTempFiles();
     }
 

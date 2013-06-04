@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IProject;
@@ -35,6 +37,9 @@ public class JSONUtil {
 
     public static final String JSON_FILE = '.' + "xml"; //$NON-NLS-1$
 
+    // for json from url
+    public static String tempJSONXsdPath = null;
+
     public static boolean validateLabelForJSON(String label) {
         if (label == null) {
             return false;
@@ -51,8 +56,8 @@ public class JSONUtil {
         // return false;
         // }
         char[] array = label.toCharArray();
-        for (int i = 0; i < array.length; i++) {
-            if (Character.isSpaceChar(array[i]) || Character.isWhitespace(array[i])) {
+        for (char element : array) {
+            if (Character.isSpaceChar(element) || Character.isWhitespace(element)) {
                 return false;
             }
         }
@@ -66,7 +71,7 @@ public class JSONUtil {
         if (label.length() < 1) {
             return false;
         }
-        if (label.toLowerCase().startsWith(JSON_FILE)) { //$NON-NLS-1$
+        if (label.toLowerCase().startsWith(JSON_FILE)) {
             return false;
         }
         // char[] array = label.toCharArray();
@@ -82,7 +87,7 @@ public class JSONUtil {
         if (label == null) {
             return false;
         }
-        if (label.toLowerCase().startsWith(JSON_FILE)) { //$NON-NLS-1$
+        if (label.toLowerCase().startsWith(JSON_FILE)) {
             return false;
         }
         if (label.contains(".")) { //$NON-NLS-1$
@@ -94,8 +99,8 @@ public class JSONUtil {
                 return false;
             }
             char[] array = label.toCharArray();
-            for (int i = 0; i < array.length; i++) {
-                if (Character.isSpaceChar(array[i]) || Character.isWhitespace(array[i])) {
+            for (char element : array) {
+                if (Character.isSpaceChar(element) || Character.isWhitespace(element)) {
                     return false;
                 }
             }
@@ -126,11 +131,20 @@ public class JSONUtil {
         javax.xml.stream.XMLOutputFactory xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newInstance();
 
         java.io.ByteArrayOutputStream outStream = new java.io.ByteArrayOutputStream();
-        java.io.ByteArrayInputStream inStream = null;
+        InputStream inStream = null;
         File file = new File(jsonPath);
-        String filename = file.getName().replaceAll("\\.", "_");
+        // String filename = file.getName().replaceAll("\\.", "_");
+        // filename = "tempTest";
+        boolean isFromUrl = false;
         try {
-            FileInputStream input = new FileInputStream(file);
+            InputStream input = null;
+            if (file.exists()) {
+                input = new FileInputStream(file);
+
+            } else {
+                isFromUrl = true;
+                input = new URL(jsonPath).openStream();
+            }
             String jsonStr = IOUtils.toString(input);
 
             convertJSON.setJsonString(jsonStr);
@@ -147,7 +161,7 @@ public class JSONUtil {
             if (!xmlFolder.exists()) {
                 xmlFolder.mkdirs();
             }
-            temPath = temPath + filename + ".xml";
+            temPath = temPath + TMP_JSON_FILE;
             FileWriter writer = new FileWriter(temPath);
             writer.write(xmlStr);
             writer.flush();
@@ -155,7 +169,9 @@ public class JSONUtil {
 
             xmLEventWriter.close();
             xmlEventReader.close();
-
+            if (isFromUrl) {
+                tempJSONXsdPath = temPath;
+            }
         } catch (FileNotFoundException e1) {
             ExceptionHandler.process(e1);
         } catch (IOException e1) {
@@ -177,6 +193,7 @@ public class JSONUtil {
     }
 
     public static void deleteWizardTempFiles() {
+        tempJSONXsdPath = null;
         Project project = ProjectManager.getInstance().getCurrentProject();
         IProject fsProject = null;
         try {

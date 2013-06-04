@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
@@ -39,7 +40,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -253,7 +253,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // labelIsGuess.setText(Messages.getString("JSONFileStep1.checkBoxIsGuess"));
 
         // file Field JSON
-        String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
         fileFieldJSON = new LabelledFileField(compositeFileLocation, "Json", //$NON-NLS-1$
                 JSONExtensions);
 
@@ -277,6 +277,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
         commonNodesLimitation.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
 
                 String str = commonNodesLimitation.getText();
@@ -317,10 +318,12 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
         commonNodesLimitation.addFocusListener(new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
 
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 commonNodesLimitation.setText(String.valueOf(TreePopulator.getLimit()));
             }
@@ -385,13 +388,59 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // }
         // });
 
-        fileFieldJSON.addSelectionListener(new SelectionListener() {
+        // fileFieldJSON.addSelectionListener(new SelectionListener() {
+        //
+        // public void widgetSelected(SelectionEvent event) {
+        // if (fileFieldJSON.getResult() == null) {
+        // return;
+        // }
+        // String text = fileFieldJSON.getText();
+        // if (isContextMode()) {
+        // ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
+        // connectionItem.getConnection(), true);
+        // text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
+        // }
+        // // getConnection().setJSONFilePath(PathUtils.getPortablePath(JSONXsdFilePath.getText()));
+        // File file = new File(text);
+        // if (file.exists()) {
+        // if (file.exists()) {
+        // String tempxml = JSONUtil.changeJsonToXml(text);
+        // JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+        // valid = treePopulator.populateTree(tempxml, treeNode);
+        // }
+        // // add for bug TDI-20432
+        // checkFieldsValue();
+        // }
+        //
+        // }
+        //
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        //
+        // }
+        // });
 
-            public void widgetSelected(SelectionEvent event) {
-                if (fileFieldJSON.getResult() == null) {
+        // fileFieldJSON : Event modifyText
+        fileFieldJSON.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                String jsonPath = fileFieldJSON.getText();
+                try {
+                    if (jsonPath == null || jsonPath.isEmpty()
+                            || (!(new File(jsonPath).exists()) && new URL(jsonPath).openStream() == null)) {
+                        valid = false;
+                    }
+                } catch (MalformedURLException e1) {
+                    valid = false;
+                } catch (IOException e1) {
+                    valid = false;
+                }
+                if (!valid) {
+                    // add for bug TDI-20432
+                    checkFieldsValue();
                     return;
                 }
-                String text = fileFieldJSON.getText();
+                String text = jsonPath;
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
@@ -399,78 +448,66 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 }
                 // getConnection().setJSONFilePath(PathUtils.getPortablePath(JSONXsdFilePath.getText()));
                 File file = new File(text);
-                if (file.exists()) {
-                    if (file.exists()) {
-                        String tempxml = JSONUtil.changeJsonToXml(text);
-                        JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
-                        valid = treePopulator.populateTree(tempxml, treeNode);
-                    }
-                    // add for bug TDI-20432
-                    checkFieldsValue();
+                // if (file.exists()) {
+                // if (file.exists()) {
+                String tempxml = JSONUtil.changeJsonToXml(text);
+                if (!file.exists()) {
+                    file = new File(JSONUtil.tempJSONXsdPath);
                 }
+                JSONFileStep1Form.this.wizard.setTempJsonPath(tempxml);
+                valid = treePopulator.populateTree(tempxml, treeNode);
+                // }
+                // add for bug TDI-20432
+                checkFieldsValue();
+                // }
 
-            }
+                // String text = fileFieldJSON.getText();
+                // File temp = new File(text);
+                // if (!temp.exists()) {
+                // return;
+                // }
 
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
-
-        // fileFieldJSON : Event modifyText
-        fileFieldJSON.addModifyListener(new ModifyListener() {
-
-            public void modifyText(final ModifyEvent e) {
-                String text = fileFieldJSON.getText();
-                File temp = new File(text);
-                if (!temp.exists()) {
-                    return;
-                }
-                if (isContextMode()) {
-                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
-                            connectionItem.getConnection(), connectionItem.getConnection().getContextName());
-                    text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
-                }
                 if (getConnection().getJSONFilePath() != null && !getConnection().getJSONFilePath().equals(text)) {
                     getConnection().getLoop().clear();
                     xsdPathChanged = true;
                 } else {
                     xsdPathChanged = false;
                 }
-                getConnection().setJSONFilePath(PathUtils.getPortablePath(fileFieldJSON.getText()));
+                getConnection().setJSONFilePath(PathUtils.getPortablePath(jsonPath));
 
                 JSONWizard wizard = ((JSONWizard) getPage().getWizard());
                 wizard.setTreeRootNode(treeNode);
 
                 BufferedReader in = null;
 
-                File file = null;
+                // File file = null;
+                //
+                // if (tempJSONXsdPath != null && getConnection().getFileContent() != null
+                // && getConnection().getFileContent().length > 0 && !isModifing) {
+                // file = new File(tempJSONXsdPath);
+                // if (!file.exists()) {
+                // try {
+                // file.createNewFile();
+                // } catch (IOException e2) {
+                // ExceptionHandler.process(e2);
+                // }
+                // FileOutputStream outStream;
+                // try {
+                // outStream = new FileOutputStream(file);
+                // outStream.write(getConnection().getFileContent());
+                // outStream.close();
+                // } catch (FileNotFoundException e1) {
+                // ExceptionHandler.process(e1);
+                // } catch (IOException e3) {
+                // ExceptionHandler.process(e3);
+                // }
+                // }
+                //
+                // } else {
+                // file = new File(text);
+                // }
 
-                if (tempJSONXsdPath != null && getConnection().getFileContent() != null
-                        && getConnection().getFileContent().length > 0 && !isModifing) {
-                    file = new File(tempJSONXsdPath);
-                    if (!file.exists()) {
-                        try {
-                            file.createNewFile();
-                        } catch (IOException e2) {
-                            ExceptionHandler.process(e2);
-                        }
-                        FileOutputStream outStream;
-                        try {
-                            outStream = new FileOutputStream(file);
-                            outStream.write(getConnection().getFileContent());
-                            outStream.close();
-                        } catch (FileNotFoundException e1) {
-                            ExceptionHandler.process(e1);
-                        } catch (IOException e3) {
-                            ExceptionHandler.process(e3);
-                        }
-                    }
-
-                } else {
-                    file = new File(text);
-                }
-
-                setFileContent(file);
+                // setFileContent(file);
                 // }
 
                 try {
@@ -546,6 +583,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         // Event encodingCombo
         encodingCombo.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 getConnection().setEncoding(encodingCombo.getText());
                 checkFieldsValue();
@@ -573,7 +611,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 JSONFilePath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                         fileFieldJSON.getText()));
             }
-            updateStatus(IStatus.ERROR, "\"{0}\" is not found or the json format is incorrect.");
+            updateStatus(IStatus.ERROR, "File is not found or the json format is incorrect.");
 
             return false;
         }
@@ -669,7 +707,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         }
         String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp"; //$NON-NLS-1$
         String fileName = ""; //$NON-NLS-1$
-        if (getConnection().getJSONFilePath() != null) { //$NON-NLS-1$
+        if (getConnection().getJSONFilePath() != null) {
             fileName = "tempJSONFile" + '.' + "json";
         }
         File temfile = new File(temPath + File.separator + fileName);

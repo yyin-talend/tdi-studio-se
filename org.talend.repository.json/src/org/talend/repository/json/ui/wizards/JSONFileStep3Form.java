@@ -64,7 +64,6 @@ import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.util.JSONConnectionContextUtils;
 import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
-import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -192,6 +191,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         // metadataNameText : Event modifyText
         metadataNameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 MetadataToolHelper.validateSchema(metadataNameText.getText());
                 metadataTable.setLabel(metadataNameText.getText());
@@ -210,6 +210,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         // metadataCommentText : Event modifyText
         metadataCommentText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 metadataTable.setComment(metadataCommentText.getText());
             }
@@ -218,6 +219,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         // add listener to tableMetadata (listen the event of the toolbars)
         tableEditorView.getMetadataEditor().addAfterOperationListListener(new IListenableListListener() {
 
+            @Override
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
             }
@@ -355,8 +357,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
                 informationLabel.setText("   " + "Guess failure");
 
             } else {
-                refreshMetaDataTable(csvArray, ((JSONXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets(),
-                        flag);
+                refreshMetaDataTable(csvArray, connection2.getSchema().get(0).getSchemaTargets(), flag);
             }
 
         } catch (CoreException e) {
@@ -406,7 +407,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i;
 
                 if (firstRowToExtractMetadata == 0) {
                     if (schemaTarget.get(i).getTagName() != null && !schemaTarget.get(i).getTagName().equals("")) { //$NON-NLS-1$
@@ -605,10 +606,8 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         super.setVisible(visible);
         if (super.isVisible()) {
             // getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") &&
-            if (getConnection().getJSONFilePath() != null
-                    && !getConnection().getJSONFilePath().equals("") //$NON-NLS-1$
-                    && (new File(getConnection().getJSONFilePath()).exists() || new File(getContextJSONPath(getConnection()))
-                            .exists())) {
+            if ((getConnection().getJSONFilePath() != null && new File(getConnection().getJSONFilePath()).exists())
+                    || (wizard != null && wizard.getTempJsonPath() != null) || JSONUtil.tempJSONXsdPath != null) {
                 runShadowProcess(true);
             }
 
