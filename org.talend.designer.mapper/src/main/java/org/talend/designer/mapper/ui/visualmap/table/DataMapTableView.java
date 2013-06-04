@@ -2002,7 +2002,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 // "'");
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
                         .getCurrentModifiedBean();
-
+                boolean needInit = false;
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                     if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
                         IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
@@ -2013,10 +2013,16 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                         String talendType = ((VarTableEntry) currentModifiedEntry).getType();
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, nullable);
                         cellEditor.setExpressionType(typeToGenerate);
+                        // TDI-23838 : High CPU and hang when working on "Var" section on MacOS
+                        if ("".equals(currentModifiedEntry.getExpression()) || currentModifiedEntry.getExpression() == null) {
+                            needInit = true;
+                        }
                     }
                 }
 
-                initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
+                if (!needInit) {
+                    initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
+                }
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
 
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
