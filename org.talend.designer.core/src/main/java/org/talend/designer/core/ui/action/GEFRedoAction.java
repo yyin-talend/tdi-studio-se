@@ -19,6 +19,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
 /**
  * DOC Talend class global comment. Detailled comment
@@ -50,6 +52,12 @@ public class GEFRedoAction extends SelectionAction {
         if (!objects.isEmpty()) {
             for (Object o : objects) {
                 if (o instanceof ConnLabelEditPart) {
+                    return false;
+                }
+                if (o instanceof NoteEditPart) {
+                    return false;
+                }
+                if (o instanceof NodeLabelEditPart) {
                     return false;
                 }
             }

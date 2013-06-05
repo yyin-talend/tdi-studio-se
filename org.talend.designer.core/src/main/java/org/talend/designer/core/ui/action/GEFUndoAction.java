@@ -15,11 +15,12 @@ package org.talend.designer.core.ui.action;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
 /**
  * DOC Talend class global comment. Detailled comment
@@ -51,7 +52,13 @@ public class GEFUndoAction extends SelectionAction {
         if (!objects.isEmpty()) {
             for (Object o : objects) {
                 if (o instanceof ConnLabelEditPart) {
-                    return true;
+                    return false;
+                }
+                if (o instanceof NoteEditPart) {
+                    return false;
+                }
+                if (o instanceof NodeLabelEditPart) {
+                    return false;
                 }
             }
         }
@@ -65,29 +72,6 @@ public class GEFUndoAction extends SelectionAction {
      */
     @Override
     public void run() {
-        List objects = getSelectedObjects();
-        boolean connectionTextActived = false;
-        if (!objects.isEmpty()) {
-            ConnLabelEditPart connLabelEditPart = null;
-            Text text = null;
-            if (objects.size() == 1) {
-                for (Object o : objects) {
-                    if (o instanceof ConnLabelEditPart) {
-                        connLabelEditPart = (ConnLabelEditPart) objects.get(0);
-                        if (connLabelEditPart.getDirectEditManager() != null
-                                && connLabelEditPart.getDirectEditManager().getTextControl() != null) {
-                            connectionTextActived = true;
-                        }
-                    }
-                }
-            }
-            if (connectionTextActived && connLabelEditPart != null) {
-                text = connLabelEditPart.getDirectEditManager().getTextControl();
-                text.setText(connLabelEditPart.getDirectEditManager().getOldName());
-                text.selectAll();
-                return;
-            }
-        }
         getCommandStack().undo();
     }
 }
