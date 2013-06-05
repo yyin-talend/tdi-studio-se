@@ -158,5 +158,12 @@
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
+   <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.repository.json.JsonFileService"
+            serviceId="IJsonFileService">
+      </Service>
+   </extension>
 
 </plugin>

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.xml.XmlUtil;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -51,6 +52,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IJsonFileService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -320,6 +322,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table, componentName);
                     }
+
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IJsonFileService.class)) {
+                        IJsonFileService jsonService = (IJsonFileService) GlobalServiceRegister.getDefault().getService(
+                                IJsonFileService.class);
+                        boolean paramChanged = jsonService.changeFilePathFromRepository(connection, param, elem, objectValue);
+                        if (paramChanged) {
+                            continue;
+                        }
+                    }
+
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
                         if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)

@@ -426,18 +426,17 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
             public void modifyText(final ModifyEvent e) {
                 String jsonPath = fileFieldJSON.getText();
                 try {
-                    if (jsonPath == null || jsonPath.isEmpty()
-                            || (!(new File(jsonPath).exists()) && new URL(jsonPath).openStream() == null)) {
-                        valid = false;
-                    }
+                    valid = jsonPath != null && !jsonPath.isEmpty()
+                            && (new File(jsonPath).exists() || new URL(jsonPath).openStream() != null);
+
                 } catch (MalformedURLException e1) {
                     valid = false;
                 } catch (IOException e1) {
                     valid = false;
                 }
+                // add for bug TDI-20432
+                checkFieldsValue();
                 if (!valid) {
-                    // add for bug TDI-20432
-                    checkFieldsValue();
                     return;
                 }
                 String text = jsonPath;

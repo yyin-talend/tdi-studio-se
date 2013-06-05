@@ -63,6 +63,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IDesignerMapperService;
+import org.talend.core.service.IJsonFileService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IJobletProviderService;
@@ -327,6 +328,17 @@ public class UpdateNodeParameterCommand extends Command {
                                     }
                                 }
                             }
+
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IJsonFileService.class)) {
+                                IJsonFileService jsonService = (IJsonFileService) GlobalServiceRegister.getDefault().getService(
+                                        IJsonFileService.class);
+                                boolean paramChanged = jsonService.changeFilePathFromRepository(result.getParameter(), param,
+                                        node, objectValue);
+                                if (paramChanged) {
+                                    continue;
+                                }
+                            }
+
                             if (objectValue != null) {
                                 if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                         && repositoryValue.equals(UpdatesConstants.TYPE)) {
