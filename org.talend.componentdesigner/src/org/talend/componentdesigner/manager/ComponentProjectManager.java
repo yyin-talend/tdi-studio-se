@@ -124,6 +124,7 @@ public final class ComponentProjectManager {
         // create the new project operation
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 CreateProjectOperation op = new CreateProjectOperation(description,
                         Messages.getString("ComponentProjectManager.NewProject")); //$NON-NLS-1$
@@ -183,6 +184,7 @@ public final class ComponentProjectManager {
     public void configProject(final IProject project, Shell shell) {
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 monitor.beginTask("Configure project...", 4);
                 try {
@@ -222,15 +224,17 @@ public final class ComponentProjectManager {
         if (monitor != null && monitor.isCanceled()) {
             throw new OperationCanceledException();
         }
-        if (project == null)
+        if (project == null) {
             return;
+        }
         IClasspathEntry[] entries = null;
         List<IClasspathEntry> cpEntries = new ArrayList<IClasspathEntry>();
         cpEntries.addAll(Arrays.asList(getDefaultJREClasspathEntries()));
         cpEntries.addAll(getDefaultUtilClasspathEntries());
-        entries = (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
-        if (monitor != null)
+        entries = cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
+        if (monitor != null) {
             monitor.worked(1);
+        }
 
         IPath output = getOutputLocation();
         IProgressMonitor subProgressMonitor = monitor == null ? new NullProgressMonitor() : new SubProgressMonitor(monitor, 2);
@@ -260,7 +264,6 @@ public final class ComponentProjectManager {
         addLibClasspathEntries(ces, "org.talend.metadata.managment"); //$NON-NLS-1$
         addLibClasspathEntries(ces, "org.talend.core"); //$NON-NLS-1$
         addLibClasspathEntries(ces, "org.talend.designer.codegen"); //$NON-NLS-1$
-        addLibClasspathEntries(ces, "org.talend.commons"); //$NON-NLS-1$
         return ces;
     }
 
