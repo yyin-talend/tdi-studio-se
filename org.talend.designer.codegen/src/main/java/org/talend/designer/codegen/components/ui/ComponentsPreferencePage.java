@@ -87,6 +87,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         /**
          * @see org.eclipse.jface.preference.FieldEditor#refreshValidState()
          */
+        @Override
         protected void refreshValidState() {
             super.refreshValidState();
         }
@@ -95,6 +96,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
          * Clears the error message from the message line if the error message is the error message from this field
          * editor.
          */
+        @Override
         protected void clearErrorMessage() {
             if (canClearErrorMessage()) {
                 super.clearErrorMessage();
@@ -122,6 +124,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(dbTypeField);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
 
         if (event.getSource() == filePathTemp) {
@@ -242,6 +245,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(doNotShowJobletAfterDoubleClickCheckBoxField);
     }
 
+    @Override
     public void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
         filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER,
@@ -253,10 +257,11 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
             String oldPath = getPreferenceStore().getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 String newPath = filePathTemp.getTextControl(parent).getText();
                 File file = new File(newPath);
-                if (!file.exists()) {
+                if (!file.exists() && !"".equals(newPath)) {
                     // getPreferenceStore().setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, "");
                     filePathTemp.showErrorMessage();
                     setValid(false);
@@ -287,6 +292,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     }
 
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -299,6 +305,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
             final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Loading user component ......", 100);
                     Display display = Display.getCurrent();
@@ -308,6 +315,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
                     if (display != null) {
                         display.syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 IComponentsFactory components = ComponentsFactoryProvider.getInstance();
 
