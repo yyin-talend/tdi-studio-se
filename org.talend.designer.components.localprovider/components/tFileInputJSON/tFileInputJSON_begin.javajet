@@ -31,14 +31,13 @@ String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "_
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-
-if(!readByXPath){
-//--------------------start Read By JSON Path
-List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String useUrl = ElementParameterParser.getValue(node, "__USEURL__");
 boolean isUseUrl = "true".equals(useUrl);
 String urlpath = ElementParameterParser.getValue(node, "__URLPATH__");
 
+if(!readByXPath){
+//--------------------start Read By JSON Path
+List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 List< ? extends IConnection> conns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 String firstConnName = "";
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -521,7 +520,19 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
             if(filename_<%=cid %> instanceof java.io.InputStream){
                 br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>,<%=encoding%>));
             }else{
-                br_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
+<%
+				if(!isUseUrl){//read from a file
+%>
+            	    br_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
+<%
+				}else{ //read from internet
+%>
+					java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
+					java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
+					br_<%=cid %> = new java.io.BufferedReader( new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream(),<%=encoding %>));
+<%
+				}
+%>
             }
             while ((line_<%=cid%> = br_<%=cid %>.readLine()) != null){
                 jsonBuffer_<%=cid%>.append(line_<%=cid%>);
