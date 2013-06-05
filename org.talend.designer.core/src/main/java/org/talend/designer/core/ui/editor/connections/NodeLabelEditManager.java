@@ -34,6 +34,8 @@ public class NodeLabelEditManager extends DirectEditManager {
 
     private Text text;
 
+    private Connection connection;
+
     public NodeLabelEditManager(GraphicalEditPart source, Class editorType, CellEditorLocator locator) {
         super(source, editorType, locator);
     }
@@ -50,7 +52,7 @@ public class NodeLabelEditManager extends DirectEditManager {
 
     @Override
     protected void initCellEditor() {
-        Connection connection = ((ConnectionLabel) this.getEditPart().getModel()).getConnection();
+        connection = ((ConnectionLabel) this.getEditPart().getModel()).getConnection();
         if (getCellEditor() instanceof NodeLabelCellEditor) {
             ((NodeLabelCellEditor) getCellEditor()).setCurrentConnection(connection);
         }
@@ -79,5 +81,9 @@ public class NodeLabelEditManager extends DirectEditManager {
             return null;
         }
         return (Text) getCellEditor().getControl();
+    }
+
+    public String getOldName() {
+        return connection == null ? "" : connection.getName();
     }
 }
