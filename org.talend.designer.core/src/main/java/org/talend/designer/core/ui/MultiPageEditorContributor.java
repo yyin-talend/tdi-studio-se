@@ -15,6 +15,7 @@ package org.talend.designer.core.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DeleteRetargetAction;
@@ -41,6 +42,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.action.ToggleSubjobsRetargetAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 
 /**
  * Manages the installation/deinstallation of global actions for multi-page editors. Responsible for the redirection of
@@ -53,9 +56,10 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 public class MultiPageEditorContributor extends MultiPageEditorActionBarContributor {
 
     private IEditorPart activeEditorPart;
-    
+
     // MOD mzhao bug 8710.
     private static Action showAndRunProcessAction = null;
+
     private ActionRegistry registry = new ActionRegistry();
 
     public MultiPageEditorContributor() {
@@ -69,11 +73,12 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     private static final String[] VIEW_MENU_ACTIONS_ID = new String[] { GEFActionConstants.ZOOM_IN, GEFActionConstants.ZOOM_OUT,
             GEFActionConstants.TOGGLE_GRID_VISIBILITY, GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY };
 
+    private ZoomComboContributionItem item;
+
     public static void setShowAndRunProcessAction(Action action) {
         showAndRunProcessAction = action;
     }
-    
-    
+
     @Override
     public void init(final IActionBars bars) {
         buildDesignActions();
@@ -89,11 +94,11 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         addDesignRetargetAction(new DeleteRetargetAction());
         addDesignRetargetAction(new UndoRetargetAction());
         addDesignRetargetAction(new RedoRetargetAction());
-        addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, Messages
-                .getString("MultiPageEditorContributor.Snap"), //$NON-NLS-1$
+        addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
+                Messages.getString("MultiPageEditorContributor.Snap"), //$NON-NLS-1$
                 IAction.AS_CHECK_BOX));
-        addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY, Messages
-                .getString("MultiPageEditorContributor.Grid"), //$NON-NLS-1$
+        addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY,
+                Messages.getString("MultiPageEditorContributor.Grid"), //$NON-NLS-1$
                 IAction.AS_CHECK_BOX));
 
         addDesignRetargetAction(new ToggleSubjobsRetargetAction());
@@ -154,9 +159,19 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         if ((activeEditorPart == activeEditor) || (activeEditor == null)) {
             return;
         }
-
+        
         activeEditorPart = activeEditor;
-
+        
+        if (activeEditor instanceof TalendEditor) {
+            RootEditPart editPart = ((TalendEditor) activeEditor).getViewer().getRootEditPart();
+            if (editPart != null && editPart instanceof TalendScalableFreeformRootEditPart) {
+                ZoomManager manager = ((TalendScalableFreeformRootEditPart) ((TalendEditor) activeEditor).getViewer()
+                        .getRootEditPart()).getZoomManager();
+                item.setZoomManager(manager);
+            }
+        } else {
+            item.setZoomManager(null);
+        }
         IActionBars actionBars = getActionBars();
         if (actionBars != null) {
 
@@ -167,8 +182,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(activeEditor, ActionFactory.CUT.getId()));
             actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(activeEditor, ActionFactory.COPY.getId()));
             actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor, ActionFactory.PASTE.getId()));
-            actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(activeEditor, ActionFactory.SELECT_ALL
-                    .getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
+                    getAction(activeEditor, ActionFactory.SELECT_ALL.getId()));
             actionBars.setGlobalActionHandler(ToggleSubjobsAction.ID, getAction(activeEditor, ToggleSubjobsAction.ID));
             // see bug 0003656: Actions in the main menu "View" are always disabled.
             activateActionsInViewMenu(activeEditor, actionBars, VIEW_MENU_ACTIONS_ID);
@@ -177,7 +192,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
                 actionBars.setGlobalActionHandler(showAndRunProcessAction.getActionDefinitionId(), showAndRunProcessAction);
             }
             actionBars.updateActionBars();
-            
+
             
         }
     }
@@ -225,7 +240,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         toolBarManager.add(getAction(ActionFactory.REDO.getId()));
         toolBarManager.add(getAction(ToggleSubjobsAction.ID));
         String[] zoomStrings = new String[] { ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
-        toolBarManager.add(new ZoomComboContributionItem(getPage(), zoomStrings));
+        item = new ZoomComboContributionItem(getPage(), zoomStrings);
+        toolBarManager.add(item);
     }
 
     /*
