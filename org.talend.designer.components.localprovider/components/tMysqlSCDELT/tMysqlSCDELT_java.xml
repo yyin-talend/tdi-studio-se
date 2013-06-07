@@ -72,6 +72,15 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+	<PARAMETER
+	  NAME="TYPE"
+	  FIELD="TEXT"
+	  NUM_ROW="20"
+	  SHOW="false"
+	  REPOSITORY_VALUE="TYPE"
+	>
+		<DEFAULT>MySQL</DEFAULT>
+	</PARAMETER>
 
     <PARAMETER
       NAME="HOST"
