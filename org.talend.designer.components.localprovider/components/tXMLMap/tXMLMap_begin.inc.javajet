@@ -689,22 +689,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 //		if(<%//tool.getValue(node);%>!=null){
 			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
 			if(valueMap.get("<%=currEleName%>")!=null) {
-				String content = FormatterUtils.format(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>,<%=tmpNode.getPattern()%>);
-<%
-    			if(!allowEmpty) {
-%>
-				if(!"".equals(content)) {
-<%
-				}
-%>
-				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",content);
-<%
-				if(!allowEmpty) {
-%>
-				}
-<%
-				}
-%>
+				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",FormatterUtils.format(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>,<%=tmpNode.getPattern()%>));
 			}<% if(allowEmpty) { %> else {
 				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>","");
 			}
@@ -725,22 +710,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 %>
 		valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression()); %>);
 		if(valueMap.get("<%=currEleName%>")!=null) {
-			String content = FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>);
-<%
-			if(!allowEmpty) {
-%>
-			if(!"".equals(content)) {
-<%
-			}
-%>
-			nestXMLTool.setText(<%=currEleName%>,content);
-<%
-			if(!allowEmpty) {
-%>
-			}
-<%
-			}
-%>
+			nestXMLTool.setText(<%=currEleName%>,FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>));
 		}
 <%
 		}
