@@ -28,6 +28,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -58,6 +59,10 @@ public class ReadRoutineAction extends AbstractRoutineAction {
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
+                canWork = false;
+            }
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_USER) {
                 canWork = false;
             }
         }
