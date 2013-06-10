@@ -426,6 +426,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
     @Override
     public void setElement(Element elem) {
         if (currentSelectedTab != null && currentSelectedTab.getData().equals(elem) && !cleaned) {
+            updatePropertiesViewerTitle();
             return;
         }
 
