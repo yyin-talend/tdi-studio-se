@@ -1893,6 +1893,15 @@
             name="ChangeExtendedInsert2FALSE4tRedshiftOutput"
             version="5.3.1">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="5.3.0"
+            class="org.talend.repository.model.migration.ChangeFileInputJSONUrlUnCheckWhenXpathCheck"
+            description="make tFileInputJSON url checkbox unticked when Xpath checkbox is ticked"
+            id="org.talend.repository.model.migration.ChangeFileInputJSONUrlUnCheckWhenXpathCheck"
+            name="ChangeFileInputJSONUrlUnCheckWhenXpathCheck"
+            version="5.3.1">
+        </projecttask>
    </extension>
    
    <extension
