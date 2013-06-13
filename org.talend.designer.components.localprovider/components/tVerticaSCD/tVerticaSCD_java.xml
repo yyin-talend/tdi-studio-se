@@ -79,6 +79,16 @@
       DYNAMIC_SETTINGS="true"
     />
 
+    <PARAMETER 
+      NAME="TYPE" 
+      FIELD="TEXT" 
+      NUM_ROW="25" 
+      SHOW="false" 
+      REPOSITORY_VALUE="TYPE" 
+    > 
+ 		<DEFAULT>VERTICA</DEFAULT> 
+    </PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
