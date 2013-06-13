@@ -162,7 +162,7 @@ if(("EXPORT").equals(action)) {
     if(columnList != null && columnList.size() > 0) {
     	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
     }
-	if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction)){
+	if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "NONE".equals(tableAction) || "TRUNCATE".equals(tableAction)){
     %>    
     <%@ include file="../templates/_tableActionForBulk.javajet"%>
     <%
