@@ -78,6 +78,16 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
+    
+    <PARAMETER 
+      NAME="TYPE" 
+      FIELD="TEXT" 
+      NUM_ROW="25" 
+      SHOW="false" 
+      REPOSITORY_VALUE="TYPE" 
+    > 
+ 		<DEFAULT>VERTICA</DEFAULT> 
+    </PARAMETER> 
 
     <PARAMETER
       NAME="HOST"
@@ -196,6 +206,16 @@
         <ITEM NAME="ROUTINE"          VALUE="ROUTINE"/>
         <ITEM NAME="TABLE_MAX"        VALUE="TABLE_MAX"/>
       </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SK_DB_SEQUENCE"
+      FIELD="TEXT"
+      NUM_ROW="61"
+      SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
+      SHOW="false"
+    >
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
     <PARAMETER

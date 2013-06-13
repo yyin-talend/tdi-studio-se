@@ -63,7 +63,17 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
-	
+    
+	<PARAMETER 
+	   NAME="TYPE" 
+	   FIELD="TEXT" 
+	   NUM_ROW="2" 
+	   SHOW="false" 
+	   REPOSITORY_VALUE="TYPE" 
+	> 
+	   <DEFAULT>SybaseASE</DEFAULT> 
+	</PARAMETER> 
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
