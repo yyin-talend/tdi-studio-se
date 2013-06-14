@@ -583,20 +583,22 @@ public class ProcessView extends ViewPart {
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
             try {
                 page.showView("org.talend.designer.runprocess.ui.views.processview"); //$NON-NLS-1$
+                
+		        selectTab(EComponentCategory.BASICRUN);
+		        if (processComposite != null && !processComposite.isDisposed()) {
+		            if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
+		                processComposite.errorMessMap.clear();
+		                processComposite.setCurRunMode(EXEC_ID);
+		                processComposite.exec();
+		            }
+		        }
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
                 // e.printStackTrace();
                 ExceptionHandler.process(e);
+            } finally {
+                canRun = true;
             }
-            selectTab(EComponentCategory.BASICRUN);
-            if (processComposite != null && !processComposite.isDisposed()) {
-                if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
-                    processComposite.errorMessMap.clear();
-                    processComposite.setCurRunMode(EXEC_ID);
-                    processComposite.exec();
-                }
-            }
-            canRun = true;
         }
 
     }
