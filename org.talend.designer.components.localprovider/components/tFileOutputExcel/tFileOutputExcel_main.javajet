@@ -55,14 +55,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				IMetadataColumn column = columns.get(i);
     				if(sizeColumns > schemaOptNum) {
     					if(i%schemaOptNum==0){
-    						boolean existCellDateFormat = false;;
-			    			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-    						if (javaType == JavaTypesManager.DATE){
-    							String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    							if(pattern != null && pattern.trim().length() != 0){
-    								existCellDateFormat = true;
-    							}
-    						}
 %>
 				fileOutputExcelUtil_<%=cid%>.putValue_<%=i/schemaOptNum%>(<%=conn.getName() %>,writableSheet_<%=cid %>,
 					startRowNum_<%=cid %>,nb_line_<%=cid%>,
