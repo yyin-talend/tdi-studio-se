@@ -54,8 +54,8 @@ String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "_
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
 
 List< ? extends IConnection> conns = node.getIncomingConnections();
-IConnection conn = conns.get(0);
-if(conn == null) {
+IConnection conn = null;
+if((conns == null) || (conns.size() < 1) || ((conn = conns.get(0)) == null)) {
 	return "";
 }
 

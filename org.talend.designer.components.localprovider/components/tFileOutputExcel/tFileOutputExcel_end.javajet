@@ -43,7 +43,7 @@
     }
 	
 	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if((conns == null) || (conns.size() < 1)) {
+	if((conns == null) || (conns.size() < 1) || (conns.get(0) == null)) {
 		return "";
 	}
 	
