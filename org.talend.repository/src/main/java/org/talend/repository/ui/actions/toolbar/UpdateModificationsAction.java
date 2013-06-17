@@ -17,7 +17,12 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * ggu class global comment. Detailled comment
@@ -50,6 +55,15 @@ public class UpdateModificationsAction extends Action implements IWorkbenchWindo
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
+        // TDI-26387
+        final IProxyRepositoryFactory proxyRepositoryFactory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
+        proxyRepositoryFactory.executeRepositoryWorkUnit(new RepositoryWorkUnit("") { //$NON-NLS-1$
+
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
+                        // nothing to do, only force doing svn update first.
+                    }
+                });
         RepositoryUpdateManager.updateAllJob(true);
     }
 
