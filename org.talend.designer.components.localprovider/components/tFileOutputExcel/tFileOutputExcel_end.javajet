@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
         java.util.List
         java.util.Map
 	"
@@ -35,14 +36,34 @@
 	boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!("").equals(allColumnAutoSize))?("true").equals(allColumnAutoSize):false;
 	List<Map<String, String>> autoSizeList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__AUTO_SZIE_SETTING__");
 	
+	int schemaOptNum=100;
+    String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+    if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+    	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+    }
+	
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if((conns == null) || (conns.size() < 1)) {
+		return "";
+	}
+	
 	if(!version07){//version judgement
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    	IMetadataTable metadata = metadatas.get(0);
 	        if (metadata!=null) {
 	        	List<IMetadataColumn> columns = metadata.getListColumns();
+	        	int sizeColumns = columns.size();
 	        	if(isAllColumnAutoSize){
 	        		for(int i=0;i<columns.size();i++){
+	        			if(sizeColumns > schemaOptNum) {
+	        				if(i%schemaOptNum==0){
+	%>
+			fileOutputExcelUtil_<%=cid%>.setColumnView_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,fitWidth_<%=cid%>);
+	<%
+	        				}
+	        				continue;
+	        			}
 	%>
 	//modif start
 		<%if(firstCellYAbsolute){%>
@@ -56,6 +77,25 @@
 	    		}else{
 	    			if(autoSizeList.size() == columns.size()){
 	                	for(int i=0;i<columns.size();i++){
+	        				if(sizeColumns > schemaOptNum) {
+	        					if(i%schemaOptNum==0){
+	        						boolean emptyMethod = true;
+	        						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
+                						Map<String,String> tmp= autoSizeList.get(i+j);
+                						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+                							emptyMethod = false;
+                							break;
+                						}
+									}
+									
+									if(!emptyMethod) {
+	%>
+			fileOutputExcelUtil_<%=cid%>.setColumnView_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,fitWidth_<%=cid%>);
+	<%
+									}
+	        					}
+	        					continue;
+	        				}
 	                		Map<String,String> tmp= autoSizeList.get(i);
 	                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
 	%>
@@ -88,8 +128,17 @@
 	    	IMetadataTable metadata = metadatas.get(0);
 	        if (metadata!=null) {
 	        	List<IMetadataColumn> columns = metadata.getListColumns();
+	        	int sizeColumns = columns.size();
 	        	if(isAllColumnAutoSize){
 	        		for(int i=0;i<columns.size();i++){
+	        			if(sizeColumns > schemaOptNum) {
+	        				if(i%schemaOptNum==0){
+	%>
+					fileOutputExcelUtil_<%=cid%>.setColAutoSize_<%=i/schemaOptNum%>(xlsxTool_<%=cid%>);
+	<%
+	        				}
+	        				continue;
+	        			}
 	%>
 					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
 	<%
@@ -97,6 +146,25 @@
 	    		}else{
 	    			if(autoSizeList.size() == columns.size()){
 	                	for(int i=0;i<columns.size();i++){
+	                		if(sizeColumns > schemaOptNum) {
+	        					if(i%schemaOptNum==0){
+	        						boolean emptyMethod = true;
+	        						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
+                						Map<String,String> tmp= autoSizeList.get(i+j);
+                						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+                							emptyMethod = false;
+                							break;
+                						}
+									}
+									
+									if(!emptyMethod) {
+	%>
+					fileOutputExcelUtil_<%=cid%>.setColAutoSize_<%=i/schemaOptNum%>(xlsxTool_<%=cid%>);
+	<%
+									}
+	        					}
+	        					continue;
+	        				}
 	                		Map<String,String> tmp= autoSizeList.get(i);
 	                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
 	%>
