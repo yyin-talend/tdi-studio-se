@@ -69,6 +69,7 @@ public class NameSection extends AbstractSection {
         addFocusListener(nameText);
         nameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 IStatus status = evaluateTextField();
                 if (status.getSeverity() == IStatus.ERROR) {
@@ -103,14 +104,15 @@ public class NameSection extends AbstractSection {
         if (getObject().getRepositoryObjectType() == null) {
             return createOkStatus();
         }
-        
+        ERepositoryObjectType routeResource = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTE_RESOURCES");
+
         String text = nameText.getText();
         if (text.length() == 0) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameEmpty")); //$NON-NLS-1$
-        } else if(getObject().getRepositoryNode() != null
-        		&& ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTE_RESOURCES").equals(getObject().getRepositoryNode().getContentType())){
-        	 return ResourcesPlugin.getWorkspace().validateName(text, IResource.FOLDER);
-        }else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
+        } else if (getObject().getRepositoryNode() != null && routeResource != null
+                && routeResource.equals(getObject().getRepositoryNode().getContentType())) {
+            return ResourcesPlugin.getWorkspace().validateName(text, IResource.FOLDER);
+        } else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameIncorrect")); //$NON-NLS-1$
         }
         // else if (!isValid(text)) {
