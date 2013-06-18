@@ -243,7 +243,11 @@ public class DropContextAnalyzer {
             }
             // forbiden dnd if use reposiotry metadat
             boolean useRepositoryMeta = outputTable.getId() != null && !"".equals(outputTable.getId());
-
+            // Unable to drag a column from the main or lookup tables to the expression filter of an output table that
+            // has a repository schema
+            if (useRepositoryMeta && currentStyledTextTarget != null) {
+                return true;
+            }
             if (useRepositoryMeta && isCursorOverHeader || useRepositoryMeta && !isCursorOverExpressionCell) {
                 return false;
             }
@@ -271,7 +275,7 @@ public class DropContextAnalyzer {
     /**
      * .
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void analyzeCursorOverExpressionCell() {
         boolean targetTableIsGlobalMapTable = targetTableIsGlobalMapTable(dataMapTableViewTarget);
 
@@ -432,11 +436,11 @@ public class DropContextAnalyzer {
     private boolean dropVarsEntryIsValid(TableItem tableItemTarget) {
         Table table = tableItemTarget.getParent();
         TableItem[] tableItems = table.getItems();
-        for (int i = 0; i < tableItems.length; i++) {
-            if (tableItemTarget == tableItems[i]) {
+        for (TableItem tableItem : tableItems) {
+            if (tableItemTarget == tableItem) {
                 break;
             }
-            if (tableItemSource == tableItems[i]) {
+            if (tableItemSource == tableItem) {
                 return true;
             }
         }
