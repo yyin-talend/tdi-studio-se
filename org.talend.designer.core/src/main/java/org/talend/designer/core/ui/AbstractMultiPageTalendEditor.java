@@ -1579,45 +1579,37 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         super.dispose();
 
-        if (isKeepPropertyLocked()) {
-            return;
-        }
-
-        // Unlock the process :
-        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        try {
-            getProcess().getProperty().eAdapters().remove(dirtyListener);
-            Property property = getProcess().getProperty();
-            if (property.eResource() == null || property.getItem().eResource() == null) {
-                property = repFactory.getUptodateProperty(property);
+        if (!getProcess().isReadOnly()) {
+            if (isKeepPropertyLocked()) {
+                return;
             }
-            // fix for bug 12524 for db repository
-            // property = repFactory.reload(property);
 
-            JobletUtil jUtil = new JobletUtil();
-            jUtil.makeSureUnlockJoblet(getProcess());
-            Item item = getProcess().getProperty().getItem();
-            boolean keep = jUtil.keepLockJoblet(item);
-            if (keep) {
-                repFactory.unlock(property.getItem());
+            // Unlock the process :
+            IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+            try {
+                getProcess().getProperty().eAdapters().remove(dirtyListener);
+                Property property = getProcess().getProperty();
+                if (property.eResource() == null || property.getItem().eResource() == null) {
+                    property = repFactory.getUptodateProperty(property);
+                }
+                // fix for bug 12524 for db repository
+                // property = repFactory.reload(property);
+
+                JobletUtil jUtil = new JobletUtil();
+                jUtil.makeSureUnlockJoblet(getProcess());
+                Item item = getProcess().getProperty().getItem();
+                boolean keep = jUtil.keepLockJoblet(item);
+                if (keep) {
+                    repFactory.unlock(property.getItem());
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            } catch (LoginException e) {
+                ExceptionHandler.process(e);
             }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (LoginException e) {
-            ExceptionHandler.process(e);
         }
-
-        // if (AbstractProcessProvider.isExtensionProcessForJoblet(getProcess())) {
-        // RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-        // } else {
-        // RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-        // if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-        // ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-        // .getService(ICamelDesignerCoreService.class);
-        // RepositoryManager.refresh(camelService.getRoutes());
-        // }
-        // }
+        
         processEditorInput.dispose();
         processEditorInput = null;
         designerEditor = null;

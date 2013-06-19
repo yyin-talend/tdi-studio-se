@@ -2329,7 +2329,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     @Override
     public boolean checkReadOnly() {
         IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem()) || !isLastVersion(property.getItem());
+        boolean readOnlyLocal = !isLastVersion(property.getItem()) || !repFactory.isEditableAndLockIfPossible(property.getItem()); 
         this.setReadOnly(readOnlyLocal);
         return readOnlyLocal;
     }
