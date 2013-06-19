@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
@@ -28,6 +30,8 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
@@ -68,6 +72,33 @@ public class EditQueriesAction extends AContextualAction {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         if (repositoryNode == null && selection != null) {
             repositoryNode = (RepositoryNode) selection.getFirstElement();
+        }
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+        IRepositoryViewObject nodeObject = repositoryNode.getObject();
+
+        boolean locked = false;
+
+        if (!factory.getRepositoryContext().isEditableAsReadOnly()) {
+            if (nodeObject.getRepositoryStatus() == ERepositoryStatus.LOCK_BY_OTHER) {
+                locked = true;
+            }
+        }
+        // Avoid to delete node which is locked.
+        if (locked || RepositoryManager.isOpenedItemInEditor(nodeObject)) {
+
+            final String title = "Impossible to edit queries";
+            final String message = "item is already locked by another user.";
+            Display.getDefault().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    MessageDialog dialog = new MessageDialog(new Shell(), title, null, message, MessageDialog.ERROR,
+                            new String[] { IDialogConstants.OK_LABEL }, 0);
+                    dialog.open();
+                }
+            });
+            return;
         }
 
         DatabaseConnectionItem dbConnectionItem = null;
