@@ -128,6 +128,9 @@ public class GuessSchemaProcess {
 
         if (node.getComponent().getModulesNeeded().size() > 0) {
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
+                if (module.getModuleName().contains("hbase")) {
+                    System.out.println();
+                }
                 if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
                             ComponentCategory.CATEGORY_4_DI.getName()), process);
@@ -211,9 +214,25 @@ public class GuessSchemaProcess {
         temppath = buildTempCSVFilename();
         // Should also replace "/r". NMa.
         memoSQL = memoSQL.replace("\r", " ");// ISO-8859-15
-        codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        // fix for TDI-26285
+        String createStatament = "conn.createStatement(java.sql.ResultSet.TYPE_SCROLL_SENSITIVE,java.sql.ResultSet.CONCUR_UPDATABLE)";//$NON-NLS-1$ 
+        String systemProperty = "";//$NON-NLS-1$ 
+        if (info.isHive()) {
+            createStatament = "conn.createStatement()";//$NON-NLS-1$ 
+            systemProperty = "System.setProperty(\"mapred.job.tracker\",\"" + info.getJobTracker() + "\");\r\n"//$NON-NLS-1$ //$NON-NLS-2$ 
+                    + "System.setProperty(\"fs.default.name\", \"" + info.getNameNode() + "\");\r\n";//$NON-NLS-1$ //$NON-NLS-2$ 
+            // only embeded hive need the following params
+            if (info.getThrifturi() != null) {
+                systemProperty = systemProperty + " System.setProperty(\"hive.metastore.local\", \"false\");\r\n"//$NON-NLS-1$ 
+                        + " System.setProperty(\"hive.metastore.uris\", \"" + info.getThrifturi() + "\");\r\n"//$NON-NLS-1$ //$NON-NLS-2$ 
+                        + "System.setProperty(\"hive.metastore.execute.setugi\", \"true\");\r\n";//$NON-NLS-1$ 
+            }
+        }
+        codeStart = systemProperty
+                + "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement(java.sql.ResultSet.TYPE_SCROLL_SENSITIVE,java.sql.ResultSet.CONCUR_UPDATABLE);\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = " + createStatament + ";\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "try {\r\nstm.setFetchSize(" + fetchSize + ");\r\n} catch (Exception e) {\r\n// Exception is thrown if db don't support, no need to catch exception here\r\n} \r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSet rs = stm.executeQuery(" + memoSQL + ");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n" //$NON-NLS-1$ //$NON-NLS-2$
@@ -300,7 +319,8 @@ public class GuessSchemaProcess {
         StringBuffer buffer = new StringBuffer();
         ProcessStreamTrashReaderUtil.readAndForget(executeprocess, buffer);
         final String errorMessage = buffer.toString();
-        if (!"".equals(buffer.toString())) {
+        boolean checkError = !info.isHive() | !previousFile.exists();
+        if (checkError && !"".equals(buffer.toString())) {
             throw new ProcessorException(errorMessage) {
 
                 private static final long serialVersionUID = 1L;

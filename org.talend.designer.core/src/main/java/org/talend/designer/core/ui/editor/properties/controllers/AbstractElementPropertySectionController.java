@@ -1723,10 +1723,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 type = "ORACLE_SID"; //$NON-NLS-1$
             }
         } else if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
-            if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
-                    elem.getElementParameter("CONNECTION_MODE").getValue())) {
-                setSpecialParamsForHiveEmbedded(elem);
-            }
+            // if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
+            // elem.getElementParameter("CONNECTION_MODE").getValue())) {
+            setSpecialParamsForHiveEmbedded(elem);
+            // }
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())

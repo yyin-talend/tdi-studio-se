@@ -15,12 +15,14 @@ package org.talend.designer.core.ui.editor.process;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.ConnParameterKeys;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.connection.hive.HiveConnVersionInfo;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
@@ -69,6 +71,18 @@ public class ConvertRepositoryNodeToProcessNode {
         if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) { // hywang for 9594
             info = new DbInfo(dbType, username, pwd, dbVersion, url, iMetadataConnection.getDriverClass(),
                     iMetadataConnection.getDriverJarPath(), additionalParams);
+        } else if (EDatabaseTypeName.HIVE.getDisplayName().equals(iMetadataConnection.getDbType())) {
+            String jobTracker = TalendTextUtils.removeQuotes(String.valueOf(iMetadataConnection
+                    .getParameter(ConnParameterKeys.CONN_PARA_KEY_JOB_TRACKER_URL)));
+            String nameNode = TalendTextUtils.removeQuotes(String.valueOf(iMetadataConnection
+                    .getParameter(ConnParameterKeys.CONN_PARA_KEY_NAME_NODE_URL)));
+            String thrifturi = null;
+            if (HiveConnVersionInfo.MODE_EMBEDDED.getKey().equals(iMetadataConnection.getDbVersionString())) {
+                thrifturi = "thrift://" + iMetadataConnection.getServerName() + ":" + iMetadataConnection.getPort();
+            }
+            info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                    iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl(),
+                    jobTracker, nameNode, thrifturi, iMetadataConnection.getDriverJarPath());
         } else {
             info = new DbInfo(dbType, username, pwd, dbVersion, url, additionalParams);
         }
@@ -85,7 +99,8 @@ public class ConvertRepositoryNodeToProcessNode {
                 ERepositoryObjectType.METADATA_CONNECTIONS);
         String componentName = null;
         componentName = name.getDefaultComponentName();
-        IComponent dbInputComponent = ComponentsFactoryProvider.getInstance().get(componentName,ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent dbInputComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         Process process = new Process(GuessSchemaProcess.getNewmockProperty());
         node = new Node(dbInputComponent, process);
         selectedContext = node.getProcess().getContextManager().getDefaultContext();
