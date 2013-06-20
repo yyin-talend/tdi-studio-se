@@ -1820,6 +1820,15 @@
             name="ChangeHadoopVersionValue4TDQComponents"
             version="5.2.2">
 	  </projecttask>
+	  <projecttask
+        	beforeLogon="false"
+            breaks="5.3.1"
+            class="org.talend.repository.model.migration.ChangeSalesForceComponetsCustomerModuleName"
+            description="Add double quote if &quot;customer module name&quot; is not surrounded by it"
+            id="org.talend.repository.model.migration.ChangeSalesForceComponetsCustomerModuleName"
+            name="ChangeSalesForceComponetsCustomerModuleName"
+            version="5.3.2">
+      </projecttask>
    </extension>
    
    <extension
@@ -1988,6 +1997,19 @@
             id="org.talend.repository.tosProvider"
             name="TOS">
       </provider>
+   </extension>
+   <extension
+         point="org.talend.core.repository.repoViewLinker">
+      <linker
+            class="org.talend.repository.ui.views.link.RoutineRepoViewLinker"
+            name="Routine"
+            priority="normal">
+      </linker>
+      <linker
+            class="org.talend.repository.ui.views.link.SQLTemplateRepoViewLinker"
+            name="SQL Template"
+            priority="normal">
+      </linker>
    </extension>
 
 </plugin>

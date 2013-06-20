@@ -68,7 +68,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			
 			String modulename = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE__").trim();
-			String sObject = (("CustomModule").equals(modulename)) ? customModulename.replaceAll("\"","") : modulename;
+			String sObject = (("CustomModule").equals(modulename)) ? customModulename : modulename;
 
 			//for bulk query
 		   	String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
@@ -142,8 +142,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					sb.append(",");
 				}
 				sb.deleteCharAt(sb.lastIndexOf(","));
-				sb.append(" from ").append(sObject);
-				sb.append("\"");
+				sb.append(" from ");
+				sb.append("\"+");
+				sb.append(sObject);
 				
 				sql = sb.toString();
 			}
@@ -197,7 +198,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%
 				}else{
 				%>
-					sforceBulk_<%=cid%>.doBulkQuery("<%=sObject%>", sql_<%=cid%>.toString(), 30);
+					sforceBulk_<%=cid%>.doBulkQuery(<%=sObject%>, sql_<%=cid%>.toString(), 30);
 					String[] queryResultIDs_<%=cid%> = sforceBulk_<%=cid%>.getQueryResultIDs();
 					for(String queryResultId_<%=cid%> : queryResultIDs_<%=cid%>){
 						java.util.List<java.util.Map<String,String>> resultListMessage_<%=cid%> = sforceBulk_<%=cid%>.getQueryResult(queryResultId_<%=cid%>);
