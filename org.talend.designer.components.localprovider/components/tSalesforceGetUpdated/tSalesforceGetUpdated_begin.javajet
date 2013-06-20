@@ -62,7 +62,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			String module = ElementParameterParser.getValue(node, "__MODULENAME__");
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
-			module = (("CustomModule").equals(module)) ? customModulename.replaceAll("\"","") : module;
+			module = (("CustomModule").equals(module)) ? customModulename : module;
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -114,7 +114,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %>				
 
 	com.salesforce.soap.partner.sobject.SObject[] so_<%=cid%> = null;
-	com.salesforce.soap.partner.ID[] ids_<%=cid %> = sfMgr_<%=cid%>.getUpdated("<%=module%>", startCal_<%=cid%>, endCal_<%=cid%>);
+	com.salesforce.soap.partner.ID[] ids_<%=cid %> = sfMgr_<%=cid%>.getUpdated(<%=module%>, startCal_<%=cid%>, endCal_<%=cid%>);
 	
 	if(ids_<%=cid %> !=null && ids_<%=cid %>.length > 0){
 						
@@ -136,7 +136,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				localIds_<%=cid %>[i_<%=cid %>-newBase_<%=cid %>] = ids_<%=cid %>[i_<%=cid %>];
 			}
 			
-			so_<%=cid %> = sfMgr_<%=cid %>.retrieve(localIds_<%=cid %>,"<%=module %>","<%=fieldlist %>");
+			so_<%=cid %> = sfMgr_<%=cid %>.retrieve(localIds_<%=cid %>,<%=module %>,"<%=fieldlist %>");
     		
     		if(so_<%=cid%> != null){
     		
