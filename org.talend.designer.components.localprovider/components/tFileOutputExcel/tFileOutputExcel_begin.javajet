@@ -4,10 +4,13 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.utils.NodeUtil
     java.util.List
+    java.util.Map
 " 
 %>
 
@@ -34,6 +37,27 @@ boolean isAppendSheet = ("true").equals(ElementParameterParser.getValue(node, "_
 
 boolean flushOnRow=("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__" ));
 String flushRowNum=ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__" );
+
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
+
+String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
+boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!("").equals(allColumnAutoSize))?("true").equals(allColumnAutoSize):false;
+List<Map<String, String>> autoSizeList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__AUTO_SZIE_SETTING__");
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+
+List< ? extends IConnection> conns = node.getIncomingConnections();
+IConnection conn = null;
+if((conns == null) || (conns.size() < 1) || ((conn = conns.get(0)) == null)) {
+	return "";
+}
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -172,6 +196,158 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    }
 %>		
 
+<%
+	int sizeColumns = columns.size();
+	if(sizeColumns> schemaOptNum){//TD64
+%>
+		class FileOutputExcelUtil_<%=cid%>{
+<%
+		for (int i = 0; i < sizeColumns; i++) {//TD128
+			IMetadataColumn column = columns.get(i);
+			if(i%schemaOptNum==0){//TD256
+%>
+			public void putHeaderValue_<%=i/schemaOptNum%>(final jxl.write.WritableSheet writableSheet_<%=cid %>,final int rowNum_<%=cid %>,
+				final jxl.write.WritableCellFormat format_<%=cid %>,final int[] fitWidth_<%=cid%>) throws java.lang.Exception {
+<%
+			}//TD256
+			
+			if(firstCellYAbsolute){
+%>
+			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, rowNum_<%=cid %>, "<%=column.getLabel() %>"
+<%
+				if (font !=null && font.length()!=0) {
+%>
+					,format_<%=cid %>
+<%
+				}
+%>
+			));		
+<%
+			}else{
+%>
+			writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, rowNum_<%=cid%>, "<%=column.getLabel() %>"
+<%
+				if (font !=null && font.length()!=0) {
+%>
+					,format_<%=cid %>
+<%
+				}
+%>
+			));
+<%
+			}
+%>
+        		//modif end
+    		fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
+<%
+			if((i+1)%schemaOptNum==0){
+%>
+			}
+<%
+			}
+		}//TD128
+		
+		if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){//TD512
+%>
+			}
+<%
+		}//TD512
+		
+		boolean emptyMethod = true;
+		
+		for(int i=0;i<sizeColumns;i++){//TD1024
+			IMetadataColumn column = columns.get(i);
+			
+			if(i%schemaOptNum==0){
+				if(!isAllColumnAutoSize) {
+					if(autoSizeList.size() == columns.size()){
+						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
+    						Map<String,String> tmp= autoSizeList.get(i+j);
+    						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+    							emptyMethod = false;
+    							break;
+    						}
+						}
+					}
+				} else {
+					emptyMethod = false;
+				}
+				
+				if(!emptyMethod) {
+%>
+			public void setColumnView_<%=i/schemaOptNum%>(final jxl.write.WritableSheet writableSheet_<%=cid %>,
+				final int[] fitWidth_<%=cid%>) throws java.lang.Exception {
+<%
+				}
+			}
+			
+			if(isAllColumnAutoSize){
+%>
+    			//modif start
+        		<%if(firstCellYAbsolute){%>
+        			writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
+        		<%}else{%>
+        			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+        		<%}%>
+    			//modif end
+<%
+     		} else {
+     			if(autoSizeList.size() == columns.size()){
+    				Map<String,String> tmp= autoSizeList.get(i);
+            		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+%>
+        			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
+<%
+            		}
+        		}
+     		}
+     		
+     		if(!emptyMethod && ((i+1)%schemaOptNum==0)){
+     			emptyMethod = true;
+%>
+			}
+<%
+     		}
+     	}//TD1024
+     	
+     	if(!emptyMethod && (sizeColumns>0&&(sizeColumns%schemaOptNum)>0)){
+%>
+			}
+<%
+     	}
+     	
+     	for(int i=0;i<sizeColumns;i++){//TD2048
+			IMetadataColumn column = columns.get(i);
+			if(i%schemaOptNum==0){
+%>
+			public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,
+				final jxl.write.WritableSheet writableSheet_<%=cid %>,final int startRowNum_<%=cid %>,final int nb_line_<%=cid %>,
+				final jxl.write.WritableCellFormat format_<%=cid%>,int[] fitWidth_<%=cid%>) throws java.lang.Exception {
+<%
+			}
+%>
+			<%@ include file="./putValue.javajet"%>
+<%
+     		if((i+1)%schemaOptNum==0){
+%>
+			}
+<%
+     		}
+		}//TD2048
+		
+     	if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){
+%>
+			}
+<%
+     	}
+%>
+			
+		}
+		
+		FileOutputExcelUtil_<%=cid%> fileOutputExcelUtil_<%=cid%>=new FileOutputExcelUtil_<%=cid%>();
+<%
+	}//TD64
+%>
 
 <%
 if(isIncludeHeader){
@@ -194,6 +370,22 @@ if(isIncludeHeader){
 <%
 	for (int i = 0; i < columns.size(); i++) {
 		IMetadataColumn column = columns.get(i);
+		if(sizeColumns > schemaOptNum){
+        	if(i%schemaOptNum==0){
+        		if(firstCellYAbsolute) {
+%>
+				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,startRowNum_<%=cid %>,<%if (font !=null && font.length()!=0) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
+<%
+        		} else {
+%>
+				fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(writableSheet_<%=cid %>,nb_line_<%=cid%>,<%if (font !=null && font.length()!=0) {%>format_<%=cid %><%} else {%>null<%}%>,fitWidth_<%=cid%>);
+<%
+        		}
+
+        	}
+        	
+        	continue;
+        }
 %>
 		//modif start
 <%
@@ -262,6 +454,115 @@ if(isIncludeHeader){
 		<%}%>
 		xlsxTool_<%=cid%>.setFont("<%=font%>");
 		<%
+		int sizeColumns = columns.size();
+		if(sizeColumns> schemaOptNum){//TD1
+%>
+			class FileOutputExcelUtil_<%=cid%>{
+<%
+    		for (int i = 0; isIncludeHeader && (i < sizeColumns); i++) {
+    			IMetadataColumn column = columns.get(i);
+    			if(i%schemaOptNum==0){
+%>
+				public void putHeaderValue_<%=i/schemaOptNum%>(final org.talend.ExcelTool xlsxTool_<%=cid%>) throws java.lang.Exception {
+<%
+    			}
+%>
+					xlsxTool_<%=cid%>.addCellValue("<%=column.getLabel()%>");
+<%
+    			if((i+1)%schemaOptNum==0){
+%>
+				}
+<%
+    			}
+    		}
+    		
+    		if(isIncludeHeader && sizeColumns>0 && (sizeColumns%schemaOptNum)>0){
+%>
+				}
+<%
+    		}
+    		
+    		boolean emptyMethod = true;
+    		for(int i=0;i<sizeColumns;i++){
+    			IMetadataColumn column = columns.get(i);
+    			if(i%schemaOptNum==0){
+    				if(!isAllColumnAutoSize) {
+    					if(autoSizeList.size() == columns.size()){
+    						for(int j=0;(j<schemaOptNum) && (i+j<sizeColumns);j++) {
+        						Map<String,String> tmp= autoSizeList.get(i+j);
+        						if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+        							emptyMethod = false;
+        							break;
+        						}
+    						}
+    					}
+    				} else {
+    					emptyMethod = false;
+    				}
+    				
+    				if(!emptyMethod) {
+%>
+				public void setColAutoSize_<%=i/schemaOptNum%>(final org.talend.ExcelTool xlsxTool_<%=cid%>) throws java.lang.Exception {
+<%    			
+					}
+    			}
+    			
+    			if(isAllColumnAutoSize){
+%>
+					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+<%
+    			} else if(autoSizeList.size() == columns.size()) {
+    				Map<String,String> tmp= autoSizeList.get(i);
+            		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){
+%>
+					xlsxTool_<%=cid%>.setColAutoSize(<%=i%>);
+<%
+            		}
+    			}
+    			
+    			if(!emptyMethod && ((i+1)%schemaOptNum==0)){
+    				emptyMethod = true;
+%>
+				}
+<%    			
+    			}
+    		}
+    		if(!emptyMethod && (sizeColumns>0 && (sizeColumns%schemaOptNum)>0)){
+%>
+				}
+<%    		
+    		}
+    		
+    		for(int i=0;i<sizeColumns;i++){
+    			IMetadataColumn column = columns.get(i);
+    			if(i%schemaOptNum==0){
+%>
+    			public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,
+    				final org.talend.ExcelTool xlsxTool_<%=cid%>) throws java.lang.Exception {
+<%    			
+    			}
+%>
+				<%@ include file="./putValue2007.javajet"%>
+<%    			
+    			if((i+1)%schemaOptNum==0){
+%>
+				}
+<%    			
+    			}
+    		}
+    		
+    		if(sizeColumns>0 && (sizeColumns%schemaOptNum)>0){
+%>
+				}
+<%    		
+    		}
+%>
+			}
+			
+			FileOutputExcelUtil_<%=cid%> fileOutputExcelUtil_<%=cid%>=new FileOutputExcelUtil_<%=cid%>();
+<%
+		}//TD1
+		
 		if(isIncludeHeader){
 			if(isDeleteEmptyFile){
 		%>
@@ -279,6 +580,14 @@ if(isIncludeHeader){
 		<%
 			for (int i = 0; i < columns.size(); i++) {
 				IMetadataColumn column = columns.get(i);
+				if(sizeColumns > schemaOptNum){
+        			if(i%schemaOptNum==0){
+%>
+					fileOutputExcelUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(xlsxTool_<%=cid%>);
+<%
+        			}
+        			continue;
+        		}
 		%>
 		xlsxTool_<%=cid%>.addCellValue("<%=column.getLabel()%>");
 		<%
