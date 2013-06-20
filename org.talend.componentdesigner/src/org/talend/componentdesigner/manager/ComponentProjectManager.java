@@ -260,7 +260,6 @@ public final class ComponentProjectManager {
         addLibClasspathEntries(ces, "org.talend.metadata.managment"); //$NON-NLS-1$
         addLibClasspathEntries(ces, "org.talend.core"); //$NON-NLS-1$
         addLibClasspathEntries(ces, "org.talend.designer.codegen"); //$NON-NLS-1$
-        addLibClasspathEntries(ces, "org.talend.commons"); //$NON-NLS-1$
         return ces;
     }
 
