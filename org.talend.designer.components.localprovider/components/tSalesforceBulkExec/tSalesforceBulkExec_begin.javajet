@@ -27,7 +27,7 @@ imports="
 	String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
 	if ("CustomModule".equals(sObject)) {
 		//modulename = customModulename; 
-		sObject = customModulename.replaceAll("\"","");
+		sObject = customModulename;
 	}
 	
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
@@ -69,7 +69,7 @@ imports="
 	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
 
 
-	sforceBulk_<%=cid%>.executeBulk("<%=sObject%>","<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
+	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
 
 	<%
 	List<IMetadataTable> metadatas = node.getMetadataList();

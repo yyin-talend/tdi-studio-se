@@ -1902,6 +1902,15 @@
             name="ChangeFileInputJSONUrlUnCheckWhenXpathCheck"
             version="5.3.1">
         </projecttask>
+        <projecttask
+        	beforeLogon="false"
+            breaks="5.3.1"
+            class="org.talend.repository.model.migration.ChangeSalesForceComponetsCustomerModuleName"
+            description="Add double quote if &quot;customer module name&quot; is not surrounded by it"
+            id="org.talend.repository.model.migration.ChangeSalesForceComponetsCustomerModuleName"
+            name="ChangeSalesForceComponetsCustomerModuleName"
+            version="5.3.2">
+        </projecttask>
    </extension>
    
    <extension
