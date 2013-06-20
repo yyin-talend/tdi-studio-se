@@ -56,7 +56,7 @@
       <page
             category="org.talend.designer.codegen.components.localprovider.page1"
             class="org.talend.designer.components.preference.labelformat.ComponentsFormatPreferencePage"
-            id="org.talend.designer.codegen.components.localprovider.page1"
+            id="org.talend.designer.codegen.components.localprovider.page2"
             name="%format">
       </page>
    </extension>
