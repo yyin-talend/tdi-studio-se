@@ -233,4 +233,11 @@ if(("UPDATE").equals(dataAction)) {
     <%
 }
 %>
+<%
+	if(!useExistingConnection) {
+%>
 conn_<%=cid %>.close();
+<%
+	}
+%>
+
