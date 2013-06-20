@@ -22,6 +22,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.metadata.managment.connection.manager.DatabaseConnConstants;
 
 /**
  * DOC hyWang class global comment. Detailled comment
@@ -48,6 +49,14 @@ public class DbInfo {
 
     private Connection conn = null;
 
+    private boolean isHive;
+
+    private String jobTracker;
+
+    private String nameNode;
+
+    private String thrifturi;
+
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String additionalParams) {
         this.dbType = dbType;
         this.username = username;
@@ -58,6 +67,27 @@ public class DbInfo {
         generateDriverName();
         genarateDriverJarPath();
         getConnFromNode();
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
+    }
+
+    // for hive
+    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String jobTracker, String nameNode,
+            String thrifturi, String additionalParams) {
+        this.dbType = dbType;
+        this.username = username;
+        this.pwd = pwd;
+        this.dbVersion = dbVersion;
+        this.url = url;
+        this.additionalParams = additionalParams;
+        this.jobTracker = jobTracker;
+        this.nameNode = nameNode;
+        this.thrifturi = thrifturi;
+        this.isHive = true;
+        generateDriverName();
+        if (!isHive) {
+            genarateDriverJarPath();
+            getConnFromNode();
+        }
         this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
     }
 
@@ -163,9 +193,9 @@ public class DbInfo {
                         dbVersion, additionalParams);
             } else {
                 // driverJarPath set to null,to reget driverJarPath
-                driverJarPath = ""; //$NON-NLS-N$
+                driverJarPath = "";
                 list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion,
-                        additionalParams); //$NON-NLS-N$
+                        additionalParams);
             }
             if (list != null && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {
@@ -187,7 +217,7 @@ public class DbInfo {
                     || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
                     || dbType.equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName())
                     || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
-                    .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
+                        .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
                 try {
                     // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
                     if (conn != null
@@ -205,6 +235,13 @@ public class DbInfo {
     }
 
     private void generateDriverName() {
+        if (EDatabaseTypeName.HIVE.getDisplayName().equals(dbType)) {
+            if (url.startsWith(DatabaseConnConstants.HIVE_2_URL_FORMAT)) {
+                driverClassName = EDatabase4DriverClassName.HIVE2.getDriverClass();
+            } else {
+                driverClassName = EDatabase4DriverClassName.HIVE.getDriverClass();
+            }
+        }
         driverClassName = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
     }
 
@@ -227,6 +264,42 @@ public class DbInfo {
 
     private String getTrueDBType(String className) {
         return ExtractMetaDataUtils.getDbTypeByClassName(className);
+    }
+
+    /**
+     * Getter for isHive.
+     * 
+     * @return the isHive
+     */
+    public boolean isHive() {
+        return this.isHive;
+    }
+
+    /**
+     * Getter for jobTracker.
+     * 
+     * @return the jobTracker
+     */
+    public String getJobTracker() {
+        return this.jobTracker;
+    }
+
+    /**
+     * Getter for nameNode.
+     * 
+     * @return the nameNode
+     */
+    public String getNameNode() {
+        return this.nameNode;
+    }
+
+    /**
+     * Getter for thrifturi.
+     * 
+     * @return the thrifturi
+     */
+    public String getThrifturi() {
+        return this.thrifturi;
     }
 
 }

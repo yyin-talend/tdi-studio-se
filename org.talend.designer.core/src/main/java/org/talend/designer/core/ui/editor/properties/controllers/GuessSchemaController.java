@@ -51,6 +51,7 @@ import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQRuleService;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.ConnParameterKeys;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -64,6 +65,8 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
+import org.talend.core.model.metadata.connection.hive.HiveConnVersionInfo;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
@@ -88,6 +91,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.wizards.metadata.connection.database.MappingFileSelectDialog;
 
@@ -743,6 +747,18 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
                             iMetadataConnection.getUrl(), iMetadataConnection.getDriverClass(),
                             iMetadataConnection.getDriverJarPath(), iMetadataConnection.getAdditionalParams());
+                } else if (EDatabaseTypeName.HIVE.getDisplayName().equals(iMetadataConnection.getDbType())) {
+                    String jobTracker = TalendTextUtils.removeQuotes(String.valueOf(iMetadataConnection
+                            .getParameter(ConnParameterKeys.CONN_PARA_KEY_JOB_TRACKER_URL)));
+                    String nameNode = TalendTextUtils.removeQuotes(String.valueOf(iMetadataConnection
+                            .getParameter(ConnParameterKeys.CONN_PARA_KEY_NAME_NODE_URL)));
+                    String thrifturi = null;
+                    if (HiveConnVersionInfo.MODE_EMBEDDED.getKey().equals(iMetadataConnection.getDbVersionString())) {
+                        thrifturi = "thrift://" + iMetadataConnection.getServerName() + ":" + iMetadataConnection.getPort();
+                    }
+                    info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                            iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
+                            iMetadataConnection.getUrl(), jobTracker, nameNode, thrifturi, iMetadataConnection.getDriverJarPath());
                 } else {
                     info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
                             iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
@@ -850,6 +866,21 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
      */
     protected boolean checkConnection(IMetadataConnection metadataConnection) {
         try {
+            if (EDatabaseTypeName.HIVE.getDisplayName().equals(metadataConnection.getDbType())) {
+                ConnectionStatus connectionStatus = new ConnectionStatus();
+                connectionStatus.setResult(false);
+                try {
+                    if (HiveConnVersionInfo.MODE_EMBEDDED.getKey().equals(metadataConnection.getDbVersionString())) {
+                        JavaSqlFactory.doHivePreSetup((DatabaseConnection) metadataConnection.getCurrentConnection());
+                    }
+                    HiveConnectionManager.getInstance().checkConnection(metadataConnection);
+                    connectionStatus.setResult(true);
+                } catch (Exception e) {
+                    log.error("" + "\n" + e.toString()); //$NON-NLS-1$//$NON-NLS-2$
+                }
+                return connectionStatus.getResult();
+            }
+
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
