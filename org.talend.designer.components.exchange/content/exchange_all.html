@@ -84,6 +84,7 @@
 				<!-- validate the createNewExtension text  start-->
 				var labelValidate = document.getElementById("extension_label").value;
 				var lastVersionAvailableValidate = document.getElementById("lastVersionAvailable").value;
+				var filename = document.getElementById("filename").value;
 				if(labelValidate==0){  
         			alert("Extension Title is empty");  
     			}else if(labelValidate=="null"){  
@@ -92,7 +93,10 @@
         			alert("Initial Version is empty");  
     			}else if(lastVersionAvailableValidate=="null"){  
         			alert("Initial Version can not be null");  
+    			}else if(filename==0){
+    				alert("Please input a vaild File path");  
     			}
+    			
     			<!-- validate the createNewExtension text  end-->
 			
 				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
