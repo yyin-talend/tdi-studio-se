@@ -128,9 +128,6 @@ public class GuessSchemaProcess {
 
         if (node.getComponent().getModulesNeeded().size() > 0) {
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
-                if (module.getModuleName().contains("hbase")) {
-                    System.out.println();
-                }
                 if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
                             ComponentCategory.CATEGORY_4_DI.getName()), process);
