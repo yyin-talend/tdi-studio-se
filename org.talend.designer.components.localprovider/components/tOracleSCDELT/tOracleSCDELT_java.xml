@@ -148,7 +148,17 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+ 
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="41"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Oracle</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"

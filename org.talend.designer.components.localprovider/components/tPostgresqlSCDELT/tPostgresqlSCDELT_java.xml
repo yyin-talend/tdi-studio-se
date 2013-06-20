@@ -101,7 +101,17 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+ 	 
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="31"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Postgresql</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
