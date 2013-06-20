@@ -381,7 +381,7 @@
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass(null);
+						rowUtil.generateClass();
 					}
 				}
 				%>
@@ -557,7 +557,7 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}else{//the following is the tFileInputCSV component
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		final String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 		class RowUtil extends DefaultRowUtil{
 			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
 				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null, start ,end);
@@ -589,6 +589,13 @@
 				<%
 				}
 				%>
+				char fieldSeparator_<%=cid %>_ListType[] = null;
+				//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
+				if ( ((String)<%=delim1%>).length() > 0 ){
+					fieldSeparator_<%=cid %>_ListType = ((String)<%=delim1%>).toCharArray();
+				}else {			
+					throw new IllegalArgumentException("Field Separator must be assigned a char."); 
+				}
 				if(<%=sourceValueName%>.length == 1 && ("\015").equals(<%=sourceValueName%>[0])){//empty line when row separator is '\n'
 					<%
 					for(int colNo=start;colNo<end;colNo++) {
@@ -686,7 +693,7 @@
 									<%
 									}else if(javaType == JavaTypesManager.LIST){ 
                                     %>                          
-                                        <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[columnIndexWithD_<%=cid%>],String.valueOf(fieldSeparator_<%=cid %>[0]));
+                                        <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[columnIndexWithD_<%=cid%>],String.valueOf(fieldSeparator_<%=cid %>_ListType[0]));
                                     <%
 									}else if(column.getTalendType().equals("id_Dynamic")){
 										this.isBehindDynamic=true;
@@ -759,7 +766,7 @@
 		    	if(("").equals(limit)){
 		    		limit="-1";
 		    	}
-		    	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");     	
+		    	  	
 		    	String rowSeparator1 = ElementParameterParser.getValue(node, "__CSVROWSEPARATOR__");
 		    	
 		    	
@@ -830,7 +837,7 @@
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass(delim1);
+						rowUtil.generateClass();
 					}
 				}	
 				%>
