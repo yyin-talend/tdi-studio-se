@@ -14,12 +14,15 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.ERepositoryStatus;
 
 /**
  * Command that allows to change a connection to a new source or a new target when collapse joblet_component. <br/>
@@ -273,13 +276,19 @@ public class JobletConnectionReconnectCommand extends Command {
                     IMetadataTable targetOldMetadataTable = newTarget.getMetadataFromConnector(connector.getName());
                     if (oldMetadataTable != null && targetOldMetadataTable != null) {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
-                        // For the auto propagate.
-                        if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
-                                && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
-                            ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
-                                    oldMetadataTable);
-                            changeMetadataCmd.execute(true);
-                            metadataChanges.add(changeMetadataCmd);
+
+                        IProcess2 jobletProcess = (IProcess2) newTarget.getJobletNode().getComponent().getProcess();
+                        ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(
+                                jobletProcess.getProperty().getItem());
+                        if (!status.equals(ERepositoryStatus.READ_ONLY)) {
+                            // For the auto propagate.
+                            if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
+                                    && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                                ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
+                                        oldMetadataTable);
+                                changeMetadataCmd.execute(true);
+                                metadataChanges.add(changeMetadataCmd);
+                            }
                         }
                     }
                 }
