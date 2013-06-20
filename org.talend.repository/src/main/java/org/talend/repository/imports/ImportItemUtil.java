@@ -63,6 +63,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.CwmResource;
+import org.talend.commons.emf.EmfHelper;
+import org.talend.commons.emf.TalendXMIResource;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -1436,7 +1438,7 @@ public class ImportItemUtil {
                     return inputStream;
                 }
             });
-            resource.load(stream, null);
+            EmfHelper.loadResource(resource, stream, null);
             resource.getResourceSet().setURIConverter(uriConverter);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
@@ -1592,6 +1594,7 @@ public class ImportItemUtil {
                 stream = manager.getStream(path);
                 Resource resource = createResource(itemRecord, path, false);
                 resource.load(stream, null);
+                EmfHelper.loadResource(resource, stream, null);
                 projects.put(path,
                         (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE.getProject()));
             }
@@ -1628,9 +1631,10 @@ public class ImportItemUtil {
                 String process = projectName + "/process/"; //$NON-NLS-1$
                 String joblet = projectName + "/joblets/"; //$NON-NLS-1$
                 String pathString = path.toPortableString();
+                // PTODO, maybe will bring bugs, like mr job,route, maybe jobscript
                 if (pathString.contains(process) || pathString.contains(context) || pathString.contains(business)
                         || pathString.contains(joblet)) {
-                    resource = new XMIResourceImpl(getURI(path));
+                    resource = new TalendXMIResource(getURI(path));
                 } else {
                     resource = new CwmResource(getURI(path));
                 }
