@@ -236,4 +236,11 @@ if(columnList != null && columnList.size() > 0) {
     stmtBulk_<%=cid %>.close();    
     <%
 %>
+
+<%
+	if(!useExistingConnection) {
+%>
 conn_<%=cid %>.close();
+<%
+	}
+%>
