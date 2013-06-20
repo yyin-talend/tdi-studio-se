@@ -28,6 +28,7 @@ List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
     if(isEnableSaveMemMode) {
         %>
         searchingStmt_<%=cid%>.close();
@@ -52,6 +53,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         updateForType3_<%=cid%>.close();
         <%
     }
+    if(useTransaction){
+	%>
+		if(!connection_<%=cid%>.getAutoCommit()) {
+			connection_<%=cid%>.commit();
+		}
+	<%
+	}
     if (!useExistingConnection) {
         %>
         if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
