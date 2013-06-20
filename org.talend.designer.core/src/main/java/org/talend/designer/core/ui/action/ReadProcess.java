@@ -25,9 +25,11 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -105,6 +107,10 @@ public class ReadProcess extends AbstractProcessAction {
                 default:
                     canWork = false;
                 }
+            }
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_USER) {
+                canWork = false;
             }
         }
         setEnabled(canWork);
