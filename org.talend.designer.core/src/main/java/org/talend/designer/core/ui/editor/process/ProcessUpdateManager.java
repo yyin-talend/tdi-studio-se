@@ -1480,6 +1480,22 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             // node.getMetadataFromConnector(schemaTypeParam.getContext());
                                             metadataTable = MetadataToolHelper.getMetadataTableFromNodeLabel(node, schemaName);
 
+                                            if (this.isAddColumn) {
+                                                Display.getDefault().syncExec(new Runnable() {
+
+                                                    @Override
+                                                    public void run() {
+                                                        isColumnUsed = MessageDialog.openQuestion(Display.getDefault()
+                                                                .getActiveShell(), Messages
+                                                                .getString("ProcessUpdateManager.Question"), Messages
+                                                                .getString("ProcessUpdateManager.QuestionString"));
+                                                    }
+
+                                                });
+                                                this.isAddColumn = false;
+                                                copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
+                                            }
+
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
                                                             IMetadataColumn.OPTIONS_NONE))) {
