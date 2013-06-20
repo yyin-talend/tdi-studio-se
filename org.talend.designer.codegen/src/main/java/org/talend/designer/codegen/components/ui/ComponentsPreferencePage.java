@@ -261,7 +261,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
             public void modifyText(ModifyEvent e) {
                 String newPath = filePathTemp.getTextControl(parent).getText();
                 File file = new File(newPath);
-                if (!file.exists()) {
+                if (!file.exists() && !"".equals(newPath)) {
                     // getPreferenceStore().setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, "");
                     filePathTemp.showErrorMessage();
                     setValid(false);
