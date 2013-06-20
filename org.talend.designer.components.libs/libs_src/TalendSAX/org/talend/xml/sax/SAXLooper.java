@@ -71,15 +71,15 @@ public class SAXLooper {
     }
 
     private void judgeIsSimple() {
-        if (this.loopPath.indexOf("..") >= 0 || this.loopPath.indexOf("*") >= 0) {
-            this.isSimpleParse = false;
-        }
-        for (int i = 0; i < nodePaths.length; i++) {
-            if (nodePaths[i].indexOf("..") >= 0 || nodePaths[i].indexOf("*") >= 0) {
-                this.isSimpleParse = false;
+        isSimpleParse = isSimplePath(loopPath);
+        
+        for(String path : nodePaths) {
+            if(!isSimpleParse) {
                 break;
             }
+            isSimpleParse = isSimplePath(path);
         }
+        
         if (this.isSimpleParse) {
             looper = new SimpleSAXLooper(loopPath, nodePaths, asXMLs);
         } else {
