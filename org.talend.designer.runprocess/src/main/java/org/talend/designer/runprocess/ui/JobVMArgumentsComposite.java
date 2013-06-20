@@ -365,7 +365,7 @@ public class JobVMArgumentsComposite {
         if (value != null) {
             int indexOf = list.indexOf(existing);
             list.remove(existing);
-            list.add(indexOf, value);
+            list.add(indexOf, value.replaceAll(" ", ""));
             viewer.refresh();
             doSave();
         }
@@ -473,11 +473,7 @@ public class JobVMArgumentsComposite {
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
                 if (columnIndex == 0) {
-                    String trim = ARG_DELIMITER.trim();
-                    if (value.trim().startsWith(trim)) {
-                        return value;
-                    }
-                    return trim + value;
+                    return value;
                 }
                 throw new IllegalStateException();
             }
@@ -530,7 +526,7 @@ public class JobVMArgumentsComposite {
             return EMPTY_STRING_LIST;
         }
         ArrayList<String> result = new ArrayList<String>(50);
-        for (String tmp : stringList.split(ARG_DELIMITER)) {
+        for (String tmp : stringList.split(" ")) {
             if (tmp != null && !"".equals(tmp)) { //$NON-NLS-1$
                 result.add(tmp);
             }
@@ -541,17 +537,10 @@ public class JobVMArgumentsComposite {
     protected String writeString(List<String> items) {
         int size = items.size();
         StringBuffer buf = new StringBuffer(size * 50);
-        buf.append(ARG_DELIMITER);
+        buf.append(" ");
         for (int i = 0; i < size; i++) {
-            buf.append(items.get(i));
-            if (i != size - 1) {
-                String trim = ARG_DELIMITER.trim();
-                if (!items.get(i + 1).trim().startsWith(trim)) {
-                    buf.append(ARG_DELIMITER);
-                } else {
-                    buf.append(" "); //$NON-NLS-1$
-                }
-            }
+            buf.append(items.get(i).trim().replaceAll(" ", ""));
+            buf.append(" "); //$NON-NLS-1$
         }
         return buf.toString();
     }
