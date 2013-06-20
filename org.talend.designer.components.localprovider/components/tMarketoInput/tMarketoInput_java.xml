@@ -34,7 +34,7 @@
 
   <PARAMETERS>
   	<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
-		<DEFAULT>"https://na-c.marketo.com/soap/mktows/1_5"</DEFAULT>
+		<DEFAULT>"https://123-ABC-456.mktoapi.com/soap/mktows/2_0"</DEFAULT>
 	</PARAMETER>
 	<PARAMETER NAME="SECRET_KEY" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
 		<DEFAULT>""</DEFAULT>
