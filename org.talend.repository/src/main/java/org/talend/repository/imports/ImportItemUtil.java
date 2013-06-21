@@ -1624,6 +1624,7 @@ public class ImportItemUtil {
                 String projectName = "";
                 if (itemRecord.getItemProject() != null) {
                     projectName = itemRecord.getItemProject().getTechnicalLabel();
+                    projectName = projectName.toLowerCase();
                 }
                 // note: do similar code as the CwmResourceFactory
                 String business = projectName + "/businessProcess/"; //$NON-NLS-1$
@@ -1631,6 +1632,7 @@ public class ImportItemUtil {
                 String process = projectName + "/process/"; //$NON-NLS-1$
                 String joblet = projectName + "/joblets/"; //$NON-NLS-1$
                 String pathString = path.toPortableString();
+                pathString = pathString.toLowerCase();
                 // PTODO, maybe will bring bugs, like mr job,route, maybe jobscript
                 if (pathString.contains(process) || pathString.contains(context) || pathString.contains(business)
                         || pathString.contains(joblet)) {
