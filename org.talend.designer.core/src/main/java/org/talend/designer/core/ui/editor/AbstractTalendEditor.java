@@ -160,6 +160,8 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
+import org.talend.designer.core.ui.action.GEFRedoAction;
+import org.talend.designer.core.ui.action.GEFUndoAction;
 import org.talend.designer.core.ui.action.ModifyConnectionOrderAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
@@ -866,6 +868,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
         // setAction(deleteAction.getId(), deleteAction);
+
+        IAction undoAction = new GEFUndoAction(this);
+        getActionRegistry().registerAction(undoAction);
+        getSelectionActions().add(undoAction.getId());
+
+        IAction redoAction = new GEFRedoAction(this);
+        getActionRegistry().registerAction(redoAction);
+        getSelectionActions().add(redoAction.getId());
 
         IAction setRefAction = new ConnectionSetAsMainRef(this);
         getActionRegistry().registerAction(setRefAction);
