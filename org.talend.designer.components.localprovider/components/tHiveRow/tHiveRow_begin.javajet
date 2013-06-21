@@ -47,6 +47,10 @@ java.sql.Connection conn_<%=cid%> = null;
 		String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
 		String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 		String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+		String fsDefalutName = "fs.default.name";
+		if(hiveVersion!=null && "Cloudera_CDH4".equals(hiveVersion)){
+			fsDefalutName="fs.defaultFS";
+		}		
 		boolean setMapredJT = "true".equals(ElementParameterParser.getValue(node, "__SET_MAPRED_JT__"));
 		boolean setNamenode = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 		List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
@@ -77,7 +81,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		if(setNamenode) {
 			String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
-			System.setProperty("fs.default.name", <%=namenode%>);
+			System.setProperty("<%=fsDefalutName%>", <%=namenode%>);
 <%
 		}		
 		
