@@ -129,6 +129,7 @@ public class ProcessContextComposite extends Composite {
 
     ISelectionChangedListener contextComboListener = new ISelectionChangedListener() {
 
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             Object input = null;
             if (!event.getSelection().isEmpty()) {
@@ -174,6 +175,7 @@ public class ProcessContextComposite extends Composite {
 
             contextListener = new IContextListener() {
 
+                @Override
                 public void contextsChanged() {
                     if (!ProcessContextComposite.this.isDisposed()) {
                         getInformationsFromContextManager(process.getContextManager());
@@ -259,11 +261,13 @@ public class ProcessContextComposite extends Composite {
                     ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(), true);
                     ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(contextType,
                             param.getName());
-                    return ContextUtils.samePropertiesForContextParameter(param, contextParameterType);
+                    if (!ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
+                        return false;
+                    }
                 }
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -276,6 +280,7 @@ public class ProcessContextComposite extends Composite {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
+        @Override
         public int compare(IContext o1, IContext o2) {
             String name1 = o1.getName().toUpperCase();
             String name2 = o2.getName().toUpperCase();
@@ -393,6 +398,7 @@ public class ProcessContextComposite extends Composite {
         /**
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
          */
+        @Override
         public String getColumnText(final Object element, final int columnIndex) {
             String text;
             IContextParameter parameter = (IContextParameter) element;
@@ -418,6 +424,7 @@ public class ProcessContextComposite extends Composite {
         /**
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
          */
+        @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
