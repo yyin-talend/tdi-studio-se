@@ -159,6 +159,12 @@ public class ImportRulesFromRepository implements SelectionListener {
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
+            if (element instanceof IFolder) {
+                IFolder folder = (IFolder) element;
+                if (folder.getName().startsWith(".")) {
+                    return false;
+                }
+            }
             if (element instanceof IFile) {
                 IFile file = (IFile) element;
                 if (!"rules".equals(file.getFileExtension())) { //$NON-NLS-1$
