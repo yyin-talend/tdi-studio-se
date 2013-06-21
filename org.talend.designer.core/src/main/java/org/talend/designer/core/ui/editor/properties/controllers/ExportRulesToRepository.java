@@ -46,7 +46,7 @@ public class ExportRulesToRepository implements SelectionListener {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
             tdqRepService = (ITDQRepositoryService) GlobalServiceRegister.getDefault().getService(ITDQRepositoryService.class);
         }
-        String elementName = node.getNodeLabel().getElementName();
+        String elementName = node.getProcess().getName() + "_" + node.getNodeLabel().getElementName();
         tdqRepService.createParserRuleItem(value, elementName);
     }
 
