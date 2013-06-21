@@ -322,7 +322,7 @@
 <%
 					if (!useFasteDateChecker) { //CONDITION_001512 START
 %>
-			if (!TalendDate.isDate((<%=_sInConnName%>.<%=colName%>).toString(), <%=pattern%><%if(ignoreTimeZone){%>,true<%}%>))
+			if (!TalendDate.isDate((<%=_sInConnName%>.<%=colName%>).toString(), <%=pattern%>,<%if(ignoreTimeZone){%>true<%}else{%>false<%}%>))
 				throw new IllegalArgumentException("Data format not matches");
 <%
 					} else { //CONDITION_001512 ELSE
