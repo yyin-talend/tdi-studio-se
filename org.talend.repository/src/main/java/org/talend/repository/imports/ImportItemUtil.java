@@ -149,6 +149,8 @@ public class ImportItemUtil {
 
     private final Set<String> deletedItems = new HashSet<String>();
 
+    private Map<ERepositoryObjectType, Set<String>> foldersCreated = new HashMap<ERepositoryObjectType, Set<String>>();
+
     private final Set<Project> updatedProjects = new HashSet<Project>();
 
     private final Map<IPath, Project> projects = new HashMap<IPath, Project>();
@@ -513,14 +515,6 @@ public class ImportItemUtil {
                                 service.loadComponentsFromProviders();
                             }
                         }
-                        // cannot cancel this part
-                        //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
-                        // for (ItemRecord itemRecord : itemRecords) {
-                        // if (itemRecord.isImported()) {
-                        // applyMigrationTasks(itemRecord, monitor);
-                        // }
-                        // monitor.worked(1);
-                        // }
                         checkDeletedFolders();
                         monitor.done();
 
@@ -579,45 +573,19 @@ public class ImportItemUtil {
     }
 
     private void checkDeletedFolders() {
-        List<FolderItem> foldersList = ProjectManager.getInstance().getFolders(
-                ProjectManager.getInstance().getCurrentProject().getEmfProject());
-        for (FolderItem folderItem : foldersList) {
-            setPathToDeleteIfNeed(folderItem);
-        }
-    }
-
-    private boolean setPathToDeleteIfNeed(FolderItem folderItem) {
-        if (folderItem.getState().isDeleted()) {
-            return true;
-        }
-        boolean allDeleted = folderItem.getType().getValue() == FolderType.FOLDER && folderItem.getChildren().size() != 0;
-        for (Item item : new ArrayList<Item>(folderItem.getChildren())) {
-            if (item instanceof FolderItem) {
-                if (!setPathToDeleteIfNeed((FolderItem) item)) {
-                    allDeleted = false;
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        if (!foldersCreated.isEmpty()) {
+            for (ERepositoryObjectType itemType : foldersCreated.keySet()) {
+                for (String folder : foldersCreated.get(itemType)) {
+                    FolderItem folderItem = repFactory.getFolderItem(ProjectManager.getInstance().getCurrentProject(), itemType,
+                            new Path(folder));
+                    if (folderItem != null) {
+                        folderItem.getState().setDeleted(true);
+                    }
                 }
             }
-            if (!item.getState().isDeleted()) {
-                allDeleted = false;
-            }
+            foldersCreated.clear();
         }
-        if (allDeleted) {
-            folderItem.getState().setDeleted(true);
-            String fullPath = "";
-            FolderItem curItem = folderItem;
-            while (curItem.getParent() instanceof FolderItem && ((Item) curItem.getParent()).getParent() instanceof FolderItem
-                    && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
-                FolderItem parentFolder = (FolderItem) curItem.getParent();
-                if ("".equals(fullPath)) {
-                    fullPath = parentFolder.getProperty().getLabel() + fullPath;
-                } else {
-                    fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
-                }
-                curItem = parentFolder;
-            }
-            folderItem.getState().setPath(fullPath);
-        }
-        return allDeleted;
     }
 
     public void clearAllData() {
@@ -630,6 +598,7 @@ public class ImportItemUtil {
         xmiResourceManager.unloadResources();
         xmiResourceManager.resetResourceSet();
         projects.clear();
+        foldersCreated.clear();
     }
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
@@ -669,6 +638,33 @@ public class ImportItemUtil {
             }
 
             try {
+                FolderItem folderItem = repFactory
+                        .getFolderItem(ProjectManager.getInstance().getCurrentProject(), itemType, path);
+                if (folderItem == null) {
+                    // if this folder does not exists (and it's parents), it will check if the folder was originally
+                    // deleted in source project.
+                    // if yes, it will set back the delete status to the folder, to keep the same as the original
+                    // project when import.
+                    // Without this code, deleted folders of items imported will not be in the recycle bin after import.
+                    // delete status is set finally in the function checkDeletedFolders
+                    IPath curPath = path;
+                    EList deletedFoldersFromOriginalProject = itemRecord.getItemProject().getDeletedFolders();
+                    while (folderItem == null && !curPath.isEmpty() && !curPath.isRoot()) {
+                        if (deletedFoldersFromOriginalProject.contains(new Path(itemType.getFolder()).append(
+                                curPath.toPortableString()).toPortableString())) {
+                            if (!foldersCreated.containsKey(itemType)) {
+                                foldersCreated.put(itemType, new HashSet<String>());
+                            }
+                            foldersCreated.get(itemType).add(curPath.toPortableString());
+                        }
+                        if (curPath.segments().length > 0) {
+                            curPath = curPath.removeLastSegments(1);
+                            folderItem = repFactory.getFolderItem(ProjectManager.getInstance().getCurrentProject(), itemType,
+                                    curPath);
+                        }
+
+                    }
+                }
                 repFactory.createParentFoldersRecursively(ProjectManager.getInstance().getCurrentProject(), itemType, path, true);
             } catch (Exception e) {
                 logError(e);
