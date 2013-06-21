@@ -48,7 +48,6 @@ public class ComponentFileChecker {
         checkFiles(currentFolder, languageSuffix);
         File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(currentFolder.getName(),
                 languageSuffix));
-        XsdValidationCacheManager xsdValidationCacheManager = XsdValidationCacheManager.getInstance();
 
         long currentCRC = 0;
         FileInputStream fis = null;
@@ -58,9 +57,8 @@ public class ComponentFileChecker {
             // do not check anymore XSD when be in headless mode.
             // check is mainly usefull for GUI to be able to check why component is not loaded after be developped.
             // if be in headless mode (like commandline), it's supposed to use only stable components
-            if (!CommonsPlugin.isHeadless() && xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
+            if (!CommonsPlugin.isHeadless()) {
                 checkXSD(xmlMainFile);
-                xsdValidationCacheManager.setChecked(xmlMainFile, currentCRC);
             }
         } catch (FileNotFoundException e) {
             ExceptionHandler.process(e);

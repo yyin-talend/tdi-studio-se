@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.preference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -398,14 +399,21 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String family = names[0];
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject(project);
+            List<ComponentSetting> toRemoveFromSettings = new ArrayList<ComponentSetting>();
             for (ComponentSetting componentSetting : components) {
-                if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
-                        && componentSetting.getName().equals(label)) {
+                if (/*
+                     * componentSetting.getFamily() != null && componentSetting.getFamily().equals(family) &&
+                     */componentSetting.getName().equals(label)) {
+                    if (visible) {
+                        toRemoveFromSettings.add(componentSetting);
+                    }
                     componentSetting.setHidden(!visible);
-                    return;
                 }
             }
-            if (!restore) {
+            if (visible) {
+                components.removeAll(toRemoveFromSettings);
+            }
+            if (toRemoveFromSettings.isEmpty() && !restore) {
                 ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
                 cs.setName(label);
                 cs.setHidden(!visible);

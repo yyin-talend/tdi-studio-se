@@ -182,21 +182,17 @@ public class TalendJetEmitter extends JETEmitter {
                     project.create(new SubProgressMonitor(progressMonitor, 1));
                     progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
                             new Object[] { project.getName() }));
-                    IProjectDescription description = workspace.newProjectDescription(project.getName());
-                    description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                    description.setLocation(null);
-                    project.open(new SubProgressMonitor(progressMonitor, 1));
-                    project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
-                } else {
-                    project.open(new SubProgressMonitor(progressMonitor, 5));
-                    IProjectDescription description = project.getDescription();
-                    // only in case it's one old workspace and got no nature defined.
-                    if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
-                        description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                        project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
-                    }
                 }
-
+                if (!project.isOpen()) {
+                    project.open(new SubProgressMonitor(progressMonitor, 5));
+                    project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+                }
+                IProjectDescription description = project.getDescription();
+                // only in case it's one old workspace and got no nature defined.
+                if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
+                    description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+                    project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+                }
                 javaProject = JavaCore.create(project);
 
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETInitializingProject_message", //$NON-NLS-1$

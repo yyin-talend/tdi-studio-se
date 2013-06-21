@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -91,7 +92,6 @@ import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -225,10 +225,34 @@ public class EmfComponent extends AbstractComponent {
             info.setUriString(uriString);
             info.setSourceBundleName(bundleId);
             info.setPathSource(pathSource);
-            cache.getComponentEntryMap().put(getName(), info);
+            if (!cache.getComponentEntryMap().containsKey(getName())) {
+                cache.getComponentEntryMap().put(getName(), new BasicEList<ComponentInfo>());
+            }
+            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
+            Iterator<ComponentInfo> it = componentsInfo.iterator();
+            while (it.hasNext()) {
+                ComponentInfo cInfo = it.next();
+                if (cInfo.getSourceBundleName().equals(bundleId)) {
+                    it.remove();
+                    // in case we already had in the cache the same component
+                    // just remove it to force to reload all from cache.
+                    break;
+                }
+            }
+            componentsInfo.add(info);
             isAlreadyLoad = true;
         } else {
-            info = cache.getComponentEntryMap().get(getName());
+            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
+            for (ComponentInfo cInfo : componentsInfo) {
+                if (cInfo.getSourceBundleName().equals(bundleId)) {
+                    info = cInfo;
+                    break;
+                }
+            }
+            if (info == null) {
+                throw new BusinessException("Component " + name + " not found in cache for bundle " + bundleId //$NON-NLS-1$ //$NON-NLS-2$
+                        + ". Please reinitalize the cache."); //$NON-NLS-1$
+            }
             isLoaded = true;
         }
     }
@@ -2218,10 +2242,6 @@ public class EmfComponent extends AbstractComponent {
         } else {
             if (info != null) {
                 originalFamilyName = info.getOriginalFamilyName();
-            } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getOriginalFamilyName();
-                }
             }
         }
         return originalFamilyName;
@@ -2632,9 +2652,11 @@ public class EmfComponent extends AbstractComponent {
 
         List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
         for (ComponentSetting componentSetting : components) {
-
-            if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
-                    && componentSetting.getName().equals(getName())) {
+            // remove the check of family since in all case the GUI won't care about the name of family in
+            // PaletteSettingPage, the components will be hidden in each family
+            if (/*
+                 * componentSetting.getFamily() != null && componentSetting.getFamily().equals(family) &&
+                 */componentSetting.getName().equals(getName())) {
                 return !componentSetting.isHidden();
             }
 
@@ -2670,13 +2692,7 @@ public class EmfComponent extends AbstractComponent {
             version = String.valueOf(compType.getHEADER().getVERSION());
             info.setVersion(version);
         } else {
-            if (info == null) {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getVersion();
-                }
-            } else {
-                version = info.getVersion();
-            }
+            version = info.getVersion();
         }
 
         return version;
@@ -2739,8 +2755,8 @@ public class EmfComponent extends AbstractComponent {
                         ITEMType itemType = (ITEMType) itemsList.get(j);
                         if (itemType.getVALUE().contains(".jar")) {
                             String[] values = itemType.getVALUE().split(";");
-                            for (int x = 0; x < values.length; x++) {
-                                String valueIndex = values[x];
+                            for (String value : values) {
+                                String valueIndex = value;
                                 if (!moduleNames.contains(valueIndex)) {
                                     moduleNames.add(valueIndex);
                                     String msg = getTranslatedValue(itemType.getNAME() + ".INFO"); //$NON-NLS-1$
@@ -3103,13 +3119,7 @@ public class EmfComponent extends AbstractComponent {
             }
             info.getPluginDependencies().addAll(pluginDependencyList);
         } else {
-            if (info != null) {
-                pluginDependencyList = info.getPluginDependencies();
-            } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getPluginDependencies();
-                }
-            }
+            pluginDependencyList = info.getPluginDependencies();
         }
         return pluginDependencyList;
     }

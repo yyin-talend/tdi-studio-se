@@ -114,6 +114,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             initializeStart = true;
         }
 
+        @Override
         public void run() {
             status = doRun();
         }
@@ -125,7 +126,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
 
                 TimeMeasure.begin("initialize Jet Emitters");
-                ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                 jetFilesCompileFail.clear();
 
@@ -143,8 +143,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                 templatesFactory.init();
 
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                // do not call init because it may be already loaded by
-                // ComponentsFactoryProvider.saveComponentVisibilityStatus
                 componentsFactory.getComponents();
 
                 long startTime = System.currentTimeMillis();
@@ -174,11 +172,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
                     for (IComponent component : new ArrayList<IComponent>(components)) {
-                        // if (component.isTechnical() || component.isVisible()) {
                         if (component.getAvailableCodeParts().size() > 0) {
                             initComponent(codeLanguage, jetBeans, codePart, component);
                         }
-                        // }
                         monitorBuffer++;
                         if (monitorBuffer % 100 == 0) {
                             monitorWrap.worked(100);
@@ -194,6 +190,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 if (!CommonsPlugin.isHeadless()) {
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             CorePlugin.getDefault().getDesignerCoreService()
                                     .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
@@ -462,6 +459,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (!CommonsPlugin.isHeadless()) {
                         Display.getDefault().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 MessageDialog.openError(Display.getDefault().getActiveShell(),
                                         Messages.getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
@@ -706,24 +704,28 @@ public final class CodeGeneratorEmittersPoolFactory {
             delegates.clear();
         }
 
+        @Override
         public void beginTask(String name, int totalWork) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.beginTask(name, totalWork);
             }
         }
 
+        @Override
         public void done() {
             for (IProgressMonitor delegate : delegates) {
                 delegate.done();
             }
         }
 
+        @Override
         public void internalWorked(double work) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.internalWorked(work);
             }
         }
 
+        @Override
         public boolean isCanceled() {
             for (IProgressMonitor monitor : delegates) {
                 if (monitor.isCanceled()) {
@@ -733,22 +735,26 @@ public final class CodeGeneratorEmittersPoolFactory {
             return cancelled;
         }
 
+        @Override
         public void setCanceled(boolean cancelled) {
             this.cancelled = cancelled;
         }
 
+        @Override
         public void setTaskName(String name) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.setTaskName(name);
             }
         }
 
+        @Override
         public void subTask(String name) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.subTask(name);
             }
         }
 
+        @Override
         public void worked(int work) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.worked(work);

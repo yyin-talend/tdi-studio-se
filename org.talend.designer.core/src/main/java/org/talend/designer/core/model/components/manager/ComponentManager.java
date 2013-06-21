@@ -35,7 +35,9 @@ public class ComponentManager {
 
     private static final String TALEND_FILE_NAME = "cache";
 
-    public static ComponentsCache getInstance() {
+    private static boolean modified = false;
+
+    public static ComponentsCache getComponentCache() {
         if (cache == null) {
             cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
         }
@@ -43,14 +45,17 @@ public class ComponentManager {
     }
 
     public static void saveResource() {
-        String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
-        try {
-            Resource resource = createComponentCacheResource(installLocation);
-            resource.getContents().add(cache);
-            EmfHelper.saveResource(cache.eResource());
-        } catch (PersistenceException e1) {
-            // TODO Auto-generated catch block
-            ExceptionHandler.process(e1);
+        if (isModified()) {
+            String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
+            try {
+                Resource resource = createComponentCacheResource(installLocation);
+                resource.getContents().add(cache);
+                EmfHelper.saveResource(cache.eResource());
+            } catch (PersistenceException e1) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e1);
+            }
+            setModified(false);
         }
     }
 
@@ -60,5 +65,23 @@ public class ComponentManager {
         URI uri = URI.createFileURI(installLocation).appendSegment(filePath);
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         return compFact.createResource(uri);
+    }
+
+    /**
+     * Getter for modified.
+     * 
+     * @return the modified
+     */
+    public static boolean isModified() {
+        return modified;
+    }
+
+    /**
+     * Sets the modified.
+     * 
+     * @param modified the modified to set
+     */
+    public static void setModified(boolean modified) {
+        ComponentManager.modified = modified;
     }
 }
