@@ -876,7 +876,6 @@ for (INode node : graphicalNodes) {
 		}
 		uri = sb.toString();
 	} else if ("cODT".equals(componentName)) {
-			//"odt:"+"//Examples/Maps/PayPal/POPayPal_PO2"+"?projectArchives="+"classpath:Examples.zip"+"&log=frequent"
 			StringBuilder sb=new StringBuilder("\"odt:\"+");
 			String odtTransformPath=getValue(node, "__ODT_TRANSFORM_PATH__");
 			sb.append(odtTransformPath);
@@ -898,7 +897,7 @@ for (INode node : graphicalNodes) {
 			}
 
 			String logConfig=getValue(node, "__LOG_CONFIG__");
-			appendParamWhenNotDefaultNorEmpty(sb, "log", logConfig, "default");
+			appendParamWhenNotDefaultNorEmpty(sb, "log", logConfig, "");
 
 			String expThreshold=getValue(node, "__EXCEPTION_THRESHOLD__");
 			appendParamWhenNotDefaultNorEmpty(sb, "exceptionThreshold", expThreshold, "FATAL");
