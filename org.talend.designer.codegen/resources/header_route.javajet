@@ -875,6 +875,38 @@ for (INode node : graphicalNodes) {
 	
 		}
 		uri = sb.toString();
+	} else if ("cODT".equals(componentName)) {
+			//"odt:"+"//Examples/Maps/PayPal/POPayPal_PO2"+"?projectArchives="+"classpath:Examples.zip"+"&log=frequent"
+			StringBuilder sb=new StringBuilder("\"odt:\"+");
+			String odtTransformPath=getValue(node, "__ODT_TRANSFORM_PATH__");
+			sb.append(odtTransformPath);
+
+			sb.append("+\"?projectArchives=");
+			String projectArchivesType=getValue(node, "__PROJECT_ARCHIVES_TYPE__");
+			if("url".equals(projectArchivesType)){
+				sb.append("\"+");
+				String projectArchives=getValue(node, "__PROJECT_ARCHIVES_LOCATION__");
+				sb.append(projectArchives);
+			}else if("repository".equals(projectArchivesType)){
+				sb.append("classpath:\"+\"");
+				String repoResourcePath=getValue(node, "__ROUTE_RESOURCE_TYPE_RES_URI__");
+				sb.append(repoResourcePath).append('\"');
+			}else if("file".equals(projectArchivesType)){
+				sb.append("file:///\"+");
+				String filePath=getValue(node, "__PROJECT_ARCHIVES_FILE__");
+				sb.append(filePath.replaceAll("\\\\","/"));
+			}
+
+			String logConfig=getValue(node, "__LOG_CONFIG__");
+			appendParamWhenNotDefaultNorEmpty(sb, "log", logConfig, "default");
+
+			String expThreshold=getValue(node, "__EXCEPTION_THRESHOLD__");
+			appendParamWhenNotDefaultNorEmpty(sb, "exceptionThreshold", expThreshold, "FATAL");
+
+			List<Map<String, String>> tableValues = getObjectValue(node, "__ADVARGUMENTS__");
+			appendTableParams(sb,tableValues);
+			uri = sb.toString();
+
 	} else {
 		continue;
 	}
