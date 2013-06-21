@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -118,8 +117,8 @@ public class JobVMArgumentsComposite {
             public void widgetSelected(SelectionEvent e) {
                 setAllEnabled(composite, checkBox.getSelection());
                 if (getJobProcess() != null) {
-                    executeCommand(new PropertyChangeCommand((Element) getJobProcess(),
-                            EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName(), checkBox.getSelection()));
+                    executeCommand(new PropertyChangeCommand(getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION
+                            .getName(), checkBox.getSelection()));
                 }
             }
 
@@ -179,6 +178,7 @@ public class JobVMArgumentsComposite {
             createButtons(buttonBox);
             buttonBox.addDisposeListener(new DisposeListener() {
 
+                @Override
                 public void widgetDisposed(DisposeEvent event) {
                     addButton = null;
                     removeButton = null;
@@ -278,6 +278,7 @@ public class JobVMArgumentsComposite {
     public void createSelectionListener() {
         selectionListener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 Widget widget = event.widget;
                 if (widget == addButton) {
@@ -298,7 +299,7 @@ public class JobVMArgumentsComposite {
     protected void doSave() {
         String s = writeString(list);
         if (s != null && getJobProcess() != null) {
-            executeCommand(new PropertyChangeCommand((Element) getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS.getName(), s));
+            executeCommand(new PropertyChangeCommand(getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS.getName(), s));
         }
     }
 
@@ -313,7 +314,7 @@ public class JobVMArgumentsComposite {
         if (cmd != null) {
             boolean exec = false;
             if (processContext != null && processContext.getProcess() instanceof IProcess2) {
-                IProcess2 process = (IProcess2) processContext.getProcess();
+                IProcess2 process = processContext.getProcess();
                 if (process != null) {
                     CommandStack commandStack = process.getCommandStack();
                     if (commandStack != null) {
@@ -343,12 +344,14 @@ public class JobVMArgumentsComposite {
             table.setFont(parent.getFont());
             viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     JobVMArgumentsComposite.this.selectionChanged();
                 }
             });
             viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+                @Override
                 public void doubleClick(DoubleClickEvent event) {
                     editItem(event.getSelection());
                 }
@@ -365,7 +368,7 @@ public class JobVMArgumentsComposite {
         if (value != null) {
             int indexOf = list.indexOf(existing);
             list.remove(existing);
-            list.add(indexOf, value);
+            list.add(indexOf, value.replaceAll(" ", ""));
             viewer.refresh();
             doSave();
         }
@@ -450,13 +453,16 @@ public class JobVMArgumentsComposite {
     protected IStructuredContentProvider createContentProvider() {
         return new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return ((List) inputElement).toArray();
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
@@ -466,32 +472,34 @@ public class JobVMArgumentsComposite {
     protected ITableLabelProvider createLabelProvider() {
         return new ITableLabelProvider() {
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
                 if (columnIndex == 0) {
-                    String trim = ARG_DELIMITER.trim();
-                    if (value.trim().startsWith(trim)) {
-                        return value;
-                    }
-                    return trim + value;
+                    return value;
                 }
                 throw new IllegalStateException();
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
@@ -530,7 +538,7 @@ public class JobVMArgumentsComposite {
             return EMPTY_STRING_LIST;
         }
         ArrayList<String> result = new ArrayList<String>(50);
-        for (String tmp : stringList.split(ARG_DELIMITER)) {
+        for (String tmp : stringList.split(" ")) {
             if (tmp != null && !"".equals(tmp)) { //$NON-NLS-1$
                 result.add(tmp);
             }
@@ -541,17 +549,10 @@ public class JobVMArgumentsComposite {
     protected String writeString(List<String> items) {
         int size = items.size();
         StringBuffer buf = new StringBuffer(size * 50);
-        buf.append(ARG_DELIMITER);
+        buf.append(" ");
         for (int i = 0; i < size; i++) {
-            buf.append(items.get(i));
-            if (i != size - 1) {
-                String trim = ARG_DELIMITER.trim();
-                if (!items.get(i + 1).trim().startsWith(trim)) {
-                    buf.append(ARG_DELIMITER);
-                } else {
-                    buf.append(" "); //$NON-NLS-1$
-                }
-            }
+            buf.append(items.get(i).replaceAll(" ", ""));
+            buf.append(" "); //$NON-NLS-1$
         }
         return buf.toString();
     }
