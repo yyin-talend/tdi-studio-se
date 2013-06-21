@@ -2684,7 +2684,7 @@ public class Node extends Element implements IGraphicalNode {
                     errorMessage += columnName + ",";
                 }
                 errorMessage = errorMessage.substring(0, errorMessage.length() - 1);
-                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
     }
