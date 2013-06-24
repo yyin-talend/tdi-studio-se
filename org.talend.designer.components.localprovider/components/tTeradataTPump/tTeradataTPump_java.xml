@@ -90,6 +90,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+     
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Teradata</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="TABLE"
