@@ -771,7 +771,7 @@ public class CodeGenerator implements ICodeGenerator {
                 for (int i = 0; i < node.getOutgoingConnections().size(); i++) {
 
                     IConnection connection = null;
-                    if (part == ECodePart.END) {
+                    if (part == ECodePart.BEGIN) {
                         connection = node.getOutgoingConnections().get(node.getOutgoingConnections().size() - (i + 1));
                     } else {
                         connection = node.getOutgoingConnections().get(i);
