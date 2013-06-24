@@ -256,6 +256,7 @@ public class ProcessView extends ViewPart {
         tabFactory.getTabbedPropertyComposite().pack();
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -295,6 +296,7 @@ public class ProcessView extends ViewPart {
 
         FocusListener fl = new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
                 IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
@@ -302,6 +304,7 @@ public class ProcessView extends ViewPart {
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
@@ -317,6 +320,7 @@ public class ProcessView extends ViewPart {
 
         contextManagerListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
                     // rubjobManager.setBooleanTrace(false);
@@ -335,6 +339,7 @@ public class ProcessView extends ViewPart {
         // TODO Auto-generated method stub
         moveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 23, 1 });
@@ -406,22 +411,27 @@ public class ProcessView extends ViewPart {
         tabFactory.setInput(descriptors);
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -439,6 +449,7 @@ public class ProcessView extends ViewPart {
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -525,10 +536,13 @@ public class ProcessView extends ViewPart {
         }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
+        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
+        if (activeContext != null) {
+            activeContext.setSelectedContext(contextComposite.getSelectedContext());
+        }
         if (dc == processComposite) {
             processComposite.setProcessContext(activeContext);
         }
-        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
         if (dc == debugTisProcessComposite) {
             debugTisProcessComposite.setProcessContext(activeContext);
             debugTisProcessComposite.setContextComposite(this.contextComposite);
@@ -536,8 +550,9 @@ public class ProcessView extends ViewPart {
         if (dc == advanceComposite) {
             advanceComposite.setProcessContext(activeContext);
         }
-        if (dc == targetComposite)
+        if (dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
+        }
         if (activeContext != null) {
             String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
             if (activeContext.getProcess().disableRunJobView()) { // ?? joblet
@@ -583,15 +598,15 @@ public class ProcessView extends ViewPart {
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
             try {
                 page.showView("org.talend.designer.runprocess.ui.views.processview"); //$NON-NLS-1$
-                
-		        selectTab(EComponentCategory.BASICRUN);
-		        if (processComposite != null && !processComposite.isDisposed()) {
-		            if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
-		                processComposite.errorMessMap.clear();
-		                processComposite.setCurRunMode(EXEC_ID);
-		                processComposite.exec();
-		            }
-		        }
+
+                selectTab(EComponentCategory.BASICRUN);
+                if (processComposite != null && !processComposite.isDisposed()) {
+                    if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
+                        processComposite.errorMessMap.clear();
+                        processComposite.setCurRunMode(EXEC_ID);
+                        processComposite.exec();
+                    }
+                }
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
                 // e.printStackTrace();
@@ -700,6 +715,7 @@ public class ProcessView extends ViewPart {
         }
         tabFactory.setSelection(new StructuredSelection() {
 
+            @Override
             public List toList() {
                 return selection;
             }
