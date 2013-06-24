@@ -221,7 +221,7 @@ public class ExcelTool {
 	}
 
 	private CellStyle getPreCellStyle() {
-		if (isAbsY && keepCellFormat) {
+		if (preSheet!=null && isAbsY && keepCellFormat) {
 			CellStyle preCellStyle =null;
 			if (preCell == null) {
 				preCellStyle = preSheet.getColumnStyle(curCell.getColumnIndex());
