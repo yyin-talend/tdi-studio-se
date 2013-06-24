@@ -566,6 +566,9 @@ public class ProcessView extends ViewPart {
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
         rubjobManager.setSelectContext(contextComposite.getSelectedContext());
+        if (activeContext != null) {
+            activeContext.setSelectedContext(contextComposite.getSelectedContext());
+        }
         if (dc != null && dc == processComposite) {
             processComposite.setProcessContext(activeContext);
         } else if (dc != null && dc == debugTisProcessComposite) {
