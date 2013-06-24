@@ -264,6 +264,18 @@ public class ProcessContextComposite extends Composite {
                     if (!ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
                         return false;
                     }
+                    // if don't open the job to run it(not use the "Detect and update all jobs"), will show
+                    // UpdateDetectionDialog to update the context ,after updated the item, the contextComboViewer still
+                    // set the old one , so need refresh.
+                    IContext runJobViewContext = getSelectedContext();
+                    if (runJobViewContext != null) {
+                        for (IContextParameter tempContext : runJobViewContext.getContextParameterList()) {
+                            if (tempContext.getName().equals(contextParameterType.getName())
+                                    && !ContextUtils.samePropertiesForContextParameter(tempContext, contextParameterType)) {
+                                return false;
+                            }
+                        }
+                    }
                 }
             }
         }
