@@ -68,7 +68,11 @@
 		</ITEMS>
 	</PARAMETER>
     
-
+    <PARAMETER NAME="TYPE" FIELD="TEXT" NUM_ROW="20" SHOW="false"
+            REPOSITORY_VALUE="TYPE">
+            <DEFAULT>Access</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
