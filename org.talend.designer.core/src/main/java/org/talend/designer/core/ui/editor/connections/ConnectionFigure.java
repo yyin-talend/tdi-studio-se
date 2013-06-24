@@ -155,33 +155,31 @@ public class ConnectionFigure extends PolylineConnection {
     }
 
     public void updateStatus() {
-        if (connection.isActivate()) {
-            for (IElementParameter enableParallel : figureMap.keySet()) {
-                if (enableParallel != null) {
-                    if (enableParallel.getValue().equals(true)) {
-                        // For NONE ,maybe its icon need to keep partitioning
-                        if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
-                            boolean isDisplayKeepPartion = false;
-                            isDisplayKeepPartion = ParallelExecutionUtils.isExistPreviousParCon((Node) connection.getSource());
-                            if (isDisplayKeepPartion) {
-                                // one connection need to display two icons maybe
-                                for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                                    pf.setVisible(true);
-                                }
-                            } else {
-                                for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                                    pf.setVisible(false);
-                                }
+        for (IElementParameter enableParallel : figureMap.keySet()) {
+            if (enableParallel != null) {
+                if (enableParallel.getValue().equals(true)) {
+                    // For NONE ,maybe its icon need to keep partitioning
+                    if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
+                        boolean isDisplayKeepPartion = false;
+                        isDisplayKeepPartion = ParallelExecutionUtils.isExistPreviousParCon((Node) connection.getSource());
+                        if (isDisplayKeepPartion) {
+                            // one connection need to display two icons maybe
+                            for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                                pf.setVisible(true);
                             }
                         } else {
                             for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                                pf.setVisible(true);
+                                pf.setVisible(false);
                             }
                         }
                     } else {
                         for (ParallelFigure pf : figureMap.get(enableParallel)) {
-                            pf.setVisible(false);
+                            pf.setVisible(true);
                         }
+                    }
+                } else {
+                    for (ParallelFigure pf : figureMap.get(enableParallel)) {
+                        pf.setVisible(false);
                     }
                 }
             }
