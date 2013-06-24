@@ -71,6 +71,16 @@
       DYNAMIC_SETTINGS="true"
     />
 
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>SybaseASE</DEFAULT>
+    </PARAMETER>
+    
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="23"
 		 SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="SYBSEIQ_12">
