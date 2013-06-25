@@ -129,12 +129,11 @@ public class UIManager {
         if (hasColumns && !containsAll && response == SWT.CANCEL) {
             boolean isNotSaveSetting = MessageDialog.openQuestion(parent.getShell(),
                     Messages.getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$ //$NON-NLS-2$
-            if (isNotSaveSetting) {
-                reductAllData();
-            } else {
-                response = SWT.OK;
+            if (!isNotSaveSetting) {
+                response = SWT.NONE;
                 setRowGenResponse(response);
             }
+            return;
         }
         if (response == SWT.OK) {
             saveAllData(currentColumnDataList);
