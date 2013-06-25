@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -142,22 +142,17 @@ public class FileCopy {
                 if (position + MAP_SIZE >= size) {
                     buf = in.map(FileChannel.MapMode.READ_ONLY, position, size - position);
                     out.write(buf);
-                    if (delSrc) {
-                        // here must clean first, or it can't delete
-                        clean(buf);
-                    }
+                    //For But TDI-26493, here must clean first, or it can't delete
+                    clean(buf);
                     break;
                 } else {
                     buf = in.map(FileChannel.MapMode.READ_ONLY, position, MAP_SIZE);
                     out.write(buf);
-                    if (delSrc) {
-                        // here must clean first, or it can't delete
-                        clean(buf);
-                    }
+                    // here must clean first, or it can't delete
+                    clean(buf);
                     position += MAP_SIZE;
                 }
             }
-
             in.close();
             out.close();
 
