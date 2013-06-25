@@ -42,6 +42,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.data.Function;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.shadow.RowGenProcessMain;
@@ -176,6 +177,27 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     }
 
     /*
+     * add for bug TDI-26458 by fwang at 24 June,2013, need check update for functions.
+     */
+    private boolean sameMetadataFunctionsAs(IMetadataTable metaTable) {
+        List<IMetadataColumn> metaTables = metaTable.getListColumns();
+        for (IMetadataColumn metaColum : metaTables) {
+            if (!(metaColum instanceof MetadataColumnExt)) {
+                break;
+            }
+            MetadataColumnExt metaColumExt = (MetadataColumnExt) metaColum;
+            String functionValue = FunctionManagerExt.getOneColData(metaColumExt);
+            for (Map<String, Object> map : getMapList()) {
+                if (metaColumExt.getLabel().equals(map.get(COLUMN_NAME)) && !functionValue.equals(map.get(ARRAY))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
@@ -190,7 +212,8 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         } else {
             for (IMetadataTable metaTable : this.metadataListOut) {
                 for (IMetadataTable externalMetaTable : metadataTablesOut) {
-                    if (!metaTable.sameMetadataAs(externalMetaTable, IMetadataColumn.OPTIONS_NONE)) {
+                    if (!metaTable.sameMetadataAs(externalMetaTable, IMetadataColumn.OPTIONS_NONE)
+                            || !this.sameMetadataFunctionsAs(metaTable)) {
                         needUpdateMetadata = true;
                         break;
                     }
