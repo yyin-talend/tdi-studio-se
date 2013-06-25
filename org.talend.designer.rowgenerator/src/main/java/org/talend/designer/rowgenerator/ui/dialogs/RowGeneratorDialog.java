@@ -123,6 +123,7 @@ public class RowGeneratorDialog extends Dialog {
              * 
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
              */
+            @Override
             public void handleEvent(Event event) {
                 rowGenMain.updateTableTitleColumn();
             }
@@ -234,9 +235,25 @@ public class RowGeneratorDialog extends Dialog {
     protected void cancelPressed() {
         UIManager uiManager = rowGenMain.getRowGenManager().getUiManager();
         uiManager.closeRowGenerator(SWT.CANCEL, true);
-        rowGenMain.buildExternalData();
-        super.cancelPressed();
+        if (uiManager.getRowGenResponse() == SWT.CANCEL) {
+            rowGenMain.buildExternalData();
+            super.cancelPressed();
+        }
 
+    }
+
+    @Override
+    public boolean close() {
+        UIManager uiManager = rowGenMain.getRowGenManager().getUiManager();
+        if (uiManager.getRowGenResponse() == SWT.NONE) {
+            uiManager.closeRowGenerator(SWT.CANCEL, true);
+            if (uiManager.getRowGenResponse() == SWT.NONE) {
+                return false;
+            }
+            rowGenMain.buildExternalData();
+        }
+        boolean returnValue = super.close();
+        return returnValue;
     }
 
 }
