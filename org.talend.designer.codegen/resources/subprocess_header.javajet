@@ -58,10 +58,15 @@
 						hSet.add(conn.getName() + templateOrigin);
 						IMetadataTable metadata = conn.getMetadataTable();
 						
-						
+						boolean changeHashAndEqualsForBigDecimal = false;
 						Set<String> hashableColumnsNames = new HashSet<String>();
-						if(conn.getTarget() instanceof IHashableInputConnections) {
-							IHashableInputConnections target = (IHashableInputConnections) conn.getTarget();
+						
+						INode targetNode = conn.getTarget();
+						if(targetNode instanceof IHashableInputConnections) {
+							if(targetNode.getUniqueName().startsWith("tMap")) {
+								changeHashAndEqualsForBigDecimal = "true".equals(ElementParameterParser.getValue(targetNode, "__CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL__"));
+							}
+							IHashableInputConnections target = (IHashableInputConnections)targetNode;
 							IHashConfiguration hashConfiguration = target.getHashConfiguration(conn.getName());
 							if(hashConfiguration != null) {
 								for(IHashableColumn hashableColumn : hashConfiguration.getHashableColumns()) {
@@ -195,6 +200,10 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 						result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
 						<%
 					
+					} else if((javaType == JavaTypesManager.BIGDECIMAL) && changeHashAndEqualsForBigDecimal) {
+						%>
+						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : new Double(this.<%=column.getLabel() %>.doubleValue()).hashCode());
+						<%
 					} else {
 					%>
 						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
@@ -240,7 +249,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 						if (this.<%=column.getLabel() %> == null) {
 							if (other.<%=column.getLabel() %> != null) 
 								return false;
-						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+						<%if((javaType == JavaTypesManager.BIGDECIMAL) && changeHashAndEqualsForBigDecimal) {%>
+						} else if ((other.<%=column.getLabel() %> == null) || (this.<%=column.getLabel() %>.compareTo(other.<%=column.getLabel() %>)!=0))
+						<%} else {%>
+						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>))
+						<%}%> 
 							return false;
 					<%
 					}

@@ -18,6 +18,8 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__");
 List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
+boolean changeHashAndEqualsForBigDecimal = "true".equals(ElementParameterParser.getValue(node, "__CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL__"));
+
 boolean hasKey = false;
 for(Map<String, String> keyColumn:keyColumns){
 	if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
@@ -89,6 +91,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
 								<%
 							
+							} else if((javaType == JavaTypesManager.BIGDECIMAL) && changeHashAndEqualsForBigDecimal) {
+								%>
+								result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : new Double(this.<%=column.getLabel() %>.doubleValue()).hashCode());
+								<%
 							} else {
 								%>
 								result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
@@ -134,7 +140,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									if (this.<%=column.getLabel() %> == null) {
 										if (other.<%=column.getLabel() %> != null) 
 											return false;
-									} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+								<%if((javaType == JavaTypesManager.BIGDECIMAL) && changeHashAndEqualsForBigDecimal) {%>
+									} else if ((other.<%=column.getLabel() %> == null) || (this.<%=column.getLabel() %>.compareTo(other.<%=column.getLabel() %>)!=0))
+								<%} else {%>
+									} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>))
+								<%}%> 
 										return false;
 								<%
 							}

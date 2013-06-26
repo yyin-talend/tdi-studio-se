@@ -111,6 +111,14 @@
       <DEFAULT/>
     </PARAMETER>
     
+    <PARAMETER
+      NAME="CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
   </ADVANCED_PARAMETERS>
   
     <CODEGENERATION>
