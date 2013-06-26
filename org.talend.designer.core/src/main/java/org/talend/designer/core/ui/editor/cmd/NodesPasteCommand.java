@@ -671,7 +671,7 @@ public class NodesPasteCommand extends Command {
             Node currentNode = nodeContainer.getNode();
             String uniqueName = currentNode.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if (oldName.equals(oldNameTonewNameMap.get(oldName))) {
+                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
                     Set<String> oldNameSet = usedDataMap.get(uniqueName);
                     if (oldNameSet == null) {
                         oldNameSet = new HashSet<String>();
