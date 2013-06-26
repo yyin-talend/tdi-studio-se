@@ -131,7 +131,7 @@ public class EditPropertiesAction extends AContextualAction {
         } else if (ERepositoryObjectType.PROCESS == object.getRepositoryObjectType()) {
             wizard = new EditProcessPropertiesWizard(object, path, getNeededVersion() == null);
         } else {
-            wizard = new PropertiesWizard(object, path, getNeededVersion() == null);
+            wizard = getPropertiesWizard(object, path);
         }
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
@@ -170,6 +170,11 @@ public class EditPropertiesAction extends AContextualAction {
             }
         }
     }
+
+	protected PropertiesWizard getPropertiesWizard(IRepositoryViewObject object,
+			IPath path) {
+		return new PropertiesWizard(object, path, getNeededVersion() == null);
+	}
 
     /**
      * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
