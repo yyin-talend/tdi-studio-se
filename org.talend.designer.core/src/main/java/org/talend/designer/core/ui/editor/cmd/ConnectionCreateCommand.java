@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -44,8 +45,8 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
 /**
  * Command that creates a new connection. <br/>
  * 
- * $Id$
  * 
+ * $Id$
  */
 public class ConnectionCreateCommand extends Command {
 
@@ -280,6 +281,8 @@ public class ConnectionCreateCommand extends Command {
             EConnectionType connecType;
             if (source.isELTComponent()) {
                 connecType = EConnectionType.TABLE;
+            }else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(source.getComponent().getType())) {
+                connecType = EConnectionType.ROUTE;
             } else {
                 connecType = EConnectionType.FLOW_MAIN;
             }
@@ -341,7 +344,10 @@ public class ConnectionCreateCommand extends Command {
                         connectionName = askForConnectionName(source.getLabel(), connectionName);
                     }
                 } else {
-                    metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
+                    IMetadataTable metaTable = source.getMetadataFromConnector(mainConnector.getName());
+                    if(metaTable != null){
+                        metaName = metaTable.getTableName();
+                    }
                     String baseName = source.getConnectionName();
                     if (source.getProcess().checkValidConnectionName(baseName)) {
                         connectionName = source.getProcess().generateUniqueConnectionName(baseName);
