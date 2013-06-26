@@ -1256,7 +1256,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 GlobalMapEntry column = (GlobalMapEntry) bean;
                 if (column.getParent() instanceof InputTable) {
                     if (JOIN_MODEL_SETTING.equals(column.getName())) {
-                        return innerJoinCheckItemEditable;
+                        return true;
                     } else if (PERSISTENCE_MODEL_SETTING.equals(column.getName())) {
                         return persistentCheckEditable;
                     }
