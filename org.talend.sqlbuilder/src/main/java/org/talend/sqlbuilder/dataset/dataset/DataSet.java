@@ -236,7 +236,15 @@ public class DataSet {
                 switch (pcolumnTypes[i]) {
 
                 case TYPE_STRING:
-                    row.setValue(i, resultSet.getString(relevantIndeces[i]));
+                    try {
+                        row.setValue(i, resultSet.getString(relevantIndeces[i]));
+                    } catch (SQLException e) {
+                        if (e.getMessage().equals("No data found")) {
+                            row.setValue(i, "");
+                        } else {
+                            throw e;
+                        }
+                    }
                     break;
                 case TYPE_INTEGER:
                     row.setValue(i, new Long(resultSet.getInt(relevantIndeces[i])));
