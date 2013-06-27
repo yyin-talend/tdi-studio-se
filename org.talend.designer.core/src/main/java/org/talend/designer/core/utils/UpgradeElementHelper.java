@@ -32,6 +32,12 @@ public final class UpgradeElementHelper {
             if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
                 continue;
             }
+            if (param.getName().equals(EParameterName.VALUES.getName())) {
+                continue;
+            }
+            if (param.getName().equals("LENGTHS")) {
+                continue;
+            }
             if (ParameterValueUtil.isUseData(param, name)) {
                 return true;
             }
