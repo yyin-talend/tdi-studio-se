@@ -13,7 +13,6 @@
 package org.talend.sqlbuilder.dataset.dataset;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
@@ -39,8 +38,8 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
     private DecimalFormat pdecimalFormat = new DecimalFormat();
 
-    private boolean pformatDates = SqlBuilderPlugin.getDefault().getPluginPreferences().getBoolean(
-            IConstants.DATASETRESULT_FORMAT_DATES);
+    private boolean pformatDates = SqlBuilderPlugin.getDefault().getPluginPreferences()
+            .getBoolean(IConstants.DATASETRESULT_FORMAT_DATES);
 
     public DataSetTableLabelProvider() {
 
@@ -100,9 +99,9 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
             // }
 
             // format dates
-            if (pformatDates && clazz == Timestamp.class) {
-                return pdateFormatter.format(new java.util.Date(((Timestamp) tmp).getTime()));
-            }
+            // if (pformatDates && clazz == Timestamp.class) {
+            // return pdateFormatter.format(new java.util.Date(((Timestamp) tmp).getTime()));
+            // }
             if (pformatDates && clazz == Date.class) {
                 return pdateFormatter.format(new java.util.Date(((Date) tmp).getTime()));
             }
