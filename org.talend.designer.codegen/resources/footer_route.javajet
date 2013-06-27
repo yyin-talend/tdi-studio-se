@@ -96,7 +96,7 @@ if(librariesSb.length()>0){
 		}
 %>
 
-		runStat.setParams();
+		runStat.initStatisticsInterceptor();
 <% } //if stats %>
 		//start camel context	
 		getCamelContexts().get(0).start();
