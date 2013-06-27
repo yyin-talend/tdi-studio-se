@@ -79,7 +79,7 @@ public abstract class AbstractMapComponent extends MapperExternalNode {
 
     protected boolean hasDataIntoExpression(Pattern pattern, PatternMatcher matcher, String expression) {
         if (expression != null) {
-            if (matcher.contains(expression, pattern)) {
+            if (matcher.matches(expression, pattern)) {
                 return true;
             }
         }
