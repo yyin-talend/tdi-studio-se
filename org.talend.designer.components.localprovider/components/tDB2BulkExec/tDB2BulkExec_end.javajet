@@ -15,7 +15,6 @@ imports="
                 
     if(!("true").equals(useExistingConn)) { 
 %>    
-		conn_<%=cid%>.commit();
         conn_<%=cid%>.close();
         <%
 	}

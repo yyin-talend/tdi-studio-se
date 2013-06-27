@@ -282,6 +282,8 @@ if(columnList != null && columnList.size() > 0) {
             column.setColumnName(column.getColumnName().toUpperCase());
         }
     }
+}
+if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)){
 %>	
 	<%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%  
