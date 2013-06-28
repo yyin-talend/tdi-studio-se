@@ -74,12 +74,14 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="30"
+      REPOSITORY_VALUE="DATABASE:NETEZZA"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="40"
+      REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
@@ -89,6 +91,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="40"
+      REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"5480"</DEFAULT>
@@ -99,6 +102,7 @@
       FIELD="TEXT"
       NUM_ROW="50"
       REQUIRED="true"
+      REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
@@ -109,6 +113,7 @@
       FIELD="TEXT"
       NUM_ROW="60"
       REQUIRED="true"
+      REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
@@ -119,6 +124,7 @@
       FIELD="TEXT"
       NUM_ROW="60"
       REQUIRED="true"
+      REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
