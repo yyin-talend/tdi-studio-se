@@ -66,6 +66,7 @@
       NAME="TDPID"
       FIELD="TDPID"
       NUM_ROW="3"
+      REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>"localtd"</DEFAULT>
     </PARAMETER>
