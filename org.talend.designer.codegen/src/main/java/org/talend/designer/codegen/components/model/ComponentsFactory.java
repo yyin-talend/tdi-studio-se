@@ -787,7 +787,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
     @Override
     public void resetCache() {
-        componentsImageRegistry.clear();
         componentList = null;
         skeletonList = null;
         customComponentList = null;
