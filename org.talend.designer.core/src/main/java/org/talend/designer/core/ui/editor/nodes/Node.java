@@ -2880,7 +2880,7 @@ public class Node extends Element implements IGraphicalNode {
             if (jobletService != null) {
                 if (jobletService.isJobletComponent(this)) {
                     Map<String, INode> multiNodes = new HashMap<String, INode>();
-                    for (INode node : process.getGeneratingNodes()) {
+                    for (INode node : jobletService.getGraphNodesForJoblet(this)) {
                         if (("preStaLogCon").equals(node.getUniqueName())) {
                             continue;
                         }
