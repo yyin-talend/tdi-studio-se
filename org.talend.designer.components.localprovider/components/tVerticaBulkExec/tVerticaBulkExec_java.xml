@@ -87,6 +87,16 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>VERTICA</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="30"
@@ -167,7 +177,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="60"
       REQUIRED="true"
     >

@@ -38,6 +38,16 @@
 	    <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST" FILTER="tGreenplumConnection"
 	      NUM_ROW="2" SHOW_IF="USE_EXISTING_CONNECTION == 'true'" DYNAMIC_SETTINGS="true"/>
 
+        <PARAMETER
+            NAME="TYPE"
+            FIELD="TEXT"
+            NUM_ROW="1"
+            SHOW="false"
+            REPOSITORY_VALUE="TYPE"
+        >
+            <DEFAULT>PostgreSQL</DEFAULT>
+        </PARAMETER>
+        
 		<PARAMETER NAME="HOST" FIELD="TEXT" NUM_ROW="3"
 			REPOSITORY_VALUE="SERVER_NAME"
 			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
@@ -74,12 +84,12 @@
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="TABLE" FIELD="TEXT" NUM_ROW="6">
+		<PARAMETER NAME="TABLE" FIELD="DBTABLE" NUM_ROW="6">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="TABLE_ACTION" FIELD="CLOSED_LIST"
-			NUM_ROW="6" NOT_SHOW_IF="PARALLELIZE == 'true'">
+			NUM_ROW="7" NOT_SHOW_IF="PARALLELIZE == 'true'">
 			<ITEMS DEFAULT="NONE">
 				<ITEM NAME="NONE" VALUE="NONE" />
 				<ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE" />
@@ -90,7 +100,7 @@
 			</ITEMS>
 		</PARAMETER>
 
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="7"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>

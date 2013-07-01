@@ -75,7 +75,17 @@
     >
       <DEFAULT>"5433"</DEFAULT>
     </PARAMETER>
-
+ 
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>VERTICA</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -131,7 +141,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="50"
     >
       <DEFAULT>"table name"</DEFAULT>
@@ -140,7 +150,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="50"
+      NUM_ROW="51"
       SHOW="false"
     >
       <ITEMS DEFAULT="INSERT">
@@ -273,7 +283,7 @@
       <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tVBE.NULL_STRING" />
       <TEMPLATE_PARAM SOURCE="self.MAPPING"   TARGET="tVBE.MAPPING" />
       <TEMPLATE_PARAM SOURCE="self.ROS"   TARGET="tVBE.ROS" />
-
+      <TEMPLATE_PARAM SOURCE="self.TYPE"   TARGET="tVBE.TYPE" />
 
 
     </TEMPLATES>
