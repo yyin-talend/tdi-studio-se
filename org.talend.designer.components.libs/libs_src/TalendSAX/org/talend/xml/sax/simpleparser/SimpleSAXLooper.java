@@ -135,7 +135,10 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
             String resultCol = node.loopPath;
             String[] splits = column.split("/");
             for (String tmp : splits) {
-                if (tmp.equals(".")) {
+                if (tmp.equals("..")) {
+                    resultCol = resultCol.substring(0, resultCol.lastIndexOf("/"));
+                    node.setAttrOutOfLoop(true);
+                } else if (tmp.equals(".")) {
                     node.isDot = true;
                 } else {
                     resultCol += "/" + tmp;
