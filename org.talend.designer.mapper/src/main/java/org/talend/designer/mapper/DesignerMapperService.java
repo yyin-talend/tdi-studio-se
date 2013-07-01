@@ -391,7 +391,7 @@ public class DesignerMapperService implements IDesignerMapperService {
                 }
             }
         }
-
+        oldMappingMap.clear();
     }
 
     public boolean isMetacolumnSame(ExternalMapperTableEntry extColumn, IMetadataColumn column) {
