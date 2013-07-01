@@ -232,7 +232,7 @@ for (INode node : graphicalNodes) {
 			}
 		}
 		String delay = ElementParameterParser.getValue(node, "__DELAY__");
-		if(delay!=null && !delay.trim().equals("") && !"1000".equals(delay)){
+		if(delay!=null && !delay.trim().equals("")){
 			if(sb.length()==0){
 				sb.append("+\"?delay=\"+");
 				sb.append(delay);
