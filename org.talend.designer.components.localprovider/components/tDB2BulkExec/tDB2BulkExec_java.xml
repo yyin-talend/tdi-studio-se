@@ -133,7 +133,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="30"
       REQUIRED="true"
     >
@@ -144,7 +144,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="30"
+      NUM_ROW="31"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -157,7 +157,7 @@
       </ITEMS>
     </PARAMETER>
 
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="30"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="31"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>

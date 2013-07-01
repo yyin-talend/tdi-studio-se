@@ -39,6 +39,16 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:GREENPLUM"
     />
+ 
+    <PARAMETER
+            NAME="TYPE"
+            FIELD="TEXT"
+            NUM_ROW="1"
+            SHOW="false"
+            REPOSITORY_VALUE="TYPE"
+    >
+            <DEFAULT>PostgreSQL</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="HOST"
@@ -101,7 +111,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="5"
     >
       <DEFAULT>""</DEFAULT>
@@ -110,7 +120,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="5"
+      NUM_ROW="6"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -279,6 +289,7 @@
       <TEMPLATE_PARAM SOURCE="self.DATA_ACTION"  TARGET="tPBE.DATA_ACTION" />
       <TEMPLATE_PARAM SOURCE="self.OIDS"  TARGET="tPBE.OIDS" />
       <TEMPLATE_PARAM SOURCE="self.HEADER"  TARGET="tPBE.HEADER" />
+      <TEMPLATE_PARAM SOURCE="self.TYPE"  TARGET="tPBE.TYPE" />
 
       <TEMPLATE_PARAM SOURCE="self.FILENAME" TARGET="tPOB.FILENAME" />
       <TEMPLATE_PARAM SOURCE="self.FILENAME" TARGET="tPBE.FILENAME" />

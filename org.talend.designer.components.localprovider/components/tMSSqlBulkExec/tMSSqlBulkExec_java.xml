@@ -69,7 +69,17 @@
       SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>      
+    </PARAMETER>
+     
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>MSSQL</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="PORT"
@@ -142,7 +152,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="6"
       REQUIRED="true"
       SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
@@ -153,7 +163,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="15"
       NOT_SHOW_IF="(ACTION=='EXPORT') or (PARALLELIZE == 'true')"
     >
       <ITEMS DEFAULT="NONE">
@@ -166,7 +176,7 @@
       </ITEMS>
     </PARAMETER>
 	
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="15"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
@@ -175,7 +185,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="20"
       SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>""</DEFAULT>
@@ -184,7 +194,7 @@
    <PARAMETER
     	NAME="QUERY"
     	FIELD="MEMO_SQL"
-    	NUM_ROW="8"
+    	NUM_ROW="25"
     	SHOW_IF="ACTION=='EXPORT'"
     	REQUIRED="true"
     >
@@ -194,7 +204,7 @@
     <PARAMETER
       NAME="REMOTE_FILENAME"
       FIELD="FILE"
-      NUM_ROW="9"
+      NUM_ROW="30"
       REQUIRED="true"
       SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
@@ -204,7 +214,7 @@
     <PARAMETER 
     	NAME="OUTPUT_FILE_NAME"
     	FIELD="FILE"
-    	NUM_ROW="11"
+    	NUM_ROW="35"
     	REQUIRED="true"
     	SHOW_IF="ACTION=='EXPORT'"
     >
@@ -214,7 +224,7 @@
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="13"
+      NUM_ROW="40"
       SHOW="false"
     >       
       <DEFAULT>id_MSSQL</DEFAULT>

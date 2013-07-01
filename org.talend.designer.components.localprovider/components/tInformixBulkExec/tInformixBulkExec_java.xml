@@ -156,7 +156,7 @@
     
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="30"
       REQUIRED="true"
     >

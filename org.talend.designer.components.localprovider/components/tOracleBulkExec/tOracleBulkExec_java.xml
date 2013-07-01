@@ -104,7 +104,12 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+    
+    <PARAMETER NAME="TYPE" FIELD="TEXT" NUM_ROW="25" SHOW="false"
+            REPOSITORY_VALUE="TYPE">
+            <DEFAULT>Oracle</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -170,7 +175,7 @@
     
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="70"
       REQUIRED="true"
     >
@@ -180,7 +185,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="70"
+      NUM_ROW="71"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -193,7 +198,7 @@
       </ITEMS>
     </PARAMETER>
 	
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="70"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="71"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
