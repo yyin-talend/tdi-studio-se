@@ -39,6 +39,14 @@ public class FooterComposite extends Composite {
 
     private Composite composite;
 
+    private MoveDownTreeNodeButton moveDown;
+
+    private MoveUpTreeNodeButton moveUpBtn;
+
+    private RemoveTreeNodeButton removeNodeBtn;
+
+    private AddTreeNodeButton addNodeBtn;
+
     /**
      * amaumont FooterComposite constructor comment.
      * 
@@ -78,9 +86,11 @@ public class FooterComposite extends Composite {
         okButton.setLayoutData(okFormData);
         okButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (foxManager.getUiManager().validateRootElement()) {
                     foxManager.getUiManager().closeFOX(SWT.OK);
@@ -99,9 +109,11 @@ public class FooterComposite extends Composite {
         cancelButton.setText(Messages.getString("FooterComposite.1")); //$NON-NLS-1$
         cancelButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 foxManager.getUiManager().closeFOX(SWT.CANCEL);
             }
@@ -128,9 +140,11 @@ public class FooterComposite extends Composite {
         autoMapButton.setText(Messages.getString("FooterComposite.AutoMap")); //$NON-NLS-1$
         autoMapButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 foxManager.getUiManager().autoMap();
             }
@@ -147,24 +161,31 @@ public class FooterComposite extends Composite {
 
         // tree operation buttons
         FormData treeNodeData = new FormData();
-        MoveDownTreeNodeButton moveDown = new MoveDownTreeNodeButton(this, foxManager);
+        moveDown = new MoveDownTreeNodeButton(this, foxManager);
         treeNodeData.right = new FormAttachment(okButton, -5);
         moveDown.getButton().setLayoutData(treeNodeData);
 
-        MoveUpTreeNodeButton moveUpBtn = new MoveUpTreeNodeButton(this, foxManager);
+        moveUpBtn = new MoveUpTreeNodeButton(this, foxManager);
         treeNodeData = new FormData();
         treeNodeData.right = new FormAttachment(moveDown.getButton(), -5);
         moveUpBtn.getButton().setLayoutData(treeNodeData);
 
-        RemoveTreeNodeButton removeNodeBtn = new RemoveTreeNodeButton(this, foxManager);
+        removeNodeBtn = new RemoveTreeNodeButton(this, foxManager);
         treeNodeData = new FormData();
         treeNodeData.right = new FormAttachment(moveUpBtn.getButton(), -5);
         removeNodeBtn.getButton().setLayoutData(treeNodeData);
 
-        AddTreeNodeButton addNodeBtn = new AddTreeNodeButton(this, foxManager);
+        addNodeBtn = new AddTreeNodeButton(this, foxManager);
         treeNodeData = new FormData();
         treeNodeData.right = new FormAttachment(removeNodeBtn.getButton(), -5);
         addNodeBtn.getButton().setLayoutData(treeNodeData);
 
+    }
+
+    public void isActivateBtn(boolean state) {
+        addNodeBtn.getButton().setEnabled(state);
+        removeNodeBtn.getButton().setEnabled(state);
+        moveUpBtn.getButton().setEnabled(state);
+        moveDown.getButton().setEnabled(state);
     }
 }
