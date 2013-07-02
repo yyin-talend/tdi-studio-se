@@ -33,6 +33,8 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -125,6 +127,8 @@ public class FOXUI {
     private boolean canModify;
 
     private boolean isRepository;
+    
+    private FooterComposite footerComp;
 
     public FOXUI(Composite parent, FOXManager foxManager) {
         this.foxManager = foxManager;
@@ -177,7 +181,7 @@ public class FOXUI {
         linker.init(schemaViewer.getTable(), xmlViewer);
         linker.setManager(foxManager);
         initSchemaTable();
-        new FooterComposite(mainComposite, SWT.NONE, foxManager);
+        footerComp = new FooterComposite(mainComposite, SWT.NONE, foxManager);
         Tree xmlTree = xmlViewer.getTree();
 
         if (xmlTree.getItems().length > 0) {
@@ -525,6 +529,16 @@ public class FOXUI {
         column1.setText(Messages.getString("FOXUI.20")); //$NON-NLS-1$
         column1.setWidth(100);
         table.setLayoutData(data2);
+        
+        table.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (footerComp != null) {
+                    footerComp.isActivateBtn(false);
+                }
+            }
+        });
 
     }
 
