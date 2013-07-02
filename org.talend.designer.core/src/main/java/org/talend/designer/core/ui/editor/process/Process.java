@@ -2027,8 +2027,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 for (int j = 0; j < listParamType.size(); j++) {
                     ElementParameterType pType = (ElementParameterType) listParamType.get(j);
                     if (pType != null) {
-                        if (parameter.getFieldType().getName().equals(pType.getField())
-                                && parameter.getName().equals(pType.getName())) {
+                        if (parameter.getName().equals(pType.getName())) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             String[] codeList = parameter.getListItemsDisplayCodeName();
                             Map<String, Object> lineValues = null;
