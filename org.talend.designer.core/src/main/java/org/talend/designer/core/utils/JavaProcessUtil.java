@@ -357,9 +357,7 @@ public class JavaProcessUtil {
                                 if (isContextMode) {
                                     getModulesInTable(process, curParam, modulesNeeded);
                                 } else {
-                                    ModuleNeeded module = new ModuleNeeded(null, (driverName).replaceAll(
-                                            TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                                            TalendTextUtils.SINGLE_QUOTE, ""), null, true);//$NON-NLS-1$
+                                    ModuleNeeded module = new ModuleNeeded(null, driverName , null, true);//$NON-NLS-1$
                                     modulesNeeded.add(module);
                                 }
                             }

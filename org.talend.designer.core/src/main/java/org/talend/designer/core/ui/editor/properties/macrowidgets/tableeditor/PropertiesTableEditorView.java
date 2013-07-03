@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -301,6 +302,29 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     ModuleListCellEditor moduleEditor = new ModuleListCellEditor(table, currentParam, param);
                     moduleEditor.setTableEditorView(this);
                     column.setCellEditor(moduleEditor);
+                    column.setLabelProvider(new IColumnLabelProvider<Object>() {
+                        @Override
+                        public String getLabel(Object bean) {
+                            if(bean==null) {
+                                return null;
+                            }
+                            String text=bean.toString();;
+                            try {
+                                Map<?, ?> map=(Map<?, ?>) bean;
+                                Iterator<?> itr = map.values().iterator();
+                                if(itr.hasNext()) {
+                                    text=itr.next().toString();
+                                }
+                            } catch (Exception e) {
+                                //ignore, use toString instead
+                            }
+                            int indexParam=text.indexOf('?');
+                            if(indexParam>0) {
+                                text=text.substring(0, indexParam);
+                            }
+                            return text;
+                        }
+                    });
                     break;
                 case COLOR:
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())

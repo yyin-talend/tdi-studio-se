@@ -13,6 +13,7 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,9 +47,9 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -296,7 +297,7 @@ public class JavaProcessorUtilities {
                         Item item = object.getProperty().getItem();
                         if (item instanceof RoutineItem) {
                             RoutineItem routine = (RoutineItem) item;
-                            EList imports = routine.getImports();
+                            EList<?> imports = routine.getImports();
                             for (Object o : imports) {
                                 IMPORTType type = (IMPORTType) o;
                                 neededLibraries.add(type.getMODULE());
@@ -415,9 +416,16 @@ public class JavaProcessorUtilities {
             changesDone = true;
         }
 
-        // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
-        // directory only file name remaining.
-        Set<String> listModulesReallyNeeded = ModuleNameExtractor.extractFileName(jobModuleList);
+    	ModuleListClassifier classifier=new ModuleListClassifier(jobModuleList);
+    	for (String source : classifier.getModulesNeedRefetchWhenRun()) {
+    		 try {
+                 CorePlugin.getDefault().getLibrariesService().deployLibrary(new File(source).toURI().toURL());
+             } catch (IOException ee) {
+                 ExceptionHandler.process(ee);
+             }
+		}
+    	
+        Set<String> listModulesReallyNeeded = classifier.getPlainModuleNamesSet();
         Set<String> listModulesNeededByProcess = new HashSet<String>();
         if (listModulesReallyNeeded != null && listModulesReallyNeeded.size() > 0) {
             for (String jobModule : listModulesReallyNeeded) {
@@ -456,6 +464,7 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
+            jarsNeedRetrieve.addAll(classifier.getModulesRefreshWhenRun());
             List<IClasspathEntry> entriesToRemove = new ArrayList<IClasspathEntry>();
             for (IClasspathEntry entry : entries) {
                 if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
