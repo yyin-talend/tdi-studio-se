@@ -191,6 +191,8 @@ public class UIManager extends AbstractUIManager {
 
     private static DataMapTableView oldSelectedView;
 
+    private final Map<String, String> oldMappingMap = new HashMap<String, String>();
+
     /**
      * DOC amaumont UIManager constructor comment.
      * 
@@ -307,11 +309,19 @@ public class UIManager extends AbstractUIManager {
                                             metadataColumn, index));
                                     // handle related table view
                                     for (DataMapTableView tableView : relatedOutputsTableView) {
-                                        mapperManager.addNewColumnEntry(tableView, metadataColumn, index);
+                                        // changed for bug TDI-26551 in July 2,2013 by fwang, should use original
+                                        // expression for related table.
+                                        IMetadataColumn relatedMetadata = metadataColumn.clone();
+                                        String label = relatedMetadata.getLabel();
+                                        String expression = oldMappingMap.get(label);
+                                        relatedMetadata.setExpression(expression == null ? "" : expression);
+
+                                        mapperManager.addNewColumnEntry(tableView, relatedMetadata, index);
                                     }
                                     index = index + 1;
 
                                 }
+                                oldMappingMap.clear();
                             } else if (event.indicesTarget != null) {
                                 List<Integer> indicesTarget = event.indicesTarget;
                                 int lstSize = indicesTarget.size();
@@ -369,6 +379,7 @@ public class UIManager extends AbstractUIManager {
                                             .retrieveAbstractDataMapTable(tableView);
                                     metadataTableEntry = mapperManager.retrieveTableEntry(new TableEntryLocation(
                                             retrieveAbstractDataMapTable.getName(), metadataColumn.getLabel()));
+                                    oldMappingMap.put(metadataTableEntry.getName(), metadataTableEntry.getExpression());
                                     mapperManager.removeTableEntry(metadataTableEntry);
                                     if (tableView.canBeResizedAtPreferedSize()) {
                                         tableView.resizeAtExpandedSize();
