@@ -38,6 +38,7 @@ import org.talend.core.repository.model.repositoryObject.MetadataTableRepository
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -102,6 +103,7 @@ public class EditQueriesAction extends AContextualAction {
         }
 
         DatabaseConnectionItem dbConnectionItem = null;
+        boolean readOnly = false;
 
         ConnectionParameters connParameters = new ConnectionParameters();
         if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
@@ -111,6 +113,7 @@ public class EditQueriesAction extends AContextualAction {
             connParameters.setQuery(""); //$NON-NLS-1$
         } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) repositoryNode.getObject();
+            readOnly = SubItemHelper.isDeleted(queryRepositoryObject.getAbstractMetadataObject());
             dbConnectionItem = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(dbConnectionItem.getProperty().getLabel());
             connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
@@ -150,12 +153,14 @@ public class EditQueriesAction extends AContextualAction {
             }
         }
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode, selectedContext);
+        
+        dial.setReadOnly(readOnly);
 
         if (connection instanceof DatabaseConnection) {
             IMetadataConnection imetadataConnection = ConvertionHelper.convert(connection, true);
             connParameters.setSchema(imetadataConnection.getSchema());
         }
-        connParameters.setNodeReadOnly(false);
+        connParameters.setNodeReadOnly(readOnly);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();

@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataFillFactory;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -61,6 +62,7 @@ import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -999,54 +1001,10 @@ public class SQLBuilderRepositoryNodeManager {
      * @param repositoryNode databaseConnection's RepositoryNode
      * @param queries need to deleted Queries
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
-        DatabaseConnectionItem item = getItem(repositoryNode);
-        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        QueriesConnection queriesConnection = connection.getQueries();
-        if (queriesConnection != null) {
-            List<Query> qs = queriesConnection.getQuery();
-            List<Query> qs2 = new ArrayList<Query>();
-            qs2.clear();
-            for (Query query : qs) {
-                boolean flag = true;
-                for (Query q : queries) {
-                    if (query.getLabel().equals(q.getLabel())) {
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    qs2.add(query);
-                }
-            }
-            queriesConnection.getQuery().clear();
-            queriesConnection.getQuery().addAll(qs2);
-        }
-        deleteEMFQueries(repositoryNode.getObject().getId(), queries);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void deleteEMFQueries(String id, List<Query> queries) {
-        DatabaseConnectionItem item = getEMFItem(id);
-        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        QueriesConnection queriesConnection = connection.getQueries();
-        if (queriesConnection != null) {
-            List<Query> qs = queriesConnection.getQuery();
-            List<Query> qs2 = new ArrayList<Query>();
-            qs2.clear();
-            for (Query query : qs) {
-                boolean flag = true;
-                for (Query q : queries) {
-                    if (query.getLabel().equals(q.getLabel())) {
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    qs2.add(query);
-                }
-            }
-            queriesConnection.getQuery().clear();
-            queriesConnection.getQuery().addAll(qs2);
+        DatabaseConnectionItem item = getEMFItem(repositoryNode.getObject().getId());
+        for (Query query : queries) {
+                SubItemHelper.setDeleted(query, true);
         }
         saveMetaData(item);
     }
