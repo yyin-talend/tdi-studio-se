@@ -49,6 +49,7 @@ import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
@@ -377,6 +378,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         displayQueries.clear();
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
             Query query = (Query) iter.next();
+            boolean isDelete = SubItemHelper.isDeleted(query);
+            boolean isReadOnly = connectionParameters.isNodeReadOnly();
+            if (isDelete && !isReadOnly) {
+                continue;
+            }
             // if (!TableHelper.isDeleted(query)) {
             QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
             repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
