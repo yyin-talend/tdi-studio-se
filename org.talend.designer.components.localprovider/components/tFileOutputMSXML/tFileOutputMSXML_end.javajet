@@ -29,7 +29,6 @@ String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMEN
 
 String cid = node.getUniqueName();
 
-String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 boolean escapeText = ("true").equals(ElementParameterParser.getValue(node, "__ESCAPE_TEXT__"));
 

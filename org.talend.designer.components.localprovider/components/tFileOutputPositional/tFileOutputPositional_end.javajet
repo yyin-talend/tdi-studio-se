@@ -12,7 +12,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-    String filename = ElementParameterParser.getValue(node, "__FILENAME__");
     boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 	
