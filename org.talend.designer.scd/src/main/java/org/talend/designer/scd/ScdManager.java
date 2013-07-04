@@ -712,8 +712,9 @@ public class ScdManager {
                 if (ArrayUtils.contains(param.getListItemsDisplayCodeName(), type.name())) {
                     allTypeNames.add(type.getName());
                 }
-            } else
+            } else {
                 allTypeNames.add(type.getName());
+            }
         }
         return allTypeNames.toArray(new String[0]);
     }
@@ -823,17 +824,34 @@ public class ScdManager {
         ECodeLanguage lang = LanguageManager.getCurrentLanguage();
         if (type2Table != null && !type2Table.isEmpty()) {
             // start date
-            createMetadataColumn(outputColumns, schema, versionData.getStartName(), Date.class, lang);
+            IMetadataColumn startColumn = createMetadataColumn(outputColumns, schema, versionData.getStartName(), Date.class,
+                    lang);
+            if (startColumn != null) {
+                startColumn.setCustomId(1);
+                startColumn.setCustom(true);
+            }
             // end date
             IMetadataColumn endColumn = createMetadataColumn(outputColumns, schema, versionData.getEndName(), Date.class, lang);
             if (endColumn != null) {
                 endColumn.setNullable(true);
+                endColumn.setCustomId(2);
+                endColumn.setCustom(true);
             }
             if (versionData.isVersionChecked()) {
-                createMetadataColumn(outputColumns, schema, versionData.getVersionName(), Integer.class, lang);
+                IMetadataColumn versionColumn = createMetadataColumn(outputColumns, schema, versionData.getVersionName(),
+                        Integer.class, lang);
+                if (versionColumn != null) {
+                    versionColumn.setCustomId(3);
+                    versionColumn.setCustom(true);
+                }
             }
             if (versionData.isActiveChecked()) {
-                createMetadataColumn(outputColumns, schema, versionData.getActiveName(), Boolean.class, lang);
+                IMetadataColumn activeColumn = createMetadataColumn(outputColumns, schema, versionData.getActiveName(),
+                        Boolean.class, lang);
+                if (activeColumn != null) {
+                    activeColumn.setCustomId(4);
+                    activeColumn.setCustom(true);
+                }
             }
         }
         fixKeyColumnsInOutputSchema(schema, inputColumnsMap, lang);
@@ -902,6 +920,10 @@ public class ScdManager {
                             column.setTalendType(getType(String.class, lang)); // /
                         }
                     }
+                }
+                if (column != null) {
+                    column.setCustomId(0);
+                    column.setCustom(true);
                 }
             }
         }
