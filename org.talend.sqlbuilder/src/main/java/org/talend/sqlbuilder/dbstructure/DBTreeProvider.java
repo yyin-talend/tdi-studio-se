@@ -49,6 +49,7 @@ import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
@@ -129,6 +130,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         this.isRefresh = refreshValue;
     }
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         RepositoryNode node = (RepositoryNode) element;
         SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) node.getObject();
@@ -143,6 +145,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return ImageUtil.getImage((repositoryObject).getImage());
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         RepositoryNode node = (RepositoryNode) element;
         if (columnIndex == 0) {
@@ -154,7 +157,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return null;
     }
 
-    @SuppressWarnings("static-access")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("static-access")
     public Object[] getChildren(Object parentElement) {
         if (isRefresh) {
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
@@ -188,6 +192,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
+    @Override
     public Object getParent(Object element) {
         RepositoryNode node = (RepositoryNode) element;
         final RepositoryNode parent = node.getParent();
@@ -198,10 +203,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof RepositoryNode)) {
             return new Object[0];
@@ -375,8 +382,13 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryViewObject repObj,
             QueriesConnection queriesConnection) {
         displayQueries.clear();
-        for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
-            Query query = (Query) iter.next();
+        for (Object element : queriesConnection.getQuery()) {
+            Query query = (Query) element;
+            boolean isDelete = SubItemHelper.isDeleted(query);
+            boolean isReadOnly = connectionParameters.isNodeReadOnly();
+            if (isDelete && !isReadOnly) {
+                continue;
+            }
             // if (!TableHelper.isDeleted(query)) {
             QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
             repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
@@ -520,10 +532,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.queriesConnection = queriesConnection;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
 
+        @Override
         public String getLabel() {
             return repObj.getLabel();
         }
@@ -547,6 +561,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.query = query;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
@@ -567,6 +582,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.repObj = repObj;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
@@ -593,6 +609,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.repObj = repObj;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
@@ -620,6 +637,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.table = table;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
@@ -643,6 +661,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             this.column = column;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
@@ -652,10 +671,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex) {
         RepositoryNode repositoryNode = (RepositoryNode) element;
         SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) repositoryNode.getObject();
@@ -667,6 +688,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex) {
         return null;
     }
