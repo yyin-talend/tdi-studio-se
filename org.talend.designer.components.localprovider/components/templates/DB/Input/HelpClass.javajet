@@ -144,6 +144,7 @@ imports="
 	    
 	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
 %>
+            //Fix for TDI-26525 for HyperFileSQL in order to resolve query on empty string not work
 			try {
             	tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
 			} catch (java.sql.SQLException e) {
