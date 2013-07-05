@@ -13,7 +13,6 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -416,16 +415,9 @@ public class JavaProcessorUtilities {
             changesDone = true;
         }
 
-    	ModuleListClassifier classifier=new ModuleListClassifier(jobModuleList);
-    	for (String source : classifier.getModulesNeedRefetchWhenRun()) {
-    		 try {
-                 CorePlugin.getDefault().getLibrariesService().deployLibrary(new File(source).toURI().toURL());
-             } catch (IOException ee) {
-                 ExceptionHandler.process(ee);
-             }
-		}
-    	
-        Set<String> listModulesReallyNeeded = classifier.getPlainModuleNamesSet();
+        // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
+        // directory only file name remaining.
+        Set<String> listModulesReallyNeeded = ModuleNameExtractor.extractFileName(jobModuleList);
         Set<String> listModulesNeededByProcess = new HashSet<String>();
         if (listModulesReallyNeeded != null && listModulesReallyNeeded.size() > 0) {
             for (String jobModule : listModulesReallyNeeded) {
@@ -464,7 +456,6 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
-            jarsNeedRetrieve.addAll(classifier.getModulesRefreshWhenRun());
             List<IClasspathEntry> entriesToRemove = new ArrayList<IClasspathEntry>();
             for (IClasspathEntry entry : entries) {
                 if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
