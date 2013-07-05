@@ -82,6 +82,7 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
 import org.talend.designer.core.utils.KeyHelper;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -411,11 +412,12 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                                 }
                             }
                         }
-
+                        if (ProjectManager.getInstance().isInCurrentMainProject(repositoryNode)) {
+                            CorePlugin.getDefault().getDiagramModelService()
+                                    .addDeleteAssignmentAction(mgr, tableViewer.getSelection());
+                        }
                     }
-                    CorePlugin.getDefault().getDiagramModelService().addDeleteAssignmentAction(mgr, tableViewer.getSelection());
                 }
-
             }
         });
         Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
