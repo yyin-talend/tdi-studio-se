@@ -47,7 +47,7 @@ public class NodesTree {
             buildSubTrees(true);
         }
     }
-    
+
     public NodesTree(IProcess process, List<? extends INode> treeNodes, boolean init, ETypeGen typeGen) {
         this.nodes = treeNodes;
         buildRootNodes(process);
@@ -111,7 +111,7 @@ public class NodesTree {
 
         for (INode node : nodes) {
             String componentName = node.getComponent().getName();
-            if ((node.isStart()) && (node.isActivate()) && (!componentName.equals("tPrejob")) //$NON-NLS-1$
+            if ((node.isStart()) && (node.isActivate()) && node.isSubtreeStart() && (!componentName.equals("tPrejob"))//$NON-NLS-1$
                     && (!componentName.equals("tPostjob"))) { //$NON-NLS-1$
                 rootNodes.add(node);
             }
