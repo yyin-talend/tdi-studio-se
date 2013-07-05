@@ -132,10 +132,12 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
 			java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
 			stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+			stmtDrop_<%=cid%>.close();
 			java.sql.Statement stmtCreate_<%=cid%> =  null;
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
 				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+				stmtCreate_<%=cid%>.close();
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>)
 					 throw new RuntimeException ("Failure on DROP_CREATE action, process terminated");
@@ -147,6 +149,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
 				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+				stmtCreate_<%=cid%>.close();
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>)
 					 throw new RuntimeException ("Table '" + tableName_<%=cid%>  + "' already exists. process terminated");
@@ -174,6 +177,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					try{
 						stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
 						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)"); 
+						stmtCreate_<%=cid%>.close();
 					}catch(java.sql.SQLException e){
 						if(<%=dieOnError%>)
 							 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
@@ -190,6 +194,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     try{
                     	stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
                     	stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+						stmtDrop_<%=cid%>.close();
                     }catch(java.sql.SQLException e){
                     	if(<%=dieOnError%>)
 							 throw new RuntimeException ("Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
@@ -202,6 +207,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 try{
                 stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");           
+				stmtCreate_<%=cid%>.close();
                 }catch(java.sql.SQLException e){
                 	if(<%=dieOnError%>)
 						 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
@@ -219,6 +225,8 @@ skeleton="../templates/db_output_bulk.skeleton"
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> = rsClearCount_<%=cid%>.getInt(1);
             }
+            stmtClearCount_<%=cid%>.close();
+			stmtClear_<%=cid%>.close();
             <% 
         } else if (("CLEAR").equals(tableAction)){
             %>
@@ -235,6 +243,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             <%
         }
+		%>
+        conn_<%=cid%>.close();
+<%
     }
 %>
 
