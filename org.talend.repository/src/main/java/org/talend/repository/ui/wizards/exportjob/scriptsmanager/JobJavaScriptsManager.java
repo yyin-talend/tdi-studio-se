@@ -500,6 +500,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         modelesList.addAll(neededModules);
         Collections.sort(modelesList, new Comparator<ModuleNeeded>() {
 
+            @Override
             public int compare(ModuleNeeded m1, ModuleNeeded m2) {
                 return m1.getModuleName().compareToIgnoreCase(m2.getModuleName());
             }
@@ -904,6 +905,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             FilenameFilter filter = new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(".java"); //$NON-NLS-1$
                 }
@@ -1330,15 +1332,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected List<String> getRelatedJobFolderNames(ProcessItem process, Set<String> jobNameVersionChecked) {
         List<String> jobFolderNames = new ArrayList<String>();
+        String projectName = getCorrespondingProjectName(process);
         String jobName = process.getProperty().getLabel();
         String jobVersion = process.getProperty().getVersion();
-        String id = jobName + "_" + jobVersion; //$NON-NLS-1$
+        String id = projectName + ":" + jobName + "_" + jobVersion; //$NON-NLS-1$ //$NON-NLS-2$
         if (jobNameVersionChecked.contains(id)) {
             return jobFolderNames; // no need to add more to the list, just return the empty list
         }
         jobNameVersionChecked.add(id);
         String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-        jobFolderNames.add(jobFolderName);
+        jobFolderNames.add(projectName + ":" + jobFolderName); //$NON-NLS-1$
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), jobNameVersionChecked));
@@ -1656,6 +1659,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File file = temPath.toFile();
             File[] files = file.listFiles(new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(FileConstants.JAR_FILE_SUFFIX)
                             || name.toLowerCase().endsWith(FileConstants.PROPERTIES_FILE_SUFFIX)
@@ -1747,6 +1751,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         final Collection<File> list = new ArrayList<File>();
         new File(rootFile, childPath).listFiles(new java.io.FilenameFilter() {
 
+            @Override
             public boolean accept(java.io.File dir, String name) {
                 File file = new java.io.File(dir, name);
                 if (file.isFile()) {

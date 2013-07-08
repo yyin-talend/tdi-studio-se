@@ -266,7 +266,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -274,9 +274,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             *
+             * 
              * If empty, nothing will be added.
-             *
+             * 
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -301,9 +301,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     *
+     * 
      * If empty, nothing will be added. @see isExcludedLib
-     *
+     * 
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -346,7 +346,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     *
+     * 
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -369,21 +369,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     *
+     * 
      * @param resource
      * @param process
      * @throws IOException
      */
     private void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) throws IOException {
-        String projectName = getCorrespondingProjectName(process);
         final URI classRootURI = classesLocation.toURI();
         List<String> jobFolderNames = getRelatedJobFolderNames(process);
         try {
-            final String classRootLocation = getClassRootLocation() + projectName + File.separator;
             for (String jobFolderName : jobFolderNames) {
-                String classRoot = FilesUtils.getFileRealPath(classRootLocation + jobFolderName);
+                String[] jf = jobFolderName.split(":"); //$NON-NLS-1$
+                String projectName = jf[0];
+                String folderName = jf[1];
+                String classRootLocation = getClassRootLocation() + projectName + File.separator;
+                String classRoot = FilesUtils.getFileRealPath(classRootLocation + folderName);
                 String targetPath = FilesUtils.getFileRealPath(classesLocation + File.separator + projectName + File.separator
-                        + jobFolderName);
+                        + folderName);
                 File sourceFile = new File(classRoot);
                 File targetFile = new File(targetPath);
                 FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
@@ -402,7 +404,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
+     * 
      * @param processItem
      * @author rzubairov
      * @return
@@ -524,7 +526,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     *
+     * 
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -942,7 +944,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     *
+     * 
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {
