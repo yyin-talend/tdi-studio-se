@@ -156,6 +156,7 @@ import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -3144,6 +3145,21 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                             }
                         }
 
+                        // handle related table, save original expression
+                        List<DataMapTableView> relatedOutputsTableView = mapperManager.getUiManager().getRelatedOutputsTableView(
+                                DataMapTableView.this);
+                        for (IMetadataColumn metadataColumn : columns) {
+                            for (DataMapTableView tableView : relatedOutputsTableView) {
+                                IDataMapTable retrieveAbstractDataMapTable = mapperManager
+                                        .retrieveAbstractDataMapTable(tableView);
+                                String tableName = retrieveAbstractDataMapTable.getName();
+                                ITableEntry metadataTableEntry = mapperManager.retrieveTableEntry(new TableEntryLocation(
+                                        tableName, metadataColumn.getLabel()));
+                                mapperManager.getUiManager().getOldMappingMap()
+                                        .put(tableName + "_" + metadataTableEntry.getName(), metadataTableEntry.getExpression());
+                            }
+                        }
+
                         extendedTableModel.removeAll(copyedAllList);
                         for (IMetadataColumn metaColumnToAdd : columns) {
                             String label = metaColumnToAdd.getLabel();
@@ -3154,6 +3170,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                         }
                         extendedTableModel.addAll(columns);
                         mapperManager.getUiManager().parseAllExpressionsForAllTables();
+                        mapperManager.getUiManager().getOldMappingMap().clear();
                         oldMappingMap.clear();
                         return value;
                     }

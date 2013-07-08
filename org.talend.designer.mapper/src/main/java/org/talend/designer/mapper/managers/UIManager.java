@@ -311,17 +311,22 @@ public class UIManager extends AbstractUIManager {
                                     for (DataMapTableView tableView : relatedOutputsTableView) {
                                         // changed for bug TDI-26551 in July 2,2013 by fwang, should use original
                                         // expression for related table.
-                                        IMetadataColumn relatedMetadata = metadataColumn.clone();
-                                        String label = relatedMetadata.getLabel();
-                                        String expression = oldMappingMap.get(label);
-                                        relatedMetadata.setExpression(expression == null ? "" : expression);
+                                        IMetadataColumn relatedMetadata = metadataColumn;
+                                        if (!oldMappingMap.isEmpty()) {
+                                            IDataMapTable retrieveAbstractDataMapTable = mapperManager
+                                                    .retrieveAbstractDataMapTable(tableView);
+                                            relatedMetadata = metadataColumn.clone();
+                                            String label = relatedMetadata.getLabel();
+                                            String expression = oldMappingMap.get(retrieveAbstractDataMapTable.getName() + "_"
+                                                    + label);
+                                            relatedMetadata.setExpression(expression == null ? "" : expression);
+                                        }
 
                                         mapperManager.addNewColumnEntry(tableView, relatedMetadata, index);
                                     }
                                     index = index + 1;
 
                                 }
-                                oldMappingMap.clear();
                             } else if (event.indicesTarget != null) {
                                 List<Integer> indicesTarget = event.indicesTarget;
                                 int lstSize = indicesTarget.size();
@@ -379,7 +384,6 @@ public class UIManager extends AbstractUIManager {
                                             .retrieveAbstractDataMapTable(tableView);
                                     metadataTableEntry = mapperManager.retrieveTableEntry(new TableEntryLocation(
                                             retrieveAbstractDataMapTable.getName(), metadataColumn.getLabel()));
-                                    oldMappingMap.put(metadataTableEntry.getName(), metadataTableEntry.getExpression());
                                     mapperManager.removeTableEntry(metadataTableEntry);
                                     if (tableView.canBeResizedAtPreferedSize()) {
                                         tableView.resizeAtExpandedSize();
@@ -2316,6 +2320,10 @@ public class UIManager extends AbstractUIManager {
 
     public Shell getShell() {
         return mapperUI.getShell();
+    }
+
+    public Map<String, String> getOldMappingMap() {
+        return oldMappingMap;
     }
 
 }
