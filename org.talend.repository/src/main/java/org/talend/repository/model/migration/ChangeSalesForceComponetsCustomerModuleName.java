@@ -53,22 +53,26 @@ public class ChangeSalesForceComponetsCustomerModuleName extends
 		IComponentConversion changeJDBCDriverJarType = new IComponentConversion() {
 
 			public void transform(NodeType node) {
-				ElementParameterType customModule = ComponentUtilities
-						.getNodeProperty(node, "CUSTOM_MODULE");
-				if(customModule == null){
-					customModule = ComponentUtilities.getNodeProperty(node, "CUSTOM_MODULE_NAME");
-				}
-				if (customModule != null) {
-					String customModuleName = customModule.getValue();
-					if (customModuleName != null) {
-						if (!customModuleName.startsWith("\"")) {
-							customModuleName = "\"" + customModuleName;
-						}
-						if (!customModuleName.endsWith("\"")) {
-							customModuleName = customModuleName + "\"";
-						}
-						customModule.setValue(customModuleName);
-					}
+			    String property = "MODULENAME";
+                ElementParameterType module = ComponentUtilities.getNodeProperty(node, property);
+			    if (module != null && "CustomModule".equals(module.getValue())) {
+    				ElementParameterType customModule = ComponentUtilities
+    						.getNodeProperty(node, "CUSTOM_MODULE");
+    				if(customModule == null){
+    					customModule = ComponentUtilities.getNodeProperty(node, "CUSTOM_MODULE_NAME");
+    				}
+    				if (customModule != null) {
+    					String customModuleName = customModule.getValue();
+    					if (customModuleName != null) {
+    						if (!customModuleName.startsWith("\"")) {
+    							customModuleName = "\"" + customModuleName;
+    						}
+    						if (!customModuleName.endsWith("\"")) {
+    							customModuleName = customModuleName + "\"";
+    						}
+    						customModule.setValue(customModuleName);
+    					}
+    				}
 
 				}
 			}

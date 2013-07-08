@@ -68,7 +68,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			
 			String modulename = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE__").trim();
-			String sObject = (("CustomModule").equals(modulename)) ? customModulename : modulename;
+			String sObject = (("CustomModule").equals(modulename)) ? customModulename : "\""+modulename+"\"";
 
 			//for bulk query
 		   	String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
