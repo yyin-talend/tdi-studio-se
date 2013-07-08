@@ -28,6 +28,8 @@ imports="
 	if ("CustomModule".equals(sObject)) {
 		//modulename = customModulename; 
 		sObject = customModulename;
+	}else{
+		sObject = "\""+sObject+"\"";
 	}
 	
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
