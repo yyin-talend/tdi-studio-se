@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -86,6 +82,10 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
+
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -191,11 +191,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME,
-                            generateRestJobSpringConfig(processItem));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobSpringConfig(processItem));
                 } else {
-                    osgiResource
-                            .addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -377,15 +375,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @throws IOException
      */
     private void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) throws IOException {
-        String projectName = getCorrespondingProjectName(process);
         final URI classRootURI = classesLocation.toURI();
         List<String> jobFolderNames = getRelatedJobFolderNames(process);
         try {
-            final String classRootLocation = getClassRootLocation() + projectName + File.separator;
             for (String jobFolderName : jobFolderNames) {
-                String classRoot = FilesUtils.getFileRealPath(classRootLocation + jobFolderName);
+                String[] jf = jobFolderName.split(":"); //$NON-NLS-1$
+                String projectName = jf[0];
+                String folderName = jf[1];
+                String classRootLocation = getClassRootLocation() + projectName + File.separator;
+                String classRoot = FilesUtils.getFileRealPath(classRootLocation + folderName);
                 String targetPath = FilesUtils.getFileRealPath(classesLocation + File.separator + projectName + File.separator
-                        + jobFolderName);
+                        + folderName);
                 File sourceFile = new File(classRoot);
                 File targetFile = new File(targetPath);
                 FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
@@ -536,8 +536,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
 
-        TemplateProcessor.processTemplate("REST_JOB_CONFIG", contextParams, targetFile, new InputStreamReader(this
-                .getClass().getResourceAsStream(TEMPLATE_JOB_REST)));
+        TemplateProcessor.processTemplate("REST_JOB_CONFIG", contextParams, targetFile, new InputStreamReader(this.getClass()
+                .getResourceAsStream(TEMPLATE_JOB_REST)));
 
         return targetFile.toURI().toURL();
     }
