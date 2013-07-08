@@ -253,50 +253,39 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         
         private void initializeJetEmittersProject(final IProgressMonitor progressMonitor) throws CoreException {
-        	Display.getDefault().syncExec(new Runnable(){
+				final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-				@Override
-				public void run() {
-					try{
-						final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-			            IProject project = workspace.getRoot().getProject(JET_PROJECT);
-			            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
-			                    new Object[] { project.getName() }));
-			            File file = new File(workspace.getRoot().getLocation().append(JET_PROJECT).toPortableString());
-			            if (file.exists() && !project.isAccessible()) {
-			                // .metadata missing, so need to reimport project to add it in the metadata.
-			                progressMonitor.subTask("Reinitilializing project " + project.getName()); //$NON-NLS-1$
-			                project.create(new SubProgressMonitor(progressMonitor, 1));
-			                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-			                        new Object[] { project.getName() }));
-			            } else if (!project.isAccessible()) {
-			                // project was deleted manually on the disk. The delete here will remove infos from metadata
-			                // then we'll be able to create a new clean project.
-			                project.delete(true, progressMonitor);
-			            }
-			            if (!project.exists()) {
-			                progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
-			                project.create(new SubProgressMonitor(progressMonitor, 1));
-			                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-			                        new Object[] { project.getName() }));
-			            }
-			            if (!project.isOpen()) {
-			                project.open(new SubProgressMonitor(progressMonitor, 5));
-			                project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
-			            }
-			            IProjectDescription description = project.getDescription();
-			            // only in case it's one old workspace and got no nature defined.
-			            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
-			                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-			                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
-			            }
-					}catch(CoreException e){
-						e.printStackTrace();
-					}
-				}
-        		
-        	});
+	            IProject project = workspace.getRoot().getProject(JET_PROJECT);
+	            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
+	                    new Object[] { project.getName() }));
+	            File file = new File(workspace.getRoot().getLocation().append(JET_PROJECT).toPortableString());
+	            if (file.exists() && !project.isAccessible()) {
+	                // .metadata missing, so need to reimport project to add it in the metadata.
+	                progressMonitor.subTask("Reinitilializing project " + project.getName()); //$NON-NLS-1$
+	                project.create(new SubProgressMonitor(progressMonitor, 1));
+	                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+	                        new Object[] { project.getName() }));
+	            } else if (!project.isAccessible()) {
+	                // project was deleted manually on the disk. The delete here will remove infos from metadata
+	                // then we'll be able to create a new clean project.
+	                project.delete(true, progressMonitor);
+	            }
+	            if (!project.exists()) {
+	                progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
+	                project.create(new SubProgressMonitor(progressMonitor, 1));
+	                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+	                        new Object[] { project.getName() }));
+	            }
+	            if (!project.isOpen()) {
+	                project.open(new SubProgressMonitor(progressMonitor, 5));
+	                project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+	            }
+	            IProjectDescription description = project.getDescription();
+	            // only in case it's one old workspace and got no nature defined.
+	            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
+	                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+	                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+	            }
         }
 
     };
