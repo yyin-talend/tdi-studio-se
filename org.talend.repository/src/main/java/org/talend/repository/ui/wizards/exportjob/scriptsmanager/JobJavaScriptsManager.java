@@ -1419,15 +1419,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected List<String> getRelatedJobFolderNames(ProcessItem process, Set<String> jobNameVersionChecked) {
         List<String> jobFolderNames = new ArrayList<String>();
+        String projectName = getCorrespondingProjectName(process);
         String jobName = process.getProperty().getLabel();
         String jobVersion = process.getProperty().getVersion();
-        String id = jobName + "_" + jobVersion; //$NON-NLS-1$
+        String id = projectName + ":" + jobName + "_" + jobVersion; //$NON-NLS-1$ //$NON-NLS-2$
         if (jobNameVersionChecked.contains(id)) {
             return jobFolderNames; // no need to add more to the list, just return the empty list
         }
         jobNameVersionChecked.add(id);
         String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-        jobFolderNames.add(jobFolderName);
+        jobFolderNames.add(projectName + ":" + jobFolderName); //$NON-NLS-1$
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), jobNameVersionChecked));
