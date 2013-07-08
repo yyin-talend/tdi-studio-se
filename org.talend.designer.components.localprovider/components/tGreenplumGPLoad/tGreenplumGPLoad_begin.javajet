@@ -125,7 +125,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	//-----------------------------------------------------------
 	// create table option
 	//-----------------------------------------------------------
-	if(columnList != null && columnList.size() > 0 && !("NONE".equals(tableAction))) {
+	if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
 		%>
 
