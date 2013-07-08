@@ -107,14 +107,8 @@ Manager manager = null;
 <%
 if(columnList != null && columnList.size() > 0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);      
-}
-if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)){
 %>
 <%@ include file="../templates/_tableActionForBulk.javajet"%>
-<%
-}
-if(columnList != null && columnList.size() > 0) {
-%>
 
 		String fileName_<%=cid%> = <%=file%>;
 		String cmdFile_<%=cid%> = fileName_<%=cid%> + ".cmd";
@@ -220,6 +214,9 @@ if(columnList != null && columnList.size() > 0) {
 	}
 %>
 
+<%
+} 		
+%>
 
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
@@ -283,9 +280,6 @@ ps_<%=cid %>.waitFor();
 normal_<%=cid%>.interrupt();
 error_<%=cid%>.interrupt();
 
-<%
-} 		
-%>
 
 
 
