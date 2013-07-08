@@ -181,6 +181,10 @@ public class ComboController extends AbstractElementPropertySectionController {
         combo.setEnabled(!param.isReadOnly());
         combo.addSelectionListener(listenerSelection);
         combo.setData(PARAMETER_NAME, param.getName());
+        int nbLines = param.getNbLines();
+        if (nbLines > 5) {
+            combo.setVisibleItemCount(nbLines);
+        }
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
