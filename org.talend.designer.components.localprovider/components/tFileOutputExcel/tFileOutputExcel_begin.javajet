@@ -71,7 +71,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		if(!useStream){ // the part of the file path
 %>		
-		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
+		String fileName_<%=cid%>=<%=filename%>;
+		java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid%>);
 		
 <%
 			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
@@ -111,7 +112,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     workbookSettings_<%=cid %>);
         }else{        
 		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
-            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>)), 
+            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(fileName_<%=cid%>)), 
             		true, 
             		workbookSettings_<%= cid %>);        
         }     
@@ -119,7 +120,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			} else {
 %>
 		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
-            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>)), 
+            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(fileName_<%=cid%>)), 
             		true, 
             		workbookSettings_<%= cid %>);
 <%
@@ -431,7 +432,17 @@ if(isIncludeHeader){
 		
 <%	
 		}else{ //version judgement /***excel 2007 xlsx*****/
+			if(!useStream){
+%>
+		String fileName_<%=cid%>=<%=filename%>;
+<%
+				if(!isAppendFile && isDeleteEmptyFile){
 %>	
+		java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid%>);
+<%
+				}
+			}
+%>
 		int nb_line_<%=cid%> = 0;
 		org.talend.ExcelTool xlsxTool_<%=cid%> = new org.talend.ExcelTool();
 <%	 
@@ -448,7 +459,7 @@ if(isIncludeHeader){
 		xlsxTool_<%=cid%>.setAppend(<%=isAppendFile%>,<%=isAppendSheet%>);
 		xlsxTool_<%=cid%>.setXY(<%=firstCellYAbsolute%>,<%=firstCellXStr%>,<%=firstCellYStr%>,<%=keepCellFormating%>);
 		<%if(!useStream){%>
-		xlsxTool_<%=cid%>.prepareXlsxFile(<%=filename%>);
+		xlsxTool_<%=cid%>.prepareXlsxFile(fileName_<%=cid%>);
 		<%}else{%>
 		xlsxTool_<%=cid%>.prepareStream();
 		<%}%>
