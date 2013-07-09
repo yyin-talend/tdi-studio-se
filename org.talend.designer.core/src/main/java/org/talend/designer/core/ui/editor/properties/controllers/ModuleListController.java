@@ -126,12 +126,12 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                 String propertyName = (String) button.getData(PARAMETER_NAME);
                 String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
 
+                try {
+                    CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
                 if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
-                    try {
-                        CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
 
                     // update the combo current value
                     CCombo combo = (CCombo) hashCurControls.get(propertyName);
