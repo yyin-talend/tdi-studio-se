@@ -48,6 +48,20 @@ imports="
 <%
             }
 		}
+		
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+			String dbType = "Timestamp";
+			if("TIME".equalsIgnoreCase(column.getType())){
+				dbType = "Time";
+			}
+%>
+			if(rs_<%=cid %>.get<%=dbType%>(column_index_<%=cid%>) != null) {
+				<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.get<%=dbType%>(column_index_<%=cid%>).getTime());
+			} else {
+				<%=firstConnName%>.<%=column.getLabel()%> =  null;
+			}			 
+<%
+		}
 		//-----------according schema type to generate ResultSet
 	    
 	    //---------end according schema type to generate ResultSet
