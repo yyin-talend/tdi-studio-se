@@ -411,6 +411,7 @@ public class ImportItemUtil {
 
         Collections.sort(itemRecords, new Comparator<ItemRecord>() {
 
+            @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
                 if (o1.getProperty().getItem() instanceof RoutineItem && o2.getProperty().getItem() instanceof RoutineItem) {
                     return 0;
@@ -433,6 +434,7 @@ public class ImportItemUtil {
             public void run() throws PersistenceException {
                 final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
 
                         final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
@@ -817,6 +819,7 @@ public class ImportItemUtil {
                         } finally {
                             is.close();
                         }
+                        repFactory.unloadResources(tmpItem.getProperty());
                     } else {
                         // connections from migrations (from 4.0.x or previous version) doesn't support reference or
                         // screenshots
@@ -1238,6 +1241,7 @@ public class ImportItemUtil {
 
         Collections.sort(items, new Comparator<ItemRecord>() {
 
+            @Override
             public int compare(ItemRecord o1, ItemRecord o2) {
                 return VersionUtils.compareTo(o1.getProperty().getVersion(), o2.getProperty().getVersion());
             }
