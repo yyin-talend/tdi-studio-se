@@ -224,6 +224,9 @@ public class ImportItemUtil {
             String itemPath = null;
             if (item.getState() != null) {
                 itemPath = item.getState().getPath();
+            } else {
+                itemRecord.addError(Messages.getString("ImportItemUtil.unsupportItem"));
+                return false;
             }
 
             boolean nameAvailable = true;
@@ -1442,8 +1445,8 @@ public class ImportItemUtil {
             resource.getResourceSet().setURIConverter(uriConverter);
             itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
                     PropertiesPackage.eINSTANCE.getProperty()));
-        } catch (IOException e) {
-            // ignore
+        } catch (Exception e) {
+            // ignore, must be one invalid or unknown item
         } finally {
             if (stream != null) {
                 try {
