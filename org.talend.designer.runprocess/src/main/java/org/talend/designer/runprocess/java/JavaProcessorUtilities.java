@@ -67,6 +67,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -626,6 +627,9 @@ public class JavaProcessorUtilities {
         for (String jar : listModulesReallyNeeded) {
             int index = indexOfEntry(entries, jar);
             if (index < 0) {
+	        	if (ContextParameterUtils.isContainContextParam(jar)) {
+	                 continue;
+	            }
                 if (listModulesNeededByProcess.contains(jar)) {
                     missingJarsForProcessOnly.add(jar);
                 } else {
