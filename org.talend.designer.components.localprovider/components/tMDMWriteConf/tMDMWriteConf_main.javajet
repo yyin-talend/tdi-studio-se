@@ -56,6 +56,7 @@ if (metadatas != null && metadatas.size()>0) {
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     List<IMetadataColumn> rejectColumnList = null;
+    boolean xmlFieldDocType=false;
     if (rejectConns != null && rejectConns.size() > 0) {
       IConnection rejectConn = rejectConns.get(0);
       if(rejectConn!=null){
@@ -91,8 +92,25 @@ if (metadatas != null && metadatas.size()>0) {
     if (outConnName != null) {
     %>
       <%=outConnName %> = new <%=outConnName %>Struct();
-      <%=outConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
-       <%if(storeFlow){%>
+  	<%
+  		if(outputColumnList!=null){
+  			for(IMetadataColumn column:outputColumnList) {
+  				if(column.getLabel().equals(xmlField) && "id_Document".equals(column.getTalendType())) {
+  					xmlFieldDocType=true;
+  					break;
+  				}
+  			}
+  		}
+      	if(xmlFieldDocType) {
+		%>
+			<%=outConnName %>.<%=xmlField %> = ParserUtils.parseTo_Document(queue_<%=cid %>.peek());
+		<%
+		}else{
+		%>
+			<%=outConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
+		<%
+		}
+		 if(storeFlow){%>
       		java.util.Map<String,String> xmlFlow_<%=cid%> = xmlFlowList_<%=cid%>.get(flowNum_<%=cid%>);
       		String valueStr_<%=cid%>;
 			<%
@@ -277,9 +295,17 @@ if (metadatas != null && metadatas.size()>0) {
 				}
 	      		<%}
 	      	}
-      	  }%>
-          
-          <%=rejectConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
+      	  }
+      	  if(xmlFieldDocType) {
+		  %>
+			<%=rejectConnName %>.<%=xmlField %> = ParserUtils.parseTo_Document(queue_<%=cid %>.peek());
+		  <%
+		  }else{
+		  %>
+			<%=rejectConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
+		  <%
+		  }
+		  %>
           <%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
         <%} else {%>
           System.err.println(e.getMessage());
