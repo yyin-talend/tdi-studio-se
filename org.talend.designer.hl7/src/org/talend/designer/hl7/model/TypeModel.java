@@ -55,26 +55,32 @@ public class TypeModel extends AbstractStructureModel {
         generatePrimitive();
     }
 
+    @Override
     protected void generateDisplayName() {
+        String typeDispaly = type == null ? "" : TalendTextUtils.LBRACKET + this.type.getName() + TalendTextUtils.RBRACKET;
+        this.displayName = getParent().getName() + "-" + index + "(" + (++rep) + ")" + typeDispaly; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        this.displayName = getParent().getName() + "-" + index + "(" + (++rep) + ")" + TalendTextUtils.LBRACKET + type.getName() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + TalendTextUtils.RBRACKET;
     }
 
     private void generatePrimitive() {
-        List<PrimitiveModel> pms = new ArrayList<PrimitiveModel>();
-        int numComp = Terser.numComponents(this.type);
-        for (int k = 1; k <= numComp; k++) {
-            int numSubComp = Terser.numSubComponents(this.type, k);
-            for (int m = 1; m <= numSubComp; m++) {
-                Primitive p = getPrimitive(this.type, k, m);
-                if (p.getValue() != null) {
-                    PrimitiveModel pm = new PrimitiveModel(this, p, k, m);
-                    pms.add(pm);
+        if (type != null) {
+            List<PrimitiveModel> pms = new ArrayList<PrimitiveModel>();
+            int numComp = Terser.numComponents(this.type);
+            for (int k = 1; k <= numComp; k++) {
+                int numSubComp = Terser.numSubComponents(this.type, k);
+                for (int m = 1; m <= numSubComp; m++) {
+                    Primitive p = getPrimitive(this.type, k, m);
+                    if (p.getValue() != null) {
+                        PrimitiveModel pm = new PrimitiveModel(this, p, k, m);
+                        pms.add(pm);
+                    }
                 }
             }
+            primitives = pms.toArray(new PrimitiveModel[0]);
+        } else {
+            PrimitiveModel pm = new PrimitiveModel(this, null, 1, 1);
+            primitives = new PrimitiveModel[] { pm };
         }
-        primitives = pms.toArray(new PrimitiveModel[0]);
     }
 
     public Primitive getPrimitive(Type type, int component, int subcomponent) {
@@ -101,8 +107,9 @@ public class TypeModel extends AbstractStructureModel {
             Varies v = (Varies) type;
 
             try {
-                if (comp > 1 && GenericPrimitive.class.isAssignableFrom(v.getData().getClass()))
+                if (comp > 1 && GenericPrimitive.class.isAssignableFrom(v.getData().getClass())) {
                     v.setData(new GenericComposite(v.getMessage()));
+                }
             } catch (DataTypeException de) {
                 String message = "Unexpected exception copying data to generic composite: " + de.getMessage();
                 throw new Error(message);
