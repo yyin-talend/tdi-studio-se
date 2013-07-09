@@ -66,8 +66,6 @@ public class JobVMArgumentsComposite {
 
     private static final List<String> EMPTY_STRING_LIST = Collections.unmodifiableList(new ArrayList<String>());
 
-    private static final String ARG_DELIMITER = " -"; //$NON-NLS-1$
-
     protected TableViewer viewer;
 
     private List<String> list = new ArrayList<String>();
@@ -361,11 +359,11 @@ public class JobVMArgumentsComposite {
     protected void editItem(ISelection sel) {
         IStructuredSelection selection = (IStructuredSelection) sel;
         String existing = (String) selection.getFirstElement();
-        String value = getExistingInputObject(existing);
+        String value = getExistingInputObject(existing.replace(" ", ""));
         if (value != null) {
             int indexOf = list.indexOf(existing);
             list.remove(existing);
-            list.add(indexOf, value.replaceAll(" ", ""));
+            list.add(indexOf, value);
             viewer.refresh();
             doSave();
         }
@@ -473,7 +471,7 @@ public class JobVMArgumentsComposite {
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
                 if (columnIndex == 0) {
-                    return value;
+                    return value.replace(" ", "");
                 }
                 throw new IllegalStateException();
             }
