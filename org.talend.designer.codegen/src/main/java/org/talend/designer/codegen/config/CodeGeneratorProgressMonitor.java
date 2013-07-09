@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -141,7 +142,7 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
      */
     public void setBlocked(IStatus reason) {
-        Dialog.getBlockedHandler().showBlocked(this, reason, taskName);
+//        Dialog.getBlockedHandler().showBlocked(this, reason, taskName);
     }
 
     /**

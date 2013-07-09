@@ -50,6 +50,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.io.IOUtils;
@@ -137,11 +138,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetFilesCompileFail.clear();
 
                 IProgressMonitor monitorWrap = null;
-                if (!CommonsPlugin.isHeadless()) {
-                    monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
-                } else {
-                    monitorWrap = new NullProgressMonitor();
-                }
+                monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
                 ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
                 
                 initializeJetEmittersProject(monitorWrap);
