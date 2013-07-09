@@ -487,18 +487,24 @@ public class SalesforceBulkAPI {
         // batchInfoList was populated when batches were created and submitted
         List<Map<String, String>> resultInfoList = new ArrayList<Map<String, String>>();
         Map<String, String> resultInfo;
-        CSVReader rdr = new CSVReader(connection.getQueryResultStream(job.getId(), batchInfoList.get(0).getId(), resultId));
+        //fix for TDI-26533
+        baseFileReader = new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+                connection.getQueryResultStream(job.getId(), batchInfoList.get(0).getId(), resultId), FILE_ENCODING)), ',');
 
-        List<String> resultHeader = rdr.nextRecord();
-        int resultCols = resultHeader.size();
-        List<String> row;
-        while ((row = rdr.nextRecord()) != null) {
-            resultInfo = new HashMap<String, String>();
-            // resultInfo.putAll(getBaseFileRow());
-            for (int i = 0; i < resultCols; i++) {
-                resultInfo.put(resultHeader.get(i), row.get(i));
+        if (baseFileReader.readNext()) {
+            baseFileHeader = Arrays.asList(baseFileReader.getValues());
+        }
+        baseFileHeaderSize = baseFileHeader.size();
+        String[] row;
+        while (baseFileReader.readNext()) {
+            if((row = baseFileReader.getValues())!=null){
+                resultInfo = new HashMap<String, String>();
+                // resultInfo.putAll(getBaseFileRow());
+                for (int i = 0; i < baseFileHeaderSize; i++) {
+                    resultInfo.put(baseFileHeader.get(i), row[i]);
+                }
+                resultInfoList.add(resultInfo);
             }
-            resultInfoList.add(resultInfo);
             // boolean success = Boolean.valueOf(resultInfo.get("Success"));
             // boolean created = Boolean.valueOf(resultInfo.get("Created"));
             // String id = resultInfo.get("Id");
