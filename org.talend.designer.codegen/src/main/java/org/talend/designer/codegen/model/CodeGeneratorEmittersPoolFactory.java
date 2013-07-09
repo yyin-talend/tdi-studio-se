@@ -138,7 +138,12 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetFilesCompileFail.clear();
 
                 IProgressMonitor monitorWrap = null;
-                monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
+                boolean headless = CommonUIPlugin.isFullyHeadless();
+                if (!headless) {
+                    monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
+                } else {
+                    monitorWrap = new NullProgressMonitor();
+                }                
                 ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
                 
                 initializeJetEmittersProject(monitorWrap);
