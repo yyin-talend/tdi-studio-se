@@ -1266,7 +1266,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             IFolder jobPackageFolder = this.project.getFolder(jobPackagePath);
             IFolder wsdlsPackageFolder = jobPackageFolder.getFolder("wsdl"); //$NON-NLS-1$
             if (wsdlsPackageFolder.exists()) {
-                wsdlsPackageFolder.delete(true, true, null);
+                wsdlsPackageFolder.delete(true, null);
             }
 
             for (INode node : graphicalNodes) {
@@ -1291,18 +1291,20 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
                             while ((zipEntry = zipIn.getNextEntry()) != null) {
                                 String outputName = zipEntry.getName();
-                                if (outputName.equals("main.wsdl")) { //$NON-NLS-1$
+                                if ("main.wsdl".equals(outputName)) { //$NON-NLS-1$
                                     outputName = uniqueName + ".wsdl"; //$NON-NLS-1$
                                 }
-                                IFile wsdlFile = wsdlsPackageFolder.getFile(outputName); //$NON-NLS-1$
-                                // cause create file will do a close. add a warp to ignore close.
-                                InputStream unCloseIn = new FilterInputStream(zipIn) {
+                                IFile wsdlFile = wsdlsPackageFolder.getFile(outputName);
+                                if (!wsdlFile.exists()) {
+                                    // cause create file will do a close. add a warp to ignore close.
+                                    InputStream unCloseIn = new FilterInputStream(zipIn) {
 
-                                    public void close() throws IOException {
+                                        public void close() throws IOException {
+                                        };
                                     };
-                                };
 
-                                wsdlFile.create(unCloseIn, true, null);
+                                    wsdlFile.create(unCloseIn, true, null);
+                                }
                                 zipIn.closeEntry();
                             }
                             zipIn.close();
@@ -1319,7 +1321,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
 
         boolean samEnabled = false;
