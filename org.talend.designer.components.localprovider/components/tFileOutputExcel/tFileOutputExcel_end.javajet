@@ -18,7 +18,6 @@
 
 	boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 	String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
-	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 	boolean createDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));	
 	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));	
 	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND_FILE__"));
@@ -119,7 +118,7 @@
 	<%	}else{%>
 		if(nb_line_<%=cid %> == 0){
 	<%	}%>
-			new java.io.File(<%=filename %>).delete();
+			file_<%=cid %>.delete();
 		}		
 	<%}
 	}else{//version judgement /***excel 2007 xlsx*****/
@@ -195,7 +194,7 @@
 	<%
 		}else{	
 	%>
-			xlsxTool_<%=cid%>.writeExcel(<%=filename%>,<%=createDir%>);
+			xlsxTool_<%=cid%>.writeExcel(fileName_<%=cid%>,<%=createDir%>);
 	<%
 		}
 	%>
@@ -208,7 +207,7 @@
 	<%	}else{%>
 		if(nb_line_<%=cid %> == 0){
 	<%	}%>
-			new java.io.File(<%=filename %>).delete();
+			file_<%=cid %>.delete();
 		}		
 	<%}
 	}
