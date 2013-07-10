@@ -1,0 +1,156 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputEBCDIC</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-file.html" title="Chapitre&nbsp;13.&nbsp;Composants File"><link rel="prev" href="tFileOutputDelimited.html" title="tFileOutputDelimited"><link rel="next" href="tFileOutputExcel.html" title="tFileOutputExcel"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileOutputEBCDIC</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileOutputDelimited.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;13.&nbsp;Composants File</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileOutputExcel.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFileOutputEBCDIC"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputEBCDIC"></a>tFileOutputEBCDIC</h2></div></div></div><div class="mediaobject"><img src="../images/tFileOutputEBCDIC_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant requiert l&#8217;utilisation d&#8217;un JDK Oracle. </p></div><div class="section" title="Propri&eacute;t&eacute;s du tFileOutputEBCDIC"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e292218"></a>Propri&eacute;t&eacute;s du tFileOutputEBCDIC</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Output</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tFileOutputEBCDIC</strong></span>
+                                &eacute;crit un fichier EBCDIC &agrave; partir de plusieurs fichiers de donn&eacute;es
+                                diff&eacute;rents ayant chacun un sch&eacute;ma diff&eacute;rent.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant &eacute;crit un fichier EBCDIC avec des donn&eacute;es extraites de
+                                fichier(s) en fonction des sch&eacute;mas d&eacute;crivant leur structure.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre Built-in ou Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+                                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+                                pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Schema</em></span></td><td valign="top"><p>S&eacute;lectionnez une option dans la liste afin
+                                d'&eacute;diter le sch&eacute;ma des donn&eacute;es &agrave; traiter.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cette liste est activ&eacute;e lorsque la case <span class="emphasis"><strong>Custom set Original Length in
+                                            Schema</strong></span> est coch&eacute;e.</p></div></td></tr><tr><td>&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: S&eacute;lectionnez cette
+                                option pour &eacute;diter le sch&eacute;ma Built-in des donn&eacute;es &agrave; traiter.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span> : S&eacute;lectionnez cette
+                                option pour &eacute;diter le sch&eacute;ma du <span class="emphasis"><strong>Repository</strong></span> s&eacute;lectionn&eacute;. Les champs suivants sont
+                                automatiquement renseign&eacute;s &agrave; l'aide du sch&eacute;ma s&eacute;lectionn&eacute;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> afin
+                                de parcourir votre syst&egrave;me, ou saisissez le chemin d'acc&egrave;s au
+                                fichier EBCDIC contenant les donn&eacute;es &agrave; g&eacute;n&eacute;rer. Pour plus
+                                d'informations, consultez le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Edit schema</em></span></td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="emphasis"><strong>[...] </strong></span>pour
+                                &eacute;diter le sch&eacute;ma Built-in ou Repository des donn&eacute;es &agrave;
+                                traiter.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Xc2j file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> afin
+                                de parcourir votre syst&egrave;me, ou saisissez le chemin d'acc&egrave;s au
+                                fichier xc2j pour transformer le(s) sch&eacute;ma(s) EBCDIC en un fichier
+                                XML interm&eacute;diaire.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ce champ est d&eacute;sactiv&eacute; et le fichier xc2j n'est pas requis
+                                        lorsque vous cochez la case <span class="emphasis"><strong>Custom set
+                                            Original Length in Schema</strong></span>.</p></div>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Custom set Original Length in
+                                Schema</em></span></td><td valign="top">
+                            <p>Cochez cette case pour augmenter la vitesse de lecture des fichiers.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous cochez cette case, le champ <span class="emphasis"><strong>Xc2j file </strong></span>est d&eacute;sactiv&eacute; et le
+                                        fichier xc2j n'est pas n&eacute;cessaire. Vous pouvez &eacute;diter le
+                                        sch&eacute;ma Built-in ou Repository pour les donn&eacute;es &agrave;
+                                        traiter.</p></div>
+                        </td></tr><tr><td><span class="emphasis"><strong>Advanced settings</strong></span></td><td valign="top"><span class="emphasis"><em>Create directory if not
+                                exist</em></span></td><td valign="top">Cochez cette case pour cr&eacute;er un r&eacute;pertoire lorsque celui
+                            sp&eacute;cifi&eacute; n'existe pas.</td></tr><tr><td valign="top">
+                            <p> </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour &eacute;crire un fichier EBCDIC et s&eacute;parer les
+                                donn&eacute;es en fonction des sch&eacute;mas identifi&eacute;s dans les fichiers en
+                                entr&eacute;e.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Cr&eacute;er un fichier EBCDIC &agrave; partir de deux fichiers d&eacute;limit&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e292496"></a>Sc&eacute;nario&nbsp;: Cr&eacute;er un fichier EBCDIC &agrave; partir de deux fichiers d&eacute;limit&eacute;s</h3></div></div></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ce sc&eacute;nario utilise l&#8217;assistant <span class="emphasis"><strong>[Copybook
+                    Connection]</strong></span> guidant l&#8217;utilisateur &agrave; travers les diff&eacute;rentes &eacute;tapes de
+                cr&eacute;ation de connexion au fichier Copybook et de r&eacute;cup&eacute;ration des sch&eacute;mas EBCDIC.
+                L&#8217;assistant <span class="emphasis"><strong>[Copybook Connection]</strong></span> est disponible
+                uniquement pour les utilisateurs ayant souscrit &agrave; l'une des solutions <span class="emphasis"><em>Talend</em></span>. Sinon, d&eacute;posez de la Palette le composant <span class="emphasis"><strong>tFileInputEBCDIC</strong></span> et configurez ses propri&eacute;t&eacute;s
+                manuellement.. </p></div><p>Le sc&eacute;nario suivant est un Job de trois composants ayant pour objectif d&#8217;&eacute;crire un
+            fichier au format EBCDIC &agrave; partir de deux fichiers d&eacute;limit&eacute;s ayant des sch&eacute;mas
+            diff&eacute;rents.</p><div class="mediaobject"><img src="../images/Use_Case_tFileOutputEBCDIC1.png"></div><p>Ce sc&eacute;nario Java utilise l&#8217;assistant <span class="emphasis"><strong>EBCDIC
+                Connection</strong></span> pour cr&eacute;er une connexion au fichier Copybook et g&eacute;n&eacute;rer un
+            fichier xc2j permettant de r&eacute;cup&eacute;rer et de transformer les diff&eacute;rents sch&eacute;mas du
+            fichier.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cr&eacute;ez une connexion au fichier Copybook d&eacute;crivant la structure d&#8217;un fichier
+                    EBCDIC. Dans ce sc&eacute;nario la connexion Copybook est appel&eacute;e
+                        <span class="emphasis"><em>EBCDIC</em></span>.<span> Pour plus
+                        d&#8217;informations concernant la configuration d&#8217;une connexion Copybook,
+                        consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur</em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</span></p></li><li class="listitem"><p>R&eacute;cup&eacute;rez le sch&eacute;ma du fichier.<span> Pour plus
+                        d&#8217;informations concernant la r&eacute;cup&eacute;ration des sch&eacute;mas &agrave; partir du fichier
+                        Copybook, consultez le <span class="emphasis"><strong>Guide utilisateur</strong></span> de
+                            <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</span></p></li></ul></div><p>Une fois la connexion au fichier Copybook cr&eacute;&eacute;e et les sch&eacute;mas r&eacute;cup&eacute;r&eacute;s &agrave; l&#8217;aide des
+            assistants EBCDIC et Schema, ils apparaissent sous le n&#339;ud <span class="emphasis"><strong>Metadata</strong></span> &gt; <span class="emphasis"><strong>Copybook</strong></span>. Ces nouveaux
+            sch&eacute;mas s&#8217;appellent <span class="emphasis"><em>Schema01</em></span>, <span class="emphasis"><em>Schema04</em></span> et
+                <span class="emphasis"><em>Schema05</em></span>.</p><p>Pour cr&eacute;er un fichier EBCDIC &agrave; partir de deux fichiers d&eacute;limit&eacute;s dans <span class="emphasis"><em>Talend Data Integration Studio</em></span>&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez deux composants <span class="emphasis"><strong>tFileInputDelimited</strong></span> et un composant <span class="emphasis"><strong>tFileOutputEBCDIC</strong></span> dans l&#8217;&eacute;diteur graphique.</p></li><li class="listitem"><p>Pour les relier, cliquez-droit sur chaque composant <span class="emphasis"><strong>tFileInputDelimited</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> dans le menu
+                    contextuel et cliquez sur le composant <span class="emphasis"><strong>tFileOutputEBCDIC</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le premier <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour afficher l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span> de la vue <span class="emphasis"><strong>Component</strong></span> et param&eacute;trer ses propri&eacute;t&eacute;s&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFileOutputEBCDIC2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>File Name</strong></span>, s&eacute;lectionnez le
+                    fichier d&eacute;limit&eacute; en cliquant sur le bouton <span class="emphasis"><strong>[...]</strong></span>.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p><span class="emphasis"><em>Si le chemin d&#8217;acc&egrave;s du fichier contient des caract&egrave;res accentu&eacute;s, vous
+                    obtiendrez un message d&#8217;erreur lors de l&#8217;ex&eacute;cution du Job. Pour plus
+                    d&#8217;informations concernant la proc&eacute;dure &agrave; suivre lorsque les accents ne sont pas
+                    support&eacute;s, consultez le</em></span>
+                <span class="emphasis"><em>Guide d&#8217;installation et de migration</em></span>
+                <span class="emphasis"><em>Talend</em></span>. </p></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Schema</strong></span>, s&eacute;lectionnez l&#8217;option
+                        <span class="emphasis"><strong>Repository</strong></span>, puis cliquez sur le bouton
+                        <span class="emphasis"><strong>[...] </strong></span>et s&eacute;lectionnez le sch&eacute;ma
+                    correspondant &agrave; votre fichier dans la bo&icirc;te de dialogue, sous le n&#339;ud <span class="emphasis"><strong>Copybook</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Header</strong></span>, indiquez le nombre de
+                    ligne en-t&ecirc;te &agrave; r&eacute;cup&eacute;rer et passer au composant suivant&nbsp;:
+                        <span class="emphasis"><em>1</em></span> dans ce sc&eacute;nario.</p></li><li class="listitem"><p>Param&eacute;trez les propri&eacute;t&eacute;s du deuxi&egrave;me <span class="emphasis"><strong>tFileInputDelimited</strong></span> de la m&ecirc;me mani&egrave;re que le premier.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileOutputEBCDIC</strong></span> pour
+                    afficher l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span> de la vue
+                        <span class="emphasis"><strong>Component</strong></span> et param&eacute;trer ses
+                    propri&eacute;t&eacute;s&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tFileOutputEBCDIC3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Data file</strong></span>, indiquez le
+                    r&eacute;pertoire et le nom du fichier EBCDIC qui sera cr&eacute;&eacute; &agrave; partir des deux fichiers
+                    d&eacute;limit&eacute;s.</p></li><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Xc2j file</strong></span>, renseignez le chemin
+                    d&#8217;acc&egrave;s au fichier permettant d&#8217;extraire le sch&eacute;ma d&eacute;crivant la structure du
+                    fichier EBCDIC.</p></li><li class="listitem"><p>Enregistrez votre Job via <span class="emphasis"><strong>Ctrl+S</strong></span> et cliquez
+                    sur la vue <span class="emphasis"><strong>Run</strong></span>, cochez les cases <span class="emphasis"><strong>Statistics</strong></span> et <span class="emphasis"><strong>Exec
+                        time</strong></span> puis cliquez sur <span class="emphasis"><strong>Run</strong></span> pour
+                    ex&eacute;cuter le Job</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileOutputDelimited.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileOutputExcel.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFileOutputDelimited&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFileOutputExcel</td></tr></table></div></body></html>

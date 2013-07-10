@@ -1,0 +1,40 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFlowMeter</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-logsanderrors.html" title="Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="tDie.html" title="tDie"><link rel="next" href="tFlowMeterCatcher.html" title="tFlowMeterCatcher"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFlowMeter</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tDie.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFlowMeterCatcher.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFlowMeter"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFlowMeter"></a>tFlowMeter</h2></div></div></div><div class="mediaobject"><img src="../images/tFlowmeter.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tFlowMeter"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e250293"></a>Propri&eacute;t&eacute;s du tFlowMeter</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Logs &amp; Errors </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tFlowMeter</strong></span> compte le nombre de lignes
+                                trait&eacute;es dans le flux sp&eacute;cifi&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le nombre de lignes est
+                                ensuite r&eacute;cup&eacute;r&eacute; par le composant <span class="emphasis"><strong>tFlowMeterCatcher</strong></span> afin d&#8217;&ecirc;tre ajout&eacute; dans les
+                                donn&eacute;es de log.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use input connection name as
+                                    label</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour r&eacute;utiliser le nom donn&eacute; au flux d&#8217;entr&eacute;e Main Row comme libell&eacute; des
+                                donn&eacute;es logg&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Mode</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le type de valeur des donn&eacute;es
+                                mesur&eacute;es&nbsp;:</p><p><span class="emphasis"><strong>Absolute</strong></span>&nbsp;:
+                                le nombre actuel de lignes est logg&eacute;.</p><p><span class="emphasis"><strong>Relative</strong></span>&nbsp;: un pourcentage (%) du nombre
+                                de lignes est logg&eacute;. Lorsque cette option est s&eacute;lectionn&eacute;e, la liste
+                                    <span class="emphasis"><strong>Connections List</strong></span> vous permet de
+                                s&eacute;lectionner une connexion de r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Thresholds</em></span></p>
+                        </td><td valign="top"><p>Ajoutez un seuil pour observer les proportions en
+                                volumes mesur&eacute;s. Vous pouvez d&eacute;cider que le flux doit &ecirc;tre compris
+                                entre un nombre minimum et maximum de lignes, et si le flux est
+                                inf&eacute;rieur au seuil minimum, il y a un goulot d&#8217;&eacute;tranglement.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant ne peut &ecirc;tre
+                                utilis&eacute; comme composant de d&eacute;but puisqu&#8217;il n&eacute;cessite un flux
+                                d&#8217;entr&eacute;e pour fonctionner.</p>
+                        </td></tr></tbody></table></div><p>Si vous avez besoin d&#8217;utiliser les donn&eacute;es de log, les statistiques et tout autre
+            mesure des flux de donn&eacute;es, consultez le <span class="emphasis"><em>Guide utilisateur
+                de</em></span>
+            <span class="emphasis"><em>Talend Open Studio</em></span>. </p></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e250411"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour plus d&#8217;informations sur l&#8217;utilisation du <span class="emphasis"><strong>tFlowMeter</strong></span>, consultez <a class="xref" href="tFlowMeterCatcher.html#Raa48663" title="Sc&eacute;nario&nbsp;: Mesurer le flux d&#8217;un Job">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Mesurer le flux d&#8217;un Job&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tDie.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-logsanderrors.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFlowMeterCatcher.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tDie&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFlowMeterCatcher</td></tr></table></div></body></html>

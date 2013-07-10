@@ -1,0 +1,93 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDTDValidator</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-xml.html" title="Chapter&nbsp;22.&nbsp;XML components"><link rel="prev" href="tAdvancedFileOutputXML.html" title="tAdvancedFileOutputXML"><link rel="next" href="tEDIFACTtoXML.html" title="tEDIFACTtoXML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tDTDValidator</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tAdvancedFileOutputXML.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;22.&nbsp;XML components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tEDIFACTtoXML.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tDTDValidator"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDTDValidator"></a>tDTDValidator</h2></div></div></div><div class="mediaobject"><img src="../images/tDTDValidator.png"></div><div class="section" title="tDTDValidator Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e290784"></a>tDTDValidator Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>XML</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Validates the XML input file against a DTD file and sends the
+                                validation log to the defined output.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Helps at controlling data and structure quality of the file to be
+                                processed </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. </p>
+                            <p>The schema of this component is read-only. It contains standard
+                                information regarding the file validation.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>DTD file</em></span></p>
+                        </td><td valign="top">
+                            <p>Filepath to the reference DTD file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>XML file</em></span></p>
+                        </td><td valign="top">
+                            <p>Filepath to the XML file to be validated.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>If XML is valid, display </em></span><span class="emphasis"><em>If XML is
+                                    not valid detected, display</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in a message to be displayed in the <span class="emphasis"><strong>Run</strong></span> console based on the result of the
+                                comparison.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print to console</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to display the validation message.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as standalone component but it is
+                                usually linked to an output component to gather the log data.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Validating XML files"><div class="titlepage"><div><div><h3 class="title"><a name="Raa71042"></a>Scenario: Validating XML files</h3></div></div></div><p>This scenario describes a Job that validates the specified type of files from a
+            folder, displays the validation result on the Run tab console, and outputs the log
+            information for the invalid files into a delimited file.</p><div class="mediaobject"><img src="../images/Use_Case_tDTDValidator1.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> to the design workspace: <span class="emphasis"><strong>tFileList</strong></span>, <span class="emphasis"><strong>tDTDValidator</strong></span>,
+                        <span class="emphasis"><strong>tMap</strong></span>, <span class="emphasis"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect the <span class="emphasis"><strong>tFileList</strong></span> to the <span class="emphasis"><strong>tDTDValidator</strong></span> with an <span class="emphasis"><strong>Iterate
+                    </strong></span>link and the remaining component using a <span class="emphasis"><strong>main
+                    </strong></span>row.</p></li><li class="step" title="Step 3"><p>Set the <span class="emphasis"><strong>tFileList</strong></span> component properties, to
+                    fetch an XML file from a folder.</p><div class="mediaobject"><img src="../images/Use_Case_tDTDValidator2.png"></div><p>Click the plus button to add a filemask line and enter the filemask: *.xml.
+                    Remember Java code requires double quotes.</p><p>Set the path of the XML files to be verified.</p><p>Select <span class="emphasis"><strong>No</strong></span> from the Case Sensitive drop-down
+                    list.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>tDTDValidate</strong></span>
+                    <span class="emphasis"><strong>Component</strong></span> view, the schema is read-only as it
+                    contains standard log information related to the validation process.</p><div class="mediaobject"><img src="../images/Use_Case_tDTDValidator3.png"></div><p>In the <span class="emphasis"><strong>Dtd file</strong></span> field, browse to the DTD file
+                    to be used as reference.</p></li><li class="step" title="Step 5"><p>Click in the XML file field, press <span class="emphasis"><strong>Ctrl+Space
+                        bar</strong></span> to access the variable list, and double-click the current
+                    filepath global variable:<code class="code"> tFileList.CURRENT_FILEPATH</code>. </p></li><li class="step" title="Step 6"><p>In the various messages to display in the <span class="emphasis"><strong>Run</strong></span>
+                    tab console, use the <span class="emphasis"><em>jobName</em></span> variable to recall the job
+                    name tag. Recall the filename using the relevant global variable:
+                        <code class="code">((String)globalMap.get("tFileList_1_CURRENT_FILE"))</code>. Remember
+                    Java code requires double quotes.</p><p>Select the <span class="emphasis"><strong>Print to Console</strong></span> check box.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>tMap</strong></span> component, drag and drop the
+                    information data from the standard schema that you want to pass on to the output
+                    file.</p><div class="mediaobject"><img src="../images/Use_Case_tDTDValidator4.png"></div></li><li class="step" title="Step 8"><p>Once the Output schema is defined as required, add a filter condition to only
+                    select the log information data when the XML file is invalid.</p><p>Follow the best practice by typing first the wanted value for the variable,
+                    then the operator based on the type of data filtered then the variable that
+                    should meet the requirement. In this case: <code class="code">0 == row1.validate</code>.
+                </p></li><li class="step" title="Step 9"><p>Then connect (if not already done) the <span class="emphasis"><strong>tMap</strong></span>
+                    to the <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component using a
+                        <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> connection. Name it as relevant, in this example:
+                        <span class="emphasis"><em>log_errorsOnly</em></span>.</p></li><li class="step" title="Step 10"><p>In the <span class="emphasis"><strong>tFileOutputDelimited</strong></span>
+                    <span class="emphasis"><strong>Basic settings</strong></span>, Define the destination
+                    filepath, the field delimiters and the encoding.</p></li><li class="step" title="Step 11"><p>Save your Job and press <span class="emphasis"><strong>F6</strong></span> to run it.</p><div class="mediaobject"><img src="../images/Use_Case_tDTDValidator5.png"></div><p>On the <span class="emphasis"><strong>Run</strong></span> console the messages defined
+                    display for each of the files. At the same time the output file is filled with
+                    the log data for invalid files.</p></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tAdvancedFileOutputXML.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-xml.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tEDIFACTtoXML.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tAdvancedFileOutputXML&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tEDIFACTtoXML</td></tr></table></div></body></html>

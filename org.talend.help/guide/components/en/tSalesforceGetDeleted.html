@@ -1,0 +1,178 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceGetDeleted</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-business.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tSalesforceConnection.html" title="tSalesforceConnection"><link rel="next" href="tSalesforceGetServerTimestamp.html" title="tSalesforceGetServerTimestamp"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSalesforceGetDeleted</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSalesforceConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Business components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSalesforceGetServerTimestamp.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSalesforceGetDeleted"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceGetDeleted"></a>tSalesforceGetDeleted</h2></div></div></div><div class="mediaobject"><img src="../images/tSalesforceGetDeleted_icon32_white.png"></div><div class="section" title="tSalesforceGetDeleted properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13149"></a>tSalesforceGetDeleted properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Component family</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Business/Cloud </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Function</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tSalesforceGetDeleted</strong></span> recovers
+                                deleted data from a Salesforce object over a given period of
+                                time.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Purpose</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can collect the deleted data from a Salesforce
+                                object during a specific period of time.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use an existing connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                        	<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+                        	<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, <span class="emphasis"><strong>Component
+				list</strong></span> presents only the connection components in the same Job level.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Salesforce Webservice URL</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in the webservice URL to connect to the Salesforce DB.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Timeout (milliseconds)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in the intended number of query timeout in
+                                Salesforce.com.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Module</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select the relevant module in the list.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you select the <span class="emphasis"><strong>Custom
+                                        module</strong></span> option, you display the <span class="emphasis"><strong>Custom Module Name</strong></span> field where you
+                                    can enter the name of the module you want to connect to. </p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                    <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                                        <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+                            <p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes
+                                to the schema. <span>Note that if you make
+                                    changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+                            <p>Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Start Date</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in between double quotes the date at which you want to start
+                                the search. Use the following date format: &#8220;yyy-MM-dd
+                                HH:mm:ss&#8221;.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>You can do the search only on the past 30 days. </p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>End Date</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in between double quotes the date at which you want to end
+                                the search. Use the following date format:&#8220;yyy-MM-dd
+                                HH:mm:ss&#8221;.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use Soap Compression</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the SOAP compression.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The compression of SOAP messages optimizes system
+                                    performance.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Client ID</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Set the ID of the real user to differentiate between those who use
+                                the same account and password to access the Salesforce
+                                website.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Usage</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>You can use this component as an output component. <span class="emphasis"><strong>tSalesforceGetDeleted</strong></span> requires an input
+                                component. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Recovering deleted data from the Salesforce server"><div class="titlepage"><div><div><h3 class="title"><a name="Raa36785"></a>Scenario: Recovering deleted data from the Salesforce server</h3></div></div></div><p>This scenario describes a two-component Job that collects the deleted data over the
+            past 5 days from the Salesforce server. </p><div class="mediaobject"><img src="../images/Use_Case_tSalesforceGetDeleted1.png"></div><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13512"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tSalesforceGetDeleted</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace.</p></li><li class="step" title="Step 2"><p>Connect the two components together using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>
+                        connection.</p></li></ol></div></div><div class="section" title="Setting up the connection to the Salesforce server"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13537"></a>Setting up the connection to the Salesforce server</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tSalesforceGetDeleted</strong></span> to
+                        display its <span class="emphasis"><strong>Basic settings</strong></span> view and define
+                        the component properties.</p><div class="mediaobject"><img src="../images/Use_Case_tSalesforceGetDeleted2.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Salesforce WebService URL</strong></span> filed,
+                        use the by-default URL of the Salesforce Web service or enter the URL you
+                        want to access.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Username</strong></span> and <span class="emphasis"><strong>Password</strong></span> fields, enter your login and password for the Web
+                        service.</p></li><li class="step" title="Step 4"><p>From the <span class="emphasis"><strong>Module</strong></span> list, select the object
+                        you want to access, <span class="emphasis"><strong>Account</strong></span> in this
+                        example.</p></li></ol></div></div><div class="section" title="Setting the search condition"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13577"></a>Setting the search condition</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p><span>From the <span class="emphasis"><strong>Schema</strong></span> list, select <span class="emphasis"><strong>Repository</strong></span> and then click the three-dot button to open a
+                            dialog box where you can select the repository schema you want to use
+                            for this component. If you have not defined your schema locally in the
+                            metadata, select <span class="emphasis"><strong>Built-in</strong></span> from the
+                                <span class="emphasis"><strong>Schema</strong></span> list and then
+                            click</span> the
+                        three-dot button next to the <span class="emphasis"><strong>Edit schema</strong></span>
+                        field to open the dialog box where you can set the schema manually.</p></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Start Date</strong></span> and <span class="emphasis"><strong>End Date</strong></span> fields, enter respectively the start and
+                        end dates for collecting the deleted data using the following date format:
+                            &#8220;<span class="emphasis"><em>yyyy-MM-dd HH:mm:ss</em></span>&#8221;. You can collect deleted data
+                        over the past 30 days. In this example, we want to recover deleted data over
+                        the past 5 days.</p></li></ol></div></div><div class="section" title="Job execution"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13613"></a>Job execution</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tLogRow</strong></span> to display its
+                            <span class="emphasis"><strong>Basic settings</strong></span> view and define the
+                        component properties.</p></li><li class="step" title="Step 2"><p>Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve the schema
+                        from the preceding component.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select <span class="emphasis"><strong>Vertical</strong></span> to display the results in a tabular form
+                        on the console. </p></li><li class="step" title="Step 4"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job and press
+                            <span class="emphasis"><strong>F6</strong></span> to execute it. </p><div class="mediaobject"><img src="../images/Use_Case_tSalesforceGetDeleted3.png"></div><p>Deleted data collected by the <span class="emphasis"><strong>tSalesforceGetDeleted</strong></span> component is displayed in a tabular
+                        form on the console.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSalesforceConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSalesforceGetServerTimestamp.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSalesforceConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSalesforceGetServerTimestamp</td></tr></table></div></body></html>

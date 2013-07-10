@@ -1,0 +1,108 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAddCRCRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="next" href="tFuzzyMatch.html" title="tFuzzyMatch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tAddCRCRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch-dataquality.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFuzzyMatch.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tAddCRCRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAddCRCRow"></a>tAddCRCRow</h2></div></div></div><div class="mediaobject"><img src="../images/tAddCRCRow.png"></div><a name="Xaa2768564"></a><div class="section" title="Propri&eacute;t&eacute;s du tAddCRCRow"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e55323"></a>Propri&eacute;t&eacute;s du tAddCRCRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top"> </td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant calcule une cl&eacute; de substitution bas&eacute;e sur une ou
+								plusieurs colonne(s) et l&#8217;ajoute au sch&eacute;ma d&eacute;fini.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Fournir un ID unique afin d&#8217;am&eacute;liorer la qualit&eacute; des donn&eacute;es
+								trait&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span></span>. Dans ce composant, une
+								nouvelle colonne CRC est automatiquement ajout&eacute;e.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+									<span class="emphasis"><em>Guide utilisateur de
+									</em></span><span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Implication</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez la case correspondant aux colonnes &agrave; d&eacute;finir comme cl&eacute; de
+								substitution et v&eacute;rifier l'int&eacute;grit&eacute; de leurs donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>CRC type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la longueur CRC. Plus le CRC est long, moins il y
+								aura de risque d&#8217;erreur.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est une &eacute;tape interm&eacute;diaire. Il requiert un flux
+								entrant et une sortie.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ajouter une cl&eacute; de substitution &agrave; un fichier"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e55528"></a>Sc&eacute;nario&nbsp;: Ajouter une cl&eacute; de substitution &agrave; un fichier</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job ajoutant une cl&eacute; de substitution &agrave; un sch&eacute;ma de fichier
+			d&eacute;limit&eacute;.</p><div class="mediaobject"><img src="../images/Use_Case_tAddCRCRow1.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e55536"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Glissez les composants suivants dans l&#8217;espace de mod&eacute;lisation : <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tAddCRCRow</strong></span> et <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez-les en utilisant un lien de type <span class="emphasis"><strong>Main
+							row</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le composant d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e55558"></a>Configurer le composant d'entr&eacute;e</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Component </strong></span>du <span class="emphasis"><strong>tFileInputDelimited</strong></span>, renseignez le champ
+							<span class="emphasis"><strong>File Name </strong></span>en saisissant le chemin
+						d&#8217;acc&egrave;s &agrave; votre fichier, ainsi que toutes les propri&eacute;t&eacute;s en rapport, au cas
+						o&ugrave; elles ne soient pas stock&eacute;es dans le <span class="emphasis"><strong>Repository</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tAddCRCRow2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cr&eacute;ez le sch&eacute;ma en cliquant sur le bouton <span class="emphasis"><strong>Edit
+							Schema</strong></span>, si le sch&eacute;ma n&#8217;est pas encore stock&eacute; dans le
+							<span class="emphasis"><strong>Repository</strong></span>. V&eacute;rifiez la colonne du type
+						de donn&eacute;es, et pour remplir le mod&egrave;le de date (Date pattern), visitez
+							<span class="emphasis"><em><a class="link" href="http://docs.oracle.com/javase/6/docs/api/index.html" target="_top">http://docs.oracle.com/javase/6/docs/api/index.html</a></em></span> (en anglais).</p></li></ol></div></div><div class="section" title="Configurer le composant tAddCRCRow"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e55592"></a>Configurer le composant tAddCRCRow</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Component</strong></span> du composant
+							<span class="emphasis"><strong>tAddCRCRow</strong></span>, s&eacute;lectionnez les cases de
+						la colonne du flux entrant &agrave; utiliser pour calculer le CRC.</p><div class="mediaobject"><img src="../images/Use_Case_tAddCRCRow3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Notez qu&#8217;une colonne CRC (en lecture seule) a &eacute;t&eacute; ajout&eacute;e &agrave; la fin du
+						sch&eacute;ma.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans l'onglet <span class="emphasis"><strong>Advanced settings</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>CRC32</strong></span> comme <span class="emphasis"><strong>CRC Type </strong></span> pour avoir une cl&eacute; de substitution plus
+						longue.</p><div class="mediaobject"><img src="../images/Use_Case_tAddCRCRow4.png"></div></li><li class="step" title="&Eacute;tape 4"><p>Dans la vue <span class="emphasis"><strong>Basic settings </strong></span>du <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez l&#8217;option <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> pour
+						afficher les donn&eacute;es de sortie sous forme de tableau dans la Console.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e55638"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Sauvegardez votre Job et appuyer sur <span class="emphasis"><strong>F6</strong></span> pour
+				l&#8217;ex&eacute;cuter.</p><div class="mediaobject"><img src="../images/Use_Case_tAddCRCRow5.png"></div><p>Une colonne CRC suppl&eacute;mentaire a &eacute;t&eacute; ajout&eacute;e au sch&eacute;ma, calcul&eacute;e d&#8217;apr&egrave;s toutes
+				les colonnes pr&eacute;c&eacute;demment s&eacute;lectionn&eacute;es (dans ce cas toutes les colonnes du
+				sch&eacute;ma).</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch-dataquality.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFuzzyMatch.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;6.&nbsp;Composants Data Quality&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFuzzyMatch</td></tr></table></div></body></html>

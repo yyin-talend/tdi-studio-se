@@ -1,0 +1,129 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFTPDelete</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-internet.html" title="Chapter&nbsp;14.&nbsp;Internet components"><link rel="prev" href="tFTPConnection.html" title="tFTPConnection"><link rel="next" href="tFTPFileExist.html" title="tFTPFileExist"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFTPDelete</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFTPConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;14.&nbsp;Internet components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFTPFileExist.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFTPDelete"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFTPDelete"></a>tFTPDelete</h2></div></div></div><div class="mediaobject"><img src="../images/tFTPDelete_icon32.png"></div><div class="section" title="tFTPDelete properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e234605"></a>tFTPDelete properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Internet/FTP</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component deletes specified files via an FTP
+								connection.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFTPDelete</strong></span> deletes files on a
+								remote FTP server.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the Repository
+								file where properties are stored. The following fields are
+								pre-filled in using fetched data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>FTP IP address</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The FTP server listening port number.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>FTP user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Remote directory</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Source directory where the files to be deleted are located.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>SFTPSupport/ Authentication method</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and then in the <span class="emphasis"><strong>Authentication method</strong></span> list, select the SFTP
+								authentication method: </p>
+							<p>
+								<span class="emphasis"><strong>Password</strong></span>: Type in the password
+								required in the relevant field. </p>
+							<p>
+								<span class="emphasis"><strong>Public key</strong></span>: Type in the private key
+								or click the three dot button next to the <span class="emphasis"><strong>Private key</strong></span> field to browse to it.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you select <span class="emphasis"><strong>Public Key</strong></span> as
+									the SFTP authentication method, make sure that the key is added
+									to the agent or that no passphrase (secret phrase) is required.
+								</p></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use Perl5 Regex Expression as
+								Filemask</em></span></td><td valign="top">
+							<p>Select this check box if you want to use Perl5 regular expressions
+								in the <span class="emphasis"><strong>Files</strong></span> field as file
+								filters.</p>
+							<p>For information about Perl5 regular expression syntax, see <a class="link" href="http://mythryl.org/my-Perl5_Regular_Expression_Syntax.html" target="_top">Perl5 Regular Expression Syntax</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Files</em></span>
+							</p>
+						</td><td valign="top">
+							<p>File name or path to the files to be deleted.  You can specify multiple files in a line
+								by using wildcards or a regular expression.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is typically used as a single-component sub-job but
+								can also be used as an output or end object.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e234914"></a>Related scenario</h3></div></div></div><p>For <span class="emphasis"><strong>tFTPDelete </strong></span>related scenario, see <a class="xref" href="tFTPPut.html#Raa64374" title="Scenario: Putting files on a remote FTP server">the section called &#8220;Scenario: Putting files on a remote FTP server&#8221;</a>.</p><p>For <span class="emphasis"><strong>tFTPDelete </strong></span>related scenario using a different
+			protocol, see <a class="xref" href="tSCPGet.html#Raa58449" title="Scenario: Getting files from a remote SCP server">the section called &#8220;Scenario: Getting files from a remote SCP server&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFTPConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-internet.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFTPFileExist.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFTPConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFTPFileExist</td></tr></table></div></body></html>

@@ -1,0 +1,443 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tMysqlConnection.html" title="tMysqlConnection"><link rel="next" href="tMysqlLastInsertId.html" title="tMysqlLastInsertId"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMysqlInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMysqlConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMysqlLastInsertId.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMysqlInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlInput"></a>tMysqlInput</h2></div></div></div><p>
+		<span class="inlinemediaobject"><img src="../images/tMysqlInput_icon32_white.png"></span>
+	</p><div class="section" title="tMysqlInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e154060"></a>tMysqlInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MySQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tMysqlInput</strong></span> reads a database and
+								extracts fields based on a query. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tMysqlInput</strong></span> executes a DB query
+								with a strictly defined order which must correspond to the schema
+								definition. Then it passes on the field list to the next component
+								via a <span class="emphasis"><strong>Main</strong></span> row link.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+						</td><td valign="top">
+							<p>Click this icon to open a database connection wizard and store the
+								database connection parameters you set in the component <span class="emphasis"><strong>Basic settings </strong></span>view.</p>
+							<p> For more information about setting up and storing database
+								connection parameters, see <span class="emphasis"><em>Talend Data Integration Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p><span>This component offers the advantage of the dynamic
+										schema feature. This allows you to retrieve unknown columns
+										from source files or to copy batches of columns from a
+										source without map&shy;ping each column individually. For
+										further information about dynamic schemas, see
+										</span><span class="emphasis"><em>Talend Data Integration Studio</em></span> User Guide.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+								<span class="emphasis"><em>Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be read.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Query type </em></span>and
+								<span class="emphasis"><em>Query</em></span></p>
+						</td><td valign="top">
+							<p>Enter your DB query paying particularly attention to properly
+								sequence the fields in order to match the schema definition. </p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em>If using the dynamic schema feature, the
+										SELECT query must include the <span class="emphasis"><strong>*</strong></span> wildcard, to retrieve all of the columns
+										from the table selected. </em></span>
+								</p></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Specify a data source alias</em></span>
+						</td><td valign="top">
+							<p>Select this check box and specify the alias of a data source created on the <span class="emphasis"><strong>Talend</strong></span>
+		Runtime side to use the shared connection pool defined in the data source configuration.
+		This option works only when you deploy and run your Job in <span class="emphasis"><strong>Talend</strong></span> Runtime. </p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>If you use the component's own DB configuration, your data source connection will be closed
+			at the end of the component. To prevent this from happening, use a shared DB connection
+			with the data source alias specified.</p></div>
+							<p>This check box is not available when the <span class="emphasis"><strong>Use an existing
+			connection</strong></span> check box is selected. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify additional connection properties for the DB connection you
+								are creating. This option is not available if you have selected the
+									<span class="emphasis"><strong>Use an existing connection</strong></span>
+								check box in the <span class="emphasis"><strong>Basic
+								settings</strong></span>.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When you need to handle data of the time-stamp type
+										<span class="emphasis"><em>0000-00-00 00:00:00</em></span> using this
+									component, set the parameter as:</p><p>
+									<code class="code">noDatetimeStringSync=true&amp;zeroDa&shy;teTimeBehavior=convertToNull</code>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable stream</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to enables streaming over buffering which
+								allows the code to read from a large table without consuming a large
+								amount of memory in order to optimize the performance.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespace
+								from all the String/Char columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Remove leading and trailing whitespace from defined
+								columns.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Clear <span class="emphasis"><strong>Trim all the String/Char
+										columns</strong></span> to enable Trim columns in this
+									field.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component covers all possible SQL queries for Mysql
+								databases.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Writing columns from a MySQL database to an output file"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111010-databases-writing_output"></a>Scenario 1: Writing columns from a MySQL database to an output file</h3></div></div></div><p>In this scenario we will read certain columns from a MySQL database, and then write
+			them to a table in a local output file.</p><div class="section" title="Dragging and dropping components and linking them together"><div class="titlepage"><div><div><h4 class="title"><a name="d0e154682"></a>Dragging and dropping components and linking them together</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop <span class="emphasis"><strong>tMysqlInput</strong></span> and <span class="emphasis"><strong>tFileOutputDelimited</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace.</p></li><li class="step" title="Step 2"><p> Link <span class="emphasis"><strong>tMysqlInput</strong></span> to <span class="emphasis"><strong>tFileOutputDelimited</strong></span> using a <span class="emphasis"><strong>Row &gt; Main</strong></span> connection.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e154713"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tMysqlInput</strong></span> to open its
+							<span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_2.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><span class="emphasis"><em>For Talend Open Studio for Big Data, the <span class="emphasis"><strong>Property type</strong></span>, <span class="emphasis"><strong>Schema</strong></span>
+				and <span class="emphasis"><strong>Query Type</strong></span> of components are always <span class="emphasis"><strong>Built-in</strong></span>. For how to edit a Built-in schema, see Talend Data Integration Studio
+			User Guide.</em></span></p></div></li><li class="step" title="Step 2"><p> From the <span class="emphasis"><strong>Property Type</strong></span> list, select
+							<span class="emphasis"><strong>Repository</strong></span> if you have already stored
+						the connection to database in the <span class="emphasis"><strong>Metadata</strong></span>
+						node of the <span class="emphasis"><strong>Repository</strong></span> tree view. The
+						property fields that follow are automatically filled in.</p><p>For more information about how to store a database connection, see
+								<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>. </p><p> If you have not defined the database connection locally in the <span class="emphasis"><strong>Repository</strong></span>, fill in the details manually after
+						selecting <span class="emphasis"><strong>Built-in</strong></span> from the <span class="emphasis"><strong>Property Type</strong></span> list.</p></li><li class="step" title="Step 3"><p><span>Set the <span class="emphasis"><strong>Schema
+								</strong></span>as<span class="emphasis"><strong> Built-in</strong></span> and
+							click</span>
+						<span class="emphasis"><strong>Edit schema</strong></span> to define the desired
+						schema.</p><p> The schema editor opens:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_3.png"></div></li><li class="step" title="Step 4"><p> Click the <span class="emphasis"><strong>[+]</strong></span> button to add the rows
+						that you will use to define the schema, four columns in this example
+							<span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>first_name</em></span>,
+							<span class="emphasis"><em>city</em></span> and <span class="emphasis"><em>salary</em></span>.</p><p> Under <span class="emphasis"><strong>Column</strong></span>, click in the fields to
+						enter the corresponding column names. </p><p> Click the field under <span class="emphasis"><strong>Type</strong></span> to define the
+						type of data.</p><p> Click <span class="emphasis"><strong>OK</strong></span> to close the schema
+						editor.</p></li><li class="step" title="Step 5"><p> Next to the <span class="emphasis"><strong>Table Name</strong></span> field, click
+							the<span class="emphasis"><strong> [...]</strong></span> button to select the database
+						table of interest.</p><p> A dialog box displays a tree diagram of all the tables in the selected
+						database:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_4.png"></div></li><li class="step" title="Step 6"><p> Click the table of interest and then click <span class="emphasis"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 7"><p> Set the<span class="emphasis"><strong> Query Type</strong></span> as <span class="emphasis"><strong>Built-In</strong></span>. </p></li><li class="step" title="Step 8"><p> In the <span class="emphasis"><strong>Query</strong></span> box, enter the query
+						required to retrieve the desired columns from the table.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_5.png"></div></li><li class="step" title="Step 9"><p> Double-click <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to set
+						its <span class="emphasis"><strong>Basic settings</strong></span> in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_6.png"></div></li><li class="step" title="Step 10"><p> Next to the <span class="emphasis"><strong>File Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to browse your directory
+						to where you want to save the output file, then enter a name for the
+						file.</p><p> Select the <span class="emphasis"><strong>Include Header</strong></span> check box to
+						retrieve the column names as well as the data.</p></li><li class="step" title="Step 11"><p> Save the Job.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e154901"></a>Executing the Job</h4></div></div></div><p>The results below can be found after <span class="emphasis"><strong>F6</strong></span> is
+				pressed to run the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_7.png"></div><p>As shown above, the output file is written with the desired column names and
+				corresponding data, retrieved from the database:</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The Job can also be run in the <span class="emphasis"><strong>Traces Debug</strong></span>
+					mode, which allows you to view the rows as they are being written to the output
+					file, in the workspace.</p></div></div></div><div class="section" title="Scenario 2: Using context parameters when reading a table from a MySQL database"><div class="titlepage"><div><div><h3 class="title"><a name="d0e154920"></a>Scenario 2: Using context parameters when reading a table from a MySQL database </h3></div></div></div><p>In this scenario, we will read a table from a MySQL database, using a context
+			parameter to refer to the table name.</p><div class="section" title="Dragging and dropping components and linking them together"><div class="titlepage"><div><div><h4 class="title"><a name="d0e154925"></a>Dragging and dropping components and linking them together</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop <span class="emphasis"><strong>tMysqlInput</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the workspace.</p></li><li class="step" title="Step 2"><p> Link <span class="emphasis"><strong>tMysqlInput</strong></span> to <span class="emphasis"><strong>tLogRow</strong></span> using a <span class="emphasis"><strong>Row &gt;
+							Main</strong></span> connection.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e154956"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tMysqlInput</strong></span> to open its
+							<span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_2.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><span class="emphasis"><em>For Talend Open Studio for Big Data, the <span class="emphasis"><strong>Property type</strong></span>, <span class="emphasis"><strong>Schema</strong></span>
+				and <span class="emphasis"><strong>Query Type</strong></span> of components are always <span class="emphasis"><strong>Built-in</strong></span>. For how to edit a Built-in schema, see Talend Data Integration Studio
+			User Guide.</em></span></p></div></li><li class="step" title="Step 2"><p> From the <span class="emphasis"><strong>Property Type</strong></span> list, select
+							<span class="emphasis"><strong>Repository</strong></span> if you have already stored
+						the connection to database in the <span class="emphasis"><strong>Metadata</strong></span>
+						node of the <span class="emphasis"><strong>Repository</strong></span> tree view. The
+						property fields that follow are automatically filled in.</p><p>For more information about how to store a database connection, see
+								<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p><p> If you have not defined the database connection in the <span class="emphasis"><strong>Repository</strong></span>, fill in the details manually after
+						selecting <span class="emphasis"><strong>Built-in</strong></span> from the <span class="emphasis"><strong>Property Type</strong></span> list.</p></li><li class="step" title="Step 3"><p><span>Set the <span class="emphasis"><strong>Schema</strong></span> as <span class="emphasis"><strong>Built-In</strong></span> and
+							click</span>
+						<span class="emphasis"><strong>Edit schema</strong></span> to define the desired
+						schema.</p><p> The schema editor opens:</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_3.png"></div></li><li class="step" title="Step 4"><p> Click the <span class="emphasis"><strong>[+]</strong></span> button to add the rows
+						that you will use to define the schema, seven columns in this example:
+							<span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>first_name</em></span>, <span class="emphasis"><em>last_name</em></span>, <span class="emphasis"><em>city</em></span>, <span class="emphasis"><em>state</em></span>, <span class="emphasis"><em>date_of_birth</em></span> and <span class="emphasis"><em>salary</em></span>.</p><p> Under <span class="emphasis"><strong>Column</strong></span>, click the fields to enter
+						the corresponding column names. </p><p> Click the fields under <span class="emphasis"><strong>Type</strong></span> to define
+						the type of data.</p><p> Click <span class="emphasis"><strong>OK</strong></span> to close the schema
+						editor.</p></li><li class="step" title="Step 5"><p> Put the cursor in the <span class="emphasis"><strong>Table Name</strong></span> field
+						and press <span class="emphasis"><strong>F5</strong></span> for context parameter setting. </p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_4.png"></div><p>For more information about context settings, see <span class="emphasis"><em>Talend Data Integration Studio User
+							Guide</em></span>.</p></li><li class="step" title="Step 6"><p>Keep the default setting in the <span class="emphasis"><strong>Name</strong></span>
+						field and type in the name of the database table in the <span class="emphasis"><strong>Default value</strong></span> field, <span class="emphasis"><em>employees</em></span> in this case. </p></li><li class="step" title="Step 7"><p>Click <span class="emphasis"><strong>Finish</strong></span> to validate the setting. </p><p>The context parameter <span class="emphasis"><em>context.TABLE</em></span>
+						automatically appears in the <span class="emphasis"><strong>Table Name</strong></span>
+						field.</p></li><li class="step" title="Step 8"><p><span>In the <span class="emphasis"><strong>Query
+								type</strong></span> list, select <span class="emphasis"><strong>Built-In</strong></span>. Then, click</span>
+						<span class="emphasis"><strong>Guess Query</strong></span> to get the query statement. </p><p>In this use case, we want to read the records with the salary above 8000.
+						Therefore, we add a <code class="code">Where</code> clause and the final query statement
+						is as follows:</p><pre class="programlisting">"SELECT 
+  "+context.TABLE+".`id`, 
+  "+context.TABLE+".`first_name`, 
+  "+context.TABLE+".`last_name`, 
+  "+context.TABLE+".`city`, 
+  "+context.TABLE+".`state`, 
+  "+context.TABLE+".`date_of_birth`, 
+  "+context.TABLE+".`salary`
+FROM "+context.TABLE+"
+WHERE
+  "+context.TABLE+".`salary` &gt; 8000"</pre></li><li class="step" title="Step 9"><p>Double-click <span class="emphasis"><strong>tLogRow</strong></span> to set its <span class="emphasis"><strong>Basic Settings</strong></span> in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_5.png"></div></li><li class="step" title="Step 10"><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> for a
+						better display of the results.</p></li><li class="step" title="Step 11"><p>Save the Job.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155174"></a>Executing the Job</h4></div></div></div><p>The results below can be found after <span class="emphasis"><strong>F6</strong></span> is
+				pressed to run the Job.</p><div class="mediaobject"><img src="../images/use_case_tmysqlinput_context_6.png"></div><p>As shown above, the records with the salary greater than 8000 are
+				retrieved.</p></div></div><div class="section" title="Scenario 3: Reading data from MySQL databases through context-based dynamic connections"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20130629-dynamic_db_connection"></a>Scenario 3: Reading data from MySQL databases through context-based dynamic
+			connections</h3></div></div></div><p>In this scenario we will read data from database tables with the same data structure
+			but in two different MySQL databases named <span class="emphasis"><em>project_q1</em></span>
+			and <span class="emphasis"><em>project_q2</em></span> respectively. We will specify the
+			connections to these databases dynamically at runtime, without making any modification
+			to the Job.</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155198"></a>Dropping and linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop two <span class="emphasis"><strong>tMysqlConnection</strong></span>, a <span class="emphasis"><strong>tMysqlInput</strong></span>, a <span class="emphasis"><strong>tLogRow</strong></span>, and a <span class="emphasis"><strong>tMysqlClose</strong></span>
+						components onto the design workspace.</p></li><li class="step" title="Step 2"><p>Link the first <span class="emphasis"><strong>tMysqlConnection</strong></span> to the
+						second <span class="emphasis"><strong>tMysqlConnection</strong></span> and the second
+							<span class="emphasis"><strong>tMysqlConnection</strong></span> to <span class="emphasis"><strong>tMysqlInput</strong></span> using <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>On Subjob Ok</strong></span>
+						connections.</p></li><li class="step" title="Step 3"><p>Link <span class="emphasis"><strong>tMysqlInput</strong></span> to <span class="emphasis"><strong>tLogRow</strong></span> using a <span class="emphasis"><strong>Row</strong></span> &gt;
+							<span class="emphasis"><strong>Main</strong></span> connection.</p></li><li class="step" title="Step 4"><p>Link <span class="emphasis"><strong>tMysqlInput</strong></span> to <span class="emphasis"><strong>tMysqlClose</strong></span> using a <span class="emphasis"><strong>Trigger</strong></span>
+						&gt; <span class="emphasis"><strong>On Subjob Ok</strong></span> connection.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-1.png"></div></li></ol></div></div><div class="section" title="Creating a context variable"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155271"></a>Creating a context variable</h4></div></div></div><p>To be able to choose a database connection dynamically at runtime, we need to
+				define a context variable, which will then be configure it in the <span class="emphasis"><strong>Dynamic settings</strong></span> of the database input component.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="emphasis"><strong>Contexts</strong></span> view, select the
+							<span class="emphasis"><strong>Variables</strong></span> tab, click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table, and give
+						the variable a name, <span class="emphasis"><em>myConnection</em></span> in this
+						example.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-context1.png"></div></li><li class="step" title="Step 2"><p>Select the <span class="emphasis"><strong>Values as tree</strong></span> tab, expand the
+							<span class="emphasis"><strong>myConnection</strong></span> node, fill the <span class="emphasis"><strong>Prompt</strong></span> field with the message you want to display
+						at runtime, and select the check box in front of the message text. </p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-context2.png"></div></li><li class="step" title="Step 3"><p>Fill the <span class="emphasis"><strong>Value</strong></span> field with the unique name
+						of the component you want to use as the default connection component,
+							<span class="emphasis"><em>tMysqlConnection_1</em></span> in this
+						example.</p></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155322"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the first <span class="emphasis"><strong>tMysqlConnection</strong></span>
+						component to show its <span class="emphasis"><strong>Basic settings</strong></span> view,
+						and set the connection details. For more information on the configuration of
+							<span class="emphasis"><strong>tMysqlConnection</strong></span>, see <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">the section called &#8220;tMysqlConnection&#8221;</a>.</p><p>Note that we use this component to open a connection to a MySQL databased
+						named <span class="emphasis"><em>project_q1</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-2.png"></div></li><li class="step" title="Step 2"><p>Configure the second <span class="emphasis"><strong>tMysqlConnection</strong></span>
+						component in the same way, but fill the <span class="emphasis"><strong>Database</strong></span> field with <span class="emphasis"><em>project_q2</em></span> because we want to use this component to open a
+						connection to another MySQL database, <span class="emphasis"><em>project_q2</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-3.png"></div></li><li class="step" title="Step 3"><p>Double-click the <span class="emphasis"><strong>tMysqlInput</strong></span> component to
+						show its <span class="emphasis"><strong>Basic settings</strong></span> view. </p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-4.png"></div></li><li class="step" title="Step 4"><p>Select the <span class="emphasis"><strong>Use an existing connection</strong></span>
+						check box, and leave the <span class="emphasis"><strong>Component List</strong></span> box
+						as it is.</p></li><li class="step" title="Step 5"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to open the <span class="emphasis"><strong>[Schema]</strong></span> dialog box and define the data structure of the
+						database table to read data from.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-5.png"></div><p>In this example, the database table structure is made of four columns,
+							<span class="emphasis"><em>id</em></span> (type Integer, 2 characters long),
+							<span class="emphasis"><em>firstName</em></span> (type String, 15 characters
+						long), <span class="emphasis"><em>lastName</em></span> (type String, 15
+						characters long), and <span class="emphasis"><em>city</em></span> (type String,
+						15 characters long). When done, click <span class="emphasis"><strong>OK</strong></span> to
+						close the dialog box and propagate the schema settings to the next
+						component.</p></li><li class="step" title="Step 6"><p>Fill the <span class="emphasis"><strong>Table</strong></span> field with the database
+						table name, <span class="emphasis"><em>customers</em></span> in this example,
+						and click <span class="emphasis"><strong>Guess Query</strong></span> to generate the query
+						statement corresponding to your table schema in the <span class="emphasis"><strong>Query</strong></span> field. </p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Dynamic settings</strong></span> view, click the
+							<span class="emphasis"><strong>[+]</strong></span> button to add a row in the table,
+						and fill the <span class="emphasis"><strong>Code</strong></span> field with the code
+						script of the context variable you just created, <code class="code">" +
+							context.myConnection + "</code> in this example.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-6.png"></div></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>Basic settings</strong></span> view of the
+							<span class="emphasis"><strong>tLogRow</strong></span> component, select the <span class="emphasis"><strong>Table</strong></span> option for better display effect of the Job
+						execution result.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-7.png"></div></li><li class="step" title="Step 9"><p>In the <span class="emphasis"><strong>Dynamic settings</strong></span> view of the
+							<span class="emphasis"><strong>tMysqlClose</strong></span> component, do exactly the
+						same as in the <span class="emphasis"><strong>Dynamic settings</strong></span> view of the
+							<span class="emphasis"><strong>tMysqlInput</strong></span> component.</p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155482"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job and press
+							<span class="emphasis"><strong>F6</strong></span> or click <span class="emphasis"><strong>Run</strong></span> to launch it. </p><p>A dialog box appears prompting you to specify the connection component you
+						want to use.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-8.png"></div></li><li class="step" title="Step 2"><p>To use the default connection component, simply click <span class="emphasis"><strong>OK</strong></span>. </p><p>The data read from database <span class="emphasis"><em>project_q1</em></span>
+						is displayed in the <span class="emphasis"><strong>Run</strong></span> console. </p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-9.png"></div></li><li class="step" title="Step 3"><p>Press <span class="emphasis"><strong>F6</strong></span> or click <span class="emphasis"><strong>Run</strong></span> to launch your Job again. When prompted, specify the
+						other connection component, <span class="emphasis"><strong>tMysqlConnection_2</strong></span>, to read data from the other database,
+							<span class="emphasis"><em>project_q2</em></span>.</p><p>The data read from database <span class="emphasis"><em>project_q2</em></span>
+						is displayed in the <span class="emphasis"><strong>Run</strong></span> console.</p><div class="mediaobject"><img src="../images/use_case-tmysqlinput-dynamic_connection-10.png"></div></li></ol></div></div></div><div class="section" title="Scenario 4: Writing dynamic columns from a MySQL database to an output file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa58493"></a>Scenario 4: Writing dynamic columns from a MySQL database to an output file</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+				<span class="emphasis"><em>This scenario makes use of the Dynamic Schema feature, which
+					is only available to users who have subscribed to one of the <span class="emphasis"><strong>Talend</strong></span> solutions.</em></span>
+			</p></div><p>In this scenario we will read dynamic columns from a MySQL database, map them and then
+			write them to a table in a local output file. By defining a dynamic column alongside
+			known column names, we can retrieve all of the columns from the database table,
+			including the unknown columns.</p><div class="section" title="Dragging and dropping components and linking them together"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155560"></a>Dragging and dropping components and linking them together</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop a <span class="emphasis"><strong>tMysqlInput</strong></span>, a <span class="emphasis"><strong>tMap</strong></span> and a <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component onto the workspace.</p></li><li class="step" title="Step 2"><p> Link <span class="emphasis"><strong>tMysqlInput</strong></span> to <span class="emphasis"><strong>tMap</strong></span> using a <span class="emphasis"><strong>Row &gt;
+							Main</strong></span> connection.</p></li><li class="step" title="Step 3"><p> Link <span class="emphasis"><strong>tMap</strong></span> to <span class="emphasis"><strong>tFileOutputDelimited</strong></span> using a <span class="emphasis"><strong>Row &gt;
+							*New Output* (Main)</strong></span> connection.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155603"></a>Configuring the components</h4></div></div></div><div class="procedure" title="Procedure&nbsp;7.7.&nbsp;Data source and dynamic columns"><a name="d0e155606"></a><p class="title"><b>Procedure&nbsp;7.7.&nbsp;Data source and dynamic columns </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tMysqlInput</strong></span> to open its
+							<span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_2.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>The dynamic schema feature is only supported in
+									<span class="emphasis"><strong>Built-In</strong></span> mode.</em></span>
+						</p></div></li><li class="step" title="Step 2"><p> Select <span class="emphasis"><strong>Built-in</strong></span> as the <span class="emphasis"><strong>Property Type</strong></span>.</p><p> Select the <span class="emphasis"><strong>DB Version</strong></span> from the
+						corresponding list.</p><p> Next to <span class="emphasis"><strong>Host</strong></span>, enter the database server
+						IP address.</p><p> Next to <span class="emphasis"><strong>Port</strong></span>, enter the listening port
+						number of the database server.</p><p> Enter your authentication data in the <span class="emphasis"><strong>Username</strong></span> and <span class="emphasis"><strong>Password</strong></span>
+						fields.</p></li><li class="step" title="Step 3"><p> Set the <span class="emphasis"><strong>Schema type</strong></span> as<span class="emphasis"><strong> Built-in</strong></span> and click <span class="emphasis"><strong>Edit
+							schema</strong></span> to define the dynamic schema.</p><p> The schema editor opens:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_3.png"></div></li><li class="step" title="Step 4"><p> Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row to the
+						schema.</p><p> Under <span class="emphasis"><strong>Column</strong></span> and<span class="emphasis"><strong>
+							Db Column</strong></span>, click in the fields to enter the corresponding
+						column names. </p><p> Click the field under <span class="emphasis"><strong>Type</strong></span> to define the
+						type of data.</p><p> Click the arrow and select <span class="emphasis"><strong>Dynamic</strong></span> from
+						the list.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em> Under <span class="emphasis"><strong>Type</strong></span>,
+								the dynamic column type must be set as <span class="emphasis"><strong>Dynamic</strong></span>.</em></span>
+						</p></div></li><li class="step" title="Step 5"><p> Click <span class="emphasis"><strong>OK</strong></span> to close the schema
+						editor.</p></li><li class="step" title="Step 6"><p> Next to the <span class="emphasis"><strong>Table Name</strong></span> field, click
+							the<span class="emphasis"><strong> [...]</strong></span> button to select the database
+						table of interest.</p><p> A dialog box displays a tree diagram of all the tables in the selected
+						database:</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_4.png"></div><p> Click the table of interest and then click <span class="emphasis"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 7"><p> Set the <span class="emphasis"><strong>Query Type</strong></span> as <span class="emphasis"><strong>Built-In</strong></span>. </p><p> In the <span class="emphasis"><strong>Query</strong></span> box, enter the query
+						required to retrieve all of the columns from the table.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em> In the SELECT statement it is necessary to use
+								the <span class="emphasis"><strong>*</strong></span> wildcard character, to
+								retrieve all of the columns from the selected table.</em></span>
+						</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_5.png"></div></li><li class="step" title="Step 8"><p> Click <span class="emphasis"><strong>tMap</strong></span> to open its <span class="emphasis"><strong>Basic Settings</strong></span> view in the <span class="emphasis"><strong>Component</strong></span> tab. </p></li><li class="step" title="Step 9"><p> Click <span class="emphasis"><strong>[...]</strong></span> next to <span class="emphasis"><strong>Map Editor</strong></span> to map the column from the source
+						file.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_6.png"></div></li><li class="step" title="Step 10"><p> Drop the column defined as dynamic from the input schema on the left onto
+						the output schema on the right.</p><p> The column dropped on the output schema retains its original
+						values.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+							<span class="emphasis"><em>The dynamic column must be mapped on a one to one basis and
+								cannot undergo any transformations. It cannot be used in a filter
+								expression or in a variables section. It cannot be renamed in the
+								output table and cannot be used as a join condition.</em></span>
+						</p></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_7.png"></div></li><li class="step" title="Step 11"><p> Click <span class="emphasis"><strong>OK</strong></span> to close the <span class="emphasis"><strong>Map Editor</strong></span>.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;7.8.&nbsp;Output file"><a name="d0e155816"></a><p class="title"><b>Procedure&nbsp;7.8.&nbsp;Output file</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to set
+						its <span class="emphasis"><strong>Basic Settings</strong></span> in the <span class="emphasis"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_8.png"></div></li><li class="step" title="Step 2"><p> Next to the <span class="emphasis"><strong>File Name</strong></span> field, click the
+							<span class="emphasis"><strong>[...]</strong></span> button to browse your directory
+						to where you want to save the output file, then enter a name for the
+						file.</p></li><li class="step" title="Step 3"><p> Select the <span class="emphasis"><strong>Include Header</strong></span> check box to
+						retrieve the column names as well as the data.</p></li><li class="step" title="Step 4"><p> Save the Job.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155852"></a>Executing the Job</h4></div></div></div><p>The results below can be found after <span class="emphasis"><strong>F6</strong></span> is
+				pressed to run the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInput_Dynamic_Schema_9.png"></div><p>As shown above, the output file is written with all the column names and
+				corresponding data, retrieved from the database via the dynamic schema:</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> The Job can also be run in the <span class="emphasis"><strong>Traces Debug</strong></span>
+					mode, which allows you to view the rows as they are written to the output file,
+					in the workspace.</p><p> </p></div><p>For further information about defining and mapping dynamic schemas, see
+						<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h4 class="title"><a name="d0e155878"></a>Related scenarios</h4></div></div></div><p>For related scenarios, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+						<a class="xref" href="tContextLoad.html#Raa15947" title="Scenario: Dynamic context use in MySQL DB insert">the section called &#8220;Scenario: Dynamic context use in MySQL DB insert&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a>.</p></li><li class="listitem"><p>
+						<a class="xref" href="tMysqlOutput.html#Raa52976" title="Scenario 4: Writing dynamic columns from a source file to a MySQL database">the section called &#8220;Scenario 4: Writing dynamic columns from a source file to a MySQL database&#8221;</a>.</p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMysqlConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMysqlLastInsertId.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMysqlConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMysqlLastInsertId</td></tr></table></div></body></html>

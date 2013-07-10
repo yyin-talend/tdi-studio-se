@@ -1,0 +1,202 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSqoopImport</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-bigdata.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tSqoopExport.html" title="tSqoopExport"><link rel="next" href="tSqoopImportAllTables.html" title="tSqoopImportAllTables"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSqoopImport</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSqoopExport.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;1.&nbsp;Composants Big Data</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSqoopImportAllTables.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tSqoopImport"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSqoopImport"></a>tSqoopImport</h2></div></div></div><div class="mediaobject"><img src="../images/tsqoopimport_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du studio
+            uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de <span class="emphasis"><em>Talend Big Data Studio</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tSqoopImport"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e27175"></a>Propri&eacute;t&eacute;s du tSqoopImport</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Big Data/Sqoop</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tSqoopImport</strong></span> appelle Sqoop
+                                pour transf&eacute;rer des donn&eacute;es d&#8217;un syst&egrave;me de gestion de base de
+                                donn&eacute;es relationnelle (SGBDR) comme MySQL ou Oracle dans le syst&egrave;me
+                                de fichiers distribu&eacute; Hadoop (Hadoop Distributed File System, HDFS).
+                            </p>	<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Assurez-vous d'avoir install&eacute; Sqoop sur l'h&ocirc;te utilis&eacute; pour ex&eacute;cuter ce composant.
+			Assurez-vous &eacute;galement d'ajouter l'invite de commande Sqoop &agrave; la variable PATH de cet
+			h&ocirc;te.</p></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tSqoopImport</strong></span> est utilis&eacute; pour
+                                d&eacute;finir les arguments requis par Sqoop pour &eacute;crire les donn&eacute;es qui
+                                vous int&eacute;ressent dans HDFS.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Saisissez l&#8217;URL JDBC utilis&eacute;e pour vous connecter &agrave; la base de donn&eacute;es dans laquelle les
+		donn&eacute;es source sont stock&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>User name</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Saisissez les informations d&#8217;authentification utilis&eacute;es pour vous connecter &agrave; la base de
+		donn&eacute;es source.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Table Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Saisissez le nom de la table &agrave; transf&eacute;rer dans HDFS.</p>
+                            <p>Ce champ est indisponible lorsque vous utilisez le mode de
+                                requ&ecirc;tes de forme libre, en cochant la case <span class="emphasis"><strong>Use query</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Append</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour &eacute;crire &agrave; la suite d&#8217;un ensemble de donn&eacute;es
+                                existant dans HDFS les donn&eacute;es transf&eacute;r&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File format</em></span></p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez un format de fichier pour les donn&eacute;es &agrave; transf&eacute;rer. Par d&eacute;faut, le format de
+		fichier est <span class="emphasis"><strong>textfile</strong></span>, mais vous pouvez &eacute;galement choisir le
+		format <span class="emphasis"><strong>sequencefile</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Compress</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour activer la compression.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print Log</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour activer la case <span class="emphasis"><strong>Verbose</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Verbose</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour imprimer plus d&#8217;informations pendant que vous travaillez, par
+		exemple des informations de d&eacute;bogage.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Direct</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour utiliser le chemin d&#8217;import rapide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Specify columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour afficher le tableau <span class="emphasis"><strong>Columns</strong></span> dans lequel vous souhaitez sp&eacute;cifier les
+                                colonnes de donn&eacute;es que vous souhaitez transf&eacute;rer dans HDFS.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use WHERE clause</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour utiliser une clause WHERE contr&ocirc;lant les
+                                lignes &agrave; transf&eacute;rer. Dans le champ activ&eacute;, saisissez la condition
+                                utilis&eacute;e pour s&eacute;lectionner les lignes de donn&eacute;es. Par exemple,
+                                    saisissez&nbsp;<code class="code">id &gt; 400</code> pour importer uniquement les
+                                lignes pour lesquelles la colonne<span class="emphasis"><em>&nbsp;id </em></span>a une
+                                valeur sup&eacute;rieure &agrave;&nbsp;400.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use MySQL default delimiters</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour utiliser les d&eacute;limiteurs MySQL par d&eacute;faut.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use query</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour utiliser le mode de requ&ecirc;te de forme libre,
+                                fourni par Sqoop.</p>
+                            <p>Une fois la case coch&eacute;e, vous pouvez saisir librement la requ&ecirc;te
+                                que vous souhaitez utiliser.</p>
+                            <p>Sp&eacute;cifiez le r&eacute;pertoire cible. Si Sqoop importe les donn&eacute;es en
+                                parall&egrave;le, sp&eacute;cifiez &eacute;galement l'argument <code class="code">Split by</code>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Specify Target Dir</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de saisir le chemin d&#8217;acc&egrave;s au fichier
+                                cible dans lequel vous souhaitez transf&eacute;rer les donn&eacute;es
+                                source.</p>
+                            <p>Cet emplacement peut &ecirc;tre un nouveau r&eacute;pertoire. Si ce n'est pas
+                                le cas, cochez la case <span class="emphasis"><strong>Append</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Specify Split
+                            by</em></span></td><td valign="top">
+                            <p>Cochez cette case puis saisissez le nom de la colonne que vous
+                                souhaitez utiliser comme colonne de division, afin de diviser la
+                                charge de travail.</p>
+                            <p>Par exemple, pour une table o&ugrave; la colonne <span class="emphasis"><em>id</em></span> est la colonne cl&eacute;, saisissez <span class="emphasis"><em>tablename.id</em></span>. Sqoop divise les donn&eacute;es
+                                &agrave; transf&eacute;rer selon la valeur de leur ID et les importe en
+                                parall&egrave;le.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Specify Number of Mappers</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de pr&eacute;ciser le nombre de t&acirc;ches de &#8220;map&#8221; (processus parall&egrave;les)
+		utilis&eacute; pour effectuer le transfert des donn&eacute;es.</p>
+                            <p>Si ne vous souhaitez pas que Sqoop travaille en parall&egrave;le, saisissez <span class="emphasis"><em>1</em></span> dans le champ affich&eacute;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Additional arguments</em></span></p>
+                        </td><td valign="top">
+                            <p>Compl&eacute;tez ce tableau pour utiliser des arguments suppl&eacute;mentaires, si n&eacute;cessaire.</p>
+                            <p>En ajoutant des arguments suppl&eacute;mentaires, vous pouvez effectuer de multiples op&eacute;rations en
+		une seule transaction. Par exemple, vous pouvez utiliser <code class="code">--hive-import</code> et
+			<code class="code">--hive-table</code> pour cr&eacute;er une table Hive et &eacute;crire des donn&eacute;es dans cette
+		table lors de l'ex&eacute;cution de la transaction &eacute;crivant des donn&eacute;es dans HDFS. Pour plus
+		d'informations concernant les arguments Sqoop disponibles, consultez le manuel de
+		Sqoop.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau des
+                                composants.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est utilis&eacute; en standalone. Il respecte les pr&eacute;requis Sqoop. Vous devez
+		conna&icirc;tre Sqoop pour l'utiliser.</p>
+                            <p>Il est recommand&eacute; d'utiliser une version 1.4+ de Sqoop afin de tirer enti&egrave;rement parti des
+		fonctionnalit&eacute;s des composants.</p>
+                            <p>Pour plus d'informations concernant Sqoop, consultez (en anglais) le manuel de Sqoop sur le
+		site : <a class="link" href="http://sqoop.apache.org/docs/1.4.0-incubating/SqoopUserGuide.html" target="_top">http://sqoop.apache.org/docs/1.4.0-incubating/SqoopUserGuide.html</a></p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Vous devez vous assurer que l'h&ocirc;te, Sqoop et le Job sont sur la m&ecirc;me machine, pour ex&eacute;cuter
+		le Job utilisant ce composant. </p>
+                            <p>Si le Studio n'est pas d&eacute;ploy&eacute; dans l'h&ocirc;te, vous pouvez installer le serveur de Job fourni
+		par <span class="emphasis"><strong>Talend</strong></span> sur l'h&ocirc;te et utiliser le serveur pour ex&eacute;cuter le
+		Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Trigger&nbsp;</strong></span>: Run if, On Subjob Ok,
+                                On Subjob Error.</p>
+                            <p> </p>
+                            <p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row&nbsp;</strong></span>: Iterate. </p>
+                            <p><span class="emphasis"><strong>Trigger&nbsp;</strong></span>: Run if, On Subjob Ok,
+                                On Subjob Error, On Component Ok, On Component Error.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les connexions, consultez le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e27684"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p><span>Aucun sc&eacute;nario n&#8217;est disponible pour ce composant.</span></p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSqoopExport.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSqoopImportAllTables.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tSqoopExport&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tSqoopImportAllTables</td></tr></table></div></body></html>

@@ -1,0 +1,429 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGenKey</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tFuzzyUniqRow.html" title="tFuzzyUniqRow"><link rel="next" href="tGenKeyHadoop.html" title="tGenKeyHadoop"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tGenKey</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFuzzyUniqRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tGenKeyHadoop.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tGenKey"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGenKey"></a>tGenKey</h2></div></div></div><div class="mediaobject"><img src="../images/tWindowKey_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du studio si
+			vous avez souscrit &agrave; l'un des produits <span class="emphasis"><em>Talend Platform</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tGenKey"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e87603"></a>Propri&eacute;t&eacute;s du tGenKey</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tGenKey </strong></span>vous permet
+								d&#8217;appliquer diff&eacute;rents types d&#8217;algorithmes sur chaque colonne
+								d&#8217;entr&eacute;e et d&#8217;utiliser les r&eacute;sultats calcul&eacute;s pour g&eacute;n&eacute;rer une cl&eacute;
+								fonctionnelle. Ces algorithmes peuvent &ecirc;tre des algorithmes cl&eacute; ou
+								des algorithmes facultatifs.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les valeurs retourn&eacute;es par les algorithmes cl&eacute; seront
+									concat&eacute;n&eacute;es, selon l&#8217;ordre des colonnes dans la table <span class="emphasis"><strong>Key composition</strong></span>.</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tGenKey </strong></span>g&eacute;n&egrave;re une
+								cl&eacute; fonctionnelle &agrave; partir des colonnes d&#8217;entr&eacute;e, en appliquant
+								diff&eacute;rents types d&#8217;algorithmes sur chaque colonne et en regroupant
+								les r&eacute;sultats calcul&eacute;s en une seule cl&eacute;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+								(built-in) soit distant dans le Repository.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour
+								r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent dans le Job.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+									<span class="emphasis"><em>Guide utilisateur de
+									</em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la (les) colonne(s)du flux principal sur laquelle
+								vous souhaitez d&eacute;finir certains algorithmes pour d&eacute;finir la cl&eacute;
+								fonctionnelle.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous s&eacute;lectionnez une colonne de dates sur laquelle appliquer un algorithme ou un
+			algorithme de mise en correspondance, vous pouvez choisir ce que vous souhaitez comparer
+			dans le format de date.</p><p>Par exemple, si vous souhaitez comparer uniquement l'ann&eacute;e, attribuez le type <span class="emphasis"><strong>Date</strong></span> &agrave; la colonne concern&eacute;e dans le sch&eacute;ma du composant puis
+			saisissez "<span class="emphasis"><em>yyyy</em></span>" dans le champ <span class="emphasis"><strong>Date Pattern</strong></span>. Le composant convertit le format de date en une cha&icirc;ne de
+			caract&egrave;res, selon le mod&egrave;le d&eacute;fini dans le sch&eacute;ma, avant de comparer les cha&icirc;nes de
+			caract&egrave;res.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Pre-Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Au besoin, s&eacute;lectionnez l&#8217;algorithme de correspondance ad&eacute;quat
+								dans la liste&nbsp;:</p>
+							<p><span class="emphasis"><strong>remove diacritical marks&nbsp;:
+								</strong></span>supprime tout signe diacritique.</p>
+							<p><span class="emphasis"><strong>remove diacritical marks and lower
+									case</strong></span>&nbsp;: supprime tout signe diacritique et convertit
+								en minuscules avant de g&eacute;n&eacute;rer le code de la colonne.</p>
+							<p><span class="emphasis"><strong>remove diacritical marks and upper case&nbsp;:
+								</strong></span>supprime tout signe diacritique et convertit en
+								majuscules avant de g&eacute;n&eacute;rer le code de la colonne.</p>
+							<p><span class="emphasis"><strong>lower case</strong></span>&nbsp;: convertit le champ
+								en lettres minuscules avant d&#8217;appliquer l&#8217;algorithme cl&eacute;.</p>
+							<p><span class="emphasis"><strong>upper case</strong></span>&nbsp;: convertit le champ
+								en lettres majuscules avant d&#8217;appliquer l&#8217;algorithme cl&eacute;.</p>
+							<p><span class="emphasis"><strong>add left position character&nbsp;</strong></span>:
+								vous permet d&#8217;ajouter un caract&egrave;re &agrave; gauche de la colonne. </p>
+							<p><span class="emphasis"><strong>add right position character&nbsp;</strong></span>:
+								vous permet d&#8217;ajouter un caract&egrave;re &agrave; droite de la colonne.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez la valeur de l&#8217;algorithme, l&agrave; o&ugrave; il peut &ecirc;tre
+								appliqu&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;algorithme ad&eacute;quat dans la liste&nbsp;:</p>
+							<p><span class="emphasis"><strong>first character of each word</strong></span>&nbsp;:
+								inclut dans la cl&eacute; fonctionnelle le premier caract&egrave;re de chaque mot
+								dans la colonne.</p>
+							<p><span class="emphasis"><strong>N first characters of each word&nbsp;</strong></span>:
+								inclut dans la cl&eacute; fonctionnelle les N premiers caract&egrave;res de chaque
+								mot dans la colonne. </p>
+							<p><span class="emphasis"><strong>first N characters of the
+								string&nbsp;</strong></span>: inclut dans la cl&eacute; fonctionnelle les N premiers
+								caract&egrave;res de la cha&icirc;ne de caract&egrave;res.</p>
+							<p><span class="emphasis"><strong>last N characters of the string&nbsp;</strong></span>:
+								inclut dans la cl&eacute; fonctionnelle les N derniers caract&egrave;res de la
+								cha&icirc;ne de caract&egrave;res.</p>
+							<p><span class="emphasis"><strong>first N consonants of the
+								string&nbsp;</strong></span>: inclut dans la cl&eacute; fonctionnelle les N premi&egrave;res
+								consonnes de la cha&icirc;ne de caract&egrave;res.</p>
+							<p><span class="emphasis"><strong>first N vowels of the string&nbsp;</strong></span>:
+								inclut dans la cl&eacute; fonctionnelle les N premi&egrave;res voyelles de la
+								cha&icirc;ne de caract&egrave;res.</p>
+							<p><span class="emphasis"><strong>pick characters&nbsp;</strong></span>: inclut dans la
+								cl&eacute; fonctionnelle les caract&egrave;res situ&eacute;s &agrave; une position fixe
+								(correspondant au chiffre d&eacute;fini/&agrave; la plage d&eacute;finie).</p>
+							<p><span class="emphasis"><strong>exact&nbsp;</strong></span>: inclut dans la cl&eacute;
+								fonctionnelle la cha&icirc;ne de caract&egrave;res compl&egrave;te.</p>
+							<p><span class="emphasis"><strong>substring(a,b)</strong></span>&nbsp;: inclut dans la
+								cl&eacute; fonctionnelle un caract&egrave;re selon l&#8217;index d&eacute;fini.</p>
+							<p><span class="emphasis"><strong>soundex code&nbsp;</strong></span>: g&eacute;n&egrave;re un code
+								selon un algorithme anglais standard. Ce code repr&eacute;sente la cha&icirc;ne
+								de caract&egrave;res qui sera incluse dans la cl&eacute; fonctionnelle. </p>
+							<p><span class="emphasis"><strong>metaphone code</strong></span>&nbsp;: g&eacute;n&egrave;re un selon
+								la prononciation des caract&egrave;res. Ce code repr&eacute;sente la cha&icirc;ne de
+								caract&egrave;res qui sera incluse dans la cl&eacute; fonctionnelle. </p>
+							<p><span class="emphasis"><strong>double-metaphone code&nbsp;</strong></span>: g&eacute;n&egrave;re un
+								code selon la prononciation des caract&egrave;res en utilisant une nouvelle
+								version de l&#8217;algorithme phon&eacute;tique Metaphone, produisant des
+								r&eacute;sultats plus pr&eacute;cis que l&#8217;algorithme original. Ce code repr&eacute;sente
+								la cha&icirc;ne de caract&egrave;res qui sera incluse dans la cl&eacute;
+								fonctionnelle.</p>
+							<p><span class="emphasis"><strong>fingerPrintkey</strong></span> : g&eacute;n&egrave;re une cl&eacute;
+								fonctionnelle d'une valeur d'une cha&icirc;ne de caract&egrave;res via la
+								s&eacute;quence suivante :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>supprime les espaces vides en d&eacute;but et fin de
+											champ,</p></li><li class="listitem"><p>passe tous les caract&egrave;res en minuscules,</p></li><li class="listitem"><p>supprime tous les caract&egrave;res de ponctuation et de
+											contr&ocirc;le,</p></li><li class="listitem"><p>divise la cha&icirc;ne de caract&egrave;res en jetons s&eacute;par&eacute;s par
+											des espaces,</p></li><li class="listitem"><p>trie les jetons et supprime les doublons,</p></li><li class="listitem"><p>groupe &agrave; nouveau les jetons,</p><p>Comme les parties de la cha&icirc;ne de caract&egrave;res sont
+											tri&eacute;es, l'ordre des jetons n'a pas d'importance.
+												<span class="emphasis"><em>Cruise, Tom</em></span> et <span class="emphasis"><em>Tom
+												Cruise</em></span> obtiennent finalement l'empreinte
+											(cl&eacute;) <span class="emphasis"><em>cruise tom</em></span> et terminent dans
+											le m&ecirc;me cluster.</p></li><li class="listitem"><p>normalise les caract&egrave;res occidentaux &eacute;tendus par leur
+											repr&eacute;sentations ASCII, par exemple
+												<span class="emphasis"><em>g&ouml;del</em></span> par
+												<span class="emphasis"><em>godel</em></span>.</p><p>Cette proc&eacute;dure reproduit les erreurs des entr&eacute;es de
+											donn&eacute;es produites lors de la saisie de caract&egrave;res
+											&eacute;tendus par un clavier ASCII. Cependant, cette proc&eacute;dure
+											peut amener &agrave; de faux positifs, par exemple
+												<span class="emphasis"><em>g&ouml;del</em></span> et
+												<span class="emphasis"><em>god&eacute;l</em></span> obtiennent
+												<span class="emphasis"><em>godel</em></span> comme empreinte mais ce
+											sont probablement des noms diff&eacute;rents. Cela fonctionne
+											moins efficacement pour les ensembles de donn&eacute;es o&ugrave; les
+											caract&egrave;res &eacute;tendus jouent un r&ocirc;le important de
+											diff&eacute;renciation.</p></li></ol></div>
+							<p><span class="emphasis"><strong>nGramkey</strong></span> : cet algorithme est
+								similaire &agrave; la m&eacute;thode <span class="emphasis"><strong>fingerPrintkey</strong></span> d&eacute;crite ci-dessus. Au lieu d'utiliser
+								des jetons s&eacute;par&eacute;s par des espaces, il utilise n-grammes, o&ugrave;
+									<span class="emphasis"><em>n</em></span> peut &ecirc;tre sp&eacute;cifi&eacute; par l'utilisateur.
+								Cette m&eacute;thode g&eacute;n&egrave;re la cl&eacute; fonctionnelle d'une valeur d'une cha&icirc;ne
+								de caract&egrave;res via la s&eacute;quence suivante :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>passe tous les caract&egrave;res en minuscules,</p></li><li class="listitem"><p>supprime tous les caract&egrave;res de ponctuation et de
+											contr&ocirc;le,</p></li><li class="listitem"><p>obtient toutes les cha&icirc;nes de caract&egrave;res n-grammes,
+										</p></li><li class="listitem"><p>trie les n-grammes et supprime les doublons,</p></li><li class="listitem"><p>groupe &agrave; nouveau les n-grammes tri&eacute;s,</p></li><li class="listitem"><p>normalise les caract&egrave;res occidentaux &eacute;tendus par leur
+											repr&eacute;sentation ASCII, par exemple
+												<span class="emphasis"><em>g&ouml;del</em></span> par
+												<span class="emphasis"><em>godel</em></span>.</p><p>Par exemple, l'empreinte 2-gramme de
+												<span class="emphasis"><em>Paris</em></span> est
+												<span class="emphasis"><em>arispari</em></span> et son empreinte
+											1-gram est <span class="emphasis"><em>aiprs</em></span>. </p><p>L'impl&eacute;mentation fournie pour cet algorithme est le
+											2-gramme.</p></li></ol></div>
+							<p><span class="emphasis"><strong>colognPhonetic</strong></span> : un algorithme
+								phon&eacute;tique Soundex optimis&eacute; pour l'allemand. Il encode une cha&icirc;ne de
+								caract&egrave;res en une valeur phon&eacute;tique de Cologne. Ce code repr&eacute;sente
+								la cha&icirc;ne de caract&egrave;res qui sera incluse dans la cl&eacute;
+								fonctionnelle.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez la valeur de l&#8217;algorithme, l&agrave; o&ugrave; il peut &ecirc;tre
+								appliqu&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Post-Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Si n&eacute;cessaire, s&eacute;lectionnez l&#8217;algorithme de correspondance ad&eacute;quat
+								dans la liste&nbsp;:</p>
+							<p><span class="emphasis"><strong>use default value</strong></span> (cha&icirc;ne de
+								caract&egrave;res)&nbsp;: vous permet de choisir une cha&icirc;ne de caract&egrave;res pour
+								remplacer des donn&eacute;es null ou vides.</p>
+							<p><span class="emphasis"><strong>add left position character&nbsp;</strong></span>:
+								vous permet d&#8217;ajouter un caract&egrave;re &agrave; gauche de la colonne. </p>
+							<p><span class="emphasis"><strong>add right position character&nbsp;</strong></span>:
+								vous permet d&#8217;ajouter un caract&egrave;re &agrave; droite de la colonne.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez la valeur de l&#8217;option, l&agrave; o&ugrave; elle est
+								applicable.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Show help</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour afficher les instructions concernant la
+								d&eacute;finition des param&egrave;tres des algorithmes/options.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcherStatistics </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant interm&eacute;diaire. Il requiert un flux
+								d&#8217;entr&eacute;e et un flux de sortie. Il peut &ecirc;tre utilis&eacute; avec d&#8217;autres
+								composants, comme le <span class="emphasis"><strong>tMatchGroup</strong></span>,
+								afin de cr&eacute;er une cl&eacute; de bloc (blocking key).</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: G&eacute;n&eacute;rer des cl&eacute;s fonctionnelles dans le flux de sortie"><div class="titlepage"><div><div><h3 class="title"><a name="Raa55888"></a>Sc&eacute;nario&nbsp;1&nbsp;: G&eacute;n&eacute;rer des cl&eacute;s fonctionnelles dans le flux de sortie</h3></div></div></div><p>Ce sc&eacute;nario comprend trois composants. Il d&eacute;crit un Job simple qui g&eacute;n&egrave;re une cl&eacute;
+			fonctionnelle pour chaque enregistrement de donn&eacute;es utilisant un algorithme sur l&#8217;une
+			des colonnes d&#8217;entr&eacute;e,&nbsp;<span class="emphasis"><em>PostalCode</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cette cl&eacute; fonctionnelle peut &ecirc;tre utilis&eacute;e de diff&eacute;rentes fa&ccedil;ons, afin de r&eacute;duire
+				le nombre de r&eacute;sultats d&#8217;un filtre sur les donn&eacute;es ou d&#8217;une correspondance de
+				donn&eacute;es, par exemple. Le composant <span class="emphasis"><strong>tGenKey</strong></span> peut
+				&ecirc;tre utilis&eacute; avec de nombreux composants de qualit&eacute; ou d&#8217;int&eacute;gration de donn&eacute;es,
+				lors d&#8217;utilisations vari&eacute;es. Pour un exemple d&#8217;utilisation du <span class="emphasis"><strong>tGenKey</strong></span>, consultez&nbsp;<a class="xref" href="tGenKey.html#Raa99658" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle&nbsp;&raquo;</a>.</p></div><p>Dans ce sc&eacute;nario, le flux de donn&eacute;es d&#8217;entr&eacute;e se compose de quatre
+				colonnes&nbsp;:&nbsp;<span class="emphasis"><em>Firstname</em></span>, <span class="emphasis"><em>Lastname</em></span>,
+				<span class="emphasis"><em>DOB</em></span>, et <span class="emphasis"><em>PostalCode </em></span>(Pr&eacute;nom, Nom, Date de
+			naissance et Code postal). Ces donn&eacute;es contiennent des probl&egrave;mes, comme des doublons,
+			des pr&eacute;noms ou des noms &eacute;crits diff&eacute;remment ou mal orthographi&eacute;s, des informations
+			diff&eacute;rentes sur un m&ecirc;me client, etc. Ce sc&eacute;nario g&eacute;n&egrave;re une cl&eacute; fonctionnelle pour
+			chaque enregistrement de donn&eacute;es utilisant un algorithme qui concat&egrave;ne les deux premiers
+			caract&egrave;res du code postal.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88208"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span>
+					dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tGenKey</strong></span> et
+						<span class="emphasis"><strong>tLogRow</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Connectez les composants &agrave; l&#8217;aide de liens <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les donn&eacute;es d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88239"></a>Configurer les donn&eacute;es d'entr&eacute;e</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFixedFlowInput</strong></span> afin
+					d&#8217;afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et de d&eacute;finir
+					ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit Schema</strong></span> pour ouvrir la bo&icirc;te de dialogue
+							<span class="emphasis"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey3.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter autant
+					de lignes que n&eacute;cessaire au sch&eacute;ma d&#8217;entr&eacute;e que vous souhaitez cr&eacute;er, &agrave; partir
+					de variables internes. </p><p>Dans cet exemple, le sch&eacute;ma se compose de quatre colonnes&nbsp;:
+						<span class="emphasis"><em>Firstname</em></span>, <span class="emphasis"><em>Lastname</em></span>,
+							<span class="emphasis"><em>DOB</em></span> et <span class="emphasis"><em>PostalCode</em></span>.</p><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+						dialogue.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+						<span class="emphasis"><strong>Use Inline Table</strong></span>.</p><p>Le tableau <span class="emphasis"><strong>Value</strong></span> s&#8217;affiche en tant que
+						<span class="emphasis"><strong>Inline Table</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey4.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter autant
+					de lignes que n&eacute;cessaire puis cliquez sur chacune d&#8217;entre elles pour d&eacute;finir les
+					donn&eacute;es d&#8217;entr&eacute;e des quatre colonnes.</p></li></ol></div></div><div class="section" title="Configurer la g&eacute;n&eacute;ration de cl&eacute;"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88321"></a>Configurer la g&eacute;n&eacute;ration de cl&eacute;</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tGenKey</strong></span> pour afficher
+					sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey6.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous le tableau <span class="emphasis"><strong>Algorithm</strong></span>, cliquez sur le
+					bouton <span class="emphasis"><strong>[+]</strong></span> afin d&#8217;ajouter une ligne.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>column</strong></span>, cliquez sur la
+					nouvelle ligne et s&eacute;lectionnez dans la liste la colonne sur laquelle vous
+					souhaitez appliquer l&#8217;algorithme. Dans cet exemple,
+						s&eacute;lectionnez&nbsp;<span class="emphasis"><em>PostalCode</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous s&eacute;lectionnez une colonne de dates sur laquelle appliquer un algorithme ou un
+			algorithme de mise en correspondance, vous pouvez choisir ce que vous souhaitez comparer
+			dans le format de date.</p><p>Par exemple, si vous souhaitez comparer uniquement l'ann&eacute;e, attribuez le type <span class="emphasis"><strong>Date</strong></span> &agrave; la colonne concern&eacute;e dans le sch&eacute;ma du composant puis
+			saisissez "<span class="emphasis"><em>yyyy</em></span>" dans le champ <span class="emphasis"><strong>Date Pattern</strong></span>. Le composant convertit le format de date en une cha&icirc;ne de
+			caract&egrave;res, selon le mod&egrave;le d&eacute;fini dans le sch&eacute;ma, avant de comparer les cha&icirc;nes de
+			caract&egrave;res.</p></div></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>algorithm</strong></span>, cliquez sur la
+					nouvelle ligne et s&eacute;lectionnez dans la liste l&#8217;algorithme que vous souhaitez
+					appliquer &agrave; la colonne correspondante. Dans cet exemple, s&eacute;lectionnez <span class="emphasis"><strong>first N characters of the string</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur la colonne <span class="emphasis"><strong>Value</strong></span> et saisissez la
+					valeur de l&#8217;algorithme s&eacute;lectionn&eacute;, si besoin. Dans ce sc&eacute;nario,
+						saisissez&nbsp;<span class="emphasis"><em>2</em></span>.</p><p>Dans cet exemple, g&eacute;n&eacute;rez une cl&eacute; fonctionnelle contenant les deux premiers caract&egrave;res
+			du code postal pour chaque ligne de donn&eacute;es, et ne d&eacute;finissez aucune option
+			suppl&eacute;mentaire pour ces colonnes.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez cocher la case <span class="emphasis"><strong>Show help</strong></span> afin
+				d&#8217;afficher les instructions concernant la d&eacute;finition des param&egrave;tres des algorithmes
+				et des options.</p></div><p>Apr&egrave;s avoir param&eacute;tr&eacute; le composant <span class="emphasis"><strong>tGenKey</strong></span>, vous
+			pouvez afficher une vue statistique de ces param&egrave;tres. Pour ce faire&nbsp;:</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez-droit sur le composant <span class="emphasis"><strong>tGenKey</strong></span> et
+					s&eacute;lectionnez <span class="emphasis"><strong>View Key Profile</strong></span> dans le menu
+					contextuel. </p></li></ol></div><p>L&#8217;&eacute;diteur <span class="emphasis"><strong>View Key Profile</strong></span> s&#8217;affiche et vous permet
+			de visualiser les statistiques du nombre de lignes par blocs et d&#8217;adapter les param&egrave;tres
+			selon le r&eacute;sultat que vous souhaitez obtenir.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lors du traitement de donn&eacute;es volumineuses et lorsque ce composant est utilis&eacute;
+				pour partitionner les donn&eacute;es afin de les utiliser dans un composant de mise en
+				correspondance (<span class="emphasis"><strong>tRecordMatching</strong></span> ou <span class="emphasis"><strong>tMatchGroup</strong></span> par exemple), il est pr&eacute;f&eacute;rable d&#8217;avoir un
+				nombre restreint de lignes par blocs. La configuration est consid&eacute;r&eacute;e comme optimale
+				autour de 50 lignes par blocs, mais cela d&eacute;pend du nombre de champs &agrave; comparer, du
+				nombre total de lignes et du temps consid&eacute;r&eacute; comme acceptable pour le traitement des
+				donn&eacute;es.</p></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour un exemple d&#8217;utilisation de l&#8217;option <span class="emphasis"><strong>View Key
+					Profile</strong></span>, consultez&nbsp;<a class="xref" href="tGenKey.html#Raa99658" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle&nbsp;&raquo;</a></p></div></div><div class="section" title="Configurer l'&eacute;criture en sortie"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88430"></a>Configurer l'&eacute;criture en sortie</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tLogRow </strong></span>afin
+					d&#8217;afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez l'option <span class="emphasis"><strong>Table</strong></span> pour afficher les r&eacute;sultats d'ex&eacute;cution du
+						Job sous forme de tableau.</p><div class="mediaobject"><img src="../images/Use_Case_tBlockedFuzzyJoin5.png"></div></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88455"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Sauvegardez votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tWindowKey8.png"></div><p>Toutes les colonnes de sortie comprenant la colonne&nbsp;<span class="emphasis"><em>T_GEN_KEY</em></span>
+			sont list&eacute;es dans la console de la vue <span class="emphasis"><strong>Run</strong></span>. La cl&eacute;
+			fonctionnelle pour chaque enregistrement de donn&eacute;es concat&egrave;ne les deux premiers
+			caract&egrave;res de la valeur correspondante dans la colonne <span class="emphasis"><strong>PostalCode</strong></span>.</p></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle"><div class="titlepage"><div><div><h3 class="title"><a name="Raa99658"></a>Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle</h3></div></div></div><p>Ce second sc&eacute;nario d&eacute;crit un Job comprenant quatre composants, dont le but est de&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>g&eacute;n&eacute;rer une cl&eacute; fonctionnelle utilisant un algorithme sur l&#8217;une des colonnes
+						d&#8217;entr&eacute;e,&nbsp;<span class="emphasis"><em>DoB</em></span>&nbsp;;</p></li><li class="listitem"><p>mettre en correspondance les colonnes selon certains types de
+					correspondances&nbsp;;</p></li><li class="listitem"><p>regrouper les colonnes de sortie via la cl&eacute; fonctionnelle g&eacute;n&eacute;r&eacute;e afin
+					d&#8217;optimiser l&#8217;op&eacute;ration de mise en correspondance et comparer uniquement les
+					enregistrements ayant la m&ecirc;me valeur de bloc, la cl&eacute; fonctionnelle dans ce
+					sc&eacute;nario. Pour plus d&#8217;informations concernant le regroupement des colonnes de
+					sortie et l&#8217;utilisation des valeurs de bloc, consultez&nbsp;<a class="xref" href="tMatchGroup.html" title="tMatchGroup">la section intitul&eacute;e &laquo;&nbsp;tMatchGroup&nbsp;&raquo;</a>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tGenKey9.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88502"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span>
+					dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="emphasis"><strong>tRowGenerator</strong></span>, <span class="emphasis"><strong>tGenKey</strong></span>,
+						<span class="emphasis"><strong>tMatchGroup</strong></span> et <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez les composants les uns aux autres &agrave; l&#8217;aide de liens <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les donn&eacute;es d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88533"></a>Configurer les donn&eacute;es d'entr&eacute;e</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tRowGenerator</strong></span> afin de
+					d&eacute;finir son sch&eacute;ma comme suit&nbsp;:</p><div class="mediaobject"><img src="../images/Use_Case_tGenKey10.png"></div><p>Le composant <span class="emphasis"><strong>tRowGenerator</strong></span> g&eacute;n&egrave;rera un flux de
+			donn&eacute;es d&#8217;entr&eacute;e comprenant trois colonnes&nbsp;: <span class="emphasis"><em>Firstname, Lastname</em></span>,
+			et <span class="emphasis"><em>DOB</em></span> (date de naissance). Ces donn&eacute;es peuvent contenir des
+			probl&egrave;mes, comme des doublons, des pr&eacute;noms ou des noms &eacute;crits diff&eacute;remment ou mal
+			orthographi&eacute;s, des informations diff&eacute;rentes sur un m&ecirc;me client, etc.</p></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider les param&egrave;tres et fermer la bo&icirc;te
+						de dialogue.</p></li></ol></div></div><div class="section" title="Configurer la g&eacute;n&eacute;ration de cl&eacute;"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88563"></a>Configurer la g&eacute;n&eacute;ration de cl&eacute;</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tGenKey</strong></span> pour afficher
+					sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tGenKey11.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous le tableau <span class="emphasis"><strong>Algorithm</strong></span>, cliquez sur le
+					bouton <span class="emphasis"><strong>[+]</strong></span> afin d&#8217;ajouter une ligne.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>column</strong></span>, cliquez sur la
+					nouvelle ligne et s&eacute;lectionnez dans la liste la colonne sur laquelle vous
+					souhaitez appliquer l&#8217;algorithme. Dans cet exemple,
+						s&eacute;lectionnez&nbsp;<span class="emphasis"><em>DoB</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>algorithm</strong></span>, cliquez sur la
+					nouvelle ligne et s&eacute;lectionnez dans la liste l&#8217;algorithme que vous souhaitez
+					appliquer &agrave; la colonne correspondante. Dans cet exemple, s&eacute;lectionnez <span class="emphasis"><strong>substring(a,b)</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur la colonne <span class="emphasis"><strong>value</strong></span> et saisissez la
+					valeur de l&#8217;algorithme s&eacute;lectionn&eacute;, si besoin. Dans ce sc&eacute;nario,
+						saisissez&nbsp;<span class="emphasis"><em>6,10</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>L&#8217;algorithme <span class="emphasis"><strong>substring(a,b)</strong></span> permet d&#8217;extraire les
+				caract&egrave;res d&#8217;une cha&icirc;ne situ&eacute;s entre deux indices, et de retourner la nouvelle
+				sous-cha&icirc;ne. Le premier caract&egrave;re est num&eacute;rot&eacute; <span class="emphasis"><em>0</em></span>. Dans ce
+				sc&eacute;nario, pour une date de naissance &#8220;<span class="emphasis"><em>21-01-1995</em></span>&#8221;, la
+					valeur&nbsp;<span class="emphasis"><em>6,10</em></span> retourne uniquement l&#8217;ann&eacute;e de naissance, soit
+					&#8220;<span class="emphasis"><em>1995</em></span>&#8221; qui correspond &agrave; la sous-cha&icirc;ne du 7&egrave;me au 10&egrave;me
+				caract&egrave;re.</p></div><p>Dans cet exemple, g&eacute;n&eacute;rez une cl&eacute; fonctionnelle contenant les quatre derniers
+			caract&egrave;res, correspondant &agrave; l&#8217;ann&eacute;e dans la date de naissance
+			(<span class="emphasis"><em>DoB</em></span>), pour chaque ligne de donn&eacute;es, et ne d&eacute;finissez aucune option
+			suppl&eacute;mentaire pour ces colonnes.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez cocher la case <span class="emphasis"><strong>Show help</strong></span> afin
+				d&#8217;afficher les instructions concernant la d&eacute;finition des param&egrave;tres des algorithmes
+				et des options.</p></div><p>Apr&egrave;s avoir param&eacute;tr&eacute; le composant <span class="emphasis"><strong>tGenKey</strong></span>, vous
+			pouvez afficher une vue statistique de ces param&egrave;tres. Pour ce faire&nbsp;:</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez-droit sur le composant <span class="emphasis"><strong>tGenKey</strong></span> et
+					s&eacute;lectionnez <span class="emphasis"><strong>View Key Profile</strong></span> dans le menu
+					contextuel. </p><div class="mediaobject"><img src="../images/Use_Case_tGenKey12.png"></div><p>L&#8217;&eacute;diteur <span class="emphasis"><strong>View Key Profile</strong></span> s&#8217;affiche et vous permet
+			de visualiser les statistiques du nombre de blocs et d&#8217;adapter les param&egrave;tres selon le
+			r&eacute;sultat que vous souhaitez obtenir.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lors du traitement de donn&eacute;es volumineuses et lorsque ce composant est utilis&eacute;
+				pour partitionner les donn&eacute;es afin de les utiliser dans un composant de mise en
+				correspondance (<span class="emphasis"><strong>tRecordMatching</strong></span> ou <span class="emphasis"><strong>tMatchGroup</strong></span> par exemple), il est pr&eacute;f&eacute;rable d&#8217;avoir un
+				nombre restreint de lignes par blocs. La configuration est consid&eacute;r&eacute;e comme optimale
+				autour de 50 lignes par blocs, mais cela d&eacute;pend du nombre de champs &agrave; comparer, du
+				nombre total de lignes et du temps consid&eacute;r&eacute; comme acceptable pour le traitement des
+				donn&eacute;es.</p></div><p>Si n&eacute;cessaire, vous pouvez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>&eacute;diter la limite (<span class="emphasis"><strong>Limit</strong></span>) du nombre de lignes
+					utilis&eacute;es pour calculer les statistiques&nbsp;;</p></li><li class="listitem"><p>&eacute;diter la colonne (<span class="emphasis"><strong>column</strong></span>) sur laquelle vous
+					souhaitez appliquer l&#8217;algorithme&nbsp;;</p></li><li class="listitem"><p>&eacute;diter l&#8217;algorithme (<span class="emphasis"><strong>algorithm</strong></span>) &agrave; appliquer
+					sur la colonne correspondante&nbsp;;</p></li><li class="listitem"><p>&eacute;diter la valeur (<span class="emphasis"><strong>value</strong></span>) la valeur de
+					l&#8217;algorithme s&eacute;lectionn&eacute;, etc.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour chaque modification effectu&eacute;e, vous pouvez visualiser ses implications en
+				cliquant sur le bouton <span class="emphasis"><strong>Refresh</strong></span> situ&eacute; en haut &agrave;
+				droite de l&#8217;&eacute;diteur.</p></div></li></ol></div></div><div class="section" title="Configurer le groupement des donn&eacute;es de sortie"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88708"></a>Configurer le groupement des donn&eacute;es de sortie</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMatchGroup</strong></span>
+					pour afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir
+					ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tWindowKey7.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous souhaitez ajouter une colonne fixe de sortie,
+					<span class="emphasis"><em>MATCHING_DISTANCES</em></span>, donnant le d&eacute;tail de la distance entre
+				chaque colonne, cliquez sur l&#8217;onglet <span class="emphasis"><strong>Advanced
+					settings</strong></span> et cochez la case<span class="emphasis"><strong> Output distance
+					details</strong></span>. Pour plus d&#8217;informations, consultez&nbsp;<a class="xref" href="tMatchGroup.html#Raa75287" title="Propri&eacute;t&eacute;s du tMatchGroup">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMatchGroup&nbsp;&raquo;</a>.</p></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> afin de
+					r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 3"><p>Si n&eacute;cessaire, cliquez sur le bouton <span class="emphasis"><strong>Edit
+						schema</strong></span> pour voir le sch&eacute;ma d&#8217;entr&eacute;e et le sch&eacute;ma de sortie et
+					effectuer toute modification requise sur le sch&eacute;ma de sortie.</p><div class="mediaobject"><img src="../images/Use_Case_tGenKey13.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Dans le sch&eacute;ma de sortie de ce composant, quatre colonnes standard de sortie sont
+				en lecture seule. Pour plus d&#8217;informations, consultez&nbsp;<a class="xref" href="tMatchGroup.html#Raa75287" title="Propri&eacute;t&eacute;s du tMatchGroup">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMatchGroup&nbsp;&raquo;</a>.</p></div></li><li class="step" title="&Eacute;tape 4"><p>Dans le tableau <span class="emphasis"><strong>Key definition</strong></span>, cliquez sur
+					le bouton<span class="emphasis"><strong> [+]</strong></span> pour ajouter &agrave; la liste les
+					colonnes sur lesquelles vous souhaitez effectuer la mise en
+						correspondance,&nbsp;<span class="emphasis"><em>FirstName</em></span>
+						et<span class="emphasis"><em>&nbsp;LastName</em></span> dans ce sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur la premi&egrave;re et la deuxi&egrave;me cellules de la colonne <span class="emphasis"><strong>Matching type</strong></span> et s&eacute;lectionnez dans la liste la (les)
+					m&eacute;thode(s) &agrave; utiliser pour effectuer la mise en correspondance,
+						<span class="emphasis"><em>Jaro-Winkler</em></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur la premi&egrave;re et la deuxi&egrave;me cellules de la colonne <span class="emphasis"><strong>Confidence Weight</strong></span> et d&eacute;finissez les poids num&eacute;riques
+					pour chacune des colonnes utilis&eacute;es comme attributs de cl&eacute;s.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur le bouton<span class="emphasis"><strong> [+]</strong></span> sous le tableau
+						<span class="emphasis"><strong>Blocking Definition</strong></span> afin d&#8217;ajouter une
+					ligne, puis cliquez sur cette ligne et s&eacute;lectionnez dans la liste la colonne que
+					vous souhaitez utiliser comme une valeur de bloc,&nbsp;<span class="emphasis"><em>T_GEN_KEY</em></span>
+					dans cet exemple. </p><p>Utiliser une valeur de bloc r&eacute;duit le nombre de paires d&#8217;enregistrements &agrave;
+					examiner. Les donn&eacute;es d&#8217;entr&eacute;e sont partitionn&eacute;es en blocs exhaustifs bas&eacute;s sur
+					la cl&eacute; fonctionnelle. Cela permet de diminuer le nombre de paires &agrave; comparer,
+					puisque la comparaison est limit&eacute;e aux paires d&#8217;enregistrements dans chaque
+					bloc. </p></li></ol></div></div><div class="section" title="Configurer l'&eacute;criture en sortie"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88802"></a>Configurer l'&eacute;criture en sortie</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tLogRow </strong></span>afin
+					d&#8217;afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez l'option <span class="emphasis"><strong>Table</strong></span> pour afficher les r&eacute;sultats d'ex&eacute;cution du
+						Job sous forme de tableau.</p><div class="mediaobject"><img src="../images/Use_Case_tBlockedFuzzyJoin5.png"></div></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e88827"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Sauvegardez votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p><div class="mediaobject"><img src="../images/Use_Case_tGenKey14.png"></div><p>Les colonnes de sortie incluent la colonne&nbsp;<span class="emphasis"><em>T_GEN_KEY</em></span> contenant la
+			cl&eacute; fonctionnelle g&eacute;n&eacute;r&eacute;e par le composant <span class="emphasis"><strong>tGenKey</strong></span>.
+			Vous pouvez constater que tous les enregistrements ayant la m&ecirc;me cl&eacute; fonctionnelle sont
+			regroup&eacute;s en trois groupes de blocs diff&eacute;rents. Tous les enregistrements ayant la m&ecirc;me
+			cl&eacute; fonctionnelle sont partitionn&eacute;s en trois groupes de blocs. L&#8217;identifiant de chaque
+			groupe est affich&eacute; dans la colonne&nbsp;<span class="emphasis"><em>GID</em></span> &agrave; c&ocirc;t&eacute; de l&#8217;enregistrement
+			correspondant. Le nombre d&#8217;enregistrements dans chacun des trois blocs de sortie est
+			list&eacute; dans la colonne&nbsp;<span class="emphasis"><em>GRP_SIZE</em></span> et calcul&eacute; uniquement sur
+			l&#8217;enregistrement ma&icirc;tre. La colonne&nbsp;<span class="emphasis"><em>MASTER</em></span> indique par <span class="emphasis"><strong>true</strong></span>/<span class="emphasis"><strong>false</strong></span> si
+			l&#8217;enregistrement correspondant est un enregistrement ma&icirc;tre ou non. La
+				colonne&nbsp;<span class="emphasis"><em>SCORE</em></span> affiche la distance calcul&eacute;e entre
+			l&#8217;enregistrement d&#8217;entr&eacute;e et l&#8217;enregistrement ma&icirc;tre selon l&#8217;algorithme de
+			correspondance <span class="emphasis"><strong>Jaro-Winkler</strong></span>.</p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFuzzyUniqRow.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tGenKeyHadoop.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFuzzyUniqRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tGenKeyHadoop</td></tr></table></div></body></html>

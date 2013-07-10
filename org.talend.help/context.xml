@@ -589,7 +589,7 @@
       <topic href="guide/components/en/tJava.html" label="tJava Component Documentation"/>
    </context>
    <context id="tJavaFlex">
-      <description>tJava makes it possible to extend the functionalities of a Talend Job through using Java commands.</description>
+      <description>tJavaFlex lets you add Java code to the Start/Main/End code sections of this component itself.</description>
       <topic href="guide/components/en/tJavaFlex.html" label="tJavaFlex Component Documentation"/>
    </context>
    <context id="tJavaRow">
@@ -811,6 +811,10 @@
    <context id="tAccessBulkExec">
       <description>As a dedicated component, tAccessBulkExec offers gains in performance when carrying out Insert operations in an Access database.</description>
       <topic href="guide/components/en/tAccessBulkExec.html" label="tAccessBulkExec Component Documentation"/>
+   </context>
+   <context id="tAccessClose">
+      <description>tAccessClose is used to disconnect one connection to Access so as to release occupied resources.</description>
+      <topic href="guide/components/en/tAccessClose.html" label="tAccessClose Component Documentation"/>
    </context>
    <context id="tAccessCommit">
       <description>Using a unique connection, this component commits in one go a global transaction instead of doing that on every row or every batch and thus provides gain in performance.</description>
@@ -1696,6 +1700,10 @@
       <description>tLDAPAttributesInput executes an LDAP query based on the given filter and corresponding to the schema definition. Then it passes on the field list to the next component via a Main row link.</description>
       <topic href="guide/components/en/tLDAPAttributesInput.html" label="tLDAPAttributesInput Component Documentation"/>
    </context>
+   <context id="tLDAPClose">
+      <description>tLDAPClose is used to disconnect one connection to the LDAP Directory server so as to release occupied resources.</description>
+      <topic href="guide/components/en/tLDAPClose.html" label="tLDAPClose Component Documentation"/>
+   </context>
    <context id="tLDAPConnection">
       <description>This component creates a connection to an LDAP Directory server. Then it can be invoked by other components that need to access the LDAP Directory server, e.g., tLDAPInput, tLDAPOutput, etc.</description>
       <topic href="guide/components/en/tLDAPConnection.html" label="tLDAPConnection Component Documentation"/>
@@ -2184,45 +2192,45 @@
       <description>tPivotToColumnsDelimited is used to fine-tune the selection of data to output</description>
       <topic href="guide/components/en/tPivotToColumnsDelimited.html" label="tPivotToColumnsDelimited Component Documentation"/>
    </context>
-   <context id="tFSAggregate">
+   <context id="tFSAggregate (deprecated)">
       <description>tFSAggregate helps setting metrics and statistics based on values or calculations from one or several large scale files.</description>
-      <topic href="guide/components/en/tFSAggregate.html" label="tFSAggregate Component Documentation"/>
+      <topic href="guide/components/en/tFSAggregate.html" label="tFSAggregate (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSCheck">
+   <context id="tFSCheck (deprecated)">
       <description>tFSCheck helps ensure the quality of data in a source file according to a sort type and order.</description>
-      <topic href="guide/components/en/tFSCheck.html" label="tFSCheck Component Documentation"/>
+      <topic href="guide/components/en/tFSCheck.html" label="tFSCheck (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSCode">
+   <context id="tFSCode (deprecated)">
       <description>tFSCode allows you to design FileScale components which are adaptable to your specific needs and fulfil domain-specific tasks.</description>
-      <topic href="guide/components/en/tFSCode.html" label="tFSCode Component Documentation"/>
+      <topic href="guide/components/en/tFSCode.html" label="tFSCode (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSFilterColumns">
+   <context id="tFSFilterColumns (deprecated)">
       <description>Helps homogenizing schemas in a file either by removing unwanted columns or adding new ones.</description>
-      <topic href="guide/components/en/tFSFilterColumns.html" label="tFSFilterColumns Component Documentation"/>
+      <topic href="guide/components/en/tFSFilterColumns.html" label="tFSFilterColumns (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSFilterRows">
+   <context id="tFSFilterRows (deprecated)">
       <description>Helps parametrizing row filters for large scale source data against set conditions.</description>
-      <topic href="guide/components/en/tFSFilterRows.html" label="tFSFilterRows Component Documentation"/>
+      <topic href="guide/components/en/tFSFilterRows.html" label="tFSFilterRows (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSJoin">
+   <context id="tFSJoin (deprecated)">
       <description>Helps combining a leftset file with a rightset file using a join predicate in order to identify the data on which to perform the join.</description>
-      <topic href="guide/components/en/tFSJoin.html" label="tFSJoin Component Documentation"/>
+      <topic href="guide/components/en/tFSJoin.html" label="tFSJoin (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSPartitionFile">
+   <context id="tFSPartitionFile (deprecated)">
       <description>Helps partitioning mass data before writing it in an output file.</description>
-      <topic href="guide/components/en/tFSPartitionFile.html" label="tFSPartitionFile Component Documentation"/>
+      <topic href="guide/components/en/tFSPartitionFile.html" label="tFSPartitionFile (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSSort">
+   <context id="tFSSort (deprecated)">
       <description>tFSSort helps creating metrics and classification tables.</description>
-      <topic href="guide/components/en/tFSSort.html" label="tFSSort Component Documentation"/>
+      <topic href="guide/components/en/tFSSort.html" label="tFSSort (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSTransform">
+   <context id="tFSTransform (deprecated)">
       <description>FSTransform helps transforming columns in large scale files.</description>
-      <topic href="guide/components/en/tFSTransform.html" label="tFSTransform Component Documentation"/>
+      <topic href="guide/components/en/tFSTransform.html" label="tFSTransform (deprecated) Component Documentation"/>
    </context>
-   <context id="tFSUnique">
+   <context id="tFSUnique (deprecated)">
       <description>tFSUnique helps having the output file without any duplicate records.</description>
-      <topic href="guide/components/en/tFSUnique.html" label="tFSUnique Component Documentation"/>
+      <topic href="guide/components/en/tFSUnique.html" label="tFSUnique (deprecated) Component Documentation"/>
    </context>
    <context id="tFileFetch">
       <description>tFileFetch allows you to retrieve file data according to the protocol which is in place.</description>

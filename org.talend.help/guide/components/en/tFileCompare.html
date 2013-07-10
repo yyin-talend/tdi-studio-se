@@ -1,0 +1,157 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileCompare</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileArchive.html" title="tFileArchive"><link rel="next" href="tFileCopy.html" title="tFileCopy"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileCompare</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileArchive.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileCopy.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileCompare"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileCompare"></a>tFileCompare</h2></div></div></div><div class="mediaobject"><img src="../images/tFileCompare.png"></div><div class="section" title="tFileCompare properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212917"></a>tFileCompare properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Management</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Compares two files and provides comparison data (based on a
+								read-only schema)</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Helps at controlling the data quality of files being
+								processed.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File to compare</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Filepath to the file to be checked.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Reference file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Filepath to the file, the comparison is based on.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>If differences are detected, display</em></span> and
+									<span class="emphasis"><em>If no difference detected, display</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in a message to be displayed in the <span class="emphasis"><strong>Run</strong></span> console based on the result of the
+								comparison.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Print to console</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to display the message.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field is
+								compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component can be used as standalone component but it is
+								usually linked to an output component to gather the log data.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Global Variables</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Difference</strong></span>: Checks whether two
+								files are identical or not. This is available as a <span class="emphasis"><strong>Flow</strong></span> variable.</p>
+							<p>Returns a boolean value: </p>
+							<p>- true if the two files are identical. </p>
+							<p>- false if there is a difference between them.</p>
+							<p> </p>
+							<p>For further information about variables, see <span class="emphasis"><em>Talend Open Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p><span class="emphasis"><strong>Row</strong></span>: Main.</p>
+							<p><span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+								Error; Run if; On Component Ok; On Component Error.</p>
+							<p> </p>
+							<p>Incoming links (from one component to another):</p>
+							<p><span class="emphasis"><strong>Row</strong></span>: Main; Reject;
+								Iterate.</p>
+							<p><span class="emphasis"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+								Subjob Error; On component Ok; On Component Error; Synchronize;
+								Parallelize. </p>
+							<p> </p>
+							<p>For further information regarding connections, see <span class="emphasis"><em>Talend Open Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Comparing unzipped files"><div class="titlepage"><div><div><h3 class="title"><a name="d0e213256"></a>Scenario: Comparing unzipped files</h3></div></div></div><p>This scenario describes a Job unarchiving a file and comparing it to a reference file
+			to make sure it did not change. The output of the comparison is stored into a delimited
+			file and a message displays in the console.</p><div class="mediaobject"><img src="../images/Use_Case_tFileCompare1.png"></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drag and drop the following components: <span class="emphasis"><strong>tFileUnarchive</strong></span>, <span class="emphasis"><strong>tFileCompare</strong></span>,
+					and <span class="emphasis"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="step" title="Step 2"><p>Link the <span class="emphasis"><strong>tFileUnarchive</strong></span> to the <span class="emphasis"><strong>tFileCompare</strong></span> with <span class="emphasis"><strong>Iterate</strong></span> connection. </p></li><li class="step" title="Step 3"><p>Connect the <span class="emphasis"><strong>tFileCompare</strong></span> to the output
+					component, using a <span class="emphasis"><strong>Main</strong></span> row link.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>tFileUnarchive</strong></span> component <span class="emphasis"><strong>Basic settings</strong></span>, fill in the path to the archive to
+					unzip.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Extraction Directory </strong></span>field, fill in
+					the destination folder for the unarchived file.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>tFileCompare </strong></span><span class="emphasis"><strong>Basic settings</strong></span>, set the <span class="emphasis"><strong>File to
+						compare</strong></span>. Press <span class="emphasis"><em>Ctrl+Space bar</em></span> to display the
+					list of global variables. Select
+						<span class="emphasis"><em>$_globals{tFileUnarchive_1}{CURRENT_FILEPATH}</em></span> or
+						<span class="emphasis"><em>"((String)globalMap.get("tFileUnarchive_1_CURRENT_FILEPATH"))"</em></span>
+					according to the language you work with, to fetch the file path from the
+						<span class="emphasis"><strong>tFileUnarchive</strong></span> component.</p><div class="mediaobject"><img src="../images/Use_Case_tFileCompare2.png"></div></li><li class="step" title="Step 7"><p>And set the <span class="emphasis"><strong>Reference file</strong></span> to base the
+					comparison on it.</p></li><li class="step" title="Step 8"><p>In the messages fields, set the messages you want to see if the files differ
+					or if the files are identical, for example: <span class="emphasis"><em>"[job " + JobName + "]
+						Files differ"</em></span>.</p></li><li class="step" title="Step 9"><p>Select the <span class="emphasis"><strong>Print to Console</strong></span> check box, for
+					the message defined to display at the end of the execution.</p></li><li class="step" title="Step 10"><p>The schema is read-only and contains standard information data. Click
+						<span class="emphasis"><strong>Edit schema</strong></span> to have a look to it.</p><div class="mediaobject"><img src="../images/Use_Case_tFileCompare3.png"></div></li><li class="step" title="Step 11"><p>Then set the output component as usual with semi-colon as data
+					separators.</p></li><li class="step" title="Step 12"><p>Save your Job and press <span class="emphasis"><strong>F6</strong></span> to run it.</p><div class="mediaobject"><img src="../images/Use_Case_tFileCompare4.png"></div><p>The message set is displayed to the console and the output shows the schema
+					information data.</p><div class="mediaobject"><img src="../images/Use_Case_tFileCompare5.png"></div></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileArchive.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileCopy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileArchive&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileCopy</td></tr></table></div></body></html>

@@ -1,0 +1,159 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tNormalize</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-processing.html" title="Chapter&nbsp;18.&nbsp;Processing components"><link rel="prev" href="tMap.html" title="tMap"><link rel="next" href="tReplace.html" title="tReplace"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tNormalize</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMap.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Processing components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tReplace.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tNormalize"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tNormalize"></a>tNormalize</h2></div></div></div><div class="mediaobject"><img src="../images/tNormalize.png"></div><div class="section" title="tNormalize Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e273165"></a>tNormalize Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Processing/Fields</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Normalizes the input flow following SQL standard. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tNormalize</strong></span> helps improve data
+								quality and thus eases the data update.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span>.
+									</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be
+								created and stored locally for this component only. Related topic:
+								see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job designs. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Column to normalize</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column from the input flow which the normalization is
+								based on.</p>
+						</td></tr><tr><td>&nbsp;</td><td>
+							<p>
+								<span class="emphasis"><em>Item separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the separator which will delimit data in the input
+								flow.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Get rid of duplicated rows from output</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to deduplicate rows in the data of the
+								output flow.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use CSV parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to include CSV specific parameters such as
+									<span class="emphasis"><strong>escape mode</strong></span> and <span class="emphasis"><strong>enclosure</strong></span> character.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Discard the trailing empty strings</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to discard the trailing empty
+								strings.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Trim resulting values</em></span>
+						</td><td valign="top">
+							<p>Select this check box to trim leading and trailing whitespace from
+								the resulting data.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When both <span class="emphasis"><strong>Discard the trailing empty
+										string</strong></span> and <span class="emphasis"><strong>Trim resulting
+										values</strong></span> check boxes are selected, the former works
+									first.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at the
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component can be used as intermediate step in a data
+								flow.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Normalizing data"><div class="titlepage"><div><div><h3 class="title"><a name="d0e273457"></a>Scenario: Normalizing data</h3></div></div></div><p>This simple scenario illustrates a Job that normalizes a list of tags for Web forum
+			topics, and displays the result in a table on the <span class="emphasis"><strong>Run</strong></span>
+			console. </p><p>This list is not well organized and it contains trailing empty strings, leading and
+			trailing whitespace, and repeated tags, as shown below.</p><pre class="programlisting">ldap,
+  db2, jdbc driver,
+grid computing,  talend architecture  ,
+content, environment,,
+tmap,,
+eclipse,
+database,java,postgresql,
+tmap,
+database,java,sybase,
+deployment,,
+repository,
+database,informix,java</pre><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e273469"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> to the design workspace: <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tNormalize</strong></span>, <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect the components using <span class="emphasis"><strong>Row</strong></span> &gt;
+							<span class="emphasis"><strong>Main</strong></span> connections.</p><div class="mediaobject"><img src="../images/Use_Case_tNormalize1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e273500"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the <span class="emphasis"><strong>tFileInputDelimited</strong></span>
+						component to open its <span class="emphasis"><strong>Basic settings</strong></span>
+						view.</p><div class="mediaobject"><img src="../images/Use_Case_tNormalize3.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>File name</strong></span> field, specify the path
+						to the input file to be normalized.</p></li><li class="step" title="Step 3"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to open the <span class="emphasis"><strong>[Schema]</strong></span> dialog box, and set up the input schema by adding
+						one column named <span class="emphasis"><em>Tags</em></span>. When done, click <span class="emphasis"><strong>OK</strong></span> to validate your schema setup and close the
+						dialog box, leaving the rest of the settings as they are.</p><div class="mediaobject"><img src="../images/Use_Case_tNormalize2.png"></div></li><li class="step" title="Step 4"><p>Double-click the <span class="emphasis"><strong>tNormalize</strong></span> component to
+						open <span class="emphasis"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tNormalize4.png"></div></li><li class="step" title="Step 5"><p>Check the schema, and if necessary, click <span class="emphasis"><strong>Sync
+							columns</strong></span> to get the schema synchronized with the input
+						component.</p></li><li class="step" title="Step 6"><p>Define the column the normalization operation is based on. </p><p>In this use case, the input schema has only one column,
+							<span class="emphasis"><em>Tags</em></span>, so just accept the default setting.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Advanced settings</strong></span> view, select the
+							<span class="emphasis"><strong>Get rid of duplicate rows from output</strong></span>,
+							<span class="emphasis"><strong>Discard the trailing empty strings</strong></span>, and
+							<span class="emphasis"><strong>Trim resulting values</strong></span> check
+						boxes.</p><div class="mediaobject"><img src="../images/use_case_tnormalize4_adv.png"></div></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>tLogRow</strong></span> component, select the
+							<span class="emphasis"><strong>Print values in the cells of table</strong></span>
+						radio button. </p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e273596"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Click <span class="emphasis"><strong>Run</strong></span> on the <span class="emphasis"><strong>Run</strong></span> tab or press <span class="emphasis"><strong>F6</strong></span> to
+						execute the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tNormalize5.png"></div><p>The list is tidied up, with duplicate tags, leading and trailing
+						whitespace and trailing empty strings removed, and the result is displayed
+						in a table cell on the console.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMap.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tReplace.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMap&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tReplace</td></tr></table></div></body></html>

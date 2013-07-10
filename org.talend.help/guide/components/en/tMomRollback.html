@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMomRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-internet.html" title="Chapter&nbsp;14.&nbsp;Internet components"><link rel="prev" href="tMomOutput.html" title="tMomOutput"><link rel="next" href="tPOP.html" title="tPOP"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMomRollback</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMomOutput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;14.&nbsp;Internet components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tPOP.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMomRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMomRollback"></a>tMomRollback</h2></div></div></div><div class="mediaobject"><img src="../images/tMomRollback_icon32_white.png"></div><div class="section" title="tMolRollback properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e243417"></a>tMolRollback properties</h3></div></div></div><p>This component is closely related to <span class="emphasis"><strong>tMomCommit</strong></span>
+            component. It usually does not make much sense to use these components independently in
+            a transaction.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Internet</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tMomRollback</strong></span> rollbacks data from
+                                the MQ Server..</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Avoids involuntary commitment of part of a transaction.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the Connection component Used in your Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Clear this check box to continue to use the selected connection
+                                once the component has performed its task.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher</em></span>
+                                <span class="emphasis"><em>Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is to be used along with Mom components, especially
+                                with <span class="emphasis"><strong>tMomCommit</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e243555"></a>Related scenario</h3></div></div></div><p>For <span class="emphasis"><strong>tMomRollback</strong></span> related scenario, see <a class="xref" href="tMysqlRollback.html#Raa14463" title="Scenario: Rollback from inserting data in mother/daughter tables">the section called &#8220;Scenario: Rollback from inserting data in
+                mother/daughter tables&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMomOutput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-internet.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tPOP.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMomOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tPOP</td></tr></table></div></body></html>

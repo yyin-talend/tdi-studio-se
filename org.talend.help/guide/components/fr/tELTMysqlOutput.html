@@ -1,0 +1,113 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTMysqlOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-elt.html" title="Chapitre&nbsp;11.&nbsp;Composants ELT"><link rel="prev" href="tELTMysqlMap.html" title="tELTMysqlMap"><link rel="next" href="tELTNetezzaInput.html" title="tELTNetezzaInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTMysqlOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tELTMysqlMap.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;11.&nbsp;Composants ELT</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTNetezzaInput.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tELTMysqlOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTMysqlOutput"></a>tELTMysqlOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tELTMySQLOutput.png"></div><a name="Xaa2979819"></a><div class="section" title="Propri&eacute;t&eacute;s du tELTMysqlOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e190430"></a>Propri&eacute;t&eacute;s du tELTMysqlOutput</h3></div></div></div><p>Les composants <span class="emphasis"><strong>tELTMysqlInput</strong></span>, <span class="emphasis"><strong>tELTMysqlOutput</strong></span>, et <span class="emphasis"><strong>tELTMysqlMap</strong></span> sont
+            tr&egrave;s proches dans leurs conditions de fonctionnement. En effet, ces trois composants
+            sont con&ccedil;us pour manipuler des sch&eacute;mas de donn&eacute;es d&#8217;une base MySQL afin de g&eacute;n&eacute;rer des
+            commandes Insert, y compris des clauses, qui devront &ecirc;tre ex&eacute;cut&eacute;es dans la table de
+            sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>ELT/Map/Mysql</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Effectue l&#8217;action sur la table telle que sp&eacute;cifi&eacute;e et ins&egrave;re les
+                                donn&eacute;es selon le sch&eacute;ma de sortie d&eacute;fini dans le Mapper ELT.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ex&eacute;cute la requ&ecirc;te Insert dans la base de donn&eacute;es Mysql.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Action on data</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Sur les donn&eacute;es de la table d&eacute;finie, vous pouvez effectuer les
+                                op&eacute;rations suivantes&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Insert&nbsp;</strong></span>: Ajoute de nouvelles
+                                lignes &agrave; la table. Si des doublons sont identifi&eacute;s, le Job
+                                s&#8217;arr&ecirc;te.</p>
+                            <p><span class="emphasis"><strong>Update&nbsp;</strong></span>: Met &agrave; jour des lignes
+                                existantes.</p>
+                            <p><span class="emphasis"><strong>Delete</strong></span>&nbsp;: Supprime les entr&eacute;es
+                                correspondantes au flux d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s. Le sch&eacute;ma est soit local (built-in) soit
+                                distant dans le Repository. </p>
+                            <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Where clauses for (for UPDATE and DELETE
+                                only</em></span>)</p>
+                        </td><td valign="top">
+                            <p>Saisissez la clause permettant de filtrer les donn&eacute;es &agrave; mettre &agrave;
+                                jour ou &agrave; supprimer lors des op&eacute;rations de mise &agrave; jour ou de
+                                suppression.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Default Table Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le nom de la table par d&eacute;faut, entre guillemets
+                                doubles.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use different table name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de d&eacute;finir le nom d&#8217;une table de sortie
+                                diff&eacute;rente, entre guillemets doubles, dans le champ <span class="emphasis"><strong>Table name</strong></span> qui appara&icirc;t.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>L&#8217;utilisation du composant <span class="emphasis"><strong>tELTMysqlOutput</strong></span> est &eacute;troitement li&eacute;e &agrave; celle des
+                                composants <span class="emphasis"><strong>tELTMysqlInput</strong></span> et
+                                    <span class="emphasis"><strong>tELTMysqlMap</strong></span>. Notez que le lien
+                                de sortie (output) &agrave; utiliser avec ces deux composants doit
+                                respecter strictement la syntaxe du nom de la table. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les composants ELT ne traitent pas le flux de donn&eacute;es lui-m&ecirc;me
+                                    mais uniquement les informations du sch&eacute;ma.</p></div>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e190699"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour des sc&eacute;narios utilisant le composant <span class="emphasis"><strong>tELTMysqlOutput</strong></span>, consultez les sc&eacute;narios suivants du composant <span class="emphasis"><strong>tELTMysqlMap</strong></span> dans&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa40349" title="Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa41309" title="Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias&nbsp;&raquo;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tELTMysqlMap.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTNetezzaInput.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tELTMysqlMap&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tELTNetezzaInput</td></tr></table></div></body></html>

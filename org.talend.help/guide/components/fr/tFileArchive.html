@@ -1,0 +1,112 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileArchive</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-file.html" title="Chapitre&nbsp;13.&nbsp;Composants File"><link rel="prev" href="tChangeFileEncoding.html" title="tChangeFileEncoding"><link rel="next" href="tFileCompare.html" title="tFileCompare"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileArchive</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tChangeFileEncoding.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;13.&nbsp;Composants File</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileCompare.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFileArchive"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileArchive"></a>tFileArchive</h2></div></div></div><div class="mediaobject"><img src="../images/tFileArchive_icon32.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tFileArchive"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e208637"></a>Propri&eacute;t&eacute;s du tFileArchive</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tFileArchive</strong></span> zippe un ou plusieurs
+                                fichier(s) en fonction des param&egrave;tres d&eacute;finis et place l&#8217;archive
+                                cr&eacute;&eacute;e dans le r&eacute;pertoire souhait&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant zippe un ou
+                                plusieurs fichier(s) pour un &eacute;ventuel traitement.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Directory</em></span></p>
+                        </td><td valign="top"><p>R&eacute;pertoire dans lequel le fichier zipp&eacute; sera
+                                plac&eacute;.</p><p><span class="emphasis"><strong>Subdirectories</strong></span> :
+                                Cochez cette case si le ou les r&eacute;pertoire(s) s&eacute;lectionn&eacute;(s)
+                                contiennent des sous-dossiers. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Archive file</em></span></p>
+                        </td><td valign="top"><p>R&eacute;pertoire de destination et nom du fichier
+                                archive.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Compress level</em></span></p>
+                        </td><td valign="top"><p>Choisissez le niveau de compression que vous
+                                souhaitez appliquer. </p><p><span class="emphasis"><strong>Best</strong></span>&nbsp;: la qualit&eacute; de compression sera optimale mais
+                                le temps de compression sera long.</p><p><span class="emphasis"><strong>Normal&nbsp;</strong></span>: qualit&eacute; et temps de compression
+                                interm&eacute;diaires. </p><p><span class="emphasis"><strong>Fast&nbsp;</strong></span>:
+                                la compression sera rapide mais la qualit&eacute; de compression sera
+                                amoindrie.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>All files</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case si vous souhaitez que tous les
+                                fichiers du dossier soient zipp&eacute;s. D&eacute;cochez-la pour sp&eacute;cifier dans
+                                le tableau <span class="emphasis"><strong>Files</strong></span> le ou les
+                                fichier(s) que vous d&eacute;sirez zipper.</p><p><span class="emphasis"><strong>Filemask</strong></span>&nbsp;: saisissez un nom de fichier ou
+                                masque de fichier utilisant un caract&egrave;re sp&eacute;cial ou une expression
+                                r&eacute;guli&egrave;re.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Create directory if not
+                                    exists</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour cr&eacute;er un nouveau dossier si
+                                votre dossier de destination n&#8217;existe pas.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou
+                                s&eacute;lectionnez <span class="emphasis"><strong>Custom</strong></span> et
+                                d&eacute;finissez-le manuellement. Ce champ est obligatoire pour la
+                                manipulation des donn&eacute;es de base de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Overwrite Existing
+                                Archive</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut. Elle vous permet
+                                de sauvegarder une archive en rempla&ccedil;ant l&#8217;archive existante.
+                                Cependant, si vous d&eacute;cochez la case, une erreur sera rapport&eacute;e, le
+                                remplacement d&#8217;archive &eacute;chouera et la nouvelle archive ne pourra
+                                &ecirc;tre sauvegard&eacute;e.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque le remplacement &eacute;choue, le Job poursuit son
+                                    ex&eacute;cution.</p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Encrypt files</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case si vous souhaitez que votre
+                                archive soit prot&eacute;g&eacute;e par un mot de passe. Le champ<span class="emphasis"><strong> Enter Password</strong></span> appara&icirc;t et vous permet
+                                de saisir votre mot de passe.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant doit &ecirc;tre
+                                utilis&eacute; en standalone.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Archive File
+                                Path</strong></span>&nbsp;: retrouve le chemin d&#8217;acc&egrave;s au fichier archive.
+                                Disponible comme variable <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p><span class="emphasis"><strong>Archive
+                                    File Name</strong></span>&nbsp;: retrouve le nom du fichier archive.
+                                Disponible comme variable <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>Pour plus d&#8217;informations
+                                concernant les variables, consultez le <span class="emphasis"><em>Guide
+                                    utilisateur</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main,
+                                Reject, Iterate.</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk, OnSubjobError, Run if,
+                                OnComponentOk, OnComponentError.</p><p> </p><p>Liens
+                                d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main, Reject,
+                                    Iterate.</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;:
+                                Run if, OnSubjobOk, OnSubjobError, OnComponentOk, OnComponentError,
+                                Synchronize, Parallelize.</p><p> </p><p>Pour plus
+                                d&#8217;informations concernant les liens, consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Zipper des fichiers &agrave; l&#8217;aide d&#8217;un tFileArchive"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e208928"></a>Sc&eacute;nario&nbsp;: Zipper des fichiers &agrave; l&#8217;aide d&#8217;un tFileArchive</h3></div></div></div><p>Ce sc&eacute;nario met en sc&egrave;ne un Job form&eacute; d&#8217;un composant unique. Il a pour but de zipper
+            des fichiers et de les enregistrer dans le r&eacute;pertoire choisi.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez-d&eacute;posez le composant <span class="emphasis"><strong>tFileArchive</strong></span> de
+                    la <span class="emphasis"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation
+                    graphique.</p></li><li class="step" title="&Eacute;tape 2"><p>Double-cliquez sur le composant afin d&#8217;afficher sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileArchive1.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Directory</strong></span>, cliquez sur<span class="emphasis"><strong> [...]</strong></span>, parcourez votre r&eacute;pertoire et s&eacute;lectionnez le
+                    dossier ou le fichier que vous souhaitez compresser.</p></li><li class="step" title="&Eacute;tape 4"><p>Cochez la case <span class="emphasis"><strong>Subdirectories</strong></span> si vous d&eacute;sirez
+                    inclure dans l&#8217;archive les fichiers des sous-dossiers.</p></li><li class="step" title="&Eacute;tape 5"><p>Renseignez ensuite le champ <span class="emphasis"><strong>Archive file</strong></span>, en
+                    indiquant le r&eacute;pertoire de destination et le nom de votre archive.</p></li><li class="step" title="&Eacute;tape 6"><p>Cochez la case <span class="emphasis"><strong>Create directory if not exists
+                    </strong></span>si votre r&eacute;pertoire de destination n&#8217;existe pas encore et que vous
+                    souhaitez le cr&eacute;er.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la liste <span class="emphasis"><strong>Compress level</strong></span>, s&eacute;lectionnez le
+                    niveau de compression que vous d&eacute;sirez appliquer &agrave; votre archive. Dans cet
+                    exemple, utilisez le niveau <span class="emphasis"><strong>normal.</strong></span></p></li><li class="step" title="&Eacute;tape 8"><p>D&eacute;cochez la case <span class="emphasis"><strong>All Files</strong></span> si vous ne
+                    souhaitez compresser que des fichiers sp&eacute;cifiques.</p><div class="mediaobject"><img src="../images/Use_Case_tFileArchive2.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Ajoutez une ligne dans le tableau &agrave; l&#8217;aide du bouton<span class="emphasis"><strong> </strong></span><span class="emphasis"><strong>[+]</strong></span>, et cliquez sur le nom qui
+                    s&#8217;affiche. Saisissez entre &eacute;toiles une partie du nom du ou des fichier(s) que
+                    vous souhaitez compresser.</p></li><li class="step" title="&Eacute;tape 10"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> afin d&#8217;ex&eacute;cuter votre
+                    Job.</p></li></ol></div><p>Le <span class="emphasis"><strong>tArchiveFile </strong></span>a compress&eacute; les fichiers s&eacute;lectionn&eacute;s
+            et a cr&eacute;&eacute; le dossier dans le r&eacute;pertoire indiqu&eacute;.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tChangeFileEncoding.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileCompare.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tChangeFileEncoding&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFileCompare</td></tr></table></div></body></html>

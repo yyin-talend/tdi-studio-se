@@ -1,0 +1,94 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tReplicate</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-orchestration.html" title="Chapitre&nbsp;17.&nbsp;Composants Orchestration"><link rel="prev" href="tPrejob.html" title="tPrejob"><link rel="next" href="tUnite.html" title="tUnite"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tReplicate</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tPrejob.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;17.&nbsp;Composants Orchestration</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tUnite.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tReplicate"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tReplicate"></a>tReplicate</h2></div></div></div><div class="mediaobject"><img src="../images/tReplicate_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tReplicate"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e258566"></a>Propri&eacute;t&eacute;s du tReplicate</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tReplicate</strong></span> duplique le sch&eacute;ma entrant en
+                                deux flux identiques.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant permet
+                                d&#8217;effectuer diff&eacute;rentes op&eacute;rations sur le m&ecirc;me sch&eacute;ma.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                            <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que lorsque vous modifiez le sch&eacute;ma, il se
+                                met automatiquement en built-in.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour
+                                r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent dans le Job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de
+                                    </em></span><span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave;
+                                et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilisable
+                                dans divers projets et Job designs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant n&#8217;est pas un
+                                composant de d&eacute;but (fond vert) puisqu&#8217;il requiert un composant
+                                d&#8217;entr&eacute;e et un composant de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;:
+                                Main</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: Run if,
+                                OnComponentOk, OnComponentError.</p><p> </p><p>Liens
+                                d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main, Reject. </p><p> </p><p>Pour plus d&#8217;informations concernant les liens,
+                                consultez&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : R&eacute;pliquer un flux et trier deux flux identiques"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e258742"></a>Sc&eacute;nario : R&eacute;pliquer un flux et trier deux flux identiques</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job lisant un flux d'entr&eacute;e contenant des noms et des &eacute;tats dans
+            un fichier CSV, r&eacute;plique le flux d'entr&eacute;e, puis trie les deux flux identiques selon le
+            nom et l'&eacute;tat respectivement et affiche les donn&eacute;es tri&eacute;es dans la console.</p><div class="mediaobject"><img src="../images/use_case_treplicate.png"></div><div class="section" title="Construire le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e258750"></a>Construire le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : un
+                            <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tReplicate</strong></span>, deux <span class="emphasis"><strong>tSortRow</strong></span> et deux <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tFileInputDelimited</strong></span> au
+                            <span class="emphasis"><strong>tReplicate</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>R&eacute;p&eacute;tez les &eacute;tapes ci-dessus afin de connecter le composant <span class="emphasis"><strong>tReplicate</strong></span> aux deux <span class="emphasis"><strong>tSortRow</strong></span> puis les deux <span class="emphasis"><strong>tSortRow</strong></span> aux deux <span class="emphasis"><strong>tLogRow</strong></span>
+                        (un chacun). </p></li><li class="step" title="&Eacute;tape 4"><p>Renommez les composants afin de mieux identifier leur r&ocirc;le au sein du
+                        Job.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e258805"></a>Configurer les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tFileInputDelimited</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_treplicate1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>File name/Stream</strong></span> afin de parcourir
+                        votre syst&egrave;me jusqu'au fichier duquel vous souhaitez lire le flux d'entr&eacute;e.
+                        Dans cet exemple, le fichier d'entr&eacute;e se nomme <span class="emphasis"><em>Names&amp;States.csv</em></span> et contient deux colonnes : <span class="emphasis"><em>name</em></span> et <span class="emphasis"><em>state</em></span>.</p><pre class="programlisting">name;state
+Andrew Kennedy;Mississippi
+Benjamin Carter;Louisiana
+Benjamin Monroe;West Virginia
+Bill Harrison;Tennessee
+Calvin Grant;Virginia
+Chester Harrison;Rhode Island
+Chester Hoover;Kansas
+Chester Kennedy;Maryland
+Chester Polk;Indiana
+Dwight Nixon;Nevada
+Dwight Roosevelt;Mississippi
+Franklin Grant;Nebraska</pre></li><li class="step" title="&Eacute;tape 3"><p>Renseignez les champs <span class="emphasis"><strong>Header</strong></span>, <span class="emphasis"><strong>Footer</strong></span> et <span class="emphasis"><strong>Limit</strong></span>
+                        selon vos besoins. Dans cet exemple, saisissez <span class="emphasis"><em>1</em></span> dans le champ <span class="emphasis"><strong>Header</strong></span> pour
+                        ignorer la premi&egrave;re ligne du fichier d'entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour d&eacute;finir la
+                        structure des donn&eacute;es du flux d'entr&eacute;e.</p><div class="mediaobject"><img src="../images/use_case_treplicate2.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Double-cliquez sur le premier <span class="emphasis"><strong>tSortRow</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_treplicate3.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Dans la table <span class="emphasis"><strong>Criteria</strong></span>, cliquez sur le
+                        bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne et
+                        configurez les param&egrave;tres de tri pour la colonne du sch&eacute;ma &agrave; traiter. Pour
+                        trier les donn&eacute;es d'entr&eacute;e selon le nom, s&eacute;lectionnez <span class="emphasis"><em>name</em></span> pour <span class="emphasis"><strong>Schema
+                            column</strong></span>. S&eacute;lectionnez <span class="emphasis"><em>alpha</em></span>
+                        comme type de tri et <span class="emphasis"><em>asc</em></span> comme ordre de
+                        tri.</p><p>Pour plus d'informations concernant ces param&egrave;tres, consultez <a class="xref" href="tSortRow.html" title="tSortRow">la section intitul&eacute;e &laquo;&nbsp;tSortRow&nbsp;&raquo;</a>.</p></li><li class="step" title="&Eacute;tape 7"><p>Double-cliquez sur le second <span class="emphasis"><strong>tSortRow</strong></span> et
+                        r&eacute;p&eacute;tez l'&eacute;tape ci-dessus pour configurer les param&egrave;tres pour la colonne
+                        contenant les &eacute;tats.</p><div class="mediaobject"><img src="../images/use_case_treplicate4.png"></div></li><li class="step" title="&Eacute;tape 8"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> de chaque
+                            <span class="emphasis"><strong>tLogRow</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Table</strong></span> dans la zone <span class="emphasis"><strong>Mode</strong></span> pour un meilleur affichage des r&eacute;sultats d'ex&eacute;cution du
+                        Job.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e258929"></a>Ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour
+                        sauvegarder le Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Ex&eacute;cutez le Job en appuyant sur <span class="emphasis"><strong>F6</strong></span> ou en
+                        cliquant sur le bouton <span class="emphasis"><strong>Run</strong></span> de la vue
+                            <span class="emphasis"><strong>Run</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_treplicate5.png"></div><p>Les donn&eacute;es tri&eacute;es par nom et les donn&eacute;es tri&eacute;es par &eacute;tat sont affich&eacute;es
+                        dans la console.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tPrejob.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tUnite.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tPrejob&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tUnite</td></tr></table></div></body></html>

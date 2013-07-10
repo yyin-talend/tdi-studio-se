@@ -1,0 +1,148 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputLDIF</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileInputJSON.html" title="tFileInputJSON"><link rel="next" href="tFileInputMail.html" title="tFileInputMail"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputLDIF</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputJSON.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputMail.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputLDIF"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputLDIF"></a>tFileInputLDIF</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputLDIF_icon32.png"></div><div class="section" title="tFileInputLDIF Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219035"></a>tFileInputLDIF Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Input</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileInputLDIF</strong></span> reads a given LDIF
+								file row by row.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileInputLDIF</strong></span> opens a file,
+								reads it row by row, et gives the full rows to the next component as
+								defined in the schema, using a Row connection.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<span class="emphasis"><em>Property type</em></span>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file where the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the file and/or variable to be processed. </p>
+							<p> </p>
+							<p> Related topic: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>add operation as prefix when the entry is modify
+									type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to display the operation mode.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Value separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the separator required for parsing data in the given file.
+								By default, the separator used is &#8220; <span class="emphasis"><em>,</em></span>&#8221;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to stop the execution of the Job when an
+								error occurs. Clear the check box to skip the row on error and
+								complete the process for error-free rows. If needed, you can collect
+								the rows on error using a <span class="emphasis"><strong>Row</strong></span> &gt;
+									<span class="emphasis"><strong>Reject</strong></span> link.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. Click <span class="emphasis"><strong>Edit Schema</strong></span> to modify the schema. <span>Note that if you make changes, the schema
+									automatically becomes built-in.</span></p>
+							<p>Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+								the schema from the previous component connected in the Job.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use field options (for Base64 decode
+									checked)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to specify the Base64-encoded columns of the
+								input flow. Once selected, this check box activates the <span class="emphasis"><strong>Decode Base64 encoding values</strong></span> table to
+								enable you to precise the columns to be decoded from Base64.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The data type of the columns to be handled by this check box
+									is <span class="emphasis"><strong>byte[]</strong></span> that you define in
+									the input schema editor. </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Use this component to read full rows in a voluminous LDIF file.
+								This component enables you to create a data flow, using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> link, and to create a reject flow with a
+									<span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span> link filtering the data which type does not
+								match the defined type. For an example of usage, see <a class="xref" href="tFileInputXML.html#Raa30210" title="Scenario&nbsp;2: Extracting erroneous XML data via a reject flow">the section called &#8220;Scenario&nbsp;2: Extracting erroneous XML data via a reject flow&#8221;</a> from <span class="emphasis"><strong>tFileInputXML</strong></span>. </p>
+						</td></tr><tr><td valign="top">
+							<span class="emphasis"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219400"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tFileOutputLDIF.html#Raa46097" title="Scenario: Writing DB data into an LDIF-type file">the section called &#8220;Scenario: Writing DB data into an LDIF-type file&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputJSON.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputMail.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputJSON&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputMail</td></tr></table></div></body></html>

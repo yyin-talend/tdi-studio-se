@@ -2,8 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Developer Guide">
-    <topic label="Online ressources">
-	    <topic label="Subversion browser" href="http://www.talendforge.org/trac/tos/" />
+        <topic label="Subversion browser" href="http://www.talendforge.org/bugs/source.php" />
         <topic label="API Reference" href="http://talendforge.org/tos-trunk/api/index.html?overview-summary.html" />
-    </topic>
 </toc>

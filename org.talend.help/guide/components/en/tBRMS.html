@@ -1,0 +1,285 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBRMS</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-processing.html" title="Chapter&nbsp;19.&nbsp;Processing components"><link rel="prev" href="tAggregateSortedRow.html" title="tAggregateSortedRow"><link rel="next" href="tConvertType.html" title="tConvertType"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tBRMS</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tAggregateSortedRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;19.&nbsp;Processing components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tConvertType.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tBRMS"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBRMS"></a>tBRMS</h2></div></div></div><div class="mediaobject"><img src="../images/tBRMS_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of Talend Data Integration Studio.
+		</p></div><div class="section" title="tBRMS properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e347998"></a>tBRMS properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Processing</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tBRMS</strong></span> retrieves business rules
+								from a Drools Guvnor repository and applies them to a Job.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tBRMS</strong></span> applies Drools business
+								rules to an incoming flow and writes the output data to an XML
+								file.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file where properties are stored. The fields that follow are
+								completed automatically using the fetched data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema and Edit Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span>.
+									</span>
+							</p>
+							<p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes
+								to the schema. <span>Note that if you make
+									changes, the schema automatically becomes
+								built-in.</span></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: You create and store
+								the schema locally for only the current component. Related topic:
+								see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job flowcharts. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>XML Field</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the XML field for the data to be written to the output
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guvnor URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The Guvnor repository URL. </p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></td><td valign="top">Type in the authentication information used to connect
+							to the <span class="emphasis"><em>Talend Administration Center</em></span> that incorporates the Guvnor Drools of
+							interest.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Name of TAC application</em></span>
+						</td><td valign="top">
+							<p>Type in the name of the <span class="emphasis"><em>Talend Administration Center</em></span> that incorporates
+								the Drools Guvnor of interest.</p>
+							<p>For example, when the URL of the <span class="emphasis"><em>Talend Administration Center</em></span> to be used is
+									<span class="emphasis"><em>http://localhost:8080/tac500</em></span>,
+								then enter <span class="emphasis"><em>tac500</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module List</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either:</p>
+							<p> </p>
+							<p> - Select the Jar file which contains the business rule to be
+								applied to the data flow.</p>
+							<p> </p>
+							<p> - Click <span class="emphasis"><strong>[...]</strong></span> and enter your
+								Drools Guvnor authentication information in the dialog box window.
+								Then click <span class="emphasis"><strong>Select Jar</strong></span> to browse the
+								repository and select the Jar file which contains the business rule
+								to be applied.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guvnor Package</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Between double quotation marks, enter the end part of the path to
+								the <span class="emphasis"><strong>URL for binary package</strong></span>, as
+								indicated in the <span class="emphasis"><strong>Information and important
+									URLs</strong></span> view of the Drools Guvnor website, when you
+								select a particular package, eg.:
+								"/package/org.talend.bank/LATEST"</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Class Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the name of the class in which the business rule is stored
+								in a Jar file.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Drools flow ID</em></span>
+							(optional)</td><td valign="top">
+							<p>A Drools flow describes the order in which a series of business
+								rules are executed. Its flow ID is defined manually when you are
+								creating the Drools flow.</p>
+							<p>When you need to call a specific Drools flow via <span class="emphasis"><strong>tBRMS</strong></span> to use the execution order it
+								defines, enter the corresponding flow ID in this field.</p>
+							<p>For further information about how to create a Drools flow, see
+									<span class="emphasis"><em>Talend Data Integration Studio</em></span> User Guide.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced Settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Configure XML Tree</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click <span class="emphasis"><strong>[...]</strong></span> to map the source
+								schema to the XML output schema. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Group by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Use the tool bar to modify the column order.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to modify the separators used for
+								numbers.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect the log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component handles data flows. Therefore it requires input and
+								output components.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Applying business rules to an input flow to filter relevant data"><div class="titlepage"><div><div><h3 class="title"><a name="d0e348514"></a>Scenario: Applying business rules to an input flow to filter relevant data</h3></div></div></div><p>This scenario describes a five component Job in which <span class="emphasis"><strong>tBRMS</strong></span> applies Drools Guvnor business rules to an input flow, in order
+			that relevant data can be retrieved in the output. In this case, rules are applied to
+			input data concerning candidates applying for a loan. The output will show whether the
+			candidates qualify or not. </p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e348522"></a>Dropping and linking the components</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> onto the
+						design workspace: <span class="emphasis"><strong>tFileInputExcel</strong></span>,
+							<span class="emphasis"><strong>tMap</strong></span>, <span class="emphasis"><strong>tBRMS</strong></span>, <span class="emphasis"><strong>tExtractXMLField</strong></span>,
+							<span class="emphasis"><strong>tLogRow</strong></span>.</p><div class="mediaobject"><img src="../images/tBRMS_Components.png"></div></li><li class="listitem"><p>Link <span class="emphasis"><strong>tFileInputExcel</strong></span> to <span class="emphasis"><strong>tMap</strong></span> using a <span class="emphasis"><strong>Row &gt; Main</strong></span>
+						connection.</p></li><li class="listitem"><p>Link <span class="emphasis"><strong>tMap</strong></span> to <span class="emphasis"><strong>tBRMS</strong></span>
+						using a <span class="emphasis"><strong>Row &gt; *New Output* (Main)</strong></span>
+						connection.</p></li><li class="listitem"><p>Link <span class="emphasis"><strong>tBRMS</strong></span> to <span class="emphasis"><strong>tExtractXMLField</strong></span> using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> connection
+						and then use another <span class="emphasis"><strong>Row &gt; Main</strong></span>
+						connection to connect <span class="emphasis"><strong>tExtractXMLField</strong></span> to
+							<span class="emphasis"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configuring the input flow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e348600"></a>Configuring the input flow</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="emphasis"><strong>tFileInputExcel</strong></span> to open its <span class="emphasis"><strong>Basic settings</strong></span> view:</p><div class="mediaobject"><img src="../images/tFileInputExcel_BasicSettings.png"></div></li><li class="listitem"><p>Next to the <span class="emphasis"><strong>File name/Stream</strong></span> field, click<span class="emphasis"><strong> [...]</strong></span> to browse to and select the Excel file
+						which contains the input data. </p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Sheet list</strong></span> area, click the <span class="emphasis"><strong>[+]</strong></span> button to add a new <span class="emphasis"><strong>Sheet</strong></span> row to the table.</p></li><li class="listitem"><p>Enter the name of the sheet which contains the input data, within double quotation
+						marks.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Header</strong></span> field, enter the number of the row which
+						contains the column names.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tMap</strong></span> to open its <span class="emphasis"><strong>Map
+							Editor</strong></span>:</p></li><li class="listitem"><p>To the top right of the <span class="emphasis"><strong>Map Editor</strong></span>, click <span class="emphasis"><strong>[+]</strong></span> to add an output schema.</p><div class="mediaobject"><img src="../images/tMap_NewOutput.png"></div></li><li class="listitem"><p>Enter a name for the <span class="emphasis"><strong>New output</strong></span> schema in the
+						corresponding field and click <span class="emphasis"><strong>OK</strong></span> to close
+						the dialog box:</p><div class="mediaobject"><img src="../images/tMap_Mapped.png"></div></li><li class="listitem"><p>Map the columns and set the parameters as required, then click <span class="emphasis"><strong>Ok</strong></span> to close the <span class="emphasis"><strong>Map
+						Editor</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>For further information about mapping schemas and defining their parameters, see
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>
+							<span class="emphasis"><em>User Guide</em></span>.</p></div></li></ol></div></div><div class="section" title="Configuring tBRMS"><div class="titlepage"><div><div><h4 class="title"><a name="d0e348699"></a>Configuring tBRMS</h4></div></div></div><p>To do this, perform the following operations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Click <span class="emphasis"><strong>tBRMS</strong></span> to open its <span class="emphasis"><strong>Basic
+							settings</strong></span> view:</p><div class="mediaobject" align="center"><img src="../images/tbrms-basic_settings.png" align="middle"></div></li><li class="listitem"><p>Set the <span class="emphasis"><strong>Property Type</strong></span> and <span class="emphasis"><strong>Schema</strong></span> as <span class="emphasis"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>[...]</strong></span> next to <span class="emphasis"><strong>Edit
+							schema</strong></span> to open the schema editor.</p><p>The input schema to the left is automatically retrieved from <span class="emphasis"><strong>tMap</strong></span>.</p><div class="mediaobject"><img src="../images/tBRMS_Schemas.png"></div></li><li class="listitem"><p>In the output area to the right, click <span class="emphasis"><strong>[+]</strong></span> to add a new
+						column which will serve to write the output data to an XML file and enter a
+						name for the column and define the <span class="emphasis"><strong>Type</strong></span> as
+						String.</p></li><li class="listitem"><p>Next to <span class="emphasis"><strong>XML Field</strong></span>, select the name of the
+						XML column you entered in the output schema.</p></li><li class="listitem"><p>Enter the <span class="emphasis"><strong>Guvnor URL</strong></span> in the corresponding field.</p></li><li class="listitem"><p>Enter <span class="emphasis"><em>Talend Administration Center</em></span> address in the <span class="emphasis"><strong>TAC
+							URL</strong></span> field, set the user name and the password used to connect
+						to this TAC in the corresponding fields.</p><p>When Drools Guvnor is installed in the same web server as <span class="emphasis"><em>Talend Administration Center</em></span>, you can use the
+						name of <span class="emphasis"><em>Talend Administration Center</em></span> application instead of the full URL.</p></li><li class="listitem"><p>Next to the <span class="emphasis"><strong>Module List</strong></span> field, click <span class="emphasis"><strong>[...]</strong></span> to open the <span class="emphasis"><strong>[Deploy
+							Jar]</strong></span> dialog box. In this dialog box, the <span class="emphasis"><strong>URL</strong></span>, <span class="emphasis"><strong>Username</strong></span>,
+							<span class="emphasis"><strong>Password</strong></span> and <span class="emphasis"><strong>URL
+							of TAC</strong></span> fields are already filled with the corresponding
+						information you entered in the earlier steps.</p><div class="mediaobject" align="center"><img src="../images/tBRMS_DeployJar.png" align="middle"></div></li><li class="listitem"><p>Click <span class="emphasis"><strong>[...]</strong></span> to browse the Jar files in the <span class="emphasis"><strong>[Select Jar</strong></span><span class="emphasis"><strong>file]</strong></span>
+						dialog box:</p><div class="mediaobject"><img src="../images/BRMS_Select_Jarfile.png"></div></li><li class="listitem"><p>Expand the nodes to browse to and select the Jar file which contains the rules of
+						interest, then click <span class="emphasis"><strong>OK</strong></span> to close the dialog
+						box:</p><div class="mediaobject"><img src="../images/BRMS_Deploy_Jar2.png"></div></li><li class="listitem"><p>From the list next to the selected Jar file, select the corresponding class name and
+						click <span class="emphasis"><strong>OK</strong></span> to close the dialog box. In this
+						example, the class is <span class="emphasis"><em>org.talend.bank.LoanSimulator</em></span>.</p><p>A <span class="emphasis"><strong>Talend</strong></span> programme transforms the business rule
+						library into a form which can be used in the Job and creates an XSD file at
+						the root of your studio, in
+							<span class="emphasis"><em>/studio_path/Drools/&lt;project_name&gt;</em></span> .</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Drools Flow ID (optional)</strong></span> field,
+						enter, between quotation marks, the ID of Drools flow to be used when
+						executing the rules of interest. In this example, it is <span class="emphasis"><em>loanflow</em></span>. For further information about how to
+						define a Drools flow ID, see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+						<span class="emphasis"><em>User Guide</em></span>.</p></li><li class="listitem"><p>Click the <span class="emphasis"><strong>Advanced Settings</strong></span> tab to set the additional
+						parameters.</p><div class="mediaobject"><img src="../images/BRMS_Advanced_settings.png"></div></li><li class="listitem"><p>In the <span class="emphasis"><strong>XML mapping</strong></span> area, click <span class="emphasis"><strong>[...]</strong></span> to configure the XML tree:</p><div class="mediaobject"><img src="../images/brms_xml_tree.png"></div></li><li class="listitem"><p>Right-click the first row in the <span class="emphasis"><strong>Link target</strong></span> table and
+						select <span class="emphasis"><strong>Import XML Tree</strong></span>.</p></li><li class="listitem"><p>Browse to and select the XSD file from the root of your studio. The <span class="emphasis"><strong>XML Tree</strong></span> schema is completed automatically:</p><div class="mediaobject"><img src="../images/brms_xml_tree2.png"></div></li><li class="listitem"><p>Drop all of the relevant columns from the <span class="emphasis"><strong>Schema list</strong></span>
+						onto the corresponding related column fields in the <span class="emphasis"><strong>Link target</strong></span> schema:</p><div class="mediaobject"><img src="../images/brms_xml_tree_attribute.png"></div></li><li class="listitem"><p>From the dialog box which appears, select the <span class="emphasis"><strong>Create as attribute
+							of target node</strong></span> option.</p><div class="mediaobject"><img src="../images/brms_xml_tree3.png"></div></li><li class="listitem"><p>Right-click the <span class="emphasis"><strong>reason</strong></span> field and select <span class="emphasis"><strong>Set As Loop Element</strong></span> from the list.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to close the dialog box.</p></li></ol></div></div><div class="section" title="Configuring the output flow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e348941"></a>Configuring the output flow</h4></div></div></div><p>To extract the data of interest, you need to configure the output flow. The
+				operations to be performed are as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="emphasis"><strong>tExtractXMLField</strong></span> to open its<span class="emphasis"><strong> Basic settings</strong></span> view.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>Edit schema</strong></span> to open the schema editor.</p><div class="mediaobject"><img src="../images/tExtractXMLField_Output_schema.png"></div></li><li class="listitem"><p>In the Output schema to the right of the editor, add and define the columns exactly as
+						they appear in the <span class="emphasis"><strong>tBRMS</strong></span> input
+						schema.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to close the editor.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Loop XPath query</strong></span> field, enter the
+						name of the <span class="emphasis"><strong>XML Tree</strong></span> root tag, as it
+						appears in the <span class="emphasis"><strong>tBRMS</strong></span> component&#8217;s <span class="emphasis"><strong>Configure XML Tree</strong></span> editor, preceded by the
+						forward slash symbol and between double quotation marks, for example:
+						"/loanSimulator".</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>XPath query</strong></span> fields, next to the corresponding
+						columns, enter the fields as they appear in the <span class="emphasis"><strong>tBRMS</strong></span> component&#8217;s <span class="emphasis"><strong>XML Tree</strong></span>
+						fields, in the <span class="emphasis"><strong>Link Target</strong></span> area of the
+							<span class="emphasis"><strong>Configure XML tree </strong></span>editor, between
+						double quotation marks.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tLogRow</strong></span> to open its <span class="emphasis"><strong>Basic settings</strong></span> view:</p><div class="mediaobject"><img src="../images/tLogRow_BasicSettings.png"></div></li><li class="listitem"><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select the <span class="emphasis"><strong>Table
+							(print values in cells of a table)</strong></span> option.</p></li><li class="listitem"><p>Save the Job and press <span class="emphasis"><strong>F6</strong></span> to run it.</p><p>The results are written to an output table in the <span class="emphasis"><strong>Run</strong></span>
+						view:</p><div class="mediaobject"><img src="../images/tbrms_scenario_result.png"></div></li></ol></div><p>The business rule has been applied to the input data and the table of results
+				indicates which candidates have been rejected. The <span class="emphasis"><strong>name</strong></span> column indicates the reason for which the candidate has been
+				rejected.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tAggregateSortedRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-processing.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tConvertType.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tAggregateSortedRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tConvertType</td></tr></table></div></body></html>

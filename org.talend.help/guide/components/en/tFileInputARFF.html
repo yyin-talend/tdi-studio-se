@@ -1,0 +1,154 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputARFF</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileExist.html" title="tFileExist"><link rel="next" href="tFileInputDelimited.html" title="tFileInputDelimited"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputARFF</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileExist.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputDelimited.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputARFF"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputARFF"></a>tFileInputARFF</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputARFF_icon32.png"></div><div class="section" title="tFileInputARFF properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e214773"></a>tFileInputARFF properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Input</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileInputARFF</strong></span> reads a ARFF file
+								row by row, with simple separated fields.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component opens a file and reads it row by row, in order to
+								divide it in fields and to send these fields to the next component,
+								as defined in the schema, through a Row connection.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file where the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+						</td><td valign="top">
+							<p>Click this icon to open a connection wizard and store the Excel
+								file connection parameters you set in the component&#8217;s <span class="emphasis"><strong>Basic settings </strong></span>view.</p>
+							<p> For more information about setting up and storing file connection
+								parameters, see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name and path of the ARFF file and/or variable to be
+								processed.</p>
+							<p> Related topic: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									<span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+								changes to the schema. <span>Note that if
+									you make changes, the schema automatically becomes
+									built-in.</span></p>
+							<p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+								the schema from the previous component connected in the Job.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be
+								created and stored locally for this component only. Related topic:
+								see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job flowcharts. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the processing metadata at the Job
+								level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Use this component to read a file and separate the fields with the
+								specified separator.</p>
+						</td></tr><tr><td valign="top">
+							<span class="emphasis"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Display the content of a ARFF file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa53415"></a>Scenario: Display the content of a ARFF file</h3></div></div></div><p>This scenario describes a two-component Job in which the rows of an ARFF file are
+			read, the delimited data is selected and the output is displayed in the <span class="emphasis"><strong>Run </strong></span>view.</p><p>An ARFF file looks like the following: </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputARFF4.png"></div><p>It is generally made of two parts. The first part describes the data structure, that
+			is to say the rows which begin by <code class="code">@attribute</code> and the second part comprises
+			the raw data, which follows the expression <code class="code">@data</code>. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputARFF1.png"></div><div class="section" title="Dropping and linking components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e215123"></a>Dropping and linking components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the <span class="emphasis"><strong>tFileInputARFF</strong></span> component from
+						the <span class="emphasis"><strong>Palette</strong></span> onto the workspace. </p></li><li class="step" title="Step 2"><p>In the same way, drop the <span class="emphasis"><strong>tLogRow
+						</strong></span>component.</p></li><li class="step" title="Step 3"><p>Right-click the <span class="emphasis"><strong>tFileInputARFF</strong></span> and select
+							<span class="emphasis"><strong>Row &gt; Main</strong></span> in the menu. Then, drag
+						the link to the <span class="emphasis"><strong>tLogRow</strong></span>, and click it. The
+						link is created and appears.</p></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e215154"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the <span class="emphasis"><strong>tFileInputARFF</strong></span>. </p></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>Component</strong></span> view, in the <span class="emphasis"><strong>File Name</strong></span> field, browse your directory in order
+						to select your .arff file.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Schema</strong></span> field, select <span class="emphasis"><strong>Built-In</strong></span>. </p></li><li class="step" title="Step 4"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to add column descriptions
+						corresponding to the file to be read.</p></li><li class="step" title="Step 5"><p>Click on the <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> button as many times as required to create the number
+						of columns required, according to the source file. Name the columns as
+						follows. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputARFF3.png"></div></li><li class="step" title="Step 6"><p>For every column, the <span class="emphasis"><strong>Nullable</strong></span> check box
+						is selected by default. Leave the check boxes selected, for all of the
+						columns.</p></li><li class="step" title="Step 7"><p>Click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="step" title="Step 8"><p>In the workspace, double-click the <span class="emphasis"><strong>tLogRow
+						</strong></span>to display its <span class="emphasis"><strong>Component </strong></span>view. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputARFF6.png"></div></li><li class="step" title="Step 9"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to check that the schema has been
+						propagated. If not, click the <span class="emphasis"><strong>Sync columns</strong></span>
+						button. </p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e215237"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span> to execute your Job.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputARFF5.png"></div><p>The console displays the data contained in the ARFF file, delimited using
+						a vertical line (the default separator). </p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileExist.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputDelimited.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileExist&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputDelimited</td></tr></table></div></body></html>

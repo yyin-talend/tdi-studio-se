@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSetDynamicSchema</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-customcode.html" title="Chapter&nbsp;5.&nbsp;Custom Code components"><link rel="prev" href="tLibraryLoad.html" title="tLibraryLoad"><link rel="next" href="tSetGlobalVar.html" title="tSetGlobalVar"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSetDynamicSchema</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tLibraryLoad.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;5.&nbsp;Custom Code components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSetGlobalVar.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSetDynamicSchema"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSetDynamicSchema"></a>tSetDynamicSchema</h2></div></div></div><div class="mediaobject"><img src="../images/tsetdynamicschema_icon32_white.png"></div><div class="section" title="tSetDynamicSchema properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e86920"></a>tSetDynamicSchema properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tSetDynamicSchema</strong></span> allows you to set a dynamic schema
+                                that can be reused by components in the subsequent subjob or subjobs
+                                to retrieve data from unknown columns.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tSetDynamicSchema</strong></span> is used to create a dynamic schema
+                                to allow components that are unable to guess the structure of the
+                                data being handled based on field separators, such as <span class="emphasis"><strong>tFileInputPositional</strong></span> and <span class="emphasis"><strong>tFileOutputPositional</strong></span>, to retrieve data
+                                from unknown columns.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed. The schema is either built-in or remotely
+                                stored in the Repository. </p>
+                            <p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes
+                                to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><strong>Built-in</strong></span>: You can
+                            create the schema and store it locally for this component. Related
+                            topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><strong>Repository</strong></span>: You have
+                            already created and stored the schema in the Repository. You can reuse
+                            it in various projects and Job flowcharts. Related topic: see
+                                    <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Sync columns</em></span></td><td valign="top">Click to synchronize the output file schema with the
+                            input file schema. The Sync function is available only when the
+                            component is linked with an input component using a <span class="emphasis"><strong>Row</strong></span> connection.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Parameters</em></span></td><td valign="top">
+                            <p>This table contains two columns.</p>
+                            <p>
+                                <span class="emphasis"><strong>Property</strong></span>: Property of the schema
+                                entry: <span class="emphasis"><em>ColumnName</em></span>, <span class="emphasis"><em>DBName</em></span>, <span class="emphasis"><em>Type</em></span>, <span class="emphasis"><em>DBType</em></span>,
+                                    <span class="emphasis"><em>Length</em></span>, <span class="emphasis"><em>Precision</em></span>, <span class="emphasis"><em>Nullable</em></span>, or <span class="emphasis"><em>Key</em></span>.</p>
+                            <p>
+                                <span class="emphasis"><strong>Value</strong></span>: Value assigned to this
+                                property.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to gather the Job processing
+                                metadata at a Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is
+                                generally used as the end component in a subjob.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component always
+                                requires an input component to defines the data structure to set
+                                into a dynamic schema.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e87106"></a>Related scenario</h3></div></div></div><p>For a related scenario that uses the <span class="emphasis"><strong>tSetDynamicSchema</strong></span> component, see <a class="xref" href="tFileInputPositional.html#jzhang-20120422-file-tfileinputpositioonal_dynamic" title="Scenario 2: Handling a positional file based on a dynamic schema">the section called &#8220;Scenario 2: Handling a positional file based on a dynamic schema&#8221;</a> of the <span class="emphasis"><strong>tFileInputPositional</strong></span> component.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tLibraryLoad.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-customcode.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSetGlobalVar.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tLibraryLoad&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSetGlobalVar</td></tr></table></div></body></html>

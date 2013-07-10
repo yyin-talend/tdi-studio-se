@@ -1,0 +1,83 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTGreenplumInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-elt.html" title="Chapitre&nbsp;11.&nbsp;Composants ELT"><link rel="prev" href="tCombinedSQLOutput.html" title="tCombinedSQLOutput"><link rel="next" href="tELTGreenplumMap.html" title="tELTGreenplumMap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTGreenplumInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tCombinedSQLOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;11.&nbsp;Composants ELT</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTGreenplumMap.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tELTGreenplumInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTGreenplumInput"></a>tELTGreenplumInput</h2></div></div></div><div class="mediaobject"><img src="../images/tELTGreenplumInput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tELTGreenplumInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e185464"></a>Propri&eacute;t&eacute;s du tELTGreenplumInput</h3></div></div></div><p>Les trois composants ELT Greenplum sont &eacute;troitement li&eacute;s en ce qui concernent leurs
+      conditions d'utilisation. Ces composants sont con&ccedil;us pour prendre en charge les sch&eacute;mas
+      Greenplum DB afin de g&eacute;n&eacute;rer des commandes Insert, dont des clauses, qui sont ex&eacute;cut&eacute;s dans la
+      table de sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Famille de
+                  composants</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>ELT/Map/Greenplum</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Fournit le sch&eacute;ma de table &agrave; utiliser pour
+                la requ&ecirc;te SQL &agrave; ex&eacute;cuter.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le composant <span class="emphasis"><strong>tELTGreenplumInput</strong></span> vous permet d'ajouter autant de tables d'entr&eacute;e
+                (input) que n&eacute;cessaire pour les requ&ecirc;tes Insert les plus complexes.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> et
+                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+              <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit la nature le nombre de
+                champs &agrave; traiter. <span>Le sch&eacute;ma peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+              <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+              <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour modifier le
+                sch&eacute;ma. <span>Notez que si vous le modifiez, le sch&eacute;ma se
+                  met automatiquement en mode <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour
+                ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est
+                stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers projets et
+                Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span><span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Default Table
+                                                  Name</em></span></p>
+                                                </td><td valign="top">
+              <p>Saisissez le nom de la table par d&eacute;faut, entre guillemets doubles.</p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Default Schema
+                                                  Name</em></span></p>
+                                                </td><td valign="top">
+              <p>Saisissez le nom du sch&eacute;ma par d&eacute;faut, entre guillemets doubles.</p>
+            </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+              <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                composant.</p>
+            </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+              <p>L&#8217;utilisation du composant <span class="emphasis"><strong>tELTGreenplumOutput</strong></span>
+                est &eacute;troitement li&eacute;e &agrave; celle des composants <span class="emphasis"><strong>tELTGreenplumMap</strong></span> et <span class="emphasis"><strong>tELTGreenplumInput</strong></span>. Notez que le lien de sortie (output) &agrave; utiliser
+                avec ces deux composants doit respecter strictement la syntaxe du nom de la table. </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les composants ELT ne traitent pas le flux de donn&eacute;es lui-m&ecirc;me mais uniquement
+                  les informations du sch&eacute;ma.</p></div>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e185688"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour des exemples d'utilisation du composant <span class="emphasis"><strong>tELTGreenplumInput</strong></span>, consultez :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tELTGreenplumMap.html#andy-20120906-elt-teltgreenplummap-mapping_data_using_simple_implicit_join" title="Sc&eacute;nario: Mapper les donn&eacute;es &agrave; l'aide d'une jointure implicite simple">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario: Mapper les donn&eacute;es &agrave; l'aide d'une jointure implicite simple &nbsp;&raquo;</a></p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa40349" title="Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre&nbsp;&raquo;</a></p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa41309" title="Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias&nbsp;&raquo;</a></p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tCombinedSQLOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTGreenplumMap.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tCombinedSQLOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tELTGreenplumMap</td></tr></table></div></body></html>

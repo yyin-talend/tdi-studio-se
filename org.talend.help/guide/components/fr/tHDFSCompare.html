@@ -1,0 +1,216 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSCompare</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-bigdata.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHCatalogOutput.html" title="tHCatalogOutput"><link rel="next" href="tHDFSConnection.html" title="tHDFSConnection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tHDFSCompare</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tHCatalogOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;1.&nbsp;Composants Big Data</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tHDFSConnection.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tHDFSCompare"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSCompare"></a>tHDFSCompare</h2></div></div></div><div class="mediaobject"><img src="../images/thdfscompare_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du Studio si vous
+			avez souscrit &agrave; l'&eacute;dition correspondante de <span class="emphasis"><em>Talend Big Data Studio</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tHDFSCompare"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e9925"></a>Propri&eacute;t&eacute;s du tHDFSCompare</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data/File</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tHDFSCompare</strong></span> compare
+								deux fichiers dans HDFS et, selon le sch&eacute;ma en lecture seule, g&eacute;n&egrave;re
+								une ligne de flux pr&eacute;sentant les informations de comparaison.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de contr&ocirc;ler la qualit&eacute; des donn&eacute;es
+								trait&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+		<span class="emphasis"><em>Use an existing connection</em></span>
+	</p>
+						</td><td valign="top">
+							<p>Cochez cette case et, dans la liste <span class="emphasis"><strong>Component List</strong></span>,
+		cliquez sur le composant HDFS de connexion duquel vous souhaitez r&eacute;utiliser les informations
+		de connexion pr&eacute;c&eacute;demment d&eacute;finies.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la liste <span class="emphasis"><strong>Component list</strong></span> pr&eacute;sente uniquement les composants de connexion du Job du
+			m&ecirc;me niveau.</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Distribution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante le produit que vous utilisez comme distribution
+		d'Hadoop. </p>
+							<p>Les options de la liste varient selon le composant que vous utilisez.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la version de la distribution d'Hadoop que vous utilisez.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="emphasis"><em>Connection</em></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>NameNode URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l'URI du NameNode Hadoop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>User name</em></span>
+							</p>
+						</td><td>
+							<p>Nom d'utilisateur de HDFS.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Group</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Identifiant de l&#8217;utilisateur et nom du groupe sous lesquels les instances HDFS ont &eacute;t&eacute;
+		lanc&eacute;es. Ce champ peut &ecirc;tre disponible ou indisponible selon la distribution que vous
+		utilisez.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use kerberos authentication</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Si vous acc&eacute;dez au cluster Hadoop fonctionnant avec la s&eacute;curit&eacute; de Kerberos, cochez cette
+		case, puis saisissez le "principal name" de Kerberos pour le NameNode dans le champ affich&eacute;.
+		Cela vous permet d'utiliser votre identifiant pour vous authentifier, en le comparant aux
+		identifiants stock&eacute;s dans Kerberos.</p>
+							<p>Cette case est disponible ou indisponible selon la distribution d'Hadoop &agrave; laquelle vous vous
+		connectez.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+		pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local
+				(<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+							<p>Le sch&eacute;ma de ce composant est en lecture seule. Vous pouvez cliquer sur <span class="emphasis"><strong>Edit schema</strong></span> afin de visualiser le sch&eacute;ma.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Comparison mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le mode de comparaison &agrave; appliquer.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File to compare</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d'acc&egrave;s au fichier
+								de HDFS dont vous souhaitez contr&ocirc;ler la qualit&eacute;.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Reference file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d'acc&egrave;s au fichier
+								de HDFS sur lequel se base la comparaison.</p>
+						</td></tr><tr><td valign="top"> </td><td valign="top">
+							<p><span class="emphasis"><em>If differences detected, display</em></span> et <span class="emphasis"><em>If no differences detected, display</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez un message &agrave; afficher dans la console de la vue
+									<span class="emphasis"><strong>Run</strong></span>, selon les r&eacute;sultats de la
+								comparaison.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Print to console</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour afficher le message dans la console de la
+								vue <span class="emphasis"><strong>Run</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+		<span class="emphasis"><strong>Custom</strong></span> et d&eacute;finissez-le
+		manuellement.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Si vous devez utiliser la configuration personnalis&eacute;e pour votre Hadoop, renseignez dans
+		cette table la ou les propri&eacute;t&eacute;(s) &agrave; personnaliser. Lors de l'ex&eacute;cution, la ou les
+		propri&eacute;t&eacute;(s) personnalis&eacute;e(s) vont &eacute;craser celles d&eacute;finies pr&eacute;c&eacute;demment pour Hadoop. </p>
+							<p>Pour plus d'informations concernant les propri&eacute;t&eacute;s requises par Hadoop, consultez la
+		documentation Hadoop. </p>
+						</td></tr><tr><td valign="top"> </td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne &agrave; la table.
+		Dans le champ <span class="emphasis"><strong>Code</strong></span>, saisissez une variable de contexte afin
+		de s&eacute;lectionner dynamiquement votre connexion HDFS parmi celles pr&eacute;vues dans votre Job.
+		Cette fonctionnalit&eacute; est utile si vous devez acc&eacute;der &agrave; des fichiers dans diff&eacute;rents syst&egrave;mes
+		HDFS ou dans diff&eacute;rentes distributions, en particulier lorsque vous travaillez dans un
+		environnement dans lequel vous ne pouvez pas changer les param&egrave;tres de votre Job, par
+		exemple lorsque votre Job doit &ecirc;tre d&eacute;ploy&eacute; et ex&eacute;cut&eacute; dans un Studio <span class="emphasis"><strong>Talend</strong></span>
+		ind&eacute;pendant.</p>
+							<p>La table <span class="emphasis"><strong>Dynamic settings</strong></span> n'est disponible que si la case
+			<span class="emphasis"><strong>Use an existing connection</strong></span> est coch&eacute;e dans la vue
+			<span class="emphasis"><strong>Basic settings</strong></span>. Lorsqu'un param&egrave;tre dynamique est
+		configur&eacute;, la liste <span class="emphasis"><strong>Component List</strong></span> devient inaccessible
+		dans la vue <span class="emphasis"><strong>Basic settings</strong></span>. </p>
+							<p>Pour plus d'informations concernant les <span class="emphasis"><strong>Dynamic settings</strong></span>
+		et les variables de contexte, consultez le <span class="emphasis"><em>Guide utilisateur Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tHDFSCompare</strong></span> peut &ecirc;tre utilis&eacute;
+								en standalone ou envoyer au composant suivant les informations
+								g&eacute;n&eacute;r&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Pr&eacute;requis</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La distribution Hadoop doit &ecirc;tre correctement install&eacute;e afin de garantir les interactions
+		avec le studio.</p>
+							<p>Par exemple, si vous devez vous connecter &agrave; MapR &agrave; partir du studio, assurez-vous d'avoir
+		install&eacute; le client MapR sur la m&ecirc;me machine que le studio et d'avoir ajout&eacute; la biblioth&egrave;que
+		client de MapR dans la variable PATH de cette machine. Pour Windows, la biblioth&egrave;que est
+			<span class="emphasis"><em>lib\MapRClient.dll</em></span> dans le fichier Jar du client MapR
+		; si vous ne l'ajoutez pas, il est possible que vous rencontriez l'erreur suivante :
+			<code class="code">no MapRClient in java.library.path</code>.</p>
+							<p>Pour plus d'informations concernant l'installation d'une distribution Hadoop, consultez le
+		manuel correspondant &agrave; la distribution Hadoop que vous utilisez.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La version 1.6+ de JRE est requise pour ex&eacute;cuter le composant.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e10418"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>
+			Aucun sc&eacute;nario n'est disponible pour ce composant.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tHCatalogOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tHDFSConnection.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tHCatalogOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tHDFSConnection</td></tr></table></div></body></html>

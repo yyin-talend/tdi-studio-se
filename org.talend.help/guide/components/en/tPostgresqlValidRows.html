@@ -1,0 +1,318 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPostgresqlValidRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tPostgresqlInvalidRows.html" title="tPostgresqlInvalidRows"><link rel="next" href="tQASAddressIncomplete.html" title="tQASAddressIncomplete"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tPostgresqlValidRows</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tPostgresqlInvalidRows.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tQASAddressIncomplete.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tPostgresqlValidRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPostgresqlValidRows"></a>tPostgresqlValidRows</h2></div></div></div><div class="mediaobject"><img src="../images/tPostgresqlValidRows_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tPostgresqlValidRows properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e105195"></a>tPostgresqlValidRows properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Component family</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>Data Quality</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Function</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tPostgresqlValidRows</strong></span> checks database rows
+                against specific <span class="emphasis"><em>Talend Data Quality</em></span> database
+                patterns.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Purpose</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tPostgresqlValidRows</strong></span> allows you to extract DB
+                rows that match a given data quality pattern.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Basic settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Validation type</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Either <span class="emphasis"><strong>Regex pattern validation</strong></span> or <span class="emphasis"><strong>DQ rule validation</strong></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><strong>Regex pattern validation</strong></span>: Validate data in the
+                database against regex patterns.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><strong>DQ rule validation</strong></span>: Validate data in the
+                database against DQ rules.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Property type</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                centrally.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: Select the repository file where
+                Properties are stored. The fields that come after are pre-filled in using the
+                fetched data.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Use existing connection</em></span>
+              </p>
+            </td><td valign="top">
+            	<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+            	<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Host</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Database server IP address.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Port</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Listening port number of DB server.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Database</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Name of the database.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Postgresql schema</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Name of the Postgresql schema.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Username</em></span> and <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top">
+              <p>DB user authentication data.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit Schema</em></span></p>
+            </td><td valign="top">
+              <p>A schema is a row description, i.e., it defines the number of fields to be
+                processed and passed on to the next component. The schema is either built-in or
+                remotely stored in the Repository. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: You create and store the schema
+                locally for this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User
+                  Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema
+                and stored it in the Repository and thus reuse it when needed. Related topic: see
+                  <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Table Name</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Enter the name of the table to be read.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Where clause</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Enter a WHERE clause to define a row filter on the table.</p>
+              <p>You can use the WHERE clause to filter the rows you want to analyze in the
+                table. This WHERE clause enables you then to retrieve valid and invalid data that
+                match certain specified criteria or conditions.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>Regex pattern
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Analyzed column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select from the schema list the column to analyze. </p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>Regex pattern
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Custom pattern</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select this check box to define manually your own customized regular expression
+                against which you want to check the DB rows.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>Regex pattern
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Patterns list</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select from the pattern list the pattern against which you want to check the DB
+                rows. </p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>DQ rule
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>DQ rule list</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select from the list the rule against which you want to check the DB
+                rows.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>DQ rule
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Query type</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>:</p>
+            </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: Fill in manually the query statement
+                or build it graphically using SQLBuilder.</p>
+            </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: Select the relevant query stored in
+                the Repository. The Query field are filled in accordingly.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>DQ rule
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Guess Query</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Click the <span class="emphasis"><strong>Guess Querry</strong></span> button to generate the
+                query which corresponds to your table schema in the <span class="emphasis"><strong>Query</strong></span> field.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>DQ rule
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Guess schema</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Click the <span class="emphasis"><strong>Guess Schema</strong></span> button to retrieve the
+                schema from the table.</p>
+            </td></tr><tr><td valign="top">
+              <p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p> Available only for <span class="emphasis"><strong>DQ rule
+                  validation</strong></span>.</p></div>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Query</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Enter your DB query paying particular attention to properly sequence the fields
+                in order to match the schema definition.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Advanced settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Use cursor</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select this check box to specify the number of rows you want to work with at a
+                given time. This option optimises performance.</p>
+            </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Trim all the String/Char columns</em></span>
+              </p>
+            </td><td valign="top">Select this check box to remove leading and trailing whitespace from
+              all the String/Char columns.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Trim column</em></span>
+              </p>
+            </td><td valign="top"><p>Remove leading and trailing whitespace from the defined
+                columns.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Clear the <span class="emphasis"><strong>Trim all the String/Char columns</strong></span> to
+                  enable <span class="emphasis"><strong>Trim column</strong></span>.</p></div></td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+              <p>
+                <span class="emphasis"><em>tStatCatcher Statistics </em></span></p>
+            </td><td valign="top">
+              <p>Select this check box to collect log data at the component level.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Dynamic settings</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+              <p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+              <p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Usage</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>This component can be used as a start or intermediary step. It requires an
+                output flow.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Limitation</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>n/a</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e106004"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tMySQLInvalidRows.html#Raa46471" title="Scenario: Reading email addresses from a DB table and retrieving specific data including invalid rows">the section called &#8220;Scenario: Reading email addresses from a DB table and retrieving specific data
+			including invalid rows&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tPostgresqlInvalidRows.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tQASAddressIncomplete.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tPostgresqlInvalidRows&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tQASAddressIncomplete</td></tr></table></div></body></html>

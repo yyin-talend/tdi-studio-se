@@ -589,7 +589,7 @@
       <topic href="guide/components/fr/tJava.html" label="tJava Component Documentation"/>
    </context>
    <context id="tJavaFlex">
-      <description>Le tJavaFlex permet d’étendre les fonctionnalités du Job Talend grâce au langage Java.</description>
+      <description>Le tJavaFlex vous permet d’ajouter du code Java dans ses sections de code Start/Main/End.</description>
       <topic href="guide/components/fr/tJavaFlex.html" label="tJavaFlex Component Documentation"/>
    </context>
    <context id="tJavaRow">
@@ -811,6 +811,10 @@
    <context id="tAccessBulkExec">
       <description>Le tAccessBulkExec est un composant dédié qui permet un gain de performance pendant les opérations d’Insert dans une base de données Access</description>
       <topic href="guide/components/fr/tAccessBulkExec.html" label="tAccessBulkExec Component Documentation"/>
+   </context>
+   <context id="tAccessClose">
+      <description>Le tAccessClose est utilisé pour arrêter une connexion à Access afin de libérer des ressources occupées.</description>
+      <topic href="guide/components/fr/tAccessClose.html" label="tAccessClose Component Documentation"/>
    </context>
    <context id="tAccessCommit">
       <description>En utilisant une connexion unique, commitez en une seule fois une transaction globale au lieu de commiter chaque ligne ou chaque lot de lignes. Ce composant permet un gain de performance.</description>
@@ -1696,6 +1700,10 @@
       <description>Le tLDAPAttributesInput exécute une LDAP basée sur un filtre prédéfini et correspondant au schéma défini. Puis la liste de champ est transmise au composant suivant via une connexion Main row.</description>
       <topic href="guide/components/fr/tLDAPAttributesInput.html" label="tLDAPAttributesInput Component Documentation"/>
    </context>
+   <context id="tLDAPClose">
+      <description>Le tLDAPClose est utilisé pour arrêter une connexion à un serveur d'un annuaire afin de libérer des ressources occupées.</description>
+      <topic href="guide/components/fr/tLDAPClose.html" label="tLDAPClose Component Documentation"/>
+   </context>
    <context id="tLDAPConnection">
       <description>Le tLDAPConnection crée une connexion au serveur d’un annuaire LDAP. Cette connexion peut être invoquée par d’autres composants devant accéder à l’annuaire LDAP, c’est-à-dire les composants tLDAPInput, tLDAPOutput, etc.</description>
       <topic href="guide/components/fr/tLDAPConnection.html" label="tLDAPConnection Component Documentation"/>
@@ -1885,7 +1893,7 @@
       <topic href="guide/components/fr/tELTMysqlMap.html" label="tELTMysqlMap Component Documentation"/>
    </context>
    <context id="tELTMysqlOutput">
-      <description>Exécute la requête Insert dans la base de données Mysql</description>
+      <description>Exécute la requête Insert dans la base de données Mysql.</description>
       <topic href="guide/components/fr/tELTMysqlOutput.html" label="tELTMysqlOutput Component Documentation"/>
    </context>
    <context id="tELTNetezzaInput">
@@ -2184,45 +2192,45 @@
       <description>Le tPivotToColumnsDelimited permet d’ajuster la sélection de données à transmettre en sortie.</description>
       <topic href="guide/components/fr/tPivotToColumnsDelimited.html" label="tPivotToColumnsDelimited Component Documentation"/>
    </context>
-   <context id="tFSAggregate">
+   <context id="tFSAggregate (déprécié)">
       <description>tFSAggregate permet d’établir des métriques et des statistiques basées sur des valeurs ou des calculs.</description>
-      <topic href="guide/components/fr/tFSAggregate.html" label="tFSAggregate Component Documentation"/>
+      <topic href="guide/components/fr/tFSAggregate.html" label="tFSAggregate (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSCheck">
+   <context id="tFSCheck (déprécié)">
       <description>tFSCheck permet de vérifier que les données du fichier source sont bien triées.</description>
-      <topic href="guide/components/fr/tFSCheck.html" label="tFSCheck Component Documentation"/>
+      <topic href="guide/components/fr/tFSCheck.html" label="tFSCheck (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSCode">
+   <context id="tFSCode (déprécié)">
       <description>Le tFSCode permet de créer des composants FileScale pouvant s’adapter à vos besoins spécifiques ainsi que d’exécuter des tâches de domaines spécifiques.</description>
-      <topic href="guide/components/fr/tFSCode.html" label="tFSCode Component Documentation"/>
+      <topic href="guide/components/fr/tFSCode.html" label="tFSCode (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSFilterColumns">
+   <context id="tFSFilterColumns (déprécié)">
       <description>Ce composant permet d’homogénéiser les structures d’un fichier en supprimant les colonnes superflues ou en ajoutant de nouvelles colonnes.</description>
-      <topic href="guide/components/fr/tFSFilterColumns.html" label="tFSFilterColumns Component Documentation"/>
+      <topic href="guide/components/fr/tFSFilterColumns.html" label="tFSFilterColumns (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSFilterRows">
+   <context id="tFSFilterRows (déprécié)">
       <description>Ce composant permet de filtrer les lignes de données d’un fichier volumineux en fonction de conditions que vous définissez.</description>
-      <topic href="guide/components/fr/tFSFilterRows.html" label="tFSFilterRows Component Documentation"/>
+      <topic href="guide/components/fr/tFSFilterRows.html" label="tFSFilterRows (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSJoin">
+   <context id="tFSJoin (déprécié)">
       <description>Ce composant permet de regrouper un fichier leftset et un fichier rightset en utilisant un prédicat de jointure pour identifier les enregistrements sur lesquels effectuer une jointure.</description>
-      <topic href="guide/components/fr/tFSJoin.html" label="tFSJoin Component Documentation"/>
+      <topic href="guide/components/fr/tFSJoin.html" label="tFSJoin (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSPartitionFile">
+   <context id="tFSPartitionFile (déprécié)">
       <description>Permet de partitionner des données en masse avant de les écrire dans un fichier de sortie.</description>
-      <topic href="guide/components/fr/tFSPartitionFile.html" label="tFSPartitionFile Component Documentation"/>
+      <topic href="guide/components/fr/tFSPartitionFile.html" label="tFSPartitionFile (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSSort">
+   <context id="tFSSort (déprécié)">
       <description>Le tFSSort d’établir des métriques et des tables de classification.</description>
-      <topic href="guide/components/fr/tFSSort.html" label="tFSSort Component Documentation"/>
+      <topic href="guide/components/fr/tFSSort.html" label="tFSSort (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSTransform">
+   <context id="tFSTransform (déprécié)">
       <description>Le FSTransform permet de transformer les colonnes de fichiers volumineux.</description>
-      <topic href="guide/components/fr/tFSTransform.html" label="tFSTransform Component Documentation"/>
+      <topic href="guide/components/fr/tFSTransform.html" label="tFSTransform (déprécié) Component Documentation"/>
    </context>
-   <context id="tFSUnique">
+   <context id="tFSUnique (déprécié)">
       <description>Le tFSUnique permet d’obtenir un fichier de sortie sans aucun doublon.</description>
-      <topic href="guide/components/fr/tFSUnique.html" label="tFSUnique Component Documentation"/>
+      <topic href="guide/components/fr/tFSUnique.html" label="tFSUnique (déprécié) Component Documentation"/>
    </context>
    <context id="tFileFetch">
       <description>Ce composant permet de récupérer des données d’un fichier à partir d’un protocole.</description>

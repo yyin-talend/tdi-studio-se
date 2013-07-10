@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tChronometerStop</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-logsanderrors.html" title="Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="tChronometerStart.html" title="tChronometerStart"><link rel="next" href="tDie.html" title="tDie"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tChronometerStop</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tChronometerStart.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;15.&nbsp;Composants Logs &amp; Errors</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tDie.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tChronometerStop"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tChronometerStop"></a>tChronometerStop</h2></div></div></div><div class="mediaobject"><img src="../images/tChronometerStop.png"></div><a name="Xaa1731726"></a><div class="section" title="Propri&eacute;t&eacute;s du tChronometerStop"><div class="titlepage"><div><div><h3 class="title"><a name="Raa77083"></a>Propri&eacute;t&eacute;s du tChronometerStop</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Logs &amp; Errors </p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tChronometerStop </strong></span>mesure le temps
+                                d&#8217;ex&eacute;cution d&#8217;un sous-Job. </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tChronometerStop</strong></span> fonctionne
+                                comme un chronom&egrave;tre&nbsp;: Il affiche le temps d&#8217;ex&eacute;cution total et
+                                arr&ecirc;te le calcul du temps de traitement soit d&#8217;un ou de plusieurs
+                                sous-Jobs dans le Job principal, soit d&#8217;une partie d&#8217;un sous-Job.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Since options</em></span></p>
+                        </td><td valign="top"><p>Cochez l&#8217;une des deux cases pour choisir le point
+                                de d&eacute;part du processus de mesure&nbsp;: </p><p><span class="emphasis"><strong>Since the beginning&nbsp;</strong></span>: arr&ecirc;te le calcul du
+                                temps dont la mesure a commenc&eacute; au d&eacute;but d&#8217;un sous-Job.
+                                    </p><p><span class="emphasis"><strong>Since a
+                                    tChronometerStart&nbsp;</strong></span>: arr&ecirc;te le calcul du temps dont la
+                                mesure a commenc&eacute; &agrave; partir d&#8217;un composant <span class="emphasis"><strong>tChronometerStart</strong></span> utilis&eacute; sur le flux de donn&eacute;es du
+                                sous-Job. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Display duration in
+                                console</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour afficher les informations
+                                d&#8217;ex&eacute;cution du sous-Job sur la console. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Display component name</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour afficher le nom des
+                                composants sur la console. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Caption</em></span></p>
+                        </td><td valign="top"><p>Entrez un texte, pour permettre d&#8217;identifier votre
+                                sous-Job par exemple. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Display human readable
+                                    duration</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour afficher les informations
+                                d&#8217;ex&eacute;cution du sous-Job en unit&eacute;s de temps exploitables.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ne peut &ecirc;tre utilis&eacute;
+                                comme composant de d&eacute;but.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Mesurer la dur&eacute;e de traitement d&#8217;un sous-Job ou d&#8217;une partie d&#8217;un sous-Job"><div class="titlepage"><div><div><h3 class="title"><a name="Raa16350"></a>Sc&eacute;nario&nbsp;: Mesurer la dur&eacute;e de traitement d&#8217;un sous-Job ou d&#8217;une partie d&#8217;un
+            sous-Job</h3></div></div></div><p>Ce sc&eacute;nario est un sous-Job, qui, dans une s&eacute;quence, effectue les op&eacute;rations
+            suivantes&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>g&eacute;n&egrave;re 1&nbsp;000&nbsp;000 lignes de noms et de pr&eacute;noms&nbsp;; </p></li><li class="listitem"><p>regroupe les noms et les pr&eacute;noms correspondants&nbsp;; </p></li><li class="listitem"><p>stocke les donn&eacute;es de sortie dans un fichier d&eacute;limit&eacute;&nbsp;; </p></li><li class="listitem"><p>mesure la dur&eacute;e d&#8217;ensemble du sous-Job&nbsp;;</p></li><li class="listitem"><p>mesure la dur&eacute;e de l&#8217;op&eacute;ration de remplacement des noms,</p></li><li class="listitem"><p>affiche les informations relatives au temps de traitement dans la console de
+                    log <span class="emphasis"><strong>Run</strong></span>.</p></li></ul></div><p>Pour mesurer le temps d&#8217;ex&eacute;cution du sous-Job&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="emphasis"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="emphasis"><strong>tRowGenerator</strong></span>, le <span class="emphasis"><strong>tMap</strong></span>, le
+                        <span class="emphasis"><strong>tFileOutputDelimited</strong></span> et le <span class="emphasis"><strong>tChronometerStop</strong></span>.</p></li><li class="listitem"><p>Reliez les trois premiers composants &agrave; l&#8217;aide de liens de type <span class="emphasis"><strong>Main Row</strong></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous reliez le <span class="emphasis"><strong>tMap </strong></span>au <span class="emphasis"><strong>tFileOutputDelimited</strong></span>, vous serez invit&eacute;s &agrave; donner un nom
+                &agrave; la table en sortie. Le nom utilis&eacute; dans cet exemple est &#8220;new_order&#8221;.</p></div><div class="mediaobject"><img src="../images/Use_Case_Chronometer1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Reliez le <span class="emphasis"><strong>tFileOutputDelimited</strong></span> au <span class="emphasis"><strong>tChronometerStop</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="emphasis"><strong>OnComponentOk</strong></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez le <span class="emphasis"><strong>tRowGenerator</strong></span> puis cliquez
+                    sur la vue <span class="emphasis"><strong>Component</strong></span> pour param&eacute;trer ses
+                    propri&eacute;t&eacute;s de base, d&eacute;finies par d&eacute;faut, dans l&#8217;onglet <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_Chronometer_BasicSettings.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> du champ
+                        <span class="emphasis"><strong>Edit schema </strong></span>pour d&eacute;finir le sch&eacute;ma du
+                        <span class="emphasis"><strong>tRowGenerator</strong></span>. Cliquez deux fois sur le
+                    bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter deux colonnes&nbsp;:
+                        <span class="emphasis"><em>First_Name </em></span>et <span class="emphasis"><em>Last_Name</em></span>. Cliquez
+                    sur <span class="emphasis"><strong>OK</strong></span> afin de fermer la bo&icirc;te de dialogue.
+                </p></li><li class="listitem"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> du champ
+                        <span class="emphasis"><strong>RowGenerator Editor</strong></span> pour ouvrir l&#8217;&eacute;diteur
+                    et d&eacute;finir les donn&eacute;es &agrave; g&eacute;n&eacute;rer. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_Chronometer_RowGenerator.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="emphasis"><strong>Number of Rows for RowGenerator
+                    </strong></span>de l&#8217;&eacute;diteur <span class="emphasis"><strong>[RowGenerator Editor]</strong></span>,
+                    pr&eacute;cisez le nombre de lignes &agrave; g&eacute;n&eacute;rer puis cliquez sur <span class="emphasis"><strong>OK</strong></span>. L&#8217;&eacute;diteur <span class="emphasis"><strong>[RowGenerator Editor]
+                    </strong></span>se ferme. </p></li><li class="listitem"><p>Une bo&icirc;te de dialogue s&#8217;ouvre et vous demande si vous souhaitez propager les
+                    changements. Cliquez sur <span class="emphasis"><strong>Yes</strong></span> (Oui).</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tMap</strong></span> pour
+                    ouvrir son &eacute;diteur. L&#8217;&eacute;diteur du <span class="emphasis"><strong>tMap</strong></span> affiche
+                    le sch&eacute;ma du composant <span class="emphasis"><strong>tRowGenerator</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_Chronometer_Mapper.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;onglet <span class="emphasis"><strong>Schema editor</strong></span> de l&#8217;&eacute;diteur du
+                        <span class="emphasis"><strong>tMap</strong></span>, cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> de la table de sortie pour ajouter deux lignes
+                    puis configurez-les.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur du <span class="emphasis"><strong>tMap</strong></span>, glissez la ligne
+                        <span class="emphasis"><em>First_Name</em></span> de la table d&#8217;entr&eacute;e dans la ligne
+                        <span class="emphasis"><em>Last_Name</em></span> de la table de sortie et glissez la ligne
+                        <span class="emphasis"><em>Last_Name </em></span>dans la ligne <span class="emphasis"><em>First_Name</em></span>
+                    de la table de sortie.</p></li><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>Apply</strong></span> pour enregistrer les
+                    modifications.</p></li><li class="listitem"><p>A nouveau, une bo&icirc;te de dialogue s&#8217;ouvre et vous demande si vous souhaitez
+                    propager les changements. Cliquez sur <span class="emphasis"><strong>Yes</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_Chronometer_Mapper1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez le <span class="emphasis"><strong>tFileOutputDelimited</strong></span> et
+                    cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> pour param&eacute;trer
+                    ses propri&eacute;t&eacute;s de base dans l&#8217;onglet <span class="emphasis"><strong>Basic
+                        settings</strong></span>&nbsp;:</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_ChronometerStop_BasicSettings3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez le <span class="emphasis"><strong>tChronometerStop</strong></span> et cliquez
+                    sur la vue <span class="emphasis"><strong>Component</strong></span> pour param&eacute;trer ses
+                    propri&eacute;t&eacute;s de base dans l&#8217;onglet <span class="emphasis"><strong>Basic
+                    settings</strong></span>.</p></li><li class="listitem"><p>Dans la zone <span class="emphasis"><strong>Since options</strong></span><span class="emphasis"><strong>, </strong></span>cochez l&#8217;option <span class="emphasis"><strong>Since the
+                        beginning</strong></span> pour mesurer la dur&eacute;e d&#8217;ex&eacute;cution du sous-Job
+                    entier.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_ChronometerStop_BasicSettings4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cochez/d&eacute;cochez les autres cases en fonction de vos besoins. Dans ce sc&eacute;nario,
+                    l&#8217;objectif est d&#8217;afficher dans la console la dur&eacute;e d&#8217;ex&eacute;cution du sous-Job,
+                    pr&eacute;c&eacute;d&eacute;e du nom du composant.</p></li><li class="listitem"><p>Si n&eacute;cessaire, saisissez du texte de le champ <span class="emphasis"><strong>Caption</strong></span>.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_ChronometerStop_Result1.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez aussi mesurer la dur&eacute;e du sous-Job en pla&ccedil;ant un <span class="emphasis"><strong>tChronometerStop</strong></span> en dessous du <span class="emphasis"><strong>tRowGenerator</strong></span>, et en les connectant via un lien <span class="emphasis"><strong>OnSubJobOk</strong></span>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tChronometerStart.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-logsanderrors.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tDie.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tChronometerStart&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tDie</td></tr></table></div></body></html>

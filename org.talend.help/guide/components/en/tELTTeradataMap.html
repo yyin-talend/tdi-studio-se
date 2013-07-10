@@ -1,0 +1,143 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTTeradataMap</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-elt.html" title="Chapter&nbsp;11.&nbsp;ELT components"><link rel="prev" href="tELTTeradataInput.html" title="tELTTeradataInput"><link rel="next" href="tELTTeradataOutput.html" title="tELTTeradataOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTTeradataMap</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tELTTeradataInput.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;11.&nbsp;ELT components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTTeradataOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tELTTeradataMap"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTTeradataMap"></a>tELTTeradataMap</h2></div></div></div><div class="mediaobject"><img src="../images/tELTTeradataMap_icon32.png"></div><div class="section" title="tELTTeradataMap properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e199299"></a>tELTTeradataMap properties</h3></div></div></div><p>The three ELT Teradata components are closely related, in terms of their operating
+            conditions. These components should be used to handle Teradata DB schemas to generate
+            Insert statements, including clauses, which are to be executed in the DB output table
+            defined.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>ELT/Map/Teradata</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Helps to graphically build the SQL statement using the table
+                                provided as input.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Uses the tables provided as input, to feed the parameter in the
+                                built statement. The statement can include inner or outer joins to
+                                be implemented between tables or between one table and its
+                                aliases.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                        	<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+                        	<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Open Studio
+				User Guide</em></span>.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>ELT Teradata Map editor</em></span></p>
+                        </td><td valign="top">
+                            <p>The ELT Map editor allows you to define the output schema as well
+                                as build graphically the SQL statement to be executed. The column
+                                names of schema can be different from the column names in the
+                                database.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Style link</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the way in which links are displayed.</p>
+                            <p>
+                                <span class="emphasis"><strong>Auto</strong></span>: By default, the links between
+                                the input and output schemas and the Web service parameters are in
+                                the form of curves. </p>
+                            <p>
+                                <span class="emphasis"><strong>Bezier curve</strong></span>: Links between the
+                                schema and the Web service parameters are in the form of curve. </p>
+                            <p>
+                                <span class="emphasis"><strong>Line</strong></span>: Links between the schema and
+                                the Web service parameters are in the form of straight lines. </p>
+                            <p> This option slightly optimizes performance.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either Built-in or Repository. </p>
+                            <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: Select the Repository
+                                file where Properties are stored. The following fields are
+                                pre-filled in using fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>Database server IP address</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Listening port number of DB server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the database</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>DB user authentication data.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Dynamic settings</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+                            <p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+                            <p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tELTTeradataMap</strong></span> is used along
+                                with a <span class="emphasis"><strong>tELTTeradataInput</strong></span> and
+                                    <span class="emphasis"><strong>tELTTeradataOutput</strong></span>. Note that
+                                the Output link to be used with these components must faithfully
+                                reflect the name of the tables. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The ELT components do not handle actual data flow but only
+                                    schema information.</p></div>
+                        </td></tr></tbody></table></div><div class="section" title="Connecting ELT components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e199650"></a>Connecting ELT components</h4></div></div></div><p>For detailed information regarding ELT component connections, see <a class="xref" href="tELTMysqlMap.html#Raa99053" title="Connecting ELT components">the section called &#8220;Connecting ELT components&#8221;</a>.</p><p>Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                <span class="emphasis"><em>User Guide</em></span>.</p></div><div class="section" title="Mapping and joining tables"><div class="titlepage"><div><div><h4 class="title"><a name="d0e199665"></a>Mapping and joining tables</h4></div></div></div><p>In the ELT Mapper, you can select specific columns from input schemas and include
+                them in the output schema. </p><p>For detailed information regarding the table schema mapping and joining, see <a class="xref" href="tELTOracleMap.html#Raa34531" title="Mapping and joining tables">the section called &#8220;Mapping and joining tables&#8221;</a>.</p></div><div class="section" title="Adding WHERE clauses"><div class="titlepage"><div><div><h4 class="title"><a name="d0e199674"></a>Adding WHERE clauses</h4></div></div></div><p>For details regarding the clause handling, see <a class="xref" href="tELTOracleMap.html#Raa51913" title="Adding where clauses">the section called &#8220;Adding where clauses&#8221;</a>.</p></div><div class="section" title="Generating the SQL statement"><div class="titlepage"><div><div><h4 class="title"><a name="d0e199681"></a>Generating the SQL statement</h4></div></div></div><p>The mapping of elements from the input schemas to the output schemas create
+                instantly the corresponding Select statement.</p><p>The clause defined internally in the ELT Mapper are also included
+                automatically.</p></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e199688"></a>Related scenarios</h3></div></div></div><p>For use cases in relation with <span class="emphasis"><strong>tELTTeradataMap</strong></span>, see
+                <span class="emphasis"><strong>tELTMysqlMap</strong></span> scenarios:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa40349" title="Scenario&nbsp;1: Aggregating table columns and filtering">the section called &#8220;Scenario&nbsp;1: Aggregating table columns and filtering&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa41309" title="Scenario 2: ELT using an Alias table">the section called &#8220;Scenario 2: ELT using an Alias table&#8221;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tELTTeradataInput.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTTeradataOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tELTTeradataInput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tELTTeradataOutput</td></tr></table></div></body></html>

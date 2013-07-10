@@ -1,0 +1,210 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputMSPositional</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileInputMSDelimited.html" title="tFileInputMSDelimited"><link rel="next" href="tFileInputMSXML.html" title="tFileInputMSXML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputMSPositional</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputMSDelimited.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputMSXML.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputMSPositional"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputMSPositional"></a>tFileInputMSPositional</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputMSPositional_icon32.png"></div><div class="section" title="tFileInputMSPositional properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e220462"></a>tFileInputMSPositional properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputMSPositional </strong></span>reads
+                                multiple schemas from a positional file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputMSPositional</strong></span> opens a
+                                complex multi-structured file, reads its data structures (schemas)
+                                and then uses <span class="emphasis"><strong>Row</strong></span> links to send
+                                fields as defined in the different schemas to the next Job
+                                components.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+                                file where the properties are stored. The fields that follow are
+                                completed automatically using the data retrieved.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the file and/or the variable to be processed </p>
+                            <p>Related topic: see <span class="emphasis"><em>Talend Open Studio User
+                                    Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Row separator</em></span></p>
+                        </td><td valign="top">
+                            <p>String (ex: &#8220;\n&#8221;on Unix) to distinguish rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Header Field Position</em></span></p>
+                        </td><td valign="top">
+                            <p>Start-end position of the schema identifier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Records</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Schema</strong></span>: define as many schemas as
+                                needed.</p>
+                            <p><span class="emphasis"><strong>Header value</strong></span>: value in the row
+                                that identifies a schema. </p>
+                            <p><span class="emphasis"><strong>Pattern</strong></span>: string which represents
+                                the length of each column of the schema, separated by commas. Make
+                                sure the values defined in this field are relevant with the defined
+                                schema.</p>
+                            <p><span class="emphasis"><strong>Reject incorrect row size</strong></span>: select
+                                the check boxes of the schemas where to reject incorrect row
+                                size.</p>
+                            <p><span class="emphasis"><strong>Parent row</strong></span>: Select the parent row
+                                from the drop-down list. By default, it is <span class="emphasis"><em>&lt;Empty&gt;</em></span>.</p>
+                            <p><span class="emphasis"><strong>Parent key column</strong></span>: Type in the
+                                parent key column name. If the parent row is not <span class="emphasis"><em>&lt;Empty&gt;</em></span>, this field must be filled
+                                with a column name of the parent row schema.</p>
+                            <p><span class="emphasis"><strong>Key column</strong></span>: Type in the key
+                                column name.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Skip from header</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped in the beginning of file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Skip from footer</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped at the end of the file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Limit</em></span></p>
+                        </td><td valign="top">
+                            <p>Maximum number of rows to be processed. If Limit = 0, no row is
+                                read or processed.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on parse error</em></span></p>
+                        </td><td valign="top">
+                            <p>Let the component die if an parsing error occurs.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on unknown header type</em></span></p>
+                        </td><td valign="top">
+                            <p>Length values separated by commas, interpreted as a string between
+                                quotes. Make sure the values entered in this fields are consistent
+                                with the schema defined.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Process long rows (needed for processing rows longer
+                                    than 100,000 characters wide)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to process long rows (this is necessary to
+                                process rows longer than 100 000 characters).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for numbers)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators used for
+                                numbers:</p>
+                            <p><span class="emphasis"><strong>Thousands separator</strong></span>: define
+                                separators for thousands.</p>
+                            <p><span class="emphasis"><strong>Decimal separator</strong></span>: define
+                                separators for decimals.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim all column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespaces
+                                from defined columns. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Validate date</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to check the date format strictly against
+                                the input schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to read a multi schemas positional file and
+                                separate fields using a position separator value. You can also
+                                create a rejection flow using a <span class="emphasis"><strong>Row &gt;
+                                    Reject</strong></span> link to filter the data which does not
+                                correspond to the type defined. For an example of how to use these
+                                two links, see <a class="xref" href="tExtractXMLField.html#Raa91776" title="Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file">the section called &#8220;Scenario 2: Extracting correct and erroneous data from an XML field in a delimited
+            file&#8221;</a>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading data from a positional file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e220906"></a>Scenario: Reading data from a positional file</h3></div></div></div><p>The following scenario reads data from a positional file, which contains two schemas.
+            The positional file is shown
+            below:</p><pre class="programlisting">schema_1 (car_owner):schema_id;car_make;owner;age
+schema_2 (car-insurance):schema_id;car_owner;age;car_insurance
+1bmw     John      45
+1bench   Mike      30
+2John      45 yes 
+2Mike      50 No      </pre><div class="section" title="Dropping the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e220913"></a>Dropping the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop one <span class="emphasis"><strong>tFileInputMSPositional</strong></span> and two
+                            <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> to the design workspace. </p></li><li class="step" title="Step 2"><p>Rename the two <span class="emphasis"><strong>tLogRow</strong></span> components as
+                            <span class="emphasis"><strong>car_owner</strong></span> and <span class="emphasis"><strong>car_insurance</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e220944"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the <span class="emphasis"><strong>tFileInputMSPositional</strong></span>
+                        component to show its <span class="emphasis"><strong>Basic settings</strong></span> view
+                        and define its properties.</p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_2.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>File name/Stream</strong></span> field, type in
+                        the path to the input file. Also, you can click the <span class="emphasis"><strong>[...]</strong></span> button to browse and choose the file.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Header Field Position</strong></span> field, enter
+                        the start-end position for the schema identifier in the input file,
+                            <span class="emphasis"><em>0-1</em></span> in this case as the first
+                        character in each row is the schema identifier.</p></li><li class="step" title="Step 4"><p>Click the <span class="emphasis"><strong>[+]</strong></span> button twice to added two
+                        rows in the <span class="emphasis"><strong>Records</strong></span> table. </p></li><li class="step" title="Step 5"><p>Click the cell under the <span class="emphasis"><strong>Schema</strong></span> column to
+                        show the <span class="emphasis"><strong>[...]</strong></span> button. </p><p>Click the <span class="emphasis"><strong>[...]</strong></span> button to show the schema
+                        naming box. </p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_3.png"></div></li><li class="step" title="Step 6"><p>Enter the schema name and click <span class="emphasis"><strong>OK</strong></span>.</p><p>The schema name appears in the cell and the schema editor opens.</p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_4.png"></div></li><li class="step" title="Step 7"><p>Define the schema <span class="emphasis"><em>car_owner</em></span>, which has
+                        four columns: <span class="emphasis"><em>schema_id</em></span>, <span class="emphasis"><em>car_make</em></span>, <span class="emphasis"><em>owner</em></span> and <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="Step 8"><p>Repeat the steps to define the schema <span class="emphasis"><em>car_insurance</em></span>, which has four columns: <span class="emphasis"><em>schema_id</em></span>, <span class="emphasis"><em>car_owner</em></span>, <span class="emphasis"><em>age</em></span> and
+                            <span class="emphasis"><em>car_insurance</em></span>. </p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_5.png"></div></li><li class="step" title="Step 9"><p>Connect <span class="emphasis"><strong>tFileInputMSPositional</strong></span> to the
+                            <span class="emphasis"><strong>car_owner</strong></span> component with the <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>car_owner</strong></span>
+                        link, and the <span class="emphasis"><strong>car_insurance</strong></span> component with
+                        the <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>car_insurance</strong></span> link.</p></li><li class="step" title="Step 10"><p>In the <span class="emphasis"><strong>Header value</strong></span> column, type in the
+                        schema identifier value for the schema, <span class="emphasis"><em>1</em></span>
+                        for the schema <span class="emphasis"><em>car_owner</em></span> and <span class="emphasis"><em>2</em></span> for the schema <span class="emphasis"><em>car_insurance</em></span> in this case.</p></li><li class="step" title="Step 11"><p>In the <span class="emphasis"><strong>Pattern</strong></span> column, type in the length
+                        of each field in the schema, i.e. the number of characters, number, etc in
+                        each field, <span class="emphasis"><em>1,8,10,3</em></span> for the schema
+                            <span class="emphasis"><em>car_owner</em></span> and <span class="emphasis"><em>1,10,3,3</em></span> for the schema <span class="emphasis"><em>car_insurance</em></span> in this case.</p></li><li class="step" title="Step 12"><p>In the <span class="emphasis"><strong>Skip from header</strong></span> field, type in
+                        the number of beginning rows to skip, <span class="emphasis"><em>2</em></span>
+                        in this case as the two rows in the beginning just describes the two
+                        schemas, instead of the values. </p></li><li class="step" title="Step 13"><p>Choose <span class="emphasis"><strong>Table (print values in cells of a
+                            table)</strong></span> in the <span class="emphasis"><strong>Mode</strong></span> area of
+                        the components <span class="emphasis"><strong>car_owner</strong></span> and <span class="emphasis"><strong>car_insurance</strong></span>.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e221138"></a>Executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save the Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span> or click <span class="emphasis"><strong>Run</strong></span> on the <span class="emphasis"><strong>Run </strong></span>tab to
+                        execute the Job.</p><div class="mediaobject"><img src="../images/use_case_tfileinputmspositional_6.png"></div><p>The file is read row by row based on the length values defined in the
+                            <span class="emphasis"><strong>Pattern</strong></span> field and output in two tables
+                        with different schemas.</p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputMSDelimited.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputMSXML.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputMSDelimited&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputMSXML</td></tr></table></div></body></html>

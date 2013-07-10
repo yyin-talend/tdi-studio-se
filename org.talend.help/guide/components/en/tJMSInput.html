@@ -1,0 +1,177 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJMSInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-internet.html" title="Chapter&nbsp;14.&nbsp;Internet components"><link rel="prev" href="tHttpRequest.html" title="tHttpRequest"><link rel="next" href="tJMSOutput.html" title="tJMSOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tJMSInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tHttpRequest.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;14.&nbsp;Internet components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tJMSOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tJMSInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJMSInput"></a>tJMSInput</h2></div></div></div><div class="mediaobject"><img src="../images/tJMSInput_icon32_white.png"></div><div class="section" title="tJMSInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239125"></a>tJMSInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Internet </p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tJMSInput</strong></span> creates an interface
+								between a Java application and a Message-Oriented middle ware
+								system.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Using a JMS server, <span class="emphasis"><strong>tJMSInput</strong></span>
+								makes it possible to have loosely coupled, reliable, and
+								asynchronous communication between different components in a
+								distributed application.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module List</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the library to be used from the list.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Context Provider</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the context URL, for example
+								"com.tibco.tibjms.naming.TibjmsInitialContext<span></span> Factory".
+								However, be careful, the syntax can vary according to the JMS server
+								used.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Server URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the server URL, respecting the syntax, for example
+								"tibjmsnaming://localhost:7222".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection Factory JDNI Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the JDNI name.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Specified User Identity</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you have to log in, select the check box and type in your login
+								and password.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Message Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the message type, either: <span class="emphasis"><strong>Topic</strong></span> or <span class="emphasis"><strong>Queue</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Message From</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the message source, exactly as expected by the server;
+								this must include the type and name of the source. e.g.: queue/A or
+								topic/testtopic</p>
+							<p> Note that the field is case-sensitive.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Timeout for Next Message (in sec)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the number of seconds before passing to the next
+								message.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Maximum Messages</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the maximum number of messages to be processed.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Message Selector Expression</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Set your filter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Processing Mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the processing mode for the messages.</p>
+							<p>
+								<span class="emphasis"><strong>Raw Message</strong></span> or <span class="emphasis"><strong>Message Content</strong></span></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next
+								component.</p>
+							<p>The <span class="emphasis"><strong>tJMSInput</strong></span> schema is
+								read-only. It is made of only one column: <span class="emphasis"><strong>Message</strong></span></p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the plus button underneath the table to add lines that
+								contains username and password required for user
+								authentication.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is generally used as an input component. It must be
+								linked to an output component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Make sure the JMS server is launched.</p>
+							
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239510"></a>Related scenarios</h3></div></div></div><p>
+			<span>For related scenarios, see <a class="xref" href="tMomInput.html#Raa41318" title="Scenario 1: Asynchronous communication via a MOM server">the section called &#8220;Scenario 1: Asynchronous communication via a MOM server&#8221;</a> and
+					<a class="xref" href="tMomInput.html#jzhang-20120420-internet-tmominput_s2" title="Scenario 2: Transmitting XML files via a MOM server">the section called &#8220;Scenario 2: Transmitting XML files via a MOM server&#8221;</a>.</span>
+			No scenario is available for this component yet.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tHttpRequest.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-internet.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tJMSOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tHttpRequest&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tJMSOutput</td></tr></table></div></body></html>

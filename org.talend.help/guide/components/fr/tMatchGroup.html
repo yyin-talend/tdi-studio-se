@@ -1,0 +1,406 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMatchGroup</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-dataquality.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tLaunchDQReports.html" title="tLaunchDQReports"><link rel="next" href="tMatchGroupHadoop.html" title="tMatchGroupHadoop"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMatchGroup</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tLaunchDQReports.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;6.&nbsp;Composants Data Quality</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMatchGroupHadoop.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tMatchGroup"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMatchGroup"></a>tMatchGroup</h2></div></div></div><div class="mediaobject"><img src="../images/tGroup_icon32_white.png"></div><div lang="fr" class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du studio si
+			vous avez souscrit &agrave; l'un des produits <span class="emphasis"><em>Talend Platform</em></span>.</p></div><div class="section" title="Propri&eacute;t&eacute;s du tMatchGroup"><div class="titlepage"><div><div><h3 class="title"><a name="Raa75287"></a>Propri&eacute;t&eacute;s du tMatchGroup</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="emphasis"><strong>tMatchGroup </strong></span>compare des
+                                colonnes du flux d&#8217;entr&eacute;e en utilisant une m&eacute;thode de correspondance
+                                d&eacute;finie et regroupe les doublons rencontr&eacute;s.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant vous permet d&#8217;assurer la qualit&eacute; de vos donn&eacute;es
+                                provenant de n&#8217;importe quelle source.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                est soit local (<span class="emphasis"><strong>Built-in</strong></span>) soit
+                                distant dans le <span class="emphasis"><strong>Repository</strong></span>. </p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Le sch&eacute;ma de sortie de ce composant contient les
+                                champs suivants&nbsp;en lecture seule :</p>
+                            <p><span class="emphasis"><em>GID&nbsp;</em></span>: repr&eacute;sente l&#8217;identifiant du
+                                groupe.</p>
+                            <p><span class="emphasis"><em>GRP_SIZE&nbsp;</em></span>: compte le nombre d&#8217;enregistrements
+                                dans le groupe, ce nombre est calcul&eacute; uniquement sur
+                                l&#8217;enregistrement ma&icirc;tre.</p>
+                            <p><span class="emphasis"><em>MASTER&nbsp;</em></span>: identifie l&#8217;enregistrement utilis&eacute;
+                                dans les comparaisons de correspondance comme enregistrement ma&icirc;tre.
+                                Il y a au moins un enregistrement ma&icirc;tre par groupe.</p>
+                            <p>Chaque enregistrement d&#8217;entr&eacute;e sera compar&eacute; &agrave; l'enregistrement
+                                ma&icirc;tre. S&#8217;il y a correspondance, il sera dans le groupe.</p>
+                            <p><span class="emphasis"><em>SCORE&nbsp;</em></span>: mesure la distance entre
+                                l&#8217;enregistrement d&#8217;entr&eacute;e et l&#8217;enregistrement ma&icirc;tre selon
+                                l&#8217;algorithme de correspondance utilis&eacute;.</p>
+                            <p>Si le tMatchGroup est utilis&eacute; afin d'avoir plusieurs flux de
+                                sortie, le score dans cette colonne d&eacute;cide du groupe de sortie dans
+                                lequel va l'enregistrement.</p>
+                            <p>GRP_QUALITY : seul l'enregistrement ma&icirc;tre poss&egrave;de un score de
+                                qualit&eacute; qui est la valeur minimale dans le groupe.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Job Designs. Voir &eacute;galement&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Key Definition</em></span>
+                                </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Un assistant de configuration est disponible pour vous
+                                        permettre de renseigner ce tableau. Pour plus
+                                        d'informations, consultez <a class="xref" href="tMatchGroup.html#ychen-20111011-dataquality-configuration_wizard" title="Assistant de configuration">la section intitul&eacute;e &laquo;&nbsp;Assistant de configuration&nbsp;&raquo;</a>.</p></div>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Input Key Attribute</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <div lang="fr" class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous s&eacute;lectionnez une colonne de dates sur laquelle appliquer un algorithme ou un
+			algorithme de mise en correspondance, vous pouvez choisir ce que vous souhaitez comparer
+			dans le format de date.</p><p>Par exemple, si vous souhaitez comparer uniquement l'ann&eacute;e, attribuez le type <span class="emphasis"><strong>Date</strong></span> &agrave; la colonne concern&eacute;e dans le sch&eacute;ma du composant puis
+			saisissez "<span class="emphasis"><em>yyyy</em></span>" dans le champ <span class="emphasis"><strong>Date Pattern</strong></span>. Le composant convertit le format de date en une cha&icirc;ne de
+			caract&egrave;res, selon le mod&egrave;le d&eacute;fini dans le sch&eacute;ma, avant de comparer les cha&icirc;nes de
+			caract&egrave;res.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Matching Type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;algorithme de correspondance dans la liste&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Exact Match&nbsp;</strong></span>: associe chaque
+                                entr&eacute;e trait&eacute;e &agrave; toutes les entr&eacute;es possibles de r&eacute;f&eacute;rence qui ont
+                                exactement la m&ecirc;me valeur. Retourne <span class="emphasis"><em>1</em></span> lorsque les deux cha&icirc;nes de caract&egrave;res, sinon,
+                                retourne <span class="emphasis"><em>0</em></span>.</p>
+                            <p><span class="emphasis"><strong>Exact - ignore case</strong></span>&nbsp;: fait
+                                correspondre chaque entr&eacute;e trait&eacute;e &agrave; toutes les entr&eacute;es de r&eacute;f&eacute;rence
+                                possibles ayant les m&ecirc;mes valeurs, en ignorant la valeur de la
+                                casse.</p>
+                            <p><span class="emphasis"><strong>Soundex&nbsp;</strong></span>: algorithme phon&eacute;tique
+                                utile pour la comparaison de pr&eacute;noms, selon la prononciation
+                                britannique. Indexe les cha&icirc;nes de caract&egrave;res par son, selon la
+                                prononciation anglaise. Par exemple "Hello" : "H400".</p>
+                            <p><span class="emphasis"><strong>Levenshtein</strong></span> (distance d'&eacute;dition)
+                                : cette option calcule le nombre de modifications (insertions,
+                                suppressions ou substitutions) n&eacute;cessaires &agrave; la transformation d'une
+                                cha&icirc;ne de caract&egrave;res en une autre. Lorsque vous utilisez cet
+                                algorithme dans le composant <span class="emphasis"><strong>tMatchGroup</strong></span>, il n'est pas n&eacute;cessaire de sp&eacute;cifier
+                                une distance maximale. Le composant calcule automatiquement un
+                                pourcentage de correspondance, bas&eacute; sur la distance. Ce score de
+                                correspondance sera utilis&eacute; afin de calculer la correspondance
+                                globale, selon le score assign&eacute; dans le champ <span class="emphasis"><strong>Confidence Weight</strong></span>.</p>
+                            <p><span class="emphasis"><strong>Metaphone&nbsp;</strong></span>: Cette option se base
+                                sur un algorithme phon&eacute;tique afin d&#8217;indexer les entr&eacute;es selon leur
+                                prononciation. Elle charge d&#8217;abord la phon&eacute;tique de toutes les
+                                entr&eacute;es du flux lookup de r&eacute;f&eacute;rence, puis v&eacute;rifie toutes les entr&eacute;es
+                                du flux principal par rapport aux entr&eacute;es du flux de
+                                r&eacute;f&eacute;rence.</p>
+                            <p><span class="emphasis"><strong>Double Metaphone&nbsp;</strong></span>: nouvelle
+                                version de l&#8217;algorithme phon&eacute;tique M&eacute;taphone, qui produit des
+                                r&eacute;sultats plus pr&eacute;cis. Il peut retourner un code primaire et un code
+                                secondaire pour une cha&icirc;ne de caract&egrave;res. Cela est utile dans des
+                                cas ambigus, mais &eacute;galement pour de multiples variantes de noms de
+                                famille aux origines communes.</p>
+                            <p><span class="emphasis"><strong>Soundex FR</strong></span>&nbsp;: algorithme
+                                phon&eacute;tique utile pour la comparaison de pr&eacute;noms, selon la
+                                prononciation fran&ccedil;aise.</p>
+                            <p><span class="emphasis"><strong>Jaro </strong></span>: fait correspondre les
+                                entr&eacute;es trait&eacute;es, selon les diff&eacute;rences d'orthographe. Il compte le
+                                nombre de caract&egrave;res correspondants entre deux cha&icirc;nes de
+                                caract&egrave;res. Plus la distance est grande, plus les cha&icirc;nes sont
+                                semblables.</p>
+                            <p><span class="emphasis"><strong>Jaro-Winkler</strong></span>&nbsp;: variante de Jaro,
+                                donnant plus d'importance au d&eacute;but de la cha&icirc;ne de
+                                caract&egrave;res.</p>
+                            <p><span class="emphasis"><strong>q-grams</strong></span>&nbsp;: fait correspondre les
+                                entr&eacute;es trait&eacute;es en divisant les cha&icirc;nes de caract&egrave;res en blocs de
+                                lettres de longueur q, afin de cr&eacute;er un nombre de longueurs
+                                q-grammes. Le r&eacute;sultat de correspondance est donn&eacute; comme le nombre
+                                de correspondances entre les q-grammes d&#8217;entr&eacute;e et de r&eacute;f&eacute;rence,
+                                divis&eacute; par le nombre de q-grammes possibles.</p>
+                            <p><span class="emphasis"><strong>custom...&nbsp;</strong></span>: permet de charger un
+                                algorithme externe de mise en correspondance &agrave; partir d&#8217;une
+                                biblioth&egrave;que Java. La colonne <span class="emphasis"><strong>Custom Matcher
+                                    Class</strong></span> est activ&eacute;e lorsque vous s&eacute;lectionnez cette
+                                option.</p>
+                            <p>Pour plus d'informations concernant le chargement d'une
+                                biblioth&egrave;que Java externe, consultez <a class="xref" href="tLibraryLoad.html" title="tLibraryLoad">la section intitul&eacute;e &laquo;&nbsp;tLibraryLoad&nbsp;&raquo;</a>.</p>
+                            <p>Pour plus d&#8217;informations concernant la cr&eacute;ation d&#8217;un algorithme de
+                                correspondance personnalis&eacute;, consultez&nbsp;<a class="xref" href="tRecordMatching.html#Raa71983" title="Cr&eacute;er un algorithme de correspondance personnalis&eacute;">la section intitul&eacute;e &laquo;&nbsp;Cr&eacute;er un algorithme de correspondance personnalis&eacute;&nbsp;&raquo;</a>.</p>
+                            <p>Pour un sc&eacute;nario associ&eacute; concernant l&#8217;utilisation d&#8217;un algorithme
+                                de correspondance personnalis&eacute;, consultez&nbsp;<a class="xref" href="tRecordMatching.html#Raa64731" title="Sc&eacute;nario&nbsp;2&nbsp;: Utiliser un algorithme de mise en correspondance personnalis&eacute; pour faire correspondre des entr&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Utiliser un algorithme de mise en correspondance personnalis&eacute; pour faire
+            correspondre des entr&eacute;es&nbsp;&raquo;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Confidence Weight</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>D&eacute;finissez un poids num&eacute;rique pour chaque attribut (colonne) de la
+                                d&eacute;finition de cl&eacute;. Les valeurs doivent &ecirc;tre sup&eacute;rieures &agrave; 0.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Blocking Definition</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Input Column</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Au besoin, s&eacute;lectionnez la (les) colonne(s) de flux d&#8217;entr&eacute;e selon
+                                laquelle (lesquelles) vous souhaitez partitionner les donn&eacute;es
+                                trait&eacute;es en blocs, ce qui est habituellement appel&eacute; &#8220;blocking&#8221;. </p>
+                            <p>La cr&eacute;ation de blocs (ou de groupes) r&eacute;duit le nombre de paires
+                                d&#8217;enregistrements n&eacute;cessitant examen. Lors de la cr&eacute;ation de blocs,
+                                les donn&eacute;es d&#8217;entr&eacute;e sont partitionn&eacute;es en blocs exhaustifs cr&eacute;&eacute;s
+                                pour augmenter la proportion de correspondances observ&eacute;es lors de la
+                                r&eacute;duction du nombre de paires &agrave; comparer. Les comparaisons sont
+                                limit&eacute;es aux paires d&#8217;enregistrements dans chaque bloc.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Utiliser des colonnes de bloc est tr&egrave;s utile lorsque vous
+                                    traitez des donn&eacute;es tr&egrave;s volumineuses.</p></div>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Store on disk</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case si vous souhaitez stocker les blocs de donn&eacute;es
+                                trait&eacute;es sur le disque, afin d&#8217;optimiser les performances de votre
+                                syst&egrave;me.</p>
+                            <p><span class="emphasis"><strong>Max buffer size</strong></span> : Saisissez la
+                                taille de la m&eacute;moire physique que vous souhaitez allouer aux donn&eacute;es
+                                trait&eacute;es.</p>
+                            <p><span class="emphasis"><strong>Temporary data directory path</strong></span> :
+                                D&eacute;finissez l'emplacement o&ugrave; stocker le fichier temporaire.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Multiple output</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez la case <span class="emphasis"><strong>Separate output</strong></span>
+                                pour obtenir trois flux de sortie diff&eacute;rents : </p>
+                            <p>-<span class="emphasis"><strong>Uniques</strong></span> : lorsque le score du
+                                groupe (distance minimale calcul&eacute;e dans l'enregistrement) est &eacute;gal &agrave;
+                                    <span class="emphasis"><em>1</em></span>, l'enregistrement est list&eacute; dans ce flux. </p>
+                            <p>-<span class="emphasis"><strong>Matches</strong></span> : lorsque le score du
+                                groupe (distance minimale calcul&eacute;e dans l'enregistrement) est
+                                sup&eacute;rieur au seuil d&eacute;fini dans le champ <span class="emphasis"><strong>Confidence threshold</strong></span>, l'enregistrement est list&eacute;
+                                dans ce flux.</p>
+                            <p>-<span class="emphasis"><strong>Suspects</strong></span> : lorsque le score du
+                                groupe (distance minimale calcul&eacute;e dans l'enregistrement) est
+                                inf&eacute;rieur au seuil d&eacute;fini dans le champ <span class="emphasis"><strong>Confidence threshold</strong></span>, l'enregistrement est list&eacute;
+                                dans ce flux.</p>
+                            <p><span class="emphasis"><strong>Confidence threshold</strong></span> : configurez
+                                une valeur num&eacute;rique entre la valeur de <span class="emphasis"><strong>Match
+                                    Interval</strong></span> et <span class="emphasis"><em>1</em></span>. Au-dessus de ce
+                                seuil, vous pouvez avoir confiance en la qualit&eacute; du groupe.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Matching Algorithm</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans la liste un algorithme - un seul est disponible
+                                pour le moment. </p>
+                            <p><span class="emphasis"><strong>Simple VSR Matcher&nbsp;</strong></span>: Cet
+                                algorithme est bas&eacute; sur une m&eacute;thode de Mod&egrave;le Vectoriel (Vector
+                                Space Retrieval) qui sp&eacute;cifie comment deux enregistrements peuvent
+                                correspondre.</p>
+                            <p><span class="emphasis"><strong>Match Interval</strong></span>&nbsp;: Saisissez la
+                                probabilit&eacute; de correspondance. Deux enregistrements de donn&eacute;es
+                                correspondent lorsque la probabilit&eacute; est sup&eacute;rieure &agrave; la valeur
+                                d&eacute;finie </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Sort the output data by GID</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de regrouper les donn&eacute;es de sortie par l&#8217;ID
+                                du groupe.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Output distance details</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ajouter une colonne fixe de sortie
+                                    <span class="emphasis"><em>MATCHING_DISTANCES</em></span> donnant le d&eacute;tail de la
+                                distance entre chaque colonne.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics </em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est un composant interm&eacute;diaire. Il requiert un flux
+                                d&#8217;entr&eacute;e et un flux de sortie.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Assistant de configuration"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111011-dataquality-configuration_wizard"></a>Assistant de configuration</h3></div></div></div><p>L'assistant de configuration est utilis&eacute; pour vous permettre de cr&eacute;er une r&egrave;gle de
+            regroupement des correspondances r&eacute;pondant le mieux &agrave; vos besoins. Une fois les donn&eacute;es
+            d'entr&eacute;e configur&eacute;es et reli&eacute;es au <span class="emphasis"><strong>tMatchGroup</strong></span>, vous
+            pouvez cliquer-droit sur ce composant dans l'espace de mod&eacute;lisation graphique puis, dans
+            le menu contextuel, s&eacute;lectionner <span class="emphasis"><strong>Configuration Wizard</strong></span>
+            afin d'ouvrir l'assistant.</p><p>La capture d'&eacute;cran ci-dessous montre comment acc&eacute;der &agrave; cet assistant.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroup-wizard_config.png" align="middle"></div><p>Dans cet exemple, le composant d'entr&eacute;e et le <span class="emphasis"><strong>tMatchGroup</strong></span> doivent d&eacute;j&agrave; &ecirc;tre configur&eacute;s et reli&eacute;s. Quand vous ouvrez
+            l'assistant de configuration, cet assistant r&eacute;cup&egrave;re la table <span class="emphasis"><strong>Key
+                definition</strong></span> et son contenu de la vue <span class="emphasis"><strong>Component</strong></span> du <span class="emphasis"><strong>tMatchGroup</strong></span>, l'ex&eacute;cute et
+            affiche les r&eacute;sultats de la mise en correspondance.</p><p>Si la table <span class="emphasis"><strong>Key definition</strong></span> est vide, l'assistant
+            r&eacute;cup&egrave;re uniquement la table.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Cet assistant de configuration est affich&eacute; une fois que vous avez reli&eacute; les
+                donn&eacute;es d'entr&eacute;e au composant <span class="emphasis"><strong>tMatchGroup</strong></span>.</p></div><div class="mediaobject" align="center"><img src="../images/match_studio.png" align="middle"></div><p>L'assistant <span class="emphasis"><strong>Configuration wizard</strong></span> se compose de trois
+            zones : </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>La vue <span class="emphasis"><strong>Component</strong></span>, qui reproduit les
+                        champs de cl&eacute; des vues <span class="emphasis"><strong>Basic settings</strong></span> et
+                            <span class="emphasis"><strong>Advanced settings</strong></span> du <span class="emphasis"><strong>tMatchGroup</strong></span>,</p></li><li class="listitem"><p>le graphique des correspondances, qui affiche les r&eacute;sultats graphiques de
+                        la mise en correspondance,</p></li><li class="listitem"><p>la table des correspondances, qui affiche les r&eacute;sultats d&eacute;taill&eacute;s de la
+                        mise en correspondance.</p></li></ul></div><p>Dans la vue <span class="emphasis"><strong>Component</strong></span>, vous pouvez &eacute;diter une r&egrave;gle
+            de mise en correspondance existante ou en cr&eacute;er une nouvelle &agrave; partir de rien. Les
+            param&egrave;tres n&eacute;cessaires &agrave; l'&eacute;dition ou &agrave; la cr&eacute;ation des r&egrave;gles de mise en correspondance
+            sont : </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Les param&egrave;tres <span class="emphasis"><strong>Schema</strong></span> et <span class="emphasis"><strong>Key definition</strong></span> sont les m&ecirc;mes que ceux que vous
+                        pouvez sp&eacute;cifier dans la vue <span class="emphasis"><strong>Basic settings</strong></span>
+                        du composant.</p></li><li class="listitem"><p>Le champ<span class="emphasis"><strong> Limit</strong></span> indique le nombre maximum
+                        de lignes &agrave; traiter par la (les) r&egrave;gle(s) de mise en correspondance dans
+                        l'assistant.</p></li><li class="listitem"><p>Le champ <span class="emphasis"><strong>Match threshold</strong></span> correspond au
+                        champ <span class="emphasis"><strong>Match interval</strong></span> de la vue <span class="emphasis"><strong>Advanced settings</strong></span>.</p></li></ul></div><p>Lorsque vous devez cr&eacute;er des r&egrave;gles alternatives dans l'assistant de configuration,
+            vous devez ouvrir d'autres vues <span class="emphasis"><strong>Component</strong></span>, en plus de
+            celle par d&eacute;faut. Dans cette situation, cliquez simplement sur le bouton <span class="emphasis"><strong>[+]</strong></span> autant de fois que n&eacute;cessaire dans le coin sup&eacute;rieur
+            droit de cette vue <span class="emphasis"><strong>Component</strong></span> puis saisissez les
+            param&egrave;tres requis dans chaque vue.</p><p>Une fois qu'une r&egrave;gle de mise en correspondance a &eacute;t&eacute; d&eacute;finie, cliquez sur le bouton
+                <span class="emphasis"><strong>Refresh</strong></span> afin de l'ex&eacute;cuter. Les r&eacute;sultats de la
+            mise en correspondance sont affich&eacute;s dans le graphique et la table de mise en
+            correspondance.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour impl&eacute;menter l'une des r&egrave;gles alternatives dans le composant <span class="emphasis"><strong>tMatchGroup</strong></span>, cliquez sur la vue <span class="emphasis"><strong>Component</strong></span> contenant cette r&egrave;gle &agrave; afficher et cliquez sur <span class="emphasis"><strong>OK</strong></span> afin de la valider et de fermer l'assistant.</p></div><p>Le graphique des r&eacute;sultats vous permet d'avoir une vue globale des doublons existants
+            dans les donn&eacute;es analys&eacute;es. </p><div class="mediaobject" align="center"><img src="../images/tmatchgroup-wizard_chart.png" align="middle"></div><p>Par exemple, dans cette capture d'&eacute;cran, le graphique des r&eacute;sultats indique que : </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>100 &eacute;l&eacute;ments au total ont &eacute;t&eacute; analys&eacute;s et organis&eacute;s en 84 groupes selon la
+                        r&egrave;gle donn&eacute;e.</p></li><li class="listitem"><p>Lorsqu'un groupe n'a pas d'&eacute;l&eacute;ment, le graphique n'affiche pas ce
+                        groupe.</p></li><li class="listitem"><p>75 groupes ont chacun un &eacute;l&eacute;ment. Ces &eacute;l&eacute;ments sont uniques.</p></li><li class="listitem"><p>8 groupes ont deux &eacute;l&eacute;ments chacun. Dans chaque groupe, les deux &eacute;l&eacute;ments
+                        sont des doublons, selon la r&egrave;gle donn&eacute;e.</p></li><li class="listitem"><p>1 groupe a 9 &eacute;l&eacute;ments. Ils sont des doublons selon la r&egrave;gle donn&eacute;e.</p></li></ul></div><p>Dans la table des r&eacute;sultats de mise en correspondance, vous pouvez visualiser les
+            d&eacute;tails de ces diff&eacute;rents doublons.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroup-wizard_table.png" align="middle"></div><p>Par exemple, la table dans la capture d'&eacute;cran indique les d&eacute;tails de chaque &eacute;l&eacute;ment et
+            les colorise selon les groupes pr&eacute;sent&eacute;s dans le graphique des r&eacute;sultats.</p><p>Vous pouvez cliquer sur les boutons <span class="emphasis"><strong>first</strong></span>, <span class="emphasis"><strong>previous</strong></span>, <span class="emphasis"><strong>next</strong></span> ou <span class="emphasis"><strong>last</strong></span> sous la table afin de parcourir les pages de
+            r&eacute;sultats.</p><p>A la fin de la configuration, pour impl&eacute;menter la r&egrave;gle qui vous convient, cliquez sur
+            la vue <span class="emphasis"><strong>Component</strong></span> de la r&egrave;gle &agrave; afficher puis cliquez
+            sur <span class="emphasis"><strong>OK</strong></span>. Le contenu de la vue active est charg&eacute; dans les
+            champs correspondants de la vue <span class="emphasis"><strong>Component</strong></span> du composant
+                <span class="emphasis"><strong>tMatchGroup</strong></span>, dans l'espace de mod&eacute;lisation
+            graphique.</p></div><div class="section" title="Sc&eacute;nario : Grouper les donn&eacute;es de sortie dans des flux s&eacute;par&eacute;s, selon la distance minimale calcul&eacute;e dans chaque enregistrement"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e93066"></a>Sc&eacute;nario : Grouper les donn&eacute;es de sortie dans des flux s&eacute;par&eacute;s, selon la distance
+            minimale calcul&eacute;e dans chaque enregistrement</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job simple comparant des colonnes dans le fichier d'entr&eacute;e &agrave;
+            l'aide de la m&eacute;thode de Jaro-Winkler, sur les colonnes <span class="emphasis"><em>lname</em></span> et
+                <span class="emphasis"><em>fname</em></span>, ainsi qu'&agrave; l'aide de la m&eacute;thode de
+            correspondance de q-grams sur la colonne <span class="emphasis"><em>address1</em></span>. Le
+            Job regroupe ensuite les enregistrements de sortie dans trois flux de sortie :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>-<span class="emphasis"><strong>Uniques</strong></span> : liste les enregistrements dont
+                        le score du groupe (distance minimale calcul&eacute;e dans l'enregistrement) est
+                        &eacute;gal &agrave; <span class="emphasis"><em>1</em></span>. </p></li><li class="listitem"><p>-<span class="emphasis"><strong>Matches</strong></span> : liste les enregistrements dont
+                        le score du groupe (distance minimale calcul&eacute;e dans l'enregistrement) est
+                        sup&eacute;rieur au seuil d&eacute;fini dans le champ <span class="emphasis"><strong>Confidence
+                            threshold</strong></span>.</p></li><li class="listitem"><p>-<span class="emphasis"><strong>Suspects</strong></span> : liste les enregistrements
+                        dont le score du groupe (distance minimale calcul&eacute;e dans l'enregistrement)
+                        est inf&eacute;rieure au seuil d&eacute;fini dans le champ <span class="emphasis"><strong>Confidence threshold</strong></span>.</p></li></ul></div><p>
+        </p><div class="mediaobject"><img src="../images/use_case_tmatchgroup.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Pour un autre sc&eacute;nario regroupant les enregistrements de sortie dans un flux de
+                sortie unique, consultez <a class="xref" href="tGenKey.html#Raa99658" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle&nbsp;&raquo;</a>.</p></div><div class="section" title="Configurer le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e93117"></a>Configurer le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : un
+                            <span class="emphasis"><strong>tFileInputExcel</strong></span>, un <span class="emphasis"><strong>tMatchGroup</strong></span> et trois <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Reliez le <span class="emphasis"><strong>tFileInputExcel</strong></span> au <span class="emphasis"><strong>tMatchGroup</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Pour configurer diff&eacute;rents flux de sortie pour les enregistrements
+                            trait&eacute;s, vous devez d'abord cocher la case <span class="emphasis"><strong>Separate output</strong></span> dans la vue <span class="emphasis"><strong>Advanced settings</strong></span> du composant <span class="emphasis"><strong>tMatchGroup</strong></span>. Pour plus d'informations, consultez la
+                            section concernant la configuration du <span class="emphasis"><strong>tMatchGroup</strong></span>.</p></div><p>Reliez le <span class="emphasis"><strong>tMatchGroup</strong></span> aux trois <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide de liens <span class="emphasis"><strong>Unique rows</strong></span>, <span class="emphasis"><strong>Confident
+                            groups</strong></span> et <span class="emphasis"><strong>Uncertain
+                        groups</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le composant d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e93184"></a>Configurer le composant d'entr&eacute;e</h4></div></div></div><p>Le fichier d'entr&eacute;e principal contient huit colonnes :
+                    <span class="emphasis"><em>account_num</em></span>, <span class="emphasis"><em>lname</em></span>,
+                    <span class="emphasis"><em>fname</em></span>, <span class="emphasis"><em>mi</em></span>,
+                    <span class="emphasis"><em>address1</em></span>, <span class="emphasis"><em>city</em></span>,
+                    <span class="emphasis"><em>state_province</em></span> et <span class="emphasis"><em>postal_code</em></span>. Les
+                donn&eacute;es dans ce fichier d'entr&eacute;e contiennent des probl&egrave;mes, tels que des doublons,
+                des noms &eacute;crits de mani&egrave;res diff&eacute;rentes ou mal orthographi&eacute;s, des informations
+                diff&eacute;rentes pour un m&ecirc;me client.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup_input.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous pouvez cr&eacute;er le fichier d'entr&eacute;e utilis&eacute; dans ce sc&eacute;nario si vous
+                    ex&eacute;cutez les Jobs <span class="emphasis"><em>c0</em></span> et <span class="emphasis"><em>c1</em></span> du projet D&eacute;mo de qualit&eacute; de donn&eacute;es,
+                    TDQEEDEMOJAVA, que vous pouvez importer depuis la fen&ecirc;tre de login de votre
+                    Studio <span class="emphasis"><em>Talend Data Quality</em></span>.
+                    Pour plus d'informations, consultez le <span class="emphasis"><em>Guide utilisateur
+                        de Talend Data Quality</em></span>.</p></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="emphasis"><strong>Basic settings</strong></span> du <span class="emphasis"><strong>tFileInputExcel</strong></span>, renseignez le champ <span class="emphasis"><strong>File Name</strong></span> en parcourant votre syst&egrave;me jusqu'au
+                        fichier d'entr&eacute;e. Param&eacute;trez les autres propri&eacute;t&eacute;s si les informations ne
+                        sont pas stock&eacute;es dans le <span class="emphasis"><strong>Repository</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cr&eacute;ez le en cliquant sur le bouton <span class="emphasis"><strong>Edit
+                            Schema</strong></span>, si le sch&eacute;ma n'est pas d&eacute;j&agrave; stock&eacute; dans le <span class="emphasis"><strong>Repository</strong></span>. Pensez &agrave; configurer le type de
+                        donn&eacute;es dans la colonne <span class="emphasis"><strong>Type</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le composant tMatchGroup"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e93262"></a>Configurer le composant tMatchGroup</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tMatchGroup</strong></span> pour
+                        afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> afin
+                        de r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> pour
+                        visualiser le sch&eacute;ma d'entr&eacute;e et le sch&eacute;ma de sortie et effectuer les
+                        modifications n&eacute;cessaires dans le sch&eacute;ma de sortie.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup4.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Dans le sch&eacute;ma de sortie de ce composant, cinq colonnes standard de
+                            sortie sont en lecture seule. Pour plus d'informations, consultez <a class="xref" href="tMatchGroup.html#Raa75287" title="Propri&eacute;t&eacute;s du tMatchGroup">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMatchGroup&nbsp;&raquo;</a>.</p></div></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                        dialogue.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la table <span class="emphasis"><strong>Key definition</strong></span>, cliquez sur
+                        le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ou des
+                        colonne(s) &agrave; la liste sur laquelle (lesquelles) vous souhaitez effectuer une
+                        op&eacute;ration de mise en correspondance, <span class="emphasis"><em>lname</em></span>, <span class="emphasis"><em>fname</em></span> et <span class="emphasis"><em>address1</em></span> dans ce sc&eacute;nario.</p><div lang="fr" class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Lorsque vous s&eacute;lectionnez une colonne de dates sur laquelle appliquer un algorithme ou un
+			algorithme de mise en correspondance, vous pouvez choisir ce que vous souhaitez comparer
+			dans le format de date.</p><p>Par exemple, si vous souhaitez comparer uniquement l'ann&eacute;e, attribuez le type <span class="emphasis"><strong>Date</strong></span> &agrave; la colonne concern&eacute;e dans le sch&eacute;ma du composant puis
+			saisissez "<span class="emphasis"><em>yyyy</em></span>" dans le champ <span class="emphasis"><strong>Date Pattern</strong></span>. Le composant convertit le format de date en une cha&icirc;ne de
+			caract&egrave;res, selon le mod&egrave;le d&eacute;fini dans le sch&eacute;ma, avant de comparer les cha&icirc;nes de
+			caract&egrave;res.</p></div></li><li class="step" title="&Eacute;tape 6"><p>Cliquez dans la cellule de la colonne <span class="emphasis"><strong>Matching
+                            type</strong></span> et s&eacute;lectionnez dans la liste la (les) m&eacute;thode(s) &agrave;
+                        utiliser pour l'op&eacute;ration de mise en correspondance, <span class="emphasis"><strong>Jaro-Winkler</strong></span> et <span class="emphasis"><strong>q-grams</strong></span>
+                        dans cet exemple.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez dans la cellule de la colonne <span class="emphasis"><strong>Confidence
+                            Weight</strong></span> afin de configurer les param&egrave;tres avanc&eacute;s de la
+                        colonne, ainsi que les poids num&eacute;riques des trois colonnes utilis&eacute;es comme
+                        attributs de cl&eacute;s.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur l'onglet <span class="emphasis"><strong>Advanced settings</strong></span>
+                        pour configurer les param&egrave;tres avanc&eacute;s du <span class="emphasis"><strong>tMatchGroup</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup5.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Cochez la case <span class="emphasis"><strong>Separate output</strong></span>. Le
+                        composant cr&eacute;e trois flux de sortie s&eacute;par&eacute;s : <span class="emphasis"><strong>Unique
+                            rows</strong></span>, <span class="emphasis"><strong>Confident groups</strong></span> et
+                            <span class="emphasis"><strong>Uncertain groups</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si la case n'est pas coch&eacute;e, le composant <span class="emphasis"><strong>tMatchGroup</strong></span> n'a qu'un flux de sortie regroupant toutes
+                            les donn&eacute;es de sortie. Pour un sc&eacute;nario d'exemple, consultez <a class="xref" href="tGenKey.html#Raa99658" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle&nbsp;&raquo;</a>.</p></div></li></ol></div></div><div class="section" title="Finaliser le Job et l'ex&eacute;cuter"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e93389"></a>Finaliser le Job et l'ex&eacute;cuter</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur chaque composant <span class="emphasis"><strong>tLogRow</strong></span> pour afficher sa vue <span class="emphasis"><strong>Basic
+                            settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li><li class="step" title="&Eacute;tape 2"><p>Sauvegarder votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span>
+                        pour l'ex&eacute;cuter.</p><p>Vous pouvez constater que les enregistrements sont regroup&eacute;s dans trois
+                        groupes diff&eacute;rents. Chaque enregistrement et list&eacute; dans un des trois
+                        groupes, selon la valeur du score de groupe, repr&eacute;sentant la distance
+                        minimale calcul&eacute;e dans le groupe.</p><p>L'identifiant de chaque groupe s'affiche dans la colonnes <span class="emphasis"><em>GID</em></span> &agrave; c&ocirc;t&eacute; de l'enregistrement correspondant.
+                        Le nombre d'enregistrements dans chacun des trois blocs de sortie est list&eacute;
+                        dans la colonne <span class="emphasis"><em>GRP_SIZE</em></span> et calcul&eacute;
+                        uniquement sur l'enregistrement ma&icirc;tre. La colonne <span class="emphasis"><em>MASTER</em></span> indique par <span class="emphasis"><strong>true</strong></span> ou
+                            <span class="emphasis"><strong>false</strong></span> si l'enregistrement correspondant
+                        est l'enregistrement ma&icirc;tre ou non. La colonne <span class="emphasis"><em>SCORE</em></span> liste la distance calcul&eacute;e entre l'enregistrement
+                        d'entr&eacute;e et l'enregistrement ma&icirc;tre, selon les algorithmes de correspondance
+                            <span class="emphasis"><strong>Jaro-Winkler</strong></span> et <span class="emphasis"><strong>q-grams</strong></span>.</p><p>Tous les enregistrements dont le score de groupe est inf&eacute;rieur &agrave; 0.95 sont
+                        list&eacute;s dans le flux de sortie <span class="emphasis"><strong>Suspects</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup6.png"></div><p>Tous les enregistrements dont le score de groupe est sup&eacute;rieur &agrave; 0.95 sont
+                        list&eacute;s dans le flux de sortie <span class="emphasis"><strong>Matches</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup7.png"></div><p>Tous les enregistrements dont la taille du groupe est &eacute;gale &agrave; 1 sont
+                        list&eacute;s dans le flux de sortie <span class="emphasis"><strong>Uniques</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tmatchgroup8.png"></div></li></ol></div><p>Pour un autre sc&eacute;nario regroupant les enregistrements de sortie en un flux de
+                sortie unique, bas&eacute; sur une cl&eacute; fonctionnelle g&eacute;n&eacute;r&eacute;e, consultez <a class="xref" href="tGenKey.html#Raa99658" title="Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Comparer les colonnes et regrouper dans le flux de sortie les
+			enregistrements en doublon ayant la m&ecirc;me cl&eacute; fonctionnelle&nbsp;&raquo;</a>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tLaunchDQReports.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMatchGroupHadoop.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tLaunchDQReports&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tMatchGroupHadoop</td></tr></table></div></body></html>

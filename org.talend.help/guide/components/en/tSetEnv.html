@@ -1,0 +1,87 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSetEnv</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-system.html" title="Chapter&nbsp;19.&nbsp;System components"><link rel="prev" href="tRunJob.html" title="tRunJob"><link rel="next" href="tSSH.html" title="tSSH"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSetEnv</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tRunJob.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;19.&nbsp;System components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSSH.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSetEnv"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSetEnv"></a>tSetEnv</h2></div></div></div><div class="mediaobject"><img src="../images/tSetEnv_icon32_white.png"></div><div class="section" title="tSetEnv Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e278794"></a>tSetEnv Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>System</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tSetEnv </strong></span>adds variables
+                                temporarily to system environment during the execution of a
+                                Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tSetEnv </strong></span>allows to create
+                                variables and execute a Job script through communicating the
+                                information about the newly created variables between subjobs. After
+                                job execution, the newly created variables are deleted.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Parameters</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Click the plus button to add the variables
+                                    needed for the job. name</strong></span>: Enter the syntax for the
+                                new variable.</p>
+                            <p><span class="emphasis"><strong>value</strong></span>: Enter a parameter value
+                                according to the context.</p>
+                            <p><span class="emphasis"><strong>append</strong></span>: Select this check box to
+                                add the new variable at the end.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tSetEnv </strong></span>can be used as a start or
+                                an intermediate component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Modifying a variable during a Job execution"><div class="titlepage"><div><div><h3 class="title"><a name="d0e278900"></a>Scenario: Modifying a variable during a Job execution</h3></div></div></div><p>The following scenario is made of two Jobs parent and child. With the <span class="emphasis"><strong>tSetEnv</strong></span> component, you can transfer and modify in a child Job
+            a value created in a parent Job. As part of this Job, the <span class="emphasis"><strong>tMsgBox</strong></span> components allow you to display, for information purposes only,
+            that a variable is properly set, via an info-box. </p><p>To modify the value of the parent Job by using a variable set in the <span class="emphasis"><strong>tSetEnv</strong></span> component, do as described in the following
+            sections:</p><div class="section" title="Drop and link components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e278916"></a>Drop and link components</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Create a first Job named <span class="emphasis"><em>parentJob</em></span>:
+                        right-click on the <span class="emphasis"><strong>Job Design</strong></span> node of the
+                            <span class="emphasis"><strong>Repository</strong></span>, and choose <span class="emphasis"><strong>Create a Job</strong></span>. </p></li><li class="listitem"><p>From the <span class="emphasis"><strong>Palette</strong></span>, drop a <span class="emphasis"><strong>tSetEnv</strong></span> component, two <span class="emphasis"><strong>tMsgBox</strong></span> components, and one <span class="emphasis"><strong>tRunJob</strong></span> component onto the design workspace.</p></li><li class="listitem"><p>Connect the <span class="emphasis"><strong>tSetEnv</strong></span> component to a first
+                        <span class="emphasis"><strong>tMsgBox</strong></span> component with a <span class="emphasis"><strong>OnSubjobOk</strong></span> link : right-click on the start component,
+                    select <span class="emphasis"><em>Trigger</em></span>, then <span class="emphasis"><strong>OnSubjobOk</strong></span>. Then click on the end component you want to
+                    connect.</p></li><li class="listitem"><p>Connect the first <span class="emphasis"><strong>tMsgBox</strong></span> component to the
+                        <span class="emphasis"><strong>tRunJob</strong></span> with a <span class="emphasis"><strong>OnSubjobOk</strong></span> link.</p></li><li class="listitem"><p>Then connect the <span class="emphasis"><strong>tRunJob</strong></span> component to the
+                    second <span class="emphasis"><strong>tMsgbox</strong></span> with a <span class="emphasis"><strong>OnSubjobOk</strong></span> link.</p><div class="mediaobject"><img src="../images/use_case-tsetenv1.png"></div></li><li class="listitem"><p>Now create a child Job named <span class="emphasis"><em>ChildJob</em></span>.</p></li><li class="listitem"><p>From the <span class="emphasis"><strong>Palette</strong></span>, drop a <span class="emphasis"><strong>tSetEnv</strong></span> component onto the design workspace.</p></li><li class="listitem"><p>Connect the <span class="emphasis"><strong>tSetEnv</strong></span> component to the
+                            <span class="emphasis"><strong>tMsgBox</strong></span> with a <span class="emphasis"><strong>OnSubjobOk</strong></span> link: right-click on the start component, select
+                            <span class="emphasis"><em>Trigger</em></span>, then <span class="emphasis"><strong>OnSubjobOk</strong></span>. Then click on the end component you want to
+                        connect.</p></li></ol></div><div class="mediaobject" align="center"><img src="../images/use_case-tsetenv2.png" align="middle"></div></div><div class="section" title="Set the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e279031"></a>Set the components</h4></div></div></div><p>In this example, the value set in the parent Job is transferred to the child Job.
+                There, it is modified and adopts the value of the child Job, and then transferred to
+                the parent Job again.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In <span class="emphasis"><em>parentJob</em></span>, select the <span class="emphasis"><strong>tSetEnv</strong></span> component and click the <span class="emphasis"><strong>Component</strong></span> tab. Add a variable row by clicking the
+                            <span class="emphasis"><strong>[+]</strong></span> button to set the initial value of
+                        the variable. Type <span class="emphasis"><em>Variable_1</em></span> in the
+                            <span class="emphasis"><strong>Name</strong></span> field, and <span class="emphasis"><em>Parent job value</em></span> in the <span class="emphasis"><strong>Value</strong></span> field.</p></li><li class="listitem"><p>Select the first <span class="emphasis"><strong>tMsgBox</strong></span> component, and click
+                        the <span class="emphasis"><strong>Component</strong></span> tab. In the <span class="emphasis"><strong>Message</strong></span> field, type the message displayed in the
+                        info-box which confirms that your variable has properly been taken into
+                        account. For example:
+                            <code class="code">"Parent:"+System.getProperty("Variable_1")</code> displays the
+                        variable set in the <span class="emphasis"><strong>tSetEnv</strong></span> component (here
+                            <span class="emphasis"><em>Parent job value</em></span>).</p></li><li class="listitem"><p>Select the second <span class="emphasis"><strong>tMsgBox</strong></span> component, and
+                        click the <span class="emphasis"><strong>Component</strong></span> tab. In the <span class="emphasis"><strong>Message</strong></span> field, type the
+                            <code class="code">"Parent:"+System.getProperty("Variable_1")</code> line again. It
+                        makes the variable set in the child Job appear.</p></li><li class="listitem"><p>Select the <span class="emphasis"><strong>tRunJob</strong></span> component and click the
+                            <span class="emphasis"><strong>Component</strong></span> tab. In the <span class="emphasis"><strong>Job</strong></span> field, type the name of your child Job, here
+                            <span class="emphasis"><em>ChildJob</em></span>. This will run the child Job
+                        when you run the parent Job.</p><div class="mediaobject"><img src="../images/use_case-tsetenv3.png"></div></li><li class="listitem"><p>Now double-click the <span class="emphasis"><strong>tRunJob</strong></span> component to open the
+                        child Job <span class="emphasis"><em>ChildJob</em></span>.</p></li><li class="listitem"><p>Select the <span class="emphasis"><strong>tSetEnv</strong></span> component, and click the
+                            <span class="emphasis"><strong>Component</strong></span> tab. Add a variable row by
+                        clicking the <span class="emphasis"><strong>[+]</strong></span> button to set the initial
+                        value of the variable. Type <span class="emphasis"><em>Variable_1</em></span> in
+                        the <span class="emphasis"><strong>Name</strong></span> field, and <span class="emphasis"><em>Child job value</em></span> in the <span class="emphasis"><strong>Value</strong></span> field.</p></li><li class="listitem"><p>Select the <span class="emphasis"><strong>tMsgBox</strong></span> component and click the
+                            <span class="emphasis"><strong>Component</strong></span> tab. In the <span class="emphasis"><strong>Message</strong></span> field, type the message displayed in the
+                        info-box which confirms that your variable has properly been taken into
+                        account. For example: <code class="code">"Son:"+System.getProperty("Variable_1")</code>
+                        displays the variable set in the <span class="emphasis"><strong>tSetEnv</strong></span>
+                        component (here <span class="emphasis"><em>Child job value</em></span>).</p><div class="mediaobject" align="center"><img src="../images/use_case-tsetenv4.png" align="middle"></div></li><li class="listitem"><p>Save your Job, go back to <span class="emphasis"><em>parentJob</em></span>, then
+                        run the Job by pressing <span class="emphasis"><strong>F6</strong></span>.</p></li></ol></div></div><div class="section" title="Run the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e279184"></a>Run the Job</h4></div></div></div><p>Three info-boxes are displayed one after the other:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><em>Parent: Parent job value</em></span>: parent Job's
+                            value is <span class="emphasis"><em>Parent job value</em></span>.</p></li><li class="listitem"><p><span class="emphasis"><em>Child: Child job value</em></span>: Child Job's
+                            value is <span class="emphasis"><em>Child job value</em></span>.</p></li><li class="listitem"><p><span class="emphasis"><em>Parent: Child job value</em></span>: parent Job's
+                            value was modified by the variable set in the <span class="emphasis"><strong>tSetEnv</strong></span> of the child Job, then transferred again to the
+                            parent Job. Parent Job's value is now the one set in the child
+                            Job.</p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tRunJob.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-system.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSSH.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tRunJob&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSSH</td></tr></table></div></body></html>

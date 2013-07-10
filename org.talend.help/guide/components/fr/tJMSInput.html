@@ -1,0 +1,91 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJMSInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-internet.html" title="Chapitre&nbsp;14.&nbsp;Composants Internet"><link rel="prev" href="tHttpRequest.html" title="tHttpRequest"><link rel="next" href="tJMSOutput.html" title="tJMSOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tJMSInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tHttpRequest.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;14.&nbsp;Composants Internet</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tJMSOutput.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tJMSInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJMSInput"></a>tJMSInput</h2></div></div></div><div class="mediaobject"><img src="../images/tJMSInput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tJMSInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e235106"></a>Propri&eacute;t&eacute;s du tJMSInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant cr&eacute;e une
+                                interface entre une application Java et un syst&egrave;me Middleware
+                                orient&eacute; Message.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="emphasis"><strong>tJMSInput</strong></span> permet de mettre en place des interactions
+                                entre composants applicatifs dans un cadre faiblement coupl&eacute;,
+                                asynchrone et fiable via un serveur JMS.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Module List</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez dans cette liste la biblioth&egrave;que &agrave;
+                                utiliser.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Context Provider</em></span></p>
+                        </td><td valign="top"><p>Saisissez l'URL de contexte, par exemple
+                                "com.tibco.tibjms.naming.TibjmsInitialContext<span></span> Factory".
+                                Attention cependant, la syntaxe peut varier selon le serveur JMS
+                                utilis&eacute;</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Server URL</em></span></p>
+                        </td><td valign="top"><p>Saisissez l&#8217;URL du serveur en respectant la
+                                syntaxe, par exemple "tibjmsnaming://localhost:7222".</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Connection Factory JDNI
+                                Name</em></span></p>
+                        </td><td valign="top"><p>Saisissez le nom JDNI.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use Specified User
+                                Identity</em></span></p>
+                        </td><td valign="top"><p>Si vous devez vous identifier, cochez la case et
+                                saisissez votre nom d&#8217;utilisateur et votre mot de passe.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Message Type</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le type de message, <span class="emphasis"><strong>Topic</strong></span> ou <span class="emphasis"><strong>Queue</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Message From</em></span></p>
+                        </td><td valign="top"><p>Saisissez la source du message, telle qu&#8217;attendue
+                                par le serveur. Celle-ci peut &ecirc;tre compos&eacute; du type et du nom de la
+                                source, par exemple&nbsp;: queue/A ou topic/testtopic.</p><p>Notez que ce champ est sensible &agrave; la casse.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Timeout for Next Message (in
+                                    sec)</em></span></p>
+                        </td><td valign="top"><p>Renseignez le d&eacute;lai (en secondes) avant de passer
+                                au message suivant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Maximum Messages</em></span></p>
+                        </td><td valign="top"><p>Saisissez le nombre maximal de messages &agrave;
+                                traiter.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Message Selector
+                                Expression</em></span></p>
+                        </td><td valign="top"><p>Sp&eacute;cifiez votre filtre.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Processing Mode</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le mode de traitement des messages&nbsp;:
+                                    </p><p><span class="emphasis"><strong>Raw Message</strong></span>&nbsp;:
+                                message brut,</p><p><span class="emphasis"><strong>Message
+                                    Content&nbsp;:</strong></span> contenu du message.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. </p><p>Le sch&eacute;ma du composant <span class="emphasis"><strong>tJMSInput</strong></span> est en lecture seule. Il est compos&eacute; d&#8217;une
+                                colonne&nbsp;: <span class="emphasis"><strong>Message</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Properties</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]
+                                </strong></span>sous le tableau afin d&#8217;ajouter des lignes contenant le
+                                nom et le mot de passe de l&#8217;utilisateur requis &agrave;
+                                l&#8217;authentification.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est
+                                g&eacute;n&eacute;ralement utilis&eacute; en tant que composant de d&eacute;but. Il requiert un
+                                composant de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Assurez-vous que le serveur JMS correspondant est lanc&eacute;.</p>
+                          
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e235399"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p><span>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tMomInput.html#Raa18347" title="Sc&eacute;nario&nbsp;1 : Communication asynchrone via un serveur MOM">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1 : Communication asynchrone via un serveur MOM&nbsp;&raquo;</a> et <a class="xref" href="tMomInput.html#jzhang-20120420-internet-tmominput_s2" title="Sc&eacute;nario 2 : Transmettre des fichiers XML via un serveur MOM">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario 2 : Transmettre des fichiers XML via un serveur MOM&nbsp;&raquo;</a>.</span>Aucun sc&eacute;nario n'est disponible pour ce composant.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tHttpRequest.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-internet.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tJMSOutput.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tHttpRequest&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tJMSOutput</td></tr></table></div></body></html>

@@ -1,0 +1,351 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHiveInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tHiveConnection.html" title="tHiveConnection"><link rel="next" href="tHiveRow.html" title="tHiveRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+		<span>tHiveInput</span>
+	</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tHiveConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tHiveRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tHiveInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHiveInput"></a>
+		<span>tHiveInput</span>
+	</h2></div></div></div><div class="mediaobject"><img src="../images/thiveinput_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>
+					Talend Big Data Studio
+				</em></span>. </em></span>
+		</p></div><div class="section" title="tHiveInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e17787"></a>
+			<span>tHiveInput properties</span>
+		</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Hive</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tHiveInput</strong></span> is the dedicated
+								component to the Hive database (the Hive data warehouse system). It
+								executes the given HiveQL query in order to extract the data of
+								interest from Hive. It provides the SQLBuilder tool to help you
+								write your HiveQL statements easily.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tHiveInput</strong></span> executes the select
+								queries to extract the corresponding data and sends the data to the
+								component that follows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td valign="top"><span class="emphasis"><strong>Repository</strong></span> : Select the
+							repository file in which the properties are stored. The fields that
+							follow are completed automatically using the data retrieved.</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Distribution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the product you are using as the Hadoop distribution from
+								the drop-down list. </p>
+							<p>The options in the list vary depending on the component you are
+								using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hive version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the version of the Hadoop distribution you are using.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select a connection mode from the list. The options vary depending
+								on the distribution you are using.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Fill this field with the name of the database.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This field is not available when you select <span class="emphasis"><strong>Embedded</strong></span> from the <span class="emphasis"><strong>Connection mode</strong></span> list. </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set Jobtracker URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to indicate the location of the Hadoop Jobtracker service to be
+		used. For example, we assume that you have chosen a machine called <span class="emphasis"><em>machine1</em></span> as the JobTracker, then set its location as <span class="emphasis"><em>machine1:portnumber</em></span>.</p>
+							<p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p>
+							<p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p>
+							<p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Set NameNode URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to indicate the location of the NameNode of the Hadoop cluster to be
+		used.</p>
+							<p>This property is required when the query you want to use is executed in Windows and it is
+		a <code class="code">Select</code> query. For example, <code class="code">SELECT your_column_name FROM
+			your_table_name</code></p>
+							<p>You can keep this check box clear, when a query is executed in Windows but does not
+		require the Hadoop Map/Reduce framework, for example, <code class="code">select * from
+			your_table_name</code>; however, setting the exact value for this property does not
+		provoke any issues with the execution in that situation.</p>
+							<p>For further information about the Hadoop Map/Reduce framework, see the Map/Reduce tutorial
+		in the Hadoop documentation.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+									<span class="emphasis"><em>Talend Data Integration Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Data Integration Studio</em></span>
+								<span class="emphasis"><em>User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be processed.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>. </p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: Fill in manually the
+								query statement or build it graphically using SQLBuilder</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the relevant
+								query stored in the Repository. The Query field gets accordingly
+								filled in.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guess Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the <span class="emphasis"><strong>Guess Query </strong></span>button to
+								generate the query which corresponds to your table schema in the
+								Query field.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Guess schema</em></span>
+						</td><td valign="top">
+							<p>Click this button to retrieve the schema from the table.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter your DB query paying particularly attention to properly
+								sequence the fields in order to match the schema definition. </p>
+							<p>For further information about the Hive query language, see <a class="link" href="https://cwiki.apache.org/Hive/languagemanual.html" target="_top">https://cwiki.apache.org/Hive/languagemanual.html</a>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespace
+								from all the String/Char columns.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Trim column</em></span>
+						</td><td valign="top">
+							<p>Remove leading and trailing whitespace from defined
+								columns.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Clear the <span class="emphasis"><strong>Trim all the String/Char
+										columns</strong></span> check box to enable <span class="emphasis"><strong>Trim column</strong></span> in this field.</p></div>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you need to use custom configuration for the Hadoop of
+		interest, complete this table with the property or properties to be
+		customized. Then at runtime, the customized property or properties
+		will override those corresponding ones defined earlier for the same
+		Hadoop. </p>
+							<p>For further information about the properties required by Hadoop,
+		see the Hadoop documentation. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Temporary path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>If you do not want to set the Jobtracker and the NameNode when you execute the query
+			<code class="code">select * from your_table_name</code>, you need to set this temporary path. For
+		example, <span class="emphasis"><em>/C:/select_all</em></span> in Windows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component offers the benefit of flexible DB queries and
+								covers all possible Hive QL queries.</p>
+							<p>If the Studio used to connect to a Hive database is operated on Windows, you must manually
+		create a file called <span class="emphasis"><em>tmp</em></span> in the root of the disk where
+		this Studio is installed.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Prerequisites</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The Hadoop distribution must be properly installed, so as to guarantee the interaction
+		with the Studio.</p>
+							<p>For example, if you need to connect to MapR from the Studio, ensure that you have installed
+		the MapR client in the machine where the Studio is, and added the MapR client library to the
+		PATH variable of that machine. For Windows, this library is <span class="emphasis"><em>lib\MapRClient.dll</em></span> in the MapR client jar file; without adding it, you may
+		encounter the following error: <code class="code">no MapRClient in java.library.path</code>.</p>
+							<p>For further information about how to install an Hadoop distribution, see the manuals
+		corresponding to the Hadoop distribution you are using.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18609"></a>
+			<span>Related scenarios</span>
+		</h3></div></div></div><p> For related topic, see <a class="xref" href="tMysqlInput.html#ychen-20111010-databases-writing_output" title="Scenario 1: Writing columns from a MySQL database to an output file">the section called &#8220;Scenario 1: Writing columns from a MySQL database to an output file&#8221;</a>.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tHiveConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tHiveRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tHiveConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tHiveRow</td></tr></table></div></body></html>

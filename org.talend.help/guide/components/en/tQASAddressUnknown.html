@@ -1,0 +1,106 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tQASAddressUnknown</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tQASAddressRow.html" title="tQASAddressRow"><link rel="next" href="tQASAddressVerified.html" title="tQASAddressVerified"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tQASAddressUnknown</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tQASAddressRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tQASAddressVerified.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tQASAddressUnknown"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tQASAddressUnknown"></a>tQASAddressUnknown</h2></div></div></div><div class="mediaobject"><img src="../images/tQASAddressUnknown_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><p>The address management components discussed here are the result of <span class="emphasis"><strong>Talend</strong></span> collaboration with
+    Experian QAS, one of the world leaders for global address data quality. </p><p>For more information about the enterprise and its software tools, visit <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p><div class="section" title="tQASAddressUnknown properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e106969"></a>tQASAddressUnknown properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Component family</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>Data Quality</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Function</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tQASAddressUnknown</strong></span> collects unknown addresses.
+                It iterates on each row and reads all input addresses against the QuickAddress data.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+                    <span class="emphasis"><strong>tQASAddressUnknown</strong></span> uses QAS Pro Web
+                    5.17.</p></div>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Purpose</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p><span class="emphasis"><strong>tQASAddressUnknown</strong></span> can give one output flow:
+                  <span class="emphasis"><strong>Unknown</strong></span> that collects all addresses that do not
+                match to deliverable results in the QuickAddress data.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Basic settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>QAS WSDL url</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Enter the URL for the QuickAdress XML document. The URL is provided by Experian
+                QAS.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Country</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select from the list the country corresponding to your input addresses.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit Schema</em></span></p>
+            </td><td valign="top">
+              <p>A schema is a row description, i.e., it defines the number of fields that will
+                be processed and passed on to the next component. The schema is either built-in or
+                remote in the Repository. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>: You create the schema and store it
+                locally for this component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User
+                  Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema
+                and stored it in the Repository. You can reuse it in various projects and job
+                designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Column to analyze</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select from the list the address column you want to analyze.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Advanced settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>tStat</em></span>
+                <span class="emphasis"><em>Catcher</em></span>
+                <span class="emphasis"><em>Statistics</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Select this check box to collect log data at the component level.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Usage</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>This component is an intermediary step. It requires an input flow as well as an
+                output.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="emphasis"><strong>Limitation</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>n/a</p>
+            </td></tr></tbody></table></div><p>
+      <span>&nbsp;</span>
+    </p></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e107217"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tQASAddressRow.html#Raa31728" title="Scenario: Editing addresses and giving the verification status">the section called &#8220;Scenario: Editing addresses and giving the verification status&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tQASAddressRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tQASAddressVerified.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tQASAddressRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tQASAddressVerified</td></tr></table></div></body></html>

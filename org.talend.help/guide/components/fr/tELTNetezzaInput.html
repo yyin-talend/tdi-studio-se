@@ -1,0 +1,74 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTNetezzaInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-elt.html" title="Chapitre&nbsp;11.&nbsp;Composants ELT"><link rel="prev" href="tELTMysqlOutput.html" title="tELTMysqlOutput"><link rel="next" href="tELTNetezzaMap.html" title="tELTNetezzaMap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tELTNetezzaInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tELTMysqlOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;11.&nbsp;Composants ELT</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tELTNetezzaMap.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tELTNetezzaInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTNetezzaInput"></a>tELTNetezzaInput</h2></div></div></div><div class="mediaobject"><img src="../images/tELTNetezzaInput_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tELTNetezzaInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e190725"></a>Propri&eacute;t&eacute;s du tELTNetezzaInput</h3></div></div></div><p>Les composants <span class="emphasis"><strong>tELTNetezzalInput</strong></span>, <span class="emphasis"><strong>tELTNetezzaOutput</strong></span>, et <span class="emphasis"><strong>tELTNetezzaMap</strong></span> sont tr&egrave;s
+      proches dans leurs conditions de fonctionnement. En effet, ces trois composants sont con&ccedil;us
+      pour manipuler des sch&eacute;mas de donn&eacute;es d&#8217;une base MySQL afin de g&eacute;n&eacute;rer des commandes Insert, y
+      compris des clauses, qui devront &ecirc;tre ex&eacute;cut&eacute;es dans la table de sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Famille de
+                  composant</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>ELT/Map/Netezza</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+              <p>Fournit le sch&eacute;ma de la table d&#8217;entr&eacute;e &agrave; la commande SQL qui sera
+                ex&eacute;cut&eacute;e.</p>
+            </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+              <p>Permet d&#8217;ajouter autant de tables que n&eacute;cessaires dans une commande Insert qui
+                peut &ecirc;tre complexe.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit Schema</em></span></p>
+            </td><td valign="top">
+              <p> Un sch&eacute;ma est une description de lignes, il d&eacute;finit la nature le nombre de
+                champs &agrave; traiter. <span>Le sch&eacute;ma peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+              
+              <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour modifier le
+                sch&eacute;ma. <span>Notez que si vous le modifiez, le sch&eacute;ma se
+                  met automatiquement en mode <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour
+                ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est
+                stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers projets et
+                Jobs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span><span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Default Table
+                                                  Name</em></span></p>
+                                                </td><td valign="top">
+              <p>Saisissez le nom de la table par d&eacute;faut, entre guillemets doubles.</p>
+            </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+              <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du Job ainsi qu&#8217;au
+                niveau du composant.</p>
+            </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+              <p>L&#8217;utilisation du composant <span class="emphasis"><strong>tELTNetezzaInput</strong></span> est
+                &eacute;troitement li&eacute;e &agrave; celle des composants <span class="emphasis"><strong>tELTGreenplumMap</strong></span> et <span class="emphasis"><strong>tELTGreenplumOutput</strong></span>. Notez que le lien de sortie (output) &agrave; utiliser
+                avec ces deux composants doit respecter strictement la syntaxe du nom de la table. </p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les composants ELT ne traitent pas le flux de donn&eacute;es lui-m&ecirc;me mais uniquement
+                  les informations du sch&eacute;ma.</p></div>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e190929"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour des sc&eacute;narios associ&eacute;s, consultez :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tELTGreenplumMap.html#andy-20120906-elt-teltgreenplummap-mapping_data_using_simple_implicit_join" title="Sc&eacute;nario: Mapper les donn&eacute;es &agrave; l'aide d'une jointure implicite simple">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario: Mapper les donn&eacute;es &agrave; l'aide d'une jointure implicite simple &nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa40349" title="Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Agr&eacute;ger les colonnes d&#8217;une table et appliquer un filtre&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><a class="xref" href="tELTMysqlMap.html#Raa41309" title="Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: ELT utilisant une table Alias&nbsp;&raquo;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tELTMysqlOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-elt.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tELTNetezzaMap.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tELTMysqlOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tELTNetezzaMap</td></tr></table></div></body></html>

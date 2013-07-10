@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlColumnList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tMysqlClose.html" title="tMysqlClose"><link rel="next" href="tMysqlCommit.html" title="tMysqlCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tMysqlColumnList</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tMysqlClose.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMysqlCommit.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tMysqlColumnList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlColumnList"></a>tMysqlColumnList</h2></div></div></div><div class="mediaobject"><img src="../images/tMysqlColumnList_icon32_white.png"></div><a name="Xaa2132898"></a><div class="section" title="tMysqlColumnList Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e89466"></a>tMysqlColumnList Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/MySQL</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Iterates on all columns
+                                of a given table through a defined Mysql connection.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Lists all column names of
+                                a given Mysql table.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top"><p>Select the <span class="emphasis"><strong>tMysqlConnection</strong></span> component in the list if more than
+                                one connection are planned for the current job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Table name</em></span></p>
+                        </td><td valign="top"><p>Enter the name of the table.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Dynamic settings</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+                            <p>When a dynamic parameter is defined, the <span class="emphasis"><strong>Component List</strong></span>
+		box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable.</p>
+                            <p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is to be
+                                used along with Mysql components, especially with <span class="emphasis"><strong>tMysqlConnection</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Iterating on a DB table and listing its column names"><div class="titlepage"><div><div><h3 class="title"><a name="Raa94771"></a>Scenario: Iterating on a DB table and listing its column names</h3></div></div></div><p>The following Java scenario creates a five-component job that iterates on a given
+            table name from a Mysql database using a Where clause and lists all column names present
+            in the table.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace: <span class="emphasis"><strong>tMysqlConnection</strong></span>, <span class="emphasis"><strong>tMysqlTableList</strong></span>, <span class="emphasis"><strong>tMysqlColumnList</strong></span>, <span class="emphasis"><strong>tFixedFlowInput</strong></span>, and <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Connect <span class="emphasis"><strong>tMysqlConnection </strong></span>to <span class="emphasis"><strong>tMysqlTableList </strong></span>using an <span class="emphasis"><strong>OnSubjobOk</strong></span> link.</p></li><li class="listitem"><p> Connect <span class="emphasis"><strong>tMysqlTableList</strong></span>, <span class="emphasis"><strong>tMysqlColumnList</strong></span>, and <span class="emphasis"><strong>tFixedFlowInput </strong></span>using <span class="emphasis"><strong>Iterate</strong></span>
+                    links.</p></li><li class="listitem"><p> Connect <span class="emphasis"><strong>tFixedFlowInput</strong></span> to <span class="emphasis"><strong>tLogRow </strong></span>using a <span class="emphasis"><strong>Row
+                        Main</strong></span> link.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="emphasis"><strong>tMysqlConnection</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic settings.</p></li><li class="listitem"><p> In the <span class="emphasis"><strong>Basic settings</strong></span> view, set the database
+                    connection details manually or select them from the context variable list,
+                    through a <span class="emphasis"><strong>Ctrl+Space</strong></span> click in the corresponding
+                    field if you have stored them locally as Metadata DB connection entries. </p></li></ul></div><p>For more information about Metadata, see <span class="emphasis"><em>Talend Open Studio</em></span>
+            <span class="emphasis"><strong>User Guide</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList1.png"></div><p>In this example, we want to connect to a Mysql database called
+                <span class="emphasis"><em>customers</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="emphasis"><strong>tMysqlTableList</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> On the <span class="emphasis"><strong>Component list</strong></span>, select the relevant
+                    Mysql connection component if more than one connection is used.</p></li><li class="listitem"><p> Enter a Where clause using the right syntax in the corresponding field to
+                    iterate on the table name(s) you want to list on the console.</p><p> In this scenario, the table we want to iterate on is called
+                        <span class="emphasis"><em>customer</em></span>.</p></li><li class="listitem"><p> In the design workspace, select <span class="emphasis"><strong>tMysqlColumnList</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> On the <span class="emphasis"><strong>Component list</strong></span>, select the relevant
+                    Mysql connection component if more than one connection is used.</p></li><li class="listitem"><p> In the <span class="emphasis"><strong>Table name</strong></span> field, enter the name of
+                    the DB table you want to list its column names.</p><p> In this scenario, we want to list the columns present in the DB table called
+                        <span class="emphasis"><em>customer</em></span>.</p></li><li class="listitem"><p> In the design workspace, select <span class="emphasis"><strong>tFixedFlowInput</strong></span> and click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic settings.</p></li><li class="listitem"><p> Set the <span class="emphasis"><strong>Schema</strong></span> to <span class="emphasis"><strong>Built-In</strong></span> and click the three-dot [...] button next to <span class="emphasis"><strong>Edit Schema </strong></span>to define the data you want to use as
+                    input. In this scenario, the schema is made of two columns, the first for the
+                    table name and the second for the column name.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList5.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="emphasis"><strong>OK</strong></span> to close the dialog box, and accept
+                    propagating the changes when prompted by the system. The defined columns display
+                    in the <span class="emphasis"><strong>Values</strong></span> panel of the <span class="emphasis"><strong>Basic settings</strong></span> view.</p></li><li class="listitem"><p> Click in the <span class="emphasis"><strong>Value</strong></span> cell for each of the two
+                    defined columns and press <span class="emphasis"><strong>Ctrl+Space </strong></span>to access
+                    the global variable list.</p></li><li class="listitem"><p> From the global variable list, select
+                        <span class="emphasis"><em>((String)globalMap.get("tMysqlTableList_1_CURRENT_TABLE"))</em></span>
+                    and
+                        <span class="emphasis"><em>((String)globalMap.get("tMysqlColumnList_1_COLUMN_NAME"))</em></span>
+                    for the <span class="emphasis"><em>TableName</em></span> and <span class="emphasis"><em>ColumnName</em></span>
+                    respectively.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList4.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Click the <span class="emphasis"><strong>Component</strong></span> tab and define the basic
+                    settings for <span class="emphasis"><strong>tLogRow</strong></span> as needed.</p></li><li class="listitem"><p> Save your job and press <span class="emphasis"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlTableList6.png"></div><p>The name of the DB table is displayed on the console along with all its column
+            names.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tMysqlClose.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMysqlCommit.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tMysqlClose&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMysqlCommit</td></tr></table></div></body></html>

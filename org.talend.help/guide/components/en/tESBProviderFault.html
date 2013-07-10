@@ -1,0 +1,167 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tESBProviderFault</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-esb.html" title="Chapter&nbsp;12.&nbsp;ESB components"><link rel="prev" href="tESBConsumer.html" title="tESBConsumer"><link rel="next" href="tESBProviderRequest.html" title="tESBProviderRequest"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tESBProviderFault</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tESBConsumer.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;12.&nbsp;ESB components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tESBProviderRequest.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tESBProviderFault"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tESBProviderFault"></a>tESBProviderFault</h2></div></div></div><div class="mediaobject"><img src="../images/tESBProviderFault_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><span class="emphasis"><em>This component is relevant only when used with the <span class="emphasis"><strong>ESB</strong></span> version of the Studio, as it should be used with the
+                    <span class="emphasis"><strong>Service</strong></span> Repository node and the <span class="emphasis"><strong>Data Service</strong></span> creation related
+            wizard(s).</em></span></p></div><div class="section" title="tESBProviderFault properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e204138"></a>tESBProviderFault properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>ESB/Web Services</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Serves a Talend Job cycle result as a Fault message of the Web
+                                service in case of a request response communication style.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Acts as Fault message of the Web Service response at the end of a
+                                    Talend Job
+                                cycle.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e. it defines the number of fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                            <p> Click <span class="emphasis"><strong>Edit schema</strong></span> to make changes to the schema. <span>Note that if you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span>
+                            </p>
+                            <p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>EBS service
+                                    settings</em></span><span class="emphasis"><em>/</em></span><span class="emphasis"><em>fault
+                                    title</em></span></p>
+                        </td><td valign="top">
+                            <p>Value of the faultString in the Fault message.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component should only be used with the <span class="emphasis"><strong>tESBProviderRequest</strong></span> component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>A JDK is required for this component to operate.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Returning Fault message"><div class="titlepage"><div><div><h3 class="title"><a name="d0e204345"></a>Scenario: Returning Fault message</h3></div></div></div><p>The Jobs, which are built upon the components under the ESB/Web Services family, act
+            as the implementations of web services defined in the <span class="emphasis"><strong>Services</strong></span> node of the <span class="emphasis"><strong>Repository</strong></span>. They
+            require the creation of and association with relevant services. For more information
+            about services, see the related topics in the <span class="emphasis"><em>Talend Open Studio</em></span>
+            <span class="emphasis"><strong>User Guide</strong></span>. </p><p>In this scenario, a provider Job and a consumer Job are needed. In the meantime, the
+            related service should already exist in the <span class="emphasis"><strong>Services</strong></span>
+            node, with the WSDL URI being
+                <span class="emphasis"><em>http://127.0.0.1.8088/esb/provider/?WSDL</em></span>, the port name being
+                <span class="emphasis"><em>LOCAL_providerSoapBinding</em></span> and the operation being
+                <span class="emphasis"><em>invoke(anyType):anyType</em></span>.</p><p>The provider Job consists of a <span class="emphasis"><strong>tESBProviderRequest</strong></span>, a
+                <span class="emphasis"><strong>tESBProviderFault</strong></span>, a <span class="emphasis"><strong>tXMLMap</strong></span>, and two <span class="emphasis"><strong>tLogRow</strong></span>
+            components.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault1.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="emphasis"><strong>Palette,</strong></span> drop a <span class="emphasis"><strong>tESBProviderRequest</strong></span>, a <span class="emphasis"><strong>tESBProviderFault</strong></span>, a <span class="emphasis"><strong>tXMLMap</strong></span>,
+                    and two <span class="emphasis"><strong>tLogRow</strong></span> onto the design
+                    workspace.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tESBProviderRequest_1</strong></span> to display
+                    its <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault2.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select <span class="emphasis"><strong>Repository</strong></span> from the <span class="emphasis"><strong>Property Type</strong></span> list and click the three-dot button to
+                    choose the service, to the granularity of port name and operation.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault24.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+                        schema</strong></span> to view the schema of <span class="emphasis"><strong>tESBProviderRequest_1</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault3.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="emphasis"><strong>tESBProviderRequest_1</strong></span> to <span class="emphasis"><strong>tLogRow_1</strong></span>.</p></li><li class="listitem"><p>Double-click the <span class="emphasis"><strong>tLogRow_1</strong></span> to display its
+                        <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault4.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="emphasis"><strong>Edit
+                        schema</strong></span> and define the schema as follow.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault5.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="emphasis"><strong>tLogRow_1</strong></span> to <span class="emphasis"><strong>tXMLMap_1</strong></span>.</p></li><li class="listitem"><p>Connect <span class="emphasis"><strong>tXMLMap_1</strong></span> to <span class="emphasis"><strong>tLogRow_2</strong></span> and name this row as
+                    <span class="emphasis"><em>payload</em></span>.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tXMLMap_1</strong></span> to open the <span class="emphasis"><strong>Map Editor</strong></span>. </p></li><li class="listitem"><p>In the left table, right-click <span class="emphasis"><em>root</em></span> to open the
+                    contextual menu. </p></li><li class="listitem"><p>From the contextual menu, select <span class="emphasis"><strong>Create
+                        Sub-Element</strong></span> and type in <span class="emphasis"><em>request</em></span> in the popup
+                    dialog box.</p></li><li class="listitem"><p>Repeat this operation to create a sub-element <span class="emphasis"><em>response</em></span> of
+                    the <span class="emphasis"><em>root</em></span> node in the output table.</p></li><li class="listitem"><p>Right-click the <span class="emphasis"><em>request</em></span> node in the input table and
+                    select <span class="emphasis"><strong>As loop element</strong></span> from the contextual
+                    menu.</p></li><li class="listitem"><p>Click the <span class="emphasis"><em>request </em></span>node in the input table and drop it to
+                    the <span class="emphasis"><strong>Expression</strong></span> column in the row of the
+                        <span class="emphasis"><em>response </em></span>node in the output table.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate the mapping and close
+                    the <span class="emphasis"><strong>Map Editor</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault6.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, double-click <span class="emphasis"><strong>tLogRow_2</strong></span> to display its <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic
+                        settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault7.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="emphasis"><strong>Edit
+                        schema</strong></span> and define the schema as follow.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault8.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="emphasis"><strong>tLogRow_2 </strong></span>to <span class="emphasis"><strong>tESBProviderFault_1</strong></span>. </p></li><li class="listitem"><p>In the design workspace, double-click <span class="emphasis"><strong>tESBProviderFault_1</strong></span> to display its <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic
+                        settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault9.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="emphasis"><strong>Edit
+                        schema</strong></span> and define the schema as follow.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault10.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The Job can be run without errors. </p></li></ul></div><p>The consumer Job consists of a <span class="emphasis"><strong>tFixedFlowInput</strong></span>, a
+                <span class="emphasis"><strong>tXMLMap</strong></span>, a <span class="emphasis"><strong>tESBConsumer</strong></span>, and two <span class="emphasis"><strong>tLogRow</strong></span>
+            components.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault11.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="emphasis"><strong>Palette,</strong></span> drop a <span class="emphasis"><strong>tFixedFlowInput</strong></span>, a <span class="emphasis"><strong>tXMLMap</strong></span>, a <span class="emphasis"><strong>tESBConsumer</strong></span>, and
+                    two <span class="emphasis"><strong>tLogRow</strong></span> components onto the design
+                    workspace.</p></li><li class="listitem"><p>Double-click <span class="emphasis"><strong>tFixedFlowInput_1</strong></span> to display its
+                        <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault13.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+                        schema</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault12.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add a new line of string type and name it
+                        <span class="emphasis"><em>payloadString</em></span>.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select <span class="emphasis"><strong>Use Single Table</strong></span> and input <code class="code">Test error</code> in
+                    quotations into the <span class="emphasis"><strong>Value</strong></span> field.</p></li><li class="listitem"><p>Connect <span class="emphasis"><strong>tFixedFlowInput_1</strong></span> to <span class="emphasis"><strong>tXMLMap_1</strong></span>.</p></li><li class="listitem"><p>Connect <span class="emphasis"><strong>tXMLMap_1</strong></span> to <span class="emphasis"><strong>tESBConsumer_1</strong></span> and name this row as
+                    <span class="emphasis"><em>payload</em></span>.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="emphasis"><strong>tXMLMap_1</strong></span> to open the <span class="emphasis"><strong>Map
+                        Editor</strong></span>.</p></li><li class="listitem"><p>On the lower right part of the map editor, click the plus button to add one
+                    row to the <span class="emphasis"><em>payload</em></span> table and name this row as
+                        <span class="emphasis"><em>payload</em></span>. </p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Type</strong></span> column of this
+                        <span class="emphasis"><em>payload</em></span> row, select <span class="emphasis"><strong>Document</strong></span> as the data type. The corresponding XML root is added
+                    automatically to the table on the right side which represents the output
+                    flow.</p></li><li class="listitem"><p>In the <span class="emphasis"><em>payload</em></span> table, right-click
+                        <span class="emphasis"><em>root</em></span> to open the contextual menu. </p></li><li class="listitem"><p>From the contextual menu, select <span class="emphasis"><strong>Create
+                        Sub-Element</strong></span> and type in <span class="emphasis"><em>request</em></span> in the popup
+                    dialog box.</p></li><li class="listitem"><p>Right-click the <span class="emphasis"><em>request</em></span> node and select <span class="emphasis"><strong>As loop element</strong></span> from the contextual menu.</p></li><li class="listitem"><p>Click the <span class="emphasis"><em>payloadstring </em></span>node in the input table and drop
+                    it to the <span class="emphasis"><strong>Expression</strong></span> column in the row of the
+                        <span class="emphasis"><em>request </em></span>node in the output table.</p></li><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate the mapping and close
+                    the <span class="emphasis"><strong>Map Editor</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault14.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Start the provider Job. In the executing log you can see:</p><p>
+                    </p><pre class="programlisting">...<span></span>
+web service [endpoint: http://127.0.0.1:8088/esb/provider] published<span></span>
+...</pre><p>
+                </p></li><li class="listitem"><p>On the <span class="emphasis"><strong>tESBConsumer_1</strong></span>
+                    <span class="emphasis"><strong>Component</strong></span> view of the consumer Job, click the
+                    three-dot button next to the <span class="emphasis"><strong>Service
+                        Configuration</strong></span> to open the editor. </p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault23.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="emphasis"><strong>WSDL</strong></span> field, type in:
+                        <span class="emphasis"><em>http://127.0.0.1:8088/esb/provider/?WSDL</em></span>.</p></li><li class="listitem"><p>Click the Refresh button to retrieve port name and operation name.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault15.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="emphasis"><strong>OK</strong></span>.</p></li><li class="listitem"><p>In the <span class="emphasis"><strong>Basic settings</strong></span> of the <span class="emphasis"><strong>tESBConsumer_1</strong></span> component, set the <span class="emphasis"><strong>Input schema</strong></span> as follow:</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault16.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="emphasis"><strong>Response schema</strong></span> as follow:</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault17.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="emphasis"><strong>Fault schema</strong></span> as follow:</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault18.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="emphasis"><strong>tESBConsumer_1</strong></span> to <span class="emphasis"><strong>tLogRow_1</strong></span> and <span class="emphasis"><strong>tLogRow_2</strong></span>.</p></li><li class="listitem"><p>Stop the provider Job.</p></li><li class="listitem"><p>In the consumer Job, double-click<span class="emphasis"><strong> tLogRow_1</strong></span>
+                    to display its <span class="emphasis"><strong>Component</strong></span> view and set its
+                        <span class="emphasis"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault19.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+                        schema</strong></span> and define the schema as follow:</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault20.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, double-click<span class="emphasis"><strong>
+                        tLogRow_2</strong></span> to display its <span class="emphasis"><strong>Component</strong></span> view and set its <span class="emphasis"><strong>Basic
+                        settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault21.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="emphasis"><strong>Edit
+                        schema</strong></span> and define the schema as follow:</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tESBProviderFault22.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The Job can be run without errors.</p></li><li class="listitem"><p>Run the provider Job. In the execution log you will see:</p><p>
+                    </p><pre class="programlisting">...<span></span>
+2011-04-19 15:38:33.486:INFO::jetty-7.2.2.v20101205<span></span>
+2011-04-19 15:38:33.721:INFO::Started SelectChannelConnector@127.0.0.1:8088<span></span>
+web service [endpoint: http://127.0.0.1:8088/esb/provider] published</pre><p>
+                </p></li><li class="listitem"><p>Run the consumer Job. In the execution log of the Job you will see:</p><p>
+                    </p><pre class="programlisting">Starting job consumer at 15:39 19/04/2011.<span></span>
+<span></span>
+[statistics] connecting to socket on port 3850<span></span>
+[statistics] connected<span></span>
+LOCAL_provider<span></span>
+LOCAL_providerSoapBinding<span></span>
+|<span></span>
+{http://talend.org/esb/service/job}LOCAL_provider<span></span>
+{http://talend.org/esb/service/job}LOCAL_providerSoapBinding<span></span>
+invoke<span></span>
+[tLogRow_1] faultString: TestFaultTitle [tESBProviderFault_1]<span></span>
+faultDetail: &lt;?xml version="1.0" encoding="UTF-8"?&gt;<span></span>
+&lt;response xmlns="http://talend.org/esb/service/job"&gt;Fault message
+text: Test error!&lt;/response&gt;<span></span>
+[statistics] disconnected<span></span>
+Job consumer ended at 15:39 19/04/2011. [exit code=0]</pre><p>
+                </p></li><li class="listitem"><p>In the provider&#8217;s log you will see the exception trace log:</p><p>
+                    </p><pre class="programlisting">...<span></span>
+WARNING: Application {http://talend.org/esb/service/job}LOCAL_provider#{http://talend.org/esb/service/job}invoke
+has thrown exception, unwinding now<span></span>
+org.apache.cxf.binding.soap.SoapFault: TestFaultTitle [tESBProviderFault_1]<span></span>
+...<span></span>
+</pre><p>It
+                    is expected because the Fault message is generated.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tESBConsumer.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-esb.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tESBProviderRequest.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tESBConsumer&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tESBProviderRequest</td></tr></table></div></body></html>

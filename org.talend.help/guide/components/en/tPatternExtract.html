@@ -1,0 +1,112 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPatternExtract</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tPatternCheck.html" title="tPatternCheck"><link rel="next" href="tPostgresqlInvalidRows.html" title="tPostgresqlInvalidRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tPatternExtract</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tPatternCheck.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tPostgresqlInvalidRows.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tPatternExtract"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPatternExtract"></a>tPatternExtract</h2></div></div></div><div class="mediaobject"><img src="../images/tPatternExtract_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tPatternExtract properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e103985"></a>tPatternExtract properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component family</strong></span></p>
+                                                </td><td valign="top"><p>Data Quality</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tPatternExtract</strong></span> extracts from a column
+                                                  all data strings that match a given Java regular
+                                                  expression. </p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tPatternExtract</strong></span> allows to output all
+                                                  data that match a given pattern. You can then
+                                                  implement any required operation on the extracted
+                                                  data.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Column to
+                                                  check</em></span></p>
+                                                </td><td valign="top"><p>Select the column you want
+                                                  to analyze.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top"><p>A schema is a row
+                                                  description, i.e., it defines the number of fields
+                                                  that will be processed and passed on to the next
+                                                  component. The schema is either built-in or remote
+                                                  in the Repository. </p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Pattern
+                                                  type</em></span></p>
+                                                </td><td valign="top"><p>Select from the list the
+                                                  pattern you want to check the data against and
+                                                  then extract all data that match the selected
+                                                  pattern.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Built-in</strong></span>: You create the schema and store it locally for this
+                                                  component only. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio
+                                                  User Guide</em></span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>: You have already created the schema and stored it
+                                                  in the Repository. You can reuse it in various
+                                                  projects and job designs. Related topic: see
+                                                  <span class="emphasis"><em>Talend Data Integration Studio
+                                                  User Guide</em></span>.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher</em></span>
+                                                  <span class="emphasis"><em>Statistics</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  collect log data at the component level.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>This component is an intermediary step. It
+                                                  requires an input flow as well as an
+                                                  output.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Extracting only the data that corresponds to a defined pattern from a delimited file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e104151"></a>Scenario: Extracting only the data that corresponds to a defined pattern from
+                        a delimited file</h3></div></div></div><p>This scenario describes a four-component Job where the <span class="emphasis"><strong>tExtractPattern</strong></span> component is used to extract only
+                        customers&#8217; email addresses (that match the <span class="emphasis"><strong>Email
+                                address</strong></span> pattern) from a delimited file that holds
+                        different customer data. Then it writes the extracted data into another
+                        delimited file. A <span class="emphasis"><strong>tFilterColumns</strong></span> component
+                        is used to adapt the output schema. </p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract.png"></div><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e104168"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> to the design
+                                                workspace: <span class="emphasis"><strong>tFileInputDelimited</strong></span>, <span class="emphasis"><strong>tPatternExtract</strong></span>, <span class="emphasis"><strong>tFilterColumns</strong></span>, and
+                                                  <span class="emphasis"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect the <span class="emphasis"><strong>tFileInputDelimited</strong></span> component to the
+                                                  <span class="emphasis"><strong>tPatternExtract</strong></span>
+                                                component using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> connection.</p></li><li class="step" title="Step 3"><p>Connect the <span class="emphasis"><strong>tPatternExtract</strong></span> component to the
+                                                  <span class="emphasis"><strong>tFilterColumns</strong></span>
+                                                component using the <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Matching
+                                                  Data</strong></span> connection.</p></li><li class="step" title="Step 4"><p>Connect the <span class="emphasis"><strong>tFilterColumns</strong></span> component to the
+                                                  <span class="emphasis"><strong>tFileOutputDelimited</strong></span> component using a
+                                                  <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e104235"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFileInputDelimited</strong></span> to display its
+                                                  <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view and define the component properties, including
+                                                the input file name, the number of header rows to
+                                                skip, and the schema. </p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract1.png"></div><p>In this scenario, the delimited file holds names,
+                                                email addresses and telephone numbers, all in a
+                                                single column:
+                                                  <span class="emphasis"><em>Name_Telephone_Address</em></span>. The
+                                                following shows an extract of the input file.</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract2.png"></div><p>Therefore, define the input schema as follows:</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract3.png"></div></li><li class="step" title="Step 2"><p>Double-click <span class="emphasis"><strong>tPatternExtract</strong></span> to display its
+                                                  <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view and define the component properties.</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract4.png"></div></li><li class="step" title="Step 3"><p>From the <span class="emphasis"><strong>Column to
+                                                  check</strong></span> list, select the column you want
+                                                to check its data against the defined
+                                                  pattern,<span class="emphasis"><em>
+                                                  Name_Telephone_Address</em></span> in this
+                                                example.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Pattern type</strong></span>
+                                                list, select the pattern you want to extract data
+                                                according to, <span class="emphasis"><strong>/Regex/internet/Email Address</strong></span> in this
+                                                example.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view of the <span class="emphasis"><strong>tFilterColumns</strong></span> component, click the
+                                                  <span class="emphasis"><strong>[...]</strong></span> button next
+                                                to <span class="emphasis"><strong>Edit schema</strong></span> to
+                                                open the <span class="emphasis"><strong>[Schema]</strong></span>
+                                                dialog box.</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract5.png"></div></li><li class="step" title="Step 6"><p>Select the column of interest from the Input schema,
+                                                and click the right arrow button to copy the column
+                                                to the output schema. Then, click <span class="emphasis"><strong>OK</strong></span> to close the dialog
+                                                box.</p></li><li class="step" title="Step 7"><p>Double-click <span class="emphasis"><strong>tFileOutputDelimited</strong></span> to display its
+                                                  <span class="emphasis"><strong>Basic settings</strong></span>
+                                                view and define the component properties.</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract6.png"></div></li><li class="step" title="Step 8"><p>In the <span class="emphasis"><strong>File Name</strong></span>
+                                                field, specify the path to the file you want to
+                                                write the output data to.</p></li><li class="step" title="Step 9"><p>Define the row and field separators in the
+                                                corresponding fields, if any. In this example, we
+                                                want to separate customers&#8217; email addresses by
+                                                semicolons.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e104342"></a>Executing the Job</h4></div></div></div><div class="procedure"><ul class="procedure"><li class="step" title="Step 1"><p>Save your Job and press <span class="emphasis"><strong>F6
+                                                </strong></span>to execute it.</p><p>Customers&#8217; email addresses are extracted from the
+                                                selected column according to the defined Email
+                                                pattern and written in the output file using
+                                                semicolons as row separators. You can then, for
+                                                example, send an email to all your customers in one
+                                                go.</p><div class="mediaobject"><img src="../images/Use_Case_tPatternExtract8.png"></div></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tPatternCheck.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tPostgresqlInvalidRows.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tPatternCheck&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tPostgresqlInvalidRows</td></tr></table></div></body></html>

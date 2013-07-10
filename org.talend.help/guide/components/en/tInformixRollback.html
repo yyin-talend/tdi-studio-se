@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInformixRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tInformixOutputBulkExec.html" title="tInformixOutputBulkExec"><link rel="next" href="tInformixRow.html" title="tInformixRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tInformixRollback</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tInformixOutputBulkExec.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tInformixRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tInformixRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInformixRollback"></a>tInformixRollback</h2></div></div></div><div class="mediaobject"><img src="../images/tInformixRollback_icon32_white.png"></div><div class="section" title="tInformixRollback properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e80053"></a>tInformixRollback properties</h3></div></div></div><p>This component is closely related to <span class="emphasis"><strong>tInformixCommit</strong></span>
+            and <span class="emphasis"><strong>tInformixConnection</strong></span>. They are generally used
+            together to execute transactions.</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/Informix</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tInformixRollback</strong></span> cancels
+                                transactions in connected databases.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component prevents involuntary transaction commits. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the <span class="emphasis"><strong>tInformixConnection</strong></span>
+                                component from the list if you plan to add more than one connection
+                                to the Job. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Clear this checkbox if you want to continue to use the connection
+                                once the component has completed its task.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect the log data at a component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Dynamic settings</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+                            <p>When a dynamic parameter is defined, the <span class="emphasis"><strong>Component List</strong></span>
+		box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable.</p>
+                            <p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be used with other Informix components,
+                                particularly <span class="emphasis"><strong>tInformixConnection</strong></span>
+                                and <span class="emphasis"><strong>tInformixCommit</strong></span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e80236"></a>Related Scenario</h3></div></div></div><p>For a scenario in which <span class="emphasis"><strong>tInformixRollback</strong></span> might be
+            used, see <a class="xref" href="tMysqlRollback.html#Raa14463" title="Scenario: Rollback from inserting data in mother/daughter tables">the section called &#8220;Scenario: Rollback from inserting data in
+                mother/daughter tables&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tInformixOutputBulkExec.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tInformixRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tInformixOutputBulkExec&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tInformixRow</td></tr></table></div></body></html>

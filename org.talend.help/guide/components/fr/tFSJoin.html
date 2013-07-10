@@ -1,0 +1,296 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFSJoin (d&eacute;pr&eacute;ci&eacute;)</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-filescale.html" title="Chapitre&nbsp;14.&nbsp;Composants FileScale"><link rel="prev" href="tFSFilterRows.html" title="tFSFilterRows (d&eacute;pr&eacute;ci&eacute;)"><link rel="next" href="tFSPartitionFile.html" title="tFSPartitionFile (d&eacute;pr&eacute;ci&eacute;)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFSJoin (d&eacute;pr&eacute;ci&eacute;)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFSFilterRows.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;14.&nbsp;Composants FileScale</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFSPartitionFile.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFSJoin (d&eacute;pr&eacute;ci&eacute;)"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFSJoin"></a>tFSJoin (d&eacute;pr&eacute;ci&eacute;)</h2></div></div></div><div class="mediaobject"><img src="../images/tFSJoin_icon32.png"></div><a name="Xaa3613656"></a><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette </strong></span>du studio
+            uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition de <span class="emphasis"><em>Talend Big Data Studio</em></span>. Pour plus
+            d&#8217;informations concernant le mode Massively Parallel eXtension, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+            <span class="emphasis"><em>Talend Big Data Studio</em></span><span class="emphasis"><em>.</em></span></p></div><div class="section" title="Propri&eacute;t&eacute;s du tFSJoin"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e302033"></a>Propri&eacute;t&eacute;s du tFSJoin</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>FileScale</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tFSJoin </strong></span>regroupe les champs de deux
+                                fichiers en utilisant des valeurs communes aux deux. Il compare des
+                                colonnes du fichier leftset (fichier d&#8217;entr&eacute;e) aux colonnes de
+                                r&eacute;f&eacute;rence du fichier rightset (fichier de r&eacute;f&eacute;rence) et &eacute;crit les
+                                donn&eacute;es agr&eacute;g&eacute;es et/ou rejet&eacute;es.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant permet de
+                                regrouper un fichier leftset et un fichier rightset en utilisant un
+                                pr&eacute;dicat de jointure pour identifier les enregistrements sur
+                                lesquels effectuer une jointure.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>:
+                                Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Repository</strong></span>&nbsp;:
+                                S&eacute;lectionnez le fichier de propri&eacute;t&eacute;s du composant. Les champs
+                                suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+                                collect&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td colspan="2" align="center" valign="top"><p><span class="emphasis"><em>Input File</em></span></p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                                pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (built-in)
+                                soit distant dans le Repository.</p><p> Cliquez sur <span class="emphasis"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous modifiez le sch&eacute;ma, il se met automatiquement en
+                                    built-in.</p></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier leftset (fichier
+                                d&#8217;entr&eacute;e) contenant les donn&eacute;es sur lesquelles vous souhaitez
+                                effectuer une jointure.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top"><p>Nombre d&#8217;enregistrements &agrave; ignorer au d&eacute;but du
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top"><p>Nombre d&#8217;enregistrements &agrave; ignorer &agrave; la fin du
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td colspan="2" align="center" valign="top"><p><span class="emphasis"><em>Rightset File</em></span></p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                                pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (built-in)
+                                soit distant dans le Repository.</p><p> Cliquez sur <span class="emphasis"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Si vous modifiez le sch&eacute;ma, il se met automatiquement en
+                                    built-in.</p></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de
+                                    </em></span><span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier rightset (fichier de
+                                r&eacute;f&eacute;rence) contenant les donn&eacute;es sur lesquelles vous souhaitez
+                                effectuer une jointure.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top"><p>Nombre d&#8217;enregistrements &agrave; ignorer au d&eacute;but du
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top"><p>Nombre d&#8217;enregistrements &agrave; ignorer &agrave; la fin du
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Record Separator
+                                (char)</em></span></p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne de caract&egrave;res ou expression
+                                r&eacute;guli&egrave;re pour s&eacute;parer les enregistrements (lignes).</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Field Separator (char)</em></span></p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne de caract&egrave;res ou expression
+                                r&eacute;guli&egrave;re pour s&eacute;parer les champs dans un enregistrement.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Join Key</em></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Input column</strong></span>&nbsp;:
+                                S&eacute;lectionnez la (les) colonne(s) du fichier d&#8217;entr&eacute;e n&eacute;cessitant
+                                v&eacute;rification par rapport &agrave; la colonne rightset (de
+                                r&eacute;f&eacute;rence).</p><p><span class="emphasis"><strong>Rightset
+                                    column</strong></span>&nbsp;: S&eacute;lectionnez les colonnes cl&eacute;s de r&eacute;f&eacute;rence
+                                qui seront utilis&eacute;es comme r&eacute;f&eacute;rence par rapport aux colonnes du
+                                fichier d&#8217;entr&eacute;e que vous souhaitez comparer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Join Mode</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez dans la liste le mode d&eacute;finissant la
+                                jointure entre le fichier d&#8217;entr&eacute;e et le fichier
+                                    rightset&nbsp;:</p><p><span class="emphasis"><strong>Inner
+                                    join</strong></span>&nbsp;: ce type de jointure est le plus courant. Il
+                                cr&eacute;e une table de sortie en combinant les valeurs des colonnes de
+                                deux tables &agrave; partir du pr&eacute;dicat de jointure.</p><p><span class="emphasis"><strong>Left-outer-join</strong></span>&nbsp;: avec ce type de
+                                jointure, la table de sortie contient toujours tous les
+                                enregistrements de la table leftset, m&ecirc;me si la condition de
+                                jointure ne trouve aucun enregistrement correspondant dans la table
+                                rightset.</p><p><span class="emphasis"><strong>Right-outer-join</strong></span>&nbsp;: avec ce type de jointure, la
+                                table de sortie contient toujours tous les enregistrements de la
+                                table rightset, m&ecirc;me si la condition de jointure ne trouve aucun
+                                enregistrement correspondant dans la table
+                                    leftset.</p><p><span class="emphasis"><strong>Full-outer-join</strong></span>&nbsp;: cette jointure applique &agrave; la fois
+                                la jointure Right-outer-join et la jointure Left-outer-join. Chaque
+                                colonne de la table se verra attribuer une valeur NULL si aucune
+                                ligne ne lui correspond.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Output File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier de sortie dans lequel
+                                vous souhaitez &eacute;crire les donn&eacute;es regroup&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Output Reject File</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier de sortie dans lequel
+                                vous souhaitez &eacute;crire les donn&eacute;es rejet&eacute;es.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Generate FSLang File</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour g&eacute;n&eacute;rer le fichier FSLang
+                                correspondant &agrave; votre Job et cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; de chacun des champs
+                                suivants&nbsp;:</p><p><span class="emphasis"><strong>Left FSLang File
+                                    Name</strong></span>&nbsp;: pour sp&eacute;cifier le chemin d&#8217;acc&egrave;s et le nom du
+                                fichier d&#8217;entr&eacute;e FSLang,</p><p><span class="emphasis"><strong>Right
+                                    FSLang File Name&nbsp;</strong></span>: pour sp&eacute;cifier le chemin d&#8217;acc&egrave;s
+                                et le nom du fichier de r&eacute;f&eacute;rence FSLang,</p><p><span class="emphasis"><strong>Join FSLang File Name</strong></span>&nbsp;: pour sp&eacute;cifier le
+                                chemin d&#8217;acc&egrave;s et le nom du fichier de sortie FSLang, fichier dans
+                                lequel les donn&eacute;es regroup&eacute;es seront &eacute;crites.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Assign FileScale Path</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case puis cliquez sur le bouton
+                                    <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>FileScale Path</strong></span> afin de s&eacute;lectionner le
+                                fichier ex&eacute;cutable du programme FileScale n&eacute;cessaire &agrave; l&#8217;ex&eacute;cution
+                                du composant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Specify Number of Process
+                                    Child</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case et saisissez le nombre de
+                                processus fils &agrave; utiliser pour effectuer l&#8217;agr&eacute;gation.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Custom FileScale Parameter (separated
+                                    by,)</em></span></p>
+                        </td><td valign="top"><p>Saisissez les param&egrave;tres pour toute op&eacute;ration
+                                sp&eacute;cifique que vous souhaitez ajouter &agrave; l&#8217;appel de l&#8217;ex&eacute;cutable
+                                FileScale.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top"><span class="emphasis"><em>Set temporary
+                            path</em></span></td><td valign="top">
+                            <p>Cochez cette case afin de d&eacute;finir le r&eacute;pertoire des fichiers
+                                temporaires du <span class="emphasis"><strong>tFSJoin</strong></span> lorsque vous
+                                travaillez sur des fichiers volumineux. Ce r&eacute;pertoire doit exister
+                                et se trouver dans une partition ayant suffisamment d'espace disque
+                                disponible. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Il est recommand&eacute; de ne pas utiliser la partition de votre
+                                    syst&egrave;me d'exploitation pour stocker des fichiers temporaires,
+                                    car cette partition peut &ecirc;tre inaccessible pour les
+                                    applications. </p></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Custom Hash Ratio</em></span></p>
+                        </td><td valign="top"><p>Saisissez un ratio entre le maximum de m&eacute;moire
+                                utilis&eacute;e pour ex&eacute;cuter le processus FileScale et la taille du
+                                fichier d&#8217;entr&eacute;e Si la taille de l&#8217;un des fichiers d&#8217;entr&eacute;e est
+                                inf&eacute;rieure au ratio, un algorithme en m&eacute;moire de jointure hach&eacute;e est
+                                essay&eacute; en premier, afin d&#8217;optimiser les
+                                performances.</p><p>Par exemple, si la valeur par d&eacute;faut de ce
+                                param&egrave;tre &eacute;quivaut &agrave; 0,5, et si la m&eacute;moire de votre ordinateur est
+                                &eacute;gale &agrave; 1GB, le processus FileScale utilisera un algorithme en
+                                m&eacute;moire de jointure hach&eacute;e, lorsque la taille du fichier d&#8217;entr&eacute;e
+                                est inf&eacute;rieure &agrave; 500MB.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du Job ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant g&egrave;re des fichiers et ne n&eacute;cessite donc pas de flux d&#8217;entr&eacute;e ou de sortie. Il est
+                                utilis&eacute; pour effectuer une jointure sur des donn&eacute;es dans des
+                                fichiers &agrave; gros volume.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>La limitation d&eacute;pend des
+                                limites impos&eacute;es par la m&eacute;moire physique et par l&#8217;architecture du
+                                processeur. Par exemple, la longueur totale des fichiers trait&eacute;s ne
+                                peut exc&eacute;der la limite syst&egrave;me pour les fichiers &agrave; gros volume
+                                (valeur maximum de 64 bits sign&eacute;s).</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Regrouper les donn&eacute;es de deux colonnes et &eacute;crire les donn&eacute;es agr&eacute;g&eacute;es et rejet&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e302615"></a>Sc&eacute;nario&nbsp;: Regrouper les donn&eacute;es de deux colonnes et &eacute;crire les donn&eacute;es agr&eacute;g&eacute;es et
+            rejet&eacute;es</h3></div></div></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>V&eacute;rifiez que vous avez d&eacute;zipp&eacute; et sauvegard&eacute; localement le fichier ex&eacute;cutable
+                FileScale fourni par <span class="emphasis"><strong>Talend</strong></span>. Vous devez d&eacute;finir le chemin
+                d&#8217;acc&egrave;s &agrave; ce fichier ex&eacute;cutable dans la vue <span class="emphasis"><strong>Advanced
+                    settings</strong></span> du composant <span class="emphasis"><strong>tFSJoin</strong></span>.</p></div><p>Ce sc&eacute;nario d&eacute;crit un Job utilisant le composant <span class="emphasis"><strong>tFSJoin</strong></span> pour regrouper les donn&eacute;es d&#8217;un fichier leftset (fichier
+            d&#8217;entr&eacute;e) avec les donn&eacute;es d&#8217;un fichier rightset (fichier de r&eacute;f&eacute;rence) en utilisant une
+            colonne commune aux deux fichiers comme cl&eacute; de jointure. Ce Job &eacute;crit &eacute;galement les
+            donn&eacute;es rejet&eacute;es, c&#8217;est-&agrave;-dire les donn&eacute;es n&#8217;ayant aucune correspondance dans le fichier
+            de r&eacute;f&eacute;rence.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e302635"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: deux
+                            <span class="emphasis"><strong>tRowGenerator</strong></span>, deux <span class="emphasis"><strong>tFileOutputDelimited</strong></span> et un <span class="emphasis"><strong>tFSJoin</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Reliez les composants <span class="emphasis"><strong>tRowGenerator</strong></span> aux
+                            <span class="emphasis"><strong>tFileOutputDelimited</strong></span> &agrave; l&#8217;aide de liens
+                            <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Utilisez un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span> afin de relier les deux <span class="emphasis"><strong>tRowGenerator</strong></span>, puis liez le second <span class="emphasis"><strong>tRowGenerator</strong></span> au <span class="emphasis"><strong>tFSJoin</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e302696"></a>Configurer les composants</h4></div></div></div><p>Dans ce sc&eacute;nario, le premier composant <span class="emphasis"><strong>tRowGenerator</strong></span> va g&eacute;n&eacute;rer les donn&eacute;es de r&eacute;f&eacute;rence selon le sch&eacute;ma
+                que vous avez d&eacute;fini dans l'&eacute;diteur du composant et les envoyer au fichier de
+                r&eacute;f&eacute;rence. Le second composant <span class="emphasis"><strong>tRowGenerator</strong></span> va
+                g&eacute;n&eacute;rer les donn&eacute;es principales selon le sch&eacute;ma que vous avez d&eacute;fini dans l'&eacute;diteur
+                du composant et les envoyer au fichier d&#8217;entr&eacute;e.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Vous devez avoir au moins une colonne commune aux deux fichiers pour pouvoir
+                    regrouper les donn&eacute;es selon cette colonne.</p></div><p>Si la g&eacute;n&eacute;ration des donn&eacute;es s&#8217;effectue sans erreur, le composant <span class="emphasis"><strong>tFSJoin</strong></span> compare les donn&eacute;es des deux fichiers selon la
+                cl&eacute; de jointure, regroupe les donn&eacute;es communes, les &eacute;crit dans un fichier de sortie,
+                puis &eacute;crit les donn&eacute;es rejet&eacute;es dans un autre fichier de sortie.</p><div class="procedure" title="Proc&eacute;dure&nbsp;14.1.&nbsp;Configurer les composants tRowGenerator et tFileOutputDelimited"><a name="d55688e302715"></a><p class="title"><b>Proc&eacute;dure&nbsp;14.1.&nbsp;Configurer les composants tRowGenerator et tFileOutputDelimited</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez sur le <span class="emphasis"><strong>tRowGenerator</strong></span> afin
+                        d&#8217;afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir
+                        ses propri&eacute;t&eacute;s. </p></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>RowGenerator Editor</strong></span> pour ouvrir
+                        l&#8217;&eacute;diteur dans lequel vous pouvez d&eacute;finir votre sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin1.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans la partie sup&eacute;rieure de l&#8217;&eacute;diteur, cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter les colonnes que vous souhaitez
+                        &eacute;crire dans le fichier d&#8217;entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 4"><p>D&eacute;finissez le sch&eacute;ma et configurez les param&egrave;tres des colonnes.</p><p>Dans ce sc&eacute;nario, le fichier de r&eacute;f&eacute;rence contient trois colonnes&nbsp;:
+                            <span class="emphasis"><em>firstname_client</em></span>,
+                            <span class="emphasis"><em>lastname_client</em></span>, et <span class="emphasis"><em>id_client</em></span>.</p><p>Si n&eacute;cessaire, cliquez sur l&#8217;onglet <span class="emphasis"><strong>Preview</strong></span> dans la partie inf&eacute;rieure de l&#8217;&eacute;diteur pour afficher
+                        la vue correspondante, puis cliquez sur le bouton <span class="emphasis"><strong>View</strong></span> pour afficher une partie des donn&eacute;es g&eacute;n&eacute;r&eacute;es.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le <span class="emphasis"><strong>tFileOutputDelimited</strong></span> pour
+                        afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir
+                        ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin2.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> afin
+                        d&#8217;afficher le sch&eacute;ma que vous avez d&eacute;fini dans l&#8217;&eacute;diteur et le modifier si
+                        n&eacute;cessaire.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le second
+                            <span class="emphasis"><strong>tRowGenerator</strong></span> pour ouvrir son &eacute;diteur
+                        et d&eacute;finir le sch&eacute;ma d&#8217;entr&eacute;e comme vous venez de le faire pour le sch&eacute;ma de
+                        r&eacute;f&eacute;rence.</p><p>Dans ce sc&eacute;nario, le fichier leftset contient trois colonnes&nbsp;:
+                            <span class="emphasis"><em>id_command, price_command</em></span> et
+                            <span class="emphasis"><em>id_client</em></span>.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin3.png"></div></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur le second <span class="emphasis"><strong>tFileOutputDelimited</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin4.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> afin
+                        d&#8217;afficher le sch&eacute;ma d&#8217;entr&eacute;e que vous avez d&eacute;fini dans l&#8217;&eacute;diteur et le
+                        modifier si n&eacute;cessaire.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;14.2.&nbsp;Configurer le composant tFSJoin"><a name="d55688e302820"></a><p class="title"><b>Proc&eacute;dure&nbsp;14.2.&nbsp;Configurer le composant tFSJoin</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Cliquez sur le <span class="emphasis"><strong>tFSJoin</strong></span> pour ouvrir sa vue
+                            <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+                        propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> pour
+                        ouvrir une bo&icirc;te de dialogue dans laquelle vous pouvez d&eacute;finir les colonnes
+                        de votre sch&eacute;ma. Le sch&eacute;ma doit correspondre au sch&eacute;ma du fichier
+                        d&#8217;entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la zone <span class="emphasis"><strong>Input File</strong></span>, param&eacute;trez les
+                        propri&eacute;t&eacute;s du fichier d&#8217;entr&eacute;e et cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> pour afficher/modifier le sch&eacute;ma du
+                        fichier d&#8217;entr&eacute;e, si n&eacute;cessaire.</p><p>R&eacute;p&eacute;tez l'op&eacute;ration pour la zone <span class="emphasis"><strong>Rightset
+                            File</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans les champs <span class="emphasis"><strong>Record Separator</strong></span> et
+                            <span class="emphasis"><strong>Field Separator</strong></span>, d&eacute;finissez les
+                        s&eacute;parateurs d&#8217;enregistrements et de champs.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans le tableau <span class="emphasis"><strong>Join Key</strong></span>, cliquez sur le
+                        bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ligne puis
+                        cliquez sur cette ligne et s&eacute;lectionnez une colonne du fichier d&#8217;entr&eacute;e
+                        ainsi qu&#8217;une colonne du fichier de r&eacute;f&eacute;rence. Ces colonnes communes sont
+                        utilis&eacute;es dans les deux fichiers comme la valeur permettant d&#8217;effectuer une
+                        jointure. R&eacute;p&eacute;tez cette op&eacute;ration pour ajouter autant de cl&eacute;s de jointure
+                        que n&eacute;cessaire.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Vous pouvez utiliser uniquement les derni&egrave;res colonnes des fichiers
+                            d&#8217;entr&eacute;e et de r&eacute;f&eacute;rence comme cl&eacute;s de jointure.</p></div></li><li class="step" title="&Eacute;tape 6"><p>Dans la liste <span class="emphasis"><strong>Join Mode</strong></span>, s&eacute;lectionnez le
+                        mode que vous souhaitez utiliser pour effectuer la jointure entre les
+                        donn&eacute;es.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="emphasis"><strong>Output File Name</strong></span>,
+                        d&eacute;finissez le chemin d&#8217;acc&egrave;s au fichier de r&eacute;f&eacute;rence qui contiendra les
+                        donn&eacute;es agr&eacute;g&eacute;es.</p></li><li class="step" title="&Eacute;tape 8"><p>Cochez la case <span class="emphasis"><strong>Output Reject File</strong></span> si vous
+                        souhaiter &eacute;crire les donn&eacute;es rejet&eacute;es dans un fichier apr&egrave;s la jointure.
+                        D&eacute;finissez le chemin d&#8217;acc&egrave;s au fichier de rejet dans le champ qui
+                        appara&icirc;t.</p></li><li class="step" title="&Eacute;tape 9"><p>Cliquez sur l&#8217;onglet <span class="emphasis"><strong>Advanced settings</strong></span>
+                        pour configurer les propri&eacute;t&eacute;s avanc&eacute;es.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin6.png"></div></li><li class="step" title="&Eacute;tape 10"><p>Cochez la case <span class="emphasis"><strong>Assign FileScale Path</strong></span> pour
+                        afficher le champ <span class="emphasis"><strong>FileScale Path</strong></span> puis
+                        cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> afin de
+                        s&eacute;lectionner le fichier ex&eacute;cutable fourni par <span class="emphasis"><strong>Talend</strong></span>.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter votre Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e302918"></a>Sauvegarder et ex&eacute;cuter votre Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> afin de
+                        sauvegarder votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Sauvegardez votre Job et appuyez sur <span class="emphasis"><strong>F6</strong></span>
+                        pour l&#8217;ex&eacute;cuter. </p></li></ol></div><p>Une barre de progression appara&icirc;t dans l&#8217;espace de mod&eacute;lisation graphique sous le
+                composant <span class="emphasis"><strong>tFSJoin</strong></span>, pour afficher l&#8217;avancement de
+                l&#8217;op&eacute;ration. Cette barre de progression vous montre combien les donn&eacute;es volumineuses
+                sont trait&eacute;es rapidement.</p><p>Lorsque le pourcentage de la barre de progression atteint les&nbsp;100%, les donn&eacute;es
+                sont agr&eacute;g&eacute;es puis &eacute;crites dans le fichier de sortie tandis que les donn&eacute;es rejet&eacute;es
+                sont &eacute;crites dans le fichier de rejets.</p><p>Ci-dessous, une partie des donn&eacute;es client agr&eacute;g&eacute;es dans le fichier de sortie&nbsp;: le
+                pr&eacute;nom et le nom du client sont group&eacute;s avec l&#8217;ID et le prix de la commande selon
+                l&#8217;ID du client.</p><div class="mediaobject"><img src="../images/Use_Case_FSJoin7.png"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFSFilterRows.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-filescale.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFSPartitionFile.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFSFilterRows (d&eacute;pr&eacute;ci&eacute;)&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFSPartitionFile (d&eacute;pr&eacute;ci&eacute;)</td></tr></table></div></body></html>

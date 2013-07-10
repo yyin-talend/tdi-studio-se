@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInfiniteLoop</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-orchestration.html" title="Chapter&nbsp;17.&nbsp;Orchestration components"><link rel="prev" href="tForeach.html" title="tForeach"><link rel="next" href="tIterateToFlow.html" title="tIterateToFlow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tInfiniteLoop</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tForeach.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;17.&nbsp;Orchestration components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tIterateToFlow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tInfiniteLoop"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInfiniteLoop"></a>tInfiniteLoop</h2></div></div></div><div class="mediaobject"><img src="../images/tInfiniteLoop_icon32_white.png"></div><div class="section" title="tInfiniteLoop Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e261633"></a>tInfiniteLoop Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Component
+                                Family</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tInfiniteLoop</strong></span> runs an infiite loop on a task.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tInfiniteLoop</strong></span> allows you to to execute a task or a Job
+                                automatically, based on a loop.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Wait at each iteration (in
+                                    milliseconds)</em></span></p>
+                        </td><td valign="top"><p>Enter the time delay between iterations.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect the log data at a
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tInifniteLoop</strong></span> is an input component and requires an
+                                Iterate link to connect it to the following component.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Current
+                                iteration</strong></span>: Indicates the current iteration number. This
+                                is available as a <span class="emphasis"><strong>Flow</strong></span>
+                                variable.</p><p> Returns an integer.</p><p> </p><p> For further information about variables, see <span class="emphasis"><em>Talend Open Studio</em></span> User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Outgoing links (from one component to
+                                another):</p><p>
+                                <span class="emphasis"><strong>Row</strong></span>: Iterate</p><p>
+                                <span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component
+                                Error.</p><p> </p><p> Incoming links (from one component
+                                to another):</p><p>
+                                <span class="emphasis"><strong>Row</strong></span>: Iterate; </p><p>
+                                <span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error; Synchronize;
+                                Parallelize. </p><p> </p><p> For further information regarding connections, see <span class="emphasis"><em>Talend Open Studio</em></span> User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e261802"></a>Related scenario</h3></div></div></div><p>For an example of the kind of scenario in which <span class="emphasis"><strong>tInifniteLoop</strong></span> might be used, see <a class="xref" href="tLoop.html#Raa73244" title="Scenario: Job execution in a loop">the section called &#8220;Scenario: Job execution in a loop&#8221;</a>, regarding
+            the <span class="emphasis"><strong>tLoop</strong></span> component.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tForeach.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tIterateToFlow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tForeach&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tIterateToFlow</td></tr></table></div></body></html>

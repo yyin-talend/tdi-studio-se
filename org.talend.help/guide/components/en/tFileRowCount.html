@@ -1,0 +1,130 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileRowCount</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileProperties.html" title="tFileProperties"><link rel="next" href="tFileTouch.html" title="tFileTouch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileRowCount</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileProperties.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileTouch.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileRowCount"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileRowCount"></a>tFileRowCount</h2></div></div></div><div class="mediaobject"><img src="../images/tFileRowCount_icon32_white.png"></div><div class="section" title="tFileRowCount properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e230261"></a>tFileRowCount properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Management</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileRowCount</strong></span> counts the number
+								of rows in a file.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileRowCount </strong></span>opens a file and
+								reads it row by row in order to determine the number of rows
+								inside.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name and path of the file to be processed and/or the variable to
+								be used.</p>
+							<p> </p>
+							<p> See also: <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Row separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>String (ex: &#8220;\n&#8221;on Unix) to distinguish rows in the output
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Ignore empty rows</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this checkbox to ignore the empty rows while the component
+								is counting the rows in the file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the processing metadata at the Job
+								level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileRowCount</strong></span> is a standalone
+								component, it must be used with a <span class="emphasis"><strong>OnSubjobOk
+								</strong></span>connection to <span class="emphasis"><strong>tJava</strong></span>.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Global Variables</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Number of counted lines</strong></span>: Returns
+								the number of rows in a file. This is available as a <span class="emphasis"><strong>Flow</strong></span> variable.</p>
+							<p> Returns an integer.</p>
+							<p> </p>
+							<p> For further information about variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Main; Iterate.</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+								Error; Run if; On Component Ok; On Component Error.</p>
+							<p> </p>
+							<p> Incoming links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Main; Reject; Iterate.</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+								Error; Run if; On component Ok; On Component Error; Synchronize;
+								Parallelize. </p>
+							<p> </p>
+							<p> For further information regarding connections, see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e230563"></a>Related scenario</h3></div></div></div><p>
+			No scenario is available for this component yet.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileProperties.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileTouch.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileProperties&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileTouch</td></tr></table></div></body></html>

@@ -1,0 +1,121 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tUniservRTMailBulk.html" title="tUniservRTMailBulk"><link rel="next" href="tUniservRTMailSearch.html" title="tUniservRTMailSearch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tUniservRTMailOutput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tUniservRTMailBulk.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tUniservRTMailSearch.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tUniservRTMailOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailOutput"></a>tUniservRTMailOutput</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailoutput_icon.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of Data Quality Service Hub Studio.</em></span>
+		</p></div><div class="section" title="tUniservRTMailOutput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e62146"></a>tUniservRTMailOutput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailOutput</strong></span> updates the
+								index pool that is used for duplicate search..</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailOutput</strong></span> keeps the
+								index pool synchronized.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e. it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the <span class="emphasis"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host name</em></span>
+							</p>
+						</td><td valign="top">Server host name between double quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">Listening port number of the server between double
+							quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Service</em></span>
+							</p>
+						</td><td>
+							<p>The service name is <code class="code">"mail"</code> by default. Enter a new
+								name if necessary (e.g. due to service suffix), between double
+								quotation marks. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td>
+							<p>Operations that can be made on the index pool. </p>
+							<p><span class="emphasis"><strong>Insert</strong></span>: inserts a new record in
+								the index pool. This request will fail if the record with the given
+								reference already exists in the index pool. </p>
+							<p><span class="emphasis"><strong>Update</strong></span>: updates an existing
+								record in the index pool. This request will fail if the record with
+								the given reference does not exist in the index pool. </p>
+							<p><span class="emphasis"><strong>Insert or update</strong></span>: inserts a new record in the index pool.
+		If the record with the given reference already exists, an update would be made.</p>
+							<p>
+		<span class="emphasis"><strong>Update or insert</strong></span>: updates the record with the given
+		reference. If the record does not exist in the index pool, a new record would be
+		inserted.</p>
+							<p><span class="emphasis"><strong>Delete</strong></span>: deletes the record with
+								the given reference from the index pool. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Uniserv Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>For detailed information, please refer to the Uniserv user manual
+									<span class="emphasis"><em>mailRetrieval</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td>Select this check box to collect log data at the Job and the
+							component levels.</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tUniservRTMailOutput</strong></span> updates the
+								index pool and passes the input set on. The output is amended by the
+								status of the operation. If the operation fails, an error message
+								will be displayed.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>To use <span class="emphasis"><strong>tUniservRTMailOutput</strong></span>, the
+								Uniserv software <span class="emphasis"><em>mailRetrieval</em></span>
+								must be installed.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Before the first use of <span class="emphasis"><strong>tUniservRTMailOutput</strong></span>, an index pool must be
+									created. You can create the index pool with <span class="emphasis"><strong>tUniservRTMailBulk</strong></span>.</p></div>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e62419"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tUniservRTMailSearch.html#add_contact_to_index_pool" title="Scenario: Adding contacts to the mailRetrieval index pool">the section called &#8220;Scenario: Adding contacts to the mailRetrieval index pool&#8221;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tUniservRTMailBulk.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tUniservRTMailSearch.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tUniservRTMailBulk&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tUniservRTMailSearch</td></tr></table></div></body></html>

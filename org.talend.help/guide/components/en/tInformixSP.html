@@ -1,0 +1,254 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInformixSP</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-databases-traditional.html" title="Chapter&nbsp;7.&nbsp;Databases - traditional components"><link rel="prev" href="tInformixRow.html" title="tInformixRow"><link rel="next" href="tMSSqlBulkExec.html" title="tMSSqlBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tInformixSP</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tInformixRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Databases - traditional components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tMSSqlBulkExec.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tInformixSP"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInformixSP"></a>tInformixSP</h2></div></div></div><div class="mediaobject"><img src="../images/tInformixSP_icon32_white.png"></div><div class="section" title="tInformixSP properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e80926"></a>tInformixSP properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component Family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Informix</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tInformixSP</strong></span> calls procedures
+								stored in a database.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tInformixSP</strong></span> allows you to
+								centralise multiple and complex queries in a database and enables
+								you to call them more easily.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No properties stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Open Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the schema.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>User authentication information.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Instance</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the Informix instance to be used. This information can
+								generally be found in the <span class="emphasis"><em>SQL hosts</em></span>
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: You have already
+								created the schema and stored it in the Repository. You can reuse it
+								in various projects and job flowcharts. Related topic: see
+										<span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>SP Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the exact name of the stored procedure (SP).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Is Function</em></span> /<span class="emphasis"><em> Return result
+									in</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box if only one value must be returned.</p>
+							<p> From the list, select the the schema column upon which the value
+								to be obtained is based.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the Plus button and select the various <span class="emphasis"><strong>Schema Columns</strong></span> that will be required by the
+								procedures. Note that the SP schema can hold more columns than there
+								are parameters used in the procedure.</p>
+							<p> Select the <span class="emphasis"><strong>Type</strong></span> of
+								parameter:</p>
+							<p>
+								<span class="emphasis"><strong>IN</strong></span>: Input parameter</p>
+							<p>
+								<span class="emphasis"><strong>OUT</strong></span>: Output parameter/return
+								value</p>
+							<p>
+								<span class="emphasis"><strong>IN OUT</strong></span>: Input parameters is to be
+								returned as value, likely after modification through the procedure
+								(function).</p>
+							<p>
+								<span class="emphasis"><strong>RECORDSET</strong></span>: Input parameters is to
+								be returned as a set of values, rather than single value.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Check <a class="xref" href="tPostgresqlCommit.html" title="tPostgresqlCommit">the section called &#8220;tPostgresqlCommit&#8221;</a>, if you want to
+									analyze a set of records from a database table or DB query and
+									return single records.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Transaction</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Clear this check box if the database is configured in the NO_LOG
+								mode.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify additional connection properties for the DB connection you
+								are creating. This option is not available if you have selected the
+									<span class="emphasis"><strong>Use an existing connection
+								</strong></span>check box in the <span class="emphasis"><strong>Basic
+									settings</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at a component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This is an intermediary component. It can also be used as an entry
+								component. In this case, only the entry parameters are
+								authorized.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The stored procedure syntax must correspond to that of the
+								database.</p>
+							
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e81522"></a>Related scenario</h3></div></div></div><p>For a scenario in which <span class="emphasis"><strong>tInformixSP</strong></span> may be used,
+			see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMDMSP.html#Raa51224" title="Scenario: Executing a stored procedure in the MDM Hub">the section called &#8220;Scenario: Executing a stored procedure in the MDM Hub&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tOracleSP.html#Raa83947" title="Scenario: Checking number format using a stored procedure">the section called &#8220;Scenario: Checking number format using a stored procedure&#8221;</a>.</p></li></ul></div><p>Also, see <a class="xref" href="tPostgresqlCommit.html" title="tPostgresqlCommit">the section called &#8220;tPostgresqlCommit&#8221;</a> if you want to analyse a set of records
+			in a table or SQL query.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tInformixRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-traditional.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tMSSqlBulkExec.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tInformixRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tMSSqlBulkExec</td></tr></table></div></body></html>

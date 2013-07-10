@@ -1,0 +1,174 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDotNETRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-dotnet.html" title="Chapitre&nbsp;10.&nbsp;Composants DotNET"><link rel="prev" href="tDotNETInstantiate.html" title="tDotNETInstantiate"><link rel="next" href="ch-elt.html" title="Chapitre&nbsp;11.&nbsp;Composants ELT"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tDotNETRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tDotNETInstantiate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;10.&nbsp;Composants DotNET</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch-elt.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tDotNETRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDotNETRow"></a>tDotNETRow</h2></div></div></div><div class="mediaobject"><img src="../images/tDotNetRow_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tDotNETRow"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e182997"></a>Propri&eacute;t&eacute;s du tDotNETRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+              <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+            </td><td valign="top">
+              <p>DotNET</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Fonction</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Le composant <span class="emphasis"><strong>tDotNETRow </strong></span> envoie des donn&eacute;es &agrave;
+                partir de biblioth&egrave;ques et vers des biblioth&egrave;ques et des classes dans .NET ou
+                d'autres fichiers DLL personnalis&eacute;s. </p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Objectif</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Le <span class="emphasis"><strong>tDotNETRow</strong></span> vous permet de faciliter la
+                transformation de donn&eacute;es &agrave; l'aide de classes .NET built-in ou
+                personnalis&eacute;es.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;<span class="emphasis"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+            </td><td valign="top">
+              <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+                trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>), soit distant (<span class="emphasis"><strong>Repository)</strong></span>.</p>
+              <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour
+                ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+                  de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est
+                stock&eacute; dans le <span class="emphasis"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre
+                r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use a static method</em></span></td><td valign="top">
+              <p>Cochez cette case pour invoquer une m&eacute;thode statique dans .NET. Cela d&eacute;sactivera
+                la case <span class="emphasis"><strong>Use an existing instance</strong></span>. </p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Propagate a data to output</em></span></td><td valign="top">
+              <p>Cochez cette case afin de propager des donn&eacute;es transform&eacute;es vers la
+                sortie</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use an existing instance</em></span></td><td valign="top">
+              <p>Cochez cette case pour r&eacute;utiliser une instance existante d'un objet .NET dans la
+                liste <span class="emphasis"><strong>Existing instance to use</strong></span>.</p>
+              <p><span class="emphasis"><strong>Existing instance to use</strong></span> : S&eacute;lectionnez une
+                instance existante d'objets .NET cr&eacute;&eacute;s par d'autres composants .NET de la
+                liste.</p>
+              <p>
+                </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Cette case est d&eacute;sactiv&eacute;e si vous avez coch&eacute; <span class="emphasis"><strong>Use a
+                      static method</strong></span>. Cochez cette case d&eacute;sactivera les champs <span class="emphasis"><strong>Dll to load</strong></span>, <span class="emphasis"><strong>Fully qualified
+                      class name(i.e. ClassLibrary1.NameSpace2.Class1)</strong></span> et <span class="emphasis"><strong>Value(s) to pass to the constructor</strong></span>.</p></div><p>
+              </p>
+            </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><em>Dll to load</em></span></p>
+            </td><td valign="top">Saisissez dans ce champ le chemin d'acc&egrave;s &agrave; une biblioth&egrave;que DLL
+              contenant la (les) classe(s) qui vous int&eacute;resse(nt) ou saisissez le nom de l'Assembly
+              ou cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> afin de parcourir
+              votre syst&egrave;me jusqu'au r&eacute;pertoire de votre biblioth&egrave;que. Par exemple, <span class="emphasis"><em>System.Data, Version=2.0.0.0, Culture=neutral,
+                PublicKeyToken=b77a5c561934e089</em></span> pour une Assembly OleDb.</td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;<span class="emphasis"><em>Fully qualified class name(i.e.
+                  ClassLibrary1.NameSpace2.Class1)</em></span></p>
+            </td><td valign="top">
+              <p>Renseignez ce champ en saisissant le chemin complet de la classe (FQN).</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;<span class="emphasis"><em>Method name</em></span></p>
+            </td><td valign="top">
+              <p>Renseignez ce champ en saisissant le nom de la m&eacute;thode &agrave; invoquer dans
+                .NET.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Value(s) to pass to the constructor</em></span></td><td valign="top">
+              <p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ou plusieurs valeur(s) &agrave; passer au constructeur
+                de l'objet. Ou, laissez vide ce tableau afin d'appeler un constructeur par d&eacute;faut
+                pour l'objet.</p>
+              <p>La/les valeur(s) valide(s) doi(ven)t &ecirc;tre les param&egrave;tres requis par la classe &agrave;
+                utiliser.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Method Parameters</em></span></td><td valign="top">
+              <p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter une ou
+                plusieurs ligne(s) de param&egrave;tres &agrave; passer &agrave; la m&eacute;thode.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Output value target column</em></span></td><td valign="top">
+              <p>Dans la liste, s&eacute;lectionnez une colonne de la lignes de sortie afin de lui
+                attribuer une valeur.</p>
+            </td></tr><tr><td>&nbsp;<span class="emphasis"><strong>Advanced settings</strong></span></td><td><span class="emphasis"><em>Create a new instance at each row</em></span></td><td valign="top">
+              <p>Cochez cette case pour cr&eacute;er une nouvelle instance &agrave; chaque ligne qui passe dans
+                le composant.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Method doesn't return a value</em></span></td><td valign="top">
+              <p>Cochez cette case afin d'invoquer une m&eacute;thode sans retourner de valeur comme
+                r&eacute;sultat du traitement.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Returns an instance of a .NET Object</em></span></td><td valign="top">
+              <p>Cochez cette case pour retourner une instance d'un objet .NET comme r&eacute;sultat
+                d'une m&eacute;thode invoqu&eacute;e.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Store the returned value for later use</em></span></td><td valign="top">
+              <p>Cochez cette case afin de stocker la valeur retourn&eacute;e d'une m&eacute;thode pour une
+                utilisation ult&eacute;rieure dans un autre composant <span class="emphasis"><strong>tDotNETRow</strong></span>.</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top">
+              <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                composant.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="emphasis"><strong>Utilisation</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Ce composant est utilis&eacute; pour communiquer avec des objets .NET. </p>
+              <p>Pour utiliser ce composant, vous devez d'abord installer les fichiers DLLs
+                d'ex&eacute;cution, par exemple <span class="emphasis"><em>janet-win32.dll</em></span>, sous
+                Windows 32 bits et <span class="emphasis"><em>janet-win64.dll</em></span> sous Windows
+                64 bits, dans le package redistribuable Microsoft Visual C++, afin d'&eacute;viter les
+                erreurs telles que <span class="emphasis"><em>UnsatisfiedLinkError</em></span> sur les
+                DLL d&eacute;pendants. </p>
+              <p>Assurez-vous que le DLL d'ex&eacute;cution et tous les autres DLL dont d&eacute;pend le DLL &agrave;
+                appeler sont enti&egrave;rement install&eacute;s et que leurs versions sont en ad&eacute;quation.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Les DLLs d'ex&eacute;cution requis peuvent &ecirc;tre install&eacute;s dans le dossier <span class="emphasis"><em>System32</em></span> ou dans le dossier <span class="emphasis"><em>bin</em></span> du JRE &agrave; utiliser.</p><p>Si vous devez exporter un Job utilisant ce composant pour l'ex&eacute;cuter hors du
+                    Studio, vous devez sp&eacute;cifier le conteneur d'ex&eacute;cution souhait&eacute; en configurant
+                    l'argument <span class="emphasis"><em>-Djava.library.path</em></span>.</p></div>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Utiliser .NET dans Talend"><div class="titlepage"><div><div><h3 class="title"><a name="dotnet-tdotnetrow-sce1"></a>Sc&eacute;nario : Utiliser .NET dans Talend</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; trois composants utilisant une biblioth&egrave;que DLL contenant une
+      classe appel&eacute;e <span class="emphasis"><em>Test1.Class1</em></span>. On invoque une m&eacute;thode de
+      cette classe qui traite la valeur et &eacute;crit les donn&eacute;es dans la console.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow1.png" align="middle"></div><div class="section" title="Pr&eacute;requis"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e183400"></a>Pr&eacute;requis</h4></div></div></div><p>Avant de reproduire ce sc&eacute;nario, vous devez d'abord construire votre environnement
+        d'ex&eacute;cution.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cr&eacute;ez le DLL &agrave; charger par le <span class="emphasis"><strong>tDotNETInstantiate</strong></span></p><p>Cette classe d'exemple construite dans .NET se pr&eacute;sente comme suit :</p><pre class="programlisting">using System;<span></span>
+using System.Collections.Generic;<span></span>
+using System.Text;<span></span>
+
+
+namespace Test1<span></span>
+{<span></span>
+    public class Class1<span></span>
+    {<span></span>
+        string s = null;<span></span>
+        public Class1(string s)<span></span>
+        {<span></span>
+            this.s = s;<span></span>
+        }<span></span>
+
+        public string getValue()<span></span>
+        {<span></span>
+            return "Return Value from Class1: " + s;<span></span>
+        }<span></span>
+
+    }<span></span>
+    }</pre><p>Cette classe lit la valeur d'entr&eacute;e et ajoute le texte <span class="emphasis"><em>Return Value from Class1:</em></span> devant cette valeur. La classe est compil&eacute;e &agrave;
+            l'aide du dernier .NET.</p></li><li class="listitem"><p>Installez le fichier DLL d'ex&eacute;cution &agrave; partir du dernier .NET. Dans ce sc&eacute;nario,
+            utilisez <span class="emphasis"><em>janet-win32.dll</em></span> sous Windows 32 bits et
+            placez-le dans le dossier <span class="emphasis"><em>System32</em></span>.</p><p>Le DLL d'ex&eacute;cution est compatible avec le DLL &agrave; charger.</p></li></ul></div></div><div class="section" title="Relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e183465"></a>Relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans
+            l'espace de mod&eacute;lisation graphique : <span class="emphasis"><strong>tDotNETInstantiate</strong></span>, <span class="emphasis"><strong>tDotNETRow</strong></span> et <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez le <span class="emphasis"><strong>tDotNETInstantiate</strong></span> au <span class="emphasis"><strong>tDotNETRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Reliez le <span class="emphasis"><strong>tDotNETRow</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span> &agrave; l'aide d'un lien <span class="emphasis"><strong>Row</strong></span> &gt;
+              <span class="emphasis"><strong>Main</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le tDotNETInstantiate"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e183514"></a>Configurer le tDotNETInstantiate</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tDotNETInstantiate</strong></span> pour
+            afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+            propri&eacute;t&eacute;s de base.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+              <span class="emphasis"><strong>Dll to load</strong></span> et parcourez votre syst&egrave;me jusqu'au
+            fichier dll &agrave; charger. Vous pouvez &eacute;galement renseigner le champ avec une Assembly. Dans
+            cet exemple, utilisez :</p><p><span class="emphasis"><em>"C:/Program
+            Files/ClassLibrary1/bin/Debug/ClassLibrary1.dll""</em></span></p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Fully qualified class name</strong></span>, saisissez
+            un nom de classe valide &agrave; utiliser. Dans cet exemple, saisissez :</p><p><span class="emphasis"><em>"Test1.Class1"</em></span></p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> sous la table <span class="emphasis"><strong>Value(s) to pass to the constructor</strong></span> afin d'ajouter une ligne
+            pour la valeur &agrave; passer au constructeur.</p><p>Dans cet exemple, saisissez :</p><p><code class="code">"Hello world"</code></p></li></ol></div></div><div class="section" title="Configurer le composant tDotNETRow"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e183565"></a>Configurer le composant tDotNETRow</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tDotNETRow</strong></span> afin
+            d'afficher sa vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses
+            propri&eacute;t&eacute;s de base. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow3.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cochez la case <span class="emphasis"><strong>Propagate data to output</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Cochez la case <span class="emphasis"><strong>Use an existing instance</strong></span> et
+            s&eacute;lectionnez <span class="emphasis"><strong>tDotNETInstantiate_1</strong></span> dans la liste
+              <span class="emphasis"><strong>Existing instance to use</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Renseignez le champ <span class="emphasis"><strong>Method Name</strong></span> avec le nom de la
+            m&eacute;thode &agrave; utiliser. Dans cet exemple, utilisez <span class="emphasis"><em>"getValue"</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+              <span class="emphasis"><strong>Edit schema</strong></span> pour ajouter une colonne au
+            sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow4.png" align="middle"></div><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> afin d'ajouter une
+            colonne au sch&eacute;ma et cliquez sur <span class="emphasis"><strong>OK</strong></span> pour sauvegarder
+            les modifications.</p></li><li class="step" title="&Eacute;tape 6"><p>S&eacute;lectionnez <span class="emphasis"><strong>newColumn</strong></span> dans la liste <span class="emphasis"><strong> Output value target column</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Laissez les autres param&egrave;tres tels qu'ils sont.</p></li></ol></div></div><div class="section" title="Configurer le tLogRow"><div class="titlepage"><div><div><h4 class="title"><a name="d43281e183640"></a>Configurer le tLogRow</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tLogRow</strong></span> afin d'afficher sa
+            vue <span class="emphasis"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de base. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow5.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> afin de
+            r&eacute;cup&eacute;rer le sch&eacute;ma d&eacute;fini dans le composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 3"><p>S&eacute;lectionnez <span class="emphasis"><strong>Table</strong></span> dans la zone <span class="emphasis"><strong>Mode</strong></span>.</p></li></ol></div><p>Sauvegardez votre Job et appuyez sur la touche <span class="emphasis"><strong>F6</strong></span> pour l'ex&eacute;cuter.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow-result.png" align="middle"></div><p>Vous pouvez constater, dans les r&eacute;sultats, que le texte <code class="code">Return Value from
+          Class1</code> est ajout&eacute; devant la valeur r&eacute;cup&eacute;r&eacute;e <code class="code">Hello world</code>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tDotNETInstantiate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dotnet.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch-elt.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tDotNETInstantiate&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;11.&nbsp;Composants ELT</td></tr></table></div></body></html>

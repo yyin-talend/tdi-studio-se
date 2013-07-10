@@ -1,0 +1,151 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileArchive</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tChangeFileEncoding.html" title="tChangeFileEncoding"><link rel="next" href="tFileCompare.html" title="tFileCompare"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileArchive</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tChangeFileEncoding.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileCompare.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileArchive"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileArchive"></a>tFileArchive</h2></div></div></div><div class="mediaobject"><img src="../images/tFileArchive_icon32.png"></div><div class="section" title="tFileArchive properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212451"></a>tFileArchive properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component Family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>The <span class="emphasis"><strong>tFileArchive</strong></span> zips one or
+                                several files according to the parameters defined and places the
+                                archive created in the directory selected.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component zips one or several files for processing.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Directory</em></span></p>
+                        </td><td valign="top">
+                            <p>Path where the zipped file will be created.</p>
+                            <p>
+                                <span class="emphasis"><strong>Subdirectories</strong></span>: Select this check
+                                box if the selected directory contains subfolders.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Archive file</em></span></p>
+                        </td><td valign="top">
+                            <p>Destination path and name of the archive file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Compress level</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the compression level you want to apply. </p>
+                            <p>
+                                <span class="emphasis"><strong>Best</strong></span>: the compression quality will
+                                be optimum, but the compression time will be long.</p>
+                            <p>
+                                <span class="emphasis"><strong>Normal</strong></span>: compression quality and
+                                time will be average. </p>
+                            <p>
+                                <span class="emphasis"><strong>Fast</strong></span>: compression will be fast, but
+                                quality will be lower.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>All files</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want all files in the directory to be
+                                zipped. Clear it to specify the file(s) you want to zip in the
+                                    <span class="emphasis"><strong>Files </strong></span>table.</p>
+                            <p>
+                                <span class="emphasis"><strong>Filemask</strong></span>: type in a file name or a
+                                file mask using a special character or a regular expression.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Create directory if not exists</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. It creates a destination
+                                folder for the output table if it does not already exist.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Overwrite Existing Archive</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. This allows you to save an
+                                archive by replacing the existing one. But if you clear the check
+                                box, an error is reported, the replacement fails and the new archive
+                                cannot be saved.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When the replacement fails, the Job runs. </p></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Encrypt files</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want your archive to be password
+                                protected. The <span class="emphasis"><strong>Enter Password</strong></span> text
+                                box appears to let you enter your password.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be used as a standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Global Variables</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Archive File Path</strong></span>: Retrieves the
+                                path to the archive file. This is available as an <span class="emphasis"><strong>After</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="emphasis"><strong>Archive File Name</strong></span>: Retrieves the
+                                name of the archive file. This is available as an <span class="emphasis"><strong>After</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p> For further information about variables, see <span class="emphasis"><em>Talend Open Studio</em></span><span class="emphasis"><em> User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="emphasis"><strong>Row</strong></span>: Main; Reject; Iterate.</p>
+                            <p>
+                                <span class="emphasis"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="emphasis"><strong>Row</strong></span>: Main; Reject; Iterate.</p>
+                            <p>
+                                <span class="emphasis"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+                                Subjob Error; On component Ok; On Component Error; Synchronize;
+                                Parallelize. </p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Zip files using a tFileArchive"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212823"></a>Scenario: Zip files using a tFileArchive</h3></div></div></div><p>This scenario creates a Job with a unique component. It aims at zipping files and
+            recording them in the selected directory.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the <span class="emphasis"><strong>tFileArchive</strong></span> component from the
+                        <span class="emphasis"><strong>Palette</strong></span> onto the workspace.</p></li><li class="step" title="Step 2"><p>Double-click it to display its <span class="emphasis"><strong>Component</strong></span>
+                    view.</p><div class="mediaobject"><img src="../images/Use_Case_tFileArchive1.png"></div></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Directory</strong></span> field, click the <span class="emphasis"><strong>[...]</strong></span> button, browse your directory and select the
+                    directory or the file you want to compress.</p></li><li class="step" title="Step 4"><p>Select the <span class="emphasis"><strong>Subdirectories</strong></span> check box if you
+                    want to include the subfolders and their files in the archive.</p></li><li class="step" title="Step 5"><p>Then, set the <span class="emphasis"><strong>Archive file</strong></span> field, by filling
+                    the destination path and the name of your archive file.</p></li><li class="step" title="Step 6"><p>Select the <span class="emphasis"><strong>Create directory if not exists
+                    </strong></span>check box if you do not have a destination directory yet and you want
+                    to create it.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>Compress level</strong></span> list, select the
+                    compression level you want to apply to your archive. In this example, we use the
+                        <span class="emphasis"><strong>normal</strong></span> level.<span class="emphasis"><strong> </strong></span></p></li><li class="step" title="Step 8"><p>Clear the <span class="emphasis"><strong>All Files</strong></span> check box if you only
+                    want to zip specific files.</p><div class="mediaobject"><img src="../images/Use_Case_tFileArchive2.png"></div></li><li class="step" title="Step 9"><p>Add a row in the table by clicking the <span class="emphasis"><strong>[+]
+                    </strong></span>button and click the name which appears. Between two star symbols
+                    (ie. *RG*), type part of the name of the file that you want to compress.</p></li><li class="step" title="Step 10"><p>Press <span class="emphasis"><strong>F6</strong></span> to execute your Job.</p></li></ol></div><p>The <span class="emphasis"><strong>tFileArchive </strong></span>has compressed the selected file(s)
+            and created the folder in the selected directory.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tChangeFileEncoding.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileCompare.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tChangeFileEncoding&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileCompare</td></tr></table></div></body></html>

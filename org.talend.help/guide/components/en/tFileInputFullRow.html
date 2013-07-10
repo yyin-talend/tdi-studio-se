@@ -1,0 +1,131 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputFullRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileInputExcel.html" title="tFileInputExcel"><link rel="next" href="tFileInputJSON.html" title="tFileInputJSON"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputFullRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputExcel.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputJSON.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputFullRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputFullRow"></a>tFileInputFullRow</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputFullRow_icon32_white.png"></div><div class="section" title="tFileInputFull Row properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e217939"></a>tFileInputFull Row properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputFullRow </strong></span>reads a given
+                                file row by row.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputFullRow </strong></span>opens a file
+                                and reads it row by row and sends complete rows as defined in the
+                                Schema to the next Job component, via a Row link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                                        <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+                            <p> Click <span class="emphasis"><strong>Edit schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected to <span class="emphasis"><strong>tFileInputFullRow</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the file and/or the variable to be processed</p>
+                            <p> </p>
+                            <p> Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Row separator</em></span></p>
+                        </td><td valign="top">
+                            <p>String (ex: &#8220;\n&#8221;on Unix) to separate rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped at the beginning of a file</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped at the end of a file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Limit</em></span></p>
+                        </td><td valign="top">
+                            <p>Maximum number of rows to be processed. If Limit = 0, no row is
+                                read or processed.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Skip empty rows</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to skip empty rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to stop the execution of the Job when an
+                                error occurs. Clear the check box to skip the row on error and
+                                complete the process for error-free rows. If needed, you can collect
+                                the rows on error using a <span class="emphasis"><strong>Row</strong></span> &gt;
+                                    <span class="emphasis"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field is
+                                compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Extract lines at random</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to set the number of lines to be extracted
+                                randomly.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to read full rows in delimited files that can
+                                get very large. You can also create a rejection flow using a
+                                    <span class="emphasis"><strong>Row &gt; Reject</strong></span> link to filter
+                                the data which does not correspond to the type defined. For an
+                                example of how to use these two links, see <a class="xref" href="tExtractXMLField.html#Raa91776" title="Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file">the section called &#8220;Scenario 2: Extracting correct and erroneous data from an XML field in a delimited
+            file&#8221;</a>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading full rows in a delimited file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218242"></a>Scenario: Reading full rows in a delimited file</h3></div></div></div><p>The following scenario creates a two-component Job that aims at reading complete rows
+            in a file and displaying the output in the <span class="emphasis"><strong>Run </strong></span>log
+            console.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="emphasis"><strong>tFileInputFullRow</strong></span> and a <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace.</p></li><li class="step" title="Step 2"><p>Right-click on the <span class="emphasis"><strong>tFileInputFullRow</strong></span>
+                    component and connect it to <span class="emphasis"><strong>tLogRow </strong></span>using a
+                        <span class="emphasis"><strong>Row Main</strong></span> link.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputFullRow.png"></div></li><li class="step" title="Step 3"><p>In the design workspace, select <span class="emphasis"><strong>tFileInputFullRow</strong></span>.</p></li><li class="step" title="Step 4"><p>Click the <span class="emphasis"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="emphasis"><strong>tFileInputFullRow</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputFullRow1.png"></div></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Basic settings </strong></span>view, set <span class="emphasis"><strong>Schema</strong></span> to <span class="emphasis"><strong>Built-In</strong></span>.</p></li><li class="step" title="Step 6"><p>Click the three-dot <span class="emphasis"><strong>[...]</strong></span> button next to the
+                        <span class="emphasis"><strong>Edit schema </strong></span>field to see the data to pass
+                    on to the <span class="emphasis"><strong>tLogRow</strong></span> component. Note that the
+                    schema is read-only and it consists of one column,
+                    <span class="emphasis"><em>line.</em></span></p><div class="mediaobject"><img src="../images/Use_Case_tFileInputFullRow2.png"></div></li><li class="step" title="Step 7"><p>Fill in a path to the file to process in the <span class="emphasis"><strong>File
+                        Name</strong></span> field, or click the three-dot [...] button. This field is
+                    mandatory. In this scenario, the file to read is <span class="emphasis"><em>test5. </em></span>It
+                    holds three rows where each row consists of tow fields separated by a semi
+                    colon.</p></li><li class="step" title="Step 8"><p>Define the <span class="emphasis"><strong>Row separator</strong></span> used to identify the
+                    end of a row.</p></li><li class="step" title="Step 9"><p>Set the <span class="emphasis"><strong>Header</strong></span> to 1, in this scenario the
+                    footer and the number of processed rows are not set.</p></li><li class="step" title="Step 10"><p>From the design workspace, select <span class="emphasis"><strong>tLogRow</strong></span> and
+                    click the <span class="emphasis"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a></p></li><li class="step" title="Step 11"><p>Save your Job and press <span class="emphasis"><strong>F6</strong></span> to execute
+                    it.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputFullRow3.png"></div><p><span class="emphasis"><strong>tFileInputFullRow</strong></span> reads the three rows one by one
+            ignoring field separators, and the complete rows are displayed on the <span class="emphasis"><strong>Run</strong></span> console.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>To extract only fields from rows, you must use <span class="emphasis"><strong>tExtractDelimitedFields</strong></span>, <span class="emphasis"><strong>tExtractPositionalFields</strong></span>, and <span class="emphasis"><strong>tExtractRegexFields</strong></span>. For more information, see <a class="xref" href="tExtractDelimitedFields.html" title="tExtractDelimitedFields">the section called &#8220;tExtractDelimitedFields&#8221;</a>, <a class="xref" href="tExtractPositionalFields.html" title="tExtractPositionalFields">the section called &#8220;tExtractPositionalFields&#8221;</a> and <a class="xref" href="tExtractRegexFields.html" title="tExtractRegexFields">the section called &#8220;tExtractRegexFields&#8221;</a>.</p></div></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputExcel.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputJSON.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputExcel&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputJSON</td></tr></table></div></body></html>

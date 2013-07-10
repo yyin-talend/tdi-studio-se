@@ -1,0 +1,251 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCassandraInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-bigdata.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tCassandraConnection.html" title="tCassandraConnection"><link rel="next" href="tCassandraOutput.html" title="tCassandraOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tCassandraInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tCassandraConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;1.&nbsp;Composants Big Data</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tCassandraOutput.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tCassandraInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCassandraInput"></a>tCassandraInput</h2></div></div></div><div class="mediaobject"><img src="../images/tCassandraInput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du Studio si
+            vous avez souscrit &agrave; l'&eacute;dition correspondante de <span class="emphasis"><em>Talend Big Data Studio</em></span>. </p></div><div class="section" title="Propri&eacute;t&eacute;s du tCassandraInput"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e2808"></a>Propri&eacute;t&eacute;s du tCassandraInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td>
+                            <p><span class="emphasis"><strong>Famille de composant</strong></span></p>
+                        </td><td>
+                            <p>Big Data / Cassandra</p>
+                        </td><td>&nbsp;</td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2">
+                            <p>Le composant <span class="emphasis"><strong>tCassandraInput</strong></span> vous
+                                permet de lire des donn&eacute;es d'un espace de cl&eacute; (keyspace) Cassandra
+                                et d'envoyer des donn&eacute;es dans un flux Talend.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2">
+                            <p>Le <span class="emphasis"><strong>tCassandraInput</strong></span> lit des
+                                donn&eacute;es d'un keyspace Cassandra sp&eacute;cifi&eacute; et envoie les donn&eacute;es au
+                                composant suivant.</p>
+                        </td></tr><tr><td>
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Use existing connection</em></span></p>
+                        </td><td><p>Cochez cette case et s&eacute;lectionnez le composant de connexion ad&eacute;quat &agrave; partir de la liste
+			<span class="emphasis"><strong>Component list</strong></span> pour r&eacute;utiliser les param&egrave;tres d&#8217;une
+		connexion que vous avez d&eacute;j&agrave; d&eacute;finie.</p></td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nom de l'h&ocirc;te ou l'adresse IP du serveur
+                                Cassandra.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td>
+                            <p>Saisissez le num&eacute;ro du port d'&eacute;coute du serveur Cassandra.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Required authentication</em></span></p>
+                        </td><td>
+                            <p>Cochez cette case afin de saisir vos identifiants de connexion &agrave;
+                                Cassandra.</p>
+                            <p>Cette case appara&icirc;t si vous ne cochez pas la case <span class="emphasis"><strong>Use existing connection</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Username</em></span></p>
+                        </td><td>
+                            <p>Saisissez dans ce champ l'identifiant d'authentification &agrave;
+                                Cassandra.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Password</em></span></p>
+                        </td><td>
+                            <p>Saisissez dans ce champ le mot de passe d'authentification &agrave;
+                                Cassandra.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><em>Keyspace configuration</em></span></p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Keyspace</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nom de l'espace de cl&eacute; duquel vous souhaitez lire les
+                                donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><em>Column family
+                                configuration</em></span></p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Column family</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nom de la famille de colonnes de laquelle vous
+                                souhaitez lire les donn&eacute;es.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Column family type</em></span></p>
+                        </td><td>
+                            <p><span class="emphasis"><strong>Standard</strong></span> : Famille de colonnes de
+                                type standard.</p>
+                            <p><span class="emphasis"><strong>Super</strong></span> : Famille de colonnes de
+                                type super.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Include row key in output
+                                    columns</em></span></p>
+                        </td><td>
+                            <p>Cochez cette case pour inclure la cl&eacute; de ligne de la famille de
+                                colonnes dans les colonnes de sortie.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Row key type</em></span></p>
+                        </td><td>
+                            <p>S&eacute;lectionnez dans la liste le type de donn&eacute;es appropri&eacute; de la cl&eacute;
+                                de ligne.</p>
+                            <p>Cette liste d&eacute;roulante appara&icirc;t uniquement si vous ne cochez pas
+                                la case <span class="emphasis"><strong>Include row key in output
+                                    columns</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Row key column</em></span></p>
+                        </td><td>
+                            <p>S&eacute;lectionnez la colonne de cl&eacute; de ligne dans la liste.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Include super columns in output
+                                    columns</em></span></p>
+                        </td><td>
+                            <p>Cochez cette case pour inclure les super colonnes de la famille de
+                                colonnes dans les colonnes de sortie.</p>
+                            <p>Cette case appara&icirc;t si vous s&eacute;lectionnez <span class="emphasis"><strong>Super</strong></span> dans la liste <span class="emphasis"><strong>Column
+                                    family type</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Super column type</em></span></p>
+                        </td><td>
+                            <p>S&eacute;lectionnez dans la liste le type de donn&eacute;es appropri&eacute; de la
+                                super colonne.</p>
+                            <p>Cette liste d&eacute;roulante appara&icirc;t uniquement si vous ne cochez pas
+                                la case <span class="emphasis"><strong>Include super columns in output
+                                    columns</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Super columns</em></span></p>
+                        </td><td>
+                            <p>S&eacute;lectionnez la super colonne, dans la liste.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><em>Query configuration</em></span></p>
+                        </td><td>
+                            <p><span class="emphasis"><em>Specify row keys</em></span></p>
+                        </td><td>
+                            <p>Cochez cette case afin de sp&eacute;cifier les cl&eacute;s des lignes de la
+                                famille de colonnes.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Row Keys</em></span></p>
+                        </td><td>
+                            <p>Saisissez les cl&eacute;s de lignes sp&eacute;cifiques dans la famille de
+                                colonnes, au format correct selon le type de cl&eacute; de ligne.</p>
+                            <p>Ce champ appara&icirc;t si vous cochez la case <span class="emphasis"><strong>Specify row keys</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Key start</em></span></p>
+                        </td><td>
+                            <p>Saisissez la cl&eacute; de la ligne de d&eacute;but du type de donn&eacute;es
+                                correct.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Key end</em></span></p>
+                        </td><td>
+                            <p>Saisissez la cl&eacute; de la ligne de fin du type de donn&eacute;es
+                                correct.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Key limit</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nombre de lignes &agrave; lire entre la ligne de d&eacute;but et la
+                                ligne de fin.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Specify columns</em></span></p>
+                        </td><td>
+                            <p>Cochez cette case afin de sp&eacute;cifier directement le nom des
+                                colonnes de la famille de colonnes.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Columns</em></span></p>
+                        </td><td>
+                            <p>Sp&eacute;cifiez directement le nom des colonnes de la famille de
+                                colonnes, au format correct selon le type de colonne.</p>
+                            <p>Ce champ appara&icirc;t si vous cochez la case <span class="emphasis"><strong>Specify columns</strong></span>.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Columns range start</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nom de la colonne de d&eacute;but du type de donn&eacute;es
+                                correct.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Columns range end</em></span></p>
+                        </td><td>
+                            <p>Saisissez le nom de la colonne de fin du type de donn&eacute;es
+                                correct.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Columns range limit</em></span></p>
+                        </td><td>
+                            <p>Saisissiez le nombre de colonnes &agrave; lire entre la colonne de d&eacute;but
+                                et la colonne de fin.</p>
+                        </td></tr><tr><td>&nbsp;</td><td>
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit Schema</em></span></p>
+                        </td><td>
+                            <p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de
+                                champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                est soit <span class="emphasis"><strong>Built-in</strong></span>, soit stock&eacute; dans
+                                le <span class="emphasis"><strong>Repository</strong></span>.</p>
+                            <p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+                        </td></tr><tr><td>
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td>
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                Job ainsi qu'au niveau de chaque composant.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Gestion des donn&eacute;es avec Cassandra"><div class="titlepage"><div><div><h3 class="title"><a name="rxie-20120921-bigdata-tcassandrainput_scenario"></a>Sc&eacute;nario : Gestion des donn&eacute;es avec Cassandra</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job simple qui lit des donn&eacute;es relatives &agrave; des employ&eacute;s dans un
+            fichier CSV, &eacute;crit les donn&eacute;es dans un keyspace Cassandra, extrait les informations
+            personnelles de certains employ&eacute;s, puis affiche les informations dans la console.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput.png"></div><p>Ce sc&eacute;nario n&eacute;cessite six composants :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="emphasis"><strong>tCassandraConnection</strong></span> pour ouvrir une
+                        connexion au serveur Cassandra.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour lire le
+                        fichier d'entr&eacute;e, d&eacute;finir la structure des donn&eacute;es et les envoie au
+                        composant suivant.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tCassandraOutput</strong></span> pour &eacute;crire les
+                        donn&eacute;es re&ccedil;ues du composant pr&eacute;c&eacute;dent dans un espace de cl&eacute; (keyspace)
+                        Cassandra.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tCassandraInput</strong></span> pour lire les donn&eacute;es
+                        du keyspace Cassandra.</p></li><li class="listitem"><p>un <span class="emphasis"><strong>tLogRow</strong></span> pour afficher dans la console
+                        les donn&eacute;es re&ccedil;ues du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>et un <span class="emphasis"><strong>tCassandraClose</strong></span> pour fermer la
+                        connexion au serveur Cassandra.</p></li></ul></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e3350"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : un
+                            <span class="emphasis"><strong>tCassandraConnection</strong></span>, un <span class="emphasis"><strong>tFileInputDelimited</strong></span>, un <span class="emphasis"><strong>tCassandraOutput</strong></span>, un <span class="emphasis"><strong>tCassandraInput</strong></span>, un <span class="emphasis"><strong>tLogRow</strong></span>
+                        et un <span class="emphasis"><strong>tCassandraClose</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez le <span class="emphasis"><strong>tFileInputDelimited</strong></span> au
+                            <span class="emphasis"><strong>tCassandraOutput</strong></span> &agrave; l'aide d'un lien
+                            <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour relier le <span class="emphasis"><strong>tCassandraInput</strong></span> au <span class="emphasis"><strong>tLogRow</strong></span>. </p></li><li class="step" title="&Eacute;tape 4"><p>Connectez le <span class="emphasis"><strong>tCassandraConnection</strong></span> au
+                            <span class="emphasis"><strong>tFileInputDelimited</strong></span> &agrave; l'aide d'un lien
+                            <span class="emphasis"><strong>Trigger</strong></span> &gt; <span class="emphasis"><strong>OnSubjobOk</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour relier le <span class="emphasis"><strong>tFileInputDelimited</strong></span> au <span class="emphasis"><strong>tCassandraInput</strong></span> et le <span class="emphasis"><strong>tCassandraInput</strong></span> au <span class="emphasis"><strong>tCassandraClose</strong></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Renommez les composants afin de mieux identifier leur r&ocirc;le.</p></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e3435"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.7.&nbsp;Ouvrir une connexion Cassandra"><a name="d55688e3438"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.7.&nbsp;Ouvrir une connexion Cassandra</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tCassandraConnection</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Server</strong></span>, saisissez le nom de
+                        l'h&ocirc;te ou l'adresse IP du serveur Cassandra. Dans cet exemple, saisissez
+                            <span class="emphasis"><em>localhost</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="emphasis"><strong>Port</strong></span>, saisissez le num&eacute;ro
+                        du port d'&eacute;coute du serveur Cassandra.</p></li><li class="step" title="&Eacute;tape 4"><p>Si n&eacute;cessaire, saisissez vos informations d'authentification &agrave; Cassandra :
+                        votre identifiant dans le champ <span class="emphasis"><strong>Username</strong></span> et
+                        votre mot de passe dans le champ <span class="emphasis"><strong>Password</strong></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.8.&nbsp;Lire les donn&eacute;es d'entr&eacute;e"><a name="d55688e3478"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.8.&nbsp;Lire les donn&eacute;es d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tFileInputDelimited</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>. </p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="emphasis"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="emphasis"><strong>File Name/Stream</strong></span> afin de parcourir
+                        votre syst&egrave;me jusqu'au fichier duquel vous souhaitez lire les donn&eacute;es. Dans
+                        ce sc&eacute;nario, le r&eacute;pertoire est <span class="emphasis"><em>D:/Input/Employees.csv</em></span>. Le fichier CSV contient quatre
+                        colonnes : <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>age</em></span>, <span class="emphasis"><em>name</em></span> et <span class="emphasis"><em>ManagerID</em></span>.</p><pre class="programlisting">id;age;name;ManagerID
+1;20;Alex;1
+2;40;Peter;1
+3;25;Mark;1
+4;26;Michael;1
+5;30;Christophe;2
+6;26;Stephane;3
+7;37;Cedric;3
+8;52;Bill;4
+9;43;Jack;2
+10;28;Andrews;4</pre></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur <span class="emphasis"><strong>Edit schema</strong></span> pour d&eacute;finir les
+                        donn&eacute;es &agrave; passer au composant <span class="emphasis"><strong>tCassandraOutput</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput7.png"></div></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.9.&nbsp;Ecrire des donn&eacute;es dans un keyspace Cassandra"><a name="d55688e3531"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.9.&nbsp;Ecrire des donn&eacute;es dans un keyspace Cassandra</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tCassandraOutput</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput3.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Saisissez les informations requises pour la connexion ou cochez la case
+                            <span class="emphasis"><strong>Use existing connection</strong></span> afin d'utiliser
+                        la connexion pr&eacute;c&eacute;demment configur&eacute;e. Dans ce sc&eacute;nario, la case <span class="emphasis"><strong>Use existing connection</strong></span> est coch&eacute;e.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la zone <span class="emphasis"><strong>Keyspace configuration</strong></span>,
+                        saisissez le nom du keyspace : <span class="emphasis"><em>Employee</em></span>,
+                        dans cet exemple.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="emphasis"><strong>Column family configuration</strong></span>,
+                        saisissez le nom de la famille de colonnes : <span class="emphasis"><em>Employee_Info</em></span>, dans cet exemple.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la liste <span class="emphasis"><strong>Action on data</strong></span>,
+                        s&eacute;lectionnez l'action que vous souhaitez effectuer. </p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> pour
+                        r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 7"><p>S&eacute;lectionnez la colonne de cl&eacute; dans la liste <span class="emphasis"><strong>Key
+                            column</strong></span>. Si n&eacute;cessaire, cochez la case <span class="emphasis"><strong>Include key in columns</strong></span>. </p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.10.&nbsp;Lire des donn&eacute;es d'un keyspace Cassandra"><a name="d55688e3595"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.10.&nbsp;Lire des donn&eacute;es d'un keyspace Cassandra</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tCassandraInput</strong></span> pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput4.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Saisissez les informations requises pour la connexion ou cochez la case
+                            <span class="emphasis"><strong>Use existing connection</strong></span> afin d'utiliser
+                        la connexion pr&eacute;c&eacute;demment configur&eacute;e. Dans ce sc&eacute;nario, la case <span class="emphasis"><strong>Use existing connection</strong></span> est coch&eacute;e.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la zone <span class="emphasis"><strong>Keyspace configuration</strong></span>,
+                        saisissez le nom de l'espace de cl&eacute; : <span class="emphasis"><em>Employee</em></span>, dans cet exemple.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="emphasis"><strong>Column family configuration</strong></span>,
+                        saisissez le nom de la famille de colonnes : <span class="emphasis"><em>Employee_Info</em></span>, dans cet exemple. </p></li><li class="step" title="&Eacute;tape 5"><p>Si n&eacute;cessaire, cochez la case <span class="emphasis"><strong>Include key in output
+                            columns</strong></span>, puis s&eacute;lectionnez, dans la liste <span class="emphasis"><strong>Key column</strong></span>, la colonne cl&eacute; de la famille de
+                        colonnes que vous souhaitez inclure.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans la zone <span class="emphasis"><strong>Query configuration</strong></span>, cochez
+                        la case <span class="emphasis"><strong>Specify row keys</strong></span> et sp&eacute;cifiez les
+                        cl&eacute;s de lignes. Dans cet exemple, trois lignes doivent &ecirc;tre lues. Cochez la
+                        case <span class="emphasis"><strong>Specify columns</strong></span> et sp&eacute;cifiez le nom
+                        des colonnes de la famille de colonnes. Ce sc&eacute;nario permet de lire trois
+                        colonnes du : <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>name</em></span> et <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Si n&eacute;cessaire, les champs <span class="emphasis"><strong>Key start</strong></span> et
+                            <span class="emphasis"><strong>Key end</strong></span> vous permettent de d&eacute;finir
+                        l'&eacute;cart de lignes. Le champ <span class="emphasis"><strong>Key limit</strong></span> vous
+                        permet de sp&eacute;cifier le nombre de lignes &agrave; l'int&eacute;rieur de l'&eacute;cart de lignes &agrave;
+                        lire. De la m&ecirc;me mani&egrave;re, les champs <span class="emphasis"><strong>Columns range
+                            start</strong></span> et <span class="emphasis"><strong>Columns range end</strong></span>
+                        vous permettent de d&eacute;finir l'&eacute;cart de colonnes dans la famille de colonnes.
+                        Le champ <span class="emphasis"><strong>Columns range limit</strong></span> vous permet de
+                        sp&eacute;cifier le nombre de colonnes dans l'&eacute;cart de colonnes &agrave; lire. </p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur le bouton <span class="emphasis"><strong>Edit schema</strong></span> afin de
+                        d&eacute;finir la structure des donn&eacute;es &agrave; lire du keyspace Cassandra.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.11.&nbsp;Afficher les informations qui vous int&eacute;ressent"><a name="d55688e3694"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.11.&nbsp;Afficher les informations qui vous int&eacute;ressent</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tLogRow</strong></span>
+                        pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> afin de
+                        visualiser les donn&eacute;es sous forme de tableau.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.12.&nbsp;Fermer la connexion Cassandra"><a name="d55688e3715"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.12.&nbsp;Fermer la connexion Cassandra</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tCassandraClose</strong></span> pour afficher sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput5.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez la connexion &agrave; fermer, dans la liste <span class="emphasis"><strong>Component List</strong></span>. </p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d55688e3737"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+S</strong></span> pour
+                        sauvegarder votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Ex&eacute;cutez le Job en appuyant sur la touche <span class="emphasis"><strong>F6</strong></span> ou en cliquant sur le bouton <span class="emphasis"><strong>Run</strong></span> dans la vue <span class="emphasis"><strong>Run</strong></span>.</p><p>Les informations personnelles des trois employ&eacute;s s'affichent dans la
+                        console.</p><div class="mediaobject"><img src="../images/Use_Case_CassandraInput6.png"></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tCassandraConnection.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tCassandraOutput.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tCassandraConnection &nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tCassandraOutput</td></tr></table></div></body></html>

@@ -1,0 +1,100 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceGetServerTimestamp</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-business.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tSalesforceGetDeleted.html" title="tSalesforceGetDeleted"><link rel="next" href="tSalesforceGetUpdated.html" title="tSalesforceGetUpdated"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSalesforceGetServerTimestamp</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSalesforceGetDeleted.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Business components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSalesforceGetUpdated.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSalesforceGetServerTimestamp"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceGetServerTimestamp"></a>tSalesforceGetServerTimestamp</h2></div></div></div><div class="mediaobject"><img src="../images/tSalesforceGetServerTimestamp_icon32_white.png"></div><div class="section" title="tSalesforceGetServerTimestamp properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13664"></a>tSalesforceGetServerTimestamp properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business/Cloud </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tSalesforceGetServerTimestamp</strong></span>
+                                retrieves the current date of the Salesforce server.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component retrieves the current date of the Salesforce server
+                                presented in a timestamp format.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                        	<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+                        	<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, <span class="emphasis"><strong>Component
+				list</strong></span> presents only the connection components in the same Job level.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Salesforce Webservice URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the webservice URL to connect to the Salesforce DB.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Timeout (milliseconds)</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the intended number of query timeout in
+                                Salesforce.com.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                    <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+                                        <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+                            <p> Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. <span>Note that if
+                                    you make changes, the schema automatically becomes <span class="emphasis"><strong>Built-in</strong></span>.</span></p>
+                            <p> Click <span class="emphasis"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Socks Proxy</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want to use a proxy server Once
+                                selected, you need enter the connection parameters that are the
+                                host, the port, the username and the passerword of the Proxy you
+                                need to use.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Soap Compression</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the SOAP compression.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The compression of the SOAP messages optimizes system
+                                    performance.</p></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Client ID</em></span></p>
+                        </td><td valign="top">
+                            <p>Set the ID of the real user to differentiate between those who use
+                                the same account and password to access the salesforce
+                                website.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>You can use this component as an output component. <span class="emphasis"><strong>tSalesforceGetServerTimestamp</strong></span> requires an
+                                input component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13935"></a>Related scenarios</h3></div></div></div><p>No scenario is available for this component yet.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSalesforceGetDeleted.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-business.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSalesforceGetUpdated.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSalesforceGetDeleted&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSalesforceGetUpdated</td></tr></table></div></body></html>

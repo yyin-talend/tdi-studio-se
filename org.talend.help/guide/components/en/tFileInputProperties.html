@@ -1,0 +1,110 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputProperties</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileInputPositional.html" title="tFileInputPositional"><link rel="next" href="tFileInputRegex.html" title="tFileInputRegex"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputProperties</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputPositional.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputRegex.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputProperties"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputProperties"></a>tFileInputProperties</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputProperties_icon32_white.png"></div><div class="section" title="tFileInputProperties properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa47553"></a>tFileInputProperties properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputProperties</strong></span> reads a text
+                                file row by row and extracts the fields.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tFileInputProperties</strong></span> opens a text
+                                file and reads it row by row then separates the fields according to
+                                the model key = value.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema </em></span>and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span>.</p>
+                            <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                            <p>For this component, the schema is read-only. It is made of two
+                                column, <span class="emphasis"><em>Key</em></span> and <span class="emphasis"><em>Value</em></span>,
+                                corresponding to the parameter name and the parameter value to be
+                                copied.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File format</em></span></p>
+                        </td><td valign="top">
+                            <p>Select from the list your file format, either: <span class="emphasis"><strong>.properties</strong></span> or <span class="emphasis"><strong>.ini</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>.properties</strong></span>: data in the
+                                configuration file is written in two lines and structured according
+                                to the following way: key = value.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>.ini</strong></span>: data in the configuration
+                                file is written in two lines and structured according to the
+                                following way: key = value and re-grouped in sections.</p>
+                            <p>
+                                <span class="emphasis"><strong>Section Name</strong></span>: enter the section
+                                name on which the iteration is based.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name or path to the file to be processed. Related topic: see
+                                    <span class="emphasis"><em>Talend Open Studio</em></span>
+                                <span class="emphasis"><em>User Guide</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to read a text file and separate data according
+                                to the structure key = value.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading and matching the keys and the values of different .properties files and outputting the results in a glossary"><div class="titlepage"><div><div><h3 class="title"><a name="Raa11530"></a>Scenario: Reading and matching the keys and the values of different .properties files
+            and outputting the results in a glossary</h3></div></div></div><p>This four-component Job reads two .properties files, one in French and the other in
+            English. The data in the two input files is mapped to output a glossary matching the
+            English and French terms.</p><p>The two input files used in this scenario hold localization strings for the <span class="emphasis"><strong>tMysqlInput</strong></span> component in <span class="emphasis"><em>Talend Open Studio</em></span>.</p><div class="mediaobject"><img src="../images/use_case-tfileinputproperties0and6.png"></div><div class="procedure" title="Procedure&nbsp;13.7.&nbsp; Dropping and linking the components"><a name="d0e222804"></a><p class="title"><b>Procedure&nbsp;13.7.&nbsp; Dropping and linking the components </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="emphasis"><strong>Palette</strong></span> onto the design workspace: <span class="emphasis"><strong>tFileInputProperties</strong></span> (x2), <span class="emphasis"><strong>tMap</strong></span>, and <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect the component together using <span class="emphasis"><strong>Row</strong></span> &gt;
+                        <span class="emphasis"><strong>Main</strong></span> links. The second properties file,
+                        <span class="emphasis"><em>FR</em></span>, is used as a lookup flow.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputProperties.png"></div></li></ol></div><div class="procedure" title="Procedure&nbsp;13.8.&nbsp; Configuring the components"><a name="d0e222837"></a><p class="title"><b>Procedure&nbsp;13.8.&nbsp; Configuring the components </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the first <span class="emphasis"><strong>tFileInputProperties</strong></span>
+                    component to open its <span class="emphasis"><strong>Basic settings</strong></span> view and
+                    define its properties.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputProperties1.png"></div></li><li class="step" title="Step 2"><p>In the <span class="emphasis"><strong>File Format</strong></span> field, select your file
+                    format.</p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>File Name</strong></span> field, click the three-dot
+                    button and browse to the input <span class="emphasis"><em>.properties</em></span>
+                    file you want to use.</p></li><li class="step" title="Step 4"><p>Do the same with the second <span class="emphasis"><strong>tFileInputProperties</strong></span> and browse to the French <span class="emphasis"><em>.properties</em></span> file this time.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputProperties2.png"></div></li><li class="step" title="Step 5"><p>Double-click the <span class="emphasis"><strong>tMap</strong></span> component to open the
+                        <span class="emphasis"><strong>tMap</strong></span> editor.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputProperties3.png"></div></li><li class="step" title="Step 6"><p>Select all columns from the <span class="emphasis"><em>English_terms</em></span> table and drop
+                    them to the output table. </p><p>Select the <span class="emphasis"><em>key</em></span> column from the
+                        <span class="emphasis"><em>English_terms</em></span> table and drop it to the
+                        <span class="emphasis"><em>key</em></span> column in the <span class="emphasis"><em>French_terms</em></span>
+                    table.</p></li><li class="step" title="Step 7"><p>In the <span class="emphasis"><strong>glossary</strong></span> table in the lower right
+                    corner of the <span class="emphasis"><strong>tMap</strong></span> editor, rename the
+                        <span class="emphasis"><em>value</em></span> field to <span class="emphasis"><em>EN</em></span> because it will
+                    hold the values of the English file.</p></li><li class="step" title="Step 8"><p>Click the plus button to add a line to the <span class="emphasis"><strong>glossary</strong></span> table and rename it to <span class="emphasis"><em>FR</em></span>. </p></li><li class="step" title="Step 9"><p>In the <span class="emphasis"><strong>Length</strong></span> field, set the maximum length
+                    to <span class="emphasis"><em>255</em></span>.</p></li><li class="step" title="Step 10"><p>In the upper left corner of the <span class="emphasis"><strong>tMap</strong></span> editor,
+                    select the <span class="emphasis"><em>value</em></span> column in the
+                        <span class="emphasis"><em>English_terms</em></span> table and drop it to the
+                        <span class="emphasis"><em>FR</em></span> column in the <span class="emphasis"><em>French_terms</em></span>
+                    table. When done, click <span class="emphasis"><strong>OK</strong></span> to validate your
+                    changes and close the map editor and propagate the changes to the next
+                    component.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;13.9.&nbsp; Saving and executing the Job"><a name="d0e222965"></a><p class="title"><b>Procedure&nbsp;13.9.&nbsp; Saving and executing the Job </b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save your Job. </p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span> or click the <span class="emphasis"><strong>Run</strong></span> button from the <span class="emphasis"><strong>Run</strong></span> tab to
+                    execute it. </p><div class="mediaobject"><img src="../images/Use_Case_tFileInputProperties4.png"></div></li></ol></div><p>The glossary displays on the console listing three columns holding: the key name in
+            the first column, the English term in the second, and the corresponding French term in
+            the third.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputPositional.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputRegex.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputPositional&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputRegex</td></tr></table></div></body></html>

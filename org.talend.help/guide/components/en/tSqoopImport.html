@@ -1,0 +1,266 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSqoopImport</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tSqoopExport.html" title="tSqoopExport"><link rel="next" href="tSqoopImportAllTables.html" title="tSqoopImportAllTables"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSqoopImport</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSqoopExport.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tSqoopImportAllTables.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tSqoopImport"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSqoopImport"></a>tSqoopImport</h2></div></div></div><div class="mediaobject"><img src="../images/tsqoopimport_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+			<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>Talend Big Data Studio</em></span>.</em></span>
+		</p></div><div class="section" title="tSqoopImport Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e27550"></a>tSqoopImport Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Sqoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tSqoopImport</strong></span> calls Sqoop to
+								transfer data from a relational database management system (RDBMS)
+								such as MySQL or Oracle into the Hadoop Distributed File System
+								(HDFS). </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Ensure that you have Sqoop installed in the host used to run this component and ensure
+			as well that you have added the Sqoop command line to the PATH variable of this
+			host.</p></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tSqoopImport</strong></span> is used to define
+								the arguments required by Sqoop for writing the data of your
+								interest into HDFS.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter the JDBC URL used to connect to the database where the source data is stored.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>User name</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Enter the authentication information used to connect to the source database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the name of the table to be transferred into HDFS.</p>
+							<p>This field is not available when you are using the free-form query
+								mode by selecting the <span class="emphasis"><strong>Use query</strong></span>
+								check box.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to append transferred data to an existing
+								dataset in HDFS.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File format</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select a file format for the data to be transferred. By default, the file format is
+			<span class="emphasis"><strong>textfile</strong></span>, but you can as well choose the <span class="emphasis"><strong>sequencefile</strong></span> format instead.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Compress</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to enable compression.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Print Log</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to activate the <span class="emphasis"><strong>Verbose</strong></span> check
+		box.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Verbose</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to print more information while working, for example, the debugging
+		information.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Direct</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to use the import fast path.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to display the column table where you can
+								specify the columns you want to transfer into HDFS.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use WHERE clause</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to use a WHERE clause that controls the rows
+								to be transferred. In the field displayed, you can type in the
+								condition used to select the rows you want. For example, type in
+									<code class="code">id &gt;400</code> to import only the rows where
+									the<span class="emphasis"><em> id </em></span>column has a value greater than
+								400.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use MySQL default delimiters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to use MySQL&#8217;s default delimiter set.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to use the free-form query mode provided by
+								Sqoop.</p>
+							<p>Once selecting it, you are able to enter the free-form query you
+								need to use.</p>
+							<p>Then, you must specify the target directory and if the Sqoop
+								imports data in parallel, specify as well the <code class="code">Split by</code>
+								argument. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify Target Dir</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to enter the path to the target location, in
+								HDFS, where you want to transfer the source data to.</p>
+							<p>This location should be a new directory; otherwise, you must
+								select the <span class="emphasis"><strong>Append</strong></span> check box.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify Split by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box, then, enter the table column you need and are able to use as the
+								splitting column to split the workload.</p>
+							<p>For example, for a table where the <span class="emphasis"><em>id</em></span> column is the
+								key column, enter <span class="emphasis"><em>tablename.id</em></span>.
+								Then Sqoop will split the data to be transferred according to their
+								ID values and imports them in parallel. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify Number of Mappers</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to indicate the number of map tasks (parallel processes) used to
+		perform the data transfer.</p>
+							<p>If you do not want Sqoop to work in parallel, enter <span class="emphasis"><em>1</em></span>
+		in the displayed field.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional arguments</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Complete this table to use additional arguments if needs be. </p>
+							<p>By adding additional arguments, you are able to perform multiple operations in one single
+		transaction. For example, you can use <code class="code">--hive-import</code> and
+			<code class="code">--hive-table</code> to create Hive table and write data in at the runtime of the
+		transaction writing data in HDFS. For further information about the available Sqoop
+		arguments, see the manual of Sqoop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is used standalone. It respects the Sqoop prerequisites. You need necessary
+		knowledge about Sqoop to use it.</p>
+							<p>We recommend using the Sqoop of version 1.4+ in order to benefit the full functions of
+		these components.</p>
+							<p>For further information about Sqoop, see the Sqoop manual on: <a class="link" href="http://sqoop.apache.org/docs/1.4.0-incubating/SqoopUserGuide.html" target="_top">http://sqoop.apache.org/docs/1.4.0-incubating/SqoopUserGuide.html</a></p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Prerequisites</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The Hadoop distribution must be properly installed, so as to guarantee the interaction
+		with the Studio.</p>
+							<p>For example, if you need to connect to MapR from the Studio, ensure that you have installed
+		the MapR client in the machine where the Studio is, and added the MapR client library to the
+		PATH variable of that machine. For Windows, this library is <span class="emphasis"><em>lib\MapRClient.dll</em></span> in the MapR client jar file; without adding it, you may
+		encounter the following error: <code class="code">no MapRClient in java.library.path</code>.</p>
+							<p>For further information about how to install an Hadoop distribution, see the manuals
+		corresponding to the Hadoop distribution you are using.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>You need to take the host, where Sqoop is installed, to run the Job using this component. </p>
+							<p>If the Studio is not deployed on this host, you can install the Job server provided by
+			<span class="emphasis"><strong>Talend</strong></span> on the host and use the server to run this Job.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+								Subjob Error.</p>
+							<p> </p>
+							<p> Incoming links (from one component to another):</p>
+							<p>
+								<span class="emphasis"><strong>Row</strong></span>: Iterate; </p>
+							<p>
+								<span class="emphasis"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+								Subjob Error; On Component Ok; On Component Error</p>
+							<p> </p>
+							<p> For further information regarding connections, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e28131"></a>Related scenario</h3></div></div></div><p>
+			<span>
+				No scenario is available for this component yet.
+			</span>
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSqoopExport.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tSqoopImportAllTables.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSqoopExport&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tSqoopImportAllTables</td></tr></table></div></body></html>

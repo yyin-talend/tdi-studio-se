@@ -1,0 +1,162 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputMSDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileOutputLDIF.html" title="tFileOutputLDIF"><link rel="next" href="tFileOutputMSPositional.html" title="tFileOutputMSPositional"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileOutputMSDelimited</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileOutputLDIF.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileOutputMSPositional.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileOutputMSDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputMSDelimited"></a>tFileOutputMSDelimited</h2></div></div></div><div class="mediaobject"><img src="../images/tFileOutputMSDelimited_icon32_white.png"></div><div class="section" title="tFileOutputMSDelimited properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e227996"></a>tFileOutputMSDelimited properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/ Output</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileOutputMSDelimited </strong></span>writes
+								multiple schema in a delimited file.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tFileOutputMSDelimited </strong></span>creates a
+								complex multi-structured delimited file, using data structures
+								(schemas) coming from several incoming <span class="emphasis"><strong>Row</strong></span> flows. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name and path to the file to be created and/or the variable to be
+								used.</p>
+							<p> </p>
+							<p> Related topic: see <span class="emphasis"><em>Talend Open Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Row Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>String (ex: &#8220;\n&#8221;on Unix) to distinguish rows.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression to separate fields.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Use Multi Field Separator</em></span>s</p>
+						</td><td valign="top">
+							<p>Select this check box to set a different field separator for each
+								of the schemas using the <span class="emphasis"><strong>Field
+									separator</strong></span> field in the <span class="emphasis"><strong>Schemas</strong></span> area.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schemas</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The table gets automatically populated by schemas coming from the
+								various incoming rows connected to <span class="emphasis"><strong>tFileOutputMSDelimited</strong></span>. Fill out the dependency
+								between the various schemas:</p>
+							<p>
+								<span class="emphasis"><strong>Parent row</strong></span>: Type in the parent flow
+								name (based on the <span class="emphasis"><strong>Row</strong></span> name
+								transferring the data).</p>
+							<p>
+								<span class="emphasis"><strong>Parent key column</strong></span>: Type in the key
+								column of the parent row.</p>
+							<p>
+								<span class="emphasis"><strong>Key column</strong></span>: Type in the key column
+								for the selected row.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced separator (for numbers)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to modify the separators used for
+								numbers:</p>
+							<p>
+								<span class="emphasis"><strong>Thousands separator</strong></span>: define
+								separators for thousands.</p>
+							<p>
+								<span class="emphasis"><strong>Decimal separator</strong></span>: define
+								separators for decimals.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>CSV options</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to take into account all parameters specific
+								to CSV files, in particular <span class="emphasis"><strong>Escape
+									char</strong></span> and <span class="emphasis"><strong>Text
+									enclosure</strong></span> parameters.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Create directory if not exists</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is selected by default. It creates the directory
+								that holds the output delimited file, if it does not already
+								exist.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding from the list or select <span class="emphasis"><strong>Custom</strong></span> and define it manually. This field is
+								compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Don&#8217;t generate empty file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box if you do not want to generate empty files.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Use this component to write a multi-schema delimited file and
+								separate fields using a field separator value.</p>
+						</td></tr><tr><td valign="top">
+							<span class="emphasis"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">
+							<p>
+								<span>n/a</span>
+							</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e228357"></a>Related scenarios</h3></div></div></div><p>
+			No scenario is available for this component yet.
+		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileOutputLDIF.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileOutputMSPositional.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileOutputLDIF&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileOutputMSPositional</td></tr></table></div></body></html>

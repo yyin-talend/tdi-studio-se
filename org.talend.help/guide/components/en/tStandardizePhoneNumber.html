@@ -1,0 +1,211 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStandardizePhoneNumber</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-dataquality.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tSchemaComplianceCheck.html" title="tSchemaComplianceCheck"><link rel="next" href="tStandardizeRow.html" title="tStandardizeRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tStandardizePhoneNumber</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSchemaComplianceCheck.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Data Quality components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tStandardizeRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tStandardizePhoneNumber"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStandardizePhoneNumber"></a>tStandardizePhoneNumber</h2></div></div></div><div class="mediaobject"><img src="../images/tStandardizePhoneNumber_icon32.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of
+			the studio on the condition that you have subscribed to any <span class="emphasis"><em>Talend Platform</em></span> product.</p></div><div class="section" title="tStandardizePhoneNumber properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e111928"></a>tStandardizePhoneNumber properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component receives phone number data from its preceding
+								component and formats and standardizes these numbers using a
+								built-in Google libphonumber library. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component standardizes phone numbers according to given
+								formats.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. This
+								component provides default columns. For further information, see
+								section <a class="xref" href="tStandardizePhoneNumber.html#Raa41291" title="Default columns">the section called &#8220;Default columns&#8221;</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: You create the schema
+								and store it locally for this component only. Related topic: see
+									<span class="emphasis"><em>Talend Data Integration Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: You have already
+								created the schema and stored it in the Repository. You can reuse it
+								in various projects and job designs. Related topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Phone number</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column holding the phone numbers of interest from the
+								input data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Country code</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the column holding the country codes (ISO 2) from the input
+								data.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The input data processed by this component must be able to
+									provide the two-letter ISO country codes alongside the
+									corresponding phone numbers of interest.</p></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Customize</em></span></p></td><td valign="top"><p>Select this check box to set a custom country code
+								(ISO 2). Once selected, it disables the <span class="emphasis"><strong>Country code</strong></span> field and gives priority to the
+								customized country code for phone number standardization.</p>
+							<p>For example, if the input data provides a set of phone numbers
+								with a wrong country code or alternatively with no country code,
+								then you can select this check box and type in the country code you
+								need for standardization. </p></td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Phone number format for output</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the format to be used to standardize the phone numbers of
+								interest. The available options are:</p>
+							<p>- <span class="emphasis"><strong>E164 </strong></span></p>
+							<p>- <span class="emphasis"><strong>International </strong></span></p>
+							<p>- <span class="emphasis"><strong>National</strong></span></p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Avoid comparison</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to deactivate the comparison performed
+								between the input and the output data at runtime. This could
+								accelerate the execution process of the Job using this
+								component.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is an intermediary step. It requires an input flow
+								as well as an output.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div><div class="section" title="Default columns"><div class="titlepage"><div><div><h4 class="title"><a name="Raa41291"></a>Default columns</h4></div></div></div><p>The following table presents details about the default columns provided by
+					<span class="emphasis"><strong>tStandardizePhoneNumber</strong></span>.</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th valign="top">
+								<p>Columns</p>
+							</th><th valign="top">
+								<p>Description</p>
+							</th></tr></thead><tbody><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>StandardizedPhoneNumber</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column presents the standardized phone numbers.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>IsValidPhoneNumber</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column indicates whether a phone number processed is
+									recognized as valid.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>IsPossiblePhoneNumber</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column indicates whether a phone number processed is
+									supposed to be valid.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>IsAlreadyStandard</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column indicates whether a phone number processed is
+									already standardized after comparing it with the output
+									standardized phone number.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>PhoneNumberType</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column indicates the type of a processed phone number,
+									such as fixed line, toll free, etc.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="emphasis"><em>ErrorMessage</em></span>
+								</p>
+							</td><td valign="top">
+								<p>This column presents the relative error message if a phone
+									number is unrecognizable.</p>
+							</td></tr></tbody></table></div><p>In addition to these default columns, you need to define more columns alongside in
+				order for this component to receive the corresponding input data.</p><p>
+				<span>&nbsp;</span>
+			</p></div></div><div class="section" title="Scenario: Standardizing French phone numbers"><div class="titlepage"><div><div><h3 class="title"><a name="d0e112323"></a>Scenario: Standardizing French phone numbers</h3></div></div></div><p>In this scenario, you use three components to standardize some French phone numbers
+			according to the French phone number format.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber1.png"></div><p>The components to be used are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong> tFixedFlowInput</strong></span>: this component is used to
+					provide the input data composed of phone numbers to be processed and the French
+					country code (FR).</p></li><li class="listitem"><p><span class="emphasis"><strong> tStandardizePhoneNumber</strong></span>: this component
+					standardizes the phone numbers of interest.</p></li><li class="listitem"><p><span class="emphasis"><strong> tLogRow</strong></span>: this component displays the result
+					of this standardization.</p></li></ul></div><p>To replicate this scenario, proceed as the following sections illustrate:</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112351"></a>Dropping and linking the components</h4></div></div></div><p>To do this, proceed as follows:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tFixedFlowInput</strong></span>, <span class="emphasis"><strong>tStandardizePhoneNumber</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> to
+						the Design workspace.</p></li><li class="step" title="Step 2"><p>Right-click the <span class="emphasis"><strong>tFixedFlowInput</strong></span> component
+						to open the contextual menu and select <span class="emphasis"><strong>Row &gt;
+							Main</strong></span>.</p></li><li class="step" title="Step 3"><p>Do the same to connect <span class="emphasis"><strong>tStandardizePhoneNumber</strong></span> to <span class="emphasis"><strong>tLogRow</strong></span> using a <span class="emphasis"><strong>Row &gt;
+							Main</strong></span> link.</p></li></ol></div><p>Then you can continue to configure these components.</p></div><div class="section" title="Configuring the input data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112395"></a>Configuring the input data</h4></div></div></div><p>To do this, proceed as follows:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click<span class="emphasis"><strong> tFixedFlowInput</strong></span> to open its
+							<span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber2.png"></div></li><li class="step" title="Step 2"><p>Next to <span class="emphasis"><strong>Edit schema</strong></span>, click the three-dot
+						button to open the schema editor.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber3.png"></div></li><li class="step" title="Step 3"><p>Click the plus button to add two rows.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Column</strong></span> column, rename these two
+						newly added rows. In this scenario, name them <span class="emphasis"><em>phone</em></span> and
+							<span class="emphasis"><em>country</em></span> respectively.</p></li><li class="step" title="Step 5"><p>Click <span class="emphasis"><strong>OK</strong></span> to validate these changes and
+						accept the propagation prompted by the dialog box that pops up.</p></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Mode</strong></span> area, select the <span class="emphasis"><strong>Use Inline Table</strong></span> option to display the <span class="emphasis"><strong>Inline Table</strong></span>.</p></li><li class="step" title="Step 7"><p>Under this table, click the plus button to add as much number of rows as
+						you need. In this scenario, add 12 rows.</p></li><li class="step" title="Step 8"><p>In this table, type in, between quotation marks, phone numbers of various
+						formats and the corresponding ISO 2-letter country code in the
+							<span class="emphasis"><em>phone</em></span> and the <span class="emphasis"><em>country</em></span> columns
+						respectively. In this scenario, they read as follows:</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber4.png"></div></li></ol></div></div><div class="section" title="Configuring the standardization process"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112470"></a>Configuring the standardization process</h4></div></div></div><p>To do this, proceed as follows:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double click <span class="emphasis"><strong>tStandardizePhoneNumber</strong></span> to
+						open its <span class="emphasis"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber5.png"></div></li><li class="step" title="Step 2"><p>If required, click <span class="emphasis"><strong>Sync columns</strong></span> to
+						retrieve the schema from the previous component. </p></li><li class="step" title="Step 3"><p>In the <span class="emphasis"><strong>Phone number</strong></span> field, select
+							<span class="emphasis"><em>phone</em></span> from the drop-down list as this column holds
+						the phone numbers to be processed.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Country</strong></span>
+						<span class="emphasis"><strong>code</strong></span> field, select<span class="emphasis"><em>
+							country</em></span> from the drop-down list as this column provides the
+						country code to be used. In this scenario, this code is the French country
+						code FR.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Phone number format for output</strong></span>
+						field, select <span class="emphasis"><strong>National</strong></span> as you need to
+						standardize these phone numbers according to the national standard format of
+						France.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112524"></a>Executing the Job</h4></div></div></div><p>Press <span class="emphasis"><strong>F6</strong></span> to run this Job.</p><p>You can read the execution result in the console of the <span class="emphasis"><strong>Run</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizePhoneNumber6.png"></div><p>From this result table, you can find that the first input record
+					<span class="emphasis"><em>0147045670</em></span>, for example, is standardized as <span class="emphasis"><em>01 47
+					04 56 70</em></span> according to the French phone number format and this number
+				is of <span class="emphasis"><em>FIXED LINE</em></span>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSchemaComplianceCheck.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-dataquality.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tStandardizeRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tSchemaComplianceCheck&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tStandardizeRow</td></tr></table></div></body></html>

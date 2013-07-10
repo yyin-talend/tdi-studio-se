@@ -1,0 +1,92 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLogRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-logsanderrors.html" title="Chapter&nbsp;15.&nbsp;Logs &amp; Errors components"><link rel="prev" href="tLogCatcher.html" title="tLogCatcher"><link rel="next" href="tStatCatcher.html" title="tStatCatcher"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tLogRow</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tLogCatcher.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;15.&nbsp;Logs &amp; Errors components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tStatCatcher.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tLogRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLogRow"></a>tLogRow</h2></div></div></div><div class="mediaobject"><img src="../images/tLogRow.png"></div><div class="section" title="tLogRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa83212"></a>tLogRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Displays data or results in the <span class="emphasis"><strong>Run</strong></span> console.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tLogRow</strong></span> is used to monitor data
+                                processed.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository.</p>
+                            <p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+                            <p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make changes
+                                to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><strong>Built-in</strong></span>: You can
+                            create the schema and store it locally for this component. Related
+                            topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><strong>Repository</strong></span>: You have
+                            already created and stored the schema in the Repository. You can reuse
+                            it in various projects and Job flowcharts. Related topic: see
+                                    <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Sync columns</em></span></td><td valign="top">Click to synchronize the output file schema with the
+                            input file schema. The Sync function is available only when the
+                            component is linked with the preceding component using a <span class="emphasis"><strong>Row</strong></span> connection.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Basic</em></span></td><td valign="top">Displays the output flow in basic mode.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Table</em></span></td><td valign="top">Displays the output flow in table cells.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Vertical</em></span></td><td valign="top">
+                            <p>Displays each row of the output flow as a key-value list. </p>
+                            <p>With this mode selected, you can choose to show either the unique
+                                name or the label of component, or both of them, for each output
+                                row.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Separator</em></span>
+                            </p>
+                            <p>(For Basic mode only)</p>
+                        </td><td valign="top">
+                            <p>Enter the separator which will delimit data on the Log
+                                display.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Print header</em></span></p>
+                            <p>(For Basic mode only)</p>
+                        </td><td valign="top">Select this check box to include the header of the input
+                            flow in the output display. </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print component unique name in front of
+                                    each output row</em></span></p>
+                            <p>(For Basic mode only)</p>
+                        </td><td valign="top">
+                            <p>Select this check box to show the unique name the component in
+                                front of each output row to differentiate outputs in case several
+                                    <span class="emphasis"><strong>tLogRow</strong></span> components are
+                                used.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print schema column name in front of each
+                                    value</em></span></p>
+                            <p>(For Basic mode only)</p>
+                        </td><td valign="top">
+                            <p>Select this check box to retrieve column labels from output
+                                schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use fixed length for
+                                values</em></span></p>
+                            <p>(For Basic mode only)</p>
+                        </td><td valign="top">
+                            <p>Select this check box to set a fixed width for the value
+                                display.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as intermediate step in a data flow or
+                                as a n end object in the Job flowchart. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e256452"></a>Related scenarios</h3></div></div></div><p>For related scenarios, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMDMInput.html#Raa34575" title="Scenario: Reading master data in an MDM hub">the section called &#8220;Scenario: Reading master data in an MDM hub&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tContextLoad.html#Raa15947" title="Scenario: Dynamic context use in MySQL DB insert">the section called &#8220;Scenario: Dynamic context use in MySQL DB insert&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tLogCatcher.html#Raa67637" title="Scenario&nbsp;1: warning &amp; log on entries">the section called &#8220;Scenario&nbsp;1: warning &amp; log on entries&#8221;</a>.</p></li><li class="listitem"><p><a class="xref" href="tLogCatcher.html#Raa74583" title="Scenario 2: Log &amp; kill a Job">the section called &#8220;Scenario 2: Log &amp; kill a Job&#8221;</a>.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tLogCatcher.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-logsanderrors.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tStatCatcher.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tLogCatcher&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tStatCatcher</td></tr></table></div></body></html>

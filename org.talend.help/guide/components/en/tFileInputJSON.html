@@ -1,0 +1,180 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputJSON</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tFileInputFullRow.html" title="tFileInputFullRow"><link rel="next" href="tFileInputLDIF.html" title="tFileInputLDIF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileInputJSON</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileInputFullRow.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileInputLDIF.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tFileInputJSON"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputJSON"></a>tFileInputJSON</h2></div></div></div><div class="mediaobject"><img src="../images/tFileInputJSON_icon32_white.png"></div><div class="section" title="tFileInputJSON properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218396"></a>tFileInputJSON properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Component
+                                                  Family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>File</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tFileInputJSON</strong></span> extracts JSON data from a file according to the
+                JSONPath query.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tFileInputJSON</strong></span> extracts JSON data from a file according to the
+                JSONPath query, then transferring the flat data to a file, a database table,
+                etc.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Property type</em></span></p>
+                                                </td><td valign="top">
+                                                  <p><span>Either
+                                                  <span class="emphasis"><strong>Built-in</strong></span> or
+                                                  <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Built-in</strong></span>:
+                                                  No property data stored centrally.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Repository</strong></span>:
+                                                  Select the repository file where the properties
+                                                  are stored. The fields that follow are completed
+                                                  automatically using the data retrieved.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e. it
+                defines the number of fields to be processed and passed on to the next component.
+                  <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+                                                  <p> Click <span class="emphasis"><strong>Edit
+                                                  Schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Built-in</strong></span>:
+                                                  The schema will be created and stored locally for
+                                                  this component only. Related topic: see <span class="emphasis"><em>Talend Open Studio</em></span>
+                                                  <span class="emphasis"><em>User
+                                                  Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused in various
+                                                  projects and Job flowcharts. Related topic: see
+                                                  <span class="emphasis"><em>Talend Open Studio</em></span>
+                                                  <span class="emphasis"><em>User
+                                                  Guide</em></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use URL</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to retrieve data
+                                                  directly from the Web.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>UR</strong></span><span class="emphasis"><strong>L</strong></span>: type in the URL path
+                                                  from which you will retrieve data.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>FIlename</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Name of the file from which you will
+                                                  retrieve data.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Mapping </em></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><strong>Column</strong></span>:
+                shows the schema defined in the Schema editor.</p>
+                                                  <p>
+                <span class="emphasis"><strong>JSONPath Query</strong></span>: specifies the JSON node that holds
+                the desired data. For details about JSONPath expressions, go to <a class="link" href="http://goessner.net/articles/JsonPath/" target="_top">http://goessner.net/articles/JsonPath/</a>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Advanced separator (for
+                                                  numbers)</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to modify the
+                                                  separators used for numbers:</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Thousands
+                                                  separator</strong></span>: define separators for
+                                                  thousands.</p>
+                                                  <p>
+                                                  <span class="emphasis"><strong>Decimal
+                                                  separator</strong></span>: define separators for
+                                                  decimals.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Encoding</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select the encoding type from the list or
+                                                  select <span class="emphasis"><strong>Custom</strong></span> and
+                                                  define it manually. This field is compulsory for
+                                                  DB data handling.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to gather the Job
+                                                  processing metadata at a Job level as well as at
+                                                  each component level.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="emphasis"><strong>tFileInputJSON</strong></span> extracts JSON data from a file according to the
+                JSONPath query, then transferring the flat data to a file, a database table,
+                etc..</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Extracting JSON data from a file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218752"></a>Scenario: Extracting JSON data from a file</h3></div></div></div><p>In this scenario, <span class="emphasis"><strong>tFileInputJSON</strong></span> reads the JSON data from
+      a .csv file and <span class="emphasis"><strong>tLogRow</strong></span> shows the flat data extracted.</p><p>The JSON data contains the brief information about the movie <span class="emphasis"><em>Brave
+        heart</em></span>. </p><div class="section" title="Linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e218768"></a>Linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop <span class="emphasis"><strong>tFileInputJSON</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> from the <span class="emphasis"><strong>Palette</strong></span> onto the Job
+            designer.</p></li><li class="step" title="Step 2"><p>Rename <span class="emphasis"><strong>tFileInputJSON</strong></span> as <span class="emphasis"><strong>read_JSON_data</strong></span> and <span class="emphasis"><strong>tLogRow</strong></span> as <span class="emphasis"><strong>show_data</strong></span>.</p></li><li class="step" title="Step 3"><p>Link the components using a <span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Main</strong></span> connection.</p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e218811"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="emphasis"><strong>tFileInputJSON</strong></span> to open its <span class="emphasis"><strong>Basic settings</strong></span> view: </p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_2.png"></div></li><li class="step" title="Step 2"><p>Click the <span class="emphasis"><strong>[...]</strong></span> button next to <span class="emphasis"><strong>Edit schema</strong></span> to open the schema editor.</p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_3.png"></div></li><li class="step" title="Step 3"><p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add five columns, namely
+              <span class="emphasis"><em>type</em></span>, <span class="emphasis"><em>movie_name</em></span>, <span class="emphasis"><em>release</em></span>, <span class="emphasis"><em>rating</em></span> and <span class="emphasis"><em>starring</em></span>, with
+            the type of <span class="emphasis"><em>string</em></span> except for the column <span class="emphasis"><em>rating</em></span>, which is <span class="emphasis"><em>double</em></span>.</p><p>Click <span class="emphasis"><strong>OK</strong></span> to close the editor.</p></li><li class="step" title="Step 4"><p>In the pop-up <span class="emphasis"><strong>Propagate</strong></span> box, click <span class="emphasis"><strong>Yes</strong></span> to propagate the schema to the subsequent
+            components.</p><div class="mediaobject"><img src="../images/use_case_textractjsonfields_13.png"></div></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Filename</strong></span> field, fill in the path to the JSON
+            file. </p><p>In this example, the JSON file is as follows: </p><pre class="programlisting">{
+    "type": "Action Movie",
+    "detail": {
+               "movies":
+                       { "name": "Brave heart",
+                         "release": "1995",
+                         "rating": "5",
+                       },
+                "starring": "Mel Gibson"
+               }
+}</pre></li><li class="step" title="Step 6"><p>In the <span class="emphasis"><strong>Mapping</strong></span> table, the schema automatically
+            appears in the <span class="emphasis"><strong>Column</strong></span> part. For each column, type in
+            the JSONPath query to retrieve data from the JSON node under the <span class="emphasis"><strong>JSONPath query</strong></span> part.</p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_4.png"></div></li><li class="step" title="Step 7"><p>For the column <span class="emphasis"><em>type</em></span>, enter the JSONPath query
+              <span class="emphasis"><em>"type"</em></span>, which is the first node of the JSON
+            data.</p></li><li class="step" title="Step 8"><p>For columns <span class="emphasis"><em>movie_name</em></span>, <span class="emphasis"><em>release</em></span> and <span class="emphasis"><em>rating</em></span>, enter the JSONPath
+            queries <span class="emphasis"><em>"$..name"</em></span>, <span class="emphasis"><em>"$..release"</em></span> and <span class="emphasis"><em>"$..rating"</em></span>
+            respectively.</p><p>Here, <span class="emphasis"><em>"$"</em></span> stands for the root node relative to
+            the nodes <span class="emphasis"><em>name</em></span>, <span class="emphasis"><em>release</em></span> and <span class="emphasis"><em>rating</em></span>, namely <span class="emphasis"><em>detail</em></span>. <span class="emphasis"><em>".."</em></span> stands for
+            the recursive decent of the node <span class="emphasis"><em>detail</em></span>, namely
+              <span class="emphasis"><em>movies</em></span>.</p><p>Therefore, the query is still valid if you replace <span class="emphasis"><em>"$..name"</em></span> with <span class="emphasis"><em>"detail.movies.name"</em></span>.</p></li><li class="step" title="Step 9"><p>For the column <span class="emphasis"><em>starring</em></span>, enter the JSONPath query
+              <span class="emphasis"><em>"detail.starring"</em></span>. Note that <span class="emphasis"><em>type</em></span> and <span class="emphasis"><em>detail</em></span> are two
+            nodes of the same level in the hierarchy.</p></li><li class="step" title="Step 10"><p>Double-click <span class="emphasis"><strong>tLogRow</strong></span> to display the <span class="emphasis"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_5.png"></div></li><li class="step" title="Step 11"><p>Select <span class="emphasis"><strong>Table (print values in cells of a table)</strong></span> for
+            a better display of the results.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e219008"></a>Executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="emphasis"><strong>Ctrl+S</strong></span> to save the Job.</p></li><li class="step" title="Step 2"><p>Press <span class="emphasis"><strong>F6</strong></span> to execute the Job. </p><div class="mediaobject"><img src="../images/use_case_tfileinputjson_6.png"></div><p>As shown above, the source JSON data is collected in a flat file table. </p></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileInputFullRow.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileInputLDIF.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tFileInputFullRow&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileInputLDIF</td></tr></table></div></body></html>

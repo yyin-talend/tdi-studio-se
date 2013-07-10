@@ -1,0 +1,95 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigFilterColumns</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-bigdata.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tPigDistinct.html" title="tPigDistinct"><link rel="next" href="tPigFilterRow.html" title="tPigFilterRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tPigFilterColumns</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tPigDistinct.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;1.&nbsp;Big Data components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tPigFilterRow.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tPigFilterColumns"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigFilterColumns"></a>tPigFilterColumns</h2></div></div></div><div class="mediaobject"><img src="../images/tPigFilterColumns_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="emphasis"><em>Talend Big Data Studio</em></span>.</em></span></p></div><div class="section" title="tPigFilterColumns Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e24027"></a>tPigFilterColumns Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Hadoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component allows you to select one or more columns from a
+								relation based on defined condition.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This <span class="emphasis"><strong>tPigFilterColumns</strong></span> component
+								selects data or filters out data from a relation based on defined
+								filter conditions.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+									The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span>.</p>
+							<p>If you are using <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, only the <span class="emphasis"><strong>Built-in</strong></span> mode is available.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will be
+								created and stored locally for this component only. Related topic:
+								see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job designs. Related topic: see
+										<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at the
+								Job level as well as at each component level. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is commonly used as intermediate step together with
+								input component and output component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Prerequisites</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The Hadoop distribution must be properly installed, so as to guarantee the interaction
+		with the Studio.</p>
+							<p>For example, if you need to connect to MapR from the Studio, ensure that you have installed
+		the MapR client in the machine where the Studio is, and added the MapR client library to the
+		PATH variable of that machine. For Windows, this library is <span class="emphasis"><em>lib\MapRClient.dll</em></span> in the MapR client jar file; without adding it, you may
+		encounter the following error: <code class="code">no MapRClient in java.library.path</code>.</p>
+							<p>For further information about how to install an Hadoop distribution, see the manuals
+		corresponding to the Hadoop distribution you are using.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Knowledge of Pig script is required.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e24243"></a>Related Scenario</h3></div></div></div><p>For a <span class="emphasis"><strong>tPigFilterColumns</strong></span> related scenario, see <a class="xref" href="tPigJoin.html#jzhang-20120516-bigdata-tpigjoin_scenario" title="Scenario: Joining two files based on an exact match and saving the result to a local file">the section called &#8220;Scenario: Joining two files based on an exact match and saving the result to a local
+			file&#8221;</a> of <span class="emphasis"><strong>tPigJoin</strong></span>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tPigDistinct.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tPigFilterRow.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tPigDistinct&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tPigFilterRow</td></tr></table></div></body></html>

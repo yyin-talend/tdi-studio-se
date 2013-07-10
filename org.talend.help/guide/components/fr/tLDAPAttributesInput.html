@@ -1,0 +1,276 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLDAPAttributesInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-databases-other.html" title="Chapitre&nbsp;9.&nbsp;Databases - Autres composants"><link rel="prev" href="tJDBCTableList.html" title="tJDBCTableList"><link rel="next" href="tLDAPClose.html" title="tLDAPClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tLDAPAttributesInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tJDBCTableList.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;9.&nbsp;Databases - Autres composants</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tLDAPClose.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tLDAPAttributesInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLDAPAttributesInput"></a>tLDAPAttributesInput</h2></div></div></div><div class="mediaobject"><img src="../images/tLDAPAttributesInput_icon32.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tLDAPAttributesInput"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e169398"></a>Propri&eacute;t&eacute;s du tLDAPAttributesInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/LDAP</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tLDAPAttributesInput</strong></span>
+								analyse chaque &eacute;l&eacute;ment trouv&eacute; via une requ&ecirc;te LDAP et liste une
+								s&eacute;rie d&#8217;attributs associ&eacute;s &agrave; l&#8217;objet.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="emphasis"><strong>tLDAPAttributesInput</strong></span> ex&eacute;cute
+								une LDAP bas&eacute;e sur un filtre pr&eacute;d&eacute;fini et correspondant au sch&eacute;ma
+								d&eacute;fini. Puis la liste de champ est transmise au composant suivant
+								via une connexion <span class="emphasis"><strong>Main row</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Peut &ecirc;tre <span class="emphasis"><strong>Built-in</strong></span> ou <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et cliquez sur le composant <span class="emphasis"><strong>tLDAPConnection</strong></span> dans la liste <span class="emphasis"><strong>Component List</strong></span>, afin de r&eacute;utiliser les
+								informations de la connexion que vous avez pr&eacute;c&eacute;demment
+								d&eacute;finie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur d&#8217;annuaire LDAP.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Base DN</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s &agrave; l&#8217;arborescence de l&#8217;utilisateur autoris&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Protocol</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le type de protocole dans la liste.</p>
+							<p><span class="emphasis"><strong>LDAP</strong></span>&nbsp;: aucun codage n&#8217;est utilis&eacute;.</p>
+							<p><span class="emphasis"><strong>LDAPS&nbsp;</strong></span>: LDAP s&eacute;curis&eacute;. Quand cette option est
+								s&eacute;lectionn&eacute;e, la case <span class="emphasis"><strong>Advanced CA</strong></span>
+								appara&icirc;t. Une fois s&eacute;lectionn&eacute;, le mode avanc&eacute; vous permet de
+								sp&eacute;cifier le r&eacute;pertoire et le mot de passe de la cl&eacute; secr&egrave;te du
+								certificat pour le stockage d&#8217;un CA sp&eacute;cifique. Cependant, vous
+								pouvez toujours d&eacute;sactiver la validation du certificat, en cochant
+								la case <span class="emphasis"><strong>Trust all certs</strong></span>. </p>
+							<p><span class="emphasis"><strong>TLS</strong></span>&nbsp;: le certificat est utilis&eacute;. Quand cette option
+								est s&eacute;lectionn&eacute;e, la case <span class="emphasis"><strong>Advanced
+									CA</strong></span> appara&icirc;t et est utilis&eacute;e de la m&ecirc;me fa&ccedil;on que pour
+								le type <span class="emphasis"><strong>LPDAPS</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Authentication User</em></span> et
+									<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Cochez <span class="emphasis"><strong>Authentication</strong></span> si une
+								connexion LDAP est n&eacute;cessaire. Notez que le login doit correspondre
+								&agrave; la syntaxe LDAP pour &ecirc;tre valide. Par exemple&nbsp;: &#8220;cn=Directory
+								Manager&#8221;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Filter</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le filtre comme attendu par l&#8217;annuaire LDAP db.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Multi valued field separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le s&eacute;parateur de valeur des champs &agrave; valeurs
+								multiples.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Alias dereferencing</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;option dans la liste. <span class="emphasis"><strong>Never
+								</strong></span>permet l&#8217;am&eacute;lioration des performances de recherche si
+								vous &ecirc;tes s&ucirc;r qu&#8217;aucun alias n&#8217;est d&eacute;r&eacute;f&eacute;renc&eacute;. Par d&eacute;faut, utilisez
+									<span class="emphasis"><strong>Always</strong></span>&nbsp;:</p>
+							<p><span class="emphasis"><strong>Always</strong></span>&nbsp;: les alias sont toujours d&eacute;r&eacute;f&eacute;renc&eacute;s.</p>
+							<p><span class="emphasis"><strong>Never&nbsp;</strong></span>: les alias ne sont jamais d&eacute;r&eacute;f&eacute;renc&eacute;s.</p>
+							<p><span class="emphasis"><strong>Searching&nbsp;</strong></span>: cette option d&eacute;r&eacute;f&eacute;rence les alias
+								uniquement apr&egrave;s la r&eacute;solution du nom.</p>
+							<p><span class="emphasis"><strong>Finding</strong></span>&nbsp;: cette option d&eacute;r&eacute;f&eacute;rence les alias
+								uniquement lors de la r&eacute;solution du nom.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Referral handling</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;option dans la liste&nbsp;:</p>
+							<p><span class="emphasis"><strong>Ignore&nbsp;</strong></span>: ne tient pas compte des redirections des
+								requ&ecirc;tes</p>
+							<p><span class="emphasis"><strong>Follow</strong></span>&nbsp;: tient compte des redirections des
+								requ&ecirc;tes</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette option permet de limiter le nombre d&#8217;enregistrement lus, si
+								n&eacute;cessaire.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Time Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette option permet de limiter la dur&eacute;e de connexion &agrave;
+								l&#8217;annuaire.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Paging</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le nombre d&#8217;entr&eacute;es retourn&eacute;es en une fois par le
+								serveur LDAP.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+								D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+								erreur, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+								lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+									<span class="emphasis"><strong>Row</strong></span> &gt; <span class="emphasis"><strong>Reject</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local (<span class="emphasis"><strong>Built-in</strong></span>) , soit distant dans le
+										<span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute;
+								ponctuellement pour ce composant seulement. Voir &eacute;galement&nbsp;le
+									<span class="emphasis"><em>Guide utilisateur de
+									</em></span><span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et il est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+									utilisateur de </em></span><span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Comme ce composant sert &agrave; lister les attributs associ&eacute;s &agrave; un &eacute;l&eacute;ment LDAP, sont sch&eacute;ma
+									est pr&eacute;d&eacute;fini. Conservez ces colonnes d&eacute;finies, m&ecirc;me si vous
+									avez besoin d&#8217;ajouter de nouvelles colonnes. Pour cela, utilisez
+									le mode Built-In. </p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Le sch&eacute;ma pr&eacute;d&eacute;fini comprend&nbsp;:</p>
+							<p>- <span class="emphasis"><em>objectclass</em></span>&nbsp;: liste des classes d&#8217;&eacute;l&eacute;ments</p>
+							<p>- <span class="emphasis"><em>mandatoryattributes</em></span> : liste des attributs obligatoires pour ces
+								classes</p>
+							<p>- <span class="emphasis"><em>optionalattributes</em></span>&nbsp;: liste des attributs facultatifs pour ces
+								classes</p>
+							<p>- <span class="emphasis"><em>objectattributes</em></span>&nbsp;: liste des attributs essentiels aux &eacute;l&eacute;ments
+								analys&eacute;s.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Class Definition Root</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez la racine de l&#8217;espace de nom de l&#8217;&eacute;l&eacute;ment Class
+								definition.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant couvre toutes les requ&ecirc;tes LDAP possibles.</p>
+							<p>Note&nbsp;: Appuyez sur <span class="emphasis"><strong>Ctrl + Espace</strong></span> pour acc&eacute;der &agrave; la
+								liste des variables globales, notamment la variable <span class="emphasis"><strong>GetResultName</strong></span> permettant de r&eacute;cup&eacute;rer
+								automatiquement la base correspondante.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e170051"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Le composant <span class="emphasis"><strong>tLDAPAttributesInput</strong></span> fonctionne de mani&egrave;re
+			similaire au <span class="emphasis"><strong>tLDAPInput</strong></span>. Vous pouvez donc consulter
+				<a class="xref" href="tLDAPInput.html#Raa32404" title="Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP&nbsp;&raquo;</a>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tJDBCTableList.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-other.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tLDAPClose.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tJDBCTableList&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tLDAPClose</td></tr></table></div></body></html>

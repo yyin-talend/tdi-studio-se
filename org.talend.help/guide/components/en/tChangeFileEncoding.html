@@ -1,0 +1,64 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tChangeFileEncoding</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-en..html" title="Talend Open Studio Components"><link rel="up" href="ch-file.html" title="Chapter&nbsp;13.&nbsp;File components"><link rel="prev" href="tCreateTemporaryFile.html" title="tCreateTemporaryFile"><link rel="next" href="tFileArchive.html" title="tFileArchive"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tChangeFileEncoding</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tCreateTemporaryFile.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;13.&nbsp;File components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileArchive.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tChangeFileEncoding"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tChangeFileEncoding"></a>tChangeFileEncoding</h2></div></div></div><div class="mediaobject"><img src="../images/tChangeFileEncoding_icon32_white.png"></div><div class="section" title="tChangeFileEncoding Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212214"></a>tChangeFileEncoding Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tChangeFileEncoding </strong></span>changes the
+                                encoding of a given file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="emphasis"><strong>tChangeFileEncoding</strong></span> transforms
+                                the character encoding of a given file and generates a new file with
+                                the transformed character encoding.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Custom Input Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to customize input encoding type. When it is
+                                selected, a list of input encoding types appears, allowing you to
+                                select an input encoding type or specify an input encoding type by
+                                selecting <span class="emphasis"><strong>CUSTOM</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>From this list of character encoding types, you can select one of
+                                the offered options or customize the character encoding by selecting
+                                    <span class="emphasis"><strong>CUSTOM</strong></span> and specifying a
+                                character encoding type.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Input File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Path of the input file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Path of the output file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Transforming the character encoding of a file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212363"></a>Scenario: Transforming the character encoding of a file</h3></div></div></div><p>This Java scenario describes a very simple Job that transforms the character encoding
+            of a text file and generates a new file with the new character encoding.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="emphasis"><strong>tChangeFileEncoding</strong></span> component onto the
+                    design workspace.</p><div class="mediaobject"><img src="../images/Use_Case_tChangeFileEncoding1.png"></div></li><li class="step" title="Step 2"><p>Double-click the <span class="emphasis"><strong>tChangeFileEncoding</strong></span>
+                    component to display its <span class="emphasis"><strong>Basic settings</strong></span> view. </p><div class="mediaobject"><img src="../images/Use_Case_tChangeFileEncoding4.png"></div></li><li class="step" title="Step 3"><p>Select <span class="emphasis"><strong>Use Custom Input Encoding</strong></span> check box.
+                    Set the <span class="emphasis"><strong>Encoding</strong></span> type to <span class="emphasis"><strong>GB2312</strong></span>.</p></li><li class="step" title="Step 4"><p>In the <span class="emphasis"><strong>Input File Name</strong></span> field, enter the file
+                    path or browse to the input file.</p></li><li class="step" title="Step 5"><p>In the <span class="emphasis"><strong>Output File Name</strong></span> field, enter the file
+                    path or browse to the output file.</p></li><li class="step" title="Step 6"><p>Select <span class="emphasis"><strong>CUSTOM</strong></span> from the second <span class="emphasis"><strong>Encoding</strong></span> list and enter <span class="emphasis"><em>UTF-16</em></span>
+                    in the text field.</p></li><li class="step" title="Step 7"><p>Press <span class="emphasis"><strong>F6</strong></span> to execute the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tChangeFileEncoding5.png"></div></li></ol></div><p>The encoding type of the file <span class="emphasis"><em>in.txt</em></span> is transformed and
+                <span class="emphasis"><em>out.txt</em></span> is generated with the UTF-16 encoding type.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tCreateTemporaryFile.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileArchive.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tCreateTemporaryFile&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tFileArchive</td></tr></table></div></body></html>

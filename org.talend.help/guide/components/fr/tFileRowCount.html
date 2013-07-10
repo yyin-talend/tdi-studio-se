@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileRowCount</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-file.html" title="Chapitre&nbsp;13.&nbsp;Composants File"><link rel="prev" href="tFileProperties.html" title="tFileProperties"><link rel="next" href="tFileTouch.html" title="tFileTouch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tFileRowCount</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tFileProperties.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;13.&nbsp;Composants File</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tFileTouch.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tFileRowCount"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileRowCount"></a>tFileRowCount</h2></div></div></div><div class="mediaobject"><img src="../images/tFileRowCount_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tFileRowCount"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e226396"></a>Propri&eacute;t&eacute;s du tFileRowCount</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="emphasis"><strong>tFileRowCount</strong></span> compte
+                                le nombre de lignes dans un fichier.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant ouvre un fichier et le lit ligne par ligne afin de
+                                d&eacute;terminer le nombre de lignes qu&#8217;il contient.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s et nom du fichier &agrave; traiter, et/ou variable &agrave;
+                                utiliser.</p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation et la d&eacute;finition
+                                de variables, consultez le <span class="emphasis"><em>Guide utilisateur
+                                    de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Row separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cha&icirc;ne (ex&nbsp;: &#8220;\n&#8221; sous Unix) s&eacute;parant les lignes.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Ignore empty rows</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour que les lignes vides ne soient pas prises
+                                en compte.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="emphasis"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es de base de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le<span class="emphasis"><strong> tFileRowCount </strong></span>est un composant
+                                standalone, et doit &ecirc;tre utilis&eacute; avec un lien de type <span class="emphasis"><strong>OnSubjobOk </strong></span>vers un <span class="emphasis"><strong>tJava</strong></span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Global Variables</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Number of counted lines</strong></span>&nbsp;:
+                                retourne le nombre de lignes dans un fichier. Disponible comme
+                                variable <span class="emphasis"><strong>Flow</strong></span>.</p>
+                            <p>Retourne un entier.</p>
+                            <p>Pour plus d&#8217;informations concernant les variables, consultez&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="emphasis"><strong>Connections</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main.</p>
+                            <p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if.</p>
+                            <p> </p>
+                            <p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main, Reject,
+                                Iterate.</p>
+                            <p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if, OnComponentOk, OnComponentError, Synchronize,
+                                Parallelize.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les liens, consultez&nbsp;le
+                                    <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e226680"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Aucun sc&eacute;nario n&#8217;est disponible pour ce composant.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tFileProperties.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-file.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tFileTouch.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tFileProperties&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tFileTouch</td></tr></table></div></body></html>

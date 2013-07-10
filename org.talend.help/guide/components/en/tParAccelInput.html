@@ -1,0 +1,259 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tParAccelInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-en..html" title="Talend Components"><link rel="up" href="ch-databases-appliance-dw.html" title="Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components"><link rel="prev" href="tParAccelConnection.html" title="tParAccelConnection"><link rel="next" href="tParAccelOutput.html" title="tParAccelOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tParAccelInput</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tParAccelConnection.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;8.&nbsp;Databases - appliance/datawarehouse components</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tParAccelOutput.html">Next</a></td></tr></table><hr></div><div lang="EN" class="section" title="tParAccelInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tParAccelInput"></a>tParAccelInput</h2></div></div></div><div class="mediaobject"><img src="../images/tParAccelInput_icon32_white.png"></div><div class="section" title="tParAccelInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e204486"></a>tParAccelInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/ ParAccel</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tParAccelInput</strong></span> reads a database
+								and extracts fields based on a query. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="emphasis"><strong>tParAccelInput</strong></span> executes a DB
+								query with a strictly defined order which must correspond to the
+								schema definition. Then it passes on the field list to the next
+								component via a <span class="emphasis"><strong>Main row</strong></span>
+								link.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span>Either <span class="emphasis"><strong>Built-in</strong></span> or <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+						</td><td valign="top">
+							<p>Click this icon to open a database connection wizard and store the
+								database connection parameters you set in the component <span class="emphasis"><strong>Basic settings </strong></span>view.</p>
+							<p> For more information about setting up and storing database
+								connection parameters, see <span class="emphasis"><em>Talend Data Integration Studio User
+									Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the
+		relevant connection component to reuse the connection details you already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When a Job contains the parent Job and the child Job, if you need to share an existing
+			connection between the two levels, for example, to share the connection created by the
+			parent Job with the child Job, you have to: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the parent level, register the DB connection to be shared in the
+							<span class="emphasis"><strong>Basic settings</strong></span> view of the connection
+						component which creates that very DB connection.</p></li><li class="listitem"><p>In the child level, use a dedicated connection component to read that
+						registered DB connection.</p></li></ol></div><p>For an example about how to share a DB connection across Job levels,see
+					<span class="emphasis"><em>Talend Data Integration Studio
+				User Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Database server IP address.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Listening port number of the DB server.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the database</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Exact name of the schema</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. <span>The schema is either <span class="emphasis"><strong>Built-in</strong></span> or stored remotely in the
+										<span class="emphasis"><strong>Repository</strong></span></span>. </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p><span>This component offers the advantage of the dynamic
+										schema feature. This allows you to retrieve unknown columns
+										from source files or to copy batches of columns from a
+										source without mapping each column individually. For further
+										information about dynamic schemas, see
+											</span><span class="emphasis"><em>Talend Data Integration Studio User
+										Guide</em></span>.</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be read. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Query type </em></span>and
+								<span class="emphasis"><em>Query</em></span></p>
+						</td><td valign="top">
+							<p>Enter your DB query paying particularly attention to sequence the
+								fields properly in order to match the schema definition.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>
+									<span class="emphasis"><em> If using the dynamic schema feature,
+										the SELECT query must include the <span class="emphasis"><strong>*</strong></span> wildcard, to retrieve all of the columns
+										from the table selected.</em></span>
+								</p></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guess Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the <span class="emphasis"><strong>Guess Query</strong></span> button to
+								generate the query which corresponds to your table schema in the
+								Query field.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guess schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the <span class="emphasis"><strong>Guess schema</strong></span> button to
+								retrieve the table schema.</p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa2952714"></a>
+								<span class="emphasis"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use cursor</em></span>
+							</p>
+						</td><td valign="top">
+							<p>When selected, helps to decide the row set to work with at a time
+								and thus optimize performance.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespace
+								from all the String/Char columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Remove leading and trailing whitespace from defined
+								columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat</em></span>
+								<span class="emphasis"><em>Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Dynamic settings</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Click the <span class="emphasis"><strong>[+]</strong></span> button to add a row in the table and fill
+		the <span class="emphasis"><strong>Code</strong></span> field with a context variable to choose your
+		database connection dynamically from multiple connections planned in your Job. This feature
+		is useful when you need to access database tables having the same data structure but in
+		different databases, especially when you are working in an environment where you cannot
+		change your Job settings, for example, when your Job has to be deployed and executed
+		independent of <span class="emphasis"><strong>Talend</strong></span> Studio.</p>
+							<p>The <span class="emphasis"><strong>Dynamic settings</strong></span> table is available only when the
+			<span class="emphasis"><strong>Use an existing connection</strong></span> check box is selected in the
+			<span class="emphasis"><strong>Basic settings</strong></span> view. When a dynamic parameter is
+		defined, the <span class="emphasis"><strong>Component List</strong></span> box in the <span class="emphasis"><strong>Basic settings</strong></span> view becomes unusable. </p>
+							<p>For more information on <span class="emphasis"><strong>Dynamic settings</strong></span> and context
+		variables, see <span class="emphasis"><em>Talend Data Integration Studio User Guide</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component covers all possible SQL queries for ParAccel
+								databases.</p>
+							
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e205094"></a>Related scenarios</h3></div></div></div><p>For related scenarios, see: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+					<a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a>. </p></li><li class="listitem"><p>
+					<a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a>.</p></li><li class="listitem"><p>
+					<span><a class="xref" href="tMysqlInput.html#Raa58493" title="Scenario 4: Writing dynamic columns from a MySQL database to an output file">the section called &#8220;Scenario 4: Writing dynamic columns from a MySQL database to an output file&#8221;</a>.</span>
+				</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tParAccelConnection.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-databases-appliance-dw.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tParAccelOutput.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">tParAccelConnection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-en..html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;tParAccelOutput</td></tr></table></div></body></html>

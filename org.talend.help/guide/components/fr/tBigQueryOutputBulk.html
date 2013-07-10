@@ -1,0 +1,133 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBigQueryOutputBulk</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-bigdata.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tBigQueryOutput.html" title="tBigQueryOutput"><link rel="next" href="tCassandraClose.html" title="tCassandraClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tBigQueryOutputBulk</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tBigQueryOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;1.&nbsp;Composants Big Data</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tCassandraClose.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tBigQueryOutputBulk"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBigQueryOutputBulk"></a>tBigQueryOutputBulk</h2></div></div></div><div class="mediaobject"><img src="../images/tBigQueryOutputBulk_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> du Studio si
+			vous avez souscrit &agrave; l'&eacute;dition correspondante de <span class="emphasis"><em>Talend Big Data Studio</em></span>. </p></div><p>Les composants <span class="emphasis"><strong>tBigQueryOutputBulk</strong></span> et <span class="emphasis"><strong>tBigQueryBulkExec</strong></span> sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble comme les
+		deux &eacute;tapes d'un processus. Dans la premi&egrave;re &eacute;tape, un fichier de sortie est g&eacute;n&eacute;r&eacute;. Dans la
+		seconde &eacute;tape, ce fichier est utilis&eacute; pour alimenter un ensemble de donn&eacute;es. Ces deux &eacute;tapes
+		sont fusionn&eacute;es dans le composant <span class="emphasis"><strong>tBigQueryOutput</strong></span>, d&eacute;taill&eacute;
+		dans une section s&eacute;par&eacute;e. L'utilisation de deux composants s&eacute;par&eacute;s permet de transformer les
+		donn&eacute;es avant de les charger.</p><div class="section" title="Propri&eacute;t&eacute;s du tBigQueryOutputBulk"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e2098"></a>Propri&eacute;t&eacute;s du tBigQueryOutputBulk</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Google BigQuery</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant tBigQuery &eacute;crit des donn&eacute;es dans un fichier <span class="emphasis"><em>.txt</em></span> ou <span class="emphasis"><em>.csv</em></span>, pr&ecirc;t &agrave; &ecirc;tre transf&eacute;r&eacute; dans Google BigQuery.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant cr&eacute;e un fichier <span class="emphasis"><em>.txt</em></span> ou <span class="emphasis"><em>.csv</em></span> pour
+								des donn&eacute;es volumineuses, afin que vous puissiez le traiter selon
+								vos besoins, avant de le transf&eacute;rer dans Google BigQuery.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+		pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit local
+				(<span class="emphasis"><strong>Built-in</strong></span>), soit distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+							
+							
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Built-in</strong></span> : Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement
+		pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur
+			de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><strong>Repository</strong></span> : Le sch&eacute;ma existe d&eacute;j&agrave; et il est stock&eacute; dans le
+			<span class="emphasis"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+		&eacute;galement le <span class="emphasis"><em>Guide utilisateur de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+							<p>Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d'acc&egrave;s au fichier
+									<span class="emphasis"><em>.txt</em></span> ou <span class="emphasis"><em>.csv</em></span> &agrave; g&eacute;n&eacute;rer.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour &eacute;crire de nouvelles donn&eacute;es &agrave; la suite des
+								donn&eacute;es existantes. Sinon, les donn&eacute;es seront &eacute;cras&eacute;es.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez un caract&egrave;re, une cha&icirc;ne de caract&egrave;res ou une expression r&eacute;guli&egrave;re pour s&eacute;parer les
+		champs des donn&eacute;es transf&eacute;r&eacute;es.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Create directory if not exists</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case pour cr&eacute;er le r&eacute;pertoire que vous avez d&eacute;fini dans le champ <span class="emphasis"><strong>File</strong></span> pour Google Cloud Storage, s'il n'existe pas.</p>
+						</td></tr><tr><td valign="top">
+							<p> </p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Custom the flush buffer size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de lignes &agrave; traiter avant de lib&eacute;rer la m&eacute;moire.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Check disk space</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour retourner une exception durant l'ex&eacute;cution si le disque est
+								plein.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+		<span class="emphasis"><strong>Custom</strong></span> et d&eacute;finissez-le
+		manuellement.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+								niveau du Job qu&#8217;au niveau de chaque composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant de sortie. Il n&eacute;cessite les donn&eacute;e
+								fournies par le composant pr&eacute;c&eacute;dent.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d55688e2424"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p> Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tBigQueryOutput.html#ychen-20120801-tbigqueryoutput-scenario" title="Sc&eacute;nario : Ecrire des donn&eacute;es dans BigQuery">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Ecrire des donn&eacute;es dans BigQuery&nbsp;&raquo;</a>. </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tBigQueryOutput.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-bigdata.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tCassandraClose.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tBigQueryOutput&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tCassandraClose</td></tr></table></div></body></html>

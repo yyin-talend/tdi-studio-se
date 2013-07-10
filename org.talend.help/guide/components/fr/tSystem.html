@@ -1,0 +1,121 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSystem</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tos-components-rg-fr..html" title="Composants Talend Open Studio"><link rel="up" href="ch-system.html" title="Chapitre&nbsp;19.&nbsp;Composants System"><link rel="prev" href="tSSH.html" title="tSSH"><link rel="next" href="ch-mdm.html" title="Chapitre&nbsp;20.&nbsp;Composants Talend MDM"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tSystem</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tSSH.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;19.&nbsp;Composants System</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch-mdm.html">Suivant</a></td></tr></table><hr></div><div lang="FR" class="section" title="tSystem"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSystem"></a>tSystem</h2></div></div></div><div class="mediaobject"><img src="../images/tSystem.png"></div><a name="Xaa1552134"></a><div class="section" title="Propri&eacute;t&eacute;s du tSystem"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e275726"></a>Propri&eacute;t&eacute;s du tSystem</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top"><p><span class="emphasis"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>System</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="emphasis"><strong>tSystem</strong></span> ex&eacute;cute une ou plusieurs
+                                commande(s) syst&egrave;me.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="emphasis"><strong>tSystem</strong></span> peut appeler d&#8217;autres commandes de
+                                traitement, fonctionnant d&eacute;j&agrave; dans un Job plus grand.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use home directory</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour changer le nom et le chemin
+                                du r&eacute;pertoire d&eacute;di&eacute;. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use Single Command</em></span></p>
+                        </td><td valign="top"><p>Lorsque la commande requise est particuli&egrave;rement simple, par exemple si un param&egrave;tre est
+                                utilis&eacute;, sans espace, s&eacute;lectionnez cette option dans le champ
+                                    <span class="emphasis"><strong>Command</strong></span>. Dans ce champ,
+                                saisissez la commande syst&egrave;me simple &agrave; ex&eacute;cuter. Notez que la
+                                syntaxe n&#8217;est pas v&eacute;rifi&eacute;e.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3><p>Sous Windows, les commandes MS-DOS ne permettent pas de passer
+                                    directement du dossier courant au dossier contenant le fichier &agrave;
+                                    ex&eacute;cuter. Pour ex&eacute;cuter un fichier, vous devez donc utiliser une
+                                    premi&egrave;re commande afin de changer de dossier courant, puis une
+                                    deuxi&egrave;me commande ex&eacute;cutant le fichier.</p></div>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use Array
+                            Command</em></span></td><td valign="top"><p>S&eacute;lectionnez cette option afin d'activer son champ
+                                <span class="emphasis"><strong>Command</strong></span>. Dans ce champ, saisissez
+                            la commande syst&egrave;me, un param&egrave;tre par ligne.</p>
+                            <p>Par exemple, saisissez la commande suivante avec les espaces
+                                cons&eacute;cutifs, pour Linux
+                                :</p><pre class="programlisting"><code class="code">"cp"</code><span></span>
+<code class="code">"/temp/source.txt"</code><span></span>
+<code class="code">"/temp/copy  to/"</code><span></span></pre></td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Standard Output</em></span> et <span class="emphasis"><em>Error Output</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le type de sortie auquel les donn&eacute;es
+                                trait&eacute;es seront transf&eacute;r&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>to console&nbsp;</strong></span>:
+                                transmet les donn&eacute;es vers la console de la vue <span class="emphasis"><strong>Run</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>to global
+                                    variable</strong></span>&nbsp;: les donn&eacute;es sont envoy&eacute;es dans une
+                                variable de sortie li&eacute;e au composant <span class="emphasis"><strong>tSystem</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>both to console and
+                                    </strong></span><span class="emphasis"><strong>to global variable</strong></span>&nbsp;:
+                                les donn&eacute;es sont envoy&eacute;es &agrave; la fois vers la console de la vue
+                                    <span class="emphasis"><strong>Run</strong></span> et dans une variable de
+                                sortie li&eacute;e au composant <span class="emphasis"><strong>tSystem</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>normal</strong></span>&nbsp;: les
+                                donn&eacute;es sont envoy&eacute;es au composant suivant. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, il d&eacute;finit le nombre de champs qui sont trait&eacute;s et
+                                pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (built-in)
+                                soit distant dans le Repository. </p>
+                            <p lang="fr">Si vous utilisez <span class="emphasis"><em>Talend Open Studio for Big Data</em></span>, seul le mode <span class="emphasis"><strong>Built-in</strong></span> est disponible.</p>
+                            <p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma. Notez que si
+                                vous modifiez le sch&eacute;ma dans cette vue, il devient automatiquement
+                                built-in.</p><p>Cliquez sur <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                                composant pr&eacute;c&eacute;dent dans le Job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant
+                                seulement. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Job designs. Voir &eacute;galement&nbsp;le <span class="emphasis"><em>Guide utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.
+                            </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Environment variables</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton <span class="emphasis"><strong>[+]</strong></span> pour ajouter les variables d&#8217;environnement
+                                n&eacute;cessaires au Job. </p><p><span class="emphasis"><strong>name</strong></span>&nbsp;: Renseignez la syntaxe de la nouvelle variable. </p><p><span class="emphasis"><strong>value&nbsp;</strong></span>: Entrez une valeur pour ce param&egrave;tre en fonction du
+                                contexte.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant sert aux
+                                entreprises qui utilisent d&eacute;j&agrave; d&#8217;autres applications qu&#8217;ils
+                                souhaitent int&eacute;grer &agrave; leur flux via Talend.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><strong>Standard Output</strong></span>&nbsp;:
+                                retourne la sortie standard d&#8217;un processus. Disponible comme
+                                variable <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne une cha&icirc;ne de caract&egrave;res.</p><p> </p><p><span class="emphasis"><strong>Error Output</strong></span>&nbsp;: retourne la sortie erron&eacute;e d&#8217;un processus.
+                                Disponible comme variable <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne une cha&icirc;ne de caract&egrave;res.</p><p> </p><p><span class="emphasis"><strong>Exit Value</strong></span>&nbsp;: retourne un code de sortie. Disponible comme
+                                variable <span class="emphasis"><strong>After</strong></span>.</p><p>Retourne un entier&nbsp;:</p><p>-sans erreur &gt; le code de sortie est 0.</p><p>-avec erreurs(s) &gt; le code de sortie est 1.</p><p> </p><p>Pour plus d&#8217;informations concernant les variables, consultez&nbsp;le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="emphasis"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main.</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk, OnSubjobError, Run if.</p><p> </p><p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p><p><span class="emphasis"><strong>Row</strong></span>&nbsp;: Main, Reject, Iterate.</p><p><span class="emphasis"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk, OnSubjobError, Run if, OnComponentOk,
+                                OnComponentError, Synchronize, Parallelize.</p><p> </p><p>Pour plus d&#8217;informations concernant les liens, consultez&nbsp;le <span class="emphasis"><em>Guide
+                                    utilisateur de</em></span>
+                                <span class="emphasis"><em>Talend Open Studio</em></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Echo &#8216;Hello World!&#8217;"><div class="titlepage"><div><div><h3 class="title"><a name="d43281e276142"></a>Sc&eacute;nario : Echo &#8216;Hello World!&#8217;</h3></div></div></div><p>Ce sc&eacute;nario est constitu&eacute; d&#8217;un Job &agrave; deux composants permettant d&#8217;afficher un message
+            dans la console de la vue <span class="emphasis"><strong>Run</strong></span>. </p><div class="mediaobject"><img src="../images/Use_Case_tSystem4.png"></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit :</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez un composant <span class="emphasis"><strong>tSystem</strong></span> de la <span class="emphasis"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                    graphique.</p></li><li class="step" title="&Eacute;tape 2"><p>Double-cliquez sur le <span class="emphasis"><strong>tSystem</strong></span> pour ouvrir sa
+                    vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tSystem1.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>S&eacute;lectionnez l'option <span class="emphasis"><strong>Use Single Command</strong></span> pour
+                    activer le champ <span class="emphasis"><strong>Command</strong></span> et saisissez
+                        <code class="code">"cmd /c echo Hello World!"</code>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la liste <span class="emphasis"><strong>Standard Output</strong></span>, s&eacute;lectionnez
+                        <span class="emphasis"><strong>to both console and global variable</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tSystem3.png"></div><p>Le Job ex&eacute;cute une commande <code class="code">echo</code> et affiche la sortie dans la console de
+            log de la vue <span class="emphasis"><strong>Run</strong></span>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tSSH.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-system.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch-mdm.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tSSH&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tos-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;20.&nbsp;Composants Talend MDM</td></tr></table></div></body></html>
