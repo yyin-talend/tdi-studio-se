@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
 /**
@@ -73,7 +75,19 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
      */
     public void clearBlocked() {
-        Dialog.getBlockedHandler().clearBlocked();
+    	 if (CommonUIPlugin.isFullyHeadless()) {
+             return;
+         }
+         final Display disp = DisplayUtils.getDisplay();
+
+         disp.syncExec(new Runnable() {
+
+             @Override
+             public void run() {
+                 Dialog.getBlockedHandler().clearBlocked();
+             }
+
+         });
     }
 
     /**
@@ -141,8 +155,20 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
      * 
      * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
      */
-    public void setBlocked(IStatus reason) {
-//        Dialog.getBlockedHandler().showBlocked(this, reason, taskName);
+    public void setBlocked(final IStatus reason) {
+    	if (CommonUIPlugin.isFullyHeadless()) {
+            return;
+        }
+        final Display disp = DisplayUtils.getDisplay();
+
+        disp.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                Dialog.getBlockedHandler().showBlocked(CodeGeneratorProgressMonitor.this, reason, taskName);
+            }
+
+        });
     }
 
     /**
