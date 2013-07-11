@@ -248,7 +248,7 @@ public class DirectEditCommand extends Command {
             }
         }
         if (node instanceof TreeNode) {
-            if (((TreeNode) node).getChildren().isEmpty()) {
+            if (XmlMapUtil.isDragable((TreeNode) node)) {
                 return node;
             } else {
                 return null;
