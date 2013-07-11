@@ -212,26 +212,31 @@ public class DbInfo {
             ExceptionHandler.process(e);
         } finally {
             // bug 9162
-            if ((driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
-                    || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
-                    || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
-                    || dbType.equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName())
+            if ((driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass()) || isJavaDB()
                     || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
                         .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
                 try {
                     // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
-                    if (conn != null
-                            && !conn.isClosed()
-                            && (dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
-                                    .equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName()))) {
+                    if (conn != null && !conn.isClosed()) {
                         conn.close();
                     }
-                    wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                    if (isJavaDB()) {
+                        wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                    }
                 } catch (SQLException e) {
                     // exception of shutdown success. no need to catch.
                 }
             }
         }
+    }
+
+    private boolean isJavaDB() {
+        if (dbType == null) {
+            return false;
+        }
+        return dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
+                || dbType.equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName());
     }
 
     private void generateDriverName() {

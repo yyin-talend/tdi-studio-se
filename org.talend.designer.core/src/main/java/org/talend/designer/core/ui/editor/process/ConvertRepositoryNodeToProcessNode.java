@@ -31,6 +31,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
@@ -145,8 +146,10 @@ public class ConvertRepositoryNodeToProcessNode {
         String memoSQLTemp = TalendTextUtils.removeQuotesIfExist(memoSQL);
         if ((memoSQLTemp == null || memoSQLTemp.equals("")) && tableName != null && !tableName.equals("")) {
             memoSQL = "select * from ";
-            memoSQL = TalendTextUtils.addSQLQuotes(memoSQL) + " + "
-                    + TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(tableName, dbType, true);
+            memoSQL = TalendTextUtils.addSQLQuotes(memoSQL)
+                    + " + "
+                    + TalendQuoteUtils.addQuotesIfNotExist(TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(tableName,
+                            dbType, true));
         }
     }
 
