@@ -37,7 +37,7 @@ public class SetParallelizationCommand extends Command {
 
     private static final String HASH_KEYS = "HASH_KEYS";
 
-    private boolean parallelForCon = false;
+    private boolean isExistParallel = false;
 
     public SetParallelizationCommand(INode node) {
         this.node = node;
@@ -50,7 +50,7 @@ public class SetParallelizationCommand extends Command {
     @Override
     public void execute() {
         setParallelization(this.node);
-        if (!parallelForCon) {
+        if (!isExistParallel) {
             MessageDialog.openInformation(new Shell(), Messages.getString("Node.setPartitioning"),
                     Messages.getString("Node.nothingDoForPartitioning"));
         }
@@ -167,7 +167,7 @@ public class SetParallelizationCommand extends Command {
                                     setParallelization(con.getTarget());
                                 } else {
                                     // add flag here is judge for if has did parallelization
-                                    parallelForCon = true;
+                                    isExistParallel = true;
                                     INode firstPartionerNode = null;
                                     IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER.getName());
                                     deparElem.setValue(Boolean.FALSE);
@@ -196,7 +196,7 @@ public class SetParallelizationCommand extends Command {
                             }
                         } else {
                             if (!con.getSource().isStart()) {
-                                if (!ParallelExecutionUtils.existPreviousDepar((Node) con.getSource())) {
+                                if (isExistParallel && !ParallelExecutionUtils.existPreviousDepar((Node) con.getSource())) {
                                     setDeparallelization(con.getTarget());
                                 }
                             }
