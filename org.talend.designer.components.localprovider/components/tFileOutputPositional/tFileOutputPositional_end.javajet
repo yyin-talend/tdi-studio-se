@@ -75,8 +75,8 @@
 	}
 %>
 
-<%if(!useStream && !isAppend && isDeleteEmptyFile){%>
-	if(nb_line_<%=cid %> == 0){
+<%if(!useStream && isDeleteEmptyFile){%>
+	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 		createFile<%=cid%>.delete();
 	}		
 <%}%>

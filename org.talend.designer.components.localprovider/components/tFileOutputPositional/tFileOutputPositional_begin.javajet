@@ -627,7 +627,15 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 %>
 		String fileNewName_<%=cid%> = <%=filename%>;
 		java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
+		boolean isFileGenerated_<%=cid %> = true;
 <%
+			if(isAppend){
+%>
+		if(createFile<%=cid%>.exists()){
+			isFileGenerated_<%=cid %> = false;
+		}
+<%
+			}
 			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
         //create directory only if not exists

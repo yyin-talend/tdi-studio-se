@@ -111,12 +111,12 @@
 		writeableWorkbook_<%=cid %>.close();
 		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 		
-	<%if(!useStream && !isAppend && isDeleteEmptyFile){
+	<%if(!useStream && isDeleteEmptyFile){
 		if(isIncludeHeader){
 	%>
-		if(nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
+		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
 	<%	}else{%>
-		if(nb_line_<%=cid %> == 0){
+		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%	}%>
 			file_<%=cid %>.delete();
 		}		
@@ -200,12 +200,12 @@
 	%>
 		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 		
-	<%if(!useStream && !isAppend && isDeleteEmptyFile){
+	<%if(!useStream && isDeleteEmptyFile){
 		if(isIncludeHeader){
 	%>
-		if(nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
+		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
 	<%	}else{%>
-		if(nb_line_<%=cid %> == 0){
+		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%	}%>
 			file_<%=cid %>.delete();
 		}		

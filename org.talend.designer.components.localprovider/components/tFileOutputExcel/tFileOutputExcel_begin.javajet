@@ -73,8 +73,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>		
 		String fileName_<%=cid%>=<%=filename%>;
 		java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid%>);
-		
+		boolean isFileGenerated_<%=cid %> = true;
 <%
+			if(isAppendFile){
+%>
+		if(file_<%=cid %>.exists()){
+			isFileGenerated_<%=cid %> = false;
+		}
+<%
+			}
 			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 //create directory only if not exists		  
@@ -436,10 +443,18 @@ if(isIncludeHeader){
 %>
 		String fileName_<%=cid%>=<%=filename%>;
 <%
-				if(!isAppendFile && isDeleteEmptyFile){
+				if(isDeleteEmptyFile){
 %>	
 		java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid%>);
+		boolean isFileGenerated_<%=cid %> = true;
 <%
+					if(isAppendFile){
+%>
+		if(file_<%=cid %>.exists()){
+			isFileGenerated_<%=cid %> = false;
+		}
+<%
+					}
 				}
 			}
 %>

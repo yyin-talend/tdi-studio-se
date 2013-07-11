@@ -28,7 +28,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  double vals<%=cid%>[];
  String fileNewName_<%=cid%> = <%=filename%>;
  java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-   <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
+ boolean isFileGenerated_<%=cid %> = true;
+<%
+   	if(isAppend){
+%>
+if(createFile<%=cid%>.exists()){
+	isFileGenerated_<%=cid %> = false;
+}
+<%
+	}
+   	if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+%>
 	 	//create directory only if not exists
 
 		java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();

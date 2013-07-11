@@ -1911,6 +1911,15 @@
             name="ChangeSalesForceComponetsCustomerModuleName"
             version="5.2.3">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.ChangeDeleteEmptyFileValueIfAppendTrueFeatureTDI26625"
+              description="The components which was modified in 26625, if append is ticked delete empty file is ticked in old job import in new product would get different result"
+              id="org.talend.repository.model.migration.ChangeDeleteEmptyFileValueIfAppendTrueFeatureTDI26625"
+              name="ChangeDeleteEmptyFileValueIfAppendTrueFeatureTDI26625"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension
