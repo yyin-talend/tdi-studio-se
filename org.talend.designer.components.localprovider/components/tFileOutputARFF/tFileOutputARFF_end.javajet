@@ -16,12 +16,16 @@ boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 %>
 java.io.FileOutputStream out<%=cid%> = null;
+<% if(isAppend){%>
+	java.io.BufferedReader buf_Check_<%=cid%> =null;
+<%}%>
 try {
     out<%=cid%> = new java.io.FileOutputStream(fileNewName_<%=cid%>, <%=isAppend%>);
 <% if(isAppend){%>
     try{
         //to check if the file-to-write is an existing-valid ARFF file
-       new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>)));
+       buf_Check_<%=cid%>=new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>));
+       new weka.core.Instances(buf_Check_<%=cid%>);
        StringBuilder sb<%=cid%> = new StringBuilder();
        for (int i = oldInsNum<%=cid%>; i < m_Data<%=cid%>.numInstances(); i++) {
            sb<%=cid%>.append("\n");
@@ -38,6 +42,18 @@ try {
     // TODO Auto-generated catch block
     e.printStackTrace();
 }finally{
+<%
+	if(isAppend){
+%>
+	if(buf_Read_<%=cid%>!=null){
+		buf_Read_<%=cid%>.close();
+	}
+	if(buf_Check_<%=cid%>!=null){
+		buf_Check_<%=cid%>.close();
+	}
+<%
+	}
+%>
 	out<%=cid%>.close();
 	out<%=cid%> = null;
 }
