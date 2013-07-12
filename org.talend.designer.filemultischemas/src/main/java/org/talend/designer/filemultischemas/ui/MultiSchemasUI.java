@@ -57,14 +57,13 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -251,24 +250,25 @@ public class MultiSchemasUI {
 
         Composite composite = new Composite(uiParent, SWT.NONE);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        composite.setLayout(new FormLayout());
+        composite.setLayout(new FillLayout());
 
-        Composite fileGroup = new Composite(composite, SWT.NONE);
-        FormData formData = new FormData();
-        formData.top = new FormAttachment(0, 5);
-        formData.left = new FormAttachment(0, 5);
-        formData.right = new FormAttachment(100, -10);
-        fileGroup.setLayoutData(formData);
+        ExpandBar bar = new ExpandBar(composite, SWT.V_SCROLL);
+
+        Composite fileGroup = new Composite(bar, SWT.NONE);
         createFileGroup(fileGroup);
+        ExpandItem settingItem = new ExpandItem(bar, SWT.NONE, 0);
+        settingItem.setText(ExternalMultiSchemasUIProperties.SETTINGS_LABEL);
+        settingItem.setHeight(fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+        settingItem.setControl(fileGroup);
+        settingItem.setExpanded(true);
 
-        allContentForm = new SashForm(composite, SWT.NONE);
-        formData = new FormData();
-        formData.top = new FormAttachment(fileGroup, 5);
-        formData.left = new FormAttachment(0, 5);
-        formData.right = new FormAttachment(100, -5);
-        formData.bottom = new FormAttachment(100, -5);
-        allContentForm.setLayoutData(formData);
+        allContentForm = new SashForm(bar, SWT.NONE);
         createViewers(allContentForm);
+        ExpandItem previewItem = new ExpandItem(bar, SWT.NONE, 1);
+        previewItem.setText(ExternalMultiSchemasUIProperties.PREVIEW_LABEL);
+        previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+        previewItem.setControl(allContentForm);
+        previewItem.setExpanded(true);
 
         initFieldValues();
         // listener
@@ -431,7 +431,7 @@ public class MultiSchemasUI {
     }
 
     private void addGroupMultiSchemaSettings(final Composite mainComposite) {
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 210); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 280); //$NON-NLS-1$
 
         Composite composite = new Composite(group, SWT.NONE);
         GridLayout gridLayout = new GridLayout(4, false);

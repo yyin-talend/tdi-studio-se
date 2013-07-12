@@ -26,7 +26,7 @@ public class ExternalMultiSchemasUIProperties {
 
     private static int[] ALL_SASHFORM_WEIGHTS = new int[] { 2, 1 };
 
-    private static int[] HEADER_SASHFORM_WEIGHTS = new int[] { 3, 1 };
+    private static int[] HEADER_SASHFORM_WEIGHTS = new int[] { 3, 2 };
 
     public static final int SASHFORM_WIDTH = 3;
 
@@ -35,6 +35,8 @@ public class ExternalMultiSchemasUIProperties {
     public static final String FILE_LABEL = "File name";
 
     public static final String OUTPUT_LABEL = "Output";
+
+    public static final String SETTINGS_LABEL = "Settings";
 
     public static final String PREVIEW_LABEL = "Preview";
 
@@ -51,7 +53,7 @@ public class ExternalMultiSchemasUIProperties {
 
     public static final String DEFAULT_COLUMN_NAME = "Column"; //$NON-NLS-1$
 
-    private static Rectangle boundsMapper = new Rectangle(50, 50, 700, 750);
+    private static Rectangle boundsMapper = new Rectangle(50, 50, 900, 850);
 
     private static boolean shellMaximized = false;
 
