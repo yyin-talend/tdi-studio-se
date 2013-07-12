@@ -54,6 +54,7 @@ import org.talend.core.download.DownloadHelper;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.ComponentSearcher;
+import org.talend.designer.components.exchange.model.Category;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.VersionRevision;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
@@ -66,31 +67,17 @@ import org.talend.designer.components.exchange.util.ExchangeWebService;
  */
 public class ImportExchangeDialog extends Dialog {
 
-    private ImportExchangeProperty downloadproperty;
-
-    private Button jobButton;
-
-    private Button templatesButton;
-
-    private Button routinesButton;
-
-    private Button refresh;
-
-    private static String type;
+    private static String category;
 
     private static String version;
 
-    private URL url;
-
-    private String selectFile;
-
-    private String progressBarMessage;
-
-    private File tempFile;
+    public Combo categoryCombo;
 
     public Combo versionCombo;
 
     public static final String TOS_VERSION_FILTER = "TOS_VERSION_FILTER"; //$NON-NLS-1$
+
+    private List<Category> fCategorys = new ArrayList<Category>();
 
     private List<VersionRevision> fVersionRevisions = new ArrayList<VersionRevision>();
 
@@ -98,22 +85,27 @@ public class ImportExchangeDialog extends Dialog {
 
     public ScrolledComposite scrolledCompositeFileViewer;
 
+    private ImportExchangeProperty downloadproperty;
+
+    private String selectFile;
+
+    private String progressBarMessage;
+
+    private URL url;
+
+    private File tempFile;
+
     public Table table;
-
-    public String getSelectFile() {
-        return selectFile;
-    }
-
-    public void setSelectFile(String selectFile) {
-        this.selectFile = selectFile;
-    }
 
     protected ImportExchangeDialog(Shell shell) {
         super(shell);
         this.setShellStyle(this.getShellStyle() | SWT.MIN | SWT.MAX | SWT.RESIZE);
+        // init
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
+                fCategorys.clear();
+                fCategorys = ExchangeWebService.searchCategoryExtensionJSONArray(ExchangeUtils.TYPEEXTENSION);
                 fVersionRevisions.clear();
                 fVersionRevisions = ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION);
             }
@@ -132,25 +124,18 @@ public class ImportExchangeDialog extends Dialog {
         layout.marginWidth = 0;
         exchangeDialogCom.setLayout(layout);
         GridData gridData = new GridData(GridData.FILL_BOTH);
-
         exchangeDialogCom.setLayoutData(gridData);
-
-        ImportCompatibleEcoComponentsComposite eco = new ImportCompatibleEcoComponentsComposite(exchangeDialogCom,
-                exchangeDialogCom.getShell(), false);
-
+        new ImportCompatibleEcoComponentsComposite(exchangeDialogCom, exchangeDialogCom.getShell(), false);
         return parent;
-
     }
 
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.FINISH_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-
     }
 
     @Override
     protected void okPressed() {
-
         IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-2$
         File pathFile = tempPath.toFile();
         if (downloadproperty.getFileName() == null || downloadproperty.getFileName() == null) {
@@ -160,12 +145,10 @@ public class ImportExchangeDialog extends Dialog {
             box.open();
             return;
         }
-
         tempFile = new File(pathFile, downloadproperty.getFileName());
         try {
             url = new URL(downloadproperty.getDownloadUrl());
         } catch (MalformedURLException e1) {
-            // e1.printStackTrace();
             ExceptionHandler.process(e1);
         }
         if (!pathFile.exists()) {
@@ -200,7 +183,6 @@ public class ImportExchangeDialog extends Dialog {
         }
 
         selectFile = tempFile.toString();
-
         super.okPressed();
     }
 
@@ -210,9 +192,7 @@ public class ImportExchangeDialog extends Dialog {
      */
     class ImportCompatibleEcoComponentsComposite extends Composite {
 
-        private static final int HEIGHT = 300;
-
-        private static final int WIDTH = 500;
+        private static final int HEIGHT = 350;
 
         public ImportCompatibleEcoComponentsComposite(Composite parent, Shell shell, boolean init) {
             super(parent, SWT.NONE);
@@ -220,16 +200,13 @@ public class ImportExchangeDialog extends Dialog {
         }
 
         public void createControls(Composite parent) {
-            setLayout(clearGridLayoutSpace(new GridLayout(1, false)));
+            setLayout(new GridLayout());
             setLayoutData(new GridData(GridData.FILL_BOTH));
             creatOptions(parent);
-
             Composite tableComposite = new Composite(parent, SWT.NONE);
             tableComposite.setLayout(new GridLayout());
 
             GridData layoutData = new GridData(GridData.FILL_BOTH);
-            // layoutData.widthHint = WIDTH;
-            // layoutData.minimumWidth = WIDTH;
             layoutData.heightHint = HEIGHT;
             layoutData.minimumHeight = HEIGHT;
             tableComposite.setLayoutData(layoutData);
@@ -298,98 +275,19 @@ public class ImportExchangeDialog extends Dialog {
             layout.marginWidth = 5;
             group.setLayout(layout);
             group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-            String currentVersion = ExchangePlugin.getDefault().getPreferenceStore().getString("TOS_IMPORT_VERSION_FILTER");//$NON-NLS-1$
-            currentVersion = ExchangeUtils.getMainVersion(currentVersion);
-            final String temVersion = currentVersion;
-
-            jobButton = new Button(group, SWT.RADIO);
-            jobButton.setText(Messages.getString("ImportExchangeDialog.JOB_BUTTON")); //$NON-NLS-1$
-            jobButton.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    if (jobButton.getSelection() == true) {
-                        type = "7"; //$NON-NLS-1$
-                        if (version == null) {
-                            if (versionCombo.getText() != null) {
-                                version = versionCombo.getText();
-                            } else {
-                                version = temVersion;
-                            }
-                        }
-                        progressBarMessage = Messages.getString("ImportExchangeDialog.DOWNLOAD_JOB"); //$NON-NLS-1$
-                        findChoiceExchange();
-                    }
-
-                }
-            });
-
-            templatesButton = new Button(group, SWT.RADIO);
-            templatesButton.setText(Messages.getString("ImportExchangeDialog.TEMPLATES_BUTTON")); //$NON-NLS-1$
-            templatesButton.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    if (templatesButton.getSelection() == true) {
-                        type = "8"; //$NON-NLS-1$
-                        if (version == null) {
-                            if (versionCombo.getText() != null) {
-                                version = versionCombo.getText();
-                            } else {
-                                version = temVersion;
-                            }
-                        }
-                        progressBarMessage = Messages.getString("ImportExchangeDialog.TEMPLATES_PROGRESSBAR"); //$NON-NLS-1$
-                        findChoiceExchange();
-                    }
-                }
-            });
-
-            routinesButton = new Button(group, SWT.RADIO);
-            routinesButton.setText(Messages.getString("ImportExchangeDialog.ROUTINES_BUTTON")); //$NON-NLS-1$
-            routinesButton.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    if (routinesButton.getSelection() == true) {
-                        type = "9"; //$NON-NLS-1$
-                        if (version == null) {
-                            if (versionCombo.getText() != null) {
-                                version = versionCombo.getText();
-                            } else {
-                                version = temVersion;
-                            }
-                        }
-                        progressBarMessage = Messages.getString("ImportExchangeDialog.ROUTINES_PROGRESSBAR"); //$NON-NLS-1$
-                        findChoiceExchange();
-                    }
-                }
-            });
-
+            // Category
+            creatCategory(group);
+            category = categoryCombo.getText();
+            // Tos Version
             creatTosVersionFilter(group, true);
             version = versionCombo.getText();
-            refresh = new Button(group, SWT.PUSH);
+            // Refresh
+            Button refresh = new Button(group, SWT.PUSH);
             refresh.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
             refresh.setToolTipText(Messages.getString("ImportExchangeDialog.REFRESH_BUTTON"));//$NON-NLS-1$
-            //refresh.setText(Messages.getString("ImportExchangeDialog.REFRESH_BUTTON")); //$NON-NLS-1$
             refresh.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent e) {
-                    if (version == null || type == null) {
-                        MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
-                        box.setText(Messages.getString("ImportExchangeDialog.WARNING")); //$NON-NLS-1$
-                        box.setMessage(Messages.getString("ImportExchangeDialog.NOT_SELECT_BUTTON")); //$NON-NLS-1$
-                        box.open();
-                        return;
-                    }
-                    if (type != null && !jobButton.getSelection() && !templatesButton.getSelection()
-                            && !routinesButton.getSelection()) {
-                        if (type == "7") { //$NON-NLS-1$
-                            jobButton.setSelection(true);
-                        } else if (type == "8") { //$NON-NLS-1$
-                            templatesButton.setSelection(true);
-                        } else if (type == "9") { //$NON-NLS-1$
-                            routinesButton.setSelection(true);
-                        }
-                    }
                     progressBarMessage = Messages.getString("ImportExchangeDialog.REFRESHING_PROGRESSBAR"); //$NON-NLS-1$
                     findChoiceExchange();
                 }
@@ -398,12 +296,39 @@ public class ImportExchangeDialog extends Dialog {
 
     }
 
-    public GridLayout clearGridLayoutSpace(GridLayout layout) {
-        layout.horizontalSpacing = 0;
-        layout.verticalSpacing = 0;
-        layout.marginWidth = 0;
-        layout.marginHeight = 0;
-        return layout;
+    public void creatCategory(Composite parent) {
+        Composite categoryComposite = new Composite(parent, SWT.NONE);
+        categoryComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        categoryComposite.setLayout(new GridLayout(2, false));
+        Label categoryLabel = new Label(categoryComposite, SWT.NONE);
+        categoryLabel.setText("Category");
+        GridData gridData = new GridData(SWT.Resize);
+        gridData.widthHint = 160;
+        categoryCombo = new Combo(categoryComposite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.RESIZE);
+        categoryCombo.setLayoutData(gridData);
+        initCategoryCombo();
+        categoryCombo.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                progressBarMessage = Messages.getString("ImportExchangeDialog.download.extensions"); //$NON-NLS-1$
+                findChoiceExchange();
+            }
+        });
+    }
+
+    public void initCategoryCombo() {
+        if (categoryCombo.getItemCount() > 0) {
+            return;
+        }
+        for (Category category : fCategorys) {
+            categoryCombo.add(category.getCategoryName());
+        }
+        categoryCombo.select(0);
+        categoryCombo.pack();
     }
 
     public void creatTosVersionFilter(Composite parent, boolean isInitTosVersion) {
@@ -428,7 +353,13 @@ public class ImportExchangeDialog extends Dialog {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                onVersionFilterChanged(e);
+                Combo comboControl = (Combo) e.getSource();
+                String value = comboControl.getText();
+                IPreferenceStore preferenceStore = ExchangePlugin.getDefault().getPreferenceStore();
+                preferenceStore.setValue("TOS_IMPORT_VERSION_FILTER", value);
+                version = value;
+                progressBarMessage = Messages.getString("ImportExchangeDialog.download.extensions"); //$NON-NLS-1$
+                findChoiceExchange();
             }
         });
     }
@@ -439,7 +370,6 @@ public class ImportExchangeDialog extends Dialog {
         }
         String currentVersion = ExchangePlugin.getDefault().getPreferenceStore().getString(TOS_VERSION_FILTER);
         currentVersion = ExchangeUtils.getMainVersion(currentVersion);
-
         if (fVersionRevisions != null) {
             String versions[] = ExchangeUtils.getVersionList(fVersionRevisions);
             int stringIndex = 0;
@@ -452,35 +382,6 @@ public class ImportExchangeDialog extends Dialog {
             versionCombo.select(stringIndex);
             versionCombo.pack();
         }
-
-    }
-
-    public void onVersionFilterChanged(SelectionEvent e) {
-        if (type == null) {
-            MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
-            box.setText(Messages.getString("ImportExchangeDialog.WARNING")); //$NON-NLS-1$
-            box.setMessage("Please choose Job/Templates/Routines first!"); //$NON-NLS-1$
-            version = versionCombo.getText();
-            box.open();
-            return;
-        }
-        Combo comboControl = (Combo) e.getSource();
-        String value = comboControl.getText();
-        IPreferenceStore preferenceStore = ExchangePlugin.getDefault().getPreferenceStore();
-        preferenceStore.setValue("TOS_IMPORT_VERSION_FILTER", value);//$NON-NLS-1$
-        version = value;
-        if (type != null && !jobButton.getSelection() && !templatesButton.getSelection() && !routinesButton.getSelection()) {
-            if (type == "7") { //$NON-NLS-1$
-                jobButton.setSelection(true);
-            } else if (type == "8") { //$NON-NLS-1$
-                templatesButton.setSelection(true);
-            } else if (type == "9") { //$NON-NLS-1$
-                routinesButton.setSelection(true);
-            }
-        }
-        progressBarMessage = Messages.getString("ImportExchangeDialog.download.components"); //$NON-NLS-1$
-        findChoiceExchange();
-
     }
 
     /**
@@ -497,11 +398,9 @@ public class ImportExchangeDialog extends Dialog {
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        if (version.equals("") || version == null) {
-                            version = "4.2.1";
-                        }
                         compatible = ComponentSearcher.getImportComponentExtensions(version, ExchangeUtils.getCurrentLanguage(),
-                                type);
+                                categoryCombo.getSelectionIndex() >= 0 ? fCategorys.get(categoryCombo.getSelectionIndex())
+                                        .getCategoryId() : "");
                         updateTable(compatible);
                     }
                 });
@@ -535,20 +434,15 @@ public class ImportExchangeDialog extends Dialog {
             return;
         }
         table.setRedraw(false);
-
         for (final ComponentExtension object : extensions) {
             final TableItem tableItem = new TableItem(table, SWT.NONE);
             tableItem.setData(object);
-
-            //
             tableItem.setText(0, object.getLabel());
             tableItem.setText(1, object.getAuthor());
             tableItem.setText(2, object.getVersionExtension());
             tableItem.setText(3, object.getDescription());
-
         }
         table.setRedraw(true);
-
     }
 
     private void removeItemElements(List<ComponentExtension> objects) {
@@ -567,4 +461,11 @@ public class ImportExchangeDialog extends Dialog {
         item.dispose();
     }
 
+    public String getSelectFile() {
+        return selectFile;
+    }
+
+    public void setSelectFile(String selectFile) {
+        this.selectFile = selectFile;
+    }
 }
