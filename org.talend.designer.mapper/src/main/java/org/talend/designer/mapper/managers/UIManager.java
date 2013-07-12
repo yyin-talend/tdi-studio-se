@@ -322,7 +322,7 @@ public class UIManager extends AbstractUIManager {
                                             relatedMetadata.setExpression(expression == null ? "" : expression);
                                         }
                                         
-                                        mapperManager.addNewColumnEntry(tableView, metadataColumn, index);
+                                        mapperManager.addNewColumnEntry(tableView, relatedMetadata, index);
                                     }
                                     index = index + 1;
 
