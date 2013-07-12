@@ -60,11 +60,6 @@ public class WebServiceTreeLabelProvider extends LabelProvider implements ITable
             } else if (columnIndex == 1) {
                 if (para.getArraySize() != 0) {
                     return para.getIndex() == null ? "*" : para.getIndex();
-                } else if (para.getParameterInfos().size() > 1) {
-                    String index = para.getIndex() == null ? "*" : para.getIndex();
-                    para.setArraySize(-1);
-                    para.setIndex("*");
-                    return index;
                 } else {
                     return null;
                 }
