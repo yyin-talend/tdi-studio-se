@@ -65,9 +65,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    		weka.core.Instances data<%=cid%>;
    		weka.core.Instances m_Data<%=cid%>;
    		<%if(isAppend){%>
+   		 java.io.BufferedReader buf_Read_<%=cid%> =null;
    		 try{
              //read existing Instances
-   		    m_Data<%=cid%> = new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>)));
+            buf_Read_<%=cid%> = new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>));
+   		    m_Data<%=cid%> = new weka.core.Instances(buf_Read_<%=cid%>);
          }catch(java.lang.Exception e){
                // Create vector of attributes.
                int numAtts<%=cid%>=<%=colDef.size()%>;
