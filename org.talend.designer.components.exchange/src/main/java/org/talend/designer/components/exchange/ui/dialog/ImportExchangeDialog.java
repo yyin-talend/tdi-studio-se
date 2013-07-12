@@ -325,6 +325,10 @@ public class ImportExchangeDialog extends Dialog {
             return;
         }
         for (Category category : fCategorys) {
+            // now hide the Category : Component ,Hadoop Configuration
+            if ("Component".equals(category.getCategoryName()) || "Hadoop Configuration".equals(category.getCategoryName())) {
+                continue;
+            }
             categoryCombo.add(category.getCategoryName());
         }
         categoryCombo.select(0);
