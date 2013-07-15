@@ -128,9 +128,8 @@ public class ConvertRepositoryNodeToProcessNode {
         memoSQL = query.getValue().toString();
         String memoSQLTemp = TalendTextUtils.removeQuotesIfExist(memoSQL);
         if ((memoSQLTemp == null || memoSQLTemp.equals("")) && tableName != null && !tableName.equals("")) {
-            memoSQL = "select * from ";
-            memoSQL = TalendTextUtils.addSQLQuotes(memoSQL) + " + "
-                    + TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(tableName, dbType, true);
+            memoSQL = "select * from " + tableName; 
+            memoSQL = TalendTextUtils.addSQLQuotes(memoSQL); 
         }
     }
 
