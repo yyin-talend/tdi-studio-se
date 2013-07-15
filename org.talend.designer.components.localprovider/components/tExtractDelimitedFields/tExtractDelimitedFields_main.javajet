@@ -93,6 +93,9 @@ try{
 		if(inputCol.getLabel().equals(field)){
 %>
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
+	if(field_<%=cid%>==null){
+		throw(new java.lang.Exception("Value of field to split is null."));
+	}
 	String[] newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
 	int length_<%=cid%> = newFields_<%=cid%>.length;
 <%
