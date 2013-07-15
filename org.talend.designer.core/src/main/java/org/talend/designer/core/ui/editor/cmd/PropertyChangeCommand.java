@@ -36,6 +36,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -151,6 +152,31 @@ public class PropertyChangeCommand extends Command {
 
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
+
+        // add for bug TDI-26632 by fwang in 11 July, 2013. can't edit parameters if use repository connection.
+        IElementParameter propertyTypeParam = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+        IElementParameter repositoryTypeParam = elem.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        if (("USE_EXISTING_CONNECTION").equals(propName) && elem instanceof Node && propertyTypeParam != null
+                && "REPOSITORY".equals(propertyTypeParam.getValue()) && repositoryTypeParam != null
+                && !("").equals(repositoryTypeParam.getValue())) {
+            Node node = (Node) elem;
+            for (IElementParameter param : node.getElementParameters()) {
+                String repositoryValue = param.getRepositoryValue();
+                if ((repositoryValue != null)
+                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                        && param.getFieldType() != EParameterFieldType.MEMO_SQL
+                        && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
+                                .getRepositoryValue()))
+                        && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
+                                UpdatesConstants.MAPPING))
+                        && !("tFileInputEBCDIC".equals(node.getComponent().getName()) && "DATA_FILE".equals(repositoryValue))) {
+                    param.setRepositoryValueUsed(true);
+                    if (!(EParameterName.DB_VERSION.getName()).equals(param.getName())) {
+                        param.setReadOnly(true);
+                    }
+                }
+            }
+        }
 
         // feature 19312
         if (propName.contains(EParameterName.USE_DYNAMIC_JOB.getName()) && newValue.equals(false)) {
