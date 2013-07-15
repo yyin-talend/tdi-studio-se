@@ -143,9 +143,8 @@ public class SetParallelizationCommand extends Command {
                         }
                         if (!isEndRow && isComponentCanParlization(con, (Node) con.getTarget())) {
                             // For those component support tPartitioner,but its keys not same as previous
-                            // tPartitioner,need
-                            // do Repartitioner automaticlly
-                            if (!isStartRow && isComponentNeedRepartion(con, (Node) con.getTarget())) {
+                            // tPartitioner,need do Repartitioner automatic
+                            if (isExistParallel && !isStartRow && isComponentNeedRepartion(con, (Node) con.getTarget())) {
                                 con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                                 con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
                                 con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
@@ -157,9 +156,10 @@ public class SetParallelizationCommand extends Command {
 
                             } else {
                                 // when pervious con is par/repar/none,keep current is none
-                                if (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
-                                        || ParallelExecutionUtils.existPreviousNone((Node) con.getSource())
-                                        || ParallelExecutionUtils.existPreviousRepar((Node) con.getSource())) {
+                                if (isExistParallel
+                                        && (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
+                                                || ParallelExecutionUtils.existPreviousNone((Node) con.getSource()) || ParallelExecutionUtils
+                                                    .existPreviousRepar((Node) con.getSource()))) {
                                     con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
                                     con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
                                     con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
@@ -168,27 +168,35 @@ public class SetParallelizationCommand extends Command {
                                 } else {
                                     // add flag here is judge for if has did parallelization
                                     isExistParallel = true;
-                                    INode firstPartionerNode = null;
+                                    INode nextPartionerNode = null;
                                     IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER.getName());
                                     deparElem.setValue(Boolean.FALSE);
                                     con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
                                     con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                                     con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
 
-                                    if (isStartRow) {
-                                        firstPartionerNode = ParallelExecutionUtils.getFirstPartionerTargetNode(con);
-                                    }
+                                    nextPartionerNode = ParallelExecutionUtils.getNextPartionerTargetNode(con);
+
                                     // set the keys from target node keys
-                                    if (firstPartionerNode != null) {
-                                        if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) firstPartionerNode).size() > 0) {
-                                            ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) firstPartionerNode);
+                                    if (nextPartionerNode != null) {
+                                        // TDI-26555:in case the target partitioner key not in the main flow.such as in
+                                        // lookup row,need to go next connection for partitioning
+                                        if (ParallelExecutionUtils.isConClumnsContainsPartionKey(con, (Node) nextPartionerNode)) {
+                                            if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) nextPartionerNode)
+                                                    .size() > 0) {
+                                                ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) nextPartionerNode);
+                                            } else {
+                                                ParallelExecutionUtils.setHashKeysForCon(con);
+                                            }
                                         } else {
-                                            ParallelExecutionUtils.setHashKeysForCon(con);
+                                            if (isStartRow) {
+                                                con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
+                                                isExistParallel = false;
+                                            }
                                         }
                                     } else {
                                         ParallelExecutionUtils.setHashKeysForCon(con);
                                     }
-
                                     if (con.getTarget() != null) {
                                         setParallelization(con.getTarget());
                                     }

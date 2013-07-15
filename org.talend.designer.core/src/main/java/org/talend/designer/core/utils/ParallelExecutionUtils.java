@@ -80,7 +80,7 @@ public class ParallelExecutionUtils {
         return isSame;
     }
 
-    public static INode getFirstPartionerTargetNode(IConnection con) {
+    public static INode getNextPartionerTargetNode(IConnection con) {
         INode targetNode = null;
         if (con.getTarget() != null) {
             String partitioning = con.getTarget().getComponent().getPartitioning();
@@ -90,7 +90,7 @@ public class ParallelExecutionUtils {
                 for (IConnection nextCon : con.getTarget().getOutgoingConnections()) {
                     if (nextCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
                             || nextCon.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
-                        return getFirstPartionerTargetNode(nextCon);
+                        return getNextPartionerTargetNode(nextCon);
                     }
                 }
             }
@@ -196,6 +196,19 @@ public class ParallelExecutionUtils {
         }
     }
 
+    public static boolean isConClumnsContainsPartionKey(IConnection con, Node firstParNode) {
+        List<String> columnListForNode = getColumnListFromTargetNode(firstParNode);
+        List<String> columnListForCon = getColumnList(con.getMetadataTable());
+
+        for (String clumnNode : columnListForNode) {
+            if (columnListForCon.contains(clumnNode)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
     public static boolean isPartitionKeysExist(IConnection con) {
         IElementParameter parTableCon = con.getElementParameter(HASH_KEYS);
         if (parTableCon != null) {
@@ -253,6 +266,17 @@ public class ParallelExecutionUtils {
                     String label = column.getLabel();
                     columnList.add(label);
                 }
+            }
+        }
+        return columnList;
+    }
+
+    public static List<String> getColumnList(IMetadataTable table) {
+        List<String> columnList = new ArrayList<String>();
+        if (table != null) {
+            for (IMetadataColumn column : table.getListColumns()) {
+                String label = column.getLabel();
+                columnList.add(label);
             }
         }
         return columnList;
@@ -340,21 +364,19 @@ public class ParallelExecutionUtils {
     }
 
     public static IConnection getPreviousParCon(Node previousNode) {
-        IConnection previousCon = null;
         if (previousNode.getIncomingConnections().size() > 0) {
             for (IConnection con : previousNode.getIncomingConnections()) {
                 if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
                         .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))
                         || (con.getElementParameter(EParameterName.REPARTITIONER.getName()) != null && con
                                 .getElementParameter(EParameterName.REPARTITIONER.getName()).getValue().equals(true))) {
-                    previousCon = con;
-                    break;
+                    return con;
                 } else {
-                    previousCon = getPreviousParCon((Node) con.getSource());
+                    return getPreviousParCon((Node) con.getSource());
                 }
             }
         }
-        return previousCon;
+        return null;
     }
 
     public static boolean isExistPreviousParCon(Node previousNode) {
