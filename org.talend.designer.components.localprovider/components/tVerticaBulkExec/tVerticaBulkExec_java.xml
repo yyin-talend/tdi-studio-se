@@ -178,7 +178,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="60"
+      NUM_ROW="59"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
