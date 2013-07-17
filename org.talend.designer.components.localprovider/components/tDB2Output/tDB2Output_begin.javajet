@@ -117,9 +117,11 @@ if(("true").equals(useExistingConn)) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String tableschema = "tableschema_" + connection;
+    String username = "username_" + connection;
     %>
     String dbschema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");    
     java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");  
     <%
 } else {       
     %>

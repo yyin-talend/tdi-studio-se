@@ -22,63 +22,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
-	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpass = ElementParameterParser.getValue(node, "__PASS__");
-	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
-	String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
-	String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
-	String dataFile = ElementParameterParser.getValue(node, "__DATA_FILE__");
-	boolean useNamedPiped = ElementParameterParser.getValue(node, "__USE_NAMED_PIPE__").equals("true");
-	String namedPipeName = ElementParameterParser.getValue(node, "__NAMED_PIPE__");
-	List<Map<String, String>> updateOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UPDATE_OPTIONS__");
-	String updateCondition = ElementParameterParser.getValue(node, "__UPDATE_CONDITION__");
-	
-	boolean useExistingCtrlFile = ElementParameterParser.getValue(node, "__USE_EXISTING_CLT_FILE__").equals("true");
-	String ctrlFile = ElementParameterParser.getValue(node, "__CLT_FILE__");
-	boolean csvOption = ElementParameterParser.getValue(node, "__CSV_OPTIONS__").equals("true");
-	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
-	String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
-	String quoteChar = ElementParameterParser.getValue(node, "__QUOTE_CHAR__");
-	boolean headerRow = ElementParameterParser.getValue(node, "__HEADER_ROW__").equals("true");
-	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
-	String logFile = ElementParameterParser.getValue(node, "__LOG_FILE__");
-	//boolean hasBeforeSQL = ElementParameterParser.getValue(node, "__HAS_BEFORE_SQL__").equals("true");
-	//String beforeSQL = ElementParameterParser.getValue(node, "__BEFORE_SQL__");
-	//boolean hasAfterSQL = ElementParameterParser.getValue(node, "__HAS_AFTER_SQL__").equals("true");
-	//String afterSQL = ElementParameterParser.getValue(node, "__AFTER_SQL__");
-	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	boolean gploadExePathGiven = ElementParameterParser.getValue(node, "__SPECIFY_GPLOAD_PATH__").equals("true");
-	String gploadExePath = ElementParameterParser.getValue(node, "__GPLOAD_PATH__");
-	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
-	
-	String tableName = dbtable;
-	if (dbschema != null && !("".equals(dbschema) || "\"\"".equals(dbschema))) {
-		tableName = dbschema + " + \".\" + " + dbtable;
-	}
-	
-	List<IMetadataColumn> columnList = getColumnList(node);
-	List<Column> stmtStructure = null;
-	if (columnList != null && columnList.size() > 0) {
-		stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
-	}
+	boolean useNamedPiped = "true".equals(ElementParameterParser.getValue(node, "__USE_NAMED_PIPE__"));
 	
 	List< ? extends IConnection> inputConns = node.getIncomingConnections();
 	List< ? extends IConnection> outputConns = node.getOutgoingConnections();
 	boolean hasInputRow = false;
 	boolean hasOutputRow = false;
-	if (inputConns != null || inputConns.size() > 0) {
+	if (inputConns != null && inputConns.size() > 0) {
 		for(IConnection conn : inputConns) {
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
 				if(!hasInputRow)
 					hasInputRow = true;
 		}
 	}
-	if (outputConns != null || outputConns.size() > 0) {
+	if (outputConns != null && outputConns.size() > 0) {
 		for(IConnection conn : outputConns) {
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
 				if(!hasOutputRow)
@@ -86,8 +43,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	}
 	
-	String inputRowName = (hasInputRow) ? inputConns.get(0).getName() : null;
-	String outputRowName = (hasOutputRow) ? outputConns.get(0).getName() : null;
 %>
 
 <%

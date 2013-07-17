@@ -46,10 +46,12 @@ Manager manager = null;
     if(useExistingConnection) {
     	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     	String conn = "conn_" + connection;
-    	String schema = "tableschema_" + connection;    	    	
+    	String schema = "tableschema_" + connection;
+    	String username = "username_" + connection;
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
         String schema_<%=cid%> = (String)globalMap.get("<%=schema %>");
+        String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");  
         <%
     } else { 
         %>
