@@ -144,15 +144,7 @@ imports="
 	    
 	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
 %>
-			try {
-            	tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
-			} catch (java.sql.SQLException e) {
-				if ("No data found".equals(e.getMessage())) {
-					tmpContent_<%=cid%> = "";
-				}else {
-					throw e;
-				}
-			}
+            tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
             if(tmpContent_<%=cid%> != null) {
                 <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
             } else {
