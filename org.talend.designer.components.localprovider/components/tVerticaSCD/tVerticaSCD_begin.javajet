@@ -99,13 +99,25 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = connection_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
             boolean whetherExist_<%=cid%> = false;
+            String defaultSchema_<%=cid%> = "public";
+            if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+            	java.sql.Statement stmtSchema_<%=cid%> = connection_<%=cid%>.createStatement();
+            	java.sql.ResultSet rsSchema_<%=cid%> = stmtSchema_<%=cid%>.executeQuery("select current_schema() ");
+            	while(rsSchema_<%=cid%>.next()){
+            		defaultSchema_<%=cid%> = rsSchema_<%=cid%>.getString("current_schema");
+            	}
+            	rsSchema_<%=cid%>.close();
+            	stmtSchema_<%=cid%>.close();
+            }
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=dbtable%>)) {
+                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=dbtable%>) && (schema_<%=cid%>.equals(dbschema_<%=cid%>) || ((dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) && defaultSchema_<%=cid%>.equalsIgnoreCase(schema_<%=cid%>)))) {
                     whetherExist_<%=cid%> = true;
                     break;
                 }
             }
+            rsTable_<%=cid%>.close();
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema, scdConfiger)%>");

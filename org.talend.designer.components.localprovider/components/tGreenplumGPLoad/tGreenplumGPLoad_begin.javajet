@@ -60,10 +60,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 	
 	String tableName = dbtable;
-	if (dbschema != null && !("".equals(dbschema) || "\"\"".equals(dbschema))) {
-		tableName = dbschema + " + \".\" + " + dbtable;
-	}
-	
 	List<IMetadataColumn> columnList = getColumnList(node);
 	List<Column> stmtStructure = null;
 	if (columnList != null && columnList.size() > 0) {
@@ -74,14 +70,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 	List< ? extends IConnection> outputConns = node.getOutgoingConnections();
 	boolean hasInputRow = false;
 	boolean hasOutputRow = false;
-	if (inputConns != null || inputConns.size() > 0) {
+	if (inputConns != null && inputConns.size() > 0) {
 		for(IConnection conn : inputConns) {
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
 				if(!hasInputRow)
 					hasInputRow = true;
 		}
 	}
-	if (outputConns != null || outputConns.size() > 0) {
+	if (outputConns != null && outputConns.size() > 0) {
 		for(IConnection conn : outputConns) {
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
 				if(!hasOutputRow)
@@ -124,6 +120,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}
 %>
 
+	String tableName_<%=cid%> = <%=tableName%>;
+	String dbschema_<%=cid%> = <%=dbschema%>;
+	String tableName4Load_<%=cid%> = "\"" + tableName_<%=cid%> + "\"";
+	if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
+		tableName_<%=cid%> = dbschema_<%=cid%> + "\".\"" + <%=tableName%>;
+		tableName4Load_<%=cid%> = "\""+dbschema_<%=cid%> + "\".\"" + <%=tableName%>+"\"";
+	}
 <%
 	//-----------------------------------------------------------
 	// create table option
@@ -136,7 +139,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpass%>;
-		String tableName_<%=cid%> = <%=tableName%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
 		<%
@@ -162,7 +164,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>)
-					 throw new RuntimeException ("Table '" + tableName_<%=cid%>  + "' already exists. process terminated");
+					 throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
 				else
 					 e.printStackTrace();
 			}
@@ -172,9 +174,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 			java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 			java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
 			boolean whetherExist_<%=cid%> = false;
+			String defaultSchema_<%=cid%> = "public";
+			if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+				java.sql.Statement stmtSchema_<%=cid%> = conn_<%=cid%>.createStatement();
+				java.sql.ResultSet rsSchema_<%=cid%> = stmtSchema_<%=cid%>.executeQuery("select current_schema() ");
+				while(rsSchema_<%=cid%>.next()){
+					defaultSchema_<%=cid%> = rsSchema_<%=cid%>.getString("current_schema");
+				}
+				rsSchema_<%=cid%>.close();
+				stmtSchema_<%=cid%>.close();
+			}
 			while(rsTable_<%=cid%>.next()) {
 				String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-				if(table_<%=cid%>.equalsIgnoreCase(<%=dbtable%>)) {
+				String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+				if(table_<%=cid%>.equals(<%=tableName%>) && (schema_<%=cid%>.equals(dbschema_<%=cid%>) || ((dbschema_<%=cid%>==null || dbschema_<%=cid%>.trim().length() ==0) && defaultSchema_<%=cid%>.equals(schema_<%=cid%>)))) {
 					whetherExist_<%=cid%> = true;
 					break;
 				}
@@ -189,7 +202,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)"); 
 					}catch(java.sql.SQLException e){
 						if(<%=dieOnError%>)
-							 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
+							 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
 						
 						else
 							 e.printStackTrace();
@@ -205,7 +218,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     	stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
                     }catch(java.sql.SQLException e){
                     	if(<%=dieOnError%>)
-							 throw new RuntimeException ("Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
+							 throw new RuntimeException ("Failure to drop table '" + tableName4Load_<%=cid%>  + "'. process terminated");
                     	
                     	else
 							 e.printStackTrace();
@@ -217,7 +230,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");           
                 }catch(java.sql.SQLException e){
                 	if(<%=dieOnError%>)
-						 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
+						 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
                 	else
 						 e.printStackTrace();
                 }
@@ -242,12 +255,15 @@ skeleton="../templates/db_output_bulk.skeleton"
             	stmtClear_<%=cid%>.close();
             }catch(java.sql.SQLException e){
             	if(<%=dieOnError%>)
-					 throw new RuntimeException ("Failure to clear table '" + tableName_<%=cid%>  + "'. process terminated");
+					 throw new RuntimeException ("Failure to clear table '" + tableName4Load_<%=cid%>  + "'. process terminated");
             	else
 					 e.printStackTrace();
             }
             <%
         }
+        %>
+        conn_<%=cid%>.close();
+        <%
     }
 %>
 
@@ -310,7 +326,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 		%>
 		gpctrl_<%=cid%>.println("  OUTPUT: ");
-		gpctrl_<%=cid%>.println("    - TABLE: " + <%=tableName%>);
+		gpctrl_<%=cid%>.println("    - TABLE: '" + tableName4Load_<%=cid%>+"'");
 		gpctrl_<%=cid%>.println("    - MODE: <%=dataAction.toLowerCase()%>");
 		<%
 		if ("UPDATE".equals(dataAction) || "MERGE".equals(dataAction)) {

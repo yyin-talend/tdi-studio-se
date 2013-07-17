@@ -21,29 +21,34 @@ String cid = node.getUniqueName();
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-StringBuilder tableName = new StringBuilder();
-StringBuilder tmpTableName = new StringBuilder();
 boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__"));
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
-String tableName_<%=cid%> = null;
 int deletedCount_<%=cid%>=0;
+String tableName_<%=cid%> = null;
+String dbschema_<%=cid%> = null;
 <%
-if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
-    tableName.append("\\\"\" + " + table + " + \"\\\"");
-    %>
-    tableName_<%=cid%> = <%=table%>;
-    <%
+if(useExistingConnection) {
+	%>
+	dbschema_<%=cid%> = (String)globalMap.get("schema_" + "<%=ElementParameterParser.getValue(node,"__CONNECTION__")%>");
+	<%
 } else {
-    tableName.append("\\\"\" + " + dbSchema + " + \"\\\".\\\"\" + " + table + " + \"\\\"");
-    %>
-    tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
-    <%
+	%>
+	dbschema_<%=cid%> = <%=dbSchema%>;
+	<%
 }
+%>
+if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	tableName_<%=cid%> = <%=table%>;
+} else {
+	tableName_<%=cid%> = dbschema_<%=cid%> + "\".\"" + <%=table%>;
+}
+<%
 if(("UPDATE").equals(dataAction)) {
-    tmpTableName = tableName;
-    tableName = new StringBuilder("\\\"tmp_" + cid ); //tableName not end. will add pid when create a temp table for update.
+%>
+     String tmpTableName_<%=cid%> = "tmp_<%=cid %>_" + pid; //tableName not end. will add pid when create a temp table for update.
+<%
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -78,9 +83,8 @@ if(notNullCols != null && notNullCols.size() > 0) {
     }
 }
 %>
-String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" 
- <%if (("UPDATE").equals(dataAction)) {%>+ "_"+ pid + "\""<%}%>
- +"<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+String bulkSQL_<%=cid%> = "COPY \"" + <%if(("UPDATE").equals(dataAction)) {%>tmpTableName_<%=cid%><% } else {%>tableName_<%=cid%> <%}%>
++ "\"<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
 <%
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
 String oids = (("true").equals(ElementParameterParser.getValue(node, "__OIDS__")) ? "OIDS" : "");
@@ -154,7 +158,7 @@ if(("UPDATE").equals(dataAction)) {
         if(keyCount_<%=cid%> == 0) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
-        String tmpTableName_<%=cid%> = tableName_<%=cid%>;
+        tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;        
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
@@ -202,4 +206,3 @@ conn_<%=cid %>.close();
 <%
 	}
 %>
-

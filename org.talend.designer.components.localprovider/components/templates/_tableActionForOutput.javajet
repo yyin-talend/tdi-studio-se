@@ -74,10 +74,10 @@ if (!isParallelize) {
             stmtCreate_<%=cid%>.close();
 <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-			boolean tableNameCaseSensitive=false; 
- 	 		if(DB2.equalsIgnoreCase(dbmsId)||POSTGRESQL.equalsIgnoreCase(dbmsId)){ 
- 	 			tableNameCaseSensitive=true; 
- 	 		} 
+        	boolean tableNameCaseSensitive=false;
+    		if(DB2.equalsIgnoreCase(dbmsId)||POSTGRESQL.equalsIgnoreCase(dbmsId)||GREENPLUM.equalsIgnoreCase(dbmsId)||POSTGREPLUS.equalsIgnoreCase(dbmsId)){
+    			tableNameCaseSensitive=true;
+    		}
 			//to fixed: bug8422
 			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 %>	         
@@ -138,8 +138,8 @@ if (!isParallelize) {
 	            rsTable_<%=cid%>.close();
 	            
 <%
-			} else if ( SYBASE.equalsIgnoreCase(dbmsId) || POSTGRESQL.equalsIgnoreCase(dbmsId)
-						|| INFORMIX.equalsIgnoreCase(dbmsId) || DB2.equalsIgnoreCase(dbmsId) ) {
+			} else if ( SYBASE.equalsIgnoreCase(dbmsId)
+						|| INFORMIX.equalsIgnoreCase(dbmsId) ) {
 %>  	            
 				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -149,6 +149,48 @@ if (!isParallelize) {
 	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
 	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>) 
 	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || dbschema_<%=cid%>.trim().length() ==0)) {
+	                    whetherExist_<%=cid%> = true;
+	                    break;
+	                }
+	            }
+	            rsTable_<%=cid%>.close();
+<%			
+			} else if( DB2.equalsIgnoreCase(dbmsId) ){
+%>
+				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            boolean whetherExist_<%=cid%> = false;
+	            while(rsTable_<%=cid%>.next()) {
+	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>) 
+	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || (dbschema_<%=cid%>.trim().length() ==0 && dbUser_<%=cid%>.equalsIgnoreCase(schema_<%=cid%>)))) {
+	                    whetherExist_<%=cid%> = true;
+	                    break;
+	                }
+	            }
+	            rsTable_<%=cid%>.close();
+<%
+			} else if ( GREENPLUM.equalsIgnoreCase(dbmsId) || POSTGRESQL.equalsIgnoreCase(dbmsId) || POSTGREPLUS.equalsIgnoreCase(dbmsId)) {
+%>  	            
+				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            boolean whetherExist_<%=cid%> = false;
+	            String defaultSchema_<%=cid%> = "public";
+	            if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	            	java.sql.Statement stmtSchema_<%=cid%> = conn_<%=cid%>.createStatement();
+	            	java.sql.ResultSet rsSchema_<%=cid%> = stmtSchema_<%=cid%>.executeQuery("select current_schema() ");
+	            	while(rsSchema_<%=cid%>.next()){
+	            		defaultSchema_<%=cid%> = rsSchema_<%=cid%>.getString("current_schema");
+	            	}
+	            	rsSchema_<%=cid%>.close();
+	            	stmtSchema_<%=cid%>.close();
+	            }
+	            while(rsTable_<%=cid%>.next()) {
+	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>) 
+	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || ((dbschema_<%=cid%> ==null || dbschema_<%=cid%>.trim().length() ==0) && defaultSchema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(schema_<%=cid%>)))) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }

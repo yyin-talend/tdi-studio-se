@@ -44,9 +44,11 @@ if(columnList != null && columnList.size() > 0) {
         String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
         String connectionName = "conn_" + connection;
         String tableschema = "tableschema_" + connection;
+        String username = "username_" + connection;
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
         String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
+        String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");  
         <%
     } else {
         String dbname= ElementParameterParser.getValue(node, "__DBNAME__");    
@@ -112,7 +114,9 @@ if(columnList != null && columnList.size() > 0) {
             boolean whetherExist_<%=cid%> = false;
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equals(<%=tableName%>)) { 
+                String qSchema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+                if(table_<%=cid%>.equals(<%=tableName%>) 
+                	&& (qSchema_<%=cid%>.equals(schema_<%=cid%>) || ((schema_<%=cid%> == null || schema_<%=cid%>.trim().length() ==0) && dbUser_<%=cid%>.equalsIgnoreCase(qSchema_<%=cid%>)))) {
                     whetherExist_<%=cid%> = true;
                     break;
                 }

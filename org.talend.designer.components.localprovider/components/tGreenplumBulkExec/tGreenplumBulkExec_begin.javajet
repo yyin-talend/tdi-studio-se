@@ -24,16 +24,24 @@ boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
 String tableName_<%=cid%> = null;
+String dbschema_<%=cid%> = null;
 <%
-if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
-    %>
-    tableName_<%=cid%> = <%=table%>;
-    <%
+if(useExistingConnection) {
+	%>
+	dbschema_<%=cid%> = (String)globalMap.get("schema_" + "<%=ElementParameterParser.getValue(node,"__CONNECTION__")%>");
+	<%
 } else {
-    %>
-    tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
-    <%
+	%>
+	dbschema_<%=cid%> = <%=dbSchema%>;
+	<%
 }
+%>
+if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	tableName_<%=cid%> = <%=table%>;
+} else {
+	tableName_<%=cid%> = dbschema_<%=cid%> + "\".\"" + <%=table%>;
+}
+<%
 if(("UPDATE").equals(dataAction)) {
 %>
     String tmpTableName_<%=cid%> = "tmp_<%=cid %>_" + pid;
