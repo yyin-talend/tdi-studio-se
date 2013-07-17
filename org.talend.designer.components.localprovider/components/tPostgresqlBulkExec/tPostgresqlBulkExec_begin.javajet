@@ -24,6 +24,7 @@ boolean standardConformingString= ("true").equals(ElementParameterParser.getValu
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
+int deletedCount_<%=cid%>=0;
 String tableName_<%=cid%> = null;
 String dbschema_<%=cid%> = null;
 <%
