@@ -1920,6 +1920,14 @@
               name="ChangeDeleteEmptyFileValueIfAppendTrueFeatureTDI26625"
               version="5.4.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.AddAPIVersion4tMSCRM"
+              id="org.talend.repository.model.migration.AddAPIVersion4tMSCRM"
+              name="AddAPIVersion4tMSCRM"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension

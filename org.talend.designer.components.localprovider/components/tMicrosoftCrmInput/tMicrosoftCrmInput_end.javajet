@@ -6,6 +6,7 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.process.ElementParameterParser
 		java.util.List
 		"
 %>
@@ -32,7 +33,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%>
+				String authType = ElementParameterParser.getValue(node, "__AUTH_TYPE__");
+				boolean isAPI2011 = ("API_2011").equals(ElementParameterParser.getValue(node,"__API_VERSION__"));
+				String discWSDL = ElementParameterParser.getValue(node, "__DISC_WSDL__");
+				if(!isAPI2011 || ("ON_PREMISE").equals(authType)){
+				%>
     				}
     				if(fetchMore_<%=cid%>){
 	                    pageNumber_<%=cid%>++;
@@ -46,7 +51,19 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
         			}
 				}
 			
-<%
+				<%
+				}else{
+				%>
+					}
+					if (!retrieveMultipleResult_<%=cid%>.getMoreRecords()) {
+		                break;
+		            }
+		            pagingInfo_<%=cid%>.setPagingCookie(retrieveMultipleResult_<%=cid%>.getPagingCookie());
+		            pagingInfo_<%=cid%>.setPageNumber(++pageNumber_<%=cid%>);
+		            query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
+		        }
+				<%					
+				}
 			}
 		}
 	}
