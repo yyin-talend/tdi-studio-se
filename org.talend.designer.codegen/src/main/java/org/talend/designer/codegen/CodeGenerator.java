@@ -104,6 +104,51 @@ public class CodeGenerator implements ICodeGenerator {
 
     private static final boolean DEBUG = false;
 
+    private class OnRowsEndCode {
+
+        private int count = 0; // count onRowsEnd components generates how many times
+
+        private StringBuffer buffer = null;
+
+        public OnRowsEndCode() {
+            count = 0;
+            buffer = new StringBuffer();
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void increase() {
+            count++;
+        }
+
+        public void decrease() {
+            count--;
+        }
+
+        public void append(StringBuffer str) {
+            buffer.append(str);
+        }
+
+        public void append(String str) {
+            buffer.append(str);
+        }
+
+        public StringBuffer getContent() {
+            return this.buffer;
+        }
+
+        public void clear() {
+            count = 0;
+            buffer.delete(0, buffer.length());
+        }
+    }
+
+    // this one is used to store all the generated code of the subjobs which start with the IN of the virtual component
+    // with OnRowsEnd. It is used to fix TDI-26484
+    private OnRowsEndCode onRowsEndCode = new OnRowsEndCode();
+
     /**
      * Constructor : use the process and laguage to initialize internal components.
      * 
@@ -205,12 +250,14 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
+    @Override
     @SuppressWarnings("unchecked")
     public String generateProcessCode() throws CodeGeneratorException {
         // Parse Process, generate Code for Individual Components
         // generate Assembly Code for individual Components
         StringBuffer componentsCode = new StringBuffer();
 
+        // used to collect all the generated code of onRowsEnd components
         long startTimer = System.currentTimeMillis();
         long endTimer = startTimer;
         try {
@@ -273,14 +320,12 @@ public class CodeGenerator implements ICodeGenerator {
                         // Fix bug TESB-2951 Generated Codes error when Route
                         // starts with cFile/cFTP/cActiveMQ/cFTP/cJMS
                         // LiXiaopeng 2011-09-05
-						INode subProcessStartNode = subTree.getRootNode()
-								.getSubProcessStartNode(true);
-						String startNodeName = subProcessStartNode
-								.getComponent().getName();
-						IElementParameter family = subProcessStartNode.getElementParameter("FAMILY");
-						if(subProcessStartNode.isStart() && null != family && "Messaging".equals(family.getValue())){
+                        INode subProcessStartNode = subTree.getRootNode().getSubProcessStartNode(true);
+                        String startNodeName = subProcessStartNode.getComponent().getName();
+                        IElementParameter family = subProcessStartNode.getElementParameter("FAMILY");
+                        if (subProcessStartNode.isStart() && null != family && "Messaging".equals(family.getValue())) {
                             nodeSubTreeList.add(subTree);
-						} else if ("cConfig".equals(startNodeName)) {
+                        } else if ("cConfig".equals(startNodeName)) {
                             // Customized remove the cConfig routeId codes.
                             // TESB-2825 LiXP 20110823
                             // Do nothing.
@@ -355,10 +400,11 @@ public class CodeGenerator implements ICodeGenerator {
             Vector footerArgument = new Vector(2);
             footerArgument.add(process);
             footerArgument.add(processTree.getRootNodes());
-            if (isCamel)
+            if (isCamel) {
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER_ROUTE, footerArgument));
-            else
+            } else {
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
+            }
             componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
             // ####
             return componentsCode.toString();
@@ -404,6 +450,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
+    @Override
     public String generateContextCode(IContext designerContext) throws CodeGeneratorException {
         if (process != null) {
             if (designerContext == null) {
@@ -444,20 +491,22 @@ public class CodeGenerator implements ICodeGenerator {
         }
         return ""; //$NON-NLS-1$
     }
-    
+
     /*
      * ADDED for TESB-7887 By GangLiu(non-Javadoc)
+     * 
      * @see org.talend.designer.codegen.ICodeGenerator#generateSpringContent()
      */
+    @Override
     public String generateSpringContent() throws CodeGeneratorException {
-    	if (process == null || !( process instanceof IProcess2) ){
-    		return null;
-    	}
-    	IProcess2 process2 = (IProcess2) process;
-    	if(!process2.needsSpring() || process2.getSpringContent() == null){
-    		return null;
-    	}
-    	return process2.getSpringContent();
+        if (process == null || !(process instanceof IProcess2)) {
+            return null;
+        }
+        IProcess2 process2 = (IProcess2) process;
+        if (!process2.needsSpring() || process2.getSpringContent() == null) {
+            return null;
+        }
+        return process2.getSpringContent();
     }
 
     /**
@@ -600,9 +649,10 @@ public class CodeGenerator implements ICodeGenerator {
     private StringBuffer generateComponentsCode(NodesSubTree subProcess, INode node, ECodePart part, String incomingName,
             ETypeGen typeGen) throws CodeGeneratorException {
         StringBuffer codeComponent = new StringBuffer();
+
         Boolean isMarked = subProcess.isMarkedNode(node, part);
         boolean isIterate = isSpecifyInputNode(node, incomingName, EConnectionType.ITERATE);
-        boolean isOnRowsEnd = isSpecifyInputNode(node, incomingName, EConnectionType.ON_ROWS_END);
+
         if ((isMarked != null) && (!isMarked)) {
             switch (part) {
             case BEGIN:
@@ -639,47 +689,81 @@ public class CodeGenerator implements ICodeGenerator {
                     }
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
                     if (ETypeGen.CAMEL == typeGen) {
-                    	if (node.getIncomingConnections().size() < 1 && node.isStart()){
-                    		// http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
-                    		String label = null;
-                    		IElementParameter parameter = node
-                    				.getElementParameter("LABEL");
-                    		if (parameter != null
-                    				&& !"__UNIQUE_NAME__".equals(parameter
-                    						.getValue())) {
-                    			label = (String) parameter.getValue();
-                    		}
+                        if (node.getIncomingConnections().size() < 1 && node.isStart()) {
+                            // http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
+                            String label = null;
+                            IElementParameter parameter = node.getElementParameter("LABEL");
+                            if (parameter != null && !"__UNIQUE_NAME__".equals(parameter.getValue())) {
+                                label = (String) parameter.getValue();
+                            }
 
-                    		/*
-                    		 * Fix https://jira.talendforge.org/browse/TESB-6685
-                    		 * label + uniqueName to make it unique
-                    		 */
-                    		if (label == null) {
-                    			label = node.getUniqueName();
-                    		}else{
-                    			label += "_"+node.getUniqueName();
-                    		}
-                    		if(!"cErrorHandler".equals(node.getComponent().getName())){
-                    			codeComponent.append(".routeId(\"" + label + "\")");
-                    		}
-                    	}else{
-                        	codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
-						}
+                            /*
+                             * Fix https://jira.talendforge.org/browse/TESB-6685 label + uniqueName to make it unique
+                             */
+                            if (label == null) {
+                                label = node.getUniqueName();
+                            } else {
+                                label += "_" + node.getUniqueName();
+                            }
+                            if (!"cErrorHandler".equals(node.getComponent().getName())) {
+                                codeComponent.append(".routeId(\"" + label + "\")");
+                            }
+                        } else {
+                            codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
+                        }
                     }
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
+
+                    // This code is used to generate the Virtual_IN--->Out part in previous
+                    boolean isNextOnRowsEnd = false;
+                    IConnection conn = null;
+                    if (node.getOutgoingConnections(EConnectionType.ON_ROWS_END).size() == 1) {
+                        conn = node.getOutgoingConnections(EConnectionType.ON_ROWS_END).get(0);
+                        isNextOnRowsEnd = isSpecifyInputNode(conn.getTarget(), conn.getName(), EConnectionType.ON_ROWS_END);
+                    }
+                    if (isNextOnRowsEnd && conn != null) {
+
+                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
+                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.BEGIN, incomingName,
+                                typeGen));
+
+                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.MAIN, incomingName,
+                                typeGen));
+                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.MAIN, typeGen));
+
+                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.END, incomingName,
+                                typeGen));
+                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.END, typeGen));
+                        onRowsEndCode.increase();
+
+                    }
                 }
                 break;
             case END:
+                boolean isOnRowsEnd = isSpecifyInputNode(node, incomingName, EConnectionType.ON_ROWS_END);
                 if (isOnRowsEnd) {
+                    // append the onRowsEnd code to the end part of the first virtual_Out
+                    onRowsEndCode.decrease();
+                    if (onRowsEndCode.getCount() == 0) {
 
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN, typeGen));
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.BEGIN, incomingName, typeGen));
+                        System.out.println(onRowsEndCode.getContent());
+                        codeComponent.append(onRowsEndCode.getContent());
+                        onRowsEndCode.clear();
+                    }
 
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
+                    // onRowsEndCode.clear();
 
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName, typeGen));
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END, typeGen));
+                    // codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN, typeGen));
+                    // codeComponent.append(generateComponentCode(subProcess, node, ECodePart.BEGIN, incomingName,
+                    // typeGen));
+                    //
+                    // codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName,
+                    // typeGen));
+                    // codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
+                    //
+                    // codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName,
+                    // typeGen));
+                    // codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END, typeGen));
 
                 } else {
                     // if (!isIterate) {
@@ -864,8 +948,9 @@ public class CodeGenerator implements ICodeGenerator {
 
         StringBuffer content = new StringBuffer();
         try {
-            if (typeGen == ETypeGen.ETL)
+            if (typeGen == ETypeGen.ETL) {
                 content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part, incomingName, subProcess));
+            }
 
             IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
             String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP + node.getComponent().getName()
@@ -875,8 +960,9 @@ public class CodeGenerator implements ICodeGenerator {
             jetBean.setTemplateRelativeUri(templateURI);
             JetProxy proxy = new JetProxy(jetBean);
             content.append(proxy.generate());
-            if (typeGen == ETypeGen.ETL)
+            if (typeGen == ETypeGen.ETL) {
                 content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part, incomingName, subProcess));
+            }
 
         } catch (JETException jetException) {
             log.error(jetException.getMessage(), jetException);
@@ -897,6 +983,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
+    @Override
     public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
         argument.setNode(node);
@@ -980,6 +1067,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @see org.talend.designer.codegen.ICodeGenerator#generateComponentCodeWithRows (java.lang.String,
      * java.lang.Object)
      */
+    @Override
     public String generateComponentCodeWithRows(String nodeName, IAloneProcessNodeConfigurer nodeConfigurer) {
         StringBuffer componentsCode = new StringBuffer();
 
@@ -1093,6 +1181,7 @@ public class CodeGenerator implements ICodeGenerator {
         return null;
     }
 
+    @Override
     public void setContextName(String contextName) {
         this.contextName = contextName;
     }
