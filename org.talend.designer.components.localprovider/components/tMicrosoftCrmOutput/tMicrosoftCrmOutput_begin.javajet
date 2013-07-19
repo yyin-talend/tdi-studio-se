@@ -23,6 +23,7 @@ String cid = node.getUniqueName();
 			int timeout = (int)(Double.valueOf(timeoutSec) * 1000);
 			boolean reuseHttpClient = ("true").equals(ElementParameterParser.getValue(node,"__REUSE_HTTP_CLIENT__"));
 			boolean debug = ("true").equals(ElementParameterParser.getValue(node,"__DEBUG__"));
+			String liveIDLoginURL = ElementParameterParser.getValue(node, "__LIVEID_LOGIN_URL__");
 %>
 			int nb_line_<%=cid%> = 0;	
 			<%if(debug){%>
@@ -67,7 +68,7 @@ String cid = node.getUniqueName();
 	        <%}else if(("ONLINE").equals(authType)){%>
 	        	com.microsoft.crm4.webserviceTest.CrmServiceStub service_<%=cid%> = new com.microsoft.crm4.webserviceTest.CrmServiceStub("https://" + <%=host%> + "/MSCrmServices/2007/CrmService.asmx");
 				org.apache.axis2.client.Options options_<%=cid%> = service_<%=cid%>._getServiceClient().getOptions();
-	        	org.talend.mscrm.login.passport.MsDynamicsWrapper msDynamicsWrapper_<%=cid%> = new org.talend.mscrm.login.passport.MsDynamicsWrapper(<%=host%>,<%=orgName%>,<%=username%>,<%=password%>);
+	        	org.talend.mscrm.login.passport.MsDynamicsWrapper msDynamicsWrapper_<%=cid%> = new org.talend.mscrm.login.passport.MsDynamicsWrapper(<%=host%>,<%=orgName%>,<%=username%>,<%=password%>,<%=liveIDLoginURL%>);
 				msDynamicsWrapper_<%=cid%>.connect();
 				String crmTicket_<%=cid%> = msDynamicsWrapper_<%=cid%>.getCrmTicket();
 	        	

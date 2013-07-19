@@ -4172,6 +4172,10 @@
 			REQUIRED="false" SHOW="false">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
+		<PARAMETER NAME="LIVEID_LOGIN_URL" FIELD="TEXT" NUM_ROW="30"
+            REQUIRED="true" SHOW_IF="AUTH_TYPE=='ONLINE'">
+            <DEFAULT>"https://login.live.com/rst2.srf"</DEFAULT>
+        </PARAMETER>
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
