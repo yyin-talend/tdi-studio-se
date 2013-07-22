@@ -15,6 +15,7 @@ Require-Bundle: org.talend.model,
  org.apache.log4j,
  org.eclipse.jet.editor,
  org.talend.core,
+ org.talend.core.ui,
  org.talend.designer.components.localprovider,
  org.eclipse.jdt.core,
  org.eclipse.xsd,
@@ -28,3 +29,4 @@ Export-Package: org.talend.componentdesigner,
  org.talend.componentdesigner.manager,
  org.talend.componentdesigner.ui
 Bundle-ClassPath: .
+Bundle-Vendor: .Talend SA.

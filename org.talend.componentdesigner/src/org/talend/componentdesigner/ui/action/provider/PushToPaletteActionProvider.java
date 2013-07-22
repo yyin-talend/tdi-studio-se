@@ -34,6 +34,8 @@ import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.util.XSDValidator;
 import org.talend.componentdesigner.util.file.FileCopy;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.service.IComponentsLocalProviderService;
 
 /**
  * DOC slanglois class global comment. Detailled comment
@@ -49,6 +51,7 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
      * 
      * @see org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator.ICommonActionExtensionSite)
      */
+    @Override
     public void init(ICommonActionExtensionSite anExtensionSite) {
 
         if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
@@ -59,6 +62,7 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
     /**
      * Adds a submenu to the given menu with the name "New Component".
      */
+    @Override
     public void fillContextMenu(IMenuManager menu) {
         menu.insertBefore("group.edit", copyProjectAction); //$NON-NLS-1$
         // Object obj = ((TreeSelection) this.getContext().getSelection()).getFirstElement();// need to get all
@@ -86,9 +90,16 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
         /*
          * (non-Javadoc) Method declared on IAction.
          */
+        @Override
         public void run() {
-            String path = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore().getString(
-                    "USER_COMPONENTS_FOLDER"); //$NON-NLS-1$
+            String path = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
+                IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
+                        .getService(IComponentsLocalProviderService.class);
+                if (service != null) {
+                    path = service.getPreferenceStore().getString("USER_COMPONENTS_FOLDER"); //$NON-NLS-1$
+                }
+            }
             if (path == null || path.length() == 0) {
                 new MessageDialog(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -147,7 +158,8 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
 
                 MessageDialog warningMessageDialog = new MessageDialog(
 
-                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("PushToPaletteActionProvider.PushToPaletteActionProvider.result"), null, waringInfo, //$NON-NLS-1$
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.getString("PushToPaletteActionProvider.PushToPaletteActionProvider.result"), null, waringInfo, //$NON-NLS-1$
                         MessageDialog.WARNING, new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
 
                 warningMessageDialog.open();
@@ -162,6 +174,7 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
             // get the correct XML file for components
             File[] list = componentFolder.listFiles(new FilenameFilter() {
 
+                @Override
                 public boolean accept(File dir, String name) {
                     // _java.xml
                     String javaXmlName = dir.getName() + "_java.xml"; //$NON-NLS-1$
