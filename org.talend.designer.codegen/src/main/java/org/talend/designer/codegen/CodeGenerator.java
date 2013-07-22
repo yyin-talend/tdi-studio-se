@@ -722,7 +722,7 @@ public class CodeGenerator implements ICodeGenerator {
                         isNextOnRowsEnd = isSpecifyInputNode(conn.getTarget(), conn.getName(), EConnectionType.ON_ROWS_END);
                     }
                     if (isNextOnRowsEnd && conn != null) {
-
+                        onRowsEndCode.increase();
                         onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
                         onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.BEGIN, incomingName,
                                 typeGen));
@@ -734,7 +734,6 @@ public class CodeGenerator implements ICodeGenerator {
                         onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.END, incomingName,
                                 typeGen));
                         onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.END, typeGen));
-                        onRowsEndCode.increase();
 
                     }
                 }
@@ -746,7 +745,7 @@ public class CodeGenerator implements ICodeGenerator {
                     onRowsEndCode.decrease();
                     if (onRowsEndCode.getCount() == 0) {
 
-                        System.out.println(onRowsEndCode.getContent());
+                        // System.out.println(onRowsEndCode.getContent());
                         codeComponent.append(onRowsEndCode.getContent());
                         onRowsEndCode.clear();
                     }
