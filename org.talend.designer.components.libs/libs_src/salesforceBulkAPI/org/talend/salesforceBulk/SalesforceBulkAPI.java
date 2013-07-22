@@ -515,7 +515,14 @@ public class SalesforceBulkAPI {
             // System.out.println("Failed with error: " + error);
             // }
         }
-
+        closeFileRead();
         return resultInfoList;
+    }
+    
+    //for TDI-26832
+    public void closeFileRead() throws IOException{
+        if(baseFileReader!=null){
+            baseFileReader.close();
+        }
     }
 }
