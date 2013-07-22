@@ -59,7 +59,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.ui.metadata.celleditor.ModuleListCellEditor;
 import org.talend.core.ui.metadata.celleditor.RuleCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
