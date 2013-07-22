@@ -34,10 +34,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -62,8 +62,10 @@ public class DateController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -71,7 +73,7 @@ public class DateController extends AbstractElementPropertySectionController {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btnEdit.setData(NAME, DATE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
@@ -106,7 +108,7 @@ public class DateController extends AbstractElementPropertySectionController {
 
         hashCurControls.put(param.getName(), dateText);
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -161,8 +163,9 @@ public class DateController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -175,10 +178,12 @@ public class DateController extends AbstractElementPropertySectionController {
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
             executeCommand(cmd);
@@ -190,7 +195,8 @@ public class DateController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(Button button) {
         DateDialog dateDial = new DateDialog(composite.getShell());
@@ -212,8 +218,9 @@ public class DateController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
@@ -244,6 +251,7 @@ public class DateController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
         // TODO Auto-generated method stub
     }

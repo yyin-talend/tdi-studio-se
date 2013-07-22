@@ -39,9 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -49,6 +47,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -112,12 +111,12 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
                                     .checkSize(ImageDescriptor.createFromImageData(imageData), ImageUtils.ICON_SIZE.ICON_32)) {
                                 if (elem instanceof IProcess2) {
                                     refreshIcon(imageData);
-                                    return new IconSelectionCommand((IProcess2) elem, ImageDescriptor
-                                            .createFromImageData(imageData), file);
+                                    return new IconSelectionCommand((IProcess2) elem,
+                                            ImageDescriptor.createFromImageData(imageData), file);
                                 }
                             } else {
-                                MessageDialog.openError(composite.getShell(), Messages
-                                        .getString("IconSelectionController.MessageTitle"), //$NON-NLS-1$ 
+                                MessageDialog.openError(composite.getShell(),
+                                        Messages.getString("IconSelectionController.MessageTitle"), //$NON-NLS-1$ 
                                         Messages.getString("IconSelectionController.Messages")); //$NON-NLS-1$ 
                             }
                         }
@@ -159,7 +158,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
         FormData data;
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$        
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         data = new FormData();
         data.left = new FormAttachment(0, 120);
@@ -173,6 +172,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.NONE, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
 
                 return new Label(parent, style);
@@ -214,7 +214,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
             // filePathText.setImage(image);
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), 0); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), 0);
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -268,6 +268,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
 
                 return new Label(parent, style);
@@ -285,14 +286,17 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
     }
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
             executeCommand(cmd);
@@ -330,7 +334,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
             this.process = process;
             this.newImage = newImage;
             if (file != null) {
-                changeCmd = new PropertyChangeCommand((Element) process, EParameterName.ICONSELECTION.getName(), file);
+                changeCmd = new PropertyChangeCommand(process, EParameterName.ICONSELECTION.getName(), file);
             }
         }
 

@@ -43,7 +43,7 @@ import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.i18n.Messages;
@@ -336,7 +336,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
                                     @Override
                                     public void done(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
-                                        ComponentUtilities.updatePalette();
+                                        ComponentPaletteUtilities.updatePalette();
                                         monitor.worked(100);
                                         monitor.done();
                                     };

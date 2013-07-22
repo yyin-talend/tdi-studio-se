@@ -38,7 +38,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.xml.XmlUtil;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
@@ -46,6 +45,7 @@ import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.utils.PathExtractor;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -151,7 +151,7 @@ public class FileController extends AbstractElementPropertySectionController {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         data = new FormData();
         data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -STANDARD_BUTTON_WIDTH);
@@ -199,7 +199,7 @@ public class FileController extends AbstractElementPropertySectionController {
 
         hashCurControls.put(param.getName(), filePathText);
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -263,15 +263,18 @@ public class FileController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
     }
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
             executeCommand(cmd);

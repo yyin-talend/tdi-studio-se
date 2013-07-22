@@ -29,7 +29,7 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.SnippetItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.snippets.SnippetManager;
+import org.talend.core.ui.snippet.SnippetManager;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;

@@ -54,13 +54,13 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.designer.components.preference.labelformat.TalendPaletteLabelProvider;
-import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
+import org.talend.designer.components.preference.provider.TalendPaletteLabelProvider;
+import org.talend.designer.components.preference.provider.TalendPaletteTreeProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -134,7 +134,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     private PaletteRoot getViewerInput() {
-        return ComponentUtilities.createPaletteRootWithAllComponents();
+        return ComponentPaletteUtilities.createPaletteRootWithAllComponents();
         // PaletteRoot paletteRoot = CorePlugin.getDefault().getDesignerCoreService().getAllNodeStructure(components);
         // return paletteRoot;
     }
@@ -329,7 +329,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
             retreiveAllEntry(names, entry);
         }
 
-        Set<String> usedComponents = ComponentUtilities.getComponentsUsedInProject(ProjectManager.getInstance()
+        Set<String> usedComponents = ComponentPaletteUtilities.getComponentsUsedInProject(ProjectManager.getInstance()
                 .getCurrentProject());
 
         boolean isUsed = false;

@@ -42,12 +42,12 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -82,15 +82,17 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
 
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         FormData data;
         btnEdit.setData(NAME, JAVA_COMMAND);
         btnEdit.setData(PARAMETER_NAME, param.getName());
         btnEdit.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // execute Java Command
                 ElementParameter fullParam = (ElementParameter) param;
@@ -117,7 +119,7 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
                     Object object = classLoaded.newInstance();
                     List<String> args = new ArrayList<String>();
                     for (String arg : fullParam.getArgs()) {
-                        args.add(ElementParameterParser.parse((Node) elem, arg));
+                        args.add(ElementParameterParser.parse(elem, arg));
                     }
                     for (Method method : classLoaded.getDeclaredMethods()) {
                         if (method.getName().equals(fullParam.getJavaFunction())) {
@@ -136,7 +138,7 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -191,7 +193,7 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnEdit.dispose();
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
@@ -215,6 +217,7 @@ public class JavaCommandController extends AbstractElementPropertySectionControl
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
     }
 

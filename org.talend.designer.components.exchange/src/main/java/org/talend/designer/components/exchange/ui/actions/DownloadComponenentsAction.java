@@ -46,7 +46,7 @@ import org.talend.core.download.DownloadHelper;
 import org.talend.core.download.DownloadListener;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -75,6 +75,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
 
     private List<ComponentExtension> fDownloadedComponents;
 
+    @Override
     public void run() {
         try {
             Job job = new DownloadJob(ExchangeManager.getInstance().getSelectedExtension());
@@ -87,6 +88,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
 
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             updateUI(event);
                         }
@@ -122,7 +124,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                 @Override
                 public void done(IJobChangeEvent event) {
 
-                    ComponentUtilities.setSkipUpdatePalette(false);
+                    ComponentPaletteUtilities.setSkipUpdatePalette(false);
                 }
             });
             RefreshComponenentsAction action = new RefreshComponenentsAction();
@@ -134,6 +136,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
         FileFilter propertiesFilter = new FileFilter() {
 
             // gcui:search xml file.
+            @Override
             public boolean accept(File file) {
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     return file.getName().endsWith("_java.xml"); //$NON-NLS-1$
@@ -205,7 +208,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                             AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
                             AbstractTalendEditor talendEditor = editor.getTalendEditor();
                             try {
-                                ComponentUtilities.setSkipUpdatePalette(true);
+                                ComponentPaletteUtilities.setSkipUpdatePalette(true);
                                 talendEditor.selectPaletteEntry(componentName);
                             } catch (Exception e) {
                                 ExceptionHandler.process(e);
@@ -303,6 +306,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                                 } else {
                                     Display.getDefault().asyncExec(new Runnable() {
 
+                                        @Override
                                         public void run() {
                                         }
                                     });
@@ -336,9 +340,11 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             return false;
         }
 
+        @Override
         public void downloadComplete() {
         }
 
+        @Override
         public void downloadProgress(DownloadHelper downloader, int bytesRead) {
             if (fMonitor.isCanceled()) {
                 // cancel download
@@ -350,6 +356,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             fMonitor.worked(bytesRead);
         }
 
+        @Override
         public void downloadStart(int totalSize) {
             fProgressLabel = "/" + toKbFormat(totalSize); //$NON-NLS-1$
             fBytesDownloaded = 0;
@@ -361,6 +368,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
         }
     }
 
+    @Override
     public void run(IIntroSite site, Properties params) {
         run();
     }

@@ -25,7 +25,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -47,6 +47,7 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
 
     private boolean toolbarAction = true;
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         toolbarAction = false;
         boolean canWork = false;
@@ -125,21 +126,25 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
         if (dialog.open() == Window.OK) {
             refresh();
             if (wizard.isNeedToRefreshPalette()) {
-                ComponentUtilities.updatePalette();
+                ComponentPaletteUtilities.updatePalette();
             }
         }
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
     }
 
+    @Override
     public void run(IAction action) {
         doRun();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 }

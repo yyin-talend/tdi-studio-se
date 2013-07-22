@@ -49,7 +49,6 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
@@ -68,6 +67,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -529,8 +529,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             .findProcessProviderFromPID(IComponent.JOBLET_PID);
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
-                    boolean isAvoidShowJobletAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
-                            .isAvoidToShowJobletAfterDoubleClick();
+                    boolean isAvoidShowJobletAfterDoubleClick = false;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
+                        IComponentsLocalProviderService componentService = (IComponentsLocalProviderService) GlobalServiceRegister
+                                .getDefault().getService(IComponentsLocalProviderService.class);
+                        if (componentService != null) {
+                            isAvoidShowJobletAfterDoubleClick = componentService.isAvoidToShowJobletAfterDoubleClick();
+                        }
+                    }
                     if (service != null && service.isJobletComponent(node) && !isAvoidShowJobletAfterDoubleClick) {
                         isJoblet = true;
                         String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
@@ -545,8 +551,15 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                     String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
                     String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
-                    boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
-                            .isAvoidToShowJobAfterDoubleClick();
+
+                    boolean isAvoidShowJobAfterDoubleClick = false;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
+                        IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister
+                                .getDefault().getService(IComponentsLocalProviderService.class);
+                        if (service != null) {
+                            isAvoidShowJobAfterDoubleClick = service.isAvoidToShowJobAfterDoubleClick();
+                        }
+                    }
                     // bug 20796
                     boolean isSelectUseDynamic = false;
                     Object useDynamicJobValue = node.getPropertyValue(EParameterName.USE_DYNAMIC_JOB.getName());

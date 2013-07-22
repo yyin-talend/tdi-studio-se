@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 
 /**
  * DOC hwang class global comment. Detailled comment
@@ -39,8 +39,9 @@ public final class ShowFavoriteAction extends Action {
         return showFavorite;
     }
 
+    @Override
     public void run() {
-        ComponentUtilities.updatePalette(true);
+        ComponentPaletteUtilities.updatePalette(true);
         state = false;
         setEnabled(false);
         ShowStandardAction.getInstance().setEnabled(true);

@@ -79,7 +79,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.ConnectionStatus;
-import org.talend.core.ui.ISQLBuilderService;
+import org.talend.core.service.ISQLBuilderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.KeywordsValidator;

@@ -50,13 +50,13 @@
       <page
             category="org.talend.core.prefs"
             class="org.talend.designer.codegen.components.ui.ComponentsPreferencePage"
-            id="org.talend.designer.codegen.components.localprovider.page1"
+            id="org.talend.designer.codegen.components.preference"
             name="%components">
       </page>
       <page
-            category="org.talend.designer.codegen.components.localprovider.page1"
-            class="org.talend.designer.components.preference.labelformat.ComponentsFormatPreferencePage"
-            id="org.talend.designer.codegen.components.localprovider.page2"
+            category="org.talend.designer.codegen.components.preference"
+            class="org.talend.designer.components.preference.ComponentsFormatPreferencePage"
+            id="org.talend.designer.codegen.components.preference.format"
             name="%format">
       </page>
    </extension>

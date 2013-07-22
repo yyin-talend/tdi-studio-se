@@ -31,10 +31,10 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
-import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -106,7 +106,7 @@ public class NodeContainerFigure extends Figure {
         this.add(rectFig, null, 0);
 
         breakpointFigure = new ImageFigure();
-        breakpointFigure.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE)));
+        breakpointFigure.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(BREAKPOINT_IMAGE)));
         breakpointFigure.setVisible(false);
         breakpointFigure.setSize(breakpointFigure.getPreferredSize());
         this.add(breakpointFigure);

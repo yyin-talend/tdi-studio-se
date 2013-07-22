@@ -24,11 +24,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.ISQLBuilderService;
+import org.talend.core.service.ISQLBuilderService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -104,7 +104,7 @@ public class ActiveProcessTracker implements IPartListener {
             if (part instanceof AbstractMultiPageTalendEditor) {
                 AbstractMultiPageTalendEditor multiPageTEditor = (AbstractMultiPageTalendEditor) part;
                 multiPageTEditor.changePaletteComponentHandler();
-                ComponentUtilities.updateFromRepositoryType(ERepositoryObjectType
+                ComponentPaletteUtilities.updateFromRepositoryType(ERepositoryObjectType
                         .getItemType(((AbstractMultiPageTalendEditor) part).getProcess().getProperty().getItem()));
                 changedProcess = false;
             }

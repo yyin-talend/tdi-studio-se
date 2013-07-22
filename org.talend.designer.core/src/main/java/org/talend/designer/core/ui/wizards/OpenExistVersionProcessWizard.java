@@ -60,7 +60,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
-import org.talend.core.ui.IOpenJobScriptActionService;
+import org.talend.core.service.IOpenJobScriptActionService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.codegen.ITalendSynchronizer;

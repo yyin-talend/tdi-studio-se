@@ -35,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ModuleNeeded;
@@ -248,7 +248,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     @Override
     public void synchronizeDesignerUI(PropertyChangeEvent evt) {
-        ComponentUtilities.updatePalette();
+        ComponentPaletteUtilities.updatePalette();
         // List<String> openJobs = new ArrayList<String>();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
             AbstractTalendEditor abstractTalendEditor = ((AbstractTalendEditor) editor);

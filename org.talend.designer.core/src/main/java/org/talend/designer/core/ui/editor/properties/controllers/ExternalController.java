@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -95,7 +95,7 @@ public class ExternalController extends AbstractElementPropertySectionController
 
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         FormData data;
         btnEdit.setData(NAME, EXTERNAL);
         btnEdit.setData(PARAMETER_NAME, param.getName());
@@ -105,7 +105,7 @@ public class ExternalController extends AbstractElementPropertySectionController
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -160,7 +160,7 @@ public class ExternalController extends AbstractElementPropertySectionController
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnEdit.dispose();
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
@@ -171,6 +171,7 @@ public class ExternalController extends AbstractElementPropertySectionController
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -178,11 +179,13 @@ public class ExternalController extends AbstractElementPropertySectionController
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand();
             executeCommand(cmd);

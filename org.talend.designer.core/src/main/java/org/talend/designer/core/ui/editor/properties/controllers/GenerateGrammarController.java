@@ -66,6 +66,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -89,6 +90,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         super(dp);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
@@ -100,10 +102,12 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             // MOD xwang 2011-08-12 make the editor dirty
             executeCommand(new Command() {
@@ -116,6 +120,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
                     }
                     disp.syncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             generateJavaFile();
                         }
@@ -136,7 +141,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnEdit.dispose();
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
@@ -157,7 +162,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         if (elem instanceof Node) {
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
 
         if (lastControl != null) {
@@ -207,7 +212,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     private Control addButton(Composite subComposite, final IElementParameter param, Control lastControl, int numInRow, int top) {
         FormData data;
         Button btnImport = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnImport.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/import.gif")));//$NON-NLS-1$
+        btnImport.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor("icons/import.gif")));//$NON-NLS-1$
         btnImport.addSelectionListener(new ImportRulesFromRepository(this));
         btnImport.setData(NAME, Messages.getString("GenerateGrammarController.import"));//$NON-NLS-1$
         btnImport.setData(PARAMETER_NAME, param.getName());
@@ -231,7 +236,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         btnExport.setSize(lastControl.getSize());
 
         Point btnSize = btnExport.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        btnExport.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/export.gif")));//$NON-NLS-1$
+        btnExport.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor("icons/export.gif")));//$NON-NLS-1$
         btnExport.addSelectionListener(new ExportRulesToRepository(this));
         btnExport.setData(NAME, Messages.getString("GenerateGrammarController.export"));//$NON-NLS-1$
         btnExport.setData(PARAMETER_NAME, param.getName());
@@ -273,8 +278,9 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
                     ex.getMessage());
         }
 
-        if (fileCreated == null)
+        if (fileCreated == null) {
             return;
+        }
 
         try {
             RoutineItem returnItem = persistInRoutine(new Path(JOB_NAME), fileCreated, javaClassName);

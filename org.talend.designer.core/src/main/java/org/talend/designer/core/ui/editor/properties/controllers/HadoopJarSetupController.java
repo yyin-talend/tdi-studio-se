@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.hadoop.version.custom.ECustomVersionType;
 import org.talend.core.hadoop.version.custom.HadoopCustomVersionDefineDialog;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -156,7 +156,7 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
             }
 
         });
-        subButton.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        subButton.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         FormData data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment(lastControl, STANDARD_BUTTON_WIDTH, SWT.RIGHT);

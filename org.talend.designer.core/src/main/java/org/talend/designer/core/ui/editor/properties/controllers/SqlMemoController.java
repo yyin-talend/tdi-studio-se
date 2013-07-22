@@ -69,9 +69,10 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.ISQLBuilderService;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
-import org.talend.core.ui.ISQLBuilderService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -216,7 +217,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton = (Button) dField1.getControl();
 
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        openSQLEditorButton.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        openSQLEditorButton.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         buttonControl.setBackground(subComposite.getBackground());
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
@@ -444,7 +445,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setQueryObject(query);
         connParameters.setQuery(query.getValue());
 
-        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
+        TextUtil.setDialogTitle(TextUtil.SQL_BUILDER_TITLE_REP);
 
         String processName = null;
         if (elem instanceof IProcess) {

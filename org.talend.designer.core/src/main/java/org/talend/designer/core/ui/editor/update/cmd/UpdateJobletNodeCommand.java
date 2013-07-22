@@ -23,11 +23,11 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -105,7 +105,8 @@ public class UpdateJobletNodeCommand extends Command {
                     List<Node> jobletNodes = (List<Node>) result.getUpdateObject();
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         for (Node node : jobletNodes) {
-                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),ComponentCategory.CATEGORY_4_DI.getName());
+                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),
+                                    ComponentCategory.CATEGORY_4_DI.getName());
                             if (newComponent == null) {
                                 continue;
                             }
@@ -176,7 +177,8 @@ public class UpdateJobletNodeCommand extends Command {
         Node currentNode = getOriginalNodeFromProcess(node);
 
         String componentName = currentNode.getComponent().getName();
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName, ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return;
         }
@@ -248,7 +250,7 @@ public class UpdateJobletNodeCommand extends Command {
             }
         }
 
-        if (propertyName.equals(ComponentUtilities.NORMAL)) {
+        if (propertyName.equals(IComponentConstants.NORMAL)) {
             for (Node node : (List<Node>) process.getGraphicalNodes()) {
                 /*
                  * if jobletNodes==null, will reload all component. Or, olny reload the fixed node.
@@ -257,7 +259,8 @@ public class UpdateJobletNodeCommand extends Command {
                     continue;
                 }
 
-                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(), ComponentCategory.CATEGORY_4_DI.getName());
+                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),
+                        ComponentCategory.CATEGORY_4_DI.getName());
                 if (newComponent == null) {
                     continue;
                 }
@@ -282,7 +285,8 @@ public class UpdateJobletNodeCommand extends Command {
         INode sourceNode = (INode) evt.getSource();
 
         String componentName = sourceNode.getComponent().getName();
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName, ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return;
         }

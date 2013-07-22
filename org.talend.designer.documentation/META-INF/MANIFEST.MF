@@ -23,6 +23,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.libraries.dom4j-jaxen,
  org.talend.model,
  org.talend.metadata.managment.ui,
+ org.talend.core.ui,
  org.talend.core,
  org.talend.core.repository,
- org.talend.repository
+ org.talend.repository,
+ org.talend.commons.ui
+Bundle-Vendor: .Talend SA.

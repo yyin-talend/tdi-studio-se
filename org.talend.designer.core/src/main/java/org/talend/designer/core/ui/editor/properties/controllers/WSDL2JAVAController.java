@@ -83,6 +83,7 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
@@ -131,7 +132,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
 
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         FormData data;
         // btnEdit.setData(NAME, EXTERNAL);
         // btnEdit.setData(PARAMETER_NAME, param.getName());
@@ -141,7 +142,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -196,7 +197,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnEdit.dispose();
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
@@ -218,16 +219,19 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
 
             generateJavaFile();
@@ -247,6 +251,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
         final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 Node node = (Node) elem;
 
@@ -386,6 +391,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         };
         IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 try {
@@ -478,8 +484,9 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-        if (routineItem.eResource() != null)
+        if (routineItem.eResource() != null) {
             addWsdlNeedLib(routineItem);
+        }
         return routineItem;
 
     }
@@ -587,6 +594,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             return hasError;
         }
 
+        @Override
         protected void run(String[] args) {
 
             // Parse the arguments

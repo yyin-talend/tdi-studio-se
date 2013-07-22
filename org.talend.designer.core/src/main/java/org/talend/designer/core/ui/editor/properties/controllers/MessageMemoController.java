@@ -46,6 +46,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -79,6 +80,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
         this.paramFieldType = param.getFieldType();
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -88,7 +90,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
         messageEditorButton = (Button) dField1.getControl();
 
         messageEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        messageEditorButton.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        messageEditorButton.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         buttonControl.setBackground(subComposite.getBackground());
         messageEditorButton.setEnabled(true);
         messageEditorButton.setData(NAME, SQLEDITOR);
@@ -107,6 +109,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
 
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
@@ -214,14 +217,16 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
 
-            ShowMessageDialog showMessageDialog = new ShowMessageDialog(Display.getCurrent().getActiveShell(), messageText
-                    .getText());
+            ShowMessageDialog showMessageDialog = new ShowMessageDialog(Display.getCurrent().getActiveShell(),
+                    messageText.getText());
             if (showMessageDialog.open() == Window.OK) {
                 Command cmd = createCommand(showMessageDialog);
                 executeCommand(cmd);
@@ -281,6 +286,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
             }
             colorStyledText.addModifyListener(new ModifyListener() {
 
+                @Override
                 public void modifyText(ModifyEvent e) {
                     message = colorStyledText.getText();
                 }
@@ -311,6 +317,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
@@ -368,6 +375,7 @@ public class MessageMemoController extends AbstractElementPropertySectionControl
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 

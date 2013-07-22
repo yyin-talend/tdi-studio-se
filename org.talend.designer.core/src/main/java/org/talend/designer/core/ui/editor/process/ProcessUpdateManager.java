@@ -28,6 +28,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
@@ -35,7 +36,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -2264,7 +2264,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             UpdateCheckResult result = null;
 
             String propertyName = event.getPropertyName();
-            if (propertyName.equals(ComponentUtilities.NORMAL)) {
+            if (propertyName.equals(IComponentConstants.NORMAL)) {
                 if (jobletProcessProvider != null && !jobletProcessProvider.hasJobletComponent(getProcess())) {
                     break;
 

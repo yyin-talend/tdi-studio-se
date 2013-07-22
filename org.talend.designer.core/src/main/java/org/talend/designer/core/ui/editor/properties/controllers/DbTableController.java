@@ -50,7 +50,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
@@ -72,8 +71,9 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.ConnectionStatus;
+import org.talend.core.service.ISQLBuilderService;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
-import org.talend.core.ui.ISQLBuilderService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject.ObjectType;
@@ -445,7 +445,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             final int nbInRow) {
 
         Button openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        openListTable.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        openListTable.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
         openListTable.setData(PARAMETER_NAME, param.getName());
         return openListTable;
     }

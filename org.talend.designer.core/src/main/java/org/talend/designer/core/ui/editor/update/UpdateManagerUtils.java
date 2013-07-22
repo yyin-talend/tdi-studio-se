@@ -33,7 +33,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -478,7 +478,7 @@ public final class UpdateManagerUtils {
             ComponentSettings.switchToCurComponentSettingsView();
         }
         if (palette) {
-            ComponentUtilities.updatePalette();
+            ComponentPaletteUtilities.updatePalette();
         }
     }
 

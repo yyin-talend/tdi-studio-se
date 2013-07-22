@@ -41,7 +41,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
@@ -54,6 +53,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -155,7 +155,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btn.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(PARAMETER_NAME, param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$

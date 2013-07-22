@@ -42,7 +42,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.designer.core.i18n.Messages;
 
 /**
@@ -69,6 +69,7 @@ public class TalendPaletteViewer extends PaletteViewer {
             final Text text = (Text) data;
             text.getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     ExpandPaletteRunnable runnable = (ExpandPaletteRunnable) executor.getQueue().poll();
                     if (runnable != null) {
@@ -144,10 +145,12 @@ public class TalendPaletteViewer extends PaletteViewer {
         findItem.setToolTipText("Search");
         findItem.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 startFiltering(text);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -157,6 +160,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         clearItem.setImage(clearImage);
         clearItem.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 text.setText(""); //$NON-NLS-1$
                 // Reset to default palette
@@ -191,16 +195,19 @@ public class TalendPaletteViewer extends PaletteViewer {
     private void configListeners(final Text text) {
         text.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
 
             }
 
+            @Override
             public void mouseDown(MouseEvent e) {
                 if (text.getText().equals(SEARCH_COMPONENT)) {
                     text.setText(""); //$NON-NLS-1$
                 }
             }
 
+            @Override
             public void mouseUp(MouseEvent e) {
 
             }
@@ -208,10 +215,12 @@ public class TalendPaletteViewer extends PaletteViewer {
 
         text.addFocusListener(new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 //                text.setText(""); //$NON-NLS-1$
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 if (text.getText() == "") { //$NON-NLS-1$
                     text.setText(SEARCH_COMPONENT);
@@ -221,6 +230,7 @@ public class TalendPaletteViewer extends PaletteViewer {
 
         text.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 startFiltering(text);
             }
@@ -247,6 +257,7 @@ public class TalendPaletteViewer extends PaletteViewer {
          * 
          * @see java.lang.Runnable#run()
          */
+        @Override
         public void run() {
             Display display = Display.getDefault();
             if (display == null) {
@@ -259,8 +270,9 @@ public class TalendPaletteViewer extends PaletteViewer {
                  * 
                  * @see java.lang.Runnable#run()
                  */
+                @Override
                 public void run() {
-                    List children = ComponentUtilities.getPaletteRoot().getChildren();
+                    List children = ComponentPaletteUtilities.getPaletteRoot().getChildren();
                     int counter = 0;
                     for (Object obj : children) {
                         if (stop || counter > 3) {
@@ -319,7 +331,7 @@ public class TalendPaletteViewer extends PaletteViewer {
 
         currentFilterText = text.getText();
         if (!currentFilterText.equals(SEARCH_COMPONENT)) {
-            ComponentUtilities.filterPalette(currentFilterText.trim());
+            ComponentPaletteUtilities.filterPalette(currentFilterText.trim());
         }
 
         filters.removeAll(disposed);

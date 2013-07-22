@@ -23,11 +23,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.designer.codegen.components.model.ComponentFileChecker;
 import org.talend.designer.codegen.components.ui.ComponenttRunJobPreferencePage;
 import org.talend.designer.codegen.components.ui.IComponentPreferenceConstant;
 import org.talend.designer.codegen.i18n.Messages;
-import org.talend.designer.components.IComponentsLocalProviderService;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

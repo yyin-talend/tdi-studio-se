@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -32,6 +31,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -116,7 +116,7 @@ public class NodeContainer extends Element {
         }
 
         if (!CommonsPlugin.isHeadless()) {
-            Image image = ImageProvider.getImage(CorePlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
+            Image image = ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
             breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.ERROR_SMALL);
             errorSize = new Dimension(image.getImageData().width, image.getImageData().height);

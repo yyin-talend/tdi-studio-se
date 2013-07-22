@@ -54,6 +54,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.dialog.BrmsDialog;
@@ -175,7 +176,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                                 }
                             }
                         }
-                        if (value.equals((String) elem.getPropertyValue(name))) { // same
+                        if (value.equals(elem.getPropertyValue(name))) { // same
                             // value so
                             // no
                             // need to do
@@ -194,6 +195,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
     IControlCreator cbCtrl = new IControlCreator() {
 
+        @Override
         public Control createControl(final Composite parent, final int style) {
             CCombo cb = new CCombo(parent, style);
             return cb;
@@ -271,7 +273,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         data = new FormData();
         data.left = new FormAttachment(cLayout, 0, SWT.RIGHT);
@@ -357,6 +359,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
      */
     private final static class IgnoreCaseComparator implements Comparator<String> {
 
+        @Override
         public int compare(String o1, String o2) {
             return o1.compareToIgnoreCase(o2);
         }
@@ -367,6 +370,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
     }
 

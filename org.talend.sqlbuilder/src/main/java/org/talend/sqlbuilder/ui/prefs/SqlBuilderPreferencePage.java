@@ -23,6 +23,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.sqlbuilder.Messages;
 
 /**
@@ -33,7 +34,7 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
 
     public SqlBuilderPreferencePage() {
         super(GRID);
-        setPreferenceStore(CorePlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(CoreUIPlugin.getDefault().getPreferenceStore());
     }
 
     private BooleanFieldEditor booleanFieldEditor;
@@ -50,6 +51,7 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
 
     private static final String SYSTEM_MODE = "false"; //$NON-NLS-1$
 
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -60,14 +62,14 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
      */
     @Override
     protected void createFieldEditors() {
-        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_QUOTE, Messages
-                .getString("SqlBuilderPreferencePage.AddQuotes"), getFieldEditorParent()); //$NON-NLS-1$
-        choiceAS4Sql = new RadioGroupFieldEditor(ITalendCorePrefConstants.AS400_SQL_SEG, Messages
-                .getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] { //$NON-NLS-1$
+        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_QUOTE,
+                Messages.getString("SqlBuilderPreferencePage.AddQuotes"), getFieldEditorParent()); //$NON-NLS-1$
+        choiceAS4Sql = new RadioGroupFieldEditor(ITalendCorePrefConstants.AS400_SQL_SEG,
+                Messages.getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] { //$NON-NLS-1$
                 { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE }, //$NON-NLS-1$
                         { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent()); //$NON-NLS-1$
-        sqlwarn = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_WARNING, Messages
-                .getString("SqlBuilderPreferencePage.sql"), //$NON-NLS-1$
+        sqlwarn = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_WARNING,
+                Messages.getString("SqlBuilderPreferencePage.sql"), //$NON-NLS-1$
                 getFieldEditorParent());
 
         // dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,
@@ -108,8 +110,8 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     private void refreshProblems() {
-        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
-                RepositoryUpdateManager.getEditors());
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService()
+                .getOpenedProcess(RepositoryUpdateManager.getEditors());
         for (IProcess2 process : openedProcessList) {
             process.checkProcess();
         }

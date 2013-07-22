@@ -33,7 +33,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess2;
@@ -64,29 +64,29 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     //
     // }
 
-    protected boolean isComponentsTypePalette(ComponentCategory componentCategory){
-        if(componentCategory == null){
+    protected boolean isComponentsTypePalette(ComponentCategory componentCategory) {
+        if (componentCategory == null) {
             return false;
         }
         EditDomain editDomain = getPaletteViewer().getEditDomain();
-        if(editDomain == null || !(editDomain instanceof DefaultEditDomain)){
+        if (editDomain == null || !(editDomain instanceof DefaultEditDomain)) {
             return false;
         }
-        IEditorPart editorPart = ((DefaultEditDomain)editDomain).getEditorPart();
-        if(editorPart == null || !(editorPart instanceof AbstractTalendEditor)){
+        IEditorPart editorPart = ((DefaultEditDomain) editDomain).getEditorPart();
+        if (editorPart == null || !(editorPart instanceof AbstractTalendEditor)) {
             return false;
         }
-        IProcess2 process = ((AbstractTalendEditor)editorPart).getProcess();
-        if(process == null){
+        IProcess2 process = ((AbstractTalendEditor) editorPart).getProcess();
+        if (process == null) {
             return false;
         }
         return componentCategory.getName().equals(process.getComponentsType());
     }
-    
+
     @Override
     public void buildContextMenu(IMenuManager menu) {
         super.buildContextMenu(menu);
-        if(!isComponentsTypePalette(ComponentCategory.CATEGORY_4_CAMEL)){
+        if (!isComponentsTypePalette(ComponentCategory.CATEGORY_4_CAMEL)) {
             menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer()));
         }
         PaletteEntry element = (PaletteEntry) ((EditPart) getPaletteViewer().getSelectedEditParts().get(0)).getModel();
@@ -209,7 +209,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 removeNotes((CombinedTemplateCreationEntry) element, project);
 
             }
-            ComponentUtilities.updatePalette(true);
+            ComponentPaletteUtilities.updatePalette(true);
         }
 
     }
@@ -235,9 +235,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
 
         @Override
         public void run() {
-            ComponentUtilities.histate = 1;
+            ComponentPaletteUtilities.histate = 1;
             DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 1); //$NON-NLS-1$
-            ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
+            ComponentPaletteUtilities.updatePalette(!ShowFavoriteAction.state);
 
         }
     }
@@ -263,9 +263,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
 
         @Override
         public void run() {
-            ComponentUtilities.histate = 0;
+            ComponentPaletteUtilities.histate = 0;
             DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 0); //$NON-NLS-1$
-            ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
+            ComponentPaletteUtilities.updatePalette(!ShowFavoriteAction.state);
 
         }
     }
@@ -273,7 +273,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     public void addNotes(CombinedTemplateCreationEntry element, Project project) {
         String label = element.getLabel();
         String[] fam = null;
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent());
         if ("".equals(family) || family == null) {//$NON-NLS-1$
             PaletteComponentFactory paCom = (PaletteComponentFactory) element
                     .getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
@@ -297,9 +297,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                     famName = fam[i];
 
                     familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-                    for (int j = 0; j < familyName.length; j++) {
+                    for (String element2 : familyName) {
 
-                        if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                        if (component.getName().equals(label) && (element2).equals(famName)) {
                             String key = component.getName() + "#" + famName; //$NON-NLS-1$
                             DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
                         }
@@ -315,8 +315,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
 
                 famName = family;
                 familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-                for (int i = 0; i < familyName.length; i++) {
-                    if (component.getName().equals(label) && (familyName[i]).equals(famName)) {
+                for (String element2 : familyName) {
+                    if (component.getName().equals(label) && (element2).equals(famName)) {
                         String key = component.getName() + "#" + famName; //$NON-NLS-1$
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
                     }
@@ -343,7 +343,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     public void removeNotes(CombinedTemplateCreationEntry element, Project project) {
         String label = element.getLabel();
         String[] fam = null;
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent());
 
         if ("".equals(family) || family == null) {//$NON-NLS-1$
             PaletteComponentFactory paCom = (PaletteComponentFactory) element
@@ -367,8 +367,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                     String[] familyName = null;
                     famName = fam[i];
                     familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-                    for (int j = 0; j < familyName.length; j++) {
-                        if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                    for (String element2 : familyName) {
+                        if (component.getName().equals(label) && (element2).equals(famName)) {
                             String key = component.getName() + "#" + famName; //$NON-NLS-1$
                             DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
                         }
@@ -383,8 +383,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
 
                 famName = family;
                 familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-                for (int j = 0; j < familyName.length; j++) {
-                    if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                for (String element2 : familyName) {
+                    if (component.getName().equals(label) && (element2).equals(famName)) {
                         String key = component.getName() + "#" + famName; //$NON-NLS-1$
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
                     }

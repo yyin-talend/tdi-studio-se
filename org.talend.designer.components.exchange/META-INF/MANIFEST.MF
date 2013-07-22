@@ -4,8 +4,8 @@ Bundle-Name: Exchange plugin
 Bundle-SymbolicName: org.talend.designer.components.exchange;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.talend.designer.components.exchange.ExchangePlugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
  org.apache.log4j,
  org.apache.commons.collections,
  org.apache.commons.logging,
@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.httpclient,
+ org.talend.commons.ui,
  org.talend.core,
+ org.talend.core.ui,
  org.talend.utils,
  org.talend.librariesmanager,
  org.talend.libraries.javacsv;resolution:=optional,

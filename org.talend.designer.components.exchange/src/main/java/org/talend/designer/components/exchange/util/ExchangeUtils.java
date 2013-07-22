@@ -51,7 +51,7 @@ import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.designer.components.exchange.ExchangePlugin;
@@ -202,7 +202,7 @@ public class ExchangeUtils {
      * @return
      */
     public static File getComponentFolder(String componentfolder) {
-        URL url = FileLocator.find(ExchangePlugin.getDefault().getBundle(), new Path(componentfolder), null); //$NON-NLS-1$
+        URL url = FileLocator.find(ExchangePlugin.getDefault().getBundle(), new Path(componentfolder), null);
         try {
             URL fileUrl = FileLocator.toFileURL(url);
             return new File(fileUrl.getPath());
@@ -233,7 +233,7 @@ public class ExchangeUtils {
         // update the palette view, the position of the new component is
         // determined by the FAMILY value in the
         // component's property file
-        ComponentUtilities.updatePalette();
+        ComponentPaletteUtilities.updatePalette();
     }
 
     public static void deleteComponent(ComponentExtension component) {
@@ -358,6 +358,7 @@ public class ExchangeUtils {
             List<String> versions = new ArrayList<String>(versionMap.keySet());
             Collections.sort(versions, new Comparator<String>() {
 
+                @Override
                 public int compare(String o1, String o2) {
                     Version ver1 = new Version(o1);
                     Version ver2 = new Version(o2);

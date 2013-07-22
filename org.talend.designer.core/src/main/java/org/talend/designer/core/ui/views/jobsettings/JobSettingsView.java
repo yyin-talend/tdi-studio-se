@@ -50,6 +50,7 @@ import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.service.ISVNUiProviderService;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -210,9 +211,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
-        ISVNProviderService service = null;
+        ISVNUiProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            service = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
         }
 
         if (EComponentCategory.EXTRA.equals(category)) {
@@ -664,9 +665,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      */
     @Override
     public ISelection getSelection() {
-        ISVNProviderService service = null;
+        ISVNUiProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            service = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
         }
 
         IDynamicProperty dc = currentSelectedTab.getPropertyComposite();

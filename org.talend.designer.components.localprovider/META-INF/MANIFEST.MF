@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.talend.designer.components.localprovider;singleton:=tru
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.components.ComponentsLocalProviderPlugin
 Require-Bundle: org.apache.commons.collections,
+ org.talend.common.ui.runtime,
  org.talend.core,
  org.talend.librariesmanager,
  org.talend.model,

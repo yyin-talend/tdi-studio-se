@@ -35,8 +35,8 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.model.components.EParameterName;
 
@@ -95,8 +95,9 @@ public class ConnectionTraceFigure extends Figure {
     Figure variableFigure = null;
 
     private void setVariableFigureBorder() {
-        if (variableFigure != null && variableFigure.getBorder() == null)
+        if (variableFigure != null && variableFigure.getBorder() == null) {
             variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
+        }
     }
 
     public void setTraceData(String data, boolean flag, boolean traceFlag) {
@@ -116,14 +117,16 @@ public class ConnectionTraceFigure extends Figure {
                 collapseButton.setCollapsed(connection.getConnectionTrace().isCollapse());
                 collapseButton.addActionListener(new ActionListener() {
 
+                    @Override
                     public void actionPerformed(ActionEvent event) {
                         connection.getConnectionTrace().setCollapse(!connection.getConnectionTrace().isCollapse());
                         collapseButton.setCollapsed(connection.getConnectionTrace().isCollapse());
                         refreshCollapseStatus();
                     }
                 });
-                if (flag == true)
+                if (flag == true) {
                     outlineFigure.add(collapseButton);
+                }
             }
             int sepIndex = data.indexOf(FIELD_SEP); // index separator for row name
 
@@ -134,7 +137,7 @@ public class ConnectionTraceFigure extends Figure {
 
             titleFigure.setText(""); //$NON-NLS-1$
             titleFigure.setText("<font color='#0000FF'> <b> " + connection.getConnectionLabel().getLabelText() //$NON-NLS-1$
-                    + "</b></font>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    + "</b></font>"); //$NON-NLS-1$ 
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
                 titleFigure.setOpaque(false);
@@ -152,13 +155,15 @@ public class ConnectionTraceFigure extends Figure {
 
             titleFigureSe.getPreferredSize().expand(20, 2);
             title2With = titleFigureSe.getPreferredSize().width;
-            if (flag == true)
+            if (flag == true) {
                 outlineFigure.add(titleFigure);
+            }
 
             ImageFigure figure = new ImageFigure(getTraceConnectionImage(flag));
             outlineFigure.add(figure);
-            if (flag == true)
+            if (flag == true) {
                 outlineFigure.add(titleFigureSe);
+            }
 
             outlineFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             outlineFigure.setOpaque(true);
@@ -186,8 +191,8 @@ public class ConnectionTraceFigure extends Figure {
                         if (o1 instanceof HashMap) {
                             String columnValue = o.toString();
                             if (columnValue.indexOf("=") > 0) {
-                                if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
-                                        columnValue.substring(0, columnValue.indexOf("=")).trim())
+                                if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString()
+                                        .equals(columnValue.substring(0, columnValue.indexOf("=")).trim())
                                         && Boolean.TRUE.toString().equals(
                                                 ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
                                     lineInfo += columnValue;
@@ -203,12 +208,12 @@ public class ConnectionTraceFigure extends Figure {
                 Object value = connection.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
                 int columnNum = 0;
                 for (Object o : columnValueList) {
-                    if (connection.traceColumn != null && connection.traceColumn.contains(columnNum))
+                    if (connection.traceColumn != null && connection.traceColumn.contains(columnNum)) {
                         lineInfo += o.toString();
-                    else {
+                    } else {
                         for (Object o1 : (ArrayList) value) {
-                            if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
-                                    o.toString().substring(0, o.toString().indexOf("=")).trim())
+                            if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString()
+                                    .equals(o.toString().substring(0, o.toString().indexOf("=")).trim())
                                     && Boolean.TRUE.toString().equals(
                                             ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
                                 lineInfo += o.toString();
@@ -315,8 +320,9 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure.setLayoutManager(variableLayout);
                     variableFigure.add(var);
                     variableFigure.add(value);
-                    if (flag == true)
+                    if (flag == true) {
                         add(variableFigure);
+                    }
                 } else {
                     String formatedValue = "<font color='#FF8040'> <b> " + str + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
@@ -331,8 +337,9 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure = new Figure();
                     variableFigure.setLayoutManager(variableLayout);
                     variableFigure.add(value);
-                    if (flag == true)
+                    if (flag == true) {
                         add(variableFigure);
+                    }
                 }
                 if (tooltip != null) {
                     variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT));
@@ -353,8 +360,9 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
                 }
             }
-            if (maximized)
+            if (maximized) {
                 this.setVariableFigureBorder();
+            }
             if (noVarNameDefined) {
                 size.width = valueWidth;
             } else {
@@ -416,7 +424,7 @@ public class ConnectionTraceFigure extends Figure {
         if (connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()) != null) {
             if ((Boolean) connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).getValue()
                     && (Boolean) connection.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName()).getValue()) {
-                image = ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE));
+                image = ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(BREAKPOINT_IMAGE));
             } else {
 
             }

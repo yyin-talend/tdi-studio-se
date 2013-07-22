@@ -39,7 +39,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -58,6 +57,7 @@ import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -111,8 +111,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         FormData data;
         String[] originalList = propertyTypeParameter.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
-        for (int i = 0; i < originalList.length; i++) {
-            stringToDisplay.add(originalList[i]);
+        for (String element : originalList) {
+            stringToDisplay.add(element);
         }
         combo.setItems(stringToDisplay.toArray(new String[0]));
         combo.setEditable(false);
@@ -224,7 +224,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btn.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, REPOSITORY_CHOICE);
@@ -246,10 +246,12 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // do nothing.
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
             if (cmd instanceof ChangeMetadataCommand) {
@@ -586,6 +588,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 

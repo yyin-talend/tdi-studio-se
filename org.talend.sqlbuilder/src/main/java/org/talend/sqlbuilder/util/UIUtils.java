@@ -26,7 +26,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -57,6 +57,7 @@ public class UIUtils {
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 MessageDialog.openError(shell, msg, e.getMessage());
             }
@@ -66,10 +67,10 @@ public class UIUtils {
     /**
      * This implementation of IRunnableContext#run(boolean, boolean, IRunnableWithProgress) runs the given
      * <code>IRunnableWithProgress</code> using the progress monitor for this progress dialog and blocks until the
-     * runnable has been run, regardless of the value of <code>fork</code>. The dialog is opened before the runnable
-     * is run, and closed after it completes. It is recommended that <code>fork</code> is set to true in most cases.
-     * If <code>fork</code> is set to <code>false</code>, the runnable will run in the UI thread and it is the
-     * runnable's responsibility to call <code>Display.readAndDispatch()</code> to ensure UI responsiveness.
+     * runnable has been run, regardless of the value of <code>fork</code>. The dialog is opened before the runnable is
+     * run, and closed after it completes. It is recommended that <code>fork</code> is set to true in most cases. If
+     * <code>fork</code> is set to <code>false</code>, the runnable will run in the UI thread and it is the runnable's
+     * responsibility to call <code>Display.readAndDispatch()</code> to ensure UI responsiveness.
      * 
      * 
      * <pre>
@@ -102,11 +103,13 @@ public class UIUtils {
             final Shell shell) {
         final IRunnableWithProgress progress = new IRunnableWithProgress() {
 
+            @Override
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitor.beginTask("test task", scale * total);
                 // SubProgressMonitor sm = new SubProgressMonitor(monitor, 1 * scale);
                 Thread t = new Thread() {
 
+                    @Override
                     public void run() {
                         try {
                             operation.run(monitor);
@@ -126,6 +129,7 @@ public class UIUtils {
 
         Runnable run = new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     ModalContext.run(progress, fork, monitor, shell.getDisplay());
@@ -168,8 +172,8 @@ public class UIUtils {
             for (SQLBuilderDialog dialog : list) {
                 if (dialog != null && dialog.getShell() != null && !dialog.getShell().isDisposed()) {
                     if (dialog.getShell().getText().contains(uniqueName)) {
-                        String title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
-                        title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + newLabel + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                        String title = TextUtil.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
+                        title += TextUtil.SQL_BUILDER_TITLE_COMP_NAME + newLabel + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                         dialog.getShell().setText(title);
                     }
                 }

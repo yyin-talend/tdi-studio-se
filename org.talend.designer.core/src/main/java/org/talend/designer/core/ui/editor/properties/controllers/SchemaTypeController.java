@@ -62,6 +62,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -191,7 +192,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btn.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, SCHEMA);
@@ -1274,8 +1275,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String tableName) {
         org.talend.core.model.metadata.builder.connection.MetadataTable table = MetadataToolHelper
                 .getMetadataTableFromSAPFunction(connectionId, functionId, tableName);
-        if (table != null)
+        if (table != null) {
             return ConvertionHelper.convert(table);
+        }
         return null;
     }
 

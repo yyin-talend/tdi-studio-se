@@ -14,8 +14,8 @@ package org.talend.repository.model;
 
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.utils.ResourceModelHelper;
 
 /**
  * Provides utilities methods relative to model on IResource. <br/>
@@ -33,6 +33,6 @@ public class ResourceModelUtils {
      * @throws PersistenceException if the IProject cannot be retrieve
      */
     public static IProject getProject(Project project) throws PersistenceException {
-        return ResourceUtils.getProject(project.getTechnicalLabel());
+        return ResourceModelHelper.getProject(project);
     }
 }

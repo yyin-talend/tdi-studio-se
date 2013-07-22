@@ -89,7 +89,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.components.IComponentsLocalProviderService;
+import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -724,7 +724,8 @@ public class EmfComponent extends AbstractComponent {
         return patterns.toArray(new String[0]);
     }
 
-    private final IPreferenceStore store = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
+    // private final IPreferenceStore store =
+    // CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
 
     /**
      * yzhang Comment method "getNodeFormatId".
@@ -734,10 +735,16 @@ public class EmfComponent extends AbstractComponent {
      * @return
      */
     private String getNodeFormatIdWithoutFormatType(String nodeLabel, String nodeFamily) {
-
-        String ids = store.getString(IComponentsLocalProviderService.FORMAT_IDS);
+        String ids = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
+            IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
+                    .getService(IComponentsLocalProviderService.class);
+            if (service != null) {
+                ids = service.getPreferenceStore().getString(IComponentsLocalProviderService.FORMAT_IDS);
+            }
+        }
         String[] idArray = null;
-        if (ids != "") { //$NON-NLS-1$
+        if (!StringUtils.isBlank(ids)) {
             idArray = ids.split(IComponentsLocalProviderService.IDS_SEPARATOR);
 
             String label = nodeLabel + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE;
@@ -780,7 +787,14 @@ public class EmfComponent extends AbstractComponent {
             }
         }
         ElementParameter param;
-
+        IPreferenceStore localComponentProviderStore = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
+            IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
+                    .getService(IComponentsLocalProviderService.class);
+            if (service != null) {
+                localComponentProviderStore = service.getPreferenceStore();
+            }
+        }
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
 
         // qli modified to fix the bug 7074.
@@ -798,9 +812,12 @@ public class EmfComponent extends AbstractComponent {
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getLABEL());
         } else if (formatId != null) {
-            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
-            if (!"".equals(label)) { //$NON-NLS-1$
-                param.setValue(label);
+            if (localComponentProviderStore != null) {
+                String label = localComponentProviderStore.getString(formatId
+                        + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
+                if (!"".equals(label)) { //$NON-NLS-1$
+                    param.setValue(label);
+                }
             }
         } else {
             // in case label/format is not set in the preferences.
@@ -824,9 +841,12 @@ public class EmfComponent extends AbstractComponent {
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getHINT());
         } else if (formatId != null) {
-            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
-            if (!"".equals(label)) { //$NON-NLS-1$
-                param.setValue(label);
+            if (localComponentProviderStore != null) {
+                String label = localComponentProviderStore.getString(formatId
+                        + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
+                if (!"".equals(label)) { //$NON-NLS-1$
+                    param.setValue(label);
+                }
             }
         } else {
             // in case hint/format is not set in the preferences.
@@ -850,9 +870,12 @@ public class EmfComponent extends AbstractComponent {
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getCONNECTION());
         } else if (formatId != null) {
-            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
-            if (!"".equals(label)) { //$NON-NLS-1$
-                param.setValue(label);
+            if (localComponentProviderStore != null) {
+                String label = localComponentProviderStore.getString(formatId
+                        + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
+                if (!"".equals(label)) { //$NON-NLS-1$
+                    param.setValue(label);
+                }
             }
         }
         listParam.add(param);

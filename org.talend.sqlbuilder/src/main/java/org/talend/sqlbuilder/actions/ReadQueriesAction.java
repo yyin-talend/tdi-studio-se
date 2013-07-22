@@ -27,7 +27,6 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
@@ -86,7 +85,7 @@ public class ReadQueriesAction extends AContextualAction {
             display = Display.getDefault();
         }
         Shell parentShell = new Shell(display);
-        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
+        TextUtil.setDialogTitle(TextUtil.SQL_BUILDER_TITLE_REP);
         Connection connection = dbConnectionItem.getConnection();
         String selectedContext = null;
         if (connection.isContextMode()) {

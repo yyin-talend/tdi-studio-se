@@ -136,7 +136,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -394,7 +394,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      */
     @Override
     protected PaletteRoot getPaletteRoot() {
-        return ComponentUtilities.getPaletteRoot();
+        return ComponentPaletteUtilities.getPaletteRoot();
     }
 
     @Override
@@ -1799,12 +1799,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             final INodeConnector mainConnector;
             if (node.isELTComponent()) {
                 mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
-            }else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
-            	mainConnector = node.getConnectorFromType(EConnectionType.ROUTE);
+            } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
+                mainConnector = node.getConnectorFromType(EConnectionType.ROUTE);
             } else {
                 mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
-            
+
             if (mainConnector == null) {
                 return;
             }
