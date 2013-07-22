@@ -12,25 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Point;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -38,7 +28,6 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -52,6 +41,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.localprovider.model.LocalRepositoryFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
+
+import static org.junit.Assert.*;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -128,8 +119,10 @@ public class ConnectionManagerTest {
             }
         }
 
-        componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited", ComponentCategory.CATEGORY_4_DI.getName());
-        componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited", ComponentCategory.CATEGORY_4_DI.getName());
+        componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited",
+                ComponentCategory.CATEGORY_4_DI.getName());
 
         sourceProcess = new Process(createProperty());
         targetProcess = new Process(createProperty());
@@ -152,10 +145,12 @@ public class ConnectionManagerTest {
 
     @After
     public void tearDown() throws Exception {
-        if (connection != null)
+        if (connection != null) {
             connection.disconnect();
-        if (newConnection != null)
+        }
+        if (newConnection != null) {
             newConnection.disconnect();
+        }
     }
 
     /**
@@ -231,22 +226,4 @@ public class ConnectionManagerTest {
         }
     }
 
-    private static File getComponentsLocation(String folder) {
-        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-
-        File file = null;
-        try {
-            URL url = FileLocator.find(b, new Path(folder), null);
-            if (url == null) {
-                return null;
-            }
-            URL fileUrl = FileLocator.toFileURL(url);
-            file = new File(fileUrl.getPath());
-        } catch (Exception e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
-
-        return file;
-    }
 }
