@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +112,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
     private boolean needMappingInSystemRoutine = false;
+
+    private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
 
     /**
      * DOC informix Comment method "posExportResource".
@@ -846,21 +849,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param process
      */
     protected void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) {
-        String projectName = getCorrespondingProjectName(process);
+        final URI classRootURI = classesLocation.toURI();
         List<String> jobFolderNames = getRelatedJobFolderNames(process);
         try {
             for (String jobFolderName : jobFolderNames) {
-                String classRoot = getClassRootLocation() + projectName + File.separator + jobFolderName;
-                String targetPath = getTmpFolder() + File.separator + projectName + File.separator + jobFolderName;
+                String[] jf = jobFolderName.split(":"); //$NON-NLS-1$
+                String projectName = jf[0];
+                String folderName = jf[1];
+                String classRootLocation = getClassRootLocation() + projectName + File.separator;
+                String classRoot = classRootLocation + folderName;
+                String targetPath = classesLocation + File.separator + projectName + File.separator + folderName;
                 File sourceFile = new File(classRoot);
                 File targetFile = new File(targetPath);
                 FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
+
                 List<URL> fileURLs = FilesUtils.getFileURLs(targetFile);
                 for (URL url : fileURLs) {
-                    String path = url.getPath();
-                    String relPath = path.replace(getTmpFolder().replace("\\", "/"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    relPath = relPath.substring(0, relPath.lastIndexOf("/")); //$NON-NLS-1$
-                    resource.addResource(relPath, url);
+                    resource.addResource(classRootURI.relativize(new File(url.toURI()).getParentFile().toURI()).toString(), url);
                 }
             }
         } catch (Exception e) {
@@ -869,20 +874,24 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected List<String> getRelatedJobFolderNames(ProcessItem process) {
-        return this.getRelatedJobFolderNames(process, true);
+        return this.getRelatedJobFolderNames(process, new HashSet<String>());
     }
 
-    protected List<String> getRelatedJobFolderNames(ProcessItem process, boolean includeSelf) {
+    protected List<String> getRelatedJobFolderNames(ProcessItem process, Set<String> jobNameVersionChecked) {
         List<String> jobFolderNames = new ArrayList<String>();
-        if (includeSelf) {
-            String jobName = process.getProperty().getLabel();
-            String jobVersion = process.getProperty().getVersion();
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-            jobFolderNames.add(jobFolderName);
+        String projectName = getCorrespondingProjectName(process);
+        String jobName = process.getProperty().getLabel();
+        String jobVersion = process.getProperty().getVersion();
+        String id = projectName + ":" + jobName + "_" + jobVersion; //$NON-NLS-1$ //$NON-NLS-2$
+        if (jobNameVersionChecked.contains(id)) {
+            return jobFolderNames; // no need to add more to the list, just return the empty list
         }
+        jobNameVersionChecked.add(id);
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+        jobFolderNames.add(projectName + ":" + jobFolderName); //$NON-NLS-1$
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
-            jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), true));
+            jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), jobNameVersionChecked));
         }
         return jobFolderNames;
     }
