@@ -264,7 +264,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -272,9 +272,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             * 
+             *
              * If empty, nothing will be added.
-             * 
+             *
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -299,9 +299,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     * 
+     *
      * If empty, nothing will be added. @see isExcludedLib
-     * 
+     *
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -344,7 +344,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     * 
+     *
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -369,7 +369,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     * 
+     *
      * @param resource
      * @param process
      * @throws IOException
@@ -489,9 +489,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
 
-        // use HTTP Basic Authentication
-        endpointInfo.put("useHttpBasicAuth", //$NON-NLS-1$
-                EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)); //$NON-NLS-1$
+        // use Authentication & authentication type
+        endpointInfo.put("useAuthentication", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)); //$NON-NLS-1$
+        endpointInfo.put("authenticationType", //$NON-NLS-1$
+                EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent)); //$NON-NLS-1$
 
         // use Service Activity Monitoring
         endpointInfo.put("useSAM", //$NON-NLS-1$
@@ -543,9 +545,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * Ensure that the value is not surrounded by quotes.
-     * 
+     *
      * @param value
      * @return
      */
@@ -736,8 +738,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
                 if (null != restRequestComponent) {
-                    if (EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) { //$NON-NLS-1$
-                        importPackages.add("org.apache.cxf.jaxrs.security"); //$NON-NLS-1$
+                    if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) { //$NON-NLS-1$
+                        String authType = EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent); //$NON-NLS-1$
+                        if ("BASIC".equals(authType)) { //$NON-NLS-1$
+                            importPackages.add("org.apache.cxf.jaxrs.security"); //$NON-NLS-1$
+                        }
+                        if ("SAML".equals(authType)) { //$NON-NLS-1$
+                            importPackages.add("org.apache.cxf.interceptor.security"); //$NON-NLS-1$
+                            importPackages.add("org.apache.cxf.rs.security.saml"); //$NON-NLS-1$
+                        }
                     }
                     if (EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) { //$NON-NLS-1$
                         importPackages.add("org.talend.esb.servicelocator.cxf"); //$NON-NLS-1$
@@ -1005,7 +1014,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     * 
+     *
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {

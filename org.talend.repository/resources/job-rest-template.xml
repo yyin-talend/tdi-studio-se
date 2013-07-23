@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-	xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
 #if ($endpoint.useSAM)
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
 		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
 #end
 
-	<jaxrs:server id="service"
+	<jaxrs:server xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+			id="service"
 #if ($endpoint.useSL)
 			xmlns:tns="${endpoint.serviceNamespace}"
 			serviceName="tns:${endpoint.serviceName}"
@@ -28,10 +27,13 @@
 				<property name="dropRootElement" value="${endpoint.unwrapJsonResponse}" />
 			</bean>
 			<bean class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider" />
-#if ($endpoint.useHttpBasicAuth)
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "BASIC")
 			<bean class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
 				<property name="contextName" value="karaf" />
 			</bean>
+#end
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+			<bean class="org.apache.cxf.rs.security.saml.SamlHeaderInHandler" />
 #end
 		</jaxrs:providers>
 		<jaxrs:features>
@@ -58,6 +60,15 @@
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 #end
 		</jaxrs:features>
+		<jaxrs:properties>
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+#[[
+			<entry key="ws-security.signature.username" value="$service{ws-security.signature.username}" />
+			<entry key="ws-security.signature.properties" value="$service{ws-security.signature.properties}" />
+			<entry key="ws-security.callback-handler" value-ref="callback" />
+]]#
+#end
+		</jaxrs:properties>
 	</jaxrs:server>
 
 	<bean id="serviceBean" class="${endpoint.jobClassName}.RestServiceProviderImpl4TalendJob">
@@ -93,5 +104,18 @@
 	<bean class="org.apache.cxf.management.counters.CounterRepository">
 		<property name="bus" ref="cxf" />
 	</bean>
+
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service"
+		placeholder-prefix="$service{" update-strategy="reload"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+	<bean id="callback" class="org.apache.cxf.interceptor.security.NamePasswordCallbackHandler">
+		<argument type="java.lang.String" value="$service{ws-security.signature.username}" />
+		<argument type="java.lang.String" value="$service{ws-security.signature.password}" />
+		<argument type="java.lang.String" value="setPassword" />
+	</bean>
+]]#
+#end
 
 </blueprint>
