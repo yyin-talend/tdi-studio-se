@@ -36,7 +36,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
@@ -55,6 +57,7 @@ import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -66,6 +69,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.config.CodeGeneratorProgressMonitor;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.JetBean;
@@ -136,12 +140,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetFilesCompileFail.clear();
 
                 IProgressMonitor monitorWrap = null;
-                boolean headless = CommonUIPlugin.isFullyHeadless();
-                if (!headless) {
-                    monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
-                } else {
-                    monitorWrap = new NullProgressMonitor();
-                }
+                monitorWrap = new NullProgressMonitor();
                 ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
 
                 initializeJetEmittersProject(monitorWrap);
@@ -301,10 +300,10 @@ public final class CodeGeneratorEmittersPoolFactory {
     };
 
     public static Job initialize() {
-        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) { //$NON-NLS-1$
+        Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) { //$NON-NLS-1$
 
             @Override
-            protected IStatus doRun(IProgressMonitor monitor) {
+            protected IStatus run(IProgressMonitor monitor) {
                 synchronized (delegateMonitor) {
                     if (jobRunnable == null) {
                         jobRunnable = new JobRunnable(Messages.getString("CodeGeneratorEmittersPoolFactory.codeThread")); //$NON-NLS-1$
@@ -332,7 +331,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
 
         };
-        job.setUser(true);
+        job.setUser(false);
         job.setPriority(Job.INTERACTIVE);
         job.schedule();
         job.wakeUp(); // start as soon as possible
@@ -665,7 +664,12 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     public static JETEmitter getJETEmitter(JetBean jetBean) {
         if (emitterPool == null || (!isInitialized() && !isInitializeStart())) {
-            initialize();
+            try {
+                new CodeGeneratorManager().initTemplate();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         // only for components, not for /resources jet file, if it compile error, it will get the
@@ -774,5 +778,38 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     public static boolean isInitializeStart() {
         return initializeStart;
+    }
+
+    static class CodeGeneratorManager {
+
+        private IStatus status;
+
+        public IStatus initTemplate() throws InterruptedException {
+            final Job initializeTemplatesJob = initialize();
+            Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
+
+                @Override
+                public void done(IJobChangeEvent event) {
+                    if (event.getJob().equals(initializeTemplatesJob)) {
+                        setStatus(event.getResult());
+                    }
+                }
+            });
+
+            while (status == null) {
+                Thread.sleep(10);
+            }
+
+            return status;
+        }
+
+        private void setStatus(IStatus result) {
+            this.status = result;
+        }
+
+        private ICodeGeneratorService getCodeGenerationService() {
+            IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
+            return (ICodeGeneratorService) service;
+        }
     }
 }
