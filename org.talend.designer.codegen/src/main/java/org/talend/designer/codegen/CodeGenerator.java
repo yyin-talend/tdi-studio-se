@@ -14,6 +14,7 @@ package org.talend.designer.codegen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -110,6 +111,8 @@ public class CodeGenerator implements ICodeGenerator {
 
         private List<StringBuffer> bufferList = new ArrayList<StringBuffer>();
 
+        private Map<String, Boolean> markedMap = new HashMap<String, Boolean>();
+
         public OnRowsEndCode() {
             count = 0;
         }
@@ -129,6 +132,7 @@ public class CodeGenerator implements ICodeGenerator {
         public void clear() {
             count = 0;
             bufferList.clear();
+            markedMap.clear();
         }
 
         public void add(StringBuffer buf) {
@@ -139,6 +143,14 @@ public class CodeGenerator implements ICodeGenerator {
 
         public List<StringBuffer> getBuffers() {
             return this.bufferList;
+        }
+
+        public Boolean mark(String key) {
+            return this.markedMap.put(key, true);
+        }
+
+        public Boolean getMarked(String key) {
+            return this.markedMap.get(key);
         }
     }
 
@@ -717,9 +729,10 @@ public class CodeGenerator implements ICodeGenerator {
                         conn = node.getOutgoingConnections(EConnectionType.ON_ROWS_END).get(0);
                         isNextOnRowsEnd = isSpecifyInputNode(conn.getTarget(), conn.getName(), EConnectionType.ON_ROWS_END);
                     }
-                    if (isNextOnRowsEnd && conn != null) {
+                    if (isNextOnRowsEnd && conn != null && (onRowsEndCode.getMarked(conn.getTarget().getUniqueName()) == null)) {
                         StringBuffer buffer = new StringBuffer();
                         onRowsEndCode.add(buffer);
+                        onRowsEndCode.mark(conn.getTarget().getUniqueName());
                         onRowsEndCode.increase();
 
                         buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
