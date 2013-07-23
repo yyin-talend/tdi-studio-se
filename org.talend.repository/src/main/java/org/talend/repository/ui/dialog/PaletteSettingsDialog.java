@@ -51,6 +51,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.components.preference.provider.TalendPaletteLabelProvider;
 import org.talend.designer.components.preference.provider.TalendPaletteTreeProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -62,6 +63,7 @@ import org.talend.repository.ui.actions.ShowStandardAction;
  * 
  * @deprecated see ProjectSettingDialog
  */
+@Deprecated
 public class PaletteSettingsDialog extends Dialog {
 
     private static final String FAMILY_SPEARATOR = "--FAMILY--"; //$NON-NLS-1$
@@ -96,8 +98,8 @@ public class PaletteSettingsDialog extends Dialog {
         this.project = pro;
         List<ComponentSetting> c = getComponentsFromProject();
         for (ComponentSetting componentSetting : c) {
-            statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(), !componentSetting
-                    .isHidden());
+            statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(),
+                    !componentSetting.isHidden());
         }
 
     }
@@ -141,7 +143,7 @@ public class PaletteSettingsDialog extends Dialog {
 
     private PaletteRoot getViewerInput() {
         IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-        PaletteRoot paletteRoot = CorePlugin.getDefault().getDesignerCoreService().getAllNodeStructure(components);
+        PaletteRoot paletteRoot = CoreUIPlugin.getDefault().getDesignerCoreUIService().getAllNodeStructure(components);
         return paletteRoot;
     }
 
@@ -161,6 +163,7 @@ public class PaletteSettingsDialog extends Dialog {
         hiddenViewer.expandToLevel(2);
         hiddenViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 rightButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -175,6 +178,7 @@ public class PaletteSettingsDialog extends Dialog {
         displayViewer.expandToLevel(2);
         displayViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 leftButton.setEnabled(!event.getSelection().isEmpty());
             }
@@ -193,6 +197,7 @@ public class PaletteSettingsDialog extends Dialog {
     private ViewerFilter getFilterForComponent(final boolean isVisible) {
         ViewerFilter filter = new ViewerFilter() {
 
+            @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 PaletteEntry entry = (PaletteEntry) element;
 
@@ -281,6 +286,7 @@ public class PaletteSettingsDialog extends Dialog {
         GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(rightButton);
         rightButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(hiddenViewer.getSelection(), true);
                 getButton(IDialogConstants.OK_ID).setEnabled(true);
@@ -295,6 +301,7 @@ public class PaletteSettingsDialog extends Dialog {
         leftButton.setLayoutData(gridData);
         leftButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(displayViewer.getSelection(), false);
                 getButton(IDialogConstants.OK_ID).setEnabled(true);
@@ -336,7 +343,7 @@ public class PaletteSettingsDialog extends Dialog {
                 retreiveAllEntry(list, en);
             }
         } else {
-            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent());
             list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
@@ -344,13 +351,13 @@ public class PaletteSettingsDialog extends Dialog {
 
     @SuppressWarnings("unchecked")
     public List<ComponentSetting> getComponentsFromProject() {
-        List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
+        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
         return components;
     }
 
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent());
         List<ComponentSetting> components = getComponentsFromProject();
 
         for (ComponentSetting componentSetting : components) {
@@ -458,8 +465,8 @@ public class PaletteSettingsDialog extends Dialog {
     @Override
     protected void cancelPressed() {
         super.cancelPressed();
-        for (Iterator iterator = statusBackup.keySet().iterator(); iterator.hasNext();) {
-            String name = (String) iterator.next();
+        for (Object element : statusBackup.keySet()) {
+            String name = (String) element;
             setComponentVisibleForRestore(name, statusBackup.get(name));
         }
     }

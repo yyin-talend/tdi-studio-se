@@ -48,8 +48,8 @@ import org.talend.commons.ui.gmf.util.ColorPalettePopup;
 import org.talend.commons.ui.gmf.util.FontHelper;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -144,7 +144,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         createAlignGroups(composite);
 
         createTextControl(composite);
-        
+
         refresh();
     }
 
@@ -166,8 +166,8 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         data.top = new FormAttachment(textLabel, 0, SWT.TOP);
         data.height = 5 * text.getLineHeight(); // 5 lines
         text.setLayoutData(data);
-        text.setForeground(new Color(null, TalendTextUtils.stringToRGB((String) note
-                .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
+        text.setForeground(new Color(null, ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR
+                .getName()))));
         text.setText(note.getText());
 
         text.addFocusListener(new FocusAdapter() {
@@ -183,11 +183,13 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
 
         text.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(org.eclipse.swt.events.KeyEvent e) {
                 // TODO Auto-generated method stub
 
             }
 
+            @Override
             public void keyReleased(org.eclipse.swt.events.KeyEvent e) {
                 // TODO Auto-generated method stub
                 if (!text.getText().equals(note.getText())) {
@@ -274,6 +276,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         fontFamilyCombo.setText((String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()));
         fontFamilyCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 updateFontFamily();
             }
@@ -284,6 +287,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         fontSizeCombo.setText((String) note.getPropertyValue(EParameterName.FONT_SIZE.getName()));
         fontSizeCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 updateFontSize();
             }
@@ -297,6 +301,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         fontBoldButton.setImage(ImageProvider.getImage(EImage.BOLD_ICON));
         fontBoldButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 
+            @Override
             public void getName(AccessibleEvent e) {
                 e.result = "Bold";
             }
@@ -306,6 +311,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         fontItalicButton.setImage(ImageProvider.getImage(EImage.ITALIC_ICON));
         fontItalicButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 
+            @Override
             public void getName(AccessibleEvent e) {
                 e.result = "Italic";
             }
@@ -313,6 +319,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
 
         fontBoldButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 updateFontBold();
             }
@@ -320,6 +327,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
 
         fontItalicButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 updateFontItalic();
             }
@@ -329,17 +337,18 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
 
         fontColorButton = new Button(toolBar, SWT.PUSH);
         Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FONT_COLOR_ICON).getImageData(),
-                TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR.getName())))
-                .createImage();
+                ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))).createImage();
         fontColorButton.setImage(overlyedImage);
         fontColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 
+            @Override
             public void getName(AccessibleEvent e) {
                 e.result = "Font Color";
             }
         });
         fontColorButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 ColorPalettePopup popup = new ColorPalettePopup(fontColorButton.getParent().getShell(),
                         IDialogConstants.BUTTON_BAR_HEIGHT);
@@ -360,9 +369,10 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTETXT_COLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();
-                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FONT_COLOR_ICON).getImageData(), selectedColor).createImage();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FONT_COLOR_ICON)
+                            .getImageData(), selectedColor).createImage();
                     fontColorButton.setImage(overlyedImage);
-                    text.setForeground(new Color(null, TalendTextUtils.stringToRGB((String) note
+                    text.setForeground(new Color(null, ColorUtils.stringToRGB((String) note
                             .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
                 }
             }
@@ -370,17 +380,19 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         new Label(toolBar, SWT.LEFT);
 
         lineColorButton = new Button(toolBar, SWT.PUSH);
-        overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.LINE_COLOR_ICON).getImageData(), TalendTextUtils
-                .stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR.getName()))).createImage();
+        overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.LINE_COLOR_ICON).getImageData(),
+                ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR.getName()))).createImage();
         lineColorButton.setImage(overlyedImage);
         lineColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 
+            @Override
             public void getName(AccessibleEvent e) {
                 e.result = "Line Color";
             }
         });
         lineColorButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 ColorPalettePopup popup = new ColorPalettePopup(lineColorButton.getParent().getShell(),
                         IDialogConstants.BUTTON_BAR_HEIGHT);
@@ -401,24 +413,27 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_LINECOLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();
-                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.LINE_COLOR_ICON).getImageData(), selectedColor).createImage();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.LINE_COLOR_ICON)
+                            .getImageData(), selectedColor).createImage();
                     lineColorButton.setImage(overlyedImage);
                 }
             }
         });
 
         fillColorButton = new Button(toolBar, SWT.PUSH);
-        overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FILL_COLOR_ICON).getImageData(), TalendTextUtils
-                .stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR.getName()))).createImage();
+        overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FILL_COLOR_ICON).getImageData(),
+                ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR.getName()))).createImage();
         fillColorButton.setImage(overlyedImage);
         fillColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 
+            @Override
             public void getName(AccessibleEvent e) {
                 e.result = "Fill Color";
             }
         });
         fillColorButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 ColorPalettePopup popup = new ColorPalettePopup(fillColorButton.getParent().getShell(),
                         IDialogConstants.BUTTON_BAR_HEIGHT);
@@ -439,7 +454,8 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_COLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();
-                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FILL_COLOR_ICON).getImageData(), selectedColor).createImage();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(ImageProvider.getImageDesc(EImage.FILL_COLOR_ICON)
+                            .getImageData(), selectedColor).createImage();
                     fillColorButton.setImage(overlyedImage);
                 }
             }
@@ -652,6 +668,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         /**
          * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
          */
+        @Override
         protected void drawCompositeImage(int width, int height) {
 
             // draw the thin color bar underneath
@@ -669,6 +686,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         /**
          * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
          */
+        @Override
         protected Point getSize() {
             return ICON_SIZE;
         }

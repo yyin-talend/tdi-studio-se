@@ -45,6 +45,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -1949,7 +1950,7 @@ public class EmfComponent extends AbstractComponent {
                 throw new RuntimeException(Messages.getString("EmfComponent.RGBNotCorrect" //$NON-NLS-1$
                         , param.getDisplayName()));
             }
-            return TalendTextUtils.stringToRGB(color);
+            return ColorUtils.stringToRGB(color);
         }
         return null;
     }

@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.skife.csv.CSVReader;
 import org.skife.csv.SimpleReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -45,12 +44,14 @@ import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.MultiSchemasComponent;
@@ -132,14 +133,17 @@ public class MultiSchemasManager {
 
     public void executeCommand(Command cmd) {
         IProcess process = this.getMultiSchemasComponent().getProcess();
-        if (process != null && process instanceof IProcess2) {
-            CommandStack commandStack = ((IProcess2) process).getCommandStack();
-            if (commandStack != null) {
-                commandStack.execute(cmd);
-                return;
+
+        boolean executed = false;
+        if (process != null && process instanceof IGEFProcess) {
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand((IGEFProcess) process, cmd);
             }
         }
-        cmd.execute();
+        if (!executed) {
+            cmd.execute();
+        }
     }
 
     public void setValues(EParameterName paramName, Object value) {

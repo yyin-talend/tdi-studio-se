@@ -32,13 +32,13 @@ import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.designer.core.utils.DesignerColorUtils;
 import org.talend.repository.ProjectManager;
 
 /**

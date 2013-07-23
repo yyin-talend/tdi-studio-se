@@ -87,6 +87,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
@@ -172,7 +173,7 @@ import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
  * $Id$
  * 
  */
-public class Process extends Element implements IProcess2, ILastVersionChecker {
+public class Process extends Element implements IProcess2, IGEFProcess, ILastVersionChecker {
 
     protected List<INode> nodes = new ArrayList<INode>();
 

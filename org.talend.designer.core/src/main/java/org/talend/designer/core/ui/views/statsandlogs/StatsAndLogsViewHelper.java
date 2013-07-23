@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -24,6 +25,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -32,13 +34,14 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -155,26 +158,26 @@ public class StatsAndLogsViewHelper {
                 // repositoryConnection = null;
                 // }
 
-                ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
+                ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(applyTo, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
-                ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
+                ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(applyTo, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
 
-                AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) applyTo).getEditor();
-                if (part instanceof AbstractMultiPageTalendEditor) {
-                    Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
-                    if (adapter != null) {
-                        CommandStack commandStack = ((CommandStack) adapter);
-                        commandStack.execute(cmd1);
-                        commandStack.execute(cmd2);
-                    }
-                } else {
-                    // zli for bug 12335
-                    CommandStack commandStack = ((Process) applyTo).getCommandStack();
-                    commandStack.execute(cmd1);
-                    commandStack.execute(cmd2);
+                CompoundCommand cc = new CompoundCommand();
+                cc.add(cmd1);
+                cc.add(cmd2);
 
+                boolean executed = false;
+                if (applyTo instanceof IGEFProcess) {
+                    IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                    if (designerCoreUIService != null) {
+                        executed = designerCoreUIService.executeCommand((IGEFProcess) applyTo, cc);
+                    }
+                }
+
+                if (!executed) {
+                    cc.execute();
                 }
 
                 continue;
@@ -551,7 +554,7 @@ public class StatsAndLogsViewHelper {
 
                 AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) element).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {
-                    Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
+                    Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
                     if (adapter != null) {
                         CommandStack commandStack = ((CommandStack) adapter);
                         commandStack.execute(cmd1);

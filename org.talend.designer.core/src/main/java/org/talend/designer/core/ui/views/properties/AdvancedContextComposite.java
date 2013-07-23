@@ -54,6 +54,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -112,7 +113,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                 | SWT.MULTI, node);
         if (node.getProcess() instanceof IProcess2) {
             IProcess2 process = (IProcess2) node.getProcess();
-            tableViewer.getExtendedTableViewer().setCommandStack(process.getCommandStack());
+            if (process instanceof IGEFProcess) {
+                tableViewer.getExtendedTableViewer().setCommandStack(((IGEFProcess) process).getCommandStack());
+            }
             if (node.getJobletNode() != null) {
                 tableViewer.setReadOnly(node.isReadOnly());
             } else {

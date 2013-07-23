@@ -23,7 +23,7 @@ import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.model.utils.DesignerColorUtils;
+import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
  * Defines connector type and name for each component. <br/>

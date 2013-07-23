@@ -33,7 +33,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -80,8 +79,8 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -294,8 +293,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         } else {
             // path = new Path(destinationFile);
-            IPreferenceStore store = RepositoryManager.getPreferenceStore();
-            if (store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
+            if (CoreRuntimePlugin.getInstance().getDesignerCoreService()
+                    .getPreferenceStoreBooleanValue(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
                 path = new Path(destinationFile);
             } else {
                 path = path.append(getDefaultFileNameWithType());
@@ -384,6 +383,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     ICheckStateListener checkStateListener = new ICheckStateListener() {
 
+        @Override
         public void checkStateChanged(CheckStateChangedEvent event) {
             checkExport();
         }
@@ -458,10 +458,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         selectedJobVersion = currentVersion;
         versionCombo.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 selectedJobVersion = versionCombo.getText();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -910,6 +912,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             // set modifier
             tableViewer.setCellModifier(new ICellModifier() {
 
+                @Override
                 public void modify(Object element, String property, Object value) {
                     List<String> nameList = new ArrayList<String>();
                     for (int i = 0; i < contextEditableValuesList.size(); i++) {
@@ -936,6 +939,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     tableViewer.refresh(node);
                 }
 
+                @Override
                 public Object getValue(Object element, String property) {
                     ContextParameterType node = (ContextParameterType) element;
                     if (property.equals(contextParameterName)) {
@@ -948,6 +952,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     return null;
                 }
 
+                @Override
                 public boolean canModify(Object element, String property) {
                     return true;
                 }
@@ -1069,6 +1074,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ContextParameterType) {
                 ContextParameterType contextParameter = (ContextParameterType) element;
@@ -1082,6 +1088,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             return ""; //$NON-NLS-1$
         }
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             return null;
         }
@@ -1093,6 +1100,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof List) {
                 return ((List) inputElement).toArray();
@@ -1100,9 +1108,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             return new Object[0];
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 

@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jdt.internal.ui.workingsets.WorkingSetMessages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -49,10 +48,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.runprocess.RunProcessContext;
@@ -116,8 +117,8 @@ public class JobVMArgumentsComposite {
             public void widgetSelected(SelectionEvent e) {
                 setAllEnabled(composite, checkBox.getSelection());
                 if (getJobProcess() != null) {
-                    executeCommand(new PropertyChangeCommand((Element) getJobProcess(),
-                            EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName(), checkBox.getSelection()));
+                    executeCommand(new PropertyChangeCommand(getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION
+                            .getName(), checkBox.getSelection()));
                 }
             }
 
@@ -177,6 +178,7 @@ public class JobVMArgumentsComposite {
             createButtons(buttonBox);
             buttonBox.addDisposeListener(new DisposeListener() {
 
+                @Override
                 public void widgetDisposed(DisposeEvent event) {
                     addButton = null;
                     removeButton = null;
@@ -276,6 +278,7 @@ public class JobVMArgumentsComposite {
     public void createSelectionListener() {
         selectionListener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 Widget widget = event.widget;
                 if (widget == addButton) {
@@ -296,7 +299,7 @@ public class JobVMArgumentsComposite {
     protected void doSave() {
         String s = writeString(list);
         if (s != null && getJobProcess() != null) {
-            executeCommand(new PropertyChangeCommand((Element) getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS.getName(), s));
+            executeCommand(new PropertyChangeCommand(getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS.getName(), s));
         }
     }
 
@@ -308,21 +311,19 @@ public class JobVMArgumentsComposite {
     }
 
     private void executeCommand(Command cmd) {
-        if (cmd != null) {
-            boolean exec = false;
-            if (processContext != null && processContext.getProcess() instanceof IProcess2) {
-                IProcess2 process = (IProcess2) processContext.getProcess();
-                if (process != null) {
-                    CommandStack commandStack = process.getCommandStack();
-                    if (commandStack != null) {
-                        exec = true;
-                        commandStack.execute(cmd);
-                    }
+        boolean executed = false;
+        if (processContext != null && processContext.getProcess() instanceof IProcess2) {
+            IProcess2 process = processContext.getProcess();
+            if (process != null && process instanceof IGEFProcess) {
+                IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                if (designerCoreUIService != null) {
+                    executed = designerCoreUIService.executeCommand((IGEFProcess) process, cmd);
                 }
             }
-            if (!exec) {
-                cmd.execute();
-            }
+        }
+
+        if (!executed) {
+            cmd.execute();
         }
     }
 
@@ -341,12 +342,14 @@ public class JobVMArgumentsComposite {
             table.setFont(parent.getFont());
             viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     JobVMArgumentsComposite.this.selectionChanged();
                 }
             });
             viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+                @Override
                 public void doubleClick(DoubleClickEvent event) {
                     editItem(event.getSelection());
                 }
@@ -448,13 +451,16 @@ public class JobVMArgumentsComposite {
     protected IStructuredContentProvider createContentProvider() {
         return new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return ((List) inputElement).toArray();
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
@@ -464,10 +470,12 @@ public class JobVMArgumentsComposite {
     protected ITableLabelProvider createLabelProvider() {
         return new ITableLabelProvider() {
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
                 if (columnIndex == 0) {
@@ -476,16 +484,20 @@ public class JobVMArgumentsComposite {
                 throw new IllegalStateException();
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 

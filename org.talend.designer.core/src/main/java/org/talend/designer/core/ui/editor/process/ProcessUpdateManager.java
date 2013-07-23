@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
@@ -144,10 +143,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 jobletReferenceMap.put(jobletItem.getProperty().getId(), jobletItem.getProperty().getModificationDate());
             }
         }
-    }
-
-    public CommandStack getCommandStack() {
-        return process.getCommandStack();
     }
 
     public Process getProcess() {

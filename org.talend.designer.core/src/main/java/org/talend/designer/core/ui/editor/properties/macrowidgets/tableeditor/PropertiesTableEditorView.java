@@ -44,6 +44,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
+import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -58,7 +59,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.EbcdicConnectionItem;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.ui.metadata.celleditor.ModuleListCellEditor;
 import org.talend.core.ui.metadata.celleditor.RuleCellEditor;
@@ -234,7 +234,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                                 .getValue();
                                         if (rootValue != null) {
                                             for (int i = 0; i < rootValue.size(); i++) {
-                                                Map<String, String> map = (Map<String, String>) rootValue.get(i);
+                                                Map<String, String> map = rootValue.get(i);
                                                 String columnName = map.get("COLUMN");
                                                 String split[] = columnName.split(":");
                                                 if (split.length == 2 && !returnedValue.equals("<Empty>")) {
@@ -313,7 +313,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         @Override
                         protected void doSetValue(Object value) {
                             if (value instanceof String) {
-                                super.doSetValue(TalendTextUtils.stringToRGB((String) value));
+                                super.doSetValue(ColorUtils.stringToRGB((String) value));
                             } else {
                                 super.doSetValue(value);
                             }
@@ -323,7 +323,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         protected void updateContents(Object value) {
                             if (value != null) {
                                 if (value instanceof String) {
-                                    super.updateContents(TalendTextUtils.stringToRGB((String) value));
+                                    super.updateContents(ColorUtils.stringToRGB((String) value));
                                 } else {
                                     super.updateContents(value);
                                 }
@@ -339,7 +339,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             if (value == null || (!(value instanceof String))) {
                                 return Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
                             }
-                            return new Color(null, TalendTextUtils.stringToRGB((String) value));
+                            return new Color(null, ColorUtils.stringToRGB((String) value));
                         }
 
                         @Override
@@ -563,7 +563,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 return value;
                             case COLOR:
                                 if (value instanceof String) {
-                                    return TalendTextUtils.stringToRGB((String) value);
+                                    return ColorUtils.stringToRGB((String) value);
                                 }
                                 return value; // already RGB
                             default: // TEXT

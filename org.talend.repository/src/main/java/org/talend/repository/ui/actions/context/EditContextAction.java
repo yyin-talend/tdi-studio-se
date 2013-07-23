@@ -21,7 +21,6 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -58,6 +57,7 @@ public class EditContextAction extends AbstractConextAction {
      * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         super.init(viewer, selection);
@@ -90,6 +90,7 @@ public class EditContextAction extends AbstractConextAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         if (repositoryNode == null) {
             repositoryNode = getCurrentRepositoryNode();
@@ -97,12 +98,7 @@ public class EditContextAction extends AbstractConextAction {
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
 
-        // refresh to lock image
-        RepositoryManager.refreshSavedNode(repositoryNode);
-
         dlg.open();
-        // refresh to unlock image
-        RepositoryManager.refreshSavedNode(repositoryNode);
 
     }
 

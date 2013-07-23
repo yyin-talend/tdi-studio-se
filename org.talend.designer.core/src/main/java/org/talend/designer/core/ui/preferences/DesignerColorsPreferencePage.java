@@ -28,12 +28,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
  * ggu class global comment. Detailled comment

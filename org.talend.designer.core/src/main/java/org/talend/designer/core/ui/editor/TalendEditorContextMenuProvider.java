@@ -23,6 +23,7 @@ import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -476,7 +477,10 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
             if (service != null) {
-                return service.getMoveToJobletAction(part, jobletNode, nodeMap);
+                Action moveToJobletAction = service.getMoveToJobletAction(part, jobletNode, nodeMap);
+                if (moveToJobletAction instanceof SelectionAction) {
+                    return (SelectionAction) moveToJobletAction;
+                }
             }
         }
         return null;
@@ -487,7 +491,10 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
             if (service != null) {
-                return service.getMoveToJobAction(part);
+                Action moveToJobAction = service.getMoveToJobAction(part);
+                if (moveToJobAction instanceof SelectionAction) {
+                    return (SelectionAction) moveToJobAction;
+                }
             }
         }
         return null;

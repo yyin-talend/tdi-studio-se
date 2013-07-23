@@ -27,7 +27,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -107,10 +106,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.LockInfo;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
@@ -166,7 +163,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private ProjectRepositoryNode rootProjectNode;
 
-    private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
+    // private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
     private List<ITreeContextualAction> contextualsActions;
 
@@ -528,11 +525,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void updateFilterImage() {
-        if (preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
-            filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_ACTIVED_ICON));
-        } else {
-            filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_DEACTIVED_ICON));
-        }
+        // if (preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+        // filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_ACTIVED_ICON));
+        // } else {
+        // filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_DEACTIVED_ICON));
+        // }
     }
 
     public void addFilters() {

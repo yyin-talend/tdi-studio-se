@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeNoteOpacityCommand;
@@ -50,12 +50,15 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
     }
 
     private void disposeColors() {
-        if (this.foreColor != null && !this.foreColor.isDisposed())
+        if (this.foreColor != null && !this.foreColor.isDisposed()) {
             foreColor.dispose();
-        if (this.backColor != null && !this.backColor.isDisposed())
+        }
+        if (this.backColor != null && !this.backColor.isDisposed()) {
             backColor.dispose();
-        if (this.labelColor != null && !this.labelColor.isDisposed())
+        }
+        if (this.labelColor != null && !this.labelColor.isDisposed()) {
             labelColor.dispose();
+        }
 
     }
 
@@ -87,7 +90,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
             if (viewer == null) {
                 return;
             }
-            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+            ComponentSettingsView compSettings = viewer;
             compSettings.cleanDisplay();
 
         }
@@ -118,12 +121,11 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         noteFigure.setSize(note.getSize());
         noteFigure.setText(note.getText());
         noteFigure.setOpaque(note.isOpaque());
-        foreColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR
-                .getName())));
-        backColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR
-                .getName())));
-        labelColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR
-                .getName())));
+        foreColor = new Color(null,
+                ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR.getName())));
+        backColor = new Color(null, ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR.getName())));
+        labelColor = new Color(null,
+                ColorUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR.getName())));
         noteFigure.setBackgroundColor(backColor);
         noteFigure.setForegroundColor(foreColor);
         noteFigure.getLabel().setForegroundColor(labelColor);
@@ -183,6 +185,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         }
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
         refresh();
     }

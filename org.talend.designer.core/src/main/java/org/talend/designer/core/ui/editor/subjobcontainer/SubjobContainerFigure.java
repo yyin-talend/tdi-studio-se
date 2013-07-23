@@ -27,12 +27,15 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.utils.DesignerColorUtils;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -80,7 +83,18 @@ public class SubjobContainerFigure extends Figure {
                 if (!process.isReadOnly()) {
                     PropertyChangeCommand ppc = new PropertyChangeCommand(subjobContainer, EParameterName.COLLAPSED.getName(),
                             !subjobContainer.isCollapsed());
-                    process.getCommandStack().execute(ppc);
+
+                    boolean executed = false;
+                    if (process instanceof IGEFProcess) {
+                        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                        if (designerCoreUIService != null) {
+                            executed = designerCoreUIService.executeCommand((IGEFProcess) process, ppc);
+                        }
+                    }
+
+                    if (!executed) {
+                        ppc.execute();
+                    }
                     reSelection();
                 }
             }

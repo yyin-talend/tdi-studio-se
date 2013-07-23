@@ -13,13 +13,14 @@
 package org.talend.designer.webservice.managers;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.webservice.WebServiceComponent;
 
 /**
@@ -67,14 +68,16 @@ public class WebServiceManager {
 
     public void executeCommand(Command cmd) {
         IProcess process = this.getWebServiceComponent().getProcess();
-        if (process != null && process instanceof IProcess2) {
-            CommandStack commandStack = ((IProcess2) process).getCommandStack();
-            if (commandStack != null) {
-                commandStack.execute(cmd);
-                return;
+        boolean executed = false;
+        if (process != null && process instanceof IGEFProcess) {
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand((IGEFProcess) process, cmd);
             }
         }
-        cmd.execute();
+        if (!executed) {
+            cmd.execute();
+        }
     }
 
     public ECodeLanguage getLanguage() {

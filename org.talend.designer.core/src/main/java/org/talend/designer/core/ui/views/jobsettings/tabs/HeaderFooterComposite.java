@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -41,10 +40,13 @@ import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
@@ -161,8 +163,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getElementParameter(EParameterName.HEADERFOOTER_HEADERID.getName());
                             if (headerFooterIdParam != null) {
                                 headerFooterIdParam.setValue(id);
-                                Command command1 = new PropertyChangeCommand((Element) process,
-                                        EParameterName.HEADERFOOTER_HEADERID.getName(), id);
+                                Command command1 = new PropertyChangeCommand(process, EParameterName.HEADERFOOTER_HEADERID
+                                        .getName(), id);
                                 compoundCommand.add(command1);
                             }
                             // headEnable
@@ -170,8 +172,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (enableParameter != null) {
                                 enableParameter.setValue(isHeader);
-                                Command command2 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_ENABLED
-                                        .getName(), isHeader);
+                                Command command2 = new PropertyChangeCommand(process, EParameterName.HEADER_ENABLED.getName(),
+                                        isHeader);
                                 compoundCommand.add(command2);
 
                             }
@@ -180,8 +182,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (libraryParameter != null) {
                                 libraryParameter.setValue(headerFooterConnection.getLibraries());
-                                Command command3 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_LIBRARY
-                                        .getName(), headerFooterConnection.getLibraries());
+                                Command command3 = new PropertyChangeCommand(process, EParameterName.HEADER_LIBRARY.getName(),
+                                        headerFooterConnection.getLibraries());
                                 compoundCommand.add(command3);
                             }
                             // headCode
@@ -189,8 +191,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (headCodeParameter != null) {
                                 headCodeParameter.setValue(headerFooterConnection.getMainCode());
-                                Command command4 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_CODE
-                                        .getName(), headerFooterConnection.getMainCode());
+                                Command command4 = new PropertyChangeCommand(process, EParameterName.HEADER_CODE.getName(),
+                                        headerFooterConnection.getMainCode());
                                 compoundCommand.add(command4);
                             }
                             // headImport
@@ -198,15 +200,20 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (headImportParameter != null) {
                                 headImportParameter.setValue(headerFooterConnection.getImports());
-                                Command command5 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_IMPORT
-                                        .getName(), headerFooterConnection.getImports());
+                                Command command5 = new PropertyChangeCommand(process, EParameterName.HEADER_IMPORT.getName(),
+                                        headerFooterConnection.getImports());
                                 compoundCommand.add(command5);
                             }
 
-                            CommandStack commandStack = process.getCommandStack();
-                            if (commandStack != null) {
-                                commandStack.execute(compoundCommand);
-                            } else {
+                            boolean executed = false;
+                            if (process != null && process instanceof IGEFProcess) {
+                                IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault()
+                                        .getDesignerCoreUIService();
+                                if (designerCoreUIService != null) {
+                                    executed = designerCoreUIService.executeCommand((IGEFProcess) process, compoundCommand);
+                                }
+                            }
+                            if (!executed) {
                                 compoundCommand.execute();
                             }
 
@@ -227,6 +234,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
 
         headerRemoveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (repositoryObject instanceof IProcess2) {
                     IProcess2 process = (IProcess2) repositoryObject;
@@ -237,21 +245,25 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                     process.getElementParameter(EParameterName.HEADER_CODE.getName()).setValue(null);
                     process.getElementParameter(EParameterName.HEADER_IMPORT.getName()).setValue(null);
                     CompoundCommand compoundCommand = new CompoundCommand();
-                    Command command1 = new PropertyChangeCommand((Element) process, EParameterName.HEADERFOOTER_HEADERID
-                            .getName(), null);
+                    Command command1 = new PropertyChangeCommand(process, EParameterName.HEADERFOOTER_HEADERID.getName(), null);
                     compoundCommand.add(command1);
-                    Command command2 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_ENABLED.getName(), null);
+                    Command command2 = new PropertyChangeCommand(process, EParameterName.HEADER_ENABLED.getName(), null);
                     compoundCommand.add(command2);
-                    Command command3 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_LIBRARY.getName(), null);
+                    Command command3 = new PropertyChangeCommand(process, EParameterName.HEADER_LIBRARY.getName(), null);
                     compoundCommand.add(command3);
-                    Command command4 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_CODE.getName(), null);
+                    Command command4 = new PropertyChangeCommand(process, EParameterName.HEADER_CODE.getName(), null);
                     compoundCommand.add(command4);
-                    Command command5 = new PropertyChangeCommand((Element) process, EParameterName.HEADER_IMPORT.getName(), null);
+                    Command command5 = new PropertyChangeCommand(process, EParameterName.HEADER_IMPORT.getName(), null);
                     compoundCommand.add(command5);
-                    CommandStack commandStack = process.getCommandStack();
-                    if (commandStack != null) {
-                        commandStack.execute(compoundCommand);
-                    } else {
+
+                    boolean executed = false;
+                    if (process != null && process instanceof IGEFProcess) {
+                        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                        if (designerCoreUIService != null) {
+                            executed = designerCoreUIService.executeCommand((IGEFProcess) process, compoundCommand);
+                        }
+                    }
+                    if (!executed) {
                         compoundCommand.execute();
                     }
 
@@ -327,8 +339,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName());
                             if (headerFooterIdParam != null) {
                                 headerFooterIdParam.setValue(id);
-                                Command command1 = new PropertyChangeCommand((Element) process,
-                                        EParameterName.HEADERFOOTER_FOOTERID.getName(), id);
+                                Command command1 = new PropertyChangeCommand(process, EParameterName.HEADERFOOTER_FOOTERID
+                                        .getName(), id);
                                 compoundCommand.add(command1);
                             }
                             // footerEnable
@@ -336,8 +348,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (enableParameter != null) {
                                 enableParameter.setValue(isFooter);
-                                Command command2 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_ENABLED
-                                        .getName(), isFooter);
+                                Command command2 = new PropertyChangeCommand(process, EParameterName.FOOTER_ENABLED.getName(),
+                                        isFooter);
                                 compoundCommand.add(command2);
                             }
                             // footerLibraries
@@ -345,8 +357,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (libraryParameter != null) {
                                 libraryParameter.setValue(headerFooterConnection.getLibraries());
-                                Command command3 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_LIBRARY
-                                        .getName(), headerFooterConnection.getLibraries());
+                                Command command3 = new PropertyChangeCommand(process, EParameterName.FOOTER_LIBRARY.getName(),
+                                        headerFooterConnection.getLibraries());
                                 compoundCommand.add(command3);
                             }
                             // footerCode
@@ -354,8 +366,8 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (footerCodeParameter != null) {
                                 footerCodeParameter.setValue(headerFooterConnection.getMainCode());
-                                Command command4 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_CODE
-                                        .getName(), headerFooterConnection.getMainCode());
+                                Command command4 = new PropertyChangeCommand(process, EParameterName.FOOTER_CODE.getName(),
+                                        headerFooterConnection.getMainCode());
                                 compoundCommand.add(command4);
                             }
                             // footerImports
@@ -363,14 +375,20 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                                     .getName());
                             if (footerImportParameter != null) {
                                 footerImportParameter.setValue(headerFooterConnection.getImports());
-                                Command command5 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_IMPORT
-                                        .getName(), headerFooterConnection.getImports());
+                                Command command5 = new PropertyChangeCommand(process, EParameterName.FOOTER_IMPORT.getName(),
+                                        headerFooterConnection.getImports());
                                 compoundCommand.add(command5);
                             }
-                            CommandStack commandStack = process.getCommandStack();
-                            if (commandStack != null) {
-                                commandStack.execute(compoundCommand);
-                            } else {
+
+                            boolean executed = false;
+                            if (process != null && process instanceof IGEFProcess) {
+                                IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault()
+                                        .getDesignerCoreUIService();
+                                if (designerCoreUIService != null) {
+                                    executed = designerCoreUIService.executeCommand((IGEFProcess) process, compoundCommand);
+                                }
+                            }
+                            if (!executed) {
                                 compoundCommand.execute();
                             }
 
@@ -391,6 +409,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
         footerRemoveButton.setLayoutData(footerRemoveButtonData);
         footerRemoveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (repositoryObject instanceof IProcess2) {
                     IProcess2 process = (IProcess2) repositoryObject;
@@ -401,21 +420,25 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                     process.getElementParameter(EParameterName.FOOTER_CODE.getName()).setValue(null);
                     process.getElementParameter(EParameterName.FOOTER_IMPORT.getName()).setValue(null);
                     CompoundCommand compoundCommand = new CompoundCommand();
-                    Command command1 = new PropertyChangeCommand((Element) process, EParameterName.HEADERFOOTER_FOOTERID
-                            .getName(), null);
+                    Command command1 = new PropertyChangeCommand(process, EParameterName.HEADERFOOTER_FOOTERID.getName(), null);
                     compoundCommand.add(command1);
-                    Command command2 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_ENABLED.getName(), null);
+                    Command command2 = new PropertyChangeCommand(process, EParameterName.FOOTER_ENABLED.getName(), null);
                     compoundCommand.add(command2);
-                    Command command3 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_LIBRARY.getName(), null);
+                    Command command3 = new PropertyChangeCommand(process, EParameterName.FOOTER_LIBRARY.getName(), null);
                     compoundCommand.add(command3);
-                    Command command4 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_CODE.getName(), null);
+                    Command command4 = new PropertyChangeCommand(process, EParameterName.FOOTER_CODE.getName(), null);
                     compoundCommand.add(command4);
-                    Command command5 = new PropertyChangeCommand((Element) process, EParameterName.FOOTER_IMPORT.getName(), null);
+                    Command command5 = new PropertyChangeCommand(process, EParameterName.FOOTER_IMPORT.getName(), null);
                     compoundCommand.add(command5);
-                    CommandStack commandStack = process.getCommandStack();
-                    if (commandStack != null) {
-                        commandStack.execute(compoundCommand);
-                    } else {
+
+                    boolean executed = false;
+                    if (process != null && process instanceof IGEFProcess) {
+                        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                        if (designerCoreUIService != null) {
+                            executed = designerCoreUIService.executeCommand((IGEFProcess) process, compoundCommand);
+                        }
+                    }
+                    if (!executed) {
                         compoundCommand.execute();
                     }
 
@@ -432,10 +455,10 @@ public class HeaderFooterComposite extends AbstractTabComposite {
         if (librariesPath != null && libraries != null && !"".equals(libraries)) {//$NON-NLS-1$
             if (libraries.contains(";")) {//$NON-NLS-1$
                 String[] split = libraries.split(";");//$NON-NLS-1$
-                for (int i = 0; i < split.length; i++) {
-                    File source = new File(split[i]);
+                for (String element : split) {
+                    File source = new File(element);
                     File target = new File(librariesPath + File.separatorChar
-                            + split[i].substring(split[i].lastIndexOf(File.separatorChar)));
+                            + element.substring(element.lastIndexOf(File.separatorChar)));
                     try {
                         FilesUtils.copyFile(source, target);
                     } catch (IOException e1) {

@@ -41,8 +41,8 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.runtime.CoreRuntimePlugin;
-import org.talend.designer.core.IDesignerCoreService;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -103,12 +103,10 @@ public class JobExportAction implements IRunnableWithProgress {
 
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(
-                Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        monitor.beginTask(Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         try {
             if (nodes != null && nodes.size() > 0) {
-                if (nodes.size() == 1
-                        && RelationshipItemBuilder.LATEST_VERSION.equals(jobVersion)) {
+                if (nodes.size() == 1 && RelationshipItemBuilder.LATEST_VERSION.equals(jobVersion)) {
                     ProcessItem item = ItemCacheManager.getProcessItem(nodes.get(0).getId(),
                             RelationshipItemBuilder.LATEST_VERSION);
                     String version = item.getProperty().getVersion();
@@ -193,10 +191,9 @@ public class JobExportAction implements IRunnableWithProgress {
             return false;
         }
         boolean addClasspathJar = true;
-        IDesignerCoreService designerCoreService = CoreRuntimePlugin.getInstance().getDesignerCoreService();
-        if (designerCoreService != null) {
-            addClasspathJar = designerCoreService.getDesignerCorePreferenceStore().getBoolean(
-                    IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+        if (designerCoreUIService != null) {
+            addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
         }
         if (isMultiNodes() || addClasspathJar) {
             manager.setTopFolder(resourcesToExport);

@@ -20,6 +20,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -74,8 +76,8 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         // TODO Auto-generated method stub
         super.addComponents(forceRedraw, reInitialize, height);
         // achen add to fix 0005991 & 0005993 when reload
-        Object value = ElementParameter2ParameterType.getParameterValue(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
-                .getName());
+        Object value = ElementParameter2ParameterType.getParameterValue(elem,
+                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
         if (value != null && value instanceof Boolean) {
             Boolean v = (Boolean) value;
             useProjectSetting.setSelection(v.booleanValue());
@@ -116,8 +118,8 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         boolean flag = useProjectSetting.getSelection();
         setMainCompositeEnable(!flag);
         topComposite.setEnabled(true);
-        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean
-                .valueOf(flag));
+        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
+                Boolean.valueOf(flag));
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
                 Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
@@ -149,7 +151,15 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
             LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process,
                     EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
 
-            process.getCommandStack().execute(command);
+            boolean executed = false;
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand(process, command);
+            }
+
+            if (!executed) {
+                command.execute();
+            }
         }
     }
 

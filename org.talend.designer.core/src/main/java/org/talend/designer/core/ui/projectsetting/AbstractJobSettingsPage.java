@@ -57,6 +57,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -217,8 +219,9 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     @Override
     public void dispose() {
-        if (widgetFactory != null)
+        if (widgetFactory != null) {
             widgetFactory.dispose();
+        }
         super.dispose();
     }
 
@@ -298,18 +301,14 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
     }
 
     protected void exeCommand(final Process process, final Command cmd) {
-        Display display = Display.getCurrent();
-        if (display == null) {
-            display = Display.getDefault();
+        boolean executed = false;
+        if (process != null) {
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand(process, cmd);
+            }
         }
-        if (display != null) {
-            display.asyncExec(new Runnable() {
-
-                public void run() {
-                    process.getCommandStack().execute(cmd);
-                }
-            });
-        } else {
+        if (!executed) {
             cmd.execute();
         }
     }
@@ -318,6 +317,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         final List<IEditorReference> list = new ArrayList<IEditorReference>();
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .getEditorReferences();
@@ -401,6 +401,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask(getTaskMessages(), (checkedNodeObject.size()) * 100);
                 final Map<String, Set<String>> contextVars = DetectContextVarsUtils.detectByPropertyType(elem, true);
@@ -449,6 +450,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                         if (disp != null) {
                             disp.syncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     showContextAndCheck(contextVars);
                                 }

@@ -21,9 +21,6 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.palette.PaletteDrawer;
-import org.eclipse.gef.palette.PaletteEntry;
-import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -58,6 +55,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.convert.IProcessConvertService;
 import org.talend.designer.core.convert.ProcessConvertManager;
@@ -67,7 +65,6 @@ import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.Expression;
-import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -76,10 +73,8 @@ import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.process.ConvertRepositoryNodeToProcessNode;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
@@ -267,57 +262,38 @@ public class DesignerCoreService implements IDesignerCoreService {
         return DesignerPlugin.getDefault().getPreferenceStore().getString(key);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getPreferenceStoreBooleanValue(java.lang.String)
+     */
     @Override
-    public IPreferenceStore getDesignerCorePreferenceStore() {
-        return DesignerPlugin.getDefault().getPreferenceStore();
+    public boolean getPreferenceStoreBooleanValue(String key) {
+        return DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key);
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory)
+     * @see org.talend.designer.core.IDesignerCoreService#setPreferenceStoreValue(java.lang.String, java.lang.Object)
      */
     @Override
-    public PaletteRoot createPalette(IComponentsFactory factory) {
-        return TalendEditorPaletteFactory.createPalette(factory);
-    }
-
-    @Override
-    public PaletteRoot createPalette(IComponentsFactory factory, boolean isFavorite) {
-        return TalendEditorPaletteFactory.createPalette(factory, isFavorite);
-    }
-
-    @Override
-    public PaletteRoot getAllNodeStructure(IComponentsFactory factory) {
-        return TalendEditorPaletteFactory.getAllNodeStructure(factory);
+    public void setPreferenceStoreValue(String key, Object value) {
+        if (value != null) {
+            DesignerPlugin.getDefault().getPreferenceStore().setValue(key, value.toString());
+        } else {
+            DesignerPlugin.getDefault().getPreferenceStore().setValue(key, ""); //$NON-NLS-1$
+        }
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory,
-     * org.eclipse.gef.palette.PaletteRoot)
+     * @see org.talend.designer.core.IDesignerCoreService#setToDefault(java.lang.String)
      */
     @Override
-    public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root) {
-        return TalendEditorPaletteFactory.createPalette(compFac, root);
-    }
-
-    @Override
-    public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {
-        return TalendEditorPaletteFactory.createPalette(compFac, root, isFavorite);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.IDesignerCoreService#setPaletteFilter(java.lang.String)
-     */
-    @Override
-    public void setPaletteFilter(String filter) {
-        TalendEditorPaletteFactory.setFilter(filter);
+    public void setPreferenceStoreToDefault(String key) {
+        DesignerPlugin.getDefault().getPreferenceStore().setToDefault(key);
     }
 
     @Override
@@ -329,15 +305,6 @@ public class DesignerCoreService implements IDesignerCoreService {
     public IAction getCreateBeanAction(boolean isToolbar) {
 
         return new CreateRoutineAction(isToolbar);
-    }
-
-    @Override
-    public List<PaletteEntry> createJobletEtnry() {
-        List<PaletteEntry> list = new ArrayList<PaletteEntry>();
-        for (AbstractProcessProvider provider : AbstractProcessProvider.findAllProcessProviders()) {
-            list.addAll(provider.addJobletEntry());
-        }
-        return list;
     }
 
     @Override
@@ -646,16 +613,6 @@ public class DesignerCoreService implements IDesignerCoreService {
         JobLaunchShortcutManager.renameJobLaunch(obj, originalName);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.IDesignerCoreService#createTalendPaletteDrawer(java.lang.String)
-     */
-    @Override
-    public PaletteDrawer createTalendPaletteDrawer(String family) {
-        return new TalendPaletteDrawer(family);
-    }
-
     @Override
     public boolean isDummyComponent(IComponent component) {
         if (component == null) {
@@ -698,19 +655,18 @@ public class DesignerCoreService implements IDesignerCoreService {
         return JavaProcessUtil.getNeededModules(process, withChildrens);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.IDesignerCoreService#createEmptyPalette()
-     */
-    @Override
-    public PaletteRoot createEmptyPalette() {
-        return TalendEditorPaletteFactory.createEmptyPalette();
-    }
-
     @Override
     public boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
         return Expression.evaluate(string, listParam);
     }
 
+    @Override
+    public int getDBConnectionTimeout() {
+        final IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        if (preferenceStore != null && preferenceStore.getBoolean(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED)) {
+            return preferenceStore.getInt(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT);
+        }
+        // disable timeout
+        return 0;
+    }
 }

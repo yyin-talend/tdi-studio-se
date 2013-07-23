@@ -66,6 +66,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -80,8 +81,10 @@ import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.service.IMRProcessService;
 import org.talend.core.tis.ICoreTisService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.designer.core.CheckNodeManager;
@@ -1345,8 +1348,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private CommandStack getCommandStack() {
         CommandStack cmdStack = null;
-        if (template) {
-            cmdStack = process.getCommandStack();
+        if (template && process instanceof Process) {
+            cmdStack = ((Process) process).getCommandStack();
         } else {
             if (process.getEditor() != null) {
                 AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) process.getEditor()).getTalendEditor();
@@ -3424,9 +3427,14 @@ public class Node extends Element implements IGraphicalNode {
             IElementParameter synchronizeSchemaParam = getElementParameter(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
             if (synchronizeSchemaParam != null) {
                 Command cmd = SynchronizeSchemaHelper.createCommand(this, synchronizeSchemaParam);
-                if (process != null && process.getCommandStack() != null) {
-                    process.getCommandStack().execute(cmd);
-                } else {
+                boolean executed = false;
+                if (process != null && process instanceof IGEFProcess) {
+                    IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                    if (designerCoreUIService != null) {
+                        executed = designerCoreUIService.executeCommand((IGEFProcess) process, cmd);
+                    }
+                }
+                if (!executed) {
                     cmd.execute();
                 }
 

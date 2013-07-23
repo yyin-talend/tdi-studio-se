@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -33,9 +32,12 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
@@ -131,15 +133,14 @@ public final class ContextParameterExtractor {
      */
     public static void saveContext(final String parameterName, final IElement elem, String replaceCode, IProcess2 process) {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, parameterName, replaceCode);
-        boolean exe = false;
-        if (process != null) {
-            final CommandStack commandStack = process.getCommandStack();
-            if (commandStack != null) {
-                commandStack.execute(cmd);
-                exe = true;
+        boolean executed = false;
+        if (process != null && process instanceof IGEFProcess) {
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand((IGEFProcess) process, cmd);
             }
         }
-        if (!exe) {
+        if (!executed) {
             cmd.execute();
         }
 

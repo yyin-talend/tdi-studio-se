@@ -47,6 +47,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
@@ -62,9 +63,11 @@ import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.service.IJsonFileService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -136,7 +139,17 @@ public class UpdateNodeParameterCommand extends Command {
         Node node = (Node) updateObject;
         if (node.getProcess() instanceof IProcess2) {
             PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-            ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
+
+            boolean executed = false;
+            if (process instanceof IGEFProcess) {
+                IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                if (designerCoreUIService != null) {
+                    executed = designerCoreUIService.executeCommand((IGEFProcess) process, pcc);
+                }
+            }
+            if (!executed) {
+                pcc.execute();
+            }
         }
     }
 

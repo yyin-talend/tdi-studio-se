@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.utils.image.ColorUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
+import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
  * ggu class global comment. Detailled comment

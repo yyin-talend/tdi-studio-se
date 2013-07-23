@@ -559,11 +559,8 @@
       		serviceId="IDesignerCoreService"
       		class="org.talend.designer.core.DesignerCoreService"/>
       <Service
-            class="org.talend.designer.core.ui.editor.TalendEditor"
-            serviceId="ITalendEditorService"/>
-      <Service
-            class="org.talend.designer.core.ManagementService"
-            serviceId="IManagementService">
+            class="org.talend.designer.core.DesignerCoreUIService"
+            serviceId="IDesignerCoreUIService">
       </Service>
    </extension>
    

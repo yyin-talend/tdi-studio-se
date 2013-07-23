@@ -588,21 +588,29 @@ public final class TalendEditorPaletteFactory {
      * @return a new PaletteRoot
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac) {
+        PaletteRoot pr = new PaletteRoot();
+        pr.add(createToolsGroup());
+        return createPalette(compFac, pr);
+    }
+
+    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {// ing
         int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
-        palette = new PaletteRoot();
+        palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
-        palette.add(createToolsGroup());
-
         createComponentsDrawer(compFac, false, histate);
-
         return palette;
     }
 
     public static PaletteRoot createPalette(final IComponentsFactory compFac, boolean isFavorite) {
+        PaletteRoot pr = new PaletteRoot();
+        pr.add(createToolsGroup());
+        return createPalette(compFac, pr, isFavorite);
+    }
+
+    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {// after
         int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
-        palette = new PaletteRoot();
+        palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
-        palette.add(createToolsGroup());
         createComponentsDrawer(compFac, false, isFavorite, histate);
         return palette;
     }
@@ -619,31 +627,6 @@ public final class TalendEditorPaletteFactory {
         int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, false, histate);
-        return palette;
-    }
-
-    /**
-     * Reload the palette components.
-     * 
-     * yzhang Comment method "createPalette".
-     * 
-     * @param compFac
-     * @param root
-     * @return
-     */
-    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {// ing
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
-        palette = root;
-        AbstractProcessProvider.loadComponentsFromProviders();
-        createComponentsDrawer(compFac, false, histate);
-        return palette;
-    }
-
-    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {// after
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
-        palette = root;
-        AbstractProcessProvider.loadComponentsFromProviders();
-        createComponentsDrawer(compFac, false, isFavorite, histate);
         return palette;
     }
 

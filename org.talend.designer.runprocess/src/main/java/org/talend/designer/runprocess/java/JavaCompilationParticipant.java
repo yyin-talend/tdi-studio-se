@@ -33,7 +33,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -93,7 +92,6 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                 @Override
                 public void run() {
                     try {
-                        RepositoryManager.refresh(ERepositoryObjectType.ROUTINES);
                         Problems.refreshProblemTreeView();
                     } catch (Exception e) {
                         // ignore any exception here, as there is no impact if refresh or not.

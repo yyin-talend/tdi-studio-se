@@ -63,8 +63,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
-import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ILastVersionChecker;
@@ -75,6 +73,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.utils.DesignerColorUtils;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -364,8 +363,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             repFactory.save(item);
         } catch (Exception e) {
         }
-        // update image in repository
-        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
         // update editor image
         setTitleImage(getTitleImage());
 

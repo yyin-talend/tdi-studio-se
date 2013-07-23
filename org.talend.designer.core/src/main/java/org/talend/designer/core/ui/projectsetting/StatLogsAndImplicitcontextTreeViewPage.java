@@ -57,6 +57,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -650,19 +652,14 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     }
 
     private void exeCommand(final Process process, final Command cmd) {
-        Display display = Display.getCurrent();
-        if (display == null) {
-            display = Display.getDefault();
+        boolean executed = false;
+        if (process != null) {
+            IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+            if (designerCoreUIService != null) {
+                executed = designerCoreUIService.executeCommand(process, cmd);
+            }
         }
-        if (display != null) {
-            display.asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    process.getCommandStack().execute(cmd);
-                }
-            });
-        } else {
+        if (!executed) {
             cmd.execute();
         }
     }

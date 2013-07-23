@@ -39,6 +39,7 @@ import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
@@ -50,6 +51,8 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerCoreUIService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -530,16 +533,16 @@ public final class UpdateManagerUtils {
             //
             Object job = result.getJob();
             boolean executed = false;
-            if (job != null) {
-                if (job instanceof IProcess2) {
-                    IProcess2 process = (IProcess2) job;
-                    process.getCommandStack().execute(command);
-                    executed = true;
+            if (job != null && job instanceof IGEFProcess) {
+                IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+                if (designerCoreUIService != null) {
+                    executed = designerCoreUIService.executeCommand((IGEFProcess) job, command);
                 }
             }
             if (!executed) {
                 command.execute();
             }
+
             subMonitor.worked(1);
 
         }

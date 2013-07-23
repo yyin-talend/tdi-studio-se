@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.talend.runprocess.data.ParallelPerformance;
 
 /**
@@ -42,7 +43,7 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
         // update label
         String oldLabel = label;
         label = parallelPerformance.getLabel(msg);
-        offset = parallelPerformance.computeLabelOffset();
+        offset = new Point(0, parallelPerformance.computeLabelOffsetY());
         firePropertyChange(LABEL_PROP, oldLabel, label);
     }
 }
