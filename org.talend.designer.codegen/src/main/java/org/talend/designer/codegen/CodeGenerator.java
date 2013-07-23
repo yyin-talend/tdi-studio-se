@@ -108,11 +108,10 @@ public class CodeGenerator implements ICodeGenerator {
 
         private int count = 0; // count onRowsEnd components generates how many times
 
-        private StringBuffer buffer = null;
+        private List<StringBuffer> bufferList = new ArrayList<StringBuffer>();
 
         public OnRowsEndCode() {
             count = 0;
-            buffer = new StringBuffer();
         }
 
         public int getCount() {
@@ -127,21 +126,19 @@ public class CodeGenerator implements ICodeGenerator {
             count--;
         }
 
-        public void append(StringBuffer str) {
-            buffer.append(str);
-        }
-
-        public void append(String str) {
-            buffer.append(str);
-        }
-
-        public StringBuffer getContent() {
-            return this.buffer;
-        }
-
         public void clear() {
             count = 0;
-            buffer.delete(0, buffer.length());
+            bufferList.clear();
+        }
+
+        public void add(StringBuffer buf) {
+            if (buf != null) {
+                bufferList.add(buf);
+            }
+        }
+
+        public List<StringBuffer> getBuffers() {
+            return this.bufferList;
         }
     }
 
@@ -712,7 +709,6 @@ public class CodeGenerator implements ICodeGenerator {
                             codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
                         }
                     }
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
 
                     // This code is used to generate the Virtual_IN--->Out part in previous
                     boolean isNextOnRowsEnd = false;
@@ -722,20 +718,22 @@ public class CodeGenerator implements ICodeGenerator {
                         isNextOnRowsEnd = isSpecifyInputNode(conn.getTarget(), conn.getName(), EConnectionType.ON_ROWS_END);
                     }
                     if (isNextOnRowsEnd && conn != null) {
+                        StringBuffer buffer = new StringBuffer();
+                        onRowsEndCode.add(buffer);
                         onRowsEndCode.increase();
-                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
-                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.BEGIN, incomingName,
-                                typeGen));
 
-                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.MAIN, incomingName,
-                                typeGen));
-                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.MAIN, typeGen));
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.BEGIN, incomingName, typeGen));
 
-                        onRowsEndCode.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.END, incomingName,
-                                typeGen));
-                        onRowsEndCode.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.END, typeGen));
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.MAIN, incomingName, typeGen));
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.MAIN, typeGen));
+
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.END, incomingName, typeGen));
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.END, typeGen));
 
                     }
+
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
                 }
                 break;
             case END:
@@ -745,8 +743,9 @@ public class CodeGenerator implements ICodeGenerator {
                     onRowsEndCode.decrease();
                     if (onRowsEndCode.getCount() == 0) {
 
-                        // System.out.println(onRowsEndCode.getContent());
-                        codeComponent.append(onRowsEndCode.getContent());
+                        for (int i = 0; i < onRowsEndCode.getBuffers().size(); i++) {
+                            codeComponent.append(onRowsEndCode.getBuffers().get(i));
+                        }
                         onRowsEndCode.clear();
                     }
 
