@@ -470,7 +470,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         // if the component is already existing in cache and if it's the same, it won't reload all (cf
                         // flag: foundComponentIsSame)
                         EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
-                                pathSource, cache, foundComponentIsSame);
+                                pathSource, cache, foundComponentIsSame, provider);
                         if (!foundComponentIsSame) {
                             // force to call some functions to update the cache. (to improve)
                             currentComp.isVisibleInComponentDefinition();
@@ -520,8 +520,10 @@ public class ComponentsFactory implements IComponentsFactory {
                         if (componentList.contains(currentComp)) {
                             log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
-                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(), null,
-                                    provider));
+                            // currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(),
+                            // null,
+                            // provider));
+                            currentComp.setProvider(provider);
                             componentList.add(currentComp);
                             if (isCustom) {
                                 customComponentList.add(currentComp);

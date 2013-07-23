@@ -17,10 +17,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -54,6 +56,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
+import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.EReadOnlyComlumnPosition;
@@ -90,8 +93,10 @@ import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.service.IComponentsLocalProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.ARGType;
@@ -213,13 +218,16 @@ public class EmfComponent extends AbstractComponent {
 
     private boolean reduce = false;
 
-    public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload)
-            throws BusinessException {
+    private AbstractComponentsProvider provider;
+
+    public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload,
+            AbstractComponentsProvider provider) throws BusinessException {
         this.uriString = uriString;
         this.name = name;
         this.pathSource = pathSource;
         this.bundleName = bundleId;
         this.isAlreadyLoad = isload;
+        this.provider = provider;
         if (!isAlreadyLoad) {
             info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
             load();
@@ -232,6 +240,7 @@ public class EmfComponent extends AbstractComponent {
             getTranslatedFamilyName();
             getRepositoryType();
             getType();
+            getLongName();
             info.setUriString(uriString);
             info.setSourceBundleName(bundleId);
             info.setPathSource(pathSource);
@@ -268,7 +277,76 @@ public class EmfComponent extends AbstractComponent {
         }
     }
 
+    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, String cachedPathSource,
+            AbstractComponentsProvider provider) {
+        try {
+            AbstractComponentsProvider currentProvider = provider;
+            if (currentProvider == null) {
+                ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+                Collection<AbstractComponentsProvider> providers = componentsProviderManager.getProviders();
+                for (AbstractComponentsProvider curProvider : providers) {
+                    String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
+                    if (source.startsWith(path)) {
+                        // fix for TDI-19889 and TDI-20507 to get the correct component provider
+                        if (cachedPathSource != null) {
+                            if (path.contains(cachedPathSource)) {
+                                currentProvider = curProvider;
+                                break;
+                            }
+                        } else {
+                            currentProvider = curProvider;
+                            break;
+                        }
+                    }
+                }
+            }
+            String installPath = currentProvider.getInstallationFolder().toString();
+            String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(),
+                    installPath.substring(installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER)));
+
+            if (currentProvider.isUseLocalProvider()) {
+                // if the component use local provider as storage (for user / ecosystem components)
+                // then get the bundle resource from the current main component provider.
+
+                // note: code here to review later, service like this shouldn't be used...
+                ResourceBundle bundle = null;
+                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                if (brandingService.isPoweredOnlyCamel()) {
+                    bundle = currentProvider.getResourceBundle(label);
+                } else {
+                    ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
+                            ITisLocalProviderService.class);
+                    bundle = service.getResourceBundle(label);
+                }
+                return bundle;
+            } else {
+                ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(currentProvider
+                        .getClass().getClassLoader()));
+                return bundle;
+            }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return null;
+    }
+
+    public static class ResClassLoader extends ClassLoader {
+
+        public ResClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+    }
+
     public ResourceBundle getResourceBundle() {
+        if (resourceBundle == null && provider != null) {
+            try {
+                resourceBundle = getComponentResourceBundle(this, provider.getInstallationFolder().toString(), null, provider);
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
         return this.resourceBundle;
     }
 
@@ -2433,7 +2511,14 @@ public class EmfComponent extends AbstractComponent {
 
     @Override
     public String getLongName() {
-        return getTranslatedValue(PROP_LONG_NAME);
+        if (isAlreadyLoad) {
+            return info.getLongName() == null ? "" : info.getLongName();
+        }
+        String longName = getTranslatedValue(PROP_LONG_NAME);
+        if (info != null) {
+            info.setLongName(longName);
+        }
+        return longName;
     }
 
     public boolean canStart() {
@@ -2753,11 +2838,7 @@ public class EmfComponent extends AbstractComponent {
             version = String.valueOf(compType.getHEADER().getVERSION());
             info.setVersion(version);
         } else {
-            if (info == null) {
-                System.out.println("bug?"); //$NON-NLS-1$
-            } else {
-                version = info.getVersion();
-            }
+            version = info.getVersion();
         }
 
         return version;
@@ -2781,6 +2862,8 @@ public class EmfComponent extends AbstractComponent {
                     String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
                     if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                         msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                    } else {
+                        importType.setMESSAGE(msg);
                     }
 
                     List<String> list = getInstallURL(importType);
@@ -2846,9 +2929,13 @@ public class EmfComponent extends AbstractComponent {
                 EList emfImportList = info.getImportType();
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
-                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
-                    if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                    //                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
+                    // if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+                    //                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                    // }
+                    String msg = importType.getMESSAGE();
+                    if (msg == null) {
+                        msg = Messages.getString("modules.required");
                     }
                     List<String> list = getInstallURL(importType);
                     ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
@@ -3744,5 +3831,23 @@ public class EmfComponent extends AbstractComponent {
     @Override
     public String getPartitioning() {
         return compType.getHEADER().getPARTITIONING();
+    }
+
+    /**
+     * Getter for provider.
+     * 
+     * @return the provider
+     */
+    public AbstractComponentsProvider getProvider() {
+        return this.provider;
+    }
+
+    /**
+     * Sets the provider.
+     * 
+     * @param provider the provider to set
+     */
+    public void setProvider(AbstractComponentsProvider provider) {
+        this.provider = provider;
     }
 }
