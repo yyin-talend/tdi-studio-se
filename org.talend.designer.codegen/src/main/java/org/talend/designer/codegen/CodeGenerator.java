@@ -98,7 +98,7 @@ public class CodeGenerator implements ICodeGenerator {
 
     private String exportAsOSGI = "false";
 
-    private static final long INIT_TIMEOUT = 15000; // 15s
+    private static final long INIT_TIMEOUT = 15 * 60 * 1000; // 15s
 
     private static final long INIT_PAUSE = 1000; // 1s
 
