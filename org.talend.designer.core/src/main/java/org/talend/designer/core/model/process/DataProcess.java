@@ -1042,12 +1042,16 @@ public class DataProcess {
 
                 if (runAfter) {
                     boolean isParall = false;
-                    for (IConnection conn : graphicalNode.getOutgoingConnections()) {
-                        if (conn.getTarget().getComponent().getName().equals("tMap")) {
-                            IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");
-                            isParall = (Boolean) elePara.getValue();
-                            break;
-                        }
+                    IComponent paralComponent = ComponentsFactoryProvider.getInstance().get("tParallelize"); //$NON-NLS-1$ 
+                        if (paralComponent != null) { 
+                            // if tParallelize component is available, then allow to use the feature lookup parallelize 
+                            for (IConnection conn : graphicalNode.getOutgoingConnections()) { 
+                                if (conn.getTarget().getComponent().getName().equals("tMap")) {//$NON-NLS-1$ 
+                                    IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");//$NON-NLS-1$ 
+                                    isParall = (Boolean) elePara.getValue(); 
+                                    break; 
+                                 } 
+                            }
                     }
 
                     if (isParall) {
