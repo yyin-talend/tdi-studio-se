@@ -1805,10 +1805,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
                                                     }
 
-                                                } else {
-                                                    paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
-                                                    // paramEncoding.setRepositoryValueUsed(true);
                                                 }
+                                                // else {
+                                                // paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                                // paramEncoding.setRepositoryValueUsed(true);
+                                                // }
                                             }
 
                                         }

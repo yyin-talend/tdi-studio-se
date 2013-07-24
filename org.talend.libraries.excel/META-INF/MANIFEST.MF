@@ -6,8 +6,10 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/poi-3.9-20121203.jar,
  lib/poi-ooxml-3.9-20121203.jar,
- lib/poi-ooxml-schemas-3.9-20121203.jar
+ lib/poi-ooxml-schemas-3.9-20121203.jar,
+ lib/simpleexcel.jar
 Export-Package: 
+ com.talend.excel.xssf.event,
  org.apache.poi,
  org.apache.poi.common.usermodel,
  org.apache.poi.ddf,
