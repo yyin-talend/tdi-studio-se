@@ -57,7 +57,7 @@ public class FileInputExcelNode extends FileInputNode {
 
         // add base parameters
         String[] paramNames = new String[] {
-                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT", "VERSION_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT", "VERSION_2007", "GENERATION_MODE" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 
         String[] paramValues;
 
@@ -70,13 +70,15 @@ public class FileInputExcelNode extends FileInputNode {
         case JAVA:
             paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
                     limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, bean.getFirstColumn(), //$NON-NLS-1$ //$NON-NLS-2$
-                    bean.getLastColumn(), "true", versionCheck }; //$NON-NLS-1$
+                    bean.getLastColumn(), "true", versionCheck, bean.getGenerationMode() }; //$NON-NLS-1$
             break;
         default: // PERL
-            paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
+            paramValues = new String[] {
+                    filename,
+                    encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
                     limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, //$NON-NLS-1$ //$NON-NLS-2$
                     bean.getFirstColumn() == null ? null : "'" + bean.getFirstColumn() + "'", //$NON-NLS-1$ //$NON-NLS-2$
-                    bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true", versionCheck }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true", versionCheck, bean.getGenerationMode() }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputExcel");

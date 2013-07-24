@@ -1911,6 +1911,15 @@
             name="ChangeSalesForceComponetsCustomerModuleName"
             version="5.2.3">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.1"
+              class="org.talend.repository.model.migration.ExcleGenerationModeMigrationTask"
+              description="default add USER_MODE as generationMode"
+              id="org.talend.repository.model.migration.ExcleGenerationModeMigrationTask"
+              name="ExcleGenerationModeMigrationTask"
+              version="5.3.2">
+        </projecttask>
    </extension>
    
    <extension

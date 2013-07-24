@@ -524,7 +524,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
 
                     if (param.isRepositoryValueUsed()) {
-                        param.setReadOnly(false);
+                        if (("GENERATION_MODE").equals(param.getName())) {
+                            param.setReadOnly(true);
+                        } else {
+                            param.setReadOnly(false);
+                        }
                     }
                 }
             }
