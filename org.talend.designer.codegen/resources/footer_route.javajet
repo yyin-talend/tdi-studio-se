@@ -417,62 +417,68 @@ for (IContextParameter ctxParam : params) {
 	}
 }
 
-class <%=process.getName()%>_Registry implements Registry {
-
-	private Map<String, Object> map = new HashMap<String, Object>();
+class <%=process.getName()%>_Registry extends SimpleRegistry {
 
 	private Registry wrapped = null;
 
 	public <%=process.getName()%>_Registry() {
-		this(null);
+		this(new SimpleRegistry());
 	}
 
 	public <%=process.getName()%>_Registry(Registry wrapped) {
 		this.wrapped = wrapped;
 	}
 
-	public Object lookup(String name) {
+	@Override
+	public Object lookupByName(String name) {
 		Object obj = null;
 		if (wrapped != null) {
-			obj = wrapped.lookup(name);
+			obj = wrapped.lookupByName(name);
 		}
 		if (obj == null) {
-			obj = map.get(name);
+			obj = super.lookupByName(name);
 		}
 		return obj;
 	}
 
-	public <T> T lookup(String name, Class<T> type) {
+	@Override
+	public <T> T lookupByNameAndType(String name, Class<T> type) {
 		T t = null;
 		if (wrapped != null) {
-			t = wrapped.lookup(name, type);
+			t = wrapped.lookupByNameAndType(name, type);
 		}
 		if (t == null) {
-			t = (T) map.get(name);
+			t = super.lookupByNameAndType(name, type);
 		}
 		return t;
 	}
-
-	public <T> Map<String, T> lookupByType(Class<T> type) {
+	
+	@Override
+	public <T> Map<String, T> findByTypeWithName(Class<T> type) {
 		Map<String, T> result = null;
 		if (wrapped != null) {
-			result = wrapped.lookupByType(type);
+			result = wrapped.findByTypeWithName(type);
 		}
 		if (result == null) {
-			result = new HashMap<String, T>();
-		}
-		if (result.isEmpty()) {
-			for (Map.Entry<String, Object> entry : map.entrySet()) {
-				if (type.isInstance(entry.getValue())) {
-					result.put(entry.getKey(), type.cast(entry.getValue()));
-				}
-			}
+			result = super.findByTypeWithName(type);
 		}
 		return result;
 	}
 
+	@Override
+	public <T> Set<T> findByType(Class<T> type){
+		Set<T> result = null;
+		if (wrapped != null) {
+			result = wrapped.findByType(type);
+		}
+		if (result == null) {
+			result = super.findByType(type);
+		}
+		return result;
+	}
+	
 	public void register(String name, Object instance) {
-		map.put(name, instance);
+		put(name, instance);
 	}
 
 }

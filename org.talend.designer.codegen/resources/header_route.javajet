@@ -85,6 +85,8 @@ package <%= packageName %>;
 	importsSet.add("import  java.util.Properties");
 	importsSet.add("import  org.apache.camel.management.JmxNotificationEventNotifier");
 	importsSet.add("import  org.springframework.osgi.context.support.OsgiBundleXmlApplicationContext");
+	importsSet.add("import  org.apache.camel.impl.SimpleRegistry");
+	importsSet.add("import  java.util.Set");
 	
 	String headerImports = ElementParameterParser.getValue(process, "__HEADER_IMPORT__");
 	if(headerImports!=null && !"".equals(headerImports.trim())){
