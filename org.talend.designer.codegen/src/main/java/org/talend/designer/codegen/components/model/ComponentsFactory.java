@@ -64,6 +64,7 @@ import org.talend.core.model.component_cache.ComponentsCache;
 import org.talend.core.model.component_cache.util.ComponentCacheResourceFactoryImpl;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentManager;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -79,7 +80,6 @@ import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
 import org.talend.designer.core.model.components.ComponentBundleToPath;
 import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
