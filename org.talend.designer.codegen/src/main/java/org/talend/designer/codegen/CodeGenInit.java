@@ -45,6 +45,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.repository.model.RepositoryConstants;
 
 /***/
 public class CodeGenInit implements IApplication {
@@ -157,7 +158,8 @@ public class CodeGenInit implements IApplication {
         Context ctx = CorePlugin.getContext();
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
 
-        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById("local")); //$NON-NLS-1$
+        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider
+                .getRepositoriyById(RepositoryConstants.REPOSITORY_LOCAL_ID));
         repositoryFactory.initialize();
     }
 
