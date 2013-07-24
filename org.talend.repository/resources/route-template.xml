@@ -44,6 +44,8 @@
 			<map>
 				<entry key="policy.token" value="$job{policy.token}" />
 				<entry key="policy.saml" value="$job{policy.saml}" />
+				<entry key="policy.saml.authz.service" value="$job{policy.saml.authz.service}" />
+				<entry key="policy.saml.authz.client" value="$job{policy.saml.authz.client}" />
 			</map>
 		</property>
 ]]#
@@ -55,9 +57,14 @@
 				<entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
 				<entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
 				<entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
+]]#
+#if ($route.hasCXFSamlProviderAuthz)
+#[[
+				<entry key="tesb.pdp.address" value="$saml{tesb.pdp.address}" />
+]]#
+#end
 			</map>
 		</property>
-]]#
 #end
 #if ($route.hasCXFSamlConsumer)
 #[[

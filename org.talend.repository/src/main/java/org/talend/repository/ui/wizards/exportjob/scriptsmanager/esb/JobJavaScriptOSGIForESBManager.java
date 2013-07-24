@@ -617,6 +617,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean useSAM = false;
         boolean hasCXFSamlConsumer = false;
         boolean hasCXFSamlProvider = false;
+        boolean hasCXFSamlProviderAuthz = false;
+        boolean hasCXFSamlConsumerAuthz = false;
         for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
             // http://jira.talendforge.org/browse/TESB-3850
             String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
@@ -625,15 +627,24 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 useSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
             }
 
+            //security is disable in case CXF_MESSAGE or RAW dataFormat
             if ("CXF_MESSAGE".equals(format) || "RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
                 continue;
             }
-            if (hasCXFSamlConsumer && hasCXFSamlProvider) {
+            
+            if (hasCXFSamlConsumer && hasCXFSamlProvider && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
+            	if(useSAM){
+            		break;
+            	}
                 continue;
             }
+            
+            //if security is unchecked, then continue
             if (!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
                 continue;
             }
+            
+            //if security type is not SAML, then continue
             String securityType = EmfModelUtils.computeTextElementValue("SECURITY_TYPE", node); //$NON-NLS-1$
             if (!"SAML".equals(securityType)) { //$NON-NLS-1$
                 continue;
@@ -647,17 +658,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 String target = conn.getTarget();
                 if (uniquename.equals(target)) {
                     hasCXFSamlConsumer = true;
+                    if(EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)){
+                    	hasCXFSamlConsumerAuthz = true;
+                    }
                     found = true;
                     break;
                 }
             }
             if (!found) {
                 hasCXFSamlProvider = true;
+                if(EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)){
+                	hasCXFSamlProviderAuthz = true;
+                }
             }
         }
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlProvider", hasCXFSamlProvider); //$NON-NLS-1$
+        routeInfo.put("hasCXFSamlConsumerAuthz", hasCXFSamlConsumerAuthz); //$NON-NLS-1$
+        routeInfo.put("hasCXFSamlProviderAuthz", hasCXFSamlProviderAuthz); //$NON-NLS-1$
 
         // route OSGi DataSources
         routeInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
