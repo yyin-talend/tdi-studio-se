@@ -37,6 +37,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.designer.gefabstractmap.figures.VarNodeTextLabel;
 import org.talend.designer.gefabstractmap.figures.cells.IComboCell;
 import org.talend.designer.gefabstractmap.figures.cells.IExpressionBuilderCell;
 import org.talend.designer.gefabstractmap.figures.cells.ITextAreaCell;
@@ -44,12 +45,14 @@ import org.talend.designer.gefabstractmap.figures.cells.ITextCell;
 import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
 import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsConstant;
+import org.talend.designer.xmlmap.figures.treetools.zone.XmlMapSearchZoneToolBar;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
 import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
@@ -223,8 +226,17 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 }
             }
 
+        } else if (model instanceof XmlMapData) {
+            XmlMapData xmlMapData = (XmlMapData) model;
+            if (directEditType != null) {
+                switch (directEditType) {
+                case SERACH:
+                    Text text = (Text) getCellEditor().getControl();
+                    text.selectAll();
+                    break;
+                }
+            }
         }
-
     }
 
     private String getTypeDisplayValue(VarNode varNode) {
@@ -444,6 +456,27 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
     @Override
     public void commit() {
+        DirectEditType directEditType = cellAndType.get(getCellEditor());
+        if (directEditType != null) {
+            switch (directEditType) {
+            case SERACH:
+                VarNodeTextLabel figure = null;
+                if (this.locator instanceof XmlMapNodeCellEditorLocator) {
+                    XmlMapNodeCellEditorLocator lo = (XmlMapNodeCellEditorLocator) locator;
+                    if (lo.getFigure() != null && lo.getFigure() instanceof VarNodeTextLabel) {
+                        figure = (VarNodeTextLabel) lo.getFigure();
+                        Object searchTextObject = getDirectEditRequest().getCellEditor().getValue();
+                        if (searchTextObject != null) {
+                            if (figure.getParent() != null && figure.getParent() instanceof XmlMapSearchZoneToolBar) {
+                                XmlMapSearchZoneToolBar searchZone = (XmlMapSearchZoneToolBar) figure.getParent();
+                                searchZone.search(searchTextObject.toString());
+                                figure.setText(searchTextObject.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         super.commit();
     }
 

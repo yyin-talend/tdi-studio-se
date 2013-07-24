@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.viewers.CellEditor;
@@ -86,6 +87,8 @@ public class MapperManager extends AbstractMapperManager {
     public static final String ERROR_REJECT_MESSAGE = "errorMessage";
 
     public static final String ERROR_REJECT_STACK_TRACE = "errorStackTrace";
+
+    private IFigure selectedFigure;
 
     public MapperManager(XmlMapComponent mapperComponent, XmlMapData copyOfMapData) {
         super(mapperComponent, copyOfMapData);
@@ -200,6 +203,7 @@ public class MapperManager extends AbstractMapperManager {
                     } else {
                         refreshStyledTextEditor(null);
                     }
+                    selectedFigure = ((TableEntityPart) firstElement).getFigure();
                 } else if (firstElement instanceof InputXmlTreeEditPart) {
                     selectInputXmlTree((InputXmlTree) ((InputXmlTreeEditPart) firstElement).getModel());
                     refreshStyledTextEditor(null);
@@ -967,5 +971,13 @@ public class MapperManager extends AbstractMapperManager {
         }
 
         outputTreeSchemaEditor.getExtendedTableModel().beanListModified();
+    }
+
+    public IFigure getSelectedFigure() {
+        return this.selectedFigure;
+    }
+
+    public void setSelectedFigure(IFigure selectedFigure) {
+        this.selectedFigure = selectedFigure;
     }
 }
