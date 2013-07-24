@@ -41,8 +41,8 @@ public class ExternalMapperUiProperties implements Serializable, Cloneable {
 
     public static final Rectangle DEFAULT_BOUNDS_MAPPER = new Rectangle(50, 50, 800, 600);
 
-    private Rectangle boundsMapper = new Rectangle(DEFAULT_BOUNDS_MAPPER.x, DEFAULT_BOUNDS_MAPPER.y,
-            DEFAULT_BOUNDS_MAPPER.width, DEFAULT_BOUNDS_MAPPER.height);
+    private Rectangle boundsMapper = new Rectangle(DEFAULT_BOUNDS_MAPPER.x, DEFAULT_BOUNDS_MAPPER.y, DEFAULT_BOUNDS_MAPPER.width,
+            DEFAULT_BOUNDS_MAPPER.height);
 
     private boolean shellMaximized = false;
 

@@ -128,6 +128,7 @@ import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.EntryState;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.OutputDataMapTableView;
+import org.talend.designer.mapper.ui.visualmap.table.VarsDataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.OutputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -166,6 +167,8 @@ public class UIManager extends AbstractUIManager {
     private OutputDataMapTableView currentSelectedOutputTableView;
 
     private InputDataMapTableView currentSelectedInputTableView;
+
+    private VarsDataMapTableView currentSelectedVarsTableView;
 
     private Zone previousSelectedZone;
 
@@ -254,6 +257,8 @@ public class UIManager extends AbstractUIManager {
             this.currentSelectedOutputTableView = (OutputDataMapTableView) dataMapTableView;
             metadataTableEditorView.setReadOnly(this.currentSelectedOutputTableView.getOutputTable().hasReadOnlyMetadataColumns()
                     || mapperManager.componentIsReadOnly());
+        } else {
+            this.currentSelectedVarsTableView = (VarsDataMapTableView) dataMapTableView;
         }
 
         if (currentZone != Zone.VARS) {
@@ -1618,6 +1623,10 @@ public class UIManager extends AbstractUIManager {
         return this.mapperUI.getScrolledCompositeViewOutputs();
     }
 
+    public ScrolledComposite getScrolledCompositeViewVars() {
+        return this.mapperUI.getScrolledCompositeViewVars();
+    }
+
     public ScrolledComposite getScrolledCompositeViewInputs() {
         return this.mapperUI.getScrolledCompositeViewInputs();
     }
@@ -1674,6 +1683,10 @@ public class UIManager extends AbstractUIManager {
 
     public InputDataMapTableView getCurrentSelectedInputTableView() {
         return this.currentSelectedInputTableView;
+    }
+
+    public VarsDataMapTableView getCurrentSelectedVarsTableView() {
+        return this.currentSelectedVarsTableView;
     }
 
     public TabFolderEditors getTabFolderEditors() {

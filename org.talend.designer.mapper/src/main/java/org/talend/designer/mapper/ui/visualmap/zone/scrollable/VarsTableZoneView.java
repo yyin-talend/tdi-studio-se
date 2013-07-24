@@ -32,9 +32,9 @@ public class VarsTableZoneView extends TablesZoneView {
     @Override
     public Layout initLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.marginLeft = 60;
-        formLayout.marginRight = 60;
-        formLayout.marginTop = 10;
+        formLayout.marginLeft = 0;
+        formLayout.marginRight = 0;
+        formLayout.marginTop = 7;
         formLayout.marginBottom = 10;
         formLayout.marginWidth = 0;
         formLayout.marginHeight = 0;
@@ -42,5 +42,4 @@ public class VarsTableZoneView extends TablesZoneView {
         setLayout(formLayout);
         return formLayout;
     }
-
 }
