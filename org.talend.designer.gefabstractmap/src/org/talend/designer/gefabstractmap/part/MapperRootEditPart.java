@@ -33,6 +33,7 @@ import org.talend.designer.gefabstractmap.figures.manager.RootModelManager;
 import org.talend.designer.gefabstractmap.figures.sash.SashSeparator;
 import org.talend.designer.gefabstractmap.figures.treetools.zone.InputZoneToolBar;
 import org.talend.designer.gefabstractmap.figures.treetools.zone.OutputZoneToolBar;
+import org.talend.designer.gefabstractmap.figures.treetools.zone.SearchZoneToolBar;
 import org.talend.designer.gefabstractmap.resource.ColorInfo;
 import org.talend.designer.gefabstractmap.resource.ColorProviderMapper;
 import org.talend.designer.gefabstractmap.resource.ImageInfo;
@@ -59,6 +60,8 @@ public abstract class MapperRootEditPart extends BaseEditPart {
     private OutputZoneToolBar outputToolBar;
 
     private InputZoneToolBar inputToolBar;
+
+    private SearchZoneToolBar searchToolBar;
 
     private RootModelManager rootModelManager;
 
@@ -97,6 +100,12 @@ public abstract class MapperRootEditPart extends BaseEditPart {
         mainFigure.add(separatorLeft);
 
         // var
+        Figure varZone = new Figure();
+        varZone.setLayoutManager(new ZoneLayout());
+        searchToolBar = createSearchZoneToolBar();
+        searchToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
+        varZone.add(searchToolBar);
+
         varScroll = new ScrollPane();
         varScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         centerFigure = new Figure();
@@ -107,8 +116,8 @@ public abstract class MapperRootEditPart extends BaseEditPart {
         centerFigure.setBorder(new MarginBorder(5, 60, 5, 60));
         varScroll.getViewport().setContents(centerFigure);
         varScroll.getViewport().setContentsTracksWidth(true);
-
-        mainFigure.add(varScroll);
+        varZone.add(varScroll);
+        mainFigure.add(varZone);
 
         // separetor 2
         SashSeparator separatorRight = new SashSeparator();
@@ -223,6 +232,8 @@ public abstract class MapperRootEditPart extends BaseEditPart {
     protected abstract InputZoneToolBar createInputZoneToolBar();
 
     protected abstract RootModelManager createRootModelManager();
+
+    protected abstract SearchZoneToolBar createSearchZoneToolBar();
 
     public RootModelManager getRootModelManager() {
         if (rootModelManager == null) {

@@ -31,7 +31,8 @@ public enum DirectEditType {
     ENABLE_EMPTY_ELEMENT(12),
     JOIN_OPTIMIZATION(13),
     CUSTOM_PARTITIONER(14),
-    INCREASE_PARALLELISM(15);
+    INCREASE_PARALLELISM(15),
+    SERACH(16);
 
     private int id;
 

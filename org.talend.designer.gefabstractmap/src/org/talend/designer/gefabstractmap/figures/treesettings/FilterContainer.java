@@ -40,7 +40,7 @@ public abstract class FilterContainer extends Figure {
 
     protected ImageFigure button;
 
-    private FilterTextArea textArea;
+    protected FilterTextArea textArea;
 
     protected Composite parent;
 
@@ -137,4 +137,7 @@ public abstract class FilterContainer extends Figure {
 
     }
 
+    public FilterTextArea getTextArea() {
+        return this.textArea;
+    }
 }

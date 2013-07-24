@@ -40,7 +40,7 @@ public abstract class ZoneToolBar extends Figure {
 
     protected Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
-    private RootModelManager rootModelManager;
+    protected RootModelManager rootModelManager;
 
     public ZoneToolBar(RootModelManager rootModelManager) {
         this.rootModelManager = rootModelManager;
