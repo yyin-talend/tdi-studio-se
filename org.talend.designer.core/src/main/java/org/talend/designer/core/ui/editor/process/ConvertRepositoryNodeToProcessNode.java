@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.process;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.gef.commands.CompoundCommand;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
@@ -31,6 +33,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
@@ -144,6 +147,12 @@ public class ConvertRepositoryNodeToProcessNode {
         memoSQL = query.getValue().toString();
         String memoSQLTemp = TalendTextUtils.removeQuotesIfExist(memoSQL);
         if ((memoSQLTemp == null || memoSQLTemp.equals("")) && tableName != null && !tableName.equals("")) {
+            boolean check = !Pattern.matches("^\\w+$", tableName);//$NON-NLS-1$
+            boolean isJDBCForMysql = databaseConnection.getURL() == null ? false : databaseConnection.getURL().startsWith(
+                    "jdbc:mysql");
+            if ((dbType.equals(EDatabaseTypeName.MYSQL.getDisplayName()) || isJDBCForMysql) && check) {
+                tableName = TalendQuoteUtils.addQuotes(tableName, TalendQuoteUtils.ANTI_QUOTE);
+            }
             memoSQL = "select * from " + tableName;
             memoSQL = TalendTextUtils.addSQLQuotes(memoSQL);
         }
