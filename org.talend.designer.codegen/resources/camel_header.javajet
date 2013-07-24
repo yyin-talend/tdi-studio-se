@@ -101,6 +101,7 @@
 			boolean hasCXFComponent = false;
 			boolean hasCXFSamlTokenProvider = false;
 			boolean hasCXFSamlTokenConsumer = false;
+			boolean hasCXFSamlTokenAuthorizationConsumer = false;
 			boolean hasCXFUsernameTokenProvider = false;
 			boolean hasCXFUsernameTokenConsumer = false;
 			boolean hasCXFHTTPAuthConsumer = false;
@@ -130,6 +131,9 @@
 								hasCXFSamlTokenProvider = true;
 							}else{
 								hasCXFSamlTokenConsumer = true;
+								if(!hasCXFSamlTokenAuthorizationConsumer){
+									hasCXFSamlTokenAuthorizationConsumer = "true".equals(ElementParameterParser.getValue(n, "__USE_AUTHORIZATION__"))?true:false;
+								}
 							}
 						}else if("USER".equals(securityType) && (!hasCXFUsernameTokenProvider || !hasCXFUsernameTokenConsumer)){
 							if(incomingConnections == 0){
@@ -150,7 +154,8 @@
 			
 			if(hasCXFComponent){
 %>
-			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider, String... token){
+			
+			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider,  boolean useAuthorization, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
 				if( null != bundleContext ){
 					org.apache.cxf.Bus bus = cxfEndpoint.getBus();
@@ -179,7 +184,7 @@
 
 %>
 			        if(token!=null&&"SAMLToken".equals(token[0])){
-			        	addSAMLToken(cxfEndpoint, bus, isProvider, token);
+			        	addSAMLToken(cxfEndpoint, bus, isProvider, useAuthorization, token);
 			        }
 <%}%>
 				}
@@ -405,11 +410,66 @@ public void registerPolicies(org.apache.cxf.Bus bus) {
         		loadPolicy(policies.get("policy.token"), bus));
         policyRegistry.register("org.talend.esb.job.saml.policy",
         		loadPolicy(policies.get("policy.saml"), bus));
+        
+        policyRegistry.register("org.talend.esb.job.saml.authz.policy",
+        		loadPolicy(policies.get("policy.saml.authz.service"), bus));
+        policyRegistry.register("org.talend.esb.job.saml.authz.client.policy",
+        		loadPolicy(policies.get("policy.saml.authz.client"), bus));
 	}
 }
 
+<%if(hasCXFSamlTokenAuthorizationConsumer){%>
+class ClaimValueCallbackHandler implements javax.security.auth.callback.CallbackHandler {
+
+    private String claimValue;
+
+    public void handle(javax.security.auth.callback.Callback[] callbacks)
+        throws java.io.IOException, javax.security.auth.callback.UnsupportedCallbackException {
+        for (int i = 0; i < callbacks.length; i++) {
+            if (callbacks[i] instanceof org.apache.cxf.ws.security.trust.claims.ClaimsCallback) {
+            	org.apache.cxf.ws.security.trust.claims.ClaimsCallback callback = (org.apache.cxf.ws.security.trust.claims.ClaimsCallback) callbacks[i];
+                callback.setClaims(createClaims());
+                
+            } else {
+                throw new javax.security.auth.callback.UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
+            }
+        }
+    }
+
+    /**
+     * Create a Claims Element for a "role"
+     */
+    private org.w3c.dom.Element createClaims() {
+    	org.w3c.dom.Document doc = org.apache.cxf.helpers.DOMUtils.createDocument();
+    	org.w3c.dom.Element claimsElement =
+            doc.createElementNS("http://docs.oasis-open.org/ws-sx/ws-trust/200512", "Claims");
+        claimsElement.setAttributeNS(null, "Dialect", "http://schemas.xmlsoap.org/ws/2005/05/identity");
+
+        org.w3c.dom.Element claimValueElement =
+            doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "ClaimValue");
+        claimValueElement.setAttributeNS(null, "Uri", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role");
+        org.w3c.dom.Element value = doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "Value");
+        value.setTextContent(claimValue);
+        claimValueElement.appendChild(value);
+
+        claimsElement.appendChild(claimValueElement);
+
+        return claimsElement;
+    }
+
+    public String getClaimValue() {
+        return claimValue;
+    }
+
+    public void setClaimValue(String claimValue) {
+        this.claimValue = claimValue;
+    }
+
+}	
+<%}%>
+
 private void addSAMLToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, org.apache.cxf.Bus bus,
-		boolean isProvider, String... token) {
+		boolean isProvider, boolean useAuthorization,  String... token) {
 <%
 if(hasCXFSamlTokenConsumer){
 %>
@@ -438,6 +498,12 @@ if(hasCXFSamlTokenConsumer){
 		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
 				token[2]);
 		stsClient.setProperties(stsProps);
+		
+        if (token[3] != null && !("".equals(token[3]))) {
+            ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
+            roleCallbackHandler.setClaimValue(token[3]);
+            stsClient.setClaimsCallbackHandler(roleCallbackHandler);
+        }
 
 		Map<String, Object> clientProps = new HashMap<String, Object>();
 		clientProps.put(
@@ -462,7 +528,11 @@ if(hasCXFSamlTokenConsumer){
 
 		// add policy
 		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
-		policyReference.setURI("org.talend.esb.job.saml.policy");
+		if(useAuthorization){
+			policyReference.setURI("org.talend.esb.job.saml.authz.client.policy");
+		}else{
+			policyReference.setURI("org.talend.esb.job.saml.policy");
+		}
 		org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
 		policy.addPolicyComponent(policyReference);
 
@@ -506,10 +576,20 @@ if (isProvider) {
 				properties);
 		endpointProps.put("ws-security.callback-handler",
 				callbackHandler);
+		endpointProps.put("use.service.registry",
+				"false");
+		if(useAuthorization){
+			endpointProps.put("tesb.pdp.address",  (String)samlProps
+					.get("tesb.pdp.address"));
+		}
 		cxfEndpoint.setProperties(endpointProps);
 		// add policy
 		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
-		policyReference.setURI("org.talend.esb.job.saml.policy");
+		if(!useAuthorization){
+			policyReference.setURI("org.talend.esb.job.saml.policy");
+		}else{
+			policyReference.setURI("org.talend.esb.job.saml.authz.policy");
+		}
 		org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
 		policy.addPolicyComponent(policyReference);
 
@@ -612,29 +692,36 @@ if(hasCXFComponentConsumerWithCXFMESSAGE){
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+			String roleName = "\"\"";
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
+			String isUseAuthorization = "false";
 			String securityToken = "(String[])null";
 			if("true".equals(useSecurity)){
 				if("USER".equals(securityType)){
 					securityToken = "\"UsernameToken\"";
 				}else if("SAML".equals(securityType)){
 					securityToken = "\"SAMLToken\"";
+					isUseAuthorization =  ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__");
+					if("true".equals(isUseAuthorization) && !isProvider){
+						roleName = ElementParameterParser.getValue(node, "__ROLE_NAME__");
+					}
+					if(null == roleName || "".equals(roleName)){
+						roleName = "\"\"";
+					}
 				}else if("BASIC".equals(securityType)){
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_BASIC";
 				}else if("DIGEST".equals(securityType)){
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST";
 				}
-			}else{
-				isProvider = false;
 			}
 			
 %>
 				// CXF endpoint for <%=cid%>
-				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=securityToken%>
+				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=securityToken%>
 <%
 				if("true".equals(useSecurity) && !isProvider){
 %>				
-							,<%=username%>,<%=password%>
+							,<%=username%>,<%=password%>, <%=roleName%>
 <%
 				}
 %>
