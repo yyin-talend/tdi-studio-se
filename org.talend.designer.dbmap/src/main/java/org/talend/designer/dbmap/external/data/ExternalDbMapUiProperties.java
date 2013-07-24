@@ -37,7 +37,7 @@ public class ExternalDbMapUiProperties implements Serializable, Cloneable {
     // must be null by default to unmarshal correctly
     private int[] weightsDatasFlowViewSashForm = new int[0];
 
-    public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 45, 10, 45 };
+    public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 33, 33, 34 };
 
     private Rectangle boundsMapper = new Rectangle(50, 50, 800, 600);
 

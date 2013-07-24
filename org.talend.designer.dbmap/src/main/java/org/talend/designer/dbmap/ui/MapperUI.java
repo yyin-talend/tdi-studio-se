@@ -68,6 +68,7 @@ import org.talend.designer.dbmap.ui.visualmap.table.InputDataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.table.OutputDataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.zone.InputsZone;
 import org.talend.designer.dbmap.ui.visualmap.zone.OutputsZone;
+import org.talend.designer.dbmap.ui.visualmap.zone.SearchZone;
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.InputTablesZoneView;
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.OutputTablesZoneView;
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.TablesZoneView;
@@ -571,8 +572,14 @@ public class MapperUI {
 
     private void createVarsZoneWithTables(MapperModel mapperModel, final Display display) {
         Control previousControl;
-        sc2 = new ScrolledComposite(datasFlowViewSashForm, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
-        // this.dropTargetOperationListener.addControl(sc2);
+        // Feature TDI-26691 : Add search option
+        SearchZone searchZone = new SearchZone(datasFlowViewSashForm, SWT.NONE, mapperManager);
+        searchZone.createSearchZone();
+
+        sc2 = new ScrolledComposite(searchZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+
+        GridData sc2GridData = new GridData(GridData.FILL_BOTH);
+        sc2.setLayoutData(sc2GridData);
 
         varsTableZoneView = new VarsTableZoneView(sc2, getBorder(), mapperManager);
         // this.dropTargetOperationListener.addControl(varsTableZoneView);

@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Display;
 public enum ColorInfo {
 
     COLOR_ENTRY_HIGHLIGHTED(176, 231, 0), // green
+    COLOR_ENTRY_HIGHLIGHTEDALL(255, 255, 0), // yellow
+    COLOR_ENTRY_SEARCH_HIGHLIGHTED(255, 150, 20), // orange
     COLOR_ENTRY_ERROR(100, 200, 255), // ?
     COLOR_ENTRY_WARNING(0, 200, 60), // ?
     COLOR_ENTRY_NORMAL(170, 170, 170), // ?

@@ -24,6 +24,8 @@ import org.talend.designer.dbmap.ui.color.ColorProviderMapper;
  */
 public enum EntryState {
     HIGHLIGHT(ColorInfo.COLOR_ENTRY_HIGHLIGHTED),
+    HIGHLIGHTALL(ColorInfo.COLOR_ENTRY_HIGHLIGHTEDALL),
+    SEARCH_HIGHLIGHT(ColorInfo.COLOR_ENTRY_SEARCH_HIGHLIGHTED),
     ERROR(ColorInfo.COLOR_ENTRY_ERROR),
     WARNING(ColorInfo.COLOR_ENTRY_WARNING),
     NONE(ColorInfo.COLOR_ENTRY_NONE);
