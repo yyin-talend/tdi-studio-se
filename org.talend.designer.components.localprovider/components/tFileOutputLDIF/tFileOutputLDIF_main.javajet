@@ -31,7 +31,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> modifyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MODIFYCONFIG__");
 %>
 		//////////////////////////
-		boolean encodingBase64 = false;
+		boolean encodingBase64_<%=cid%> = false;
 <%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
@@ -51,7 +51,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
 %>
-		encodingBase64 = false;
+		encodingBase64_<%=cid%> = false;
 		String value_<%=column.getLabel() %>_<%=cid %> = "";
 <%					
 					if(!isPrimitive) {
@@ -149,7 +149,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 					if(isBinary || isBase64){
 						%>
 						// Convert binary or Base64 value to Base64 encoded string				
-						encodingBase64 = true;
+						encodingBase64_<%=cid%> = true;
 						<%	
 					}
 					break;
@@ -173,16 +173,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 				%>
 				// If content doesn't follow LDIF rules, it must be base64 encoded
 				if(!isPrintable_<%=cid %>){
-					encodingBase64 = true;
+					encodingBase64_<%=cid%> = true;
 				}
 				else{
-					encodingBase64 = false;
+					encodingBase64_<%=cid%> = false;
 				}
 				<%
 			}
 			%>
 			// Add ":" to comply with base64 ldif syntax
-				item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
+				item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
 <%
 			List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
@@ -221,13 +221,13 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 %>
 			// If content doesn't follow LDIF rules, it must be base64 encoded
 			if(!isPrintable_<%=cid %>){
-				encodingBase64 = true;
+				encodingBase64_<%=cid%> = true;
 			}
 			<%
 		}
 		%>
 		// Add ":" to comply with base64 ldif syntax
-			value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
+			value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
 <%
 			List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
@@ -288,7 +288,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 					if(isBinary || isBase64){
 						%>
 						// Convert binary or Base64 value to Base64 encoded string				
-						encodingBase64 = true;
+						encodingBase64_<%=cid%> = true;
 						<%	
 					}
 					break;
@@ -306,16 +306,16 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 					%>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
 					if(!isPrintable_<%=cid %>){
-						encodingBase64 = true;
+						encodingBase64_<%=cid%> = true;
 					}
 					else{
-						encodingBase64 = false;
+						encodingBase64_<%=cid%> = false;
 					}
 					<%
 				}
 				%>
 				// Add ":" to comply with base64 ldif syntax
-	                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
+	                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,item_<%=cid %>,<%=encoding%>);
 <%
     			List<IMetadataColumn> columns_sub = metadata.getListColumns();
                 for (int j = 0; j < columns_sub.size(); j++) {
@@ -354,13 +354,13 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 %>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
 					if(!isPrintable_<%=cid %>){
-						encodingBase64 = true;
+						encodingBase64_<%=cid%> = true;
 					}
 				<%
 				}
 			%>
 			// Add ":" to comply with base64 ldif syntax
-				value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
+				value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64_<%=cid%>,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
 <%
 			List<IMetadataColumn> columns_sub = metadata.getListColumns();
             for (int j = 0; j < columns_sub.size(); j++) {
