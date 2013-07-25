@@ -107,7 +107,6 @@
 			boolean hasCXFHTTPAuthConsumer = false;
 			boolean hasCXFHTTPAuthProvider = false;
 			boolean hasCXFComponentConsumer = false;
-			boolean hasCXFComponentConsumerWithCXFMESSAGE = false;
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
 				hasCXFComponent = true;
@@ -121,9 +120,6 @@
 					int incomingConnections = n.getIncomingConnections().size();
 					if(!hasCXFComponentConsumer && incomingConnections>0){
 						hasCXFComponentConsumer = true;
-					}
-					if(!hasCXFComponentConsumerWithCXFMESSAGE && incomingConnections>0 && "CXF_MESSAGE".equals(formatType)){
-						hasCXFComponentConsumerWithCXFMESSAGE = true;
 					}
 					if("true".equals(useSecurity)){
 						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer)){
@@ -605,62 +601,7 @@ if (isProvider) {
 }
 <%
 }
-if(hasCXFComponentConsumerWithCXFMESSAGE){
 %>
-
-			/*
-			 * on CXF_MESSAGE case (call a service)
-			 * if the response is fault, then will run into problem
-			 */
-			private void addCXFMESSAGEFaultInterceptor(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint){
-				cxfEndpoint.getBus().getInFaultInterceptors().add(new org.apache.cxf.interceptor.DocLiteralInInterceptor() {
-					@Override
-					public void handleMessage(org.apache.cxf.message.Message message) {
-						// if has List content, then return
-						if(message.getContent(java.util.List.class) != null){
-							return;
-						}
-						if (isFaultMessage(message)) {
-							org.apache.cxf.message.Message inFaultMessage = message
-									.getExchange().getInFaultMessage();
-							org.apache.cxf.message.MessageContentsList parameters = new org.apache.cxf.message.MessageContentsList();
-							if (inFaultMessage != null) {
-								org.apache.cxf.staxutils.W3CDOMStreamWriter content = inFaultMessage
-										.get(org.apache.cxf.staxutils.W3CDOMStreamWriter.class);
-								parameters.add(content);
-							}
-							message.setContent(java.util.List.class, parameters);
-						}
-					}
-
-					private boolean isFaultMessage(org.apache.cxf.message.Message msg) {
-						if (msg == null
-								|| !(msg instanceof org.apache.cxf.binding.soap.SoapMessage)) {
-							return false;
-						}
-						org.apache.cxf.binding.soap.SoapMessage message = (org.apache.cxf.binding.soap.SoapMessage) msg;
-						
-						//if it's not a CXF_MESSAGE, then return false
-						Object dataFormat = message.getContextualProperty(org.apache.camel.component.cxf.common.message.CxfConstants.DATA_FORMAT_PROPERTY);
-						if(org.apache.camel.component.cxf.DataFormat.CXF_MESSAGE != dataFormat){
-							return false;
-						}
-						
-						javax.xml.stream.XMLStreamReader xmlReader = message
-								.getContent(javax.xml.stream.XMLStreamReader.class);
-						if (xmlReader == null) {
-							return false;
-						}
-						if (message.getVersion().getFault()
-								.equals(xmlReader.getName())
-								&& isRequestor(message)) {
-							return true;
-						}
-						return false;
-					}
-				});
-			}
-<%}%>
 			/**
 			* please initial uri map 
 			*/
@@ -727,10 +668,6 @@ if(hasCXFComponentConsumerWithCXFMESSAGE){
 %>
 						);
 <%			
-			if("CXF_MESSAGE".equals(formatType) && node.getIncomingConnections().size() > 0){
-%>
-				addCXFMESSAGEFaultInterceptor(<%=endpointVar%>);
-<%			}
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
 			if ("true".equals(useSL)) {
