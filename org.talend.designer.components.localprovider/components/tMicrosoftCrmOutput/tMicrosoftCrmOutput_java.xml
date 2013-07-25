@@ -8143,8 +8143,8 @@
 			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" /> 
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" /> 
   			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" /> 
-	        <IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true"/>
-            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true"/>
+	        <IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" BundleID="" REQUIRED="true"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" BundleID="" REQUIRED="true"/>
 				
 		</IMPORTS>
 	</CODEGENERATION>
