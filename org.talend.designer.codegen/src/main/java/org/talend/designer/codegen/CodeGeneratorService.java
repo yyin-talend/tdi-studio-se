@@ -13,17 +13,21 @@
 package org.talend.designer.codegen;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCompilations;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -137,18 +141,33 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     @Override
     public Job refreshTemplates() {
-        // this will force to refresh all components libs when install run ctrl+f3
+        Element oldComponent = null;
+        IComponentSettingsView viewer = null;
+        if (!CommonUIPlugin.isFullyHeadless()) {
+            // TDI-25866:In case select a component and sctrl+shift+f3,need clean its componentSetting view
+            viewer = (IComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView(IComponentSettingsView.ID);
+
+            if (viewer != null) {
+                oldComponent = viewer.getElement();
+                viewer.cleanDisplay();
+            }
+        }
+        ComponentCompilations.deleteMarkers();
+        ComponentsFactoryProvider.getInstance().resetCache();
         ILibraryManagerService librairesManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
                 ILibraryManagerService.class);
         librairesManagerService.clearCache();
-        ComponentCompilations.deleteMarkers();
-        ComponentsFactoryProvider.getInstance().resetCache();
-        Job job = CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        Job job = CodeGeneratorEmittersPoolFactory.initialize();
+        // achen modify to record ctrl+shift+f3 is pressed to fix bug 0006107
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
 
+        if (oldComponent != null) {
+            viewer.setElement(oldComponent);
+        }
         return job;
     }
 }
