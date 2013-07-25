@@ -4216,8 +4216,8 @@
 			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED="true" />
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-api.jar" REQUIRED="true" />
   			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-impl.jar" REQUIRED="true" />
-  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED="true"/>
-            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-ri.jar" REQUIRED="true"/>
+  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED="true"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-ri.jar" REQUIRED="true"/>
 		</IMPORTS>
 	</CODEGENERATION>
 
