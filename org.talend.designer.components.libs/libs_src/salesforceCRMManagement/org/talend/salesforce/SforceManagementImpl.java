@@ -231,6 +231,8 @@ public class SforceManagementImpl implements SforceManagement {
 
     private ArrayList<SObject> updateItems;
 
+    private String[] changedItemKeys = new String[0];
+
     private String upsertKeyColumn;
 
     public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression,
@@ -330,19 +332,22 @@ public class SforceManagementImpl implements SforceManagement {
         try {
             if (insertItems.size() > 0) {
                 SObject[] accs = insertItems.toArray(new SObject[insertItems.size()]);
+                changedItemKeys = new String[accs.length];
                 Create create = new Create();
                 create.setSObjects(accs);
                 SaveResult[] sr = stub.create(create, sh, co, null, null, null, null, null, null, null, null, null).getResult();
                 insertItems.clear();
                 accs = null;
 
-                if (exceptionForErrors && sr != null && sr.length != 0) {
+                if (sr != null && sr.length != 0) {
+                    int batch_idx = -1;
                     for (SaveResult result : sr) {
+                        ++batch_idx;
                         StringBuilder errors = new StringBuilder("");
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors());
+                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?""+(batch_idx+1):"Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -357,6 +362,10 @@ public class SforceManagementImpl implements SforceManagement {
             }
             if (deleteItems.size() > 0) {
                 ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
+                changedItemKeys = new String[delIDs.length]; 
+                for(int ix=0;ix<delIDs.length;++ix) {
+                    changedItemKeys[ix]=delIDs[ix].getID();
+                }
                 Delete dels = new Delete();
                 dels.setIds(delIDs);
                 DeleteResponse dresp = stub.delete(dels, sh, co, null, null, null, null, null, null, null, null);
@@ -364,13 +373,15 @@ public class SforceManagementImpl implements SforceManagement {
                 deleteItems.clear();
                 delIDs = null;
 
-                if (exceptionForErrors && dr != null && dr.length != 0) {
+                if (dr != null && dr.length != 0) {
+                    int batch_idx = -1;
                     for (DeleteResult result : dr) {
+                        ++batch_idx;
                         StringBuilder errors = new StringBuilder("");
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors());
+                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -385,6 +396,10 @@ public class SforceManagementImpl implements SforceManagement {
             }
             if (updateItems.size() > 0) {
                 SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
+                changedItemKeys = new String[upds.length]; 
+                for(int ix=0;ix<upds.length;++ix) {
+                    changedItemKeys[ix]=upds[ix].getId().getID();
+                }
                 Update update = new Update();
                 update.setSObjects(upds);
                 SaveResult[] saveResults = stub.update(update, sh, co, null, null, null, null, null, null, null, null, null)
@@ -392,13 +407,15 @@ public class SforceManagementImpl implements SforceManagement {
                 updateItems.clear();
                 upds = null;
 
-                if (exceptionForErrors && saveResults != null && saveResults.length != 0) {
+                if (saveResults != null && saveResults.length != 0) {
+                    int batch_idx = -1;
                     for (SaveResult result : saveResults) {
+                        ++batch_idx;
                         StringBuilder errors = new StringBuilder("");
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors());
+                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -413,6 +430,17 @@ public class SforceManagementImpl implements SforceManagement {
             }
             if (upsertItems.size() > 0) {
                 SObject[] upds = upsertItems.toArray(new SObject[upsertItems.size()]);
+                changedItemKeys = new String[upds.length];
+                for(int ix=0;ix<upds.length;++ix) {
+                    changedItemKeys[ix]="No value for "+upsertKeyColumn+" ";
+                    OMElement[] oms = upds[ix].getExtraElement();
+                    for(int iy=0;iy<oms.length;++iy) {
+                        if(upsertKeyColumn!=null && oms[iy]!=null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
+                            changedItemKeys[ix]=oms[iy].getText();
+                            break;
+                        }
+                    }
+                }
                 Upsert upsert = new Upsert();
                 upsert.setSObjects(upds);
                 upsert.setExternalIDFieldName(upsertKeyColumn);
@@ -421,13 +449,15 @@ public class SforceManagementImpl implements SforceManagement {
                 upsertItems.clear();
                 upds = null;
 
-                if (exceptionForErrors && upsertResults != null && upsertResults.length != 0) {
+                if (upsertResults != null && upsertResults.length != 0) {
+                    int batch_idx = -1;
                     for (UpsertResult result : upsertResults) {
+                        ++batch_idx;
                         StringBuilder errors = new StringBuilder("");
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors());
+                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -462,6 +492,10 @@ public class SforceManagementImpl implements SforceManagement {
 
         if (deleteItems.size() >= commitLevel) {
             ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
+            changedItemKeys = new String[delIDs.length]; 
+            for(int ix=0;ix<delIDs.length;++ix) {
+                changedItemKeys[ix]=delIDs[ix].getID();
+            }
             Delete dels = new Delete();
             dels.setIds(delIDs);
             DeleteResponse dresp = stub.delete(dels, sh, co, null, null, null, null, null, null, null, null);
@@ -470,12 +504,14 @@ public class SforceManagementImpl implements SforceManagement {
             delIDs = null;
 
             if (dr != null && dr.length != 0) {
+                int batch_idx = -1;
                 for (DeleteResult result : dr) {
+                    ++batch_idx;
                     StringBuilder errors = new StringBuilder("");
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors());
+                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -516,6 +552,7 @@ public class SforceManagementImpl implements SforceManagement {
 
         if (insertItems.size() >= commitLevel) {
             SObject[] accs = insertItems.toArray(new SObject[insertItems.size()]);
+            changedItemKeys = new String[accs.length];
             Create create = new Create();
             create.setSObjects(accs);
             SaveResult[] sr = stub.create(create, sh, co, null, null, null, null, null, null, null, null, null).getResult();
@@ -523,12 +560,14 @@ public class SforceManagementImpl implements SforceManagement {
             accs = null;
 
             if (sr != null && sr.length != 0) {
+                int batch_idx = -1;
                 for (SaveResult result : sr) {
+                    ++batch_idx;
                     StringBuilder errors = new StringBuilder("");
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors());
+                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?""+(batch_idx+1):"Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -561,6 +600,10 @@ public class SforceManagementImpl implements SforceManagement {
         // call the update passing an array of object
         if (updateItems.size() >= commitLevel) {
             SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
+            changedItemKeys = new String[upds.length]; 
+            for(int ix=0;ix<upds.length;++ix) {
+                changedItemKeys[ix]=upds[ix].getId().getID();
+            }
             Update update = new Update();
             update.setSObjects(upds);
             SaveResult[] saveResults = stub.update(update, sh, co, null, null, null, null, null, null, null, null, null)
@@ -568,13 +611,15 @@ public class SforceManagementImpl implements SforceManagement {
             updateItems.clear();
             upds = null;
 
-            if (exceptionForErrors && saveResults != null && saveResults.length != 0) {
+            if (saveResults != null && saveResults.length != 0) {
+                int batch_idx = -1;
                 for (SaveResult result : saveResults) {
+                    ++batch_idx;
                     StringBuilder errors = new StringBuilder("");
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors());
+                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -611,6 +656,17 @@ public class SforceManagementImpl implements SforceManagement {
         // call the update passing an array of object
         if (upsertItems.size() >= commitLevel) {
             SObject[] upds = upsertItems.toArray(new SObject[upsertItems.size()]);
+            changedItemKeys = new String[upds.length]; 
+            for(int ix=0;ix<upds.length;++ix) {
+                changedItemKeys[ix]="No value for "+upsertKeyColumn+" ";
+                OMElement[] oms = upds[ix].getExtraElement();
+                for(int iy=0;iy<oms.length;++iy) {
+                    if(upsertKeyColumn!=null && oms[iy]!=null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
+                        changedItemKeys[ix]=oms[iy].getText();
+                        break;
+                    }
+                }
+            }
             Upsert upsert = new Upsert();
             upsert.setSObjects(upds);
             upsert.setExternalIDFieldName(upsertKeyColumn);
@@ -619,13 +675,15 @@ public class SforceManagementImpl implements SforceManagement {
             upsertItems.clear();
             upds = null;
 
-            if (exceptionForErrors && upsertResults != null && upsertResults.length != 0) {
+            if (upsertResults != null && upsertResults.length != 0) {
+                int batch_idx = -1;
                 for (UpsertResult result : upsertResults) {
+                    ++batch_idx;
                     StringBuilder errors = new StringBuilder("");
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors());
+                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -642,7 +700,7 @@ public class SforceManagementImpl implements SforceManagement {
 
     }
 
-    private StringBuilder addLog(Error[] resultErrors) throws Exception {
+    private StringBuilder addLog(Error[] resultErrors, String row_key) throws Exception {
         StringBuilder errors = new StringBuilder("");
         if (resultErrors != null) {
             for (Error error : resultErrors) {
@@ -651,8 +709,10 @@ public class SforceManagementImpl implements SforceManagement {
                     logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
                     logWriter.newLine();
                     logWriter.newLine();
-                    logWriter.append("\tFields: ");
+                    logWriter.append("\tRowKey/RowNo: "+row_key);
                     if (error.getFields() != null) {
+                        logWriter.newLine();
+                        logWriter.append("\tFields: ");
                         boolean flag = false;
                         for (String field : error.getFields()) {
                             if (flag) {
