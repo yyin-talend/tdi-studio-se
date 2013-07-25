@@ -498,13 +498,13 @@ if(hasCXFSamlTokenConsumer){
 		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
 				token[2]);
 		stsClient.setProperties(stsProps);
-		
+<%if(hasCXFSamlTokenAuthorizationConsumer){%>
         if (token[3] != null && !("".equals(token[3]))) {
             ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
             roleCallbackHandler.setClaimValue(token[3]);
             stsClient.setClaimsCallbackHandler(roleCallbackHandler);
         }
-
+<%}%>
 		Map<String, Object> clientProps = new HashMap<String, Object>();
 		clientProps.put(
 				org.apache.cxf.ws.security.SecurityConstants.STS_CLIENT,
