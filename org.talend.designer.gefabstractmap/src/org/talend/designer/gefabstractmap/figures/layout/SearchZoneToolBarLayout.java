@@ -67,7 +67,7 @@ public class SearchZoneToolBarLayout extends ToolbarLayout {
             int minHeight = minSizes[i].height;
             int prefWidth = prefSizes[i].width;
             if (i == 1) {
-                prefWidth = 220;
+                prefWidth = 200;
             }
             Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
             child = (IFigure) children.get(i);

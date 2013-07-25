@@ -2453,8 +2453,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
                             Arrays.<ITableEntry> asList(currentExpressionFilterEntry), true, false);
-                    expressionFilterText.setBackground(null);
-                    expressionFilterText.setForeground(null);
+                    if (!mapperManager.isSearchOption()) {
+                        expressionFilterText.setBackground(null);
+                        expressionFilterText.setForeground(null);
+                    }
                     StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                             .getStyledTextHandler();
                     styledTextHandler.setCurrentEntry(currentExpressionFilterEntry);
@@ -2701,12 +2703,20 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         List<Problem> problems = table.getExpressionFilter().getProblems();
         if (problems != null && colorAllowed) {
             expressionFilterText.setColoring(false);
-            expressionFilterText.setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
-            expressionFilterText.setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
+            if (!mapperManager.isSearchOption()) {
+                expressionFilterText
+                        .setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
+                expressionFilterText
+                        .setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
+            }
         } else {
             expressionFilterText.setColoring(true);
-            expressionFilterText.setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL));
-            expressionFilterText.setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL));
+            if (!mapperManager.isSearchOption()) {
+                expressionFilterText
+                        .setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL));
+                expressionFilterText
+                        .setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL));
+            }
         }
     }
 

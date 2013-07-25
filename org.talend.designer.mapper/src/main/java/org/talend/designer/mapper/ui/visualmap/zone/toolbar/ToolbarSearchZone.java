@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.visualmap.table.EntryState;
 
 /**
@@ -89,7 +88,7 @@ public class ToolbarSearchZone {
 
         hightLightAllButton = new ToolItem(toolBarActions, SWT.CHECK);
         hightLightAllButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.CHECKED_ICON)));
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.HIGHTLIGHT_ICON)));
         // hightLightAllButton.setText("Hightlight All");
         hightLightAllButton.setToolTipText("hightlight all");
         hightLightAllButton.setSelection(false);
@@ -98,7 +97,6 @@ public class ToolbarSearchZone {
     }
 
     private void addCommonsComponentListeners() {
-        final UIManager uiManager = mapperManager.getUiManager();
         final SearchZoneMapper searchZoneMapper = new SearchZoneMapper(mapperManager);
 
         searchText.addKeyListener(new KeyListener() {
@@ -106,12 +104,11 @@ public class ToolbarSearchZone {
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                     e.doit = false;
+                    // if change the search text ,need clear the data .
                     if (searchMaps.size() > 0) {
-                        if (!searchZoneMapper.isHightlightAll()) {
-                            searchZoneMapper.hightlightAll(searchMaps, false);
-                        } else {
-                            searchZoneMapper.hightlightAll(searchMaps, true);
-                        }
+                        searchZoneMapper.hightlightAll(searchMaps, false);
+                        hightLightAllButton.setSelection(false);
+                        searchZoneMapper.setHightlightAll(hightLightAllButton.getSelection());
                         searchMaps.clear();
                     }
                     searchZoneMapper.search(searchMaps, searchText.getText());
@@ -177,6 +174,7 @@ public class ToolbarSearchZone {
                 if (searchMaps.isEmpty() && hightLightAllButton.getSelection()) {
                     searchZoneMapper.search(searchMaps, searchText.getText());
                 }
+                mapperManager.setSearchOption(hightLightAllButton.getSelection());
                 searchZoneMapper.setHightlightAll(hightLightAllButton.getSelection());
                 searchZoneMapper.hightlightAll(searchMaps, hightLightAllButton.getSelection());
             }

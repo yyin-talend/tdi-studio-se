@@ -32,6 +32,7 @@ import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treesettings.XmlMapFilterContainer;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -41,6 +42,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -51,22 +53,22 @@ public class SearchZoneMapper {
 
     private boolean isHightlightAll = false;
 
+    private SearchPattern matcher = null;
+
     public SearchZoneMapper(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
+        matcher = new SearchPattern();
     }
 
     public void search(Map<Integer, Figure> searchMaps, String searchValue) {
         if (searchValue.equals("") || searchValue == null) {
             return;
         }
-        // SearchPattern
-        SearchPattern matcher = new SearchPattern();
-        matcher.setPattern(searchValue);
 
         List<InputXmlTree> inputTrees = mapperManager.getExternalData().getInputTrees();
         List<VarTable> varTables = mapperManager.getExternalData().getVarTables();
         List<OutputXmlTree> outputTrees = mapperManager.getExternalData().getOutputTrees();
-
+        matcher.setPattern(searchValue);
         int index = -1;
 
         // for the Lookup InputTables
@@ -88,19 +90,9 @@ public class SearchZoneMapper {
             }
             // TreeNode
             for (TreeNode node : inputXmlTree.getNodes()) {
-                if (node.getExpression() != null && matcher.matches(node.getExpression())) {
-                    EList<Adapter> adapter = node.eAdapters();
-                    if (adapter.size() > 0) {
-                        if (adapter.get(0) instanceof TableEntityPart) {
-                            TableEntityPart tableEntityPart = (TableEntityPart) adapter.get(0);
-                            if (tableEntityPart != null && tableEntityPart.getFigure() != null
-                                    && tableEntityPart.getFigure() instanceof TableEntityFigure) {
-                                TableEntityFigure nodeFigure = (TableEntityFigure) tableEntityPart.getFigure();
-                                index++;
-                                searchMaps.put(index, nodeFigure);
-                            }
-                        }
-                    }
+                if (getMatcherNodeFigure(node) != null) {
+                    index++;
+                    searchMaps.put(index, getMatcherNodeFigure(node));
                 }
             }
         }
@@ -108,19 +100,9 @@ public class SearchZoneMapper {
         // for the VarsTables
         for (VarTable varTable : varTables) {
             for (VarNode node : varTable.getNodes()) {
-                if (node.getExpression() != null && matcher.matches(node.getExpression())) {
-                    EList<Adapter> adapter = node.eAdapters();
-                    if (adapter.size() > 0) {
-                        if (adapter.get(0) instanceof TableEntityPart) {
-                            TableEntityPart tableEntityPart = (TableEntityPart) adapter.get(0);
-                            if (tableEntityPart != null && tableEntityPart.getFigure() != null
-                                    && tableEntityPart.getFigure() instanceof TableEntityFigure) {
-                                TableEntityFigure nodeFigure = (TableEntityFigure) tableEntityPart.getFigure();
-                                index++;
-                                searchMaps.put(index, nodeFigure);
-                            }
-                        }
-                    }
+                if (getMatcherNodeFigure(node) != null) {
+                    index++;
+                    searchMaps.put(index, getMatcherNodeFigure(node));
                 }
             }
         }
@@ -144,18 +126,18 @@ public class SearchZoneMapper {
             }
             // OutputTreeNode
             for (OutputTreeNode node : outputXmlTree.getNodes()) {
-                if (node.getExpression() != null && matcher.matches(node.getExpression())) {
-                    EList<Adapter> adapter = node.eAdapters();
-                    if (adapter.size() > 0) {
-                        if (adapter.get(0) instanceof TableEntityPart) {
-                            TableEntityPart tableEntityPart = (TableEntityPart) adapter.get(0);
-                            if (tableEntityPart != null && tableEntityPart.getFigure() != null
-                                    && tableEntityPart.getFigure() instanceof TableEntityFigure) {
-                                TableEntityFigure nodeFigure = (TableEntityFigure) tableEntityPart.getFigure();
-                                index++;
-                                searchMaps.put(index, nodeFigure);
-                            }
+                // id_Document type
+                if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
+                    for (TreeNode nodeTemp : XmlMapUtil.getFlatChildrenList(node)) {
+                        if (getMatcherNodeFigure(nodeTemp) != null) {
+                            index++;
+                            searchMaps.put(index, getMatcherNodeFigure(nodeTemp));
                         }
+                    }
+                } else {
+                    if (getMatcherNodeFigure(node) != null) {
+                        index++;
+                        searchMaps.put(index, getMatcherNodeFigure(node));
                     }
                 }
             }
@@ -265,8 +247,23 @@ public class SearchZoneMapper {
                 }
             }
         }
-
         return selectKey;
+    }
+
+    private TableEntityFigure getMatcherNodeFigure(AbstractNode node) {
+        if (node != null && node.getExpression() != null && matcher.matches(node.getExpression())) {
+            EList<Adapter> adapter = node.eAdapters();
+            if (adapter.size() > 0) {
+                if (adapter.get(0) instanceof TableEntityPart) {
+                    TableEntityPart tableEntityPart = (TableEntityPart) adapter.get(0);
+                    if (tableEntityPart != null && tableEntityPart.getFigure() != null
+                            && tableEntityPart.getFigure() instanceof TableEntityFigure) {
+                        return (TableEntityFigure) tableEntityPart.getFigure();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public boolean isHightlightAll() {

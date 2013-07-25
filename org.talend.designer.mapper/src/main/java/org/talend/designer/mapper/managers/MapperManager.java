@@ -116,6 +116,8 @@ public class MapperManager extends AbstractMapperManager {
 
     private boolean isMRProcess;
 
+    private boolean isSearchOption = false;
+
     public MapperManager(MapperComponent mapperComponent) {
         super(mapperComponent);
         tableEntriesManager = new TableEntriesManager(this);
@@ -1154,4 +1156,11 @@ public class MapperManager extends AbstractMapperManager {
         return this.isMRProcess;
     }
 
+    public boolean isSearchOption() {
+        return this.isSearchOption;
+    }
+
+    public void setSearchOption(boolean isSearchOption) {
+        this.isSearchOption = isSearchOption;
+    }
 }

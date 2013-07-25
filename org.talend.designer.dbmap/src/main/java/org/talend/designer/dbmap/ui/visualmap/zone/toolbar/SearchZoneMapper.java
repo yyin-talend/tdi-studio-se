@@ -179,32 +179,29 @@ public class SearchZoneMapper {
 
     public Integer getSelectedKeyAtSelectedTableItem(Map<Integer, ITableEntry> searchMaps) {
         Integer selectKey = 0;
-        ISelection selection = null;
-        TableViewerCreator tableViewerCreator = uiManager.getCurrentSelectedInputTableView().getTableViewerCreatorForColumns();
-        if (tableViewerCreator != null) {
-            selection = tableViewerCreator.getTableViewer().getSelection();
-            if (selection.isEmpty() && uiManager.getCurrentSelectedOutputTableView() != null) {
-                // ?
-                tableViewerCreator = uiManager.getCurrentSelectedOutputTableView().getTableViewerCreatorForColumns();
-                if (tableViewerCreator != null) {
-                    selection = tableViewerCreator.getTableViewer().getSelection();
-                }
-            }
+        TableViewerCreator tableViewerCreator = null;
+        if (uiManager.getCurrentSelectedInputTableView() != null) {
+            tableViewerCreator = uiManager.getCurrentSelectedInputTableView().getTableViewerCreatorForColumns();
+        } else if (uiManager.getCurrentSelectedOutputTableView() != null) {
+            tableViewerCreator = uiManager.getCurrentSelectedOutputTableView().getTableViewerCreatorForColumns();
         }
-        if (selection != null && !selection.isEmpty()) {
-            List<ITableEntry> list = uiManager.extractSelectedTableEntries(selection);
-            if (list != null && !list.isEmpty()) {
-                ITableEntry tableEntry = list.get(0);
-                if (tableEntry != null) {
-                    if (searchMaps.containsValue(tableEntry)) {
-                        Iterator iter = searchMaps.entrySet().iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry entry = (Map.Entry) iter.next();
-                            if (entry.getValue() != null && entry.getValue() instanceof ITableEntry) {
-                                ITableEntry tableEntryTemp = (ITableEntry) entry.getValue();
-                                if (tableEntry.equals(tableEntryTemp)) {
-                                    tableViewerCreator.getTableViewer().getTable().deselectAll();
-                                    return (Integer) entry.getKey();
+        if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null) {
+            ISelection selection = tableViewerCreator.getTableViewer().getSelection();
+            if (selection != null && !selection.isEmpty()) {
+                List<ITableEntry> list = uiManager.extractSelectedTableEntries(selection);
+                if (list != null && !list.isEmpty()) {
+                    ITableEntry tableEntry = list.get(0);
+                    if (tableEntry != null) {
+                        if (searchMaps.containsValue(tableEntry)) {
+                            Iterator iter = searchMaps.entrySet().iterator();
+                            while (iter.hasNext()) {
+                                Map.Entry entry = (Map.Entry) iter.next();
+                                if (entry.getValue() != null && entry.getValue() instanceof ITableEntry) {
+                                    ITableEntry tableEntryTemp = (ITableEntry) entry.getValue();
+                                    if (tableEntry.equals(tableEntryTemp)) {
+                                        tableViewerCreator.getTableViewer().getTable().deselectAll();
+                                        return (Integer) entry.getKey();
+                                    }
                                 }
                             }
                         }

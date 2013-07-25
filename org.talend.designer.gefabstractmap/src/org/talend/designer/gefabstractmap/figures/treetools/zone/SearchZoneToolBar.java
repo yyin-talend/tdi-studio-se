@@ -64,7 +64,7 @@ public abstract class SearchZoneToolBar extends ZoneToolBar {
 
         public HightLightAllButton() {
             super(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                    .getImageDesc(EImage.CHECKED_ICON)));
+                    .getImageDesc(EImage.HIGHTLIGHT_ICON)));
         }
 
         @Override
