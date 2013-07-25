@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -38,8 +40,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -322,8 +326,17 @@ public class LoginDialog extends TrayDialog {
 
                 if (!isExchangeLogon || !isUserPassRight) {
                     if (count < 10) {
-                        TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-                        tfDialog.open();
+                        new Thread() {
+
+                            @Override
+                            public void run() {
+                                Display display = new Display();
+                                Shell shell = new Shell(display, SWT.ON_TOP);
+                                TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
+                                tfDialog.open();
+                            }
+
+                        }.start();
                     }
                 }
             }
