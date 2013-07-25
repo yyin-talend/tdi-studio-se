@@ -4203,8 +4203,8 @@
 			<IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/jaxen-1.1.1.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-api.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
   			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj-impl.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
-  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
-            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-ri.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
+  			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-api.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxp-ri.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="crm4client" MODULE="crm4client.jar" UrlPath="platform:/plugin/org.talend.libraries.crm/lib/crm4client.jar" REQUIRED_IF="(AUTH_TYPE=='ON_PREMISE') OR (API_VERSION=='API_2007')" />
             <!-- 2011 -->
             <!-- crm client -->
