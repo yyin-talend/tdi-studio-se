@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Codegen Plug-in
+Bundle-Name: CodeGen Plug-in
 Bundle-SymbolicName: org.talend.designer.codegen;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.talend.core.repository,
  org.eclipse.emf.codegen,

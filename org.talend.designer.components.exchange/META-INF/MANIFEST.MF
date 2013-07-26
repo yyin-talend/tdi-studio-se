@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Exchange plugin
+Bundle-Name: Exchange Plug-in
 Bundle-SymbolicName: org.talend.designer.components.exchange;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.talend.designer.components.exchange.ExchangePlugin
