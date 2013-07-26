@@ -827,14 +827,14 @@ public abstract class JobScriptsManager {
                 String itemVersionString = (itemVersion == null) ? "" : "_" + itemVersion;
                 if (item.getFileExtension() == null || "".equals(item.getFileExtension())) { //$NON-NLS-1$
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + itemVersionString + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                            .append(itemName + itemVersionString + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ 
                 } else {
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + itemVersionString + "." + item.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$
+                            .append(itemName + itemVersionString + "." + item.getFileExtension()); //$NON-NLS-1$ 
                 }
 
                 IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                        .append(itemName + itemVersionString + "." //$NON-NLS-1$ //$NON-NLS-2$
+                        .append(itemName + itemVersionString + "." //$NON-NLS-1$ 
                                 + FileConstants.PROPERTIES_EXTENSION);
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();
@@ -851,7 +851,7 @@ public abstract class JobScriptsManager {
 
             }
 
-            if (org.talend.commons.utils.platform.PluginChecker.isTDQLoaded()) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
                 ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
                         ITDQItemService.class);
                 if (tdqItemService != null

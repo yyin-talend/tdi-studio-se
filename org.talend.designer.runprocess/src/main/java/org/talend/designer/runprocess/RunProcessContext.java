@@ -44,9 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IConnection;
@@ -58,13 +56,10 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.java.ExportModelJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.prefs.RunProcessTokenCollector;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
@@ -1580,35 +1575,4 @@ public class RunProcessContext {
         this.isBasicRun = isBasicRun;
     }
 
-    protected IProcessor getExportModelProcessor(IProcess process, Property property) {
-        List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-        try {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-                IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                        IMRProcessService.class);
-                for (INode node : graphicalNodes) {
-                    if (node.getComponent() != null && "tRunJob".equals(node.getComponent().getName())) {
-                        IElementParameter elementParameter = node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS");
-                        if (elementParameter != null) {
-                            Object value = elementParameter.getValue();
-                            if (value != null && !"".equals(value)) {
-                                IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
-                                        .getProxyRepositoryFactory().getLastVersion(value.toString());
-                                if (lastVersion != null) {
-                                    boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
-                                    if (hasMrSubProcess) {
-                                        return new ExportModelJavaProcessor(process, property, true);
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (PersistenceException e) {
-            return null;
-        }
-        return null;
-    }
 }

@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.SystemException;
@@ -130,7 +131,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      */
     @Override
     public Process run(String[] optionsParam, int statisticsPort, int tracePort) throws ProcessorException {
-        return run(optionsParam, statisticsPort, tracePort, null, null);
+        return run(optionsParam, statisticsPort, tracePort, new NullProgressMonitor(), null);
     }
 
     /*

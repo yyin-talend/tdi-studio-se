@@ -17,12 +17,20 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.service.IMRProcessService;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.repository.ui.utils.ZipToFile;
 
 /**
@@ -43,23 +51,32 @@ public class ExportModelJavaProcessor extends JavaProcessor {
         super(process, property, filenameFromLabel);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.runprocess.Processor#run(java.lang.String[], int, int,
+     * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
+     */
     @Override
-    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+    public Process run(String[] optionsParam, int statisticsPort, int tracePort, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
         ExportProcessorHelper helper = new ExportProcessorHelper();
 
         // export job
-        String archive = helper.exportJob(this, statisticsPort, tracePort, watchParam, monitor);
+        String archive = helper.exportJob(this, statisticsPort, tracePort,
+                ArrayUtils.contains(optionsParam, "--watch") ? "--watch" : null, monitor);
         unzipFolder = unzipAndDeploy(process, archive);
 
         Process process = super.execFrom(unzipFolder + File.separatorChar + this.process.getName(), Level.INFO, statisticsPort,
-                tracePort, new String[] { watchParam });
+                tracePort, optionsParam);
 
-        // delete tempfiles after exeute ??
-        // FilesUtils.deleteFile(new File(archive), true);
-        // FilesUtils.deleteFile(new File(unzipFolder), true);
         return process;
+    }
 
+    @Override
+    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+            IProcessMessageManager processMessageManager) throws ProcessorException {
+        return run(new String[] { watchParam }, statisticsPort, tracePort, monitor, processMessageManager);
     }
 
     @Override
@@ -114,4 +131,37 @@ public class ExportModelJavaProcessor extends JavaProcessor {
         }
         return list;
     }
+
+    public boolean shouldRunAsExport() {
+        List<? extends INode> generatedNodes = process.getGeneratingNodes();
+        try {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                        IMRProcessService.class);
+                for (INode node : generatedNodes) {
+                    if (node.getComponent() != null && "tRunJob".equals(node.getComponent().getName())) {
+                        IElementParameter elementParameter = node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS");
+                        if (elementParameter != null) {
+                            Object value = elementParameter.getValue();
+                            if (value != null && !"".equals(value)) {
+                                IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
+                                        .getProxyRepositoryFactory().getLastVersion(value.toString());
+                                if (lastVersion != null) {
+                                    boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
+                                    if (hasMrSubProcess) {
+                                        return true;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            return false;
+        }
+        return false;
+    }
+
 }
