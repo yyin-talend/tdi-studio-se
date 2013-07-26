@@ -332,6 +332,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         };
         job.setUser(false);
+        job.setSystem(true);
         job.setPriority(Job.INTERACTIVE);
         job.schedule();
         job.wakeUp(); // start as soon as possible

@@ -301,7 +301,7 @@ public class CodeView extends ViewPart {
                 break;
             default:
             }
-            Job job = new Job("Generation Engine Initialization in progress...") {
+            Job job = new Job(Messages.getString("CodeView.initMessage")) {
 
                 @Override
                 protected IStatus run(IProgressMonitor monitor) {
