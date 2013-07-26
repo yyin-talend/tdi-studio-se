@@ -19,6 +19,12 @@ import java.util.Map;
 
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.UniqueNodeNameGenerator;
+import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -53,16 +59,59 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand#createPastableBeansList(java.util.List)
+     * @see
+     * org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand#createPastableBeansList(java
+     * .util.List)
      */
     @Override
     public List createPastableBeansList(ExtendedTableModel extendedTable, List copiedObjectsList) {
+
         ArrayList list = new ArrayList();
+
+        IElementParameter param = null;
+        INode node = null;
+        if (extendedTable instanceof PropertiesTableEditorModel) {
+            PropertiesTableEditorModel<B> model = (PropertiesTableEditorModel<B>) extendedTable;
+            if (model.getElement() instanceof INode) {
+                node = (INode) model.getElement();
+                param = model.getElemParameter();
+            }
+        }
 
         for (Object current : copiedObjectsList) {
             if (current instanceof HashMap) {
                 // create a new column as a copy of this column
                 Map<String, Object> clonedRow = (Map<String, Object>) ((HashMap) current).clone();
+                if (param != null) {
+                    for (String key : clonedRow.keySet()) {
+                        Object value = clonedRow.get(key);
+                        if (value instanceof String && !"".equals(value)) {
+                            IElementParameter childParam = null;
+                            for (Object o : param.getListItemsValue()) {
+                                if (o instanceof IElementParameter) {
+                                    if (((IElementParameter) o).getName().equals(key)) {
+                                        childParam = (IElementParameter) o;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (childParam != null && childParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
+                                IMetadataTable originalMetadata = node.getMetadataTable((String) value);
+                                IMetadataTable clonedMetadata = originalMetadata.clone();
+                                List<String> tableList = new ArrayList<String>();
+                                for (IMetadataTable table : node.getMetadataList()) {
+                                    tableList.add(table.getTableName());
+                                }
+                                String newTableName = UniqueNodeNameGenerator.generateUniqueNodeName(
+                                        originalMetadata.getTableName(), tableList);
+                                clonedMetadata.setTableName(newTableName);
+                                clonedMetadata.setLabel(newTableName);
+                                node.getMetadataList().add(clonedMetadata);
+                                clonedRow.put(key, newTableName);
+                            }
+                        }
+                    }
+                }
                 list.add(clonedRow);
             }
         }
