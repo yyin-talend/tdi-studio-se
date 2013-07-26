@@ -153,13 +153,12 @@
 			
 			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider,  boolean useAuthorization, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
+<%if(hasCXFUsernameTokenProvider || hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer || hasCXFHTTPAuthProvider){%>
 				if( null != bundleContext ){
-					org.apache.cxf.Bus bus = cxfEndpoint.getBus();
-			        org.apache.cxf.configuration.ConfiguredBeanLocator cbl = bus==null?null:bus.getExtension(org.apache.cxf.configuration.ConfiguredBeanLocator.class);
-			        if(cbl != null){
-			             bus.setExtension(new org.apache.cxf.bus.osgi.OSGiBeanLocator(cbl, bundleContext), org.apache.cxf.configuration.ConfiguredBeanLocator.class);
-			        }
+					<%if(hasCXFUsernameTokenProvider || hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer){%>
+						org.apache.cxf.Bus bus = cxfEndpoint.getBus();
 <%
+					}
 					if(hasCXFUsernameTokenProvider){
 %>			        
 				        if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
@@ -185,6 +184,7 @@
 <%}%>
 				}
 <%
+}
 				if(hasCXFUsernameTokenConsumer){
 %>
 				if(!isProvider&&token!=null&&token.length>=3&&"UsernameToken".equals(token[0])){
