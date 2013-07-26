@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: DataIntegration
+Bundle-Name: Data Integration View Plug-in
 Bundle-SymbolicName: org.talend.repository.view.di;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.talend.repository.view.di.DIRepositoryViewPlugin
-Bundle-Vendor: .Talend.
+Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.expressions;visibility:=reexport,

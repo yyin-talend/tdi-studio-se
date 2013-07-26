@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Scd Plug-in
+Bundle-Name: SCD Plug-in
 Bundle-SymbolicName: org.talend.designer.scd;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: .Talend SA.

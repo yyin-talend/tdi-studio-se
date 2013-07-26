@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.talend.designer.runprocess.test
 Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.talend.designer.runprocess;bundle-version="2.2.0"
+Fragment-Host: org.talend.designer.runprocess
 Require-Bundle: org.junit4;bundle-version="4.5.0"
