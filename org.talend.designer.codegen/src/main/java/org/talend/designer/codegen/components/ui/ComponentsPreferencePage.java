@@ -222,6 +222,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     protected void addFontAndColorFieldsForDataViewer(Composite composite) {
         IntegerFieldEditor rowLimit = new IntegerFieldEditor(IComponentPreferenceConstant.LIMIT,
                 Messages.getString("ComponentsPreferencePage.rowLimit"), composite);//$NON-NLS-1$ 
+        rowLimit.setValidRange(1, 1000);
         addField(rowLimit);
         Text textControl = rowLimit.getTextControl(composite);
         GridData layoutData = new GridData();
