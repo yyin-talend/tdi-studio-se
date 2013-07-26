@@ -175,27 +175,34 @@ public class SetParallelizationCommand extends Command {
                                     con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
                                     con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
 
-                                    nextPartionerNode = ParallelExecutionUtils.getNextPartionerTargetNode(con);
+                                    if (isStartRow && lineStyle.equals(EConnectionType.FLOW_MERGE)) {
+                                        con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
+                                        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.TRUE);
+                                        isExistParallel = false;
+                                    } else {
+                                        nextPartionerNode = ParallelExecutionUtils.getNextPartionerTargetNode(con);
 
-                                    // set the keys from target node keys
-                                    if (nextPartionerNode != null) {
-                                        // TDI-26555:in case the target partitioner key not in the main flow.such as in
-                                        // lookup row,need to go next connection for partitioning
-                                        if (ParallelExecutionUtils.isConClumnsContainsPartionKey(con, (Node) nextPartionerNode)) {
-                                            if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) nextPartionerNode)
-                                                    .size() > 0) {
-                                                ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) nextPartionerNode);
+                                        // set the keys from target node keys
+                                        if (nextPartionerNode != null) {
+                                            // TDI-26555:in case the target partitioner key not in the main flow.such as
+                                            // in lookup row,need to go next connection for partitioning
+                                            if (ParallelExecutionUtils.isConClumnsContainsPartionKey(con,
+                                                    (Node) nextPartionerNode)) {
+                                                if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) nextPartionerNode)
+                                                        .size() > 0) {
+                                                    ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) nextPartionerNode);
+                                                } else {
+                                                    ParallelExecutionUtils.setHashKeysForCon(con);
+                                                }
                                             } else {
-                                                ParallelExecutionUtils.setHashKeysForCon(con);
+                                                if (isStartRow) {
+                                                    con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
+                                                    isExistParallel = false;
+                                                }
                                             }
                                         } else {
-                                            if (isStartRow) {
-                                                con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
-                                                isExistParallel = false;
-                                            }
+                                            ParallelExecutionUtils.setHashKeysForCon(con);
                                         }
-                                    } else {
-                                        ParallelExecutionUtils.setHashKeysForCon(con);
                                     }
                                     if (con.getTarget() != null) {
                                         setParallelization(con.getTarget());
