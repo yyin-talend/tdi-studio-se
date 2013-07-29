@@ -592,11 +592,16 @@ public class PropertyChangeCommand extends Command {
                         newMetadataTable.setTableName(metadataTable.getTableName());
                         newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
 
+                        // fix for TDI-19963: switch between readonly table and table with custom coumns
+                        if (newMetadataTable.isReadOnly()) {
+                            metadataTable.getListColumns().clear();
+                        }
+
                         // remove all custom columns first, since new custom columns from default table will be added
                         // automatically
                         List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
                         for (IMetadataColumn column : metadataTable.getListColumns()) {
-                            if (column.isCustom()) {
+                            if (column.isCustom() || column.isReadOnly()) {
                                 columnsToRemove.add(column);
                             }
                         }
@@ -605,7 +610,7 @@ public class PropertyChangeCommand extends Command {
                         boolean onlyHaveCustomInDefault = true;
                         List<IMetadataColumn> customColumnsFromDefault = new ArrayList<IMetadataColumn>();
                         for (IMetadataColumn column : newMetadataTable.getListColumns()) {
-                            if (!column.isCustom()) {
+                            if (!column.isCustom() && !column.isReadOnly()) {
                                 onlyHaveCustomInDefault = false;
                             } else {
                                 customColumnsFromDefault.add(column);
@@ -613,6 +618,7 @@ public class PropertyChangeCommand extends Command {
                         }
                         metadataTable.getListColumns().addAll(customColumnsFromDefault);
                         if (onlyHaveCustomInDefault) {
+                            metadataTable.setReadOnly(newMetadataTable.isReadOnly());
                             newMetadataTable = metadataTable;
                         }
 
