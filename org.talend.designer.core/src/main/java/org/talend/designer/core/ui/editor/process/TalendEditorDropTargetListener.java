@@ -175,8 +175,8 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.ModulesInstallerUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
-import org.talend.librariesmanager.utils.ModulesInstaller;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -427,7 +427,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         if (newObject instanceof Node) {
             IComponent component = ((Node) newObject).getComponent();
             Shell shell = Display.getCurrent().getActiveShell();
-            ModulesInstaller.installModules(new Shell(shell), component);
+            ModulesInstallerUtil.installModules(new Shell(shell), component);
         }
     }
 
@@ -1081,7 +1081,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // setselecte(part, lastUniqname);
         }
         Shell shell = Display.getCurrent().getActiveShell();
-        ModulesInstaller.installModules(new Shell(shell), components);
+        ModulesInstallerUtil.installModules(new Shell(shell), components);
 
     }
 
