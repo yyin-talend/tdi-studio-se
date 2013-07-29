@@ -66,6 +66,7 @@ import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.runprocess.data.PerformanceData;
+import org.talend.utils.network.FreePortFinder;
 
 /**
  * Context of a running process. <br/>
@@ -938,6 +939,7 @@ public class RunProcessContext {
                     try {
                         if (serverSock != null) {
                             serverSock.close();
+                            new FreePortFinder().removePort(statsPort);
                         }
                     } catch (IOException e1) {
                         // e1.printStackTrace();
