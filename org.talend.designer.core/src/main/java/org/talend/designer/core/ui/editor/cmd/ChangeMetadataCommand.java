@@ -335,6 +335,10 @@ public class ChangeMetadataCommand extends Command {
                         && baseConnector.equals(baseConnectorForCurrentNode)
                         && (targetIsBuiltIn || (targetNode.getMetadataFromConnector(baseConnector) != null && !targetNode
                                 .getMetadataFromConnector(baseConnector).sameMetadataAs(newOutputMetadata)))) {
+                    IMetadataTable targetMeatadat = targetNode.getMetadataFromConnector(baseConnector);
+                    if (targetMeatadat.isReadOnly()) {
+                        continue;
+                    }
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
