@@ -52,6 +52,7 @@ public enum EInternalTemplate {
     MR_COMPONENT_MRCONFIG_HEADER("mr_component_mrconfig_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     MR_COMPONENT_MRCONFIG_FOOTER("mr_component_mrconfig_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     MR_SUBPROCESS_HEADER("mr_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_SUBPROCESS_RUN("mr_subprocess_run", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     MR_SUBPROCESS_FOOTER("mr_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
 
     HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$

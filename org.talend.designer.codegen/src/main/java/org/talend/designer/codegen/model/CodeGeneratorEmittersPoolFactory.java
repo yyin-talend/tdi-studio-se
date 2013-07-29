@@ -427,6 +427,9 @@ public final class CodeGeneratorEmittersPoolFactory {
             if (component.getAvailableCodeParts().contains(ECodePart.MRCODE)) {
                 initComponent(codeLanguage, jetBeans, ECodePart.MRCODE, component);
             }
+            if (component.getAvailableCodeParts().contains(ECodePart.MRJOBFOOTER)) {
+                initComponent(codeLanguage, jetBeans, ECodePart.MRJOBFOOTER, component);
+            }
             if (component.getAvailableCodeParts().contains(ECodePart.MRCONFIG)) {
                 initComponent(codeLanguage, jetBeans, ECodePart.MRCONFIG, component);
             }
