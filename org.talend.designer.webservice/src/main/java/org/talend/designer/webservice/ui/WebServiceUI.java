@@ -1235,10 +1235,11 @@ public class WebServiceUI implements AbstractWebService {
         butData.verticalSpan = 1;
         refreshbut.setLayoutData(butData);
 
-        if (wsdlUrl != null && !wsdlUrl.contains("\"")) {
-            wsdlField.setReadOnly(true);
-            refreshbut.setEnabled(false);
-        }
+        // if (wsdlUrl != null && !wsdlUrl.contains("\"")) {
+        // wsdlField.setReadOnly(true);
+        // refreshbut.setEnabled(false);
+        // }
+
         // add port name UI
         Composite wsdlPortcomposite = new Composite(wsdlComposite, SWT.NONE);
         GridData portlayoutData = new GridData(GridData.FILL_HORIZONTAL);
