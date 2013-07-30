@@ -1937,6 +1937,15 @@
               name="ExcleGenerationModeMigrationTask"
               version="5.3.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.1"
+              class="org.talend.repository.model.migration.MigrationTaskForIssue18419WithDiDemosProject"
+              description="if you chose a different name than DI_DEMOS for your demo project,the &quot;beforeRunJobs&quot; job cannot work as the path is hardcoded in the properties"
+              id="org.talend.repository.model.migration.MigrationTaskForIssue18419WithDiDemosProject"
+              name="Modify tFileUnarchive ZIPFILE field value(DI_DEMOS)"
+              version="5.3.2">
+        </projecttask>
    </extension>
    
    <extension

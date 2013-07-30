@@ -37,7 +37,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  */
 public class MigrationTaskForIssue18419 extends AbstractJobMigrationTask {
 
-    private static final String ELEMENTPARAMETERNAME = "System.getProperty(\"user.dir\").concat(\"/workspace/TALENDDEMOSJAVA/documentations/talend_files_0.1.item\")";
+    private static final String DEMOS_PROJECT_NAME = "TALENDDEMOSJAVA"; //$NON-NLS-1$
 
     @Override
     public ExecutionResult execute(final Item item) {
@@ -51,14 +51,16 @@ public class MigrationTaskForIssue18419 extends AbstractJobMigrationTask {
             ModifyComponentsAction.searchAndModify(item, processType, filter,
                     Arrays.<IComponentConversion> asList(new IComponentConversion() {
 
+                        @Override
                         public void transform(NodeType node) {
                             Project pro = ProxyRepositoryFactory.getInstance().getProject(item);
                             String proName = pro.getLabel();
                             ElementParameterType zipFile = ComponentUtilities.getNodeProperty(node, "ZIPFILE"); //$NON-NLS-1$
                             String zipFileName = zipFile.getValue();
-                            if (proName != null && !proName.equals("TALENDDEMOSJAVA") && zipFileName != null
-                                    && zipFileName.equals(ELEMENTPARAMETERNAME)) {
-                                zipFile.setValue(ELEMENTPARAMETERNAME.replaceFirst("TALENDDEMOSJAVA", proName));
+                            final String oldValues = getOldValues();
+                            if (proName != null && !proName.equals(getDemoProjectName()) && zipFileName != null
+                                    && zipFileName.equals(oldValues)) {
+                                zipFile.setValue(oldValues.replaceFirst(getDemoProjectName(), proName));
                             }
                         }
 
@@ -72,6 +74,16 @@ public class MigrationTaskForIssue18419 extends AbstractJobMigrationTask {
 
     }
 
+    protected String getDemoProjectName() {
+        return DEMOS_PROJECT_NAME;
+    }
+
+    private String getOldValues() {
+        return "System.getProperty(\"user.dir\").concat(\"/workspace/" //$NON-NLS-1$
+                + getDemoProjectName() + "/documentations/talend_files_0.1.item\")"; //$NON-NLS-1$
+    }
+
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2011, 11, 10, 13, 0, 0);
         return gc.getTime();
