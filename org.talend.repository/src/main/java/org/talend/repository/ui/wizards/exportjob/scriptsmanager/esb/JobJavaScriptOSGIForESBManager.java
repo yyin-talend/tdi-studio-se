@@ -578,15 +578,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         jobInfo.put("isESBJob", isESBJob); //$NON-NLS-1$
         jobInfo.put("isESBJobFactory", isESBJob && isTalendESBJobFactory(processItem)); //$NON-NLS-1$
 
-        // job components use SAM
+        // job components use SAM / use SAML
         boolean useSAM = false;
+        boolean useSAML = false;
         for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
-            if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+            if (!useSAM && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
                 useSAM = true;
+            }
+            if (!useSAML && EmfModelUtils.computeCheckElementValue("NEED_AUTH", node) //$NON-NLS-1$
+                    && "SAML".equals(EmfModelUtils.computeTextElementValue("AUTH_TYPE", node))) { //$NON-NLS-1$
+                useSAML = true;
+            }
+            if (useSAM && useSAML) {
                 break;
             }
         }
         jobInfo.put("useSAM", useSAM); //$NON-NLS-1$
+        jobInfo.put("useSAML", useSAML); //$NON-NLS-1$
 
         // job OSGi DataSources
         jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
@@ -633,7 +641,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if ("CXF_MESSAGE".equals(format) || "RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
                 continue;
             }
-            
+
             if (hasCXFSamlConsumer && hasCXFSamlProvider && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
             	if(useSAM){
             		break;
