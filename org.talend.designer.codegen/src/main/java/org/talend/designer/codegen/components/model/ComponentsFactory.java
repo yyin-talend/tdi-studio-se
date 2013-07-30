@@ -74,6 +74,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.utils.TalendCacheUtils;
 import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.additionaljet.ComponentsFactoryProviderManager;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
@@ -347,7 +348,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
-        String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
+        // String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
 
         FileFilter skeletonFilter = new FileFilter() {
 
@@ -493,10 +494,21 @@ public class ComponentsFactory implements IComponentsFactory {
                             ComponentManager.setModified(true); // this will force to save the cache later.
                         }
 
+                        boolean hiddenComponent = false;
+
+                        Collection<IComponentFactoryFilter> filters = ComponentsFactoryProviderManager.getInstance()
+                                .getProviders();
+                        for (IComponentFactoryFilter filter : filters) {
+                            if (!filter.isAvailable(currentComp.getName())) {
+                                hiddenComponent = true;
+                                break;
+                            }
+                        }
+
                         // if the component is not needed in the current branding,
                         // and that this one IS NOT a specific component for code generation
                         // just don't load it
-                        if (availableComponents != null && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                        if (hiddenComponent
                                 && !(currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
                             continue;
                         }
@@ -506,7 +518,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         // if the component is not needed in the current branding,
                         // and that this one IS a specific component for code generation,
                         // hide it
-                        if (availableComponents != null && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                        if (hiddenComponent
                                 && (currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
                             currentComp.setVisible(false);
                             currentComp.setTechnical(true);
