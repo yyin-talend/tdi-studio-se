@@ -26,8 +26,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -42,6 +46,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -50,6 +56,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -2605,32 +2612,57 @@ public class LoginComposite extends Composite {
         return null;
     }
 
-    private void setBranchesSetting(Project project, boolean lastUsedBranch) {
+    private void setBranchesSetting(final Project project, boolean lastUsedBranch) {
         if (branchesViewer != null) {
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-
-            List<String> projectBranches = getProjectBranches(project);
+            final List<String> projectBranches = new ArrayList<String>();
+            projectBranches.add("trunk"); //$NON-NLS-1$
             branchesViewer.setInput(projectBranches);
-            if (!projectBranches.isEmpty()) {
-                String branch = null;
-                if (lastUsedBranch) {
-                    String lastBranch = prefManipulator.getLastSVNBranch();
-                    if (lastBranch != null && projectBranches.contains(lastBranch)) {
-                        branch = lastBranch;
+            branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+            final Font originalFont = branchesViewer.getCombo().getFont();
+            FontData fontData = originalFont.getFontData()[0];
+            final Font newFont = new Font(branchesViewer.getCombo().getDisplay(), new FontData(fontData.getName(),
+                    fontData.getHeight(), SWT.ITALIC));
+            branchesViewer.getCombo().setFont(newFont);
+            branchesViewer.getCombo().setEnabled(false);
+            final Job backgroundGUIUpdate = new Job("List Branches") { //$NON-NLS-1$
+
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    projectBranches.clear();
+                    projectBranches.addAll(getProjectBranches(project));
+                    return org.eclipse.core.runtime.Status.OK_STATUS;
+                }
+
+            };
+            Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
+
+                @Override
+                public void done(IJobChangeEvent event) {
+                    if (event.getJob().equals(backgroundGUIUpdate)) {
+                        if (branchesViewer != null && !branchesViewer.getCombo().isDisposed()) {
+                            branchesViewer.getCombo().getDisplay().syncExec(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    branchesViewer.setInput(projectBranches);
+                                    branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+                                    branchesViewer.getCombo().setFont(originalFont);
+                                    branchesViewer.getCombo().setEnabled(true);
+                                }
+                            });
+                        }
                     }
                 }
-                if (branch == null) {
-                    branch = projectBranches.get(0); // trunk
-                    prefManipulator.setLastSVNBranch(branch);
+            });
+            backgroundGUIUpdate.schedule();
+            branchesViewer.getCombo().addDisposeListener(new DisposeListener() {
+
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    newFont.dispose();
                 }
-
-                branchesViewer.setSelection(new StructuredSelection(new Object[] { branch }));
-
-            } else {
-                prefManipulator.setLastSVNBranch(SVNConstant.EMPTY);
-            }
+            });
         }
-        // hideBranchesView();
     }
 
     private List<String> getProjectBranches(Project p) {
