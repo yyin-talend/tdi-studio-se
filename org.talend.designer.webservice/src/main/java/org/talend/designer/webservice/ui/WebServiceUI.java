@@ -121,11 +121,11 @@ public class WebServiceUI implements AbstractWebService {
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
             .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
 
-    private WebServiceManager webServiceManager;
+    private final WebServiceManager webServiceManager;
 
-    private WebServiceDialog webServiceDialog;
+    private final WebServiceDialog webServiceDialog;
 
-    private Composite uiParent;
+    private final Composite uiParent;
 
     private LabelledFileField wsdlField;
 
@@ -207,27 +207,27 @@ public class WebServiceUI implements AbstractWebService {
 
     private AddListDialog dialogInputList;
 
-    private WebServiceComponent connector;
+    private final WebServiceComponent connector;
 
     private static int DEFAULT_INDEX = 0;
 
-    private int selectedColumnIndex = DEFAULT_INDEX;
+    private final int selectedColumnIndex = DEFAULT_INDEX;
 
-    private List<Function> allfunList = new ArrayList<Function>();
+    private final List<Function> allfunList = new ArrayList<Function>();
 
-    private List<PortNames> allPortNames = new ArrayList<PortNames>();
+    private final List<PortNames> allPortNames = new ArrayList<PortNames>();
 
     // private List<ParameterInfo> inParaList = new ArrayList<ParameterInfo>();
 
-    private List<OutPutMappingData> outParaList = new ArrayList<OutPutMappingData>();
+    private final List<OutPutMappingData> outParaList = new ArrayList<OutPutMappingData>();
 
-    private List<InputMappingData> inputMappingList = new ArrayList<InputMappingData>();
+    private final List<InputMappingData> inputMappingList = new ArrayList<InputMappingData>();
 
-    private List<IMetadataColumn> inPutcolumnList = new ArrayList<IMetadataColumn>();
+    private final List<IMetadataColumn> inPutcolumnList = new ArrayList<IMetadataColumn>();
 
-    private List<OutPutMappingData> outPutcolumnList = new ArrayList<OutPutMappingData>();
+    private final List<OutPutMappingData> outPutcolumnList = new ArrayList<OutPutMappingData>();
 
-    private List<OutPutMappingData> outputColumnCompareList = new ArrayList<OutPutMappingData>();
+    private final List<OutPutMappingData> outputColumnCompareList = new ArrayList<OutPutMappingData>();
 
     private String URLValue;
 
@@ -249,7 +249,7 @@ public class WebServiceUI implements AbstractWebService {
 
     private PortNames currentPortName;
 
-    private List<IMetadataColumn> forOutColumnList = new ArrayList<IMetadataColumn>();
+    private final List<IMetadataColumn> forOutColumnList = new ArrayList<IMetadataColumn>();
 
     private int currentElementIndexForIn = -1;
 
@@ -539,10 +539,12 @@ public class WebServiceUI implements AbstractWebService {
                 .getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(final IProgressMonitor monitor) {
                 monitor.beginTask("Retrieve WSDL parameter from net,please wait....", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (inPutcolumnList.isEmpty()) {
                             getInConnList();
@@ -1213,6 +1215,7 @@ public class WebServiceUI implements AbstractWebService {
         };
         wsdlField.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 // TODO Auto-generated method stub
                 URLValue = wsdlField.getText();
@@ -1235,10 +1238,11 @@ public class WebServiceUI implements AbstractWebService {
         butData.verticalSpan = 1;
         refreshbut.setLayoutData(butData);
 
-        if (wsdlUrl != null && !wsdlUrl.contains("\"")) {
-            wsdlField.setReadOnly(true);
-            refreshbut.setEnabled(false);
-        }
+        // if (wsdlUrl != null && !wsdlUrl.contains("\"")) {
+        // wsdlField.setReadOnly(true);
+        // refreshbut.setEnabled(false);
+        // }
+
         // add port name UI
         Composite wsdlPortcomposite = new Composite(wsdlComposite, SWT.NONE);
         GridData portlayoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -1276,10 +1280,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<PortNames, String>() {
 
+                    @Override
                     public String get(PortNames bean) {
                         return bean.getPortName();
                     }
 
+                    @Override
                     public void set(PortNames bean, String value) {
                         bean.setPortName(value);
                     }
@@ -1333,10 +1339,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<Function, String>() {
 
+                    @Override
                     public String get(Function bean) {
                         return bean.getName();
                     }
 
+                    @Override
                     public void set(Function bean, String value) {
                         bean.setName(value);
 
@@ -1378,6 +1386,7 @@ public class WebServiceUI implements AbstractWebService {
                         .getActiveShell().getShell());
                 IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+                    @Override
                     public void run(final IProgressMonitor monitor) {
                         monitor.beginTask("Retrieve WSDL parameter from net.", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         boolean f = true;
@@ -1584,6 +1593,7 @@ public class WebServiceUI implements AbstractWebService {
         portNameList.clear();
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 // TODO Auto-generated method stub
                 URLValue = wsdlField.getText();
@@ -1639,6 +1649,7 @@ public class WebServiceUI implements AbstractWebService {
         }
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 // TODO Auto-generated method stub
                 ExtendedTableModel<Function> listModel = listTableView.getExtendedTableModel();
@@ -1661,6 +1672,7 @@ public class WebServiceUI implements AbstractWebService {
 
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 String url = "";
                 // TODO Auto-generated method stub
@@ -1807,10 +1819,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, String>() {
 
+                    @Override
                     public String get(IMetadataColumn bean) {
                         return bean.getLabel();
                     }
 
+                    @Override
                     public void set(IMetadataColumn bean, String value) {
                         bean.setLabel(value);
 
@@ -1911,6 +1925,7 @@ public class WebServiceUI implements AbstractWebService {
                 expressionColumn.setTitle(Messages.getString("WebServiceUI.EXPRESSION")); //$NON-NLS-1$
                 expressionColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputMappingData, String>() {
 
+                    @Override
                     public String get(InputMappingData bean) {
                         if ("".equals(bean.getInputColumnValue()) || bean.getInputColumnValue() == null) {
                             return "";
@@ -1930,6 +1945,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getInputColumnValue();
                     }
 
+                    @Override
                     public void set(InputMappingData bean, String value) {
                         bean.setInputColumnValue(value);
 
@@ -1965,6 +1981,7 @@ public class WebServiceUI implements AbstractWebService {
                 elementColumn.setTitle(Messages.getString("WebServiceUI.ELEMENT")); //$NON-NLS-1$
                 elementColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputMappingData, String>() {
 
+                    @Override
                     public String get(InputMappingData bean) {
                         ParameterInfo para = bean.getParameter();
                         if (para != null) {
@@ -1988,6 +2005,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getParameterName();
                     }
 
+                    @Override
                     public void set(InputMappingData bean, String value) {
                         if (value.contains("[+] ")) { //$NON-NLS-1$
                             value.replace("[+] ", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2569,6 +2587,7 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.ELEMENT")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
 
                         ParameterInfo para = bean.getParameter();
@@ -2598,6 +2617,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getParameterName();
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         if (value.contains("[+] ")) { //$NON-NLS-1$
                             value.replace("[+] ", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2691,6 +2711,7 @@ public class WebServiceUI implements AbstractWebService {
                 expressionColumn.setTitle(Messages.getString("WebServiceUI.EXPRESSION")); //$NON-NLS-1$
                 expressionColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
                         StringBuffer paraName = new StringBuffer();
                         String paraNameof = bean.getParameterName();
@@ -2722,6 +2743,7 @@ public class WebServiceUI implements AbstractWebService {
                         }
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         bean.setParameterName(value);
 
@@ -2757,10 +2779,12 @@ public class WebServiceUI implements AbstractWebService {
                 elementColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 elementColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
                         return bean.getOutputColumnValue();
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         bean.setOutputColumnValue(value);
 
