@@ -57,6 +57,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         super(drawer);
     }
 
+    @Override
     @SuppressWarnings("restriction")
     public IFigure createFigure() {
         if (getParent() instanceof TalendDrawerEditPart) {
@@ -77,6 +78,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
 
             fig.getCollapseToggle().addFocusListener(new FocusListener.Stub() {
 
+                @Override
                 public void focusGained(FocusEvent fe) {
                     getViewer().select(TalendDrawerEditPart.this);
                 }
@@ -87,6 +89,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         return super.createFigure();
     }
 
+    @Override
     @SuppressWarnings("restriction")
     public void propertyChange(PropertyChangeEvent evt) {
         super.propertyChange(evt);
@@ -96,8 +99,12 @@ public class TalendDrawerEditPart extends DrawerEditPart {
             if (isExpaned == getDrawer().isInitiallyOpen()) {
                 return;
             }
-            getDrawerFigure().setExpanded(getDrawer().isInitiallyOpen());
-            refreshVisuals();
+            try {
+                getDrawerFigure().setExpanded(getDrawer().isInitiallyOpen());
+                refreshVisuals();
+            } catch (Exception e) {
+                // do nothing
+            }
         }
 
     }
