@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.i18n.Messages;
@@ -160,12 +161,15 @@ public class CategoryComposite extends Composite {
         source.setTransfer(new Transfer[] { textTransfer });
         source.addDragListener(new DragSourceListener() {
 
+            @Override
             public void dragStart(DragSourceEvent event) {
                 // CLabel functionLabel = getSource(event);
-                if (functionList.getSelection().equals("")) //$NON-NLS-1$
+                if (functionList.getSelection().equals("")) {
                     event.doit = false;
+                }
             }
 
+            @Override
             public void dragSetData(DragSourceEvent event) {
                 if (textTransfer.isSupportedType(event.dataType)) {
                     Function function = (Function) ((IStructuredSelection) functionViewer.getSelection()).getFirstElement();
@@ -177,6 +181,7 @@ public class CategoryComposite extends Composite {
                 }
             }
 
+            @Override
             public void dragFinished(DragSourceEvent event) {
 
             }
@@ -197,7 +202,7 @@ public class CategoryComposite extends Composite {
         Label docLabel = new Label(docComposite, SWT.NONE);
         docLabel.setText(Messages.getString("CategoryComposite.Help")); //$NON-NLS-1$
 
-        if ("yes".equalsIgnoreCase(System.getProperty("USE_BROWSER"))) {
+        if (TalendPropertiesUtil.isEnabledUseBrowser()) {
             final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
             docDisplayer.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
             docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -243,6 +248,7 @@ public class CategoryComposite extends Composite {
         UIRelationShipLinker(ListViewer categoryViewer, final ListViewer functionViewer, final Object docDisplayer) {
             categoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
 
                     try {
@@ -268,6 +274,7 @@ public class CategoryComposite extends Composite {
 
             functionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     if (function != null && function.getDescription() != null) {
@@ -290,6 +297,7 @@ public class CategoryComposite extends Composite {
 
             functionViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+                @Override
                 public void doubleClick(DoubleClickEvent event) {
 
                     try {
@@ -313,8 +321,9 @@ public class CategoryComposite extends Composite {
                                 } else {
                                     expressionComposite.setExpression(function.getName() + "()", true);
                                 }
-                            } else
+                            } else {
                                 expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
+                            }
                         } else {
                             if (docDisplayer instanceof Text) {
                                 ((Text) docDisplayer).setText("");
@@ -427,6 +436,7 @@ public class CategoryComposite extends Composite {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
+        @Override
         public int compare(IContentProposal o1, IContentProposal o2) {
             return o1.getContent().compareToIgnoreCase(o2.getContent());
         }

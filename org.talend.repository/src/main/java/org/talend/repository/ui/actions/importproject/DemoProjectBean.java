@@ -12,17 +12,28 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 import org.talend.core.language.ECodeLanguage;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
+
 public class DemoProjectBean {
 
     private String projectName;
 
-    private ECodeLanguage language;
+    private ECodeLanguage language = ECodeLanguage.JAVA;
 
     private String demoProjectFilePath;
 
@@ -30,15 +41,17 @@ public class DemoProjectBean {
 
     private EDemoProjectFileType demoProjectFileType;
 
+    private String descriptionContents;
+
     /**
      * the plugin id where the demo src is
      */
     private String pluginId;
-           
+
     public String getPluginId() {
         return pluginId;
     }
-   
+
     public void setPluginId(String pluginId) {
         this.pluginId = pluginId;
     }
@@ -65,7 +78,9 @@ public class DemoProjectBean {
      * Getter for language.
      * 
      * @return the language
+     * @deprecated no need, only support java currently
      */
+    @Deprecated
     public ECodeLanguage getLanguage() {
         return language;
     }
@@ -74,7 +89,9 @@ public class DemoProjectBean {
      * Sets the language.
      * 
      * @param language the language to set
+     * @deprecated no need, only support java currently
      */
+    @Deprecated
     public void setLanguage(ECodeLanguage language) {
         this.language = language;
     }
@@ -121,5 +138,53 @@ public class DemoProjectBean {
      */
     public void setDemoProjectFileType(EDemoProjectFileType demoProjectFileType) {
         this.demoProjectFileType = demoProjectFileType;
+    }
+
+    public String getDescriptionContents() {
+        if (this.descriptionContents == null) {
+            synchronized (DemoProjectBean.class) {
+                this.descriptionContents = getDemoProjectDescriptionContent();
+            }
+        }
+        return this.descriptionContents;
+    }
+
+    private String getDemoProjectDescriptionContent() {
+        Bundle bundle = Platform.getBundle(getPluginId());
+        if (bundle != null) {
+            URL url = null;
+            try {
+                url = FileLocator.resolve(bundle.getEntry(getDescriptionFilePath()));
+            } catch (IOException e) {
+                //
+            }
+            if (url != null) {
+                InputStream is = null;
+                try {
+                    try {
+                        is = url.openStream();
+                    } catch (IOException e) {
+                        String filePath = new Path(url.getFile()).toOSString();
+                        is = new FileInputStream(filePath);
+                    }
+                    StringWriter sw = new StringWriter();
+                    int c = -1;
+                    while ((c = is.read()) != -1) {
+                        sw.write(c);
+                    }
+                    return sw.getBuffer().toString();
+                } catch (IOException e) {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e1) {
+                            //
+                        }
+                    }
+                }
+            }
+        }
+
+        return ""; //$NON-NLS-1$
     }
 }

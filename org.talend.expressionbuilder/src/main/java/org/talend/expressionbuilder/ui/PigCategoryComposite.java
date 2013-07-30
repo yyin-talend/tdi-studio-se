@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.i18n.Messages;
@@ -114,11 +115,14 @@ public class PigCategoryComposite extends CategoryComposite {
         source.setTransfer(new Transfer[] { textTransfer });
         source.addDragListener(new DragSourceListener() {
 
+            @Override
             public void dragStart(DragSourceEvent event) {
-                if (functionList.getSelection().equals("")) //$NON-NLS-1$
+                if (functionList.getSelection().equals("")) {
                     event.doit = false;
+                }
             }
 
+            @Override
             public void dragSetData(DragSourceEvent event) {
                 if (textTransfer.isSupportedType(event.dataType)) {
                     Function function = (Function) ((IStructuredSelection) functionViewer.getSelection()).getFirstElement();
@@ -133,6 +137,7 @@ public class PigCategoryComposite extends CategoryComposite {
                 }
             }
 
+            @Override
             public void dragFinished(DragSourceEvent event) {
 
             }
@@ -153,7 +158,7 @@ public class PigCategoryComposite extends CategoryComposite {
         Label docLabel = new Label(docComposite, SWT.NONE);
         docLabel.setText(Messages.getString("CategoryComposite.Help")); //$NON-NLS-1$
 
-        if ("yes".equalsIgnoreCase(System.getProperty("USE_BROWSER"))) {
+        if (TalendPropertiesUtil.isEnabledUseBrowser()) {
             final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
             docDisplayer.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
             docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));

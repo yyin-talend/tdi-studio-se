@@ -37,8 +37,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 
@@ -55,8 +54,6 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
     private Browser descriptionBrowser;
 
     private Text descriptionText;
-
-    private boolean useBrowser = true;
 
     private List<DemoProjectBean> demoProjectList;
 
@@ -80,6 +77,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      * org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#createControl(org.eclipse.swt
      * .widgets.Composite)
      */
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -112,7 +110,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     public void createDescriptionIn(Composite composite) {
 
-        if ("yes".equalsIgnoreCase(System.getProperty("USE_BROWSER"))) {
+        if (TalendPropertiesUtil.isEnabledUseBrowser()) {
             descriptionBrowser = new Browser(composite, SWT.BORDER);
             descriptionBrowser.setText(""); //$NON-NLS-1$
             GridData gd = new GridData(GridData.FILL_BOTH);
@@ -124,7 +122,6 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
             GridData gd = new GridData(GridData.FILL_BOTH);
             gd.widthHint = 200;
             descriptionText.setLayoutData(gd);
-            useBrowser = false;
         }
     }
 
@@ -137,21 +134,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
 
             TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
             tableItem.setText(demoProject.getProjectName());
-            tableItem.setImage(getImageForDemoProject(demoProject.getLanguage()));
+            tableItem.setImage(getFullImagePath());
         }
-    }
-
-    /**
-     * Gets images.
-     * 
-     * @param language
-     * @return
-     */
-    private Image[] getImageForDemoProject(ECodeLanguage language) {
-
-        String languageName = language.getName();
-        Image[] image = getFullImagePath(languageName);
-        return image;
     }
 
     /**
@@ -160,15 +144,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      * @param languageName
      * @return
      */
-    private Image[] getFullImagePath(String languageName) {
-        String relatedImagePath = null;
-        if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("java").getName())) { //$NON-NLS-1$
-            relatedImagePath = "icons/java.png"; //$NON-NLS-1$
-        } else if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("perl").getName())) { //$NON-NLS-1$
-            relatedImagePath = "icons/perl.gif"; //$NON-NLS-1$
-        } else {
-            relatedImagePath = "icons/perl.gif"; //$NON-NLS-1$
-        }
+    private Image[] getFullImagePath() {
+        String relatedImagePath = "icons/java.png"; //$NON-NLS-1$;
         Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         URL url = null;
         String pluginPath = null;
@@ -190,35 +167,20 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
      * )
      */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
-
         selectedDemoProjectIndex = ((TableViewer) event.getSource()).getTable().getSelectionIndex();
-
-        // try {
-        // Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-        // URL url;
-        // url = FileLocator.toFileURL(FileLocator.find(bundle, new
-        // Path(this.demoProjectList.get(selectedDemoProjectIndex)
-        // .getDescriptionFilePath()), null));
-        //
-        // String descriptionFilePath = new Path(url.getFile()).toOSString();
-        // descriptionBrowser.setUrl(descriptionFilePath);
 
         // MOD gdbu 2011-5-10 bug : 21138
         DemoProjectBean demoProjectBean = this.demoProjectList.get(selectedDemoProjectIndex);
-        ECodeLanguage demoLanguage = demoProjectBean.getLanguage();
-        String demoDescription = CorePlugin.getDefault().getResourceService()
-                .getDemoDescription(demoLanguage, demoProjectBean.getProjectName());
-        // ~21138
+        String demoDescription = demoProjectBean.getDescriptionContents();
 
-        if (useBrowser) {
+        // ~21138
+        if (descriptionBrowser != null && TalendPropertiesUtil.isEnabledUseBrowser() && !descriptionBrowser.isDisposed()) {
             descriptionBrowser.setText(demoDescription);
-        } else {
+        } else if (descriptionText != null && !descriptionText.isDisposed()) {
             descriptionText.setText(demoDescription);
         }
-        // } catch (IOException e) {
-        // ExceptionHandler.process(e);
-        // }
     }
 
     /**
