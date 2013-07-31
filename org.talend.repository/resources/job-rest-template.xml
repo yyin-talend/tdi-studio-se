@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-#if ($endpoint.useSAM)
+#if ($job.useSAM || $endpoint.useSAM)
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
 		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
 #end
@@ -17,7 +17,7 @@
 			<ref component-id="serviceBean" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<bean class="${endpoint.jobClassName}.ExceptionMapper4TalendJobRestService">
+			<bean class="${job.className}.ExceptionMapper4TalendJobRestService">
 				<argument ref="serviceBean" />
 			</bean>
 			<bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
@@ -71,16 +71,25 @@
 		</jaxrs:properties>
 	</jaxrs:server>
 
-	<bean id="serviceBean" class="${endpoint.jobClassName}.RestServiceProviderImpl4TalendJob">
+	<bean id="serviceBean" class="${job.className}.RestServiceProviderImpl4TalendJob">
 		<argument ref="job" />
 	</bean>
 
-	<bean id="job" class="${endpoint.jobClassName}" destroy-method="destroy">
+	<bean id="job" class="${job.className}" destroy-method="destroy">
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
-#if (!$endpoint.jobDataSources.isEmpty())
+#if ($job.useSAM)
+		<property name="eventFeature" ref="eventFeature" />
+#end
+#if ($job.useSAML)
+		<property name="stsProps">
+			<cm:cm-properties persistent-id="org.talend.esb.job.client.sts"
+				xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+		</property>
+#end
+#if (!$job.dataSources.isEmpty())
 		<property name="dataSources">
 			<map>
-#foreach ($alias in $endpoint.jobDataSources)
+#foreach ($alias in $job.dataSources)
 				<entry key="${alias}">
 					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
 				</entry>
@@ -95,7 +104,7 @@
 			<value>routines.system.api.TalendJob</value>
 		</interfaces>
 		<service-properties>
-			<entry key="name" value="${endpoint.jobName}" />
+			<entry key="name" value="${job.name}" />
 			<entry key="type" value="job" />
 		</service-properties>
 	</service>

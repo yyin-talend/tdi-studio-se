@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
 	<!-- Talend Job OSGi blueprint descriptor -->
 
@@ -8,7 +8,7 @@
 		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
 #end
 
-	<bean id="job" class="${job.className}" destroy-method="destroy" activation="eager">
+	<bean id="job" class="${job.className}" destroy-method="destroy">
 #if ($job.useSAM)
 		<property name="eventFeature" ref="eventFeature" />
 #end

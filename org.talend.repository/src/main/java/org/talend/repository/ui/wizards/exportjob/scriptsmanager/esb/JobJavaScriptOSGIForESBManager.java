@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -109,8 +110,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String jobName;
 
-    private String jobClassName;
-
     private String itemType = null;
 
     private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
@@ -146,7 +145,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 itemToBeExport.add(processItem);
                 jobName = processItem.getProperty().getLabel();
-                jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
 
                 String jobVersion = processItem.getProperty().getVersion();
                 if (!isMultiNodes() && getSelectedJobVersion() != null) {
@@ -191,7 +189,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobSpringConfig(processItem));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobBlueprintConfig(processItem));
                 } else {
                     osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem));
                 }
@@ -211,7 +209,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
 
             // generate the META-INFO folder
-            ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
+            ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport, jobName);
             list.add(0, metaInfoFolder);
         } catch (Exception e) {
             throw new ProcessorException(e);
@@ -431,9 +429,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + configName);
 
         if (isRoute()) {
-            createRouteBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
+            createRouteBundleBlueprintConfig(processItem, targetFile);
         } else {
-            createJobBundleBlueprintConfig(processItem, targetFile, jobName, jobClassName);
+            createJobBundleBlueprintConfig(processItem, targetFile);
         }
 
         return targetFile.toURI().toURL();
@@ -444,19 +442,53 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     // return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     // }
 
-    private static final String TEMPLATE_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
+    private static Map<String, Object> collectJobInfo(ProcessItem processItem) {
+        // velocity template context
+        Map<String, Object> jobInfo = new HashMap<String, Object>();
 
-    private URL generateRestJobSpringConfig(ProcessItem processItem) throws IOException {
-        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "blueprint.xml"); //$NON-NLS-1$
+        String name = processItem.getProperty().getLabel();
+
+        // job name and class name
+        jobInfo.put("name", name); //$NON-NLS-1$
+        jobInfo.put("className", getPackageName(processItem) + PACKAGE_SEPARATOR + name); //$NON-NLS-1$
+
+        // additional Talend job interfaces (ESB related)
+        boolean isESBJob = isTalendESBJob(processItem);
+        jobInfo.put("isESBJob", isESBJob); //$NON-NLS-1$
+        jobInfo.put("isESBJobFactory", isESBJob && isTalendESBJobFactory(processItem)); //$NON-NLS-1$
+
+        // job components use SAM / use SAML
+        boolean useSAM = false;
+        boolean useSAML = false;
+        for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
+            if (!useSAM && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+                useSAM = true;
+            }
+            if (!useSAML && EmfModelUtils.computeCheckElementValue("NEED_AUTH", node) //$NON-NLS-1$
+                    && "SAML".equals(EmfModelUtils.computeTextElementValue("AUTH_TYPE", node))) { //$NON-NLS-1$
+                useSAML = true;
+            }
+            if (useSAM && useSAML) {
+                break;
+            }
+        }
+        jobInfo.put("useSAM", useSAM); //$NON-NLS-1$
+        jobInfo.put("useSAML", useSAML); //$NON-NLS-1$
+
+        // job OSGi DataSources
+        jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
+
+        return jobInfo;
+    }
+
+    private static Map<String, Object> collectRestEndpointInfo(ProcessItem processItem) {
+        Map<String, Object> endpointInfo = new HashMap<String, Object>();
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
-        // velocity template context
-        Map<String, Object> endpointInfo = new HashMap<String, Object>();
-
-        // job name and class name
-        endpointInfo.put("jobName", jobName); //$NON-NLS-1$
-        endpointInfo.put("jobClassName", jobClassName); //$NON-NLS-1$
+        if (null == restRequestComponent) {
+            return endpointInfo;
+        }
 
         // REST endpoint address
         final String runtimeServicesContext = "/services"; //$NON-NLS-1$
@@ -531,96 +563,77 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         endpointInfo.put("serviceNamespace", //$NON-NLS-1$
                 EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)); //$NON-NLS-1$
 
-        // job OSGi DataSources
-        endpointInfo.put("jobDataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
+        return endpointInfo;
+    }
+
+    /**
+    *
+    * Ensure that the value is not surrounded by quotes.
+    *
+    * @param value
+    * @return
+    */
+   private static final String unquote(String value) {
+       String result = value;
+       if (null != value && 1 < value.length()) {
+           if (value.startsWith("\"") && value.endsWith("\"")) {
+               result = value.substring(1, value.length() - 1);
+           }
+       }
+       return result;
+   }
+
+    private static final String TEMPLATE_BLUEPRINT_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
+
+    private URL generateRestJobBlueprintConfig(ProcessItem processItem) throws IOException {
+        File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "blueprint.xml"); //$NON-NLS-1$
 
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("endpoint", endpointInfo); //$NON-NLS-1$
+        contextParams.put("endpoint", collectRestEndpointInfo(processItem)); //$NON-NLS-1$
+        contextParams.put("job", collectJobInfo(processItem)); //$NON-NLS-1$
 
-        TemplateProcessor.processTemplate("REST_JOB_CONFIG", contextParams, targetFile, new InputStreamReader(this.getClass()
-                .getResourceAsStream(TEMPLATE_JOB_REST)));
+        TemplateProcessor.processTemplate("REST_JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
+                getTemplateReader(TEMPLATE_BLUEPRINT_JOB_REST));
 
         return targetFile.toURI().toURL();
     }
 
-    /**
-     *
-     * Ensure that the value is not surrounded by quotes.
-     *
-     * @param value
-     * @return
-     */
-    private static final String unquote(String value) {
-        String result = value;
-        if (null != value && 1 < value.length()) {
-            if (value.startsWith("\"") && value.endsWith("\"")) {
-                result = value.substring(1, value.length() - 1);
-            }
-        }
-        return result;
-    }
-
     private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
 
-    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, String jobName, String jobClassName)
-            throws IOException {
-
-        // velocity template context
-        Map<String, Object> jobInfo = new HashMap<String, Object>();
-
-        // job name and class name
-        jobInfo.put("name", jobName); //$NON-NLS-1$
-        jobInfo.put("className", jobClassName); //$NON-NLS-1$
-
-        // additional Talend job interfaces (ESB related)
-        boolean isESBJob = isTalendESBJob(processItem);
-        jobInfo.put("isESBJob", isESBJob); //$NON-NLS-1$
-        jobInfo.put("isESBJobFactory", isESBJob && isTalendESBJobFactory(processItem)); //$NON-NLS-1$
-
-        // job components use SAM / use SAML
-        boolean useSAM = false;
-        boolean useSAML = false;
-        for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
-            if (!useSAM && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-                useSAM = true;
-            }
-            if (!useSAML && EmfModelUtils.computeCheckElementValue("NEED_AUTH", node) //$NON-NLS-1$
-                    && "SAML".equals(EmfModelUtils.computeTextElementValue("AUTH_TYPE", node))) { //$NON-NLS-1$
-                useSAML = true;
-            }
-            if (useSAM && useSAML) {
-                break;
-            }
-        }
-        jobInfo.put("useSAM", useSAM); //$NON-NLS-1$
-        jobInfo.put("useSAML", useSAML); //$NON-NLS-1$
-
-        // job OSGi DataSources
-        jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
-
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile) throws IOException {
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("job", jobInfo); //$NON-NLS-1$
+        contextParams.put("job", collectJobInfo(processItem)); //$NON-NLS-1$
 
-        Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-        final URL FileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(TEMPLATE_BLUEPRINT_JOB), null));
-        final File file = new File(FileUrl.getPath());
         TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
-                new InputStreamReader(new FileInputStream(file)));
+                getTemplateReader(TEMPLATE_BLUEPRINT_JOB));
     }
 
     private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
-    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, String jobName, String jobClassName)
-            throws IOException {
-
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile) throws IOException {
         // velocity template context
+        Map<String, Object> contextParams = new HashMap<String, Object>();
+        contextParams.put("route", collectRouteInfo(processItem)); //$NON-NLS-1$
+
+        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
+                getTemplateReader(TEMPLATE_BLUEPRINT_ROUTE));
+    }
+
+    private static Reader getTemplateReader(String templatePath) throws IOException {
+        Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+        final URL fileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(templatePath), null));
+        return new InputStreamReader(new FileInputStream(new File(fileUrl.getPath())));
+    }
+
+    private static Map<String, Object> collectRouteInfo(ProcessItem processItem) {
         Map<String, Object> routeInfo = new HashMap<String, Object>();
 
         // route name and class name
-        routeInfo.put("name", jobName); //$NON-NLS-1$
-        routeInfo.put("className", jobClassName); //$NON-NLS-1$
+        String name = processItem.getProperty().getLabel();
+        routeInfo.put("name", name); //$NON-NLS-1$
+        routeInfo.put("className", getPackageName(processItem) + PACKAGE_SEPARATOR + name); //$NON-NLS-1$
 
         boolean useSAM = false;
         boolean hasCXFSamlConsumer = false;
@@ -643,9 +656,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
 
             if (hasCXFSamlConsumer && hasCXFSamlProvider && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
-            	if(useSAM){
-            		break;
-            	}
+                if(useSAM){
+                    break;
+                }
                 continue;
             }
 
@@ -661,36 +674,36 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
 
-			if (EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) {
-				if (asConsumer) {
-					hasCXFRegistryConsumer = true;
-				} else {
-					hasCXFRegistryProvider = true;
-				}
-				continue;
-			}
-			if (hasCXFSamlConsumer && hasCXFSamlProvider
-					&& hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
-				continue;
-			}
-			if (!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
-				continue;
-			}
-			String securityType = EmfModelUtils.computeTextElementValue(
-					"SECURITY_TYPE", node); //$NON-NLS-1$
-			if (!"SAML".equals(securityType)) { //$NON-NLS-1$
-				continue;
-			}
-            if (asConsumer) {
-				hasCXFSamlConsumer = true;
-			} else {
-				hasCXFSamlProvider = true;
-			}
-			if (EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)) {
+            if (EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) {
                 if (asConsumer) {
-					hasCXFSamlConsumerAuthz = true;
-				} else {
-                	hasCXFSamlProviderAuthz = true;
+                    hasCXFRegistryConsumer = true;
+                } else {
+                    hasCXFRegistryProvider = true;
+                }
+                continue;
+            }
+            if (hasCXFSamlConsumer && hasCXFSamlProvider
+                    && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
+                continue;
+            }
+            if (!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
+                continue;
+            }
+            String securityType = EmfModelUtils.computeTextElementValue(
+                    "SECURITY_TYPE", node); //$NON-NLS-1$
+            if (!"SAML".equals(securityType)) { //$NON-NLS-1$
+                continue;
+            }
+            if (asConsumer) {
+                hasCXFSamlConsumer = true;
+            } else {
+                hasCXFSamlProvider = true;
+            }
+            if (EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)) {
+                if (asConsumer) {
+                    hasCXFSamlConsumerAuthz = true;
+                } else {
+                    hasCXFSamlProviderAuthz = true;
                 }
             }
         }
@@ -705,19 +718,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // route OSGi DataSources
         routeInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
 
-        // velocity template context
-        Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("route", routeInfo); //$NON-NLS-1$
-
-        Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-        final URL FileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(TEMPLATE_BLUEPRINT_ROUTE), null));
-        final File file = new File(FileUrl.getPath());
-        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
-                new InputStreamReader(new FileInputStream(file)));
+        return routeInfo;
     }
 
-    private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport)
-            throws IOException {
+    private ExportFileResource genMetaInfoFolder(ExportFileResource libResource,
+            List<ProcessItem> itemToBeExport, String itemName) throws IOException {
 
         ExportFileResource metaInfoResource = new ExportFileResource(null, FileConstants.META_INF_FOLDER_NAME);
 
@@ -726,7 +731,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         FileOutputStream fos = null;
         try {
-            Manifest manifest = getManifest(libResource, itemToBeExport, jobName);
+            Manifest manifest = getManifest(libResource, itemToBeExport, itemName);
             fos = new FileOutputStream(manifestFile);
             manifest.write(fos);
         } finally {
