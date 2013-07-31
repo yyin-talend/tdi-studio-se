@@ -214,6 +214,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         if (control instanceof Text) {
             Text t = (Text) control;
             Object data = t.getData(TypedTextCommandExecutor.PARAMETER_NAME);
+            if (data != null && data instanceof String) {
+                if (((String) data).equals("PARALLELIZE_UNIT_SIZE")) {
+                    return;
+                }
+            }
             if (useRepository((String) data)) {
                 t.setEditable(false);
             } else {
@@ -229,6 +234,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             Button b = (Button) control;
             Object p = control.getData(TypedTextCommandExecutor.PARAMETER_NAME);
             Object n = control.getData("NAME");
+            if (p != null && p instanceof String) {
+                if (((String) p).equals("MULTI_THREAD_EXECATION")) {
+                    return;
+                }
+            }
             if (p != null && n != null && p instanceof String && n instanceof String) {
                 if (((String) p).equals("SQLEDITOR") && ((String) n).equals("TABLE_STATS")) {
                     return;
