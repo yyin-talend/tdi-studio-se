@@ -45,6 +45,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -250,6 +251,11 @@ public class CodeView extends ViewPart {
     }
 
     public void refresh() {
+        ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
+        if (((ICodeGeneratorService) service).isInitializeJet()) {
+            return;
+        }
+
         if (selectedNode != null) {
             generatedCode = ""; //$NON-NLS-1$
 
@@ -278,7 +284,6 @@ public class CodeView extends ViewPart {
                 return;
             }
             if (codeGenerator == null) {
-                ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
                 codeGenerator = service.createCodeGenerator();
             }
             viewStartAction.setChecked(false);
@@ -301,77 +306,77 @@ public class CodeView extends ViewPart {
                 break;
             default:
             }
-            synchronized (this) {
-                Job job = new Job(Messages.getString("CodeView.initMessage")) {
 
-                    @Override
-                    protected IStatus run(IProgressMonitor monitor) {
-                        switch (codeView) {
-                        case CODE_START:
-                            try {
-                                generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                            } catch (SystemException e) {
-                                ExceptionHandler.process(e);
-                            }
-                            break;
-                        case CODE_MAIN:
-                            try {
-                                generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                            } catch (SystemException e) {
-                                ExceptionHandler.process(e);
-                            }
-                            break;
-                        case CODE_END:
-                            try {
-                                generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                            } catch (SystemException e) {
-                                ExceptionHandler.process(e);
-                            }
-                            break;
-                        case CODE_ALL:
-                            try {
-                                generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                            } catch (SystemException e) {
-                                ExceptionHandler.process(e);
-                            }
-                            try {
-                                generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                            } catch (SystemException e) {
-                                ExceptionHandler.process(e);
-                            }
-                            try {
-                                generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                            } catch (SystemException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            break;
-                        default:
+            Job job = new Job(Messages.getString("CodeView.initMessage")) {
+
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    switch (codeView) {
+                    case CODE_START:
+                        try {
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
                         }
-                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                        break;
+                    case CODE_MAIN:
+                        try {
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        break;
+                    case CODE_END:
+                        try {
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        break;
+                    case CODE_ALL:
+                        try {
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        try {
+                            generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        try {
+                            generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
+                        } catch (SystemException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        break;
+                    default:
                     }
+                    return org.eclipse.core.runtime.Status.OK_STATUS;
+                }
 
-                };
-                job.setPriority(Job.INTERACTIVE);
-                job.schedule();
-                job.addJobChangeListener(new JobChangeAdapter() {
+            };
+            job.setPriority(Job.INTERACTIVE);
+            job.schedule();
+            job.addJobChangeListener(new JobChangeAdapter() {
 
-                    @Override
-                    public void done(IJobChangeEvent event) {
-                        new UIJob("") {
+                @Override
+                public void done(IJobChangeEvent event) {
+                    new UIJob("") {
 
-                            @Override
-                            public IStatus runInUIThread(IProgressMonitor monitor) {
-                                document.set(generatedCode);
-                                return org.eclipse.core.runtime.Status.OK_STATUS;
-                            }
+                        @Override
+                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                            document.set(generatedCode);
+                            return org.eclipse.core.runtime.Status.OK_STATUS;
+                        }
 
-                        }.schedule();
-                    }
+                    }.schedule();
+                }
 
-                });
-            }
+            });
         }
+
     }
 
     /*

@@ -170,4 +170,8 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         }
         return job;
     }
+
+    public boolean isInitializeJet() {
+        return !CodeGeneratorEmittersPoolFactory.isInitialized() && CodeGeneratorEmittersPoolFactory.isInitializeStart();
+    }
 }
