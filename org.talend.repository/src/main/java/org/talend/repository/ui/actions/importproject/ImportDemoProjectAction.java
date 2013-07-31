@@ -12,29 +12,21 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.List;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.eclipse.ui.internal.wizards.datatransfer.TarException;
-import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
@@ -105,29 +97,10 @@ public final class ImportDemoProjectAction extends Action {
                                 return;
                             }
                         }
-
-                        String demoFilePath = demoProjectBean.getDemoProjectFilePath();
-                        EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
-                        String pluginID = demoProjectBean.getPluginId();
-                        Bundle bundle = Platform.getBundle(pluginID);
-
-                        URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
-
-                        String filePath = new Path(url.getFile()).toOSString();
-                        // FIXME TDI-22786
-                        String technicalName = ProjectManager.getLocalTechnicalProjectName(projectName);
-                        if (demoProjectFileType.equals(EDemoProjectFileType.FOLDER)) {
-                            ImportProjectsUtilities.importProjectAs(shell, projectName, technicalName, filePath, monitorWrap);
-                        } else {// type.equalsIgnoreCase("archive")
-                            ImportProjectsUtilities.importArchiveProjectAs(shell, projectName, technicalName, filePath,
-                                    monitorWrap);
-
-                        }
+                        ImportProjectsUtilities.importDemoProject(shell, projectName, demoProjectBean, monitor);
                         lastImportedName = projectName;
 
-                    } catch (IOException e) {
-                        throw new InvocationTargetException(e);
-                    } catch (TarException e) {
+                    } catch (Exception e) {
                         throw new InvocationTargetException(e);
                     }
 

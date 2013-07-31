@@ -14,7 +14,6 @@ package org.talend.repository.ui.login;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -77,8 +75,6 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.eclipse.ui.internal.wizards.datatransfer.TarException;
-import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
@@ -119,7 +115,6 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.actions.importproject.DemoProjectBean;
-import org.talend.repository.ui.actions.importproject.EDemoProjectFileType;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
@@ -780,8 +775,7 @@ public class LoginComposite extends Composite {
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
-                    final String newName = newPrjWiz.getName().trim().replace(' ', '_');
-                    final String technicalName = newPrjWiz.getTechnicalName();
+                    final String projectName = newPrjWiz.getName().trim().replace(' ', '_');
                     final String demoProjName = importCombo.getCombo().getItem(importCombo.getCombo().getSelectionIndex());
 
                     //
@@ -794,40 +788,20 @@ public class LoginComposite extends Composite {
                             monitorWrap = new EventLoopProgressMonitor(monitor);
 
                             try {
-                                final List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
+                                final List<DemoProjectBean> demoProjectsList = ImportProjectsUtilities.getAllDemoProjects();
                                 DemoProjectBean demoProjectBean = null;
-                                for (DemoProjectBean bean : demoProjectList) {
-                                    if (bean.getProjectName().equals(demoProjName)) {
-                                        demoProjectBean = bean;
+                                for (DemoProjectBean demoBean : demoProjectsList) {
+                                    if (demoBean.getProjectName().equals(demoProjName)) {
+                                        demoProjectBean = demoBean;
                                         break;
                                     }
                                 }
                                 if (null == demoProjectBean) {
                                     throw new IOException("cannot find selected demo project"); //$NON-NLS-1$
                                 }
-                                String techName = demoProjectBean.getProjectName();
-
-                                String demoFilePath = demoProjectBean.getDemoProjectFilePath();
-                                EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
-                                String pluginID = demoProjectBean.getPluginId();
-                                Bundle bundle = Platform.getBundle(pluginID);
-
-                                URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
-
-                                String filePath = new Path(url.getFile()).toOSString();
-
-                                if (demoProjectFileType.equals(EDemoProjectFileType.FOLDER)) {
-                                    ImportProjectsUtilities.importProjectAs(getShell(), newName, technicalName, filePath,
-                                            monitorWrap);
-                                } else {// type.equalsIgnoreCase("archive")
-                                    ImportProjectsUtilities.importArchiveProjectAs(getShell(), newName, technicalName, filePath,
-                                            monitorWrap);
-                                }
-
-                            } catch (IOException e) {
-                                throw new InvocationTargetException(e);
-                            } catch (TarException e) {
-                                throw new InvocationTargetException(e);
+                                ImportProjectsUtilities.importDemoProject(getShell(), projectName, demoProjectBean, monitor);
+                            } catch (Exception e1) {
+                                throw new InvocationTargetException(e1);
                             }
 
                             monitorWrap.done();
@@ -979,7 +953,7 @@ public class LoginComposite extends Composite {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (projectText.getText() == "") { //$NON-NLS-1$
+                if (projectText.getText().length() == 0) {
                     projectText.setText(DEFAULT_PROJECT_NAME);
                     projectText.setBackground(GREY_COLOR);
                 }
@@ -2195,6 +2169,7 @@ public class LoginComposite extends Composite {
             } catch (InvocationTargetException e) {
                 throw (Exception) e.getTargetException();
             } catch (InterruptedException e) {
+                //
             }
 
             initialized = true;
@@ -2336,6 +2311,7 @@ public class LoginComposite extends Composite {
             } catch (InvocationTargetException e) {
                 throw (Exception) e.getTargetException();
             } catch (InterruptedException e) {
+                //
             }
 
             initialized = true;

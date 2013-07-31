@@ -120,6 +120,7 @@ public final class DemoProjectsProvider extends RegistryReader {
                     demoBean.setDescriptionFilePath(demoProvider.descHtml);
                     demoBean.setDemoProjectFilePath(demoProvider.projectUrl);
                     if (demoBean.getDemoProjectFilePath().endsWith(FileExtensions.ZIP_FILE_SUFFIX)
+                            || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_FILE_SUFFIX)
                             || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_GZ_FILE_SUFFIX)) {
                         demoBean.setDemoProjectFileType(EDemoProjectFileType.ARCHIVE);
                     } else {

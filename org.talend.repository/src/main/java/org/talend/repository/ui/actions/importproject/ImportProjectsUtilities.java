@@ -12,15 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,9 +28,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
@@ -46,10 +43,12 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.properties.Project;
 import org.talend.core.repository.utils.XmiResourceManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.AfterImportProjectUtil;
 
@@ -62,8 +61,6 @@ import org.talend.repository.ui.utils.AfterImportProjectUtil;
  * 
  */
 public class ImportProjectsUtilities {
-
-    private static final String XML_FILE_PATH = "resources/demoprojects/"; //$NON-NLS-1$
 
     public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -119,28 +116,6 @@ public class ImportProjectsUtilities {
             throw new InvocationTargetException(e);
         }
         return null;
-    }
-
-    private static void replaceInFile(String regex, String fileName, String replacement) throws IOException {
-        InputStream in = new FileInputStream(fileName);
-        StringBuffer buffer = new StringBuffer();
-        try {
-            InputStreamReader inR = new InputStreamReader(in);
-            BufferedReader buf = new BufferedReader(inR);
-            String line;
-            while ((line = buf.readLine()) != null) {
-                if (line.contains("<TalendProperties:Project")) { //$NON-NLS-1$
-                    line = line.replaceAll(regex, replacement);
-                }
-                buffer.append(line).append("\n"); //$NON-NLS-1$
-            }
-        } finally {
-            in.close();
-        }
-
-        OutputStream os = new FileOutputStream(fileName);
-        os.write(buffer.toString().getBytes());
-        os.close();
     }
 
     public static void importArchiveProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
@@ -356,115 +331,25 @@ public class ImportProjectsUtilities {
      */
     public static List<DemoProjectBean> getAllDemoProjects() {
         return Arrays.asList(DemoProjectsProvider.getInstance().getDemoProjects());
-
-        // SAXReader reader = new SAXReader();
-        // Document doc = null;
-        // List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
-        // DemoProjectBean demoProject = null;
-        // Map<String, File> xmlListFilesMap = getXMLFilePath();
-        // Iterator<String> iterator = xmlListFilesMap.keySet().iterator();
-        // while (iterator.hasNext()) {
-        // String pluginId = iterator.next();
-        // File xmlFile = xmlListFilesMap.get(pluginId);
-        // try {
-        // doc = reader.read(xmlFile);
-        // } catch (DocumentException e) {
-        // ExceptionHandler.process(e);
-        // return null;
-        // }
-        //
-        // Element demoProjectsInfo = doc.getRootElement();
-        //
-        // IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-        // IBrandingService.class);
-        // String[] availableLanguages = brandingService.getBrandingConfiguration().getAvailableLanguages();
-        //
-        //            for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) { //$NON-NLS-1$
-        // Element demoProjectElement = (Element) i.next();
-        // demoProject = new DemoProjectBean();
-        //                demoProject.setProjectName(demoProjectElement.attributeValue("name")); //$NON-NLS-1$
-        //                String language = demoProjectElement.attributeValue("language"); //$NON-NLS-1$
-        //
-        // if (!ArrayUtils.contains(availableLanguages, language)) {
-        // // if the language is not available in current branding, don't display this demo project
-        // continue;
-        // }
-        //
-        // demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
-        //                String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType"); //$NON-NLS-1$
-        // demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
-        //                demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
-        //                demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
-        // // get the demo plugin Id
-        //                demoProject.setPluginId(demoProjectElement.attributeValue("pluginId")); //$NON-NLS-1$   
-        // if (demoProject.getPluginId() == null) {
-        // demoProject.setPluginId(pluginId);
-        // }
-        // if (demoProject.getProjectName().equals("ESBDEMOS")) {
-        // if (!PluginChecker.isPluginLoaded("org.talend.repository.services")) {
-        // continue;
-        // }
-        // }
-        // demoProjectList.add(demoProject);
-        // }
-        // }
-        // return demoProjectList;
     }
 
-    // private static String getMDMDemoPluginId() {
-    //        if (PluginChecker.isPluginLoaded("org.talend.rcp.branding.tombundle")) {//CE //$NON-NLS-1$ 
-    //            return "org.talend.mdm.repository"; //$NON-NLS-1$
-    // } else {// EE
-    //            return "org.talend.mdm.repository.enterprise"; //$NON-NLS-1$
-    // }
-    // }
-    //
-    // /**
-    // * Gets the path of demo projects xml file.
-    // *
-    // * @return Map<String,File>, plugin and config xml file
-    // */
-    // private static Map<String, File> getXMLFilePath() {
-    // Map<String, File> xmlListFilesMap = new HashMap<String, File>();
-    // String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, ResourcesPlugin.TDQ_PLUGIN_ID,
-    // getMDMDemoPluginId() };
-    //
-    // for (String pluginID : pluginIDs) {
-    // Bundle bundle = Platform.getBundle(pluginID);
-    // if (bundle != null) {
-    // URL url = null;
-    //
-    // String fullPath = XML_FILE_PATH;
-    // if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginID)) {
-    // fullPath = PluginConstant.EMPTY_STRING;
-    // }
-    // URL fileUrl = FileLocator.find(bundle, new Path(fullPath), null);
-    // try {
-    // if (fileUrl != null) {
-    // url = FileLocator.toFileURL(fileUrl);
-    // }
-    // } catch (IOException e) {
-    // ExceptionHandler.process(e);
-    // }
-    // if (url == null) {
-    // continue;
-    // }
-    // File xmlFilePath = new File(url.getPath());
-    // if (xmlFilePath.exists()) {
-    // String files[] = xmlFilePath.list(new FilenameFilter() {
-    //
-    // @Override
-    // public boolean accept(File arg0, String arg1) {
-    // return XmlUtil.isXMLFile(arg1);
-    // }
-    // });
-    // for (String file : files) {
-    //                        File xml = new File(url.getPath() + "/" + file); //$NON-NLS-1$
-    // xmlListFilesMap.put(pluginID, xml);
-    // }
-    // }
-    // }
-    // }
-    // return xmlListFilesMap;
-    // }
+    public static void importDemoProject(Shell shell, String newProjectName, DemoProjectBean demoProjectBean,
+            IProgressMonitor monitor) throws Exception {
+        if (demoProjectBean == null || newProjectName == null) {
+            return;
+        }
+        Bundle bundle = Platform.getBundle(demoProjectBean.getPluginId());
+        URL demoURL = FileLocator.find(bundle, new Path(demoProjectBean.getDemoProjectFilePath()), null);
+        demoURL = FileLocator.toFileURL(demoURL);
+        String filePath = new Path(demoURL.getFile()).toOSString();
+
+        final String newTechName = ProjectManager.getLocalTechnicalProjectName(newProjectName);
+
+        if (EDemoProjectFileType.FOLDER.equals(demoProjectBean.getDemoProjectFileType())) {
+            ImportProjectsUtilities.importProjectAs(shell, newProjectName, newTechName, filePath, monitor);
+        } else {// type.equalsIgnoreCase("archive")
+            ImportProjectsUtilities.importArchiveProjectAs(shell, newProjectName, newTechName, filePath, monitor);
+
+        }
+    }
 }
