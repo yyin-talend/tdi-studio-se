@@ -3771,7 +3771,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     private void refreshAllContextView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view2 = page.findView(ContextsView.ID);
+        IViewPart view2 = page.findView(ContextsView.CTX_ID_DESIGNER);
         if (view2 instanceof ContextsView) {
             ((ContextsView) view2).updateAllContextView(true);
         }

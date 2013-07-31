@@ -556,7 +556,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private void changeContextsViewStatus(boolean flag) {
         IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (workbenchPage != null) {
-            IViewPart view = workbenchPage.findView(ContextsView.ID);
+            IViewPart view = workbenchPage.findView(ContextsView.CTX_ID_DESIGNER);
             if (view != null) {
                 ContextsView contextsView = (ContextsView) view;
                 contextsView.getContextViewComposite().setTabEnable(flag);

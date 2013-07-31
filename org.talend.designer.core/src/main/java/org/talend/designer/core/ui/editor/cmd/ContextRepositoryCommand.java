@@ -114,7 +114,7 @@ public class ContextRepositoryCommand extends Command {
      */
     private void refreshContextView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view2 = page.findView(ContextsView.ID);
+        IViewPart view2 = page.findView(ContextsView.CTX_ID_DESIGNER);
         if (view2 instanceof ContextsView) {
             ((ContextsView) view2).updateContextView(contextItem == null);
         }

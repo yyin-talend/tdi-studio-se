@@ -12,29 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.contexts;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.context.JobContextManager;
+import org.eclipse.ui.part.EditorPart;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
-import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
-import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.ContextComposite;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.cmd.ContextAddParameterCommand;
-import org.talend.designer.core.ui.editor.cmd.ContextChangeDefaultCommand;
-import org.talend.designer.core.ui.editor.cmd.ContextRemoveParameterCommand;
-import org.talend.designer.core.ui.editor.cmd.ContextRenameParameterCommand;
-import org.talend.designer.core.ui.editor.cmd.ContextTemplateModifyCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
@@ -44,18 +31,6 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
  * 
  */
 public class ContextViewComposite extends ContextComposite {
-
-    AbstractMultiPageTalendEditor part;
-
-    // private CCombo typeCombo;
-    //
-    // private CCombo repositoryCombo;
-
-    private String currentRepositoryContext = null;
-
-    private Map<String, ContextItem> repositoryContextItemMap = null;
-
-    private BidiMap repositoryContextValueMap = null;
 
     /**
      * bqian ContextComposite constructor comment.
@@ -67,11 +42,9 @@ public class ContextViewComposite extends ContextComposite {
         super(parent, false);
     }
 
-    public void setPart(AbstractMultiPageTalendEditor part) {
-        this.part = part;
-        super.refreshTemplateTab();
-        super.refreshTableTab();
-        super.refreshTreeTab();
+    @Override
+    public void setPart(EditorPart part) {
+        super.setPart(part);
         refreshRelationship();
         // for bug 13730
     }
@@ -85,6 +58,7 @@ public class ContextViewComposite extends ContextComposite {
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
+    @Override
     public void refresh() {
         refreshRelationship();
         super.refresh();
@@ -108,113 +82,37 @@ public class ContextViewComposite extends ContextComposite {
         super.refreshTreeTab();
     }
 
+    @Override
     public CommandStack getCommandStack() {
-        return part == null ? null : (CommandStack) (part.getTalendEditor().getAdapter(CommandStack.class));
+        return part == null ? null : (CommandStack) (((AbstractMultiPageTalendEditor) part).getTalendEditor()
+                .getAdapter(CommandStack.class));
     }
 
+    @Override
     public IContextManager getContextManager() {
         return getProcess() == null ? null : getProcess().getContextManager();
     }
 
+    @Override
     public IProcess2 getProcess() {
-        return part == null ? null : part.getTalendEditor().getProcess();
+        return part == null ? null : ((AbstractMultiPageTalendEditor) part).getTalendEditor().getProcess();
     }
 
     private Process getJob() {
         return (Process) getProcess();
     }
 
-    public void onContextChangeDefault(IContextManager contextManager, IContext newDefault) {
-        getCommandStack().execute(new ContextChangeDefaultCommand(contextManager, newDefault));
-    }
-
-    public void onContextRenameParameter(IContextManager contextManager, String sourceId, String oldName, String newName) {
-        if (contextManager instanceof JobContextManager) {
-            JobContextManager manager = (JobContextManager) contextManager;
-            manager.addNewName(newName, oldName);
-            // record the modified operation.
-            setModifiedFlag(contextManager);
-        }
-        getCommandStack().execute(new ContextRenameParameterCommand(contextManager, sourceId, oldName, newName));
-        // update variable reference for current job, for 2608
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.context.ContextComposite#switchSettingsView()
+     */
+    @Override
+    protected void switchSettingsView(String oldName, String newName) {
         if (UpdateContextVariablesHelper.updateProcessForRenamed(getProcess(), oldName, newName)) {
             JobSettings.switchToCurJobSettingsView();
             ComponentSettings.switchToCurComponentSettingsView();
         }
     }
 
-    public void onContextRenameParameter(IContextManager contextManager, String oldName, String newName) {
-        if (contextManager instanceof JobContextManager) {
-            JobContextManager manager = (JobContextManager) contextManager;
-            manager.addNewName(newName, oldName);
-            // record the modified operation.
-            setModifiedFlag(contextManager);
-        }
-        getCommandStack().execute(new ContextRenameParameterCommand(contextManager, oldName, newName));
-        // update variable reference for current job, for 2608
-        if (UpdateContextVariablesHelper.updateProcessForRenamed(getProcess(), oldName, newName)) {
-            JobSettings.switchToCurJobSettingsView();
-            ComponentSettings.switchToCurComponentSettingsView();
-        }
-    }
-
-    public void onContextModify(IContextManager contextManager, IContextParameter parameter) {
-        // record the modified operation.
-        setModifiedFlag(contextManager);
-        getCommandStack().execute(new ContextTemplateModifyCommand(getProcess(), contextManager, parameter));
-    }
-
-    public void onContextAddParameter(IContextManager contextManager, IContextParameter parameter) {
-        getCommandStack().execute(new ContextAddParameterCommand(getContextManager(), parameter));
-    }
-
-    public void onContextRemoveParameter(IContextManager contextManager, String paramName) {
-        Set<String> names = new HashSet<String>();
-        names.add(paramName);
-        onContextRemoveParameter(contextManager, names);
-    }
-
-    private void setModifiedFlag(IContextManager contextManager) {
-        if (contextManager != null && contextManager instanceof JobContextManager) {
-            JobContextManager manager = (JobContextManager) contextManager;
-            // record the modified operation.
-            manager.setModified(true);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.
-     * IContextManager, java.util.List)
-     */
-    public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames) {
-        // record the modified operation.
-        setModifiedFlag(contextManager);
-        getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramNames));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.
-     * IContextManager, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void onContextRemoveParameter(IContextManager contextManager, String paramName, String sourceId) {
-        setModifiedFlag(contextManager);
-        getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramName, sourceId));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.
-     * IContextManager, java.util.Set, java.lang.String)
-     */
-    @Override
-    public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames, String sourceId) {
-        setModifiedFlag(contextManager);
-        getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramNames, sourceId));
-    }
 }
