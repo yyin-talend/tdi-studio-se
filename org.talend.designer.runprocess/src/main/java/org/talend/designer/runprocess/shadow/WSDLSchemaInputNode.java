@@ -74,10 +74,12 @@ public class WSDLSchemaInputNode extends FileInputNode {
         addParameter(param);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for (Object string : parameters) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("VALUE", TalendTextUtils.addQuotes(string.toString())); //$NON-NLS-1$
-            list.add(map);
+        if (parameters != null) {
+            for (Object string : parameters) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("VALUE", TalendTextUtils.addQuotes(string.toString())); //$NON-NLS-1$
+                list.add(map);
+            }
         }
         param = new ObjectElementParameter("PARAMS", list); //$NON-NLS-1$
         param.setListItemsDisplayCodeName(new String[] { "VALUE" }); //$NON-NLS-1$
