@@ -2409,7 +2409,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     @Override
     @SuppressWarnings("unchecked")
     public boolean executeUpdates(List<UpdateResult> results) {
-        return UpdateManagerUtils.executeUpdates(results, true);
+        return UpdateManagerUtils.executeUpdates(results, false, true, true);
     }
 
     /**

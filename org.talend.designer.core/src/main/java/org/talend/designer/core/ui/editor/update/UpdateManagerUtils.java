@@ -189,6 +189,11 @@ public final class UpdateManagerUtils {
         return executeUpdates(results, false, updateAllJobs);
     }
 
+    public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow,
+            final boolean updateAllJobs) {
+        return executeUpdates(results, onlySimpleShow, updateAllJobs, false);
+    }
+
     @SuppressWarnings("unchecked")
     public static boolean executeUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
@@ -207,19 +212,25 @@ public final class UpdateManagerUtils {
 
     @SuppressWarnings("unchecked")
     public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow,
-            final boolean updateAllJobs) {
-        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
-                Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
+            final boolean updateAllJobs, final boolean noRepositoryWorkUnit) {
+        if (noRepositoryWorkUnit) {
+            // RWU means also SVN Access, maybe in some cases to optimize,
+            // we want to avoid SVN Access to optimize since we don't really save any file
+            return doExecuteUpdates(results, onlySimpleShow, updateAllJobs);
+        } else {
+            RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
+                    Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
-            @Override
-            protected void run() throws LoginException, PersistenceException {
-                result = doExecuteUpdates(results, onlySimpleShow, updateAllJobs);
-            }
+                @Override
+                protected void run() throws LoginException, PersistenceException {
+                    result = doExecuteUpdates(results, onlySimpleShow, updateAllJobs);
+                }
 
-        };
-        repositoryWorkUnit.setAvoidUnloadResources(true);
-        ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
-        return repositoryWorkUnit.getResult();
+            };
+            repositoryWorkUnit.setAvoidUnloadResources(true);
+            ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
+            return repositoryWorkUnit.getResult();
+        }
     }
 
     private static boolean doExecuteUpdates(final List<UpdateResult> results, boolean onlySimpleShow, final boolean updateAllJobs) {
