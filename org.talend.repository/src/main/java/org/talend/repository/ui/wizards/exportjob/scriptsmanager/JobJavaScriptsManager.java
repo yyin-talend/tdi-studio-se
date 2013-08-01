@@ -273,7 +273,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), process[i], selectedJobVersion);
 
-        addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies), process[i]);
+        addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies)
+                && isOptionChoosed(ExportChoice.needJobItem), process[i]);
         resources.addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(ExportChoice.needJobScript))); // always
         // need
         // job
@@ -1172,7 +1173,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         isOptionChoosed(ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                         isOptionChoosed(ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies), resource);
+                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies)
+                        && isOptionChoosed(ExportChoice.needJobItem), resource);
             }
         }
 
@@ -1188,7 +1190,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
         processedJob.add(process);
         addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
-        addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies), resource);
+        addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies)
+                && isOptionChoosed(ExportChoice.needJobItem), resource);
         addSourceCode(allResources, process, isOptionChoosed(ExportChoice.needSourceCode), resource);
         addDependenciesSourceCode(allResources, resource, isOptionChoosed(ExportChoice.needSourceCode));
 

@@ -140,7 +140,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), itemsResource, selectedJobVersion);
 
-            addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies), itemsResource);
+            addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies)
+                    && isOptionChoosed(ExportChoice.needJobItem), itemsResource);
 
             // add children jobs
             boolean needChildren = true;
@@ -278,7 +279,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), true));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
                     isOptionChoosed(ExportChoice.needContext));
-            addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies), srcResource);
+            addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies)
+                    && isOptionChoosed(ExportChoice.needJobItem), srcResource);
         }
 
     }
