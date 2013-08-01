@@ -537,9 +537,16 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true')");
         addElementParameter(tmpParam);
 
-        tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
+        tmpParam = new ElementParameter(this);
+        tmpParam.setName("PART_QUEUE_SIZE");
+        tmpParam.setValue("1000");
+        tmpParam.setDisplayName(EParameterName.QUEUE_SIZE.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.TEXT);
+        tmpParam.setNumRow(45);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("PARTITIONER == 'true'");
+        tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true') and (DEPARTITIONER=='false')");
         addElementParameter(tmpParam);
 
         tmpParam = tmpNode.getElementParameter("HASH_PARTITION");
@@ -556,9 +563,16 @@ public class Connection extends Element implements IConnection, IPerformance {
         componentPar = ComponentsFactoryProvider.getInstance().get("tDepartitioner", ComponentCategory.CATEGORY_4_DI.getName());
         tmpNode = new Node(componentPar, (Process) source.getProcess());
 
-        tmpParam = tmpNode.getElementParameter("QUEUE_SIZE");
+        tmpParam = new ElementParameter(this);
+        tmpParam.setName("DEPART_QUEUE_SIZE");
+        tmpParam.setValue("1000");
+        tmpParam.setDisplayName(EParameterName.QUEUE_SIZE.getDisplayName());
+        tmpParam.setFieldType(EParameterFieldType.TEXT);
+        tmpParam.setNumRow(45);
+        tmpParam.setReadOnly(false);
+        tmpParam.setRequired(false);
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
-        tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true')");
+        tmpParam.setShowIf("(DEPARTITIONER == 'true' or REPARTITIONER=='true') and (PARTITIONER=='false')");// "(DEPARTITIONER == 'true' or REPARTITIONER=='true')"
         addElementParameter(tmpParam);
 
         IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
