@@ -1493,6 +1493,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 table = (MetadataTable) ((SAPFunctionRepositoryObject) object).getAdapter(MetadataTable.class);
             } else if (object instanceof SalesforceModuleRepositoryObject) {
                 table = ((SalesforceModuleRepositoryObject) object).getDefaultTable();
+                IRepositoryViewObject obj = null;
+                if (selectedNode.getChildren() != null) {
+                    for (IRepositoryNode repositoryNode : selectedNode.getChildren()) {
+                        obj = repositoryNode.getObject();
+                        if (obj instanceof MetadataTableRepositoryObject) {
+                            table = ((MetadataTableRepositoryObject) obj).getTable();
+                            break;
+                        }
+                    }
+                }
             }
             if (table != null) {
                 String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
