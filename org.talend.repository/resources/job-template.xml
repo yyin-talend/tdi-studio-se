@@ -8,15 +8,36 @@
 		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
 #end
 
+#if ($job.useSAML)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts"
+		placeholder-prefix="$sts{" update-strategy="none"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+]]#
+#end
+
 	<bean id="job" class="${job.className}" destroy-method="destroy">
 #if ($job.useSAM)
 		<property name="eventFeature" ref="eventFeature" />
 #end
 #if ($job.useSAML)
+#[[
 		<property name="stsProps">
-			<cm:cm-properties persistent-id="org.talend.esb.job.client.sts"
-				xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+			<map>
+				<entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}"/>
+				<entry key="sts.namespace" value="$sts{sts.namespace}"/>
+				<entry key="sts.service.name" value="$sts{sts.service.name}"/>
+				<entry key="sts.endpoint.name" value="$sts{sts.endpoint.name}"/>
+
+				<entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}"/>
+				<entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}"/>
+				<entry key="ws-security.sts.token.usecert" value="$sts{ws-security.sts.token.usecert}"/>
+				<entry key="ws-security.sts.token.username" value="$sts{ws-security.sts.token.username}"/>
+				<entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}"/>
+				<entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}"/>
+			</map>
 		</property>
+]]#
 #end
 #if (!$job.dataSources.isEmpty())
 		<property name="dataSources">
