@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service"
+		placeholder-prefix="$service{" update-strategy="reload"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+]]#
+#end
+
 #if ($job.useSAM || $endpoint.useSAM)
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
 		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
@@ -65,7 +73,13 @@
 #[[
 			<entry key="ws-security.signature.username" value="$service{ws-security.signature.username}" />
 			<entry key="ws-security.signature.properties" value="$service{ws-security.signature.properties}" />
-			<entry key="ws-security.callback-handler" value-ref="callback" />
+			<entry key="ws-security.callback-handler">
+				<bean class="org.apache.cxf.interceptor.security.NamePasswordCallbackHandler">
+					<argument type="java.lang.String" value="$service{ws-security.signature.username}" />
+					<argument type="java.lang.String" value="$service{ws-security.signature.password}" />
+					<argument type="java.lang.String" value="setPassword" />
+				</bean>
+			</entry>
 ]]#
 #end
 		</jaxrs:properties>
@@ -77,6 +91,9 @@
 
 	<bean id="job" class="${job.className}" destroy-method="destroy">
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+		<property name="bus" ref="cxf" />
+#end
 #if ($job.useSAM)
 		<property name="eventFeature" ref="eventFeature" />
 #end
@@ -113,18 +130,5 @@
 	<bean class="org.apache.cxf.management.counters.CounterRepository">
 		<property name="bus" ref="cxf" />
 	</bean>
-
-#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
-#[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.service"
-		placeholder-prefix="$service{" update-strategy="reload"
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
-	<bean id="callback" class="org.apache.cxf.interceptor.security.NamePasswordCallbackHandler">
-		<argument type="java.lang.String" value="$service{ws-security.signature.username}" />
-		<argument type="java.lang.String" value="$service{ws-security.signature.password}" />
-		<argument type="java.lang.String" value="setPassword" />
-	</bean>
-]]#
-#end
 
 </blueprint>
