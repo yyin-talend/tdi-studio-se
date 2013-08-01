@@ -145,6 +145,7 @@ class ExportItemWizardPage extends WizardPage {
         return filteredCheckboxTree.getViewer();
     }
 
+    @Override
     public void createControl(Composite parent) {
 
         TimeMeasure.begin(this.getClass().getSimpleName());
@@ -420,6 +421,7 @@ class ExportItemWizardPage extends WizardPage {
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
         exportItemsTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 refreshExportDependNodes();
             }
@@ -618,6 +620,7 @@ class ExportItemWizardPage extends WizardPage {
 
         directoryPathField.addTraverseListener(new TraverseListener() {
 
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
@@ -638,6 +641,7 @@ class ExportItemWizardPage extends WizardPage {
 
         directoryPathField.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 saveExportPath(DIRECTORY_PATH, directoryPathField.getText());
             }
@@ -646,6 +650,7 @@ class ExportItemWizardPage extends WizardPage {
 
         archivePathField.addTraverseListener(new TraverseListener() {
 
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
@@ -664,6 +669,7 @@ class ExportItemWizardPage extends WizardPage {
 
         archivePathField.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 saveExportPath(ARCHIVE_PATH, archivePathField.getText());
             }
@@ -726,6 +732,7 @@ class ExportItemWizardPage extends WizardPage {
 
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("Dependencies", 100);//$NON-NLS-1$
                 monitor.setCanceled(false);
@@ -737,6 +744,7 @@ class ExportItemWizardPage extends WizardPage {
                 // dependencies All
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         for (Item item : selectedItems) {
                             RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects);
@@ -747,6 +755,7 @@ class ExportItemWizardPage extends WizardPage {
                 monitor.worked(60);
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (exportDependencies.getSelection()) {
                             for (IRepositoryViewObject repositoryObject : repositoryObjects) {
@@ -774,6 +783,7 @@ class ExportItemWizardPage extends WizardPage {
                 // selection
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
                         Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
@@ -934,6 +944,15 @@ class ExportItemWizardPage extends WizardPage {
         Collection<Item> selectedItems = getSelectedItems();
         try {
             ExportItemUtil exportItemUtil = new ExportItemUtil();
+            if (itemFromArchiveRadio.getSelection()) {
+                if (lastPath != null && !lastPath.endsWith(FileConstants.TAR_FILE_SUFFIX)
+                        && !lastPath.endsWith(FileConstants.TAR_GZ_FILE_SUFFIX)
+                        && !lastPath.endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
+                    // set zip as default
+                    lastPath = lastPath + FileConstants.ZIP_FILE_SUFFIX;
+                }
+            }
+
             // MOD sgandon 31/03/2010 bug 12229: moved getAllVersion into ExportItemUtil.exportitems() method.
             exportItemUtil.exportItems(new File(lastPath), selectedItems, true, new NullProgressMonitor());
 
