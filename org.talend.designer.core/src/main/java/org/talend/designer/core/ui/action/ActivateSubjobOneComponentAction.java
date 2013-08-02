@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusSubjobCommand;
@@ -66,6 +67,9 @@ public class ActivateSubjobOneComponentAction extends SelectionAction {
                 return false;
             }
             Node node = (Node) part.getModel();
+            if(ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getProcess().getComponentsType())){
+                return false;
+            }
 
             if (node.isReadOnly()) {
                 return false;
