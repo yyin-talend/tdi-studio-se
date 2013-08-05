@@ -171,7 +171,8 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return job;
     }
 
-    public boolean isInitializeJet() {
+    @Override
+    public boolean isInitializingJet() {
         return !CodeGeneratorEmittersPoolFactory.isInitialized() && CodeGeneratorEmittersPoolFactory.isInitializeStart();
     }
 }

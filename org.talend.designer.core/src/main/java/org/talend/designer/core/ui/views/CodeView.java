@@ -255,6 +255,11 @@ public class CodeView extends ViewPart {
     }
 
     public void refresh() {
+        ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
+        if (service.isInitializingJet()) {
+            return;
+        }
+
         if (isGenerating()) {
             return;
         }
