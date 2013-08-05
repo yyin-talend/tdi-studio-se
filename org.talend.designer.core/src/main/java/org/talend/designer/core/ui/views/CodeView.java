@@ -259,11 +259,10 @@ public class CodeView extends ViewPart {
             return;
         }
         setGenerating(true);
-        Job job = new Job(Messages.getString("CodeView.initMessage")) {
+        Job job = new Job(Messages.getString("CodeView.initMessage")) { //$NON-NLS-1$
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-
                 if (selectedNode != null) {
                     generatedCode = ""; //$NON-NLS-1$
 
@@ -298,63 +297,31 @@ public class CodeView extends ViewPart {
                     viewMainAction.setChecked(false);
                     viewEndAction.setChecked(false);
                     viewAllAction.setChecked(false);
-
-                    switch (codeView) {
-                    case CODE_START:
-                        viewStartAction.setChecked(true);
-                        break;
-                    case CODE_MAIN:
-                        viewMainAction.setChecked(true);
-                        break;
-                    case CODE_END:
-                        viewEndAction.setChecked(true);
-                        break;
-                    case CODE_ALL:
-                        viewAllAction.setChecked(true);
-                        break;
-                    default:
-                    }
-                    switch (codeView) {
-                    case CODE_START:
-                        try {
+                    try {
+                        switch (codeView) {
+                        case CODE_START:
+                            viewStartAction.setChecked(true);
                             generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                        } catch (SystemException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        break;
-                    case CODE_MAIN:
-                        try {
+                            break;
+                        case CODE_MAIN:
+                            viewMainAction.setChecked(true);
                             generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                        } catch (SystemException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        break;
-                    case CODE_END:
-                        try {
+                            break;
+                        case CODE_END:
+                            viewEndAction.setChecked(true);
                             generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                        } catch (SystemException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        break;
-                    case CODE_ALL:
-                        try {
+                            break;
+                        case CODE_ALL:
+                            viewAllAction.setChecked(true);
                             generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                        } catch (SystemException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        try {
                             generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                        } catch (SystemException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        try {
                             generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                        } catch (SystemException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            break;
+                        default:
                         }
-                        break;
-                    default:
+                    } catch (SystemException e) {
+                        generatedCode = Messages.getString("CodeView.Error"); //$NON-NLS-1$
+                        ExceptionHandler.process(e);
                     }
                 }
                 return org.eclipse.core.runtime.Status.OK_STATUS;
