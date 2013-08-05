@@ -1,20 +1,29 @@
 package org.talend.designer.core.ui.editor.jobletcontainer;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
@@ -48,8 +57,6 @@ public class JobletContainerFigure extends Figure {
 
     private JobletCollapseFigure collapseFigure;
 
-    private RGB mainColor;
-
     private boolean showTitle;
 
     private String title;
@@ -59,6 +66,8 @@ public class JobletContainerFigure extends Figure {
     private RGB red = new RGB(250, 72, 80);
 
     private RGB green = new RGB(130, 240, 100);
+
+    private Map<String, RectangleFigure> mrFigures = new HashMap<String, RectangleFigure>();
 
     /**
      * DOC hwang JobletContainerFigure constructor comment.
@@ -94,6 +103,8 @@ public class JobletContainerFigure extends Figure {
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
 
+        initMRFigures();
+
         htmlStatusHint = new SimpleHtmlFigure();
 
         initSubJobTitleColor();
@@ -101,6 +112,9 @@ public class JobletContainerFigure extends Figure {
         updateData();
 
         initializejobletContainer(jobletContainer.getJobletContainerRectangle());
+        if (jobletContainer.getNode().isMapReduceStart()) {
+            refreshNodes(false);
+        }
     }
 
     public void doCollapse() {
@@ -140,7 +154,9 @@ public class JobletContainerFigure extends Figure {
         // select the start node.
         if (jobletContainer.isCollapsed()) {
             IProcess2 process = jobletContainer.getProcess();
-            // this.get
+            if (process == null) {
+                return;
+            }
             AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) process.getEditor();
             Node startNode = jobletContainer.getJobletStartNode();
             if (startNode != null && editor != null) {
@@ -164,48 +180,102 @@ public class JobletContainerFigure extends Figure {
             warningFigure.setLocation(jobletContainer.getWarningLocation());
         }
         super.paint(graphics);
-        refreshNodes();
+        refreshNodes(false);
     }
 
     boolean lastJobletRedState = false;
 
-    private void refreshNodes() {
-        boolean isRed = new JobletUtil().isRed(this.jobletContainer);
-        Project refProject = ProjectManager.getInstance().getProject(this.jobletContainer.getProcess().getProperty().getItem());
-        if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
-            if (!this.jobletContainer.isCollapsed()) {
-                isRed = true;
-            }
-        }
-        if (this.jobletContainer.isCollapsed() && lastJobletRedState == isRed) {
-            return;
-        }
-        lastJobletRedState = isRed;
-
-        if (isRed && rectFig != null) {
-            rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
-        } else if (rectFig != null) {
-            rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
-        }
-        if (isRed && outlineFigure != null) {
-            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
-        } else if (outlineFigure != null) {
-            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), green));
-        }
-
-        if (!jobletContainer.isCollapsed()) {
-            for (Object ele : jobletContainer.getElements()) {
-                if (ele instanceof Node) {
-                    ((Node) ele).setReadOnly(isRed);
+    public void refreshNodes(boolean isClear) {
+        if (this.jobletContainer.getNode().isJoblet()) {
+            boolean isRed = new JobletUtil().isRed(this.jobletContainer);
+            Project refProject = ProjectManager.getInstance().getProject(
+                    this.jobletContainer.getProcess().getProperty().getItem());
+            if (!ProjectManager.getInstance().isInCurrentMainProject(refProject)) {
+                if (!this.jobletContainer.isCollapsed()) {
+                    isRed = true;
                 }
             }
+            if (this.jobletContainer.isCollapsed() && lastJobletRedState == isRed) {
+                return;
+            }
+            lastJobletRedState = isRed;
+            if (isRed && rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(red));
+            } else if (rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
+            }
+            if (isRed && outlineFigure != null) {
+                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(red));
+            } else if (outlineFigure != null) {
+                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(green));
+            }
+
+            if (!jobletContainer.isCollapsed()) {
+                for (Object ele : jobletContainer.getElements()) {
+                    if (ele instanceof Node) {
+                        ((Node) ele).setReadOnly(isRed);
+                    }
+                }
+            }
+        } else if (this.jobletContainer.getNode().isMapReduce()) {
+            if (!this.jobletContainer.getNode().isMapReduceStart()) {
+                rectFig.setVisible(false);
+                outlineFigure.setVisible(false);
+                return;
+            }
+            this.jobletContainer.updateJobletNodes(true);
+            if (rectFig != null) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
+                rectFig.setVisible(true);
+            }
+
+            if (outlineFigure != null) {
+                outlineFigure.setVisible(false);
+            }
+
+            Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+            while (ite.hasNext()) {
+                Entry<String, RectangleFigure> entry = ite.next();
+                String key = entry.getKey();
+                RectangleFigure value = entry.getValue();
+                Double percent = new Double(0);
+                if (key.startsWith("map_")) {
+                    if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
+                        percent = jobletContainer.getPercentMap() * 10;
+                        value.setVisible(true);
+                    }
+                }
+
+                if (key.startsWith("reduce_")) {
+                    if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
+                        percent = jobletContainer.getPercentReduce() * 10;
+                        value.setVisible(true);
+                    }
+                }
+
+                if (value.isVisible()) {
+                    Integer i = Integer.parseInt(key.substring(key.indexOf("_") + 1)) + 1;
+                    if (i.toString().equals(jobletContainer.getMrName()) || isClear) {
+                        List object = value.getChildren();
+                        for (Object o : object) {
+                            if (o instanceof RectangleFigure) {
+                                setProgressData((RectangleFigure) o, percent, 8);
+                            }
+                        }
+                    }
+                }
+
+            }
+
         }
+
     }
 
     public void initializejobletContainer(Rectangle rectangle) {
-        disposeColors();
+        // disposeColors();
         Point location = this.getLocation();
         collapseFigure.setCollapsed(jobletContainer.isCollapsed());
+        collapseFigure.setVisible(this.jobletContainer.getNode().isJoblet());
         titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
         Dimension preferedSize = titleFigure.getPreferredSize();
         preferedSize = preferedSize.getExpanded(0, 3);
@@ -220,22 +290,51 @@ public class JobletContainerFigure extends Figure {
 
         outlineFigure.setLocation(new Point(location.x, location.y));
         outlineFigure.setVisible(showTitle);
-        outlineFigure.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
+        outlineFigure.setForegroundColor(ColorUtils.getCacheColor(new RGB(220, 120, 120)));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
+
+        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        int i = 0;
+        while (ite.hasNext()) {
+            Entry<String, RectangleFigure> entry = ite.next();
+            String key = entry.getKey();
+            RectangleFigure value = entry.getValue();
+            Integer count = this.jobletContainer.getNode().getMrJobInGroupCount();
+            i = Integer.parseInt(key.substring(key.indexOf("_") + 1));
+            int mry = preferedSize.height * i;
+            if (key.startsWith("map_")) {
+                value.setLocation(new Point(location.x, location.y + rectangle.height - count * preferedSize.height + mry));
+            }
+            if (key.startsWith("reduce_")) {
+                value.setLocation(new Point(location.x + 120, location.y + rectangle.height - count * preferedSize.height + mry));
+            }
+
+        }
 
         // collapseFigure.setBackgroundColor(new Color(null, 50, 50, 250));
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        if (new JobletUtil().isRed(this.jobletContainer)) {
-            rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
-            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
+        if (this.jobletContainer.getNode().isJoblet()) {
+            if (new JobletUtil().isRed(this.jobletContainer)) {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(red));
+                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(red));
+            } else {
+                rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
+                outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(green));
+            }
         } else {
-            rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
-            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), green));
+            rectFig.setBackgroundColor(ColorUtils.getCacheColor(green));
+            outlineFigure.setBackgroundColor(ColorUtils.getCacheColor(green));
+            // progressFigure.setBackgroundColor(new Color(Display.getDefault(), red));
+            if (!this.jobletContainer.getNode().isMapReduceStart()) {
+                rectFig.setVisible(false);
+                outlineFigure.setVisible(false);
+            }
+
         }
 
-        rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
+        rectFig.setForegroundColor(ColorUtils.getCacheColor(new RGB(220, 120, 120)));
     }
 
     public void disposeColors() {
@@ -250,6 +349,32 @@ public class JobletContainerFigure extends Figure {
         }
         if (outlineFigure.getBackgroundColor() != null && !outlineFigure.getBackgroundColor().isDisposed()) {
             outlineFigure.getBackgroundColor().dispose();
+        }
+
+        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        while (ite.hasNext()) {
+            Entry<String, RectangleFigure> entry = ite.next();
+            RectangleFigure value = entry.getValue();
+            if (value.getForegroundColor() != null && !value.getForegroundColor().isDisposed()) {
+                value.getForegroundColor().dispose();
+                // for (Object o : value.getChildren()) {
+                // if (o instanceof Figure) {
+                // if (((Figure) o).getForegroundColor() != null && !((Figure) o).getForegroundColor().isDisposed()) {
+                // ((Figure) o).getForegroundColor().dispose();
+                // }
+                // }
+                // }
+            }
+            if (value.getBackgroundColor() != null && !value.getBackgroundColor().isDisposed()) {
+                value.getBackgroundColor().dispose();
+                // for (Object o : value.getChildren()) {
+                // if (o instanceof Figure) {
+                // if (((Figure) o).getBackgroundColor() != null && !((Figure) o).getBackgroundColor().isDisposed()) {
+                // ((Figure) o).getBackgroundColor().dispose();
+                // }
+                // }
+                // }
+            }
         }
     }
 
@@ -290,6 +415,18 @@ public class JobletContainerFigure extends Figure {
             rectFig.add(collapseFigure);
             add(outlineFigure, null, 0);
             add(rectFig, null, 1);
+        }
+
+        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        while (ite.hasNext()) {
+            Entry<String, RectangleFigure> entry = ite.next();
+            RectangleFigure value = entry.getValue();
+            add(value, null, 2);
+        }
+
+        if (!this.jobletContainer.getNode().isMapReduceStart() && !this.jobletContainer.getNode().isJoblet()) {
+            rectFig.setVisible(false);
+            outlineFigure.setVisible(false);
         }
     }
 
@@ -341,4 +478,124 @@ public class JobletContainerFigure extends Figure {
         }
     }
 
+    private void initMRFigures() {
+        Integer mrCount = this.jobletContainer.getNode().getMrJobInGroupCount();
+        if (!jobletContainer.getNode().isMapReduceStart()) {
+            return;
+        }
+        if (this.jobletContainer.getNode().getMrGroupId() == null) {
+            return;
+        }
+        if (mrCount == null) {
+            mrCount = 1;
+        }
+        if (mrCount != null) {
+            for (int i = 0; i < mrCount; i++) {
+                RectangleFigure progressMap = new RectangleFigure();
+                progressMap.setOutline(false);
+                progressMap.setOpaque(false);
+                Label mapTip = new Label();
+                mapTip.setText("Map ");
+                progressMap.setToolTip(mapTip);
+                progressMap.setLayoutManager(new ToolbarLayout(true));
+                progressMap.setVisible(false);
+
+                SimpleHtmlFigure mapTitle = new SimpleHtmlFigure();
+                mapTitle.setText("<font color='#000000'> <b> " + "Map " + "</b></font>");
+                mapTitle.setOpaque(false);
+                mapTitle.setBackgroundColor(ColorUtils.getCacheColor(green));
+                mapTitle.setForegroundColor(ColorUtils.getCacheColor(green));
+
+                RectangleFigure mapGreen = new RectangleFigure();
+                mapGreen.setSize(60, mapTitle.getPreferredSize().height);
+                mapGreen.setPreferredSize(60, mapTitle.getPreferredSize().height + 5);
+                mapGreen.setBorder(new LineBorder(ColorConstants.black, 1));
+                mapGreen.setLayoutManager(new ToolbarLayout(true));
+                mapGreen.setLocation(new Point(progressMap.getLocation().x + mapTitle.getPreferredSize().width, progressMap
+                        .getLocation().y));
+                mapGreen.setVisible(true);
+                mapGreen.setOpaque(true);
+                progressMap.add(mapTitle, 0);
+                progressMap.add(mapGreen, 1);
+
+                progressMap.setSize(mapTitle.getPreferredSize().width + mapGreen.getPreferredSize().width,
+                        mapTitle.getPreferredSize().height + 1);
+                progressMap.setPreferredSize(mapTitle.getPreferredSize().width + mapGreen.getPreferredSize().width,
+                        mapTitle.getPreferredSize().height + 1);
+                mrFigures.put("map_" + i, progressMap);
+                // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                RectangleFigure progressReduce = new RectangleFigure();
+                progressReduce.setOutline(false);
+                progressReduce.setOpaque(false);
+                Label reduceTip = new Label();
+                reduceTip.setText("Reduce ");
+                progressReduce.setToolTip(reduceTip);
+                progressReduce.setLayoutManager(new ToolbarLayout(true));
+                progressReduce.setVisible(false);
+
+                SimpleHtmlFigure reduceTitle = new SimpleHtmlFigure();
+                reduceTitle.setText("<font color='#000000'> <b> " + "Reduce " + "</b></font>");
+                reduceTitle.setOpaque(false);
+                reduceTitle.setBackgroundColor(ColorUtils.getCacheColor(green));
+                reduceTitle.setForegroundColor(ColorUtils.getCacheColor(green));
+
+                RectangleFigure reduceGreen = new RectangleFigure();
+                reduceGreen.setSize(60, reduceTitle.getPreferredSize().height);
+                reduceGreen.setPreferredSize(60, reduceTitle.getPreferredSize().height + 5);
+                reduceGreen.setBorder(new LineBorder(ColorConstants.black, 1));
+                reduceGreen.setLayoutManager(new ToolbarLayout(true));
+                reduceGreen.setLocation(new Point(progressReduce.getLocation().x + reduceTitle.getPreferredSize().width,
+                        progressReduce.getLocation().y));
+                reduceGreen.setVisible(true);
+                reduceGreen.setOpaque(true);
+                progressReduce.add(reduceTitle, 0);
+                progressReduce.add(reduceGreen, 1);
+
+                progressReduce.setSize(reduceTitle.getPreferredSize().width + reduceGreen.getPreferredSize().width,
+                        reduceTitle.getPreferredSize().height + 1);
+                progressReduce.setPreferredSize(reduceTitle.getPreferredSize().width + reduceGreen.getPreferredSize().width,
+                        reduceTitle.getPreferredSize().height + 1);
+                mrFigures.put("reduce_" + i, progressReduce);
+            }
+        }
+    }
+
+    public void setProgressData(RectangleFigure progressBarFigure, Double extentString, int extent) {
+        progressBarFigure.getChildren().clear();
+        int nodeX = progressBarFigure.getLocation().x;
+        int nodeY = progressBarFigure.getLocation().y;
+
+        if (extentString == 10) {
+            ImageFigure progressDataFigure = new ImageFigure();
+            Image image = ImageProvider.getImage(ECoreImage.MRGREEBAR);
+            progressDataFigure.setImage(image);
+            progressDataFigure.setVisible(true);
+            progressBarFigure.add(progressDataFigure);
+        } else if (extentString > 0 && extentString < 10) {
+            for (int i = 0; i < extentString; i++) {
+                ImageFigure progressDataFigure = new ImageFigure();
+                Image image = ImageProvider.getImage(ECoreImage.MRREDBAR);
+                progressDataFigure.setImage(image);
+                progressDataFigure.setVisible(true);
+                progressBarFigure.add(progressDataFigure);
+                int imageWith = image.getImageData().width;
+                if (i != 0) {
+                    Point point = new Point(nodeX + i * imageWith, nodeY);
+                    progressDataFigure.setLocation(point);
+                }
+            }
+            for (int j = 0; j < (10 - extentString); j++) {
+                ImageFigure progressDataFigure = new ImageFigure();
+                Image image = ImageProvider.getImage(ECoreImage.MRGRAYBAR);
+                progressDataFigure.setImage(image);
+                progressDataFigure.setVisible(true);
+                progressBarFigure.add(progressDataFigure);
+                int imageWith = image.getImageData().width;
+                if (j != 0) {
+                    Point point = new Point(nodeX + extentString * imageWith + j * imageWith, nodeY);
+                    progressDataFigure.setLocation(point);
+                }
+            }
+        }
+    }
 }

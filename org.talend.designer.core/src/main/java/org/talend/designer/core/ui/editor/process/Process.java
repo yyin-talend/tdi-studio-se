@@ -1262,7 +1262,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             if (element instanceof SubjobContainer) {
                 saveSubjob(fileFact, processType, (SubjobContainer) element);
                 for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
-                    if (container instanceof JobletContainer) {
+                    if (container.getNode().isJoblet()) {
                         JobletContainer jobletCon = (JobletContainer) container;
                         boolean needUpdate = false;
                         IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
@@ -1938,7 +1938,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         NodeContainer nodec = null;
-        if (nc.isJoblet()) {
+        if (nc.isJoblet() || nc.isMapReduce()) {
             nodec = new JobletContainer(nc);
         } else {
             nodec = new NodeContainer(nc);
@@ -2006,6 +2006,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         loadColumnsBasedOnSchema(nc, listParamType);
         NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
         if (nc.isJoblet()) {
+            nodeContainer = new JobletContainer(nc);
+        } else if (nc.isMapReduce()) {
             nodeContainer = new JobletContainer(nc);
         } else {
             nodeContainer = new NodeContainer(nc);

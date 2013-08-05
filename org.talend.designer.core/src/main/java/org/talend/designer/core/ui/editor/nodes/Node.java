@@ -254,6 +254,17 @@ public class Node extends Element implements IGraphicalNode {
 
     private boolean subtreeStart;
 
+    boolean isMapReduceStart = false;
+
+    // as the talend job contains multiple mapreduce jobs, use this to indicate which mapreduce job contains this
+    // graphic node
+    private Integer mrGroupId;
+
+    // for the component which will generate multiple mapreduce jobs, count the size of mapreduce jobs.
+    private Integer mrJobInGroupCount;
+
+    private Integer mrJobIDInGroup;
+
     /**
      * Getter for index.
      * 
@@ -4187,6 +4198,52 @@ public class Node extends Element implements IGraphicalNode {
         return isJoblet;
     }
 
+    public boolean isMapReduceStart() {
+        if (this.getMrGroupId() == null) {
+            return false;
+        }
+        if (this.isMapReduce() && this.getIncomingConnections().isEmpty() && this.getOutgoingConnections().isEmpty()) {
+            return true;
+        }
+        return isMapReduceStart;
+    }
+
+    public boolean isMapReduce() {
+        if (this.getProcess().getComponentsType() == null) {
+            return false;
+        }
+        if (this.getProcess().getComponentsType().equals("MR")) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setMapReduceStart(boolean isMapReduceStart) {
+        if (this.getMrGroupId() == null) {
+            this.isMapReduceStart = false;
+            return;
+        }
+        List<? extends INode> gNodeList = this.getProcess().getGraphicalNodes();
+        boolean alreadyHave = false;
+        for (INode node : gNodeList) {
+            if (node instanceof Node) {
+                if (((Node) node).isMapReduceStart) {
+                    if (((Node) node).getUniqueName().equals(this.getUniqueName())) {
+                        continue;
+                    } else if (((Node) node).getMrGroupId().equals(this.getMrGroupId())) {
+                        alreadyHave = true;
+                    }
+                }
+
+            }
+        }
+        if (alreadyHave) {
+            this.isMapReduceStart = false;
+        } else {
+            this.isMapReduceStart = isMapReduceStart;
+        }
+    }
+
     @Override
     public INode getJobletNode() {
         return jobletNode;
@@ -4263,6 +4320,33 @@ public class Node extends Element implements IGraphicalNode {
             return;
         }
         param.setValue(new Boolean(subtreeStart));
+    }
+
+    public Integer getMrGroupId() {
+        return mrGroupId;
+    }
+
+    public void setMrGroupId(Integer mrGroupId) {
+        this.mrGroupId = mrGroupId;
+    }
+
+    public Integer getMrJobInGroupCount() {
+        if (mrJobInGroupCount == null) {
+            return 1;
+        }
+        return mrJobInGroupCount;
+    }
+
+    public void setMrJobInGroupCount(Integer mrJobInGroupCount) {
+        this.mrJobInGroupCount = mrJobInGroupCount;
+    }
+
+    public Integer getMrJobIDInGroup() {
+        return mrJobIDInGroup;
+    }
+
+    public void setMrJobIDInGroup(Integer mrJobIDInGroup) {
+        this.mrJobIDInGroup = mrJobIDInGroup;
     }
 
 }

@@ -795,6 +795,9 @@ public class JobletUtil {
 
     public boolean isRed(JobletContainer jobletContainer) {
         IProcess2 jobletProcess = (IProcess2) jobletContainer.getNode().getComponent().getProcess();
+        if (jobletProcess == null) {
+            return false;
+        }
         ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(jobletProcess.getProperty().getItem());
         if (status == ERepositoryStatus.LOCK_BY_OTHER) {
             return true;

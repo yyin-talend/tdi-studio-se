@@ -104,6 +104,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -913,6 +914,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             // exec();
 
         }
+        refreshNodeContainer();
     }
 
     public void pause(int id) {
@@ -1771,6 +1773,18 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 extend = extentPro;
             }
 
+        }
+
+    }
+
+    public void refreshNodeContainer() {
+        org.talend.core.model.process.IProcess process = processContext.getProcess();
+        List<? extends INode> nodeList = process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            if ((node instanceof Node) && (((Node) node).isMapReduceStart())) {
+                ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
+                        "UPDATE_STATUS", "CLEAR", new Double(0), new Double(0)); //$NON-NLS-1$
+            }
         }
 
     }

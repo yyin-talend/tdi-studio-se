@@ -277,19 +277,22 @@ public class JobletConnectionReconnectCommand extends Command {
                     if (oldMetadataTable != null && targetOldMetadataTable != null) {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
 
-                        IProcess2 jobletProcess = (IProcess2) newTarget.getJobletNode().getComponent().getProcess();
-                        ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(
-                                jobletProcess.getProperty().getItem());
-                        if (!status.equals(ERepositoryStatus.READ_ONLY)) {
-                            // For the auto propagate.
-                            if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
-                                    && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
-                                ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
-                                        oldMetadataTable);
-                                changeMetadataCmd.execute(true);
-                                metadataChanges.add(changeMetadataCmd);
+                        if (newTarget.getJobletNode() != null) {
+                            IProcess2 jobletProcess = (IProcess2) newTarget.getJobletNode().getComponent().getProcess();
+                            ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(
+                                    jobletProcess.getProperty().getItem());
+                            if (!status.equals(ERepositoryStatus.READ_ONLY)) {
+                                // For the auto propagate.
+                                if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
+                                        && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                                    ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
+                                            oldMetadataTable);
+                                    changeMetadataCmd.execute(true);
+                                    metadataChanges.add(changeMetadataCmd);
+                                }
                             }
                         }
+
                     }
                 }
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);

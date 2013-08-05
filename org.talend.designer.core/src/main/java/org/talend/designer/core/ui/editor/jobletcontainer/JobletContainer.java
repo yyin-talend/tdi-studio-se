@@ -74,6 +74,12 @@ public class JobletContainer extends NodeContainer {
 
     public static final int EXPEND_SIZE = 10;
 
+    private String mrName = "";
+
+    private Double percentMap = new Double(0);
+
+    private Double percentReduce = new Double(0);
+
     public JobletContainer(Node node) {
         super(node);
         this.node = node;
@@ -111,11 +117,16 @@ public class JobletContainer extends NodeContainer {
     public Rectangle getJobletContainerRectangle() {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
+        boolean mapStart = this.getNode().isMapReduceStart();
+        // List<INode> jobletNodes = new ArrayList<INode>();
+        // if (this.getNode().isJoblet()) {
+        // IProcess jobletProcess = this.getNode().getComponent().getProcess();
+        // jobletNodes.addAll(jobletProcess.getGraphicalNodes());
+        // } else if (mapStart) {
+        // jobletNodes.addAll(this.getNode().getProcess().getGraphicalNodes());
+        // }
 
-        IProcess jobletProcess = this.getNode().getComponent().getProcess();
-        List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
-
-        if (!collapsed && nodeContainers.size() > 0) {
+        if ((!collapsed || mapStart) && nodeContainers.size() > 0) {
             Rectangle jobletNodeRec = this.node.getNodeContainer().getNodeContainerRectangle();
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
@@ -128,6 +139,14 @@ public class JobletContainer extends NodeContainer {
                         curRect.setSize(preferedSize.width + 6, curRect.height);
                     }
                 }
+
+                if (this.getNode().isMapReduceStart()) {
+                    Integer count = this.getNode().getMrJobInGroupCount();
+                    if (count != null && count > 1) {
+                        curRect.setSize(curRect.width, curRect.height + 20 * (count - 1));
+                    }
+                }
+
                 // if (container.getNode().isDesignSubjobStartNode()) {
                 // totalRectangle = curRect.getCopy();
                 // } else {
@@ -137,6 +156,7 @@ public class JobletContainer extends NodeContainer {
                     totalRectangle = totalRectangle.getUnion(curRect);
                 }
                 // }
+
             }
             // totalRectangle.setLocation(jobletNodeRec.getLocation());
             // totalRectangle.x = totalRectangle.x - EXPEND_SIZE * 2;
@@ -273,7 +293,10 @@ public class JobletContainer extends NodeContainer {
             transferLocation(false);
             updateSubjobContainer();
 
-            refreshJobletConnections();
+            if (!node.isMapReduceStart()) {
+                refreshJobletConnections();
+            }
+
             fireStructureChange(EParameterName.COLLAPSED.getName(), this);
         } else {
             super.setPropertyValue(id, value);
@@ -286,107 +309,138 @@ public class JobletContainer extends NodeContainer {
         refreshJobletNodes(update, isCollapsed());
         transferLocation(update);
         updateSubjobContainer();
-        refreshJobletConnections();
+        if (!this.node.isMapReduceStart()) {
+            refreshJobletConnections();
+        }
     }
 
     public void refreshJobletNodes(boolean update, boolean coll) {
-        if (!coll || update) {
-            JobletUtil util = new JobletUtil();
-            IProcess jobletProcess = this.getNode().getComponent().getProcess();
-            Set<IConnection> conns = new HashSet<IConnection>();
-            List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
-            boolean lockByOther = false;
-            if (jobletProcess instanceof IProcess2) {
-                lockByOther = util.lockByOthers(((IProcess2) jobletProcess).getProperty().getItem());
-            }
+        if (this.node.isJoblet()) {
+            if (!coll || update) {
+                JobletUtil util = new JobletUtil();
+                IProcess jobletProcess = this.getNode().getComponent().getProcess();
+                Set<IConnection> conns = new HashSet<IConnection>();
+                List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
+                boolean lockByOther = false;
+                if (jobletProcess instanceof IProcess2) {
+                    lockByOther = util.lockByOthers(((IProcess2) jobletProcess).getProperty().getItem());
+                }
 
-            Map<String, List<? extends IElementParameter>> paraMap = new HashMap<String, List<? extends IElementParameter>>();
-            // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
-            for (NodeContainer nc : nodeContainers) {
-                if (this.node.getProcess() instanceof IProcess2) {
-                    if (!update) {
-                        paraMap.put(nc.getNode().getJoblet_unique_name(), nc.getNode().getElementParameters());
+                Map<String, List<? extends IElementParameter>> paraMap = new HashMap<String, List<? extends IElementParameter>>();
+                // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
+                for (NodeContainer nc : nodeContainers) {
+                    if (this.node.getProcess() instanceof IProcess2) {
+                        if (!update) {
+                            paraMap.put(nc.getNode().getJoblet_unique_name(), nc.getNode().getElementParameters());
+                        }
+                        ((IProcess2) this.node.getProcess()).removeUniqueNodeName(nc.getNode().getUniqueName());
                     }
-                    ((IProcess2) this.node.getProcess()).removeUniqueNodeName(nc.getNode().getUniqueName());
+                }
+                nodeContainers.clear();
+                jobletElements.clear();
+
+                // boolean canAdd = false;
+                // boolean canRemove = false;
+                for (INode inode : jobletNodes) {
+                    // canAdd = util.canAdd(temList, inode);
+                    if ((inode instanceof Node)) {
+                        Node temNode = (Node) inode;
+                        // if (canAdd) {
+                        conns.addAll(temNode.getIncomingConnections());
+                        conns.addAll(temNode.getOutgoingConnections());
+                        Node jnode = util.cloneNode(temNode, this.node.getProcess(), paraMap, lockByOther);
+                        if (!this.node.isActivate()) {
+                            jnode.setActivate(this.node.isActivate());
+                        }
+                        NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
+                        jnode.setJobletnode(this.node);
+                        jnode.setJoblet_unique_name(temNode.getUniqueName());
+                        this.nodeContainers.add(nodeContainer);
+                        this.jobletElements.add(jnode);
+                        this.jobletElements.add(jnode.getNodeLabel());
+                        this.jobletElements.add(jnode.getNodeError());
+                        this.jobletElements.add(jnode.getNodeProgressBar());
+                        // } else if (update) {
+                        // for (NodeContainer nodeC : nodeContainers) {
+                        // if (nodeC.getNode().getJoblet_unique_name().equals(temNode.getUniqueName())) {
+                        // util.updateNode(nodeC.getNode(), temNode);
+                        // break;
+                        // }
+                        // }
+                        // }
+
+                    }
+                }
+                // temList = new ArrayList<NodeContainer>(nodeContainers);
+                // for (NodeContainer nodeCon : temList) {
+                // Node temNode = nodeCon.getNode();
+                // canRemove = util.canDelete(jobletNodes, temNode);
+                // if (canRemove) {
+                // this.nodeContainers.remove(nodeCon);
+                // this.jobletElements.remove(temNode);
+                // this.jobletElements.remove(temNode.getNodeError());
+                // this.jobletElements.remove(temNode.getNodeLabel());
+                // this.jobletElements.remove(temNode.getNodeProgressBar());
+                // List<? extends IConnection> inCons = new ArrayList<IConnection>(temNode.getIncomingConnections());
+                // for (IConnection con : inCons) {
+                // con.getTarget().removeInput(con);
+                // }
+                // List<? extends IConnection> outCons = new ArrayList<IConnection>(temNode.getOutgoingConnections());
+                // for (IConnection con : outCons) {
+                // con.getTarget().removeOutput(con);
+                // }
+                // }
+                // }
+                for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
+                    IConnection con = iter.next();
+                    String sourceName = con.getSource().getUniqueName();
+                    String targetName = con.getTarget().getUniqueName();
+                    Node sourceNode = null;
+                    Node targetNode = null;
+                    for (NodeContainer nodeC : nodeContainers) {
+                        Node connNode = nodeC.getNode();
+                        if (connNode.getJoblet_unique_name().equals(sourceName)) {
+                            sourceNode = connNode;
+                        }
+                        if (connNode.getJoblet_unique_name().equals(targetName)) {
+                            targetNode = connNode;
+                        }
+                        if (sourceNode != null && targetNode != null) {
+                            util.cloneConnection(con, sourceNode, targetNode);
+                            break;
+                        }
+                    }
+                }
+
+            }
+        } else if (this.node.isMapReduceStart()) {
+            Integer mrGroupId = node.getMrGroupId();
+            List<? extends INode> mapReduceNodes = this.node.getProcess().getGraphicalNodes();
+            List<Node> nodeList = new ArrayList<Node>();
+            for (INode inode : mapReduceNodes) {
+                if ((inode instanceof Node)) {
+                    Node temNode = (Node) inode;
+                    if (temNode.getMrGroupId().equals(mrGroupId)) {
+                        nodeList.add(temNode);
+                    }
                 }
             }
+
             nodeContainers.clear();
             jobletElements.clear();
 
-            // boolean canAdd = false;
-            // boolean canRemove = false;
-            for (INode inode : jobletNodes) {
-                // canAdd = util.canAdd(temList, inode);
-                if ((inode instanceof Node)) {
-                    Node temNode = (Node) inode;
-                    // if (canAdd) {
-                    conns.addAll(temNode.getIncomingConnections());
-                    conns.addAll(temNode.getOutgoingConnections());
-                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), paraMap, lockByOther);
-                    if (!this.node.isActivate()) {
-                        jnode.setActivate(this.node.isActivate());
-                    }
-                    NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
-                    jnode.setJobletnode(this.node);
-                    jnode.setJoblet_unique_name(temNode.getUniqueName());
-                    this.nodeContainers.add(nodeContainer);
-                    this.jobletElements.add(jnode);
-                    this.jobletElements.add(jnode.getNodeLabel());
-                    this.jobletElements.add(jnode.getNodeError());
-                    this.jobletElements.add(jnode.getNodeProgressBar());
-                    // } else if (update) {
-                    // for (NodeContainer nodeC : nodeContainers) {
-                    // if (nodeC.getNode().getJoblet_unique_name().equals(temNode.getUniqueName())) {
-                    // util.updateNode(nodeC.getNode(), temNode);
-                    // break;
-                    // }
-                    // }
-                    // }
-
-                }
+            for (Node inode : nodeList) {
+                NodeContainer nodeContainer = inode.getNodeContainer();
+                // inode.setJobletnode(this.node);
+                // inode.setJoblet_unique_name(inode.getUniqueName());
+                this.nodeContainers.add(nodeContainer);
+                this.jobletElements.add(inode);
+                this.jobletElements.add(inode.getNodeLabel());
+                this.jobletElements.add(inode.getNodeError());
+                this.jobletElements.add(inode.getNodeProgressBar());
             }
-            // temList = new ArrayList<NodeContainer>(nodeContainers);
-            // for (NodeContainer nodeCon : temList) {
-            // Node temNode = nodeCon.getNode();
-            // canRemove = util.canDelete(jobletNodes, temNode);
-            // if (canRemove) {
-            // this.nodeContainers.remove(nodeCon);
-            // this.jobletElements.remove(temNode);
-            // this.jobletElements.remove(temNode.getNodeError());
-            // this.jobletElements.remove(temNode.getNodeLabel());
-            // this.jobletElements.remove(temNode.getNodeProgressBar());
-            // List<? extends IConnection> inCons = new ArrayList<IConnection>(temNode.getIncomingConnections());
-            // for (IConnection con : inCons) {
-            // con.getTarget().removeInput(con);
-            // }
-            // List<? extends IConnection> outCons = new ArrayList<IConnection>(temNode.getOutgoingConnections());
-            // for (IConnection con : outCons) {
-            // con.getTarget().removeOutput(con);
-            // }
-            // }
-            // }
-            for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
-                IConnection con = iter.next();
-                String sourceName = con.getSource().getUniqueName();
-                String targetName = con.getTarget().getUniqueName();
-                Node sourceNode = null;
-                Node targetNode = null;
-                for (NodeContainer nodeC : nodeContainers) {
-                    Node connNode = nodeC.getNode();
-                    if (connNode.getJoblet_unique_name().equals(sourceName)) {
-                        sourceNode = connNode;
-                    }
-                    if (connNode.getJoblet_unique_name().equals(targetName)) {
-                        targetNode = connNode;
-                    }
-                    if (sourceNode != null && targetNode != null) {
-                        util.cloneConnection(con, sourceNode, targetNode);
-                        break;
-                    }
-                }
-            }
-
         }
+
     }
 
     private void transferLocation(boolean update) {
@@ -394,7 +448,7 @@ public class JobletContainer extends NodeContainer {
         if (update) {
             // do nothing
         }
-        if (this.isCollapsed() == true) {
+        if ((this.isCollapsed() == true) && !this.getNode().isMapReduceStart()) {
             return;
         }
         if (this.nodeContainers.size() <= 0) {
@@ -410,7 +464,7 @@ public class JobletContainer extends NodeContainer {
         int hight_y = oragPoint.y - stratPoint.y;
         for (NodeContainer nodeCon : this.nodeContainers) {
             Node jobNode = nodeCon.getNode();
-            if (jobNode.getJoblet_unique_name().equals(startNode.getUniqueName())) {
+            if (jobNode.getJoblet_unique_name() != null && jobNode.getJoblet_unique_name().equals(startNode.getUniqueName())) {
                 jobNode.setLocation(oragPoint);
             } else {
                 Point nodePoint = jobNode.getLocation();
@@ -423,7 +477,7 @@ public class JobletContainer extends NodeContainer {
 
     public void transferLocation(Point oldPos) {
         this.update = false;
-        if (this.isCollapsed() == true) {
+        if ((this.isCollapsed() == true) && !this.getNode().isMapReduceStart()) {
             return;
         }
         if (this.nodeContainers.size() <= 0) {
@@ -640,5 +694,29 @@ public class JobletContainer extends NodeContainer {
 
     public void setNeedchangeLock(boolean needchangeLock) {
         this.needchangeLock = needchangeLock;
+    }
+
+    public void updateState(final String id, Object value, Double percentMap, Double percentReduce) {
+        if (id.equals("UPDATE_STATUS")) { //$NON-NLS-1$
+            this.percentMap = percentMap;
+            this.percentReduce = percentReduce;
+            firePropertyChange("UPDATE_STATUS", null, value); //$NON-NLS-1$
+        }
+    }
+
+    public Double getPercentMap() {
+        return this.percentMap;
+    }
+
+    public Double getPercentReduce() {
+        return this.percentReduce;
+    }
+
+    public String getMrName() {
+        return mrName;
+    }
+
+    public void setMrName(String mrName) {
+        this.mrName = mrName;
     }
 }

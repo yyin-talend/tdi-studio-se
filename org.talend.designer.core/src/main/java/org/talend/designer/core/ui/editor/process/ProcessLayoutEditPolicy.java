@@ -152,7 +152,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
                     constraint.getLocation());
         } else if (request.getNewObject() instanceof Node) {
             NodeContainer nodeContainer = null;
-            if (((Node) request.getNewObject()).isJoblet()) {
+            if (((Node) request.getNewObject()).isJoblet() || ((Node) request.getNewObject()).isMapReduce()) {
                 nodeContainer = new JobletContainer((Node) request.getNewObject());
             } else {
                 nodeContainer = new NodeContainer((Node) request.getNewObject());

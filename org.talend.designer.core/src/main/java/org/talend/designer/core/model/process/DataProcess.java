@@ -2919,7 +2919,7 @@ public class DataProcess implements IGeneratingProcess {
         ValidationRulesUtil.updateRejectMetatable(newGraphicalNode, graphicalNode);
 
         NodeContainer nc = null;
-        if (newGraphicalNode.isJoblet()) {
+        if (newGraphicalNode.isJoblet() || newGraphicalNode.isMapReduce()) {
             nc = new JobletContainer(newGraphicalNode);
         } else {
             nc = new NodeContainer(newGraphicalNode);

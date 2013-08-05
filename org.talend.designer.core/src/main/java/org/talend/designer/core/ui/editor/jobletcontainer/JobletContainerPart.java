@@ -53,7 +53,7 @@ public class JobletContainerPart extends NodeContainerPart {
     @Override
     protected void unregisterVisuals() {
         super.unregisterVisuals();
-        ((JobletContainerFigure) getFigure()).disposeColors();
+        // ((JobletContainerFigure) getFigure()).disposeColors();
     }
 
     @Override
@@ -192,6 +192,18 @@ public class JobletContainerPart extends NodeContainerPart {
             // elems.add(getModel());
             // parent.refresh();
             needUpdateSubjob = true;
+        } else if (changeEvent.getPropertyName().equals("UPDATE_STATUS")) { //$NON-NLS-1$
+            // ((JobletContainer) getModel()).updateJobletNodes(true);
+            if (getFigure() instanceof JobletContainerFigure) {
+                String newValue = (String) changeEvent.getNewValue();
+                if (newValue != null && newValue.equals("CLEAR")) {
+                    ((JobletContainerFigure) getFigure()).refreshNodes(true);
+                } else {
+                    ((JobletContainerFigure) getFigure()).refreshNodes(false);
+                }
+
+            }
+            refreshVisuals();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             if (getFigure() instanceof JobletContainerFigure) {
                 ((JobletContainerFigure) getFigure()).updateData();
@@ -248,7 +260,7 @@ public class JobletContainerPart extends NodeContainerPart {
                     // Node node = ((NodeContainer) getModel()).getNode();
                     JobletContainer nc = (JobletContainer) this.getModel();
                     // Rectangle rec = new Rectangle(node.getLocation(), node.getSize());
-                    boolean isCollapse = nc.isCollapsed();
+                    boolean isCollapse = nc.isCollapsed() && !nc.getNode().isMapReduceStart();
                     int rightChangewidth = nc.getRightChangeWidth();
                     int downChangeheight = nc.getDownChangeHeight();
                     int leftChangewidth = nc.getLeftChangeWidth();

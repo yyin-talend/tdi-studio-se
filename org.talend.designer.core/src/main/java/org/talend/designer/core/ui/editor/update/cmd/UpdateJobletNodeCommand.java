@@ -115,7 +115,7 @@ public class UpdateJobletNodeCommand extends Command {
                             // of node.
                             Node currentNode = getOriginalNodeFromProcess(node);
                             boolean neesPro = needPropagate(currentNode);
-                            if (currentNode.isJoblet()) {
+                            if (currentNode.isJoblet() || currentNode.isMapReduce()) {// maybe no need modify
                                 if (result.isNeedReloadJoblet()) {
                                     reloadNode(currentNode, newComponent);
                                 }

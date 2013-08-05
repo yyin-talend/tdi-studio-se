@@ -84,6 +84,8 @@ public class PartFactory implements EditPartFactory {
         } else if (model instanceof NodeContainer) {
             if (((NodeContainer) model).getNode().isJoblet()) {
                 part = new JobletContainerPart();
+            } else if (((NodeContainer) model).getNode().isMapReduce()) {
+                part = new JobletContainerPart();
             } else {
                 part = new NodeContainerPart();
             }

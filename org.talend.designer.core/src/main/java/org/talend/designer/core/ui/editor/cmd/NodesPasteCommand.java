@@ -511,7 +511,7 @@ public class NodesPasteCommand extends Command {
             }
 
             NodeContainer nc = null;
-            if (((Node) pastedNode).isJoblet()) {
+            if (((Node) pastedNode).isJoblet() || ((Node) pastedNode).isMapReduce()) {
                 nc = new JobletContainer((Node) pastedNode);
             } else {
                 nc = new NodeContainer((Node) pastedNode);

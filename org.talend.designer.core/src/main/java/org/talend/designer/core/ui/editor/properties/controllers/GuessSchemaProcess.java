@@ -133,7 +133,7 @@ public class GuessSchemaProcess {
                             ComponentCategory.CATEGORY_4_DI.getName()), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     NodeContainer nc = null;
-                    if (libNode1.isJoblet()) {
+                    if (libNode1.isJoblet() || libNode1.isMapReduce()) {
                         nc = new JobletContainer(libNode1);
                     } else {
                         nc = new NodeContainer(libNode1);

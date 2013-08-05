@@ -174,6 +174,7 @@ import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -1602,7 +1603,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                             Node node = (Node) newObject;
                             // TDI-23304 this bug is caused by TDI-23058
                             if (!node.getComponent().getComponentType().equals(EComponentType.JOBLET)) {
-                                NodeContainer nodeContainer = new NodeContainer(node);
+                                NodeContainer nodeContainer = null;
+                                if (node.isMapReduce()) {
+                                    nodeContainer = new JobletContainer(node);
+                                } else {
+                                    nodeContainer = new NodeContainer(node);
+                                }
+
                                 Point originalPoint = ((CreateRequest) request).getLocation();
                                 RootEditPart rep = getViewer().getRootEditPart().getRoot();
                                 Point viewOriginalPosition = new Point();

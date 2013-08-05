@@ -339,7 +339,8 @@ public class NodesMoveCommond extends Command {
             if (!containNodeInProcess(copiedNode)) {
                 continue;
             }
-            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(), copiedNode.getProcess().getComponentsType());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(),
+                    copiedNode.getProcess().getComponentsType());
             if (component == null) {
                 component = copiedNode.getComponent();
             }
@@ -498,7 +499,7 @@ public class NodesMoveCommond extends Command {
             }
 
             NodeContainer nc = null;
-            if (((Node) pastedNode).isJoblet()) {
+            if (((Node) pastedNode).isJoblet() || ((Node) pastedNode).isMapReduce()) {
                 nc = new JobletContainer((Node) pastedNode);
             } else {
                 nc = new NodeContainer((Node) pastedNode);

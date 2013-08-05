@@ -1055,7 +1055,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
                 processSpecificDBTypeIfSameProduct(store.componentName, node);
                 NodeContainer nc = null;
-                if (node.isJoblet()) {
+                if (node.isJoblet() || node.isMapReduce()) {
                     nc = new JobletContainer(node);
                 } else {
                     nc = new NodeContainer(node);

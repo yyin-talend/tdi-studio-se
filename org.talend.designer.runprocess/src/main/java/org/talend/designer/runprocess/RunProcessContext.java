@@ -57,6 +57,8 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -955,6 +957,7 @@ public class RunProcessContext {
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
                         String line = reader.readLine();
+                        showMapReduceData(line);
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             if (line != null) {
                                 if (line.startsWith("0")) {
@@ -1577,4 +1580,43 @@ public class RunProcessContext {
         this.isBasicRun = isBasicRun;
     }
 
+    private void showMapReduceData(String data) {
+        if (!data.contains("|")) {
+            return;
+        }
+        String[] datas = data.split("\\|");
+        if (datas.length < 4) {
+            return;
+        }
+        final Integer groupID = new Integer(datas[0]);
+        //        if ((!"".equals(datas[0])) && datas[0] != null) { //$NON-NLS-1$
+        // groupID = Integer.parseInt(datas[0]);
+        // }
+        final String mrName = datas[1];
+        final Double percentMap = new Double(datas[2]);
+        //        if ((!"".equals(datas[2])) && datas[2] != null) { //$NON-NLS-1$  
+        // percentMap = Double.parseDouble(datas[2]);
+        // }
+        final Double percentReduce = new Double(datas[3]);
+        //        if ((!"".equals(datas[3])) && datas[3] != null) { //$NON-NLS-1$  
+        // percentMap = Double.parseDouble(datas[3]);
+        // }
+
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                List<? extends INode> nodeList = process.getGraphicalNodes();
+                for (INode node : nodeList) {
+                    if ((node instanceof Node) && ((Node) node).getMrGroupId() != null
+                            && ((Node) node).getMrGroupId().equals(groupID)) {
+                        if (((Node) node).getNodeContainer() instanceof JobletContainer) {
+                            ((JobletContainer) ((Node) node).getNodeContainer()).setMrName(mrName);
+                            ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
+                                    "UPDATE_STATUS", mrName, percentMap, percentReduce); //$NON-NLS-1$
+                        }
+                    }
+                }
+            }
+        });
+    }
 }
