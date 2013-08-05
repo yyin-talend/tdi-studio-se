@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
@@ -36,6 +41,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
@@ -88,9 +94,13 @@ public class CodeView extends ViewPart {
 
     private INode generatingNode = null;
 
+    private boolean generating = false;
+
     public static final String ID = "org.talend.designer.core.codeView"; //$NON-NLS-1$
 
     private Composite parent;
+
+    private String generatedCode;
 
     IAction viewStartAction = new Action() {
 
@@ -219,12 +229,7 @@ public class CodeView extends ViewPart {
         IViewPart view = page.findView(CodeView.ID);
         if (view != null) {
             final CodeView codeView = (CodeView) view;
-            codeView.getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
-
-                public void run() {
-                    codeView.refresh(element);
-                }
-            });
+            codeView.refresh(element);
         }
     }
 
@@ -247,70 +252,107 @@ public class CodeView extends ViewPart {
         }
     }
 
+    private synchronized void setGenerating(boolean generating) {
+        this.generating = generating;
+    }
+
+    private synchronized boolean isGenerating() {
+        return this.generating;
+    }
+
     public void refresh() {
-        if (selectedNode != null) {
-            String generatedCode = ""; //$NON-NLS-1$
-
-            // joblet or joblet node
-            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(selectedNode.getProcess());
-            if (!isJoblet && PluginChecker.isJobLetPluginLoaded()) {
-                IJobletProviderService jobletSservice = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                        IJobletProviderService.class);
-                if (jobletSservice != null && jobletSservice.isJobletComponent(selectedNode)) {
-                    isJoblet = true;
-                }
-            }
-            if (isJoblet) {
-                document.set(generatedCode);
-                return;
-            }
-
-            generatingNode = null;
-            for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
-                if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
-                    generatingNode = node;
-                }
-            }
-            if (generatingNode == null) {
-                document.set(Messages.getString("CodeView.MultipleComponentError")); //$NON-NLS-1$
-                return;
-            }
-            if (codeGenerator == null) {
-                ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
-                codeGenerator = service.createCodeGenerator();
-            }
-            viewStartAction.setChecked(false);
-            viewMainAction.setChecked(false);
-            viewEndAction.setChecked(false);
-            viewAllAction.setChecked(false);
-            try {
-                switch (codeView) {
-                case CODE_START:
-                    viewStartAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                    break;
-                case CODE_MAIN:
-                    viewMainAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                    break;
-                case CODE_END:
-                    viewEndAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                    break;
-                case CODE_ALL:
-                    viewAllAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
-                    generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
-                    generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
-                    break;
-                default:
-                }
-            } catch (SystemException e) {
-                document.set(Messages.getString("CodeView.Error")); //$NON-NLS-1$
-                ExceptionHandler.process(e);
-            }
-            document.set(generatedCode);
+        if (isGenerating()) {
+            return;
         }
+        setGenerating(true);
+        Job job = new Job(Messages.getString("CodeView.initMessage")) { //$NON-NLS-1$
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                if (selectedNode != null) {
+                    generatedCode = ""; //$NON-NLS-1$
+
+                    // joblet or joblet node
+                    boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(selectedNode.getProcess());
+                    if (!isJoblet && PluginChecker.isJobLetPluginLoaded()) {
+                        IJobletProviderService jobletSservice = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                                .getService(IJobletProviderService.class);
+                        if (jobletSservice != null && jobletSservice.isJobletComponent(selectedNode)) {
+                            isJoblet = true;
+                        }
+                    }
+                    if (isJoblet) {
+                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                    }
+
+                    generatingNode = null;
+                    for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
+                        if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
+                            generatingNode = node;
+                        }
+                    }
+                    if (generatingNode == null) {
+                        generatedCode = Messages.getString("CodeView.MultipleComponentError");
+                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                    }
+                    if (codeGenerator == null) {
+                        ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
+                        codeGenerator = service.createCodeGenerator();
+                    }
+                    viewStartAction.setChecked(false);
+                    viewMainAction.setChecked(false);
+                    viewEndAction.setChecked(false);
+                    viewAllAction.setChecked(false);
+                    try {
+                        switch (codeView) {
+                        case CODE_START:
+                            viewStartAction.setChecked(true);
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
+                            break;
+                        case CODE_MAIN:
+                            viewMainAction.setChecked(true);
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
+                            break;
+                        case CODE_END:
+                            viewEndAction.setChecked(true);
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
+                            break;
+                        case CODE_ALL:
+                            viewAllAction.setChecked(true);
+                            generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
+                            generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
+                            generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
+                            break;
+                        default:
+                        }
+                    } catch (SystemException e) {
+                        generatedCode = Messages.getString("CodeView.Error"); //$NON-NLS-1$
+                        ExceptionHandler.process(e);
+                    }
+                }
+                return org.eclipse.core.runtime.Status.OK_STATUS;
+            }
+
+        };
+        job.setPriority(Job.INTERACTIVE);
+        job.schedule();
+        job.addJobChangeListener(new JobChangeAdapter() {
+
+            @Override
+            public void done(IJobChangeEvent event) {
+                new UIJob("") { //$NON-NLS-1$
+
+                    @Override
+                    public IStatus runInUIThread(IProgressMonitor monitor) {
+                        document.set(generatedCode);
+                        setGenerating(false);
+                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                    }
+
+                }.schedule();
+            }
+
+        });
     }
 
     /*

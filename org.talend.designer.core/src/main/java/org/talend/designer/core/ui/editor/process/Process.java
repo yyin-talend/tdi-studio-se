@@ -577,6 +577,26 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     DataProcess generatingProcess = null;
 
+    boolean isBuilding;
+
+    /**
+     * Getter for isBuilding.
+     * 
+     * @return the isBuilding
+     */
+    public synchronized boolean isBuilding() {
+        return this.isBuilding;
+    }
+
+    /**
+     * Sets the isBuilding.
+     * 
+     * @param isBuilding the isBuilding to set
+     */
+    public synchronized void setBuilding(boolean isBuilding) {
+        this.isBuilding = isBuilding;
+    }
+
     @Override
     public List<? extends INode> getGeneratingNodes() {
         if (generatingProcess == null) {
@@ -587,6 +607,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             checkRoutineDependencies();
         }
         if (isProcessModified()) {
+            if (isBuilding()) {
+                return generatedNodeList;
+            }
+            setBuilding(true);
             List<INode> sortedFlow = sortNodes(nodes);
             if (sortedFlow.size() != nodes.size()) {
                 sortedFlow = nodes;
@@ -594,6 +618,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             generatingProcess.buildFromGraphicalProcess(sortedFlow);
             generatedNodeList = generatingProcess.getNodeList();
             processModified = false;
+            setBuilding(false);
         }
         return generatedNodeList;
     }
@@ -2328,7 +2353,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     @Override
     public boolean checkReadOnly() {
         IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        boolean readOnlyLocal = !isLastVersion(property.getItem()) || !repFactory.isEditableAndLockIfPossible(property.getItem()); 
+        boolean readOnlyLocal = !isLastVersion(property.getItem()) || !repFactory.isEditableAndLockIfPossible(property.getItem());
         this.setReadOnly(readOnlyLocal);
         return readOnlyLocal;
     }
