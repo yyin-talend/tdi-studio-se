@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -51,10 +52,12 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
@@ -65,6 +68,7 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -300,6 +304,10 @@ public class ComboController extends AbstractElementPropertySectionController {
             // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             executeCommand(cmd);
+            IElementParameter component = elem.getElementParameter(EParameterName.COMPONENT_NAME.getName());
+            if (component != null && component.getValue().equals("tSalesforceOutput")) {//$NON-NLS-1$ 
+                updateSaleforceOutput(event);
+            }
             IElementParameter elementParameterFromField = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
             if (elementParameterFromField != null) {
                 Object value = elementParameterFromField.getValue();
@@ -313,6 +321,81 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         }
     };
+
+    private void updateSaleforceOutput(SelectionEvent event) {
+        Set<String> elementsName;
+        Control ctrl;
+        elementsName = hashCurControls.keySet();
+        for (String name : elementsName) {
+            Object o = hashCurControls.get(name);
+            if (o instanceof Control) {
+                ctrl = (Control) o;
+                CCombo combo = (CCombo) event.getSource();
+                Object data = ctrl.getData(PARAMETER_NAME);
+                if (!(ctrl instanceof CCombo)) {
+                    continue;
+                }
+                boolean isDisposed = ((CCombo) ctrl).isDisposed() || combo.isDisposed();
+                if (isDisposed) {
+                    continue;
+                }
+                if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
+                    if (data.equals("MODULENAME")) {
+                        if (elem instanceof Node) {
+                            Node node = (Node) elem;
+                            if (node.getIncomingConnections().size() == 1) {
+                                IConnection connection = node.getIncomingConnections().get(0);
+                                if (connection != null
+                                        && MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot"))) {//$NON-NLS-1$ //$NON-NLS-2$
+                                    Node nodeSource = (Node) connection.getSource();
+                                    Node nodeTarget = (Node) connection.getTarget();
+                                    String connector = EConnectionType.FLOW_MAIN.getName();
+                                    IElementParameter paramTarget = nodeTarget.getSchemaParameterFromConnector(connector);
+                                    IMetadataTable tableTarget = nodeTarget.getMetadataFromConnector(connector);
+
+                                    IElementParameter schemaParamTarget = paramTarget.getChildParameters().get(
+                                            EParameterName.SCHEMA_TYPE.getName());
+
+                                    INodeConnector mainConnector = nodeSource.getConnectorFromType(EConnectionType.FLOW_MAIN);
+                                    INodeConnector outputConnector = mainConnector;
+                                    if (mainConnector.getMaxLinkOutput() == 0) {
+                                        for (INodeConnector currentConnector : nodeSource.getListConnector()) {
+                                            if (!currentConnector.getBaseSchema().equals(EConnectionType.FLOW_MAIN.getName())
+                                                    && currentConnector.getMaxLinkOutput() > 0) {
+                                                outputConnector = currentConnector;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    IElementParameter param = nodeTarget.getSchemaParameterFromConnector(outputConnector
+                                            .getName());
+
+                                    ChangeMetadataCommand cmc = new ChangeMetadataCommand(nodeSource, param, null, tableTarget);
+                                    CommandStack cmdStack = getCommandStack();
+                                    if (cmdStack != null) {
+                                        cmdStack.execute(cmc);
+                                    }
+
+                                    if (schemaParamTarget.getValue().equals(EmfComponent.REPOSITORY)) {
+                                        IElementParameter repositorySchemaParamTarget = paramTarget.getChildParameters().get(
+                                                EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                                        if (param != null) {
+                                            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                                                    .setValue(repositorySchemaParamTarget.getValue());
+                                            nodeSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                                    EmfComponent.REPOSITORY);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 
     /**
      * This method is used for getting command base on component type.
