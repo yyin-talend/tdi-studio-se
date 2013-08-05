@@ -136,6 +136,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.service.ISAPProviderService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -244,6 +245,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 oozieService = (IOozieService) GlobalServiceRegister.getDefault().getService(IOozieService.class);
             }
             if (oozieService != null && oozieService.isOozieNode(sourceNode)) {
+                return false;
+            }
+
+            ISAPProviderService sapService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ISAPProviderService.class)) {
+                sapService = (ISAPProviderService) GlobalServiceRegister.getDefault().getService(ISAPProviderService.class);
+            }
+            if (sapService != null && sapService.isSAPNode(sourceNode)) {
                 return false;
             }
         }
