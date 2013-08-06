@@ -523,8 +523,8 @@ public class JavaProcessorUtilities {
                 entries[index] = first;
                 entries[exchange] = entry;
                 changesDone = true;
-                exchange++;
             }
+            exchange++;
         }
         if (changesDone) {
             javaProject.setRawClasspath(entries, null);
