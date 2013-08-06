@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
+import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -183,6 +184,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
             // designer color
             DesignerColorUtils.initPreferenceDefault(store);
+
+            // default colors for the ColorStyledText.
+            ColorManager.initDefaultColors(store);
         }
 
     }
