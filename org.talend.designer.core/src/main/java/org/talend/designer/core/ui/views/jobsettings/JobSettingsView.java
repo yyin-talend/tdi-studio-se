@@ -669,7 +669,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             service = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
         }
-
+        if (currentSelectedTab == null) {
+            return null;
+        }
         IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
         if (dc instanceof ProcessVersionComposite) {
             return ((ProcessVersionComposite) dc).getSelection();
