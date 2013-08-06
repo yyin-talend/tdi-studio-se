@@ -1581,6 +1581,9 @@ public class RunProcessContext {
     }
 
     private void showMapReduceData(String data) {
+        if (!getProcess().getComponentsType().equals("MR")) {
+            return;
+        }
         if (!data.contains("|")) {
             return;
         }
