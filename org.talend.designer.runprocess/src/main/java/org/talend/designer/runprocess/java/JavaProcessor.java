@@ -393,13 +393,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                         }
                     }
                 }
-                // replace drl template tages
-                if (PluginChecker.isSnippetsPluginLoaded()) {
-                    processCode = replaceSnippet(processCode);
-                }
-                if (PluginChecker.isSnippetsPluginLoaded()) {
-                    processCode = replaceSnippet(processCode);
-                }
 
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
@@ -1299,6 +1292,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                                     // cause create file will do a close. add a warp to ignore close.
                                     InputStream unCloseIn = new FilterInputStream(zipIn) {
 
+                                        @Override
                                         public void close() throws IOException {
                                         };
                                     };

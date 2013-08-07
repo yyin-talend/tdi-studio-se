@@ -675,16 +675,6 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         this.targetPlatform = targetPlatform;
     }
 
-    /**
-     * DOC bqian Comment method "replaceSnippet".
-     * 
-     * @param processCode
-     */
-    public String replaceSnippet(String processCode) {
-        SnippetParser sp = new SnippetParser();
-        return sp.convertSnippet(processCode);
-    }
-
     public boolean checkKillAllowed() {
         return true;
     }

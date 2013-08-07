@@ -20,16 +20,10 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -51,9 +45,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.ui.viewer.ReconcilerStyledText;
-import org.talend.core.ui.viewer.ReconcilerViewer;
-import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
@@ -61,6 +52,8 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.viewer.ReconcilerStyledText;
+import org.talend.designer.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.designer.core.utils.ISampleCodeFactory;
 import org.talend.designer.core.utils.JavaSampleCodeFactory;
 
@@ -288,7 +281,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         }
 
         addDragAndDropTarget(text);
-        addSnippetDropTarget(viewer);
 
         // IDocument document = viewer.getDocument();
         // if (document != null) {
@@ -397,35 +389,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             return ((Node) elem).getUniqueName().startsWith("tJavaRow"); //$NON-NLS-1$
         }
         return false;
-    }
-
-    /**
-     * DOC bqian Comment method "addSnippetDropTarget".
-     * 
-     * @param viewer
-     */
-    private void addSnippetDropTarget(ISourceViewer viewer) {
-        if (viewer.getTextWidget().getData("DropTarget") != null) { //$NON-NLS-1$
-            DropTarget dropTarget = (DropTarget) viewer.getTextWidget().getData("DropTarget"); //$NON-NLS-1$
-            Transfer[] transfers = dropTarget.getTransfer();
-            if (!(transfers[transfers.length - 1] instanceof LocalSelectionTransfer)) {
-                Transfer[] newTransfers = new Transfer[transfers.length + 1];
-                System.arraycopy(transfers, 0, newTransfers, 0, transfers.length);
-                newTransfers[transfers.length] = LocalSelectionTransfer.getTransfer();
-                dropTarget.setTransfer(newTransfers);
-            }
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer,
-                    getParameterName(viewer.getTextWidget()), elem, getCommandStack());
-            dropTarget.addDropListener(dropLisenter);
-
-        } else {
-            int ops = DND.DROP_COPY | DND.DROP_MOVE;
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer,
-                    getParameterName(viewer.getTextWidget()), elem, getCommandStack());
-            ((ReconcilerViewer) viewer)
-                    .addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
-        }
-
     }
 
     /*
