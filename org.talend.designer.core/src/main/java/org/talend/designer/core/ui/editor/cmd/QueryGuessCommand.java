@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Priority;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.PersistenceException;
@@ -356,7 +357,8 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if (isJdbc && conn != null || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())) {
+        if ((isJdbc && conn != null) || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_RAC.getDisplayName()))) {
             schema = getDefaultSchema(realTableName);
         }
         // Mssql query need add catalog before the table
@@ -385,10 +387,10 @@ public class QueryGuessCommand extends Command {
                         }
                         if (cata.getName().contains("-")) {
                             return realTableName;
-                        }else if (childeleName.equals(realTableName)) {
-                            return cata.getName() + "." + ele.getName()+ "." + realTableName;
+                        } else if (childeleName.equals(realTableName)) {
+                            return cata.getName() + "." + ele.getName() + "." + realTableName;
                         } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
-                            return cata.getName()+ "." + realTableName;
+                            return cata.getName() + "." + realTableName;
                         }
                     }
                 }
