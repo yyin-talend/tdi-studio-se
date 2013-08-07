@@ -19,13 +19,13 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.window.Window;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.gefabstractmap.figures.treetools.zone.InputZoneToolBar;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
@@ -211,7 +211,7 @@ public class XmlMapInputZoneToolBar extends InputZoneToolBar {
 
                                 MetadataColumn errorMessageCol = new MetadataColumn();
                                 errorMessageCol.setLabel(MapperManager.ERROR_REJECT_MESSAGE);
-                                errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                                errorMessageCol.setTalendType(DesignerPlugin.getDefault().getPreferenceStore()
                                         .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
                                 errorMessageCol.setNullable(true);
                                 errorMessageCol.setOriginalDbColumnName(MapperManager.ERROR_REJECT_MESSAGE);
@@ -221,7 +221,7 @@ public class XmlMapInputZoneToolBar extends InputZoneToolBar {
 
                                 MetadataColumn errorStackTrace = new MetadataColumn();
                                 errorStackTrace.setLabel(MapperManager.ERROR_REJECT_STACK_TRACE);
-                                errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                                errorStackTrace.setTalendType(DesignerPlugin.getDefault().getPreferenceStore()
                                         .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
                                 errorStackTrace.setNullable(true);
                                 errorStackTrace.setOriginalDbColumnName(MapperManager.ERROR_REJECT_STACK_TRACE);

@@ -53,6 +53,7 @@ import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.MultiSchemasComponent;
 import org.talend.designer.filemultischemas.data.CSVArrayAndSeparator;
@@ -403,10 +404,7 @@ public class MultiSchemasManager {
 
     private String getValueDefaultType() {
         String valueDefaultType = MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE;
-        if (getLanguage() == ECodeLanguage.PERL) {
-            valueDefaultType = MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE;
-        }
-        String defaultType = CorePlugin.getDefault().getPreferenceStore().getString(valueDefaultType);
+        String defaultType = DesignerPlugin.getDefault().getPreferenceStore().getString(valueDefaultType);
         if (defaultType != null && !"".equals(defaultType.trim())) { //$NON-NLS-1$
             return defaultType;
         }
@@ -415,10 +413,7 @@ public class MultiSchemasManager {
 
     private int getValueDefaultLength() {
         String valueDefaultLength = MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH;
-        if (getLanguage() == ECodeLanguage.PERL) {
-            valueDefaultLength = MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH;
-        }
-        String defaultLength = CorePlugin.getDefault().getPreferenceStore().getString(valueDefaultLength);
+        String defaultLength = DesignerPlugin.getDefault().getPreferenceStore().getString(valueDefaultLength);
         if (defaultLength != null && !"".equals(defaultLength.trim())) { //$NON-NLS-1$
             return Integer.parseInt(defaultLength);
         }

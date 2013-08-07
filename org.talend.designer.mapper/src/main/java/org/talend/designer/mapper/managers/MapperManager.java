@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -627,7 +626,7 @@ public class MapperManager extends AbstractMapperManager {
         metadataTable.setTableName(tableName);
         MetadataColumn errorMessageCol = new MetadataColumn();
         errorMessageCol.setLabel(ERROR_REJECT_MESSAGE);
-        errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+        errorMessageCol.setTalendType(DesignerPlugin.getDefault().getPreferenceStore()
                 .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorMessageCol.setNullable(true);
         errorMessageCol.setOriginalDbColumnName(ERROR_REJECT_MESSAGE);
@@ -638,7 +637,7 @@ public class MapperManager extends AbstractMapperManager {
 
         MetadataColumn errorStackTrace = new MetadataColumn();
         errorStackTrace.setLabel(ERROR_REJECT_STACK_TRACE);
-        errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+        errorStackTrace.setTalendType(DesignerPlugin.getDefault().getPreferenceStore()
                 .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorStackTrace.setNullable(true);
         errorStackTrace.setOriginalDbColumnName(ERROR_REJECT_STACK_TRACE);

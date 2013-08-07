@@ -40,9 +40,9 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -51,10 +51,9 @@ import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
-import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
-import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -484,32 +483,21 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
                                 precisionValue = lengthValue - positionDecimal;
                             }
                         } else {
-                            IPreferenceStore corePreferenceStore = CoreRuntimePlugin.getInstance().getCoreService()
-                                    .getPreferenceStore();
-                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                                if (corePreferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
-                                        && !corePreferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals(
-                                                "")) { //$NON-NLS-1$
-                                    globalType = corePreferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
-                                    if (corePreferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
-                                            && !corePreferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH)
-                                                    .equals("")) { //$NON-NLS-1$
-                                        lengthValue = Integer.parseInt(corePreferenceStore
-                                                .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
-                                    }
-                                }
-                            } else {
-                                if (corePreferenceStore.getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
-                                        && !corePreferenceStore.getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE)
+                            IPreferenceStore preferenceStore = null;
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreUIService.class)) {
+                                IDesignerCoreUIService designerCoreUiService = (IDesignerCoreUIService) GlobalServiceRegister
+                                        .getDefault().getService(IDesignerCoreUIService.class);
+                                preferenceStore = designerCoreUiService.getPreferenceStore();
+                            }
+                            if (preferenceStore != null
+                                    && preferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
+                                    && !preferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                                globalType = preferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                if (preferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                        && !preferenceStore.getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH)
                                                 .equals("")) { //$NON-NLS-1$
-                                    globalType = corePreferenceStore
-                                            .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
-                                    if (corePreferenceStore.getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
-                                            && !corePreferenceStore.getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                                        lengthValue = Integer.parseInt(corePreferenceStore
-                                                .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
-                                    }
+                                    lengthValue = Integer.parseInt(preferenceStore
+                                            .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
                                 }
                             }
 
@@ -523,21 +511,11 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
                 metadataColumn.setPattern("\"dd-MM-yyyy\""); //$NON-NLS-1$
                 // Convert javaType to TalendType
                 String talendType = null;
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    talendType = globalType;
-                    if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
-                        metadataColumn.setPrecision(precisionValue);
-                    } else {
-                        metadataColumn.setPrecision(0);
-                    }
+                talendType = globalType;
+                if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
+                    metadataColumn.setPrecision(precisionValue);
                 } else {
-                    talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
-                            "TALENDDEFAULT", false)); //$NON-NLS-1$
-                    if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        metadataColumn.setPrecision(precisionValue);
-                    } else {
-                        metadataColumn.setPrecision(0);
-                    }
+                    metadataColumn.setPrecision(0);
                 }
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);

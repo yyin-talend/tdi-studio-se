@@ -26,7 +26,7 @@ import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.metadata.managment.ui.i18n.Messages;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC qwei class global comment. Detailled comment
