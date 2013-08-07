@@ -515,16 +515,17 @@ public class JavaProcessorUtilities {
                 } else {
                     missingJars = missingJars + ", " + jar; //$NON-NLS-1$
                 }
+            } else {
+                if (index != exchange) {
+                    // exchange
+                    IClasspathEntry entry = entries[index];
+                    IClasspathEntry first = entries[exchange];
+                    entries[index] = first;
+                    entries[exchange] = entry;
+                    changesDone = true;
+                }
+                exchange++;
             }
-            if (index >= 0 && index != exchange) {
-                // exchange
-                IClasspathEntry entry = entries[index];
-                IClasspathEntry first = entries[exchange];
-                entries[index] = first;
-                entries[exchange] = entry;
-                changesDone = true;
-            }
-            exchange++;
         }
         if (changesDone) {
             javaProject.setRawClasspath(entries, null);
