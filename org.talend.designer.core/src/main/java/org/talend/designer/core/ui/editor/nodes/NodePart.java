@@ -379,19 +379,20 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             for (IConnection conn : ((Node) getModel()).getOutgoingConnections()) {
                 String connIdName = null;
                 String oldName = conn.getUniqueName();
-                node.getProcess().removeUniqueConnectionName(oldName);
-                if (node.getProcess().checkValidConnectionName(node.getConnectionName(), false)) {
-                    connIdName = node.getProcess().generateUniqueConnectionName(node.getConnectionName());
-                } else {
-                    connIdName = node.getProcess().generateUniqueConnectionName("row"); //$NON-NLS-1$
-                }
-                if (conn instanceof Connection && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)
-                        && node.getProcess().checkValidConnectionName(connIdName)) {
-                    ((Connection) conn).setUniqueName(connIdName);
-                    node.getProcess().addUniqueConnectionName(connIdName);
-                    ((Connection) conn).setName(connIdName);
-                } else {
-                    node.getProcess().addUniqueConnectionName(oldName);
+                if (conn instanceof Connection && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    node.getProcess().removeUniqueConnectionName(oldName);
+                    if (node.getProcess().checkValidConnectionName(node.getConnectionName(), false)) {
+                        connIdName = node.getProcess().generateUniqueConnectionName(node.getConnectionName());
+                    } else {
+                        connIdName = node.getProcess().generateUniqueConnectionName("row"); //$NON-NLS-1$
+                    }
+                    if (node.getProcess().checkValidConnectionName(connIdName)) {
+                        ((Connection) conn).setUniqueName(connIdName);
+                        node.getProcess().addUniqueConnectionName(connIdName);
+                        ((Connection) conn).setName(connIdName);
+                    } else {
+                        node.getProcess().addUniqueConnectionName(oldName);
+                    }
                 }
             }
         }
