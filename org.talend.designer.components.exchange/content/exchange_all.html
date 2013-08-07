@@ -85,28 +85,38 @@
 				var labelValidate = document.getElementById("extension_label").value;
 				var lastVersionAvailableValidate = document.getElementById("lastVersionAvailable").value;
 				var filename = document.getElementById("filename").value;
+				var isSkipPage = true;
 				if(labelValidate==0){  
-        			alert("Extension Title is empty");  
+        			alert("Extension Title is empty"); 
+        			isSkipPage = false; 
     			}else if(labelValidate=="null"){  
-        			alert("Extension Title can not be null");  
+        			alert("Extension Title can not be null"); 
+        			isSkipPage = false;  
     			}else if(lastVersionAvailableValidate==0){  
         			alert("Initial Version is empty");  
+        			isSkipPage = false; 
     			}else if(lastVersionAvailableValidate=="null"){  
-        			alert("Initial Version can not be null");  
+        			alert("Initial Version can not be null");
+        			isSkipPage = false;   
     			}else if(filename==0){
-    				alert("Please input a vaild File path");  
+    				alert("Please input a vaild File path");
+    				isSkipPage = false;   
     			}
     			
     			<!-- validate the createNewExtension text  end-->
 			
-				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
-				var filter = "filter:" + "'" + filtervalue + "'";
-				var filename = "filename:" + "'" + document.getElementById("filename").value + "'";
-				filename = filename.replaceAll2Excep("\\", "/");
-				var jsonObj = "{" + label + "," + lastVersionAvailable + "," + description + "," + listVersionCompatibles + "," + filter + "," + filename + "}"
+				if (isSkipPage == true) {
+					var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
+					var filter = "filter:" + "'" + filtervalue + "'";
+					var filename = "filename:" + "'" + document.getElementById("filename").value + "'";
+					filename = filename.replaceAll2Excep("\\", "/");
+					var jsonObj = "{" + label + "," + lastVersionAvailable + "," + description + "," + listVersionCompatibles + "," + filter + "," + filename + "}"
 				
-				var url = prefix + "&amp;extensionValues=" + jsonObj;
-				document.getElementById('commit').href = url;
+					var url = prefix + "&amp;extensionValues=" + jsonObj;
+					document.getElementById('commit').href = url;
+					window.location.href=document.getElementById('commit').href;
+				}
+				
 			}
 			
 			function updateReWriteUrl() {
@@ -137,22 +147,28 @@
 				
 				<!-- validate the updateExtension text  start-->
 				var lastVersionAvailable_updateValidate = document.getElementById("lastVersionAvailable_update").value;
+				var isSkipPage = true;
 				if(lastVersionAvailable_updateValidate==0){  
         			alert("New Version is empty");  
+        			var isSkipPage = false;
     			}else if(lastVersionAvailable_updateValidate=="null"){  
-        			alert("New Version can not be null");  
+        			alert("New Version can not be null"); 
+        			var isSkipPage = false; 
     			}
     			<!-- validate the updateExtension text  end-->
 			
-				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
-				var filter = "filter:" + "'" + filtervalue + "'";
-				var filename = "filename:" + "'" + document.getElementById("filename_update").value + "'";
-				filename = filename.replaceAll2Excep("\\", "/");
-				var jsonObj = "{" + lastVersionAvailable + "," + listVersionCompatibles + "," + filter + "," + filename + "}"
+				if (isSkipPage == true) {
+					var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
+					var filter = "filter:" + "'" + filtervalue + "'";
+					var filename = "filename:" + "'" + document.getElementById("filename_update").value + "'";
+					filename = filename.replaceAll2Excep("\\", "/");
+					var jsonObj = "{" + lastVersionAvailable + "," + listVersionCompatibles + "," + filter + "," + filename + "}"
 				
-				var url = prefix + "&amp;extensionValues=" + jsonObj;
-				document.getElementById('commit_update').href = url;
-			
+					var url = prefix + "&amp;extensionValues=" + jsonObj;
+					document.getElementById('commit_update').href = url;
+					window.location.href=document.getElementById('commit_update').href;
+				}
+				
 			}
 			
 			function modifyReWriteUrl() {
@@ -464,7 +480,7 @@
 											<td ></td>
 											<td>
 												<a class="xh" href="" id="commit" style="margin-left:5px;">
-													<button onclick="window.location.href=document.getElementById('commit').href" onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
+													<button onclick="createNewExtensionWriteUrl()" style="width: 176px">
 														Add Extension
 													</button>
 												</a>
@@ -523,7 +539,7 @@
 											<td ></td>
 											<td>
 												<a class="xh" href="" id="commit_update" style="margin-left:5px;">
-													<button onclick="window.location.href=document.getElementById('commit_update').href" onmouseover="updateReWriteUrl()" style="width: 176px">
+													<button onclick="updateReWriteUrl()" style="width: 176px">
 														Upload Extension
 													</button>
 												</a>
