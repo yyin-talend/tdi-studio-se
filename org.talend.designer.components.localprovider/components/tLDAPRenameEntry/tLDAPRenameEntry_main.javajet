@@ -48,6 +48,7 @@ imports="
      			String firstConnName = conn.getName();
     			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
 %>
+        	whetherReject_<%=cid%> = false;
 	try{
 
 		LDAPRenameEntryUtil_<%=cid%> renameUtil<%=cid%> = new LDAPRenameEntryUtil_<%=cid%>();
