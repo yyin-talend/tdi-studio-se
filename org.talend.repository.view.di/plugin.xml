@@ -20,10 +20,15 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isBusinessModelBranch">
-               </test>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isBusinessModelBranch">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -76,10 +81,15 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isJobBranch">
-               </test>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isJobBranch">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -132,10 +142,15 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isContextTopNode">
-               </test>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isContextTopNode">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -245,10 +260,15 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isSqlTemplatesTopNode">
-               </test>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isSqlTemplatesTopNode">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -303,10 +323,15 @@
                <instanceof
                      value="org.talend.repository.model.ProjectRepositoryNode">
                </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isDocTopNode">
-               </test>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isDocTopNode">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -314,12 +339,10 @@
                <instanceof
                      value="org.talend.repository.model.RepositoryNode">
                </instanceof>
-               <or>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isDocTopNode">
-                  </test>
-               </or>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isDocTopNode">
+               </test>
             </and>
          </possibleChildren>
          <actionProvider
