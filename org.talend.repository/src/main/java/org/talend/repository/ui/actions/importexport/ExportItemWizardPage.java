@@ -81,6 +81,7 @@ import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -276,15 +277,7 @@ class ExportItemWizardPage extends WizardPage {
         if (object == null && ERepositoryObjectType.GENERATED.equals(node.getContentType())) {
             return false;
         }
-        // hide subnodes of hadoop cluster if they are existent.
-        IHadoopClusterService hadoopClusterService = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
-            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
-                    IHadoopClusterService.class);
-        }
-        if (hadoopClusterService != null) {
-            return !hadoopClusterService.isHadoopSubnode(node);
-        }
+
         return true;
     }
 
@@ -1032,7 +1025,7 @@ class ExportItemWizardPage extends WizardPage {
                 items.put(item.getProperty().getId(), item);
             }
         }
-        if (filteredCheckboxTree != null) {
+        if (filteredCheckboxTree != null && !isHadoopClusterNode(repositoryNode)) {
             IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
             if (contentProvider instanceof ITreeContentProvider) {
                 Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
@@ -1044,6 +1037,19 @@ class ExportItemWizardPage extends WizardPage {
 
     public boolean performCancel() {
         return true;
+    }
+
+    private boolean isHadoopClusterNode(IRepositoryNode repositoryNode) {
+        IHadoopClusterService hadoopClusterService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
+            hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
+                    IHadoopClusterService.class);
+        }
+        if (hadoopClusterService != null) {
+            return hadoopClusterService.isHadoopClusterNode(repositoryNode);
+        }
+
+        return false;
     }
 
 }
