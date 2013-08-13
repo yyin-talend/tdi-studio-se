@@ -242,7 +242,7 @@ public class FunctionManagerExt extends FunctionManager {
                 if (UIManager.isJavaProject()) {
                     String className = bean.getFunction().getClassName();
                     String fullName = className + "." + name;//$NON-NLS-1$
-                    //                    String fullName = JavaFunctionParser.getTypeMethods().get(bean.getTalendType() + "." + name); //$NON-NLS-1$
+                    //                    String fullName = RoutineFunctionParser.getTypeMethods().get(bean.getTalendType() + "." + name); //$NON-NLS-1$
                     newValue = fullName + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED;

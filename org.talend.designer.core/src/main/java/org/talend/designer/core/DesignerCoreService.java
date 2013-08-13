@@ -13,6 +13,7 @@
 package org.talend.designer.core;
 
 import java.beans.PropertyChangeEvent;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,9 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -669,4 +673,17 @@ public class DesignerCoreService implements IDesignerCoreService {
         // disable timeout
         return 0;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getJavadocContentAccessContentReader(org.eclipse.jdt.core.IMember)
+     */
+    @Override
+    public Reader getJavadocContentAccessContentReader(IMember member) throws JavaModelException {
+        Reader reader = JavadocContentAccess.getContentReader(member, true);
+        return reader;
+    }
+
 }

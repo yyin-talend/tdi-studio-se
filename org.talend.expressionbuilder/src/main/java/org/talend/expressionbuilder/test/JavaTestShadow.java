@@ -37,7 +37,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.JavaFunctionParser;
+import org.talend.designer.rowgenerator.data.RoutineFunctionParser;
 import org.talend.expressionbuilder.ui.CategoryComposite;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
@@ -55,7 +55,7 @@ public class JavaTestShadow {
 
     public void process(Text testResultText, TableViewer tableViewer) {
 
-        Map<String, String> map = JavaFunctionParser.getTypePackgeMethods();
+        Map<String, String> map = RoutineFunctionParser.getTypePackgeMethods();
 
         Function function = CategoryComposite.getSelectedFunction();
 
