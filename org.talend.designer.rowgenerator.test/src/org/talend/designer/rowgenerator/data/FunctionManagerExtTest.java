@@ -69,7 +69,7 @@ public class FunctionManagerExtTest {
         when(baseConn.getTalendType()).thenReturn("id_String");
 
         AbstractFunctionParser parser = null;
-        parser = new JavaFunctionParser();
+        parser = new RoutineFunctionParser();
         parser.parse();
         List<TalendType> talendTypes = parser.getList();
         List<Function> funtions = new ArrayList<Function>();
