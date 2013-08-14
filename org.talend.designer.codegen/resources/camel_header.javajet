@@ -846,7 +846,9 @@ if (isProvider) {
 <%
 			}
 			//http://jira.talendforge.org/browse/TESB-3850
-			if ("true".equals(useSAM) && !"RAW".equals(formatType)) {
+            // !"true".equals(useRegistry) - https://jira.talendforge.org/browse/TESB-10725
+            			
+			if ("true".equals(useSAM) && !"RAW".equals(formatType)  && !"true".equals(useRegistry)) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {

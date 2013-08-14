@@ -165,9 +165,14 @@ package <%= packageName %>;
 
 <%
 	for (INode node : graphicalNodes) {
+		boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
+		String useRegistry = "false";
+		if(isStudioEEVersion){
+		 	useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
+		}
 		if("cCXF".equals(node.getComponent().getName()) 
 							&& "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))  
-							&& !"RAW".equals(ElementParameterParser.getValue(node, "__DATAFORMAT__"))) { %>
+							&& !"RAW".equals(ElementParameterParser.getValue(node, "__DATAFORMAT__"))&& !"true".equals(useRegistry) ) { %>
 			//ESB Service Activity Monitor Feature
 			private org.apache.cxf.feature.AbstractFeature eventFeature;
 
