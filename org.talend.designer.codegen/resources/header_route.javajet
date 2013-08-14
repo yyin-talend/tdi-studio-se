@@ -280,6 +280,35 @@ for (INode node : graphicalNodes) {
 				uri = uri + sb.toString();
 			}
 		}
+	}else if("cDirectVM".equals(componentName)){
+		boolean inputName= getBoolValue(node, "____INPUT_ENDPOINT_NAME____");
+		boolean isProducer = node.getIncomingConnections().size()>0;
+		
+		INode consumerNode = node;
+		if(isProducer && !inputName){
+			String desNodeName= (String)getValue(node, "____ROUTE_COMPONENT_TYPE_ID____");
+			if(desNodeName!=null){
+				List<? extends INode> allNodes = node.getProcess().getGraphicalNodes();
+				for(INode aNode : allNodes){
+					if(aNode.getUniqueName().equals(desNodeName)){
+						consumerNode=aNode;
+						break;
+					}
+				}
+			}
+		}
+		
+		String endpointName=getValue(consumerNode, "__ENDPOINT_NAME__");
+		
+		uri="\"direct-vm:\"+" + endpointName;
+		
+		if(isProducer){
+			boolean isBlock= getBoolValue(node, "____BLOCK____");
+			if(isBlock){
+				uri += "+\"?block=true&timeout="+getValue(consumerNode, "__TIMEOUT__")+"\"";
+			}
+		}
+			
 	}else if("cTimer".equals(componentName)){
 		uri = "\"timer:\"+\""+node.getUniqueName()+"\"";
 		StringBuilder sb = new StringBuilder();
