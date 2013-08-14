@@ -2588,6 +2588,8 @@ public class LoginComposite extends Composite {
         return null;
     }
 
+    private Job backgroundGUIUpdate;
+
     private void setBranchesSetting(final Project project, boolean lastUsedBranch) {
         if (branchesViewer != null) {
             final List<String> projectBranches = new ArrayList<String>();
@@ -2600,16 +2602,18 @@ public class LoginComposite extends Composite {
                     fontData.getHeight(), SWT.ITALIC));
             branchesViewer.getCombo().setFont(newFont);
             branchesViewer.getCombo().setEnabled(false);
-            final Job backgroundGUIUpdate = new Job("List Branches") { //$NON-NLS-1$
+            if (backgroundGUIUpdate == null || (backgroundGUIUpdate.getState() == Job.NONE)) {
+                backgroundGUIUpdate = new Job("List Branches") { //$NON-NLS-1$
 
-                @Override
-                protected IStatus run(IProgressMonitor monitor) {
-                    projectBranches.clear();
-                    projectBranches.addAll(getProjectBranches(project));
-                    return org.eclipse.core.runtime.Status.OK_STATUS;
-                }
+                    @Override
+                    protected IStatus run(IProgressMonitor monitor) {
+                        projectBranches.clear();
+                        projectBranches.addAll(getProjectBranches(project));
+                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                    }
 
-            };
+                };
+            }
             Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
 
                 @Override
