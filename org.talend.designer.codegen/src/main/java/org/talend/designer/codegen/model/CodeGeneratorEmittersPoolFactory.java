@@ -67,10 +67,8 @@ import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.codegen.config.CodeGeneratorProgressMonitor;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.JetBean;
 import org.talend.designer.codegen.config.LightJetBean;
@@ -145,13 +143,13 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 initializeJetEmittersProject(monitorWrap);
 
+                TimeMeasure.step("initialize Jet Emitters", "initialize JET Project"); //$NON-NLS-1$ //$NON-NLS-2$
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
                         .getInstance();
                 templatesFactory.setCurrentLanguage(codeLanguage);
                 templatesFactory.init();
 
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                componentsFactory.getComponents();
 
                 long startTime = System.currentTimeMillis();
 
@@ -162,6 +160,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
                 Set<IComponent> components = componentsFactory.getComponents();
+                TimeMeasure.step("initialize Jet Emitters", "getComponents"); //$NON-NLS-1$ //$NON-NLS-2$
 
                 monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), //$NON-NLS-1$
                         (2 * templates.size() + 5 * components.size()));
@@ -176,6 +175,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         monitorBuffer = 0;
                     }
                 }
+                TimeMeasure.step("initialize Jet Emitters", "initialize jet beans from templates"); //$NON-NLS-1$ //$NON-NLS-2$
 
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
@@ -190,10 +190,12 @@ public final class CodeGeneratorEmittersPoolFactory {
                         }
                     }
                 }
+                TimeMeasure.step("initialize Jet Emitters", "initialize jet beans from components"); //$NON-NLS-1$ //$NON-NLS-2$
                 monitorWrap.worked(monitorBuffer);
 
                 initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                 monitorWrap.done();
+                TimeMeasure.step("initialize Jet Emitters", "initialize and generate each jet emitters"); //$NON-NLS-1$ //$NON-NLS-2$
 
                 if (!CommonUIPlugin.isFullyHeadless()) {
                     Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
@@ -230,7 +232,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 try {
                     IWorkspace workspace = ResourcesPlugin.getWorkspace();
                     IProject project = workspace.getRoot().getProject(JET_PROJECT);
-                    project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+                    TimeMeasure.step("initialize Jet Emitters", "build project .JETEmitters"); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
                 }
