@@ -87,6 +87,20 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     private Composite parent;
 
+    public static boolean isVisible() {
+        IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (ww != null) {
+            IWorkbenchPage activePage = ww.getActivePage();
+            if (activePage != null) {
+                IViewPart part = activePage.findView(ID);
+                if (part != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static ProblemsView show() {
         IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (ww != null) {
