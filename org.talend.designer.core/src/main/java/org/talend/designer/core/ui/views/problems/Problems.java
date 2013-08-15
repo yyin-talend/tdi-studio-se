@@ -285,7 +285,7 @@ public class Problems {
             return;
         }
 
-        if (getProblemView() != null) {
+        if (ProblemsView.isVisible()) {
             Display.getDefault().syncExec(new Runnable() {
 
                 /*
