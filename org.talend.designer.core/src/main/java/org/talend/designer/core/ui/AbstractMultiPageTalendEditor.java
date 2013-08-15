@@ -388,7 +388,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 Property property = processEditorInput.getItem().getProperty();
                 propertyInformation = new ArrayList(property.getInformations());
                 property.eAdapters().add(dirtyListener);
-                repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
                 boolean locked = repFactory.getStatus(currentProcess) == ERepositoryStatus.LOCK_BY_USER;
                 if (!locked) {
@@ -412,21 +411,29 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                         @Override
                         public void handleEvent(Event event) {
-                            if (event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY) != null) {
-                                boolean readOnly = currentProcess.checkReadOnly();
-                                setReadOnly(readOnly);
-                                if (!readOnly) {
-                                    repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
-                                    display.asyncExec(new Runnable() {
+                            String lockTopic = Constant.REPOSITORY_ITEM_EVENT_PREFIX + Constant.ITEM_LOCK_EVENT_SUFFIX;
+                            if (lockTopic.equals(event.getTopic())) {
+                                Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
+                                if (o != null && o instanceof Item) {
+                                    String itemId = ((Item) o).getProperty().getId();
+                                    if (itemId.equals(currentProcess.getId())) {
+                                        if (currentProcess.isReadOnly()) {
+                                            boolean readOnly = currentProcess.checkReadOnly();
+                                            setReadOnly(readOnly);
+                                            if (!readOnly) {
+                                                display.asyncExec(new Runnable() {
 
-                                        @Override
-                                        public void run() {
-                                            setFocus();
+                                                    @Override
+                                                    public void run() {
+                                                        setFocus();
+                                                    }
+                                                });
+                                                Property property = processEditorInput.getItem().getProperty();
+                                                propertyInformation = new ArrayList(property.getInformations());
+                                                property.eAdapters().add(dirtyListener);
+                                            }
                                         }
-                                    });
-                                    Property property = processEditorInput.getItem().getProperty();
-                                    propertyInformation = new ArrayList(property.getInformations());
-                                    property.eAdapters().add(dirtyListener);
+                                    }
                                 }
                             }
                         }
