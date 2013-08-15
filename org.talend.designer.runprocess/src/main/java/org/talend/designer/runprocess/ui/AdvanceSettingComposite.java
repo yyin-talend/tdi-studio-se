@@ -159,13 +159,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
         // log4j setting
 
-        Group log4jGroup = (Group) createLog4jGroup(panel);
-        if (Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
-            log4jGroup.setVisible(true);
-        } else {
-            log4jGroup.setVisible(false);
-        }
-
         Group execGroup = new Group(panel, SWT.NONE);
         execGroup.setText("JVM Setting"); //$NON-NLS-1$
         GridLayout layoutg = new GridLayout();
@@ -175,8 +168,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         FormData layouDatag = new FormData();
         layouDatag.left = new FormAttachment(0, 10);
         layouDatag.right = new FormAttachment(100, 0);
-        layouDatag.top = new FormAttachment(0, 106);
-        layouDatag.bottom = new FormAttachment(100, 0);
+        layouDatag.top = new FormAttachment(0, 55);
+        layouDatag.bottom = new FormAttachment(57, 0);
         execGroup.setLayoutData(layouDatag);
 
         ScrolledComposite execScroll = new ScrolledComposite(execGroup, SWT.V_SCROLL | SWT.H_SCROLL);
@@ -195,6 +188,13 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
                     Messages.getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
                     argumentsComposite);
             execScroll.setMinSize(execGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        }
+
+        Group log4jGroup = (Group) createLog4jGroup(panel);
+        if (Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+            log4jGroup.setVisible(true);
+        } else {
+            log4jGroup.setVisible(false);
         }
         addListeners();
 
@@ -476,8 +476,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         FormData log4jGroupLayouData = new FormData();
         log4jGroupLayouData.left = new FormAttachment(0, 10);
         log4jGroupLayouData.right = new FormAttachment(100, 0);
-        log4jGroupLayouData.top = new FormAttachment(0, 55);
-        log4jGroupLayouData.bottom = new FormAttachment(57, 0);
+        log4jGroupLayouData.top = new FormAttachment(0, 200);
+        log4jGroupLayouData.bottom = new FormAttachment(210, 0);
         log4jGroup.setLayoutData(log4jGroupLayouData);
 
         log4jLevel = new Combo(log4jGroup, SWT.READ_ONLY);
