@@ -2077,6 +2077,12 @@
             class="org.talend.repository.preference.CustomComponentSettingPage"
             id="org.talend.repository.preference.CustomComponentSettingPage"
             title="%customCompSetting">
+      </page>
+      <page
+            class="org.talend.repository.preference.Log4jSettingPage"
+            id="org.talend.repository.log4j"
+            order="6"
+            title="Log4j">
       </page>        
    </extension>
    <extension
