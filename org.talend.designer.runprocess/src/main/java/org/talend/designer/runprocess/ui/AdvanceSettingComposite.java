@@ -25,8 +25,10 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
@@ -35,10 +37,13 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.IMultiPageTalendEditor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.repository.constants.Log4jPrefsConstants;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -53,6 +58,10 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     private Button clearBeforeExec;
 
+    private Combo log4jLevel;
+
+    private Button applyLog4jForChild;
+
     private RunProcessContext processContext;
 
     private Composite argumentsComposite;
@@ -60,6 +69,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
     private JobVMArgumentsComposite argumentsViewer;
 
     private ProcessManager processManager;
+
+    IRunProcessService service;
 
     /**
      * DOC Administrator AdvanceSettingComposite constructor comment.
@@ -74,6 +85,9 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         setExpandVertical(true);
         this.setLayout(new FormLayout());
         processManager = ProcessManager.getInstance();
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        }
         FormData layoutData = new FormData();
         layoutData.left = new FormAttachment(0, 0);
         layoutData.right = new FormAttachment(100, 0);
@@ -142,16 +156,26 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         layouDatacb.bottom = new FormAttachment(0, 50);
         clearBeforeExec.setLayoutData(layouDatacb);
         clearBeforeExec.setEnabled(false);
+
+        // log4j setting
+
+        Group log4jGroup = (Group) createLog4jGroup(panel);
+        if (Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+            log4jGroup.setVisible(true);
+        } else {
+            log4jGroup.setVisible(false);
+        }
+
         Group execGroup = new Group(panel, SWT.NONE);
         execGroup.setText("JVM Setting"); //$NON-NLS-1$
         GridLayout layoutg = new GridLayout();
-        layoutg.marginHeight = 0;
+        layoutg.marginHeight = 1;
         layoutg.marginWidth = 0;
         execGroup.setLayout(layoutg);
         FormData layouDatag = new FormData();
         layouDatag.left = new FormAttachment(0, 10);
         layouDatag.right = new FormAttachment(100, 0);
-        layouDatag.top = new FormAttachment(0, 55);
+        layouDatag.top = new FormAttachment(0, 106);
         layouDatag.bottom = new FormAttachment(100, 0);
         execGroup.setLayoutData(layouDatag);
 
@@ -218,6 +242,18 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             public void widgetSelected(SelectionEvent e) {
                 processContext.setClearBeforeExec(clearBeforeExec.getSelection());
                 processManager.setClearBeforeExec(clearBeforeExec.getSelection());
+            }
+        });
+        log4jLevel.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+            }
+        });
+        applyLog4jForChild.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
             }
         });
     }
@@ -421,4 +457,41 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     }
 
+    private String[] getListToDisplay() {
+        String[] levelForLog4j = { "debug", "info", "warning", "error", "fatal" };
+
+        return levelForLog4j;
+    }
+
+    private Composite createLog4jGroup(Composite parent) {
+
+        // log4j setting
+        Group log4jGroup = new Group(parent, SWT.NONE);
+        log4jGroup.setText("Log4j Setting"); //$NON-NLS-1$
+        GridLayout log4jGroupLayout = new GridLayout();
+        log4jGroupLayout.marginHeight = 0;
+        log4jGroupLayout.marginWidth = 0;
+        log4jGroupLayout.numColumns = 2;
+        log4jGroup.setLayout(log4jGroupLayout);
+        FormData log4jGroupLayouData = new FormData();
+        log4jGroupLayouData.left = new FormAttachment(0, 10);
+        log4jGroupLayouData.right = new FormAttachment(100, 0);
+        log4jGroupLayouData.top = new FormAttachment(0, 55);
+        log4jGroupLayouData.bottom = new FormAttachment(57, 0);
+        log4jGroup.setLayoutData(log4jGroupLayouData);
+
+        log4jLevel = new Combo(log4jGroup, SWT.READ_ONLY);
+        log4jLevel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        log4jLevel.setText("Log4j Level");
+        log4jLevel.setBackground(log4jGroup.getBackground());
+        log4jLevel.setItems(getListToDisplay());
+        log4jLevel.select(0);
+
+        applyLog4jForChild = new Button(log4jGroup, SWT.CHECK);
+        applyLog4jForChild.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        applyLog4jForChild.setText("Apply log4j settings for children");
+        applyLog4jForChild.setToolTipText("Apply log4j settings for children");
+
+        return log4jGroup;
+    }
 }

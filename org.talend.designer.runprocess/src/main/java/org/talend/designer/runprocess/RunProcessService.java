@@ -269,8 +269,13 @@ public class RunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#updateLogFiles(org.eclipse.core.resources.IProject)
      */
     @Override
-    public void updateLogFiles(IProject project) {
-        delegateService.updateLogFiles(project);
+    public void updateLogFiles(IProject project, boolean isLogForJob) {
+        delegateService.updateLogFiles(project, isLogForJob);
+    }
+
+    @Override
+    public String getLogTemplate(String path) {
+        return delegateService.getLogTemplate(path);
     }
 
 }

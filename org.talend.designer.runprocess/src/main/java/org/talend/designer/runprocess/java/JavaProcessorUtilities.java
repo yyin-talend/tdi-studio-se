@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -149,7 +148,7 @@ public class JavaProcessorUtilities {
             }
         }
 
-        initLogFiles(prj);
+        // initLogFiles(prj, false);
     }
 
     /**
@@ -159,13 +158,13 @@ public class JavaProcessorUtilities {
      * 
      * @param project
      */
-    private static void initLogFiles(IProject project) {
+    private static void initLogFiles(IProject project, boolean isLogForJob) {
         IRunProcessService service = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
         }
         if (service != null) {
-            service.updateLogFiles(project);
+            service.updateLogFiles(project, isLogForJob);
         }
     }
 
@@ -681,11 +680,7 @@ public class JavaProcessorUtilities {
                 initializeProject();
             }
 
-            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
-            IFile logFile = javaProject.getProject().getFile(path.append("log4j.properties"));
-            if (!logFile.exists()) {
-                initLogFiles(javaProject.getProject());
-            }
+            initLogFiles(javaProject.getProject(), true);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }

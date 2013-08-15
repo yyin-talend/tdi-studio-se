@@ -13,10 +13,12 @@
 package org.talend.designer.runprocess;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.log4j.Level;
@@ -36,6 +38,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -44,6 +49,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.utils.ResourceModelHelper;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
@@ -51,6 +57,9 @@ import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.constants.Log4jPrefsConstants;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.runprocess.data.PerformanceData;
 
 /**
@@ -64,6 +73,10 @@ public class DefaultRunProcessService implements IRunProcessService {
     private static final String ROUTINE_FILENAME_EXT = ".pm"; //$NON-NLS-1$
 
     private static final String RESOURCE_FILE_PATH = "resources/"; //$NON-NLS-1$
+
+    private static final String RESOURCE_LOG_FILE_PATH = "log/log4j.properties_template";
+
+    private static final String RESOURCE_COMMONLOG_FILE_PATH = "log/common-logging.properties_template";
 
     /*
      * (non-Javadoc)
@@ -321,8 +334,8 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#getTemplateStrFromPreferenceStore(java.lang.String)
      */
     @Override
-    public String getTemplateStrFromPreferenceStore(String templateType) {
-        return RunProcessPlugin.getDefault().getPreferenceStore().getString(templateType);
+    public String getTemplateStrFromPreferenceStore(String nodeType) {
+        return Log4jPrefsSettingManager.getInstance().getValueOfPreNode(nodeType);
     }
 
     /*
@@ -331,18 +344,47 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#updateLogFiles(org.eclipse.core.resources.IProject)
      */
     @Override
-    public void updateLogFiles(IProject project) {
+    public void updateLogFiles(IProject project, boolean isLogForJob) {
+        // if directly init or modify log4j,need handle with the log4j under .setting/,if not,means execute or export
+        // job,need to copy the latest log4j from .setting/ to /java/src
         if (project == null) {
             return;
         }
         try {
-            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
-            IFolder srcFolder = project.getFolder(path);
-            if (srcFolder == null) {
+            // get the .setting folder where we need to keep the log4j file
+            IFolder prefSettingFolder = ResourceUtils.getFolder(
+                    ResourceModelHelper.getProject(ProjectManager.getInstance().getCurrentProject()), ".settings", false);
+            if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
+                Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE, "false");
+                Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
+                        getLogTemplate(RESOURCE_LOG_FILE_PATH));
+                Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
+                        getLogTemplate(RESOURCE_COMMONLOG_FILE_PATH));
+            }
+
+            IFile commonLogFile = prefSettingFolder.getFile("common-logging.properties"); //$NON-NLS-1$
+            IFile log4jFile = prefSettingFolder.getFile("log4j.xml"); //$NON-NLS-1$
+            IFolder srcFolder = null;
+
+            if (isLogForJob) { // means execute or export job need the log4j?
+                File commondLog4jFile = new File(commonLogFile.getLocation().toOSString());
+                File LogFile = new File(log4jFile.getLocation().toOSString());
+                Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
+                srcFolder = project.getFolder(path);
+                if (commondLog4jFile.exists()) {
+                    FilesUtils.copyFile(commondLog4jFile, new File(srcFolder.getFile("common-logging.properties").getLocation()
+                            .toOSString()));
+                }
+                if (LogFile.exists()) {
+                    FilesUtils.copyFile(LogFile, new File(srcFolder.getFile("log4j.xml").getLocation().toOSString()));
+                }
                 return;
             }
-            IFile commonLogFile = srcFolder.getFile("common-logging.properties"); //$NON-NLS-1$
-            String commonLogStr = getTemplateStrFromPreferenceStore(RunProcessPrefsConstants.COMMON_LOGGING_PROPERTIES_TEMPLATE);
+
+            if (prefSettingFolder == null) {
+                return;
+            }
+            String commonLogStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.COMMON_LOGGING_NODE);
             if (commonLogStr != null) {
                 File clFile = new File(commonLogFile.getLocation().toOSString());
                 if (!clFile.exists()) {// not support modify common-logging.properties template now.
@@ -355,8 +397,7 @@ public class DefaultRunProcessService implements IRunProcessService {
                     }
                 }
             }
-            IFile log4jFile = srcFolder.getFile("log4j.properties"); //$NON-NLS-1$
-            String log4jStr = getTemplateStrFromPreferenceStore(RunProcessPrefsConstants.LOG4J_PROPERTIES_TEMPLATE);
+            String log4jStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.LOG4J_CONTENT_NODE);
             if (log4jStr != null) {
                 File ljFile = new File(log4jFile.getLocation().toOSString());
                 FileOutputStream ljFileOutputStream = null;
@@ -367,10 +408,39 @@ public class DefaultRunProcessService implements IRunProcessService {
                     ljFileOutputStream.close();
                 }
             }
-            srcFolder.refreshLocal(IResource.DEPTH_ONE, null);
+            prefSettingFolder.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    @Override
+    public String getLogTemplate(String path) {
+        IRunProcessService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        }
+        if (service == null) {
+            return "";
+        }
+
+        File templateFile = new File(service.getResourceFilePath(path));
+        if (!templateFile.exists()) {
+            return "";
+        }
+
+        return getLogTemplateString(templateFile);
+    }
+
+    private String getLogTemplateString(File templateScriptFile) {
+        if (templateScriptFile != null && templateScriptFile.exists()) {
+            try {
+                return new Scanner(templateScriptFile).useDelimiter("\\A").next(); //$NON-NLS-1$
+            } catch (FileNotFoundException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return "";
     }
 
 }

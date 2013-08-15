@@ -344,7 +344,10 @@ public enum EParameterName {
 
     // Added for Hadoop properties
     USE_HADOOP_PROPERTIES("USE_HADOOP_PROPERTIES"),
-    HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES");
+    HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES"),
+
+    // Added for log4j.xml
+    LOG4J_ACTIVATE("LOG4J_ACTIVATE");
 
     private String displayName;
 

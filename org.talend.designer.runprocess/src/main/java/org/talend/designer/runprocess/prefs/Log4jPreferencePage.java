@@ -120,7 +120,7 @@ public class Log4jPreferencePage extends FieldEditorPreferencePage implements IW
         }
         if (service != null) {
             IProject project = JavaProcessorUtilities.getJavaProject().getProject();
-            service.updateLogFiles(project);
+            service.updateLogFiles(project, false);
         }
     }
 

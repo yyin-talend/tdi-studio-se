@@ -159,12 +159,14 @@ import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
@@ -352,6 +354,18 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
                 .getString(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        // for log4j activate
+        param = new ElementParameter(this);
+        param.setName(EParameterName.LOG4J_ACTIVATE.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.LOG4J_ACTIVATE.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE));
         param.setReadOnly(true);
         addElementParameter(param);
 

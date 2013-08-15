@@ -125,12 +125,6 @@
           id="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
           name="%shellSetting">
     </page>
-    <page
-          category="org.talend.designer.runprocess"
-          class="org.talend.designer.runprocess.prefs.Log4jPreferencePage"
-          id="org.talend.designer.runprocess.prefs.Log4jPreferencePage"
-          name="%log4j">
-    </page>
  </extension>
  <extension
        point="org.eclipse.jdt.core.compilationParticipant">
