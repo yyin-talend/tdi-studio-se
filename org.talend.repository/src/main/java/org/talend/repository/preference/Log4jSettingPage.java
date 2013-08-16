@@ -117,7 +117,7 @@ public class Log4jSettingPage extends ProjectSettingPage {
 
             }
             reset = false;
-            updateLogFiles();
+            // updateLogFiles();
         }
 
         return ok;

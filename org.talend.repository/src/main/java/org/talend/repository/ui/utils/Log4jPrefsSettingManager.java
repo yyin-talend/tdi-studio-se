@@ -118,4 +118,11 @@ public class Log4jPrefsSettingManager {
         }
         return "";
     }
+
+    public static String[] getLevel() {
+        String[] levels = { Log4jPrefsConstants.DEBUG, Log4jPrefsConstants.INFO, Log4jPrefsConstants.WARNING,
+                Log4jPrefsConstants.ERROR, Log4jPrefsConstants.FATAL };
+        return levels;
+    }
+
 }
