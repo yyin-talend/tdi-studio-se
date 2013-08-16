@@ -457,12 +457,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     }
 
-    private String[] getListToDisplay() {
-        String[] levelForLog4j = { "debug", "info", "warning", "error", "fatal" };
-
-        return levelForLog4j;
-    }
-
     private Composite createLog4jGroup(Composite parent) {
 
         // log4j setting
@@ -484,7 +478,7 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         log4jLevel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
         log4jLevel.setText("Log4j Level");
         log4jLevel.setBackground(log4jGroup.getBackground());
-        log4jLevel.setItems(getListToDisplay());
+        log4jLevel.setItems(Log4jPrefsSettingManager.getLevel());
         log4jLevel.select(0);
 
         applyLog4jForChild = new Button(log4jGroup, SWT.CHECK);

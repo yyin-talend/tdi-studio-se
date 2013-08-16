@@ -38,8 +38,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.commons.utils.io.FilesUtils;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
@@ -49,7 +47,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.utils.ResourceModelHelper;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
@@ -57,7 +54,6 @@ import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.mapreduce.MapReduceJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.runprocess.data.PerformanceData;
@@ -352,8 +348,13 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
         try {
             // get the .setting folder where we need to keep the log4j file
-            IFolder prefSettingFolder = ResourceUtils.getFolder(
-                    ResourceModelHelper.getProject(ProjectManager.getInstance().getCurrentProject()), ".settings", false);
+            // IFolder prefSettingFolder = ResourceUtils.getFolder(
+            // ResourceModelHelper.getProject(ProjectManager.getInstance().getCurrentProject()), ".settings", false);
+            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
+            IFolder srcFolder = project.getFolder(path);
+            IFile commonLogFile = srcFolder.getFile("common-logging.properties");
+            IFile log4jFile = srcFolder.getFile("log4j.xml");
+            // create the .prefs file and save log4j.xml and common-logging.properties's content into it
             if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE, "false");
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
@@ -361,54 +362,36 @@ public class DefaultRunProcessService implements IRunProcessService {
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
                         getLogTemplate(RESOURCE_COMMONLOG_FILE_PATH));
             }
-
-            IFile commonLogFile = prefSettingFolder.getFile("common-logging.properties"); //$NON-NLS-1$
-            IFile log4jFile = prefSettingFolder.getFile("log4j.xml"); //$NON-NLS-1$
-            IFolder srcFolder = null;
-
-            if (isLogForJob) { // means execute or export job need the log4j?
-                File commondLog4jFile = new File(commonLogFile.getLocation().toOSString());
-                File LogFile = new File(log4jFile.getLocation().toOSString());
-                Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
-                srcFolder = project.getFolder(path);
-                if (commondLog4jFile.exists()) {
-                    FilesUtils.copyFile(commondLog4jFile, new File(srcFolder.getFile("common-logging.properties").getLocation()
-                            .toOSString()));
-                }
-                if (LogFile.exists()) {
-                    FilesUtils.copyFile(LogFile, new File(srcFolder.getFile("log4j.xml").getLocation().toOSString()));
-                }
+            if (srcFolder == null) {
                 return;
             }
-
-            if (prefSettingFolder == null) {
-                return;
-            }
-            String commonLogStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.COMMON_LOGGING_NODE);
-            if (commonLogStr != null) {
-                File clFile = new File(commonLogFile.getLocation().toOSString());
-                if (!clFile.exists()) {// not support modify common-logging.properties template now.
-                    FileOutputStream clFileFileOutputStream = null;
+            if (isLogForJob) { // when execute or export job need the log4j files under .src folder
+                String commonLogStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.COMMON_LOGGING_NODE);
+                if (commonLogStr != null) {
+                    File clFile = new File(commonLogFile.getLocation().toOSString());
+                    if (!clFile.exists()) {
+                        FileOutputStream clFileFileOutputStream = null;
+                        try {
+                            clFileFileOutputStream = new FileOutputStream(clFile);
+                            clFileFileOutputStream.write(commonLogStr.getBytes());
+                        } finally {
+                            clFileFileOutputStream.close();
+                        }
+                    }
+                }
+                String log4jStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.LOG4J_CONTENT_NODE);
+                if (log4jStr != null) {
+                    File ljFile = new File(log4jFile.getLocation().toOSString());
+                    FileOutputStream ljFileOutputStream = null;
                     try {
-                        clFileFileOutputStream = new FileOutputStream(clFile);
-                        clFileFileOutputStream.write(commonLogStr.getBytes());
+                        ljFileOutputStream = new FileOutputStream(ljFile);
+                        ljFileOutputStream.write(log4jStr.getBytes());
                     } finally {
-                        clFileFileOutputStream.close();
+                        ljFileOutputStream.close();
                     }
                 }
             }
-            String log4jStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.LOG4J_CONTENT_NODE);
-            if (log4jStr != null) {
-                File ljFile = new File(log4jFile.getLocation().toOSString());
-                FileOutputStream ljFileOutputStream = null;
-                try {
-                    ljFileOutputStream = new FileOutputStream(ljFile);
-                    ljFileOutputStream.write(log4jStr.getBytes());
-                } finally {
-                    ljFileOutputStream.close();
-                }
-            }
-            prefSettingFolder.refreshLocal(IResource.DEPTH_ONE, null);
+            srcFolder.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
