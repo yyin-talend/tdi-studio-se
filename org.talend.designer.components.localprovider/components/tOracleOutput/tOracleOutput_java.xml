@@ -161,7 +161,7 @@
       NUM_ROW="40"
       REPOSITORY_VALUE="SCHEMA"
       REQUIRED="false"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_RAC')"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
