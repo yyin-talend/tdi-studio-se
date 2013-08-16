@@ -143,7 +143,7 @@
       FIELD="TEXT"
       NUM_ROW="50"
       REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_RAC')"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
