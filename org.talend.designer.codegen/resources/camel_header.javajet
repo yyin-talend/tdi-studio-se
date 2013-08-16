@@ -752,19 +752,20 @@ if (isProvider) {
 			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+			
 			String useRegistry = "false";
-			if(isStudioEEVersion){
-			 	useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
+			String useSecurity = "false";
+			if(!"RAW".equals(formatType) && !"CXF_MESSAGE".equals(formatType)){
+				if(isStudioEEVersion){
+					useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
+				}
+				if("false".equals(useRegistry)){
+					useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
+				}
 			}
+			
 			String role = ElementParameterParser.getValue(node, "__ROLE_NAME__");
-			String useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
-			if("true".equals(useRegistry)){
-				useSecurity = "false";
-			}
-			if("RAW".equals(formatType) || "CXF_MESSAGE".equals(formatType)){
-				useRegistry = "false";
-				useSecurity = "false";
-			}
+			
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
@@ -793,8 +794,6 @@ if (isProvider) {
 				}else if("DIGEST".equals(securityType)){
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST";
 				}
-			}else{
-				isProvider = false;
 			}
 			
 %>
@@ -811,7 +810,7 @@ if (isProvider) {
 <%			
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
-			if ("true".equals(useSL)) {
+			if ("true".equals(useSL) && (isProvider || "false".equals(useRegistry))) {
 				List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
 %>
 				// Add Service Locator Service to <%=endpointVar%>

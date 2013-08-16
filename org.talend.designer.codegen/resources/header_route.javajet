@@ -34,6 +34,8 @@
 	IProcess process = (IProcess) v.get(0);
 	String version = (String) v.get(1);
 
+	boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
+	
 	List<? extends INode> processNodes = (List<? extends INode>) process.getGeneratingNodes();
 	List<? extends INode> graphicalNodes = (List<? extends INode>) process.getGraphicalNodes();
 	boolean stats = codeGenArgument.isStatistics();
@@ -164,8 +166,8 @@ package <%= packageName %>;
 %>
 
 <%
+
 	for (INode node : graphicalNodes) {
-		boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
 		String useRegistry = "false";
 		if(isStudioEEVersion){
 		 	useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
@@ -480,14 +482,11 @@ for (INode node : graphicalNodes) {
 		String url = ElementParameterParser.getValue(node, "__ADDRESS__").trim();
 
 		List<? extends IConnection> conns = node.getIncomingConnections();
-		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
+		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__")) 
+				&& (!isStudioEEVersion || "false".equals(ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__")))) {
 			if (!conns.isEmpty()) {
-				INode source = conns.get(0).getSource();
-				if (!("cErrorHandler".equals(source.getComponent().getName())
-						&& source.getIncomingConnections().isEmpty())) {
-					// consumer role
-					url = "((null == bundleContext) ? " + url + " : \"locator://locator/\")";
-				}
+				// consumer role
+				url = "((null == bundleContext) ? " + url + " : \"locator://locator/\")";
 			}
 		}
 
