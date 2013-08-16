@@ -10,6 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20130810A"
     STARTABLE="true"
+    PARTITIONING="NONE"
   >
     <SIGNATURE/>
   </HEADER>
@@ -68,6 +69,7 @@
       FIELD="TABLE"
       NUM_ROW="20"
       NB_LINES="5"
+      REQUIRED="true"
       SHOW_IF="CONFIG_CLIENT=='true'"
       GROUP="CLIENT_CONFIG"
     >

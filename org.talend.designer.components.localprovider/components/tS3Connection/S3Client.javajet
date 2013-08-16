@@ -21,20 +21,24 @@ if(("true").equals(useExistingConn)) {
 %>
 		com.amazonaws.ClientConfiguration cc_<%=cid%> = new com.amazonaws.ClientConfiguration();
 <%
-		boolean containSendBuffer=false;
-		boolean containRecieveBuffer=false;
+		boolean setBuffer = false;
 		for(Map<String,String> map :clientConfiguration){
 			String client_parameter = map.get("CLIENT_PARAMETER");
 			String value = map.get("VALUE");
-			if("SocketSendBufferSizeHints".equals(client_parameter)){
-				containSendBuffer=true;
+			if(!setBuffer && ("SocketSendBufferSizeHints".equals(client_parameter) || "SocketReceiveBufferSizeHints".equals(client_parameter))){
+				setBuffer=true;
 %>
-				int scketSendBufferSizeHints_<%=cid%> = <%=value%>;//scketSendBufferSizeHints and socketReceiveBufferSizeHints works together
+			int scketSendBufferSizeHints_<%=cid%> = 0;
+			int socketReceiveBufferSizeHints_<%=cid%> = 0;
+<%
+			}
+			if("SocketSendBufferSizeHints".equals(client_parameter)){
+%>
+				scketSendBufferSizeHints_<%=cid%> = <%=value%>;
 <%
 			}else if("SocketReceiveBufferSizeHints".equals(client_parameter)){
-				containRecieveBuffer=true;
 %>
-				int socketReceiveBufferSizeHints_<%=cid%> = <%=value%>;//scketSendBufferSizeHints and socketReceiveBufferSizeHints works together
+				socketReceiveBufferSizeHints_<%=cid%> = <%=value%>;
 <%
 			}else if("Protocol".equals(client_parameter)){
 %>
@@ -46,16 +50,10 @@ if(("true").equals(useExistingConn)) {
 <%
 			}
 		}
-		if(containSendBuffer || containRecieveBuffer){
-			if(containSendBuffer && containRecieveBuffer){
+		if(setBuffer){
 %>
 			cc_<%=cid%>.setSocketBufferSizeHints(scketSendBufferSizeHints_<%=cid%>,socketReceiveBufferSizeHints_<%=cid%>);
 <%
-			}else{
-%>
-			System.err.println("You should set parameter scketSendBufferSizeHints and socketReceiveBufferSizeHints together!");
-<%
-			}
 		}
 %>
 		com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);

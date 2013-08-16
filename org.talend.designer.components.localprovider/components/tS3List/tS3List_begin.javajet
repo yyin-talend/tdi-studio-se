@@ -1,9 +1,5 @@
 <%@ jet 
 imports="
-	org.talend.core.model.metadata.IMetadataColumn
-	org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.process.IConnection
-	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -23,73 +19,49 @@ imports="
 	int nb_bucket_object_<%=cid%> = 0;
 	try{
 <%
-IMetadataTable metadata=null;
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-	metadata = metadatas.get(0);
-}
-if(metadata!=null){
-	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	List<IMetadataColumn> columnLists = metadata.getListColumns();
-	for(IConnection conn:conns){
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			String firstConnName = conn.getName();
-			List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
-			boolean listAll = "true".equals(ElementParameterParser.getValue(node,"__LISTALL__"));
-			if(listAll){
-				String objects_prefix=ElementParameterParser.getValue(node,"__OBJECTS_PREFIX__");
+List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
+boolean listAll = "true".equals(ElementParameterParser.getValue(node,"__LISTALL__"));
+if(listAll){
+	String objects_prefix=ElementParameterParser.getValue(node,"__OBJECTS_PREFIX__");
 %>
-				java.util.List<com.amazonaws.services.s3.model.Bucket> buckets_<%=cid%> = conn_<%=cid%>.listBuckets();
-				for (com.amazonaws.services.s3.model.Bucket bucket_<%=cid%> : buckets_<%=cid%>) {
-					String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
-					com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,<%=objects_prefix!=null && objects_prefix.trim().length()>0 ?objects_prefix:null%>);
+	java.util.List<com.amazonaws.services.s3.model.Bucket> buckets_<%=cid%> = conn_<%=cid%>.listBuckets();
+	for (com.amazonaws.services.s3.model.Bucket bucket_<%=cid%> : buckets_<%=cid%>) {
+		String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
+		com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,<%=objects_prefix!=null && objects_prefix.trim().length()>0 ?objects_prefix:null%>);
 <%
-			} else if(buckets.size()>0){
+} else if(buckets.size()>0){
 %>
-				java.util.List<String> buckets_<%=cid%> = new java.util.ArrayList<String>();
-				java.util.Map<String,String> object_prefixs_<%=cid%> = new java.util.HashMap<String,String>();
+	java.util.List<String> buckets_<%=cid%> = new java.util.ArrayList<String>();
+	java.util.Map<String,String> object_prefixs_<%=cid%> = new java.util.HashMap<String,String>();
 <%
-				for(Map<String, String> map: buckets){
-					String bucket_name =map.get("BUCKET_NAME");
-					String object_prefix =map.get("OBJECT_PREFIX");
-					if(object_prefix!=null && object_prefix.trim().length()>0){
+	for(Map<String, String> map: buckets){
+		String bucket_name =map.get("BUCKET_NAME");
+		String object_prefix =map.get("OBJECT_PREFIX");
+		if(object_prefix!=null && object_prefix.trim().length()>0){
 %>
-						object_prefixs_<%=cid%>.put(<%=bucket_name%>,<%=object_prefix%>);
+			object_prefixs_<%=cid%>.put(<%=bucket_name%>,<%=object_prefix%>);
 <%
-					}
-%>
-					buckets_<%=cid%>.add(<%=bucket_name%>);
-<%
-				}
-%>
-				for (String currentBucketName_<%=cid%> : buckets_<%=cid%>) {
-					com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,object_prefixs_<%=cid%>.get(currentBucketName_<%=cid%>));
-<%
-			}
-			if(listAll || buckets.size()>0){
-%>
-				nb_bucket_<%=cid%>++;
-				do {
-					for (com.amazonaws.services.s3.model.S3ObjectSummary objectSummary_<%=cid%> : objects_<%=cid%>.getObjectSummaries()) {
-						nb_bucket_object_<%=cid%>++;
-<%
-						for(IMetadataColumn column :columnLists){
-							if("bucket".equalsIgnoreCase(column.getLabel())){
-%>
-								<%=firstConnName%>.<%=column.getLabel()%> = currentBucketName_<%=cid%>;
-<%
-							}else if("Owner".equalsIgnoreCase(column.getLabel())){
-%>
-								<%=firstConnName%>.<%=column.getLabel()%> = objectSummary_<%=cid%>.getOwner().getDisplayName();
-<%
-							}else {
-%>
-								<%=firstConnName%>.<%=column.getLabel()%> = objectSummary_<%=cid%>.get<%=column.getLabel()%>();
-<%
-							}
-						}
-			}
 		}
+%>
+		buckets_<%=cid%>.add(<%=bucket_name%>);
+<%
 	}
+%>
+	for (String currentBucketName_<%=cid%> : buckets_<%=cid%>) {
+		com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,object_prefixs_<%=cid%>.get(currentBucketName_<%=cid%>));
+<%
+}
+if(listAll || buckets.size()>0){
+%>
+	do {
+		java.util.List<com.amazonaws.services.s3.model.S3ObjectSummary> list_objects_<%=cid%> = objects_<%=cid%>.getObjectSummaries();
+		if(list_objects_<%=cid%>.size()>0){
+			nb_bucket_<%=cid%>++;
+		}
+		for (com.amazonaws.services.s3.model.S3ObjectSummary objectSummary_<%=cid%> : list_objects_<%=cid%>) {
+			nb_bucket_object_<%=cid%>++;
+			globalMap.put("<%=cid%>_CURRENT_BUCKET", currentBucketName_<%=cid%>);
+			globalMap.put("<%=cid%>_CURRENT_KEY", objectSummary_<%=cid%>.getKey());
+<%
 }
 %>

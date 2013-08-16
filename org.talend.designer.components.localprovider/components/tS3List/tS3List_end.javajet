@@ -1,9 +1,6 @@
 <%@ jet 
 imports="
 	java.util.List
-	org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.process.IConnection
-	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
@@ -16,28 +13,16 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	IMetadataTable metadata=null;
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		metadata = metadatas.get(0);
-	}
-	if(metadata!=null){
-		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-		for(IConnection conn:conns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				boolean listAll = "true".equals(ElementParameterParser.getValue(node,"__LISTALL__"));
-				List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
-				if(listAll || buckets.size()>0){
+	boolean listAll = "true".equals(ElementParameterParser.getValue(node,"__LISTALL__"));
+	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
+	if(listAll || buckets.size()>0){
 %>
 
-		                }
-		                objects_<%=cid%> = conn_<%=cid%>.listNextBatchOfObjects(objects_<%=cid%>);
-		        } while (objects_<%=cid%>.isTruncated());
-		    }
-<%
-				}
-			}
+		            }
+		            objects_<%=cid%> = conn_<%=cid%>.listNextBatchOfObjects(objects_<%=cid%>);
+		    } while (objects_<%=cid%>.isTruncated());
 		}
+<%
 	}
 %>
 	}catch(com.amazonaws.AmazonClientException e_<%=cid%>){

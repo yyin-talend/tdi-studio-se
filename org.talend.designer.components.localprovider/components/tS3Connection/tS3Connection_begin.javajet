@@ -9,70 +9,9 @@ imports="
 %>
 
 <%
-    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-    INode node = (INode)codeGenArgument.getArgument();
-	
-    String cid = node.getUniqueName();
-    String accessKey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
-    String secretKey = ElementParameterParser.getValue(node, "__SECRET_KEY__");
-    boolean configClient = "true".equals(ElementParameterParser.getValue(node, "__CONFIG_CLIENT__"));
-    List<Map<String,String>> clientConfiguration = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CLIENT_CONFIGURATION__");
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
 %>
-	String accessKey_<%=cid%> = <%=accessKey%>;
-	String secretKey_<%=cid%> = <%=secretKey%>;
-	com.amazonaws.auth.AWSCredentials credentials_<%=cid%>  = new com.amazonaws.auth.BasicAWSCredentials(accessKey_<%=cid%>,secretKey_<%=cid%>);
-<%
-	if(configClient && clientConfiguration.size()>0){
-%>
-		com.amazonaws.ClientConfiguration cc_<%=cid%> = new com.amazonaws.ClientConfiguration();
-<%
-		boolean containSendBuffer=false;
-		boolean containRecieveBuffer=false;
-		for(Map<String,String> map :clientConfiguration){
-			String client_parameter = map.get("CLIENT_PARAMETER");
-			String value = map.get("VALUE");
-			if("SocketSendBufferSizeHints".equals(client_parameter)){
-				containSendBuffer=true;
-%>
-				int scketSendBufferSizeHints_<%=cid%> = <%=value%>;//scketSendBufferSizeHints and socketReceiveBufferSizeHints works together
-<%
-			}else if("SocketReceiveBufferSizeHints".equals(client_parameter)){
-				containRecieveBuffer=true;
-%>
-				int socketReceiveBufferSizeHints_<%=cid%> = <%=value%>;//scketSendBufferSizeHints and socketReceiveBufferSizeHints works together
-<%
-			}else if("Protocol".equals(client_parameter)){
-%>
-				cc_<%=cid%>.setProtocol(com.amazonaws.Protocol.<%=value.toUpperCase().replaceAll("\"","")%>);
-<%
-			}else{
-%>
-				cc_<%=cid%>.set<%=client_parameter%>(<%=value%>);
-<%
-			}
-		}
-		if(containSendBuffer || containRecieveBuffer){
-			if(containSendBuffer && containRecieveBuffer){
-%>
-			cc_<%=cid%>.setSocketBufferSizeHints(scketSendBufferSizeHints_<%=cid%>,socketReceiveBufferSizeHints_<%=cid%>);
-<%
-			}else{
-%>
-			System.err.println("You should set parameter scketSendBufferSizeHints and socketReceiveBufferSizeHints together!");
-<%
-			}
-		}
-%>
-		com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
-<%
-	}else{
-%>
-		com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
-<%
-	}
-%>
-
+<%@ include file="S3Client.javajet" %>
 	globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
-	globalMap.put("accessKey_" + "<%=cid%>",accessKey_<%=cid%>);
-	globalMap.put("secretKey_" + "<%=cid%>",secretKey_<%=cid%>);
-	

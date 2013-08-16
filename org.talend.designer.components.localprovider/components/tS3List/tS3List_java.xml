@@ -10,6 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20130810A"
     STARTABLE="true"
+    PARTITIONING="NONE"
   >
     <SIGNATURE/>
   </HEADER>
@@ -23,8 +24,8 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
-    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
     <CONNECTOR CTYPE="COMPONENT_OK"/>
@@ -93,18 +94,6 @@
             <ITEM NAME="OBJECT_PREFIX"/>
         </ITEMS>
     </PARAMETER>
-	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
-	        NUM_ROW="40">
-		<TABLE>
-		    <COLUMN NAME="Bucket" TYPE="id_String" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="Key" TYPE="id_String" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="ETag" TYPE="id_String" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="Owner" TYPE="id_String" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="Size" TYPE="id_Long" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="StorageClass" TYPE="id_String" READONLY="true" CUSTOM="true"/>
-		    <COLUMN NAME="LastModified" TYPE="id_Date" READONLY="false" CUSTOM="true"/>
-		</TABLE>
-	</PARAMETER>
 	<PARAMETER
 	    NAME="DIE_ON_ERROR"
 	    FIELD="CHECK"
@@ -130,6 +119,7 @@
 		  FIELD="TABLE"
 		  NUM_ROW="30"
 		  NB_LINES="5"
+		  REQUIRED="true"
 		  GROUP="CLIENT_CONFIG"
 		  SHOW_IF="(CONFIG_CLIENT =='true') AND (USE_EXISTING_CONNECTION == 'false')"
 		>
@@ -169,6 +159,8 @@
    </CODEGENERATION>
 
     <RETURNS>
+        <RETURN NAME="CURRENT_BUCKET" TYPE="id_String" AVAILABILITY="FLOW" />
+        <RETURN NAME="CURRENT_KEY" TYPE="id_String" AVAILABILITY="FLOW" />
         <RETURN NAME="NB_BUCKET" TYPE="id_Integer" AVAILABILITY="AFTER" />
         <RETURN NAME="NB_BUCKET_OBJECT" TYPE="id_Integer" AVAILABILITY="AFTER" />
     </RETURNS>
