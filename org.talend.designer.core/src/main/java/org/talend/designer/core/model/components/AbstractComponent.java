@@ -101,4 +101,9 @@ public abstract class AbstractComponent implements IComponent {
     public String getPartitioning() {
         return "AUTO"; //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isSupportDbType() {
+        return false;
+    }
 }

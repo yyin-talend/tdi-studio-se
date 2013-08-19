@@ -587,4 +587,9 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public String getPartitioning() {
         return "AUTO"; //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isSupportDbType() {
+        return false;
+    }
 }
