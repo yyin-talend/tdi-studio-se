@@ -642,6 +642,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasCXFSamlConsumerAuthz = false;
         boolean hasCXFRegistryConsumer = false;
         boolean hasCXFRegistryProvider = false;
+        boolean isEEVersion = isStudioEEVersion();
+        
         for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
             // http://jira.talendforge.org/browse/TESB-3850
             String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
@@ -673,16 +675,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     break;
                 }
             }
-
-            if (EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) {
-                if (asConsumer) {
-                    hasCXFRegistryConsumer = true;
-                } else {
-                    hasCXFRegistryProvider = true;
-                }
-                //https://jira.talendforge.org/browse/TESB-10725
-                useSAM = false;
-                continue;
+            if(isEEVersion) {
+	            if (EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) {
+	                if (asConsumer) {
+	                    hasCXFRegistryConsumer = true;
+	                } else {
+	                    hasCXFRegistryProvider = true;
+	                }
+	                //https://jira.talendforge.org/browse/TESB-10725
+	                useSAM = false;
+	                continue;
+	            }
             }
             if (hasCXFSamlConsumer && hasCXFSamlProvider
                     && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
@@ -701,12 +704,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else {
                 hasCXFSamlProvider = true;
             }
-            if (EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)) {
-                if (asConsumer) {
-                    hasCXFSamlConsumerAuthz = true;
-                } else {
-                    hasCXFSamlProviderAuthz = true;
-                }
+            if(isEEVersion) {
+	            if (EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)) {
+	                if (asConsumer) {
+	                    hasCXFSamlConsumerAuthz = true;
+	                } else {
+	                    hasCXFSamlProviderAuthz = true;
+	                }
+	            }
             }
         }
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
@@ -886,7 +891,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      */
     private static Collection<String> addRouteResourcePackages(ProcessItem item) {
         Collection<String> pkgs = new HashSet<String>();
-        EMap additionalProperties = item.getProperty().getAdditionalProperties();
+        EMap<?,?> additionalProperties = item.getProperty().getAdditionalProperties();
         if (additionalProperties != null) {
             Object resourcesObj = additionalProperties.get("ROUTE_RESOURCES_PROP");
             if (resourcesObj != null) {
@@ -955,7 +960,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-    @Override
+    protected static boolean isStudioEEVersion() {
+	    return org.talend.core.PluginChecker.isPluginLoaded("org.talend.commandline"); //$NON-NLS-1$
+	}
+
+	@Override
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
 
         if (!needLibraries) {
