@@ -72,6 +72,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
@@ -1955,6 +1956,34 @@ public class EmfComponent extends AbstractComponent {
         return null;
     }
 
+    private String getMappingType() {
+        for (Object parameter : compType.getPARAMETERS().getPARAMETER()) {
+            if (parameter instanceof PARAMETERType) {
+                PARAMETERType paramType = (PARAMETERType) parameter;
+                if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
+                    if (paramType.getDEFAULT().size() > 0) {
+                        return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        for (Object parameter : compType.getADVANCEDPARAMETERS().getPARAMETER()) {
+            if (parameter instanceof PARAMETERType) {
+                PARAMETERType paramType = (PARAMETERType) parameter;
+                if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
+                    if (paramType.getDEFAULT().size() > 0) {
+                        return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
         List<TABLEType> tableList = xmlParam.getTABLE();
         if ((tableList == null) || (tableList.size() == 0)) {
@@ -1979,12 +2008,13 @@ public class EmfComponent extends AbstractComponent {
             return;
         }
 
+        String mappingType = getMappingType();
         for (TABLEType tableType : tableList) {
             IMetadataTable defaultTable = new MetadataTable();
             EList xmlColumnList = tableType.getCOLUMN();
             COLUMNType xmlColumn;
             List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
-            IMetadataColumn talendColumn;
+            MetadataColumn talendColumn;
 
             boolean isReadOnly;
             if (tableType.isSetREADONLY()) {
@@ -2014,6 +2044,11 @@ public class EmfComponent extends AbstractComponent {
                 talendColumn.setKey(xmlColumn.isKEY());
                 talendColumn.setPattern(xmlColumn.getPATTERN());
                 talendColumn.setComment(xmlColumn.getCOMMENT());
+                if (mappingType != null) {
+                    String defaultSelectedDbType = MetadataTalendType.getMappingTypeRetriever(mappingType)
+                            .getDefaultSelectedDbType(xmlColumn.getTYPE());
+                    talendColumn.setType(defaultSelectedDbType);
+                }
                 if (xmlColumn.isSetREADONLY()) {
                     talendColumn.setReadOnly(xmlColumn.isREADONLY());
                 } else if (isReadOnly) {
@@ -3850,5 +3885,10 @@ public class EmfComponent extends AbstractComponent {
      */
     public void setProvider(AbstractComponentsProvider provider) {
         this.provider = provider;
+    }
+
+    @Override
+    public boolean isSupportDbType() {
+        return compType.getHEADER().isSUPPORTS_DB_TYPE();
     }
 }
