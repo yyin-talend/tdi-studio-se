@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -326,17 +327,34 @@ public class LoginDialog extends TrayDialog {
 
                 if (!isExchangeLogon || !isUserPassRight) {
                     if (count < 10) {
-                        new Thread() {
+                        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+                            new Thread() {
 
-                            @Override
-                            public void run() {
-                                Display display = new Display();
-                                Shell shell = new Shell(display, SWT.ON_TOP);
-                                TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
-                                tfDialog.open();
-                            }
+                                @Override
+                                public void run() {
+                                    Display display = new Display();
+                                    Shell shell = new Shell(display, SWT.ON_TOP);
+                                    TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
+                                    tfDialog.open();
+                                }
 
-                        }.start();
+                            }.start();
+                        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+                            TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                            tfDialog.open();
+                        } else {
+                            new Thread() {
+
+                                @Override
+                                public void run() {
+                                    Display display = new Display();
+                                    Shell shell = new Shell(display, SWT.ON_TOP);
+                                    TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
+                                    tfDialog.open();
+                                }
+
+                            }.start();
+                        }
                     }
                 }
             }
