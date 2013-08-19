@@ -1969,14 +1969,16 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
         }
-        for (Object parameter : compType.getADVANCEDPARAMETERS().getPARAMETER()) {
-            if (parameter instanceof PARAMETERType) {
-                PARAMETERType paramType = (PARAMETERType) parameter;
-                if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
-                    if (paramType.getDEFAULT().size() > 0) {
-                        return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
-                    } else {
-                        return null;
+        if (compType.getADVANCEDPARAMETERS() != null) {
+            for (Object parameter : compType.getADVANCEDPARAMETERS().getPARAMETER()) {
+                if (parameter instanceof PARAMETERType) {
+                    PARAMETERType paramType = (PARAMETERType) parameter;
+                    if ("MAPPING_TYPE".equals(paramType.getFIELD())) {
+                        if (paramType.getDEFAULT().size() > 0) {
+                            return ((DEFAULTType) paramType.getDEFAULT().get(0)).getValue();
+                        } else {
+                            return null;
+                        }
                     }
                 }
             }
