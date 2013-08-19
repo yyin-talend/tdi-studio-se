@@ -327,19 +327,7 @@ public class LoginDialog extends TrayDialog {
 
                 if (!isExchangeLogon || !isUserPassRight) {
                     if (count < 10) {
-                        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-                            new Thread() {
-
-                                @Override
-                                public void run() {
-                                    Display display = new Display();
-                                    Shell shell = new Shell(display, SWT.ON_TOP);
-                                    TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
-                                    tfDialog.open();
-                                }
-
-                            }.start();
-                        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+                        if (Platform.getOS().equals(Platform.OS_LINUX)) {
                             TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
                             tfDialog.open();
                         } else {
