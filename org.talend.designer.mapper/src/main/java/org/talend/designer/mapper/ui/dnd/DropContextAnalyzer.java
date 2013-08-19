@@ -199,7 +199,8 @@ public class DropContextAnalyzer {
                  */
                 return false;
             } else {
-                return true;
+                // OUTPUT => OUTPUT
+                return checkZoonTarget();
             }
 
         }
@@ -224,6 +225,10 @@ public class DropContextAnalyzer {
             return false;
         }
 
+        return checkZoonTarget();
+    }
+
+    private boolean checkZoonTarget() {
         IDataMapTable dataMapTable = dataMapTableViewTarget.getDataMapTable();
         if (zoneTarget == Zone.OUTPUTS) {
             OutputTable outputTable = (OutputTable) dataMapTable;
@@ -260,7 +265,6 @@ public class DropContextAnalyzer {
                 return false;
             }
         }
-
         return true;
     }
 
