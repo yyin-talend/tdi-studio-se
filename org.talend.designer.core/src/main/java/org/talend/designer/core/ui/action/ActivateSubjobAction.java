@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusSubjobCommand;
@@ -70,6 +71,10 @@ public class ActivateSubjobAction extends SelectionAction {
                 return false;
             }
             Node node = (Node) part.getModel();
+            boolean isCamelNode = ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getProcess().getComponentsType());
+            if(!node.isStart() && isCamelNode){
+                return false;
+            }
             if (node.isReadOnly()) {
                 return false;
             }
@@ -79,9 +84,17 @@ public class ActivateSubjobAction extends SelectionAction {
 
             if (node.isStart()) {
                 if (node.isActivate()) {
-                    setText(TEXT_REM_ACTIVATE_COMPLETE);
+                    if(isCamelNode){
+                        setText(Messages.getString("ActivateSubjobAction.DeactivateCompleteRoute"));
+                    }else{
+                        setText(TEXT_REM_ACTIVATE_COMPLETE);
+                    }
                 } else {
-                    setText(TEXT_SET_ACTIVATE_COMPLETE);
+                    if(isCamelNode){
+                        setText(Messages.getString("ActivateSubjobAction.ActivateCompleteRoute"));
+                    }else{
+                        setText(TEXT_SET_ACTIVATE_COMPLETE);
+                    }
                 }
             } else {
                 if (node.isActivate()) {

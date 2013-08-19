@@ -588,6 +588,7 @@ public final class Expression {
                         }
                     }
 
+                    break;
                 }
             }
         }
