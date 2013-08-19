@@ -642,77 +642,62 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasCXFSamlConsumerAuthz = false;
         boolean hasCXFRegistryConsumer = false;
         boolean hasCXFRegistryProvider = false;
-        boolean isEEVersion = isStudioEEVersion();
         
-        for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
-            // http://jira.talendforge.org/browse/TESB-3850
-            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-            
-            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
-                useSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
-            }
-
-            //security is disable in case CXF_MESSAGE or RAW dataFormat
-            if ("CXF_MESSAGE".equals(format) || "RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
-                continue;
-            }
-
-            if (hasCXFSamlConsumer && hasCXFSamlProvider && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
-                if(useSAM){
-                    break;
-                }
-                continue;
-            }
-
-            String uniquename = ElementParameterParser.getUNIQUENAME(node);
-            @SuppressWarnings("unchecked")
-            EList<ConnectionType> connections = processItem.getProcess().getConnection();
-            boolean asConsumer = false;
-            for (ConnectionType conn : connections) {
-                String target = conn.getTarget();
-                if (uniquename.equals(target)) {
-                    asConsumer = true;
-                    break;
-                }
-            }
-            if(isEEVersion) {
-	            if (EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) {
-	                if (asConsumer) {
-	                    hasCXFRegistryConsumer = true;
-	                } else {
-	                    hasCXFRegistryProvider = true;
-	                }
-	                //https://jira.talendforge.org/browse/TESB-10725
-	                useSAM = false;
-	                continue;
+        Collection<NodeType> cCXFs = EmfModelUtils.getComponentsByName(processItem, "cCXF");
+        if(!cCXFs.isEmpty()) {
+        	//consumers.
+        	Set<String> consumerNodes = new HashSet<String>();
+        	@SuppressWarnings("unchecked")
+			List<ConnectionType> connections = processItem.getProcess().getConnection();
+        	for (ConnectionType conn : connections) {
+        		consumerNodes.add(conn.getTarget());
+        	}
+        	
+        	boolean isEEVersion = isStudioEEVersion();
+			for (NodeType node : cCXFs) { //$NON-NLS-1$
+	        	boolean nodeUseSAM = false;
+	        	boolean nodeUseSaml = false;
+	        	boolean nodeUseAuthz = false;
+	        	boolean nodeUseRegistry = false;
+	
+	            // http://jira.talendforge.org/browse/TESB-3850
+	            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
+	            
+	            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
+	            	nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
 	            }
-            }
-            if (hasCXFSamlConsumer && hasCXFSamlProvider
-                    && hasCXFSamlConsumerAuthz && hasCXFSamlProviderAuthz) {
-                continue;
-            }
-            if (!EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
-                continue;
-            }
-            String securityType = EmfModelUtils.computeTextElementValue(
-                    "SECURITY_TYPE", node); //$NON-NLS-1$
-            if (!"SAML".equals(securityType)) { //$NON-NLS-1$
-                continue;
-            }
-            if (asConsumer) {
-                hasCXFSamlConsumer = true;
-            } else {
-                hasCXFSamlProvider = true;
-            }
-            if(isEEVersion) {
-	            if (EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node)) {
-	                if (asConsumer) {
-	                    hasCXFSamlConsumerAuthz = true;
-	                } else {
-	                    hasCXFSamlProviderAuthz = true;
-	                }
+
+	            //security is disable in case CXF_MESSAGE or RAW dataFormat
+	            if (!"CXF_MESSAGE".equals(format) && !"RAW".equals(format)) { //$NON-NLS-1$  //$NON-NLS-2$
+	            	if (isEEVersion && EmfModelUtils.computeCheckElementValue("ENABLE_REGISTRY", node)) { //$NON-NLS-1$
+	            		nodeUseRegistry = true;
+	            		//https://jira.talendforge.org/browse/TESB-10725
+	            		nodeUseSAM = false;
+		        	}else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
+	        			String securityType = EmfModelUtils.computeTextElementValue(
+	        					"SECURITY_TYPE", node); //$NON-NLS-1$
+	        			if ("SAML".equals(securityType)) { //$NON-NLS-1$
+	        				nodeUseSaml = true;
+	        				nodeUseAuthz = isEEVersion && EmfModelUtils.computeCheckElementValue("USE_AUTHORIZATION", node);
+	    				}
+	    			}
+				}
+	            useSAM |= nodeUseSAM;
+	            if(consumerNodes.contains(ElementParameterParser.getUNIQUENAME(node))) {
+	            	hasCXFSamlConsumer |= nodeUseSaml;
+	            	hasCXFSamlConsumerAuthz |= nodeUseAuthz;
+	            	hasCXFRegistryConsumer |= nodeUseRegistry;
+	            }else {
+	            	hasCXFSamlProvider |= nodeUseSaml;
+	            	hasCXFSamlProviderAuthz |= nodeUseAuthz;
+	            	hasCXFRegistryProvider |= nodeUseRegistry;
+				}
+	        
+	            if(useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion
+	            		|| (hasCXFRegistryConsumer && hasCXFRegistryProvider && hasCXFSamlProviderAuthz && hasCXFSamlConsumerAuthz))){
+	            	break;
 	            }
-            }
+	        }
         }
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
