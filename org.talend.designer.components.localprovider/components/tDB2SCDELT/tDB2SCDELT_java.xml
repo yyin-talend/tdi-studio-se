@@ -318,6 +318,23 @@
   <ADVANCED_PARAMETERS>
 
     <PARAMETER
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="3"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        REPOSITORY_VALUE="PROPERTIES_STRING">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        NUM_ROW="4">
+        <DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1;parameterName2=value2;"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="10"
