@@ -53,10 +53,19 @@ Manager manager = null;
         String schema_<%=cid%> = (String)globalMap.get("<%=schema %>");
         String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");  
         <%
-    } else { 
-        %>
+    } else {
+    	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+			String url_<%=cid %> = "jdbc:db2://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
+<%
+		} else {
+%>
+			String url_<%=cid %> = "jdbc:db2://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%> + ":" + <%=dbproperties%>;
+<%
+		}
+%>
 	    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
-    	String url_<%=cid %> = "jdbc:db2://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;    
     	String dbUser_<%=cid %> = <%=user%>;    
     	String dbPwd_<%=cid %> = <%=pas%>;
     	String schema_<%=cid%> = <%=dbschema%>;    

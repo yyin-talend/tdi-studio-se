@@ -32,10 +32,19 @@ if(("true").equals(useExistingConn)) {
 	%>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
-} else {       
-    %>
+} else {
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+	    String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
+<%
+	} else {
+%>
+		String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":" + <%=dbproperties%>;
+<%
+	}
+%>
     java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
-    String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
     String dbUser_<%=cid %> = <%=dbuser%>;    
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);

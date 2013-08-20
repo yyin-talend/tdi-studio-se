@@ -18,10 +18,16 @@ imports="
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	    
 		public void setURL(INode node) {
-			
+	    	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 			String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 <%
+			} else {
+%>
+			String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":" + <%=dbproperties%>;
+<%
+			}
 		}
 		
 		public String getDirverClassName(INode node){
