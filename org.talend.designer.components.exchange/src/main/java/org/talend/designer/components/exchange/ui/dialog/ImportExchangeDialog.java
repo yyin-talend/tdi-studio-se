@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -324,9 +325,12 @@ public class ImportExchangeDialog extends Dialog {
         if (categoryCombo.getItemCount() > 0) {
             return;
         }
-        for (Category category : fCategorys) {
+        Iterator<Category> cListIterator = fCategorys.iterator();
+        while (cListIterator.hasNext()) {
+            Category category = cListIterator.next();
             // now hide the Category : Component ,Hadoop Configuration
             if ("Component".equals(category.getCategoryName()) || "Hadoop Configuration".equals(category.getCategoryName())) {
+                cListIterator.remove();
                 continue;
             }
             categoryCombo.add(category.getCategoryName());
