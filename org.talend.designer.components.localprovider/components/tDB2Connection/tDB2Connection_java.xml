@@ -141,8 +141,24 @@
    </PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
-		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">  
-			<DEFAULT>false</DEFAULT>    
+
+        <PARAMETER
+            NAME="PROPERTIES"
+            FIELD="TEXT"
+            NUM_ROW="5"
+            REPOSITORY_VALUE="PROPERTIES_STRING">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER
+            NAME="NOTE"
+            FIELD="LABEL"
+            NUM_ROW="6">
+            <DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1;parameterName2=value2;"</DEFAULT>
+        </PARAMETER>
+
+		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">
+			<DEFAULT>false</DEFAULT>
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
