@@ -420,7 +420,7 @@ public class JobletContainer extends NodeContainer {
             for (INode inode : mapReduceNodes) {
                 if ((inode instanceof Node)) {
                     Node temNode = (Node) inode;
-                    if (temNode.getMrGroupId().equals(mrGroupId)) {
+                    if (temNode.getMrGroupId() != null && mrGroupId != null && temNode.getMrGroupId().equals(mrGroupId)) {
                         nodeList.add(temNode);
                     }
                 }

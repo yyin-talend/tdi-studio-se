@@ -4230,7 +4230,7 @@ public class Node extends Element implements IGraphicalNode {
                 if (((Node) node).isMapReduceStart) {
                     if (((Node) node).getUniqueName().equals(this.getUniqueName())) {
                         continue;
-                    } else if (((Node) node).getMrGroupId().equals(this.getMrGroupId())) {
+                    } else if (((Node) node).getMrGroupId() != null && ((Node) node).getMrGroupId().equals(this.getMrGroupId())) {
                         alreadyHave = true;
                     }
                 }

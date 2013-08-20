@@ -1989,7 +1989,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
 
         if (targetConnection != null) {
-            NodeContainer nodeContainer = new NodeContainer(node);
+            NodeContainer nodeContainer = null;
+            if (node.isMapReduce()) {
+                nodeContainer = new JobletContainer(node);
+            } else {
+                nodeContainer = new NodeContainer(node);
+            }
             IProcess2 p = editor.getProcess();
             // TDI-21099
             if (p instanceof Process) {
