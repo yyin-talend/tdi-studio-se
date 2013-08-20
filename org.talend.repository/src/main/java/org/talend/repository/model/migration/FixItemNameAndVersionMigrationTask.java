@@ -15,13 +15,8 @@ package org.talend.repository.model.migration;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.utils.ResourceFilenameHelper;
-import org.talend.core.repository.utils.XmiResourceManager;
 
 /**
  * created by talend2 on 2013-8-14 Detailled comment
@@ -67,20 +62,21 @@ public class FixItemNameAndVersionMigrationTask extends AbstractItemMigrationTas
         // }
 
         // check filename expected. (VERSION)
-        ResourceFilenameHelper.FileName fileNameTest = ResourceFilenameHelper.create(item.getProperty().eResource(),
-                item.getProperty(), null);
-        if (ResourceFilenameHelper.mustChangeVersion(fileNameTest)) {
-            XmiResourceManager xmiResourceManager = ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider()
-                    .getResourceManager();
-            try {
-                xmiResourceManager.propagateFileName(item.getProperty(), item.getProperty());
-
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
-            }
-        }
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        // ResourceFilenameHelper.FileName fileNameTest = ResourceFilenameHelper.create(item.getProperty().eResource(),
+        // item.getProperty(), null);
+        // if (ResourceFilenameHelper.mustChangeVersion(fileNameTest)) {
+        // XmiResourceManager xmiResourceManager =
+        // ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider()
+        // .getResourceManager();
+        // try {
+        // xmiResourceManager.propagateFileName(item.getProperty(), item.getProperty());
+        //
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // return ExecutionResult.FAILURE;
+        // }
+        // }
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
 }
