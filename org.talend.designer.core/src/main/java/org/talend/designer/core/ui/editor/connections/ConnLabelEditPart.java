@@ -207,9 +207,9 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
 
     @Override
     public boolean isSelectable() {
-        Connection conn = (Connection) this.getModel();
-        Node source = (Node) conn.getSource();
-        Node target = (Node) conn.getTarget();
+        ConnectionLabel connLabel = (ConnectionLabel) this.getModel();
+        Node source = (Node) connLabel.getConnection().getSource();
+        Node target = (Node) connLabel.getConnection().getTarget();
         SubjobContainer sourceSubjob = source.getNodeContainer().getSubjobContainer();
         SubjobContainer targetSubjob = target.getNodeContainer().getSubjobContainer();
         if ((sourceSubjob == targetSubjob) && targetSubjob.isCollapsed()) {
