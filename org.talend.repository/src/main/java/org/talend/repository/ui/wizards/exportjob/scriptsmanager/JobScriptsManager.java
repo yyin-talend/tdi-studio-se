@@ -101,6 +101,10 @@ public abstract class JobScriptsManager {
 
     public static final String CTX_PARAMETER_ARG = "--context_param"; //$NON-NLS-1$
 
+    public static final String LOG4J_ENABLE = "--applyLog4jToChildren";
+
+    public static final String LOG4J_LEVEL_ARG = "--log4jLevel=";
+
     public static final String CMDFORWIN = "%*"; //$NON-NLS-1$
 
     public static final String CMDFORUNIX = "\"$@\""; //$NON-NLS-1$
@@ -201,6 +205,7 @@ public abstract class JobScriptsManager {
         // selected
         needContext,
         applyToChildren,
+        applyLog4jToChildren,
         addStatistics, // for feature 11031
         doNotCompileCode,
         needDependencies,
@@ -642,6 +647,8 @@ public abstract class JobScriptsManager {
 
     private String destinationPath;
 
+    private String log4jLevel;
+
     protected void addNodeToResource(IResource[] resources, List<IResource> sourceFile) throws CoreException {
 
         for (IResource resource : resources) {
@@ -953,6 +960,14 @@ public abstract class JobScriptsManager {
 
     public String getOutputSuffix() {
         return FileConstants.ZIP_FILE_SUFFIX;
+    }
+
+    public String getLog4jLevel() {
+        return log4jLevel;
+    }
+
+    public void setLog4jLevel(String log4jLevel) {
+        this.log4jLevel = log4jLevel;
     }
 
 }

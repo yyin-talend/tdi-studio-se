@@ -61,6 +61,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
@@ -438,9 +439,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         String launcher = (getCurrentExportType1() == JobExportType.POJO) ? launcherCombo.getText() : "all";
         String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
+        String log4jLevel = (log4jLevelCombo == null || log4jLevelCombo.isDisposed()) ? "debug" : log4jLevelCombo.getText();
         JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher,
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType1());
         manager.setDestinationPath(getDestinationValue());
+        manager.setLog4jLevel(log4jLevel);
         return manager;
     }
 
@@ -830,6 +833,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
+        log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
+        if (Log4jPrefsSettingManager.getLevel().length > 0) {
+            log4jLevelCombo.select(0);
+        }
     }
 
     @Override
@@ -876,6 +883,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             if (jobItemButton != null && !jobItemButton.isDisposed()) {
                 settings.put(STORE_JOB_ID, jobItemButton.getSelection());
+            }
+            if (applyLog4jToChildrenButton != null) {
+                settings.put(APPLY_LOG4J_TO_CHILDREN_ID, applyLog4jToChildrenButton.getSelection());
+            }
+
+            if (log4jLevelCombo != null) {
+                settings.put(LOG4J_LEVEL_ID, log4jLevelCombo.getText());
             }
 
             if (getCurrentExportType1().equals(JobExportType.POJO)) {

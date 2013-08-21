@@ -44,6 +44,10 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
 
     public static final String APPLY_TO_CHILDREN_ID = "JavaJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID"; //$NON-NLS-1$
 
+    public static final String APPLY_LOG4J_TO_CHILDREN_ID = "JavaJobScriptsExportWizardPage.APPLY_LOG4J_TO_CHILDREN_ID"; //$NON-NLS-1$
+
+    public static final String LOG4J_LEVEL_ID = "JavaJobScriptsExportWizardPage.LOG4J_LEVEL_ID"; //$NON-NLS-1$
+
     public static final String STORE_DEPENDENCIES_ID = "JavaJobScriptsExportWizardPage.STORE_DEPENDENCIES_ID"; //$NON-NLS-1$
 
     // public static final String STORE_GENERATECODE_ID = "JavaJobScriptsExportWizardPage.STORE_GENERATECODE_ID";

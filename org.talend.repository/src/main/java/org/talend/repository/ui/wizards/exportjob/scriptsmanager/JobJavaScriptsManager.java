@@ -61,6 +61,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -104,10 +105,12 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.IExportJobConstants;
+import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
@@ -267,7 +270,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         addSourceCode(process, processItem, isOptionChoosed(ExportChoice.needSourceCode), process[i], selectedJobVersion);
-
+        addLog4jSetting(process[i]);
         addDependenciesSourceCode(process, process[i], isOptionChoosed(ExportChoice.needSourceCode));
         addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
@@ -716,11 +719,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
-            List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                    jobProcess, processItem, selectedJobVersion, resources, codeOptions);
+            List<URL> childrenList = new ArrayList<URL>();
+            if (CommonsPlugin.isHeadless()) {
+                childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                        jobProcess, processItem, selectedJobVersion, resources, codeOptions);
+            } else {
+                childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                        jobProcess, processItem, selectedJobVersion, resources, new String[] {
+                                isOptionChoosed(ExportChoice.applyLog4jToChildren) == true ? LOG4J_ENABLE : null,
+                                getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel() : null });
+            }
             resources.addAll(childrenList);
             process[i].addResources(resources);
-
             // Gets job designer resouce
             // List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
             // process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
@@ -1133,6 +1143,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
                     }
                 }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    protected void addLog4jSetting(ExportFileResource resource) {
+        try {
+            if (Log4jUtil.isEnable()
+                    && Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE)
+                            .equals("true")) {
+                IPath srcPath = getSrcRootLocation();
+                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
+                File commonLogFile = (srcPath.append(Log4jPrefsConstants.COMMON_LOGGING_FILE)).toFile();
+                List<URL> log4jFileUrls = new ArrayList<URL>();
+                log4jFileUrls.add(FileLocator.toFileURL(log4jFile.toURL()));
+                log4jFileUrls.add(FileLocator.toFileURL(commonLogFile.toURL()));
+                resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY, log4jFileUrls);
+
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
