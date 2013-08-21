@@ -33,6 +33,8 @@ import org.talend.commons.ui.utils.workbench.gef.LabelCellEditorLocator;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 
 /**
  * Graphical part of the Gef object for the connection label. <br/>
@@ -201,4 +203,18 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
     public NodeLabelEditManager getDirectEditManager() {
         return this.manager;
     }
+
+    @Override
+    public boolean isSelectable() {
+        ConnectionLabel connLabel = (ConnectionLabel) this.getModel();
+        Node source = (Node) connLabel.getConnection().getSource();
+        Node target = (Node) connLabel.getConnection().getTarget();
+        SubjobContainer sourceSubjob = source.getNodeContainer().getSubjobContainer();
+        SubjobContainer targetSubjob = target.getNodeContainer().getSubjobContainer();
+        if ((sourceSubjob == targetSubjob) && targetSubjob.isCollapsed()) {
+            return false;
+        }
+        return super.isSelectable();
+    }
+
 }
