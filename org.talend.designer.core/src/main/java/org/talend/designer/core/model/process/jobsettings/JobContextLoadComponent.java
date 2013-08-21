@@ -673,4 +673,9 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isSupportDbType() {
         return false;
     }
+
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return null;
+    }
 }

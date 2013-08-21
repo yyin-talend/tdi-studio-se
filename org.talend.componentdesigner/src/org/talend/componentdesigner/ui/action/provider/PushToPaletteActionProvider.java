@@ -35,7 +35,10 @@ import org.talend.componentdesigner.util.XSDValidator;
 import org.talend.componentdesigner.util.file.FileCopy;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.service.IComponentsLocalProviderService;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC slanglois class global comment. Detailled comment
@@ -138,6 +141,15 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
 
                         FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
 
+                    }
+                }
+
+                // add for bug TDI-26719, clear image cash from EmfComponent
+                IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+                List<IComponent> comList = components.getCustomComponents();
+                for (IComponent com : comList) {
+                    if (com.getImageRegistry() != null) {
+                        com.getImageRegistry().clear();
                     }
                 }
 

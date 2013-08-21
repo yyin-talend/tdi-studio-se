@@ -3220,6 +3220,11 @@ public class EmfComponent extends AbstractComponent {
         this.imageRegistry = imageRegistry;
     }
 
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return imageRegistry;
+    }
+
     /**
      * Getter for icon16.
      * 

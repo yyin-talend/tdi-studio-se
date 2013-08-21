@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.util.Map;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 
@@ -106,4 +109,10 @@ public abstract class AbstractComponent implements IComponent {
     public boolean isSupportDbType() {
         return false;
     }
+
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return null;
+    }
+
 }
