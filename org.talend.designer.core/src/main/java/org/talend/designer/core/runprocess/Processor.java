@@ -142,9 +142,10 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      */
     @Deprecated
     @Override
-    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
-            IProcessMessageManager processMessageManager) throws ProcessorException {
-        return run(new String[] { watchParam }, statisticsPort, tracePort, monitor, processMessageManager);
+    public Process run(int statisticsPort, int tracePort, String watchParam, String log4jLevel, String applyLog4jToChildren,
+            IProgressMonitor monitor, IProcessMessageManager processMessageManager) throws ProcessorException {
+        return run(new String[] { watchParam, log4jLevel, applyLog4jToChildren }, statisticsPort, tracePort, monitor,
+                processMessageManager);
     }
 
     /*
