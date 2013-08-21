@@ -388,8 +388,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             column.setId(NAME_PROPERTY);
             column.setWidth(250);
             column.setModifiable(true);
+            needContextModeParameters();
 
-            nameCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
+            nameCellEditor = new DynamicComboBoxCellEditor(table, legalParameters, comboboxCellEditorLabelProvider);
             column.setCellEditor(nameCellEditor);
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IElementParameter, Object>() {
 
@@ -521,14 +522,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                     if (comboContent.size() > 0) {
                                         List<IElementParameter> tableInput = getTableViewerCreator().getInputList();
                                         IElementParameter parameter = comboContent.get(0);
-                                        if (comboContent.size() > 1) {
-                                            for (IElementParameter param : comboContent) {
-                                                if (param.getValue() instanceof Boolean && (Boolean) param.getValue()) {
-                                                    parameter = param;
-                                                    break;
-                                                }
-                                            }
-                                        }
                                         tableInput.add(parameter);
 
                                         parameter.setContextMode(true);
