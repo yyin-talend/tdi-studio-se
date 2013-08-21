@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.util.Map;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 
@@ -100,5 +103,10 @@ public abstract class AbstractComponent implements IComponent {
     @Override
     public String getPartitioning() {
         return "AUTO"; //$NON-NLS-1$
+    }
+
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return null;
     }
 }

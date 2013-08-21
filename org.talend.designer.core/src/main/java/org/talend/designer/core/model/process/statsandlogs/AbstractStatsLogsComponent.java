@@ -14,6 +14,7 @@ package org.talend.designer.core.model.process.statsandlogs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.components.ComponentCategory;
@@ -586,5 +587,10 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     @Override
     public String getPartitioning() {
         return "AUTO"; //$NON-NLS-1$
+    }
+
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return null;
     }
 }

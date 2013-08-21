@@ -668,4 +668,9 @@ public class JobContextLoadComponent implements IComponent {
     public String getPartitioning() {
         return "AUTO"; //$NON-NLS-1$
     }
+
+    @Override
+    public Map<String, ImageDescriptor> getImageRegistry() {
+        return null;
+    }
 }
