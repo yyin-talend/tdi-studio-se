@@ -168,16 +168,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath);
 
                 String processId = processItem.getProperty().getId();
-                if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
-                    generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
+
+                IProcess iProcess = generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
                             tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                             true /* isExportAsOSGI */, progressMonitor);
-                    analysisModules(processId, jobVersion);
-                } else {
-                    LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processId, jobVersion,
-                            Collections.<ModuleNeeded> emptySet());
-                    LastGenerationInfo.getInstance().setLastMainJob(null);
-                }
+                analysisModules(processId, jobVersion);
 
                 analysisMavenModule(processItem);
 
@@ -189,9 +184,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 // restJob
                 if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobBlueprintConfig(processItem));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateRestJobBlueprintConfig(processItem, iProcess));
                 } else {
-                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem));
+                    osgiResource.addResource(FileConstants.BLUEPRINT_FOLDER_NAME, generateBlueprintConfig(processItem, iProcess));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -423,15 +418,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return ROUTE.equals(itemType);
     }
 
-    private URL generateBlueprintConfig(ProcessItem processItem) throws IOException {
+    private URL generateBlueprintConfig(ProcessItem processItem, IProcess process) throws IOException {
 
         String configName = (isRoute()) ? "route.xml" : "job.xml"; //$NON-NLS-1$ //$NON-NLS-2$
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + configName);
 
         if (isRoute()) {
-            createRouteBundleBlueprintConfig(processItem, targetFile);
+            createRouteBundleBlueprintConfig(processItem, targetFile, process);
         } else {
-            createJobBundleBlueprintConfig(processItem, targetFile);
+            createJobBundleBlueprintConfig(processItem, targetFile, process);
         }
 
         return targetFile.toURI().toURL();
@@ -442,7 +437,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     // return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     // }
 
-    private static Map<String, Object> collectJobInfo(ProcessItem processItem) {
+    private static Map<String, Object> collectJobInfo(ProcessItem processItem, IProcess process) {
         // velocity template context
         Map<String, Object> jobInfo = new HashMap<String, Object>();
 
@@ -476,7 +471,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         jobInfo.put("useSAML", useSAML); //$NON-NLS-1$
 
         // job OSGi DataSources
-        jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
+        jobInfo.put("dataSources", DataSourceConfig.getAliases(process)); //$NON-NLS-1$
 
         return jobInfo;
     }
@@ -585,13 +580,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String TEMPLATE_BLUEPRINT_JOB_REST = "/resources/job-rest-template.xml"; //$NON-NLS-1$
 
-    private URL generateRestJobBlueprintConfig(ProcessItem processItem) throws IOException {
+    private URL generateRestJobBlueprintConfig(ProcessItem processItem, IProcess process) throws IOException {
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "blueprint.xml"); //$NON-NLS-1$
 
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("endpoint", collectRestEndpointInfo(processItem)); //$NON-NLS-1$
-        contextParams.put("job", collectJobInfo(processItem)); //$NON-NLS-1$
+        contextParams.put("job", collectJobInfo(processItem, process)); //$NON-NLS-1$
 
         TemplateProcessor.processTemplate("REST_JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
                 getTemplateReader(TEMPLATE_BLUEPRINT_JOB_REST));
@@ -601,10 +596,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
 
-    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile) throws IOException {
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("job", collectJobInfo(processItem)); //$NON-NLS-1$
+        contextParams.put("job", collectJobInfo(processItem, process)); //$NON-NLS-1$
 
         TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
                 getTemplateReader(TEMPLATE_BLUEPRINT_JOB));
@@ -612,10 +607,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
-    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile) throws IOException {
+    private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("route", collectRouteInfo(processItem)); //$NON-NLS-1$
+        contextParams.put("route", collectRouteInfo(processItem, process)); //$NON-NLS-1$
 
         TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
                 getTemplateReader(TEMPLATE_BLUEPRINT_ROUTE));
@@ -627,7 +622,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return new InputStreamReader(new FileInputStream(new File(fileUrl.getPath())));
     }
 
-    private static Map<String, Object> collectRouteInfo(ProcessItem processItem) {
+    private static Map<String, Object> collectRouteInfo(ProcessItem processItem, IProcess process) {
         Map<String, Object> routeInfo = new HashMap<String, Object>();
 
         // route name and class name
@@ -708,7 +703,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         routeInfo.put("hasCXFRegistryProvider", hasCXFRegistryProvider); //$NON-NLS-1$
 
         // route OSGi DataSources
-        routeInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
+        routeInfo.put("dataSources", DataSourceConfig.getAliases(process)); //$NON-NLS-1$
 
         return routeInfo;
     }
