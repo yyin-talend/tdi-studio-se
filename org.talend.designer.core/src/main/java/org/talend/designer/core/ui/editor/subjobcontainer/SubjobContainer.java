@@ -495,6 +495,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     @Override
     public void updateSubjobContainer() {
         fireStructureChange(UPDATE_SUBJOB_CONTENT, this);
+        refreshOutputConnections();
     }
 
     /**
@@ -515,7 +516,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public void setPropertyValue(String id, Object value) {
         super.setPropertyValue(id, value);
         if (id.equals(EParameterName.COLLAPSED.getName())) {
-            refreshOutputConnections();
+            // refreshOutputConnections();
             updateSubjobContainer();
         } else if (id.equals(EParameterName.SUBJOB_COLOR.getName()) || id.equals(EParameterName.SHOW_SUBJOB_TITLE.getName())
                 || id.equals(EParameterName.SUBJOB_TITLE.getName())) {

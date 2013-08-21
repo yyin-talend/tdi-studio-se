@@ -33,7 +33,9 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeFigure;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
@@ -50,6 +52,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
      */
+    @Override
     public void activate() {
         if (!isActive()) {
             super.activate();
@@ -74,6 +77,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
@@ -105,6 +109,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
+    @Override
     public void setSelected(final int value) {
         super.setSelected(value);
         List cl = this.getChildren();
@@ -116,14 +121,14 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
 
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (value == SELECTED_PRIMARY) {
-            IViewPart view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            IViewPart view = page.findView(ComponentSettingsView.ID);
             if (view != null) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) view;
                 compSettings.setElement((Connection) getModel());
                 CodeView.refreshCodeView((Connection) getModel());
             }
         } else if (value == SELECTED_NONE) {
-            IViewPart view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            IViewPart view = page.findView(ComponentSettingsView.ID);
             if (view != null) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) view;
                 compSettings.cleanDisplay();
@@ -137,6 +142,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
+    @Override
     protected void createEditPolicies() {
         // Selection handle edit policy.
         // Makes the connection show a feedback, when selected by the user.
@@ -144,6 +150,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         // Allows the removal of the connection model element
         installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy() {
 
+            @Override
             protected Command getDeleteCommand(GroupRequest request) {
                 if (((Connection) getModel()).isReadOnly()) {
                     return null;
@@ -164,15 +171,16 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#createFigure()
      */
+    @Override
     protected IFigure createFigure() {
         IConnection conn = (IConnection) getModel();
         ConnectionFigure connection = new ConnectionFigure(conn, conn.getSourceNodeConnector().getConnectionProperty(
                 conn.getLineStyle()), conn.getSource());
 
         if (((Connection) getModel()).isActivate()) {
-            ((ConnectionFigure) connection).setAlpha(-1);
+            connection.setAlpha(-1);
         } else {
-            ((ConnectionFigure) connection).setAlpha(Connection.ALPHA_VALUE);
+            connection.setAlpha(Connection.ALPHA_VALUE);
         }
 
         return connection;
@@ -183,6 +191,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         String property = event.getPropertyName();
         ConnectionFigure connectionFigure = (ConnectionFigure) figure;
@@ -219,6 +228,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @Override
     protected List getModelChildren() {
         List<Element> elements;
         elements = new ArrayList<Element>();
@@ -239,5 +249,18 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         }
 
         return elements;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        Connection conn = (Connection) this.getModel();
+        Node source = (Node) conn.getSource();
+        Node target = (Node) conn.getTarget();
+        SubjobContainer sourceSubjob = source.getNodeContainer().getSubjobContainer();
+        SubjobContainer targetSubjob = target.getNodeContainer().getSubjobContainer();
+        if ((sourceSubjob == targetSubjob) && targetSubjob.isCollapsed()) {
+            return false;
+        }
+        return super.isSelectable();
     }
 }
