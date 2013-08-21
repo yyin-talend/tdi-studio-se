@@ -53,7 +53,7 @@ public class DataSourceConfig {
 		List<? extends INode> generatingNodes = processItem.getGeneratingNodes();
 		for(INode node: generatingNodes){
 			String datasourceAlias = getDatasourceAliasFrom(node);
-			if(datasourceAlias != null){
+			if(datasourceAlias != null && !datasourceAlias.isEmpty()){
 				aliases.add(datasourceAlias);
 			}
 		}
