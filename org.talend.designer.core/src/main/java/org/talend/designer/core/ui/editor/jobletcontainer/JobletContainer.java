@@ -293,7 +293,7 @@ public class JobletContainer extends NodeContainer {
             transferLocation(false);
             updateSubjobContainer();
 
-            if (!node.isMapReduceStart()) {
+            if (node.isJoblet()) {
                 refreshJobletConnections();
             }
 
@@ -309,7 +309,7 @@ public class JobletContainer extends NodeContainer {
         refreshJobletNodes(update, isCollapsed());
         transferLocation(update);
         updateSubjobContainer();
-        if (!this.node.isMapReduceStart()) {
+        if (this.node.isJoblet()) {
             refreshJobletConnections();
         }
     }
@@ -448,7 +448,10 @@ public class JobletContainer extends NodeContainer {
         if (update) {
             // do nothing
         }
-        if ((this.isCollapsed() == true) && !this.getNode().isMapReduceStart()) {
+        if ((this.isCollapsed() == true)) {// && !this.getNode().isMapReduceStart()
+            return;
+        }
+        if (this.getNode().isMapReduce()) {
             return;
         }
         if (this.nodeContainers.size() <= 0) {
@@ -477,7 +480,10 @@ public class JobletContainer extends NodeContainer {
 
     public void transferLocation(Point oldPos) {
         this.update = false;
-        if ((this.isCollapsed() == true) && !this.getNode().isMapReduceStart()) {
+        if ((this.isCollapsed() == true)) {// && !this.getNode().isMapReduceStart()
+            return;
+        }
+        if (this.getNode().isMapReduce()) {
             return;
         }
         if (this.nodeContainers.size() <= 0) {

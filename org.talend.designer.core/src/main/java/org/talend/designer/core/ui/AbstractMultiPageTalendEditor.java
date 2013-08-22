@@ -1051,7 +1051,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         for (INode node : nodeList) {
             if (node instanceof Node) {
                 NodeContainer nc = ((Node) node).getNodeContainer();
-                if (nc instanceof JobletContainer) {
+                if ((nc instanceof JobletContainer) && nc.getNode().isJoblet()) {
                     if (((JobletContainer) nc).isCollapsed() && !state) {
                         if (map.get(nc.getNode().getUniqueName()) != null && !map.get(nc.getNode().getUniqueName())) {
                             ((JobletContainer) nc).setCollapsed(state);

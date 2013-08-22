@@ -189,7 +189,7 @@ public class ExternalNodeChangeCommand extends Command {
     private void changeCollapsedState(boolean state, Map<String, Boolean> map, INode node) {
         if (node instanceof Node) {
             NodeContainer nc = ((Node) node).getNodeContainer();
-            if (nc instanceof JobletContainer) {
+            if ((nc instanceof JobletContainer) && nc.getNode().isJoblet()) {
                 if (((JobletContainer) nc).isCollapsed() && !state) {
                     map.put(nc.getNode().getUniqueName(), false);
                     ((JobletContainer) nc).setCollapsed(state);
