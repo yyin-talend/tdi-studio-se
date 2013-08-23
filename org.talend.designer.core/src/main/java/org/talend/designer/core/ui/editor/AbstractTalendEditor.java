@@ -153,6 +153,7 @@ import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -1523,8 +1524,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                                 // reconnect the node
                                 Node originalTarget = (Node) targetConnection.getTarget();
-                                INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-                                for (INodeConnector connector : node.getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+                                
+                                EConnectionType connectionType =  EConnectionType.FLOW_MAIN;
+                                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                                            ICamelDesignerCoreService.class);
+                                    if(camelService.isRouteBuilderNode(node)){
+                                        connectionType = EConnectionType.ROUTE;
+                                    }
+                                }
+                                INodeConnector targetConnector = node.getConnectorFromType(connectionType);
+                                for (INodeConnector connector : node.getConnectorsFromType(connectionType)) {
                                     if (connector.getMaxLinkOutput() != 0) {
                                         targetConnector = connector;
                                         break;

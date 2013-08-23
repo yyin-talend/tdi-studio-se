@@ -26,6 +26,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.service.IDesignerMapperService;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
@@ -192,6 +193,15 @@ public class CreateComponentOnLinkHelper {
 
     public static boolean canCreateNodeOnLink(org.talend.designer.core.ui.editor.connections.Connection connection, Node node) {
         if (connection != null && node != null) {
+            
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                        ICamelDesignerCoreService.class);
+                if(camelService.isRouteBuilderNode(node)){
+                    return camelService.canCreateNodeOnLink(connection, node);
+                }
+            }
+            
             INode source = connection.getSource();
             INodeConnector sourceConnector = connection.getSourceNodeConnector();
 
