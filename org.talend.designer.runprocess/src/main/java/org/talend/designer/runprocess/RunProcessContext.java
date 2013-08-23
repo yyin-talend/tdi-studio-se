@@ -163,7 +163,7 @@ public class RunProcessContext {
 
     private boolean startingMessageWritten;
 
-    private boolean isApplayLog4jToChild = false;
+    private boolean applyLog4jToChildren = false;
 
     private String log4jLevel;
 
@@ -189,6 +189,9 @@ public class RunProcessContext {
         setSaveBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSAVEBEFORERUN));
         setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore()
                 .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        setApplyLog4jToChildren(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISAPPLYLOG4J));
+        setLog4jLevel(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -487,7 +490,7 @@ public class RunProcessContext {
                             }
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
-                            final String applyLog4j = RunProcessContext.this.isApplayLog4jToChild() ? LOG4J_ENABLE : null;
+                            final String applyLog4j = RunProcessContext.this.isApplyLog4jToChildren() ? LOG4J_ENABLE : null;
                             String level = RunProcessContext.this.getLog4jLevel();
                             if (level != null) {
                                 level = LOG4J_LEVEL_ARG + (level.equals("") ? "debug" : level);
@@ -1404,6 +1407,35 @@ public class RunProcessContext {
         }
     }
 
+    /**
+     * Getter for isApplyLog4jToChildren.
+     * 
+     * @return the isApplyLog4jToChildren
+     */
+    public boolean isApplyLog4jToChildren() {
+        return this.applyLog4jToChildren;
+    }
+
+    /**
+     * Sets the isApplyLog4jToChildren.
+     * 
+     * @param isApplyLog4jToChildren the isApplyLog4jToChildren to set
+     */
+    public void setApplyLog4jToChildren(boolean applyLog4j) {
+        if (this.applyLog4jToChildren != applyLog4j) {
+            this.applyLog4jToChildren = applyLog4j;
+            firePropertyChange(PROR_SWITCH_TIME, Boolean.valueOf(!applyLog4jToChildren), Boolean.valueOf(applyLog4jToChildren));
+        }
+    }
+
+    public String getLog4jLevel() {
+        return log4jLevel;
+    }
+
+    public void setLog4jLevel(String log4jLevel) {
+        this.log4jLevel = log4jLevel;
+    }
+
     public ITargetExecutionConfig getSelectedTargetExecutionConfig() {
         return this.selectedTargetExecutionConfig;
     }
@@ -1635,22 +1667,6 @@ public class RunProcessContext {
                 }
             }
         });
-    }
-
-    public boolean isApplayLog4jToChild() {
-        return isApplayLog4jToChild;
-    }
-
-    public void setApplayLog4jToChild(boolean isApplayLog4jToChild) {
-        this.isApplayLog4jToChild = isApplayLog4jToChild;
-    }
-
-    public String getLog4jLevel() {
-        return log4jLevel;
-    }
-
-    public void setLog4jLevel(String log4jLevel) {
-        this.log4jLevel = log4jLevel;
     }
 
 }

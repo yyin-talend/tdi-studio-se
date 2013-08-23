@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
@@ -37,7 +36,6 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.IMultiPageTalendEditor;
-import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -58,10 +56,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     private Button clearBeforeExec;
 
-    private Combo log4jLevel;
-
-    private Button applyLog4jForChild;
-
     private RunProcessContext processContext;
 
     private Composite argumentsComposite;
@@ -70,7 +64,9 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     private ProcessManager processManager;
 
-    IRunProcessService service;
+    private Combo log4jLevel;
+
+    private Button applyLog4jForChild;
 
     /**
      * DOC Administrator AdvanceSettingComposite constructor comment.
@@ -85,9 +81,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         setExpandVertical(true);
         this.setLayout(new FormLayout());
         processManager = ProcessManager.getInstance();
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
-        }
         FormData layoutData = new FormData();
         layoutData.left = new FormAttachment(0, 0);
         layoutData.right = new FormAttachment(100, 0);
@@ -156,20 +149,17 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         layouDatacb.bottom = new FormAttachment(0, 50);
         clearBeforeExec.setLayoutData(layouDatacb);
         clearBeforeExec.setEnabled(false);
-
-        // log4j setting
-
         Group execGroup = new Group(panel, SWT.NONE);
         execGroup.setText("JVM Setting"); //$NON-NLS-1$
         GridLayout layoutg = new GridLayout();
-        layoutg.marginHeight = 1;
+        layoutg.marginHeight = 0;
         layoutg.marginWidth = 0;
         execGroup.setLayout(layoutg);
         FormData layouDatag = new FormData();
         layouDatag.left = new FormAttachment(0, 10);
         layouDatag.right = new FormAttachment(100, 0);
-        layouDatag.top = new FormAttachment(0, 55);
-        layouDatag.bottom = new FormAttachment(57, 0);
+        layouDatag.top = new FormAttachment(watchBtn, 2);
+        layouDatag.bottom = new FormAttachment(watchBtn, 240);
         execGroup.setLayoutData(layouDatag);
 
         ScrolledComposite execScroll = new ScrolledComposite(execGroup, SWT.V_SCROLL | SWT.H_SCROLL);
@@ -184,18 +174,46 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
             GridLayout gridLayoutArguments = new GridLayout(1, false);
             argumentsComposite.setLayout(gridLayoutArguments);
-            argumentsViewer = new JobVMArgumentsComposite("vmarguments",
-                    Messages.getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+            argumentsViewer = new JobVMArgumentsComposite(
+                    "vmarguments", Messages.getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
                     argumentsComposite);
             execScroll.setMinSize(execGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         }
 
-        Group log4jGroup = (Group) createLog4jGroup(panel);
+        Group log4jGroup = new Group(panel, SWT.NONE);
+        log4jGroup.setText(Messages.getString("ProcessComposite.log4jLevel")); //$NON-NLS-1$
+        GridLayout log4jGroupLayout = new GridLayout();
+        log4jGroupLayout.marginHeight = 0;
+        log4jGroupLayout.marginWidth = 0;
+        log4jGroupLayout.numColumns = 2;
+        log4jGroup.setLayout(log4jGroupLayout);
+        FormData log4jGroupLayouData = new FormData();
+        log4jGroupLayouData.left = new FormAttachment(0, 10);
+        log4jGroupLayouData.right = new FormAttachment(100, 0);
+        log4jGroupLayouData.top = new FormAttachment(execGroup, 3);
+        log4jGroupLayouData.bottom = new FormAttachment(100, 0);
+        log4jGroup.setLayoutData(log4jGroupLayouData);
+
+        log4jLevel = new Combo(log4jGroup, SWT.READ_ONLY);
+        log4jLevel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        log4jLevel.setText("Log4j Level");
+        log4jLevel.setBackground(log4jGroup.getBackground());
+        log4jLevel.setItems(Log4jPrefsSettingManager.getLevel());
+        log4jLevel.select(0);
+
+        applyLog4jForChild = new Button(log4jGroup, SWT.CHECK);
+        applyLog4jForChild.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        applyLog4jForChild.setText(Messages.getString("ProcessComposite.applyLog4jToChildren"));
+        applyLog4jForChild.setToolTipText(Messages.getString("ProcessComposite.applyLog4jToChildren"));
+
         if (Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
-            log4jGroup.setVisible(true);
+            applyLog4jForChild.setEnabled(true);
+            log4jLevel.setEnabled(true);
         } else {
-            log4jGroup.setVisible(false);
+            applyLog4jForChild.setEnabled(false);
+            log4jLevel.setEnabled(false);
         }
+
         addListeners();
 
         clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
@@ -204,6 +222,10 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
                 .getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN));
         perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
                 .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN));
+
+        applyLog4jForChild.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISAPPLYLOG4J));
+        log4jLevel.setText(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
     }
 
     /**
@@ -249,13 +271,15 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             @Override
             public void widgetSelected(SelectionEvent e) {
                 processContext.setLog4jLevel(log4jLevel.getText());
+                processContext.setLog4jLevel(log4jLevel.getText());
             }
         });
         applyLog4jForChild.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                processContext.setApplayLog4jToChild(applyLog4jForChild.getSelection());
+                processContext.setApplyLog4jToChildren(applyLog4jForChild.getSelection());
+                processManager.setApplyLog4jToChildren(applyLog4jForChild.getSelection());
             }
         });
     }
@@ -278,6 +302,10 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         this.processContext = processContext;
         watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
+        applyLog4jForChild.setSelection(processContext != null && processContext.isApplyLog4jToChildren());
+        if (processContext != null && processContext.getLog4jLevel() != null) {
+            log4jLevel.setText(processContext.getLog4jLevel());
+        }
         boolean disableAll = false;
         if (processContext != null) {
             disableAll = processContext.getProcess().disableRunJobView();
@@ -459,35 +487,4 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     }
 
-    private Composite createLog4jGroup(Composite parent) {
-
-        // log4j setting
-        Group log4jGroup = new Group(parent, SWT.NONE);
-        log4jGroup.setText("Log4j Setting"); //$NON-NLS-1$
-        GridLayout log4jGroupLayout = new GridLayout();
-        log4jGroupLayout.marginHeight = 0;
-        log4jGroupLayout.marginWidth = 0;
-        log4jGroupLayout.numColumns = 2;
-        log4jGroup.setLayout(log4jGroupLayout);
-        FormData log4jGroupLayouData = new FormData();
-        log4jGroupLayouData.left = new FormAttachment(0, 10);
-        log4jGroupLayouData.right = new FormAttachment(100, 0);
-        log4jGroupLayouData.top = new FormAttachment(0, 200);
-        log4jGroupLayouData.bottom = new FormAttachment(210, 0);
-        log4jGroup.setLayoutData(log4jGroupLayouData);
-
-        log4jLevel = new Combo(log4jGroup, SWT.READ_ONLY);
-        log4jLevel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-        log4jLevel.setText("Log4j Level");
-        log4jLevel.setBackground(log4jGroup.getBackground());
-        log4jLevel.setItems(Log4jPrefsSettingManager.getLevel());
-        log4jLevel.select(0);
-
-        applyLog4jForChild = new Button(log4jGroup, SWT.CHECK);
-        applyLog4jForChild.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        applyLog4jForChild.setText("Apply log4j settings for children");
-        applyLog4jForChild.setToolTipText("Apply log4j settings for children");
-
-        return log4jGroup;
-    }
 }

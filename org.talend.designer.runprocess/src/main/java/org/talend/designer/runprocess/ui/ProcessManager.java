@@ -43,14 +43,19 @@ public class ProcessManager {
 
     private Boolean saveJobBeforeRun = true;
 
-    private Boolean execTime = RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-            RunProcessPrefsConstants.ISEXECTIMERUN);
+    private Boolean execTime = RunProcessPlugin.getDefault().getPreferenceStore()
+            .getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN);
 
     private Boolean stat = RunProcessPlugin.getDefault().getPreferenceStore()
             .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN);
 
-    private Boolean clearBeforeExec = RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-            RunProcessPrefsConstants.ISCLEARBEFORERUN);
+    private Boolean clearBeforeExec = RunProcessPlugin.getDefault().getPreferenceStore()
+            .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN);
+
+    private Boolean applyLog4j = RunProcessPlugin.getDefault().getPreferenceStore()
+            .getBoolean(RunProcessPrefsConstants.ISAPPLYLOG4J);
+
+    private String log4jLevel = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL);
 
     private boolean trace = true;
 
@@ -184,6 +189,22 @@ public class ProcessManager {
 
     public boolean isTrace() {
         return this.trace;
+    }
+
+    public Boolean isApplyLog4jToChildren() {
+        return applyLog4j;
+    }
+
+    public void setApplyLog4jToChildren(Boolean applyLog4j) {
+        this.applyLog4j = applyLog4j;
+    }
+
+    public String getLog4jLevel() {
+        return log4jLevel;
+    }
+
+    public void setLog4jLevel(String log4jLevel) {
+        this.log4jLevel = log4jLevel;
     }
 
 }

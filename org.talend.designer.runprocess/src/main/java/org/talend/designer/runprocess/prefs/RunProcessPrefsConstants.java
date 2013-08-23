@@ -32,6 +32,10 @@ public class RunProcessPrefsConstants {
 
     public static final String ISEXECTIMERUN = "execTimeRun"; //$NON-NLS-1$
 
+    public static final String ISAPPLYLOG4J = "applyLog4jToChildren"; //$NON-NLS-1$
+
+    public static final String LOG4JLEVEL = "log4jLevel"; //$NON-NLS-1$
+
     public static final String ISSTATISTICSRUN = "statisticsRun"; //$NON-NLS-1$
 
     public static final String ISTRACESRUN = "tracesRun"; //$NON-NLS-1$
