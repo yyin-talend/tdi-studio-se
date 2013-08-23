@@ -1493,7 +1493,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                            IMetadataColumn.OPTIONS_NONE))) {
+                                                            IMetadataColumn.OPTIONS_IGNORE_USED))) {
 
                                                 List<Object> parameter = new ArrayList<Object>();
                                                 parameter.add(copyOfrepositoryMetadata);
@@ -1636,7 +1636,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                .isUseCustomModuleName())) {
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
