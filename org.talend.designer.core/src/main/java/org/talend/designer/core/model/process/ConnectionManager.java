@@ -90,12 +90,6 @@ public class ConnectionManager {
             return false;
         }
 
-        // limit the use of the tUnite, avoid a conflict in case source link is in a merge part, and target use merge.
-        if (!source.getLinkedMergeInfo().isEmpty()
-                && (!target.getLinkedMergeInfo().isEmpty() || target.getComponent().useMerge())) {
-            return false;
-        }
-
         // Check existing connections to avoid to have more than one link
         // no matter the type of the connection and the direction
         List<Connection> connections = new ArrayList<Connection>((List<Connection>) source.getOutgoingConnections());
