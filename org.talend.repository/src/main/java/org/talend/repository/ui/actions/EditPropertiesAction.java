@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
@@ -204,6 +205,17 @@ public class EditPropertiesAction extends AContextualAction {
             IProject project = javaProject.getProject();
             IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
             IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
+
+            // add for bug TDI-24379 on August 23, 2013.
+            IFolder srcInterFolder = srcFolder.getFolder("internal");//$NON-NLS-1$
+            if (srcInterFolder.exists()) {
+                File file = new File(srcInterFolder.getLocationURI());
+                for (File f : file.listFiles()) {
+                    if (f.isFile()) {
+                        f.delete();
+                    }
+                }
+            }
 
             // qli modified to fix the bug 5400 and 6185.
             IPackageFragment routinesPkg = getPackageFragment(root);
