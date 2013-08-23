@@ -1498,7 +1498,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                            IMetadataColumn.OPTIONS_NONE))) {
+                                                            IMetadataColumn.OPTIONS_IGNORE_USED))) {
 
                                                 List<Object> parameter = new ArrayList<Object>();
                                                 parameter.add(copyOfrepositoryMetadata);
