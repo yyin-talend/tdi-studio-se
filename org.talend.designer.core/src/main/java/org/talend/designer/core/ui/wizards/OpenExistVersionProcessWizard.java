@@ -163,6 +163,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             } else {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+                    @Override
                     public void run(final IProgressMonitor monitor) throws CoreException {
                         if (!alreadyEditedByUser) {
                             getProperty().setVersion(mainPage.getNewVersion());
@@ -232,7 +233,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             return false;
         }
         StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
-        if (selection != null && selection.isEmpty()) {
+        if (selection != null && !selection.isEmpty()) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             boolean lastVersion = node.getObject().getVersion().equals(originalVersion);
             if (!lastVersion) {
