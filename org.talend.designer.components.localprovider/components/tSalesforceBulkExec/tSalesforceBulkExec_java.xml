@@ -3248,6 +3248,11 @@
 				<ITEM NAME="Serial" VALUE="Serial" />
 			</ITEMS>
 		</PARAMETER>
+        
+        <PARAMETER NAME="AWAIT_TIME" FIELD="TEXT" NUM_ROW="15"
+            REQUIRED="true">
+            <DEFAULT>10*1000</DEFAULT>
+        </PARAMETER>
 
 		<PARAMETER
 	       NAME="USE_PROXY"

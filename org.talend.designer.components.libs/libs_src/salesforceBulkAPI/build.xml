@@ -2,6 +2,8 @@
 <project name="org.talend.designer.components.libs" default="process" basedir=".">
 	
 	<property name="component.plugin.home" value="../../../org.talend.designer.components.localprovider/components" />
+	<property name="csv.dir" value="../../../org.talend.libraries.csv/lib" />
+	<property name="lib.dir" value="../../../org.talend.libraries.salesforce/lib" />
 
 	<!-- #################################################### -->
 
@@ -15,7 +17,7 @@
 	<path id="compile.classpath">
 		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/partnerBulk.jar" />
 		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/wsc.jar" />
-		<pathelement location="${component.plugin.home}/tFileInputDelimited/talendcsv.jar" />
+		<pathelement location="${csv.dir}/talendcsv.jar" />
 	</path>
 
 	<!-- #################################################### -->	
@@ -23,7 +25,7 @@
 
 	<!-- sourcecode and final jar path -->
 	<property name="source.home" value="." />
-	<property name="jar.home" value="${component.plugin.home}/${component.name}/${jar.name}" />
+	<property name="jar.home" value="${lib.dir}/${jar.name}" />
 
 	<!-- temp dir for clasee files -->
 	<property name="build.dir" value="../../build" />
