@@ -1,6 +1,7 @@
 package org.talend.designer.core.utils;
 
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -27,6 +28,21 @@ public class ConnectionUtil {
             return process.generateUniqueConnectionName(Process.DEFAULT_TRY_CONNECTION_NAME);
         }
         return null;
+    }
+    
+    public static String generateUniqueConnectionName(EConnectionType connectType, IProcess process, INodeConnector connector) {
+        if(connector == null){
+            return generateUniqueConnectionName(connectType, process);
+        }
+        String linkName = connector.getLinkName();
+        if(linkName == null){
+            return generateUniqueConnectionName(connectType, process);
+        }
+        linkName = linkName.replaceAll("\\s", "_");
+        if(!process.checkValidConnectionName(linkName)){
+            linkName = connector.getName();
+        }
+        return process.generateUniqueConnectionName(linkName.toLowerCase());
     }
 
 }

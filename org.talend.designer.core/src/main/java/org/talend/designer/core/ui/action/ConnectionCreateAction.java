@@ -640,7 +640,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROW_CONNECTION_NAME);
                 } else if(connecType.hasConnectionCategory(IConnectionCategory.CAMEL)){
-                    connectionName = ConnectionUtil.generateUniqueConnectionName(connecType, node.getProcess());
+                    connectionName = ConnectionUtil.generateUniqueConnectionName(connecType, node.getProcess(), curNodeConnector);
                 } else {
                     connectionName = curNodeConnector.getLinkName();
                 }
