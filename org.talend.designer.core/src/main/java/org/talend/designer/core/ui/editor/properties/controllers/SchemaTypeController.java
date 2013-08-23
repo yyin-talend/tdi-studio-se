@@ -682,7 +682,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 if (originaleOutputTable != null && originaleOutputTable instanceof MetadataTable) {
                     ((MetadataTable) originaleOutputTable).setRepository(true);
                 }
+            } else if (schemaParam != null && EmfComponent.BUILTIN.equals(schemaParam.getValue())) {
+                if (originaleOutputTable != null && originaleOutputTable instanceof MetadataTable) {
+                    ((MetadataTable) originaleOutputTable).setRepository(false);
+                }
             }
+
             if ("tUniservBTGeneric".equals(node.getComponent().getName())) {
                 originaleOutputTable = node.getMetadataTable("OUTPUT_SCHEMA");
             }
