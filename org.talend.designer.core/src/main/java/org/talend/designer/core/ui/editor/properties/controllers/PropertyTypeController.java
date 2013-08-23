@@ -354,25 +354,22 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     CompoundCommand compoundCommand = new CompoundCommand();
                     RepositoryNode selectNode = dialog.getResult();
                     ChangeValuesFromRepository changeValuesFromRepository = null;
-                    if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
+                    if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                        IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                        IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
+                        String currentJobId = process.getProperty().getId();
+
                         String serviceId = item.getProperty().getId();
                         String portId = selectNode.getParent().getObject().getId();
                         String operationId = selectNode.getObject().getId();
+
                         changeValuesFromRepository = new ChangeValuesFromRepository(
                                 elem,
                                 repositoryConnection,
                                 param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                            boolean foundInOpen = false;
-                            IProcess2 process = null;
-                            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                    .getEditorReferences();
-                            process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
-                            String jobID = process.getProperty().getId();
-                            service.deleteOldRelation(jobID);
-                            service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId, selectNode);
-                        }
+
+                        service.deleteOldRelation(currentJobId);
+                        service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId, selectNode);
                     } else {
                         changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, fullParamName, id);
                     }
