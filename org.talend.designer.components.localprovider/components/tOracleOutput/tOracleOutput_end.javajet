@@ -83,7 +83,7 @@ imports="
 			<%}%>										
 	    	stmtCreateGeoColumns_<%=cid%>.execute(insertGeometryColumns_<%=cid %>);
 	    	<%if(isLog4jEnabled){%>
-				log.info("<%=cid%>" excute " + insertGeometryColumns_<%=cid %> + " successfully !");
+				log.info("<%=cid%> excute " + insertGeometryColumns_<%=cid %> + " successfully !");
 			<%}%>
     	}
         
