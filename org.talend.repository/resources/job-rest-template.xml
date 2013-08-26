@@ -83,6 +83,11 @@
 ]]#
 #end
 		</jaxrs:properties>
+#if ($endpoint.useAuthorization)
+     <jaxrs:inInterceptors>
+        	 <ref component-id="XACMLInterceptor"/>
+	 </jaxrs:inInterceptors>
+#end
 	</jaxrs:server>
 
 	<bean id="serviceBean" class="${job.className}.RestServiceProviderImpl4TalendJob">
@@ -125,6 +130,13 @@
 			<entry key="type" value="job" />
 		</service-properties>
 	</service>
+
+#if ($endpoint.useAuthorization)
+	<bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor" 
+        			 id="XACMLInterceptor">
+		<property name="pdpAddress" value="$service{tesb.pdp.address}"/>
+	</bean>
+#end	
 
 	<!-- Wiring the counter repository -->
 	<bean class="org.apache.cxf.management.counters.CounterRepository">
