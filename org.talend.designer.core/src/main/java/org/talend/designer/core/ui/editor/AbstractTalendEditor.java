@@ -1827,7 +1827,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             if (node.isELTComponent()) {
                 mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
             } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
-                mainConnector = node.getConnectorFromType(EConnectionType.ROUTE);
+                INodeConnector tmp = null;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            ICamelDesignerCoreService.class);
+                    tmp = node.getConnectorFromType(camelService.getTargetConnectionType(node));
+                }else{
+                    tmp = node.getConnectorFromType(EConnectionType.ROUTE);
+                }
+                mainConnector = tmp;
             } else {
                 mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
