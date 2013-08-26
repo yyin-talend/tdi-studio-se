@@ -740,6 +740,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            applyLog4jToChildrenButton.setSelection(settings.getBoolean(APPLY_LOG4J_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
             if (chkButton.isVisible()) {
                 zipOption = String.valueOf(chkButton.getSelection());
@@ -760,6 +761,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);
+            }
+        }
+        if (log4jLevelCombo != null) {
+            log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
+            if (Log4jPrefsSettingManager.getLevel().length > 0) {
+                log4jLevelCombo.select(0);
             }
         }
     }
@@ -798,6 +805,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            applyLog4jToChildrenButton.setSelection(settings.getBoolean(APPLY_LOG4J_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
             zipOption = String.valueOf(chkButton.getSelection());
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
@@ -833,9 +841,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
-        log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
-        if (Log4jPrefsSettingManager.getLevel().length > 0) {
-            log4jLevelCombo.select(0);
+        if (log4jLevelCombo != null) {
+            log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
+            if (Log4jPrefsSettingManager.getLevel().length > 0) {
+                log4jLevelCombo.select(0);
+            }
         }
     }
 
@@ -884,11 +894,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (jobItemButton != null && !jobItemButton.isDisposed()) {
                 settings.put(STORE_JOB_ID, jobItemButton.getSelection());
             }
-            if (applyLog4jToChildrenButton != null) {
+            if (applyLog4jToChildrenButton != null && !applyLog4jToChildrenButton.isDisposed()) {
                 settings.put(APPLY_LOG4J_TO_CHILDREN_ID, applyLog4jToChildrenButton.getSelection());
             }
 
-            if (log4jLevelCombo != null) {
+            if (log4jLevelCombo != null && !log4jLevelCombo.isDisposed()) {
                 settings.put(LOG4J_LEVEL_ID, log4jLevelCombo.getText());
             }
 
@@ -1419,6 +1429,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
         applyToChildrenButton.setSelection(true);
+
+        applyLog4jToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        applyLog4jToChildrenButton.setSelection(true);
+        applyLog4jToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyLog4jToChildren"));//$NON-NLS-1$
+
+        log4jLevelCombo = new Combo(optionsGroup, SWT.PUSH);
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        log4jLevelCombo.setLayoutData(gd);
 
         restoreWidgetValuesForWS();
 
