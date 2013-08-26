@@ -13,6 +13,7 @@
 	java.util.HashMap
 	java.util.Map
     org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IProcess
 	" 
 	skeleton="tMap_commons.skeleton"
 %>
@@ -46,6 +47,8 @@
 			}
 		}
 	}
+	IProcess process = node.getProcess();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
 
 		// Bug partially fixed, see bug:785	
@@ -141,3 +144,6 @@
 		}
 %>
 // ###############################        
+<%if(isLog4jEnabled){%>
+	log.info("<%=componentName%> finished successfully!");
+<%}%> 

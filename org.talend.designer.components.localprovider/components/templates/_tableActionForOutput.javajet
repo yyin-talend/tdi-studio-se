@@ -4,6 +4,7 @@
 //issue 0010346 Parallelization crash with "Drop table if exists and create"
 Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 String dbms=ElementParameterParser.getValue(node, "__MAPPING__");
+boolean isLog4jEnabled_tableAction = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 	manager = getManager(dbmsId, cid);
@@ -18,9 +19,18 @@ if (!isParallelize) {
         if(("DROP_CREATE").equals(tableAction)) {
 %>            
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> start to drop table " +  tableName_<%=cid%>);
+			<%}%>
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> drop table " + tableName_<%=cid%> + " successfully!");
+			<%}%>
             stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> start to create table " + tableName_<%=cid%>);
+			<%}%>
 <%
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
@@ -43,12 +53,18 @@ if (!isParallelize) {
 <%
 			}
 %>
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> create table " + tableName_<%=cid%> + " successfully!");
+			<%}%>
 			stmtCreate_<%=cid%>.close();
 <%				
 
         } else if(("CREATE").equals(tableAction)) {
 %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> start to create table "+ tableName_<%=cid%>);
+			<%}%>
 <%
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
@@ -71,6 +87,9 @@ if (!isParallelize) {
 <%
 			}
 %>
+        	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> create table " + tableName_<%=cid%> + " successfully !");
+			<%}%>
             stmtCreate_<%=cid%>.close();
 <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
@@ -220,6 +239,9 @@ if (!isParallelize) {
 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        			<%if(isLog4jEnabled_tableAction){%>
+						log.info("<%=cid%> start to create table " + tableName_<%=cid%>);
+					<%}%>
 <%
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
@@ -242,6 +264,9 @@ if (!isParallelize) {
 <%
 			}
 %>
+    		   	<%if(isLog4jEnabled_tableAction){%>
+					log.info("<%=cid%> create table " + tableName_<%=cid%> + " successfully !");
+				<%}%>
                     stmtCreate_<%=cid%>.close();            
                 }                
 <%
@@ -249,10 +274,19 @@ if (!isParallelize) {
 %>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+	    	    	<%if(isLog4jEnabled_tableAction){%>
+						log.info("<%=cid%> start to drop table " +  tableName_<%=cid%>);
+					<%}%>
                     stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+	    	    	<%if(isLog4jEnabled_tableAction){%>
+						log.info("<%=cid%> drop table " + tableName_<%=cid%>+ " successfully !");
+					<%}%>
                     stmtDrop_<%=cid%>.close();
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+	    	    	<%if(isLog4jEnabled_tableAction){%>
+						log.info("<%=cid%> start to create table " + tableName_<%=cid%> );
+					<%}%>
 <%
 			if(isDynamic) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
@@ -275,6 +309,9 @@ if (!isParallelize) {
 <%
 			}
 %>
+	    	    	<%if(isLog4jEnabled_tableAction){%>
+						log.info("<%=cid%> create table " + tableName_<%=cid%> +" successfully !");
+					<%}%>
                 stmtCreate_<%=cid%>.close();
 <%
 			}
@@ -295,7 +332,13 @@ if (!isParallelize) {
         } else if(("CLEAR").equals(tableAction)) {
 %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+    	   <%if(isLog4jEnabled_tableAction){%>
+					log.info("<%=cid%> start to clear table " + tableName_<%=cid%> );
+			<%}%>
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+   	    	<%if(isLog4jEnabled_tableAction){%>
+					log.info("<%=cid%> clear table " +  tableName_<%=cid%> + " successfully !");
+			<%}%>
             stmtClear_<%=cid%>.close();
 <%
         }else if(("TRUNCATE").equals(tableAction)) {
@@ -303,7 +346,13 @@ if (!isParallelize) {
             java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
+  	    	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> start to trancate table " + tableName_<%=cid%> );
+			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+   	    	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> truncate table " + tableName_<%=cid%> + " successfully !");
+			<%}%>
             while(rsTruncCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
             }
@@ -316,7 +365,13 @@ if (!isParallelize) {
 		 	java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
 		 	java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
+  	    	<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> start to truncate reuse stroage table " +  tableName_<%=cid%>);
+			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateReuseStroageTableSQL()%>");
+   	    	<%if(isLog4jEnabled_tableAction){%>
+					log.info("<%=cid%> truncate reuse stroage table " + tableName_<%=cid%> + " successfully!");
+			<%}%>
              while(rsTruncCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
             }

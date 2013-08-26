@@ -3,6 +3,7 @@ imports="
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IProcess
 " 
 %>
 
@@ -11,6 +12,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	IProcess process = node.getProcess();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 %>
 }
 stmt_<%=cid %>.close();
@@ -19,9 +22,19 @@ stmt_<%=cid %>.close();
 if(!("true").equals(useExistingConn))
 {
 	%>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> start to close conn_<%=cid%>");
+	<%}%>
 	conn_<%=cid %> .close();
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> close conn_<%=cid%> successfully!");
+	<%}%>
 	<%
 }
 %>
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> has retrieved "+nb_line_<%=cid%> + " records");
+	log.info("<%=cid%> finish successfully!");
+<%}%>

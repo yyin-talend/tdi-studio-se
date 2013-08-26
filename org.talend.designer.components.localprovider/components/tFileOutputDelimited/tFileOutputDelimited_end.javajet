@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser 
 		java.util.List
+		org.talend.core.model.process.IProcess
 	" 
 %>
 
@@ -25,6 +26,8 @@
 	boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 	
 	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
+	IProcess process = node.getProcess();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 %>
 
 <%
@@ -161,5 +164,7 @@ if(out<%=cid %>!=null) {
 	}
 }
 %>
-
-
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> has wrote "+nb_line_<%=cid%> + " records");
+	log.info("<%=cid%> finish successfully!");
+<%}%>

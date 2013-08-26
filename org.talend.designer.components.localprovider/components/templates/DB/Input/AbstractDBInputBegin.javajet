@@ -29,6 +29,7 @@ imports="
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String enableStream = ElementParameterParser.getValue(node, "__ENABLE_STREAM__");
 	String dbms=ElementParameterParser.getValue(node, "__MAPPING__");
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
     boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
@@ -161,6 +162,9 @@ imports="
 		    %>
 		    String tmpContent_<%=cid%> = null;
 		    int column_index_<%=cid%> =1;
+		    <%if(isLog4jEnabled){%>
+		    	log.info("<%=cid%>" + " start to retrieve record from database!");
+		    <%}%>
 		    while (rs_<%=cid %>.next()) {
 		        nb_line_<%=cid%>++;
 		        <%

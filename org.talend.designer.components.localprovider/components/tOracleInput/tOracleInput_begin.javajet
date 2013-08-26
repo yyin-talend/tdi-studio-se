@@ -10,6 +10,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		java.util.Map
 		java.util.List
+		org.talend.core.model.process.IProcess
 " 
 %>
 	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
@@ -90,6 +91,11 @@ imports="
 				String dbUser_<%=cid %> = <%=dbuser%>;
 				String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
+				if(isLog4jEnabled){
+%>
+					log.info("<%=cid%>" +" start to connect " + url_<%=cid%>);
+<%
+				}
 				if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
@@ -107,6 +113,11 @@ imports="
 				atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
 				atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
 				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+				}
+				if(isLog4jEnabled){
+%>
+						log.info("<%=cid%>" +" connect to " + url_<%=cid%> + " successfully!");
 <%
 				}
 %>
@@ -299,6 +310,9 @@ imports="
 <%
 					} else {
 %>    
+						<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Null value in non-Nullable column");
+						<%}%>
 						throw new RuntimeException("Null value in non-Nullable column");
 <%    
 					}
@@ -344,6 +358,9 @@ imports="
 <%
 				} else {
 %>    
+						<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Null value in non-Nullable column");
+						<%}%>
  	                	throw new RuntimeException("Null value in non-Nullable column");
 <%    
 				}

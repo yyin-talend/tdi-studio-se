@@ -11,6 +11,7 @@ imports="
 		java.util.ArrayList
 		java.util.Map
 		java.util.HashMap
+		org.talend.core.model.process.IProcess
 	" 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -44,6 +45,8 @@ String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
 boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
 boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
 boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+IProcess process = node.getProcess();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
 if (useSpatialOptions) {
 	int targetSRID = -1;
@@ -105,6 +108,9 @@ for(Column column : stmtStructure) {
 }
 %>
 
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> satrt to work ......");
+<%}%>
 <%
 if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction)) {
     int updateKeyCount = 0;
@@ -117,6 +123,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
         if(updateKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%>" +" For update ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For update, Schema must have a key");
         }
         <%
@@ -132,6 +141,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%>" +" For delete ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For delete, Schema must have a key");
         }
         <%
@@ -228,6 +240,9 @@ if(useExistingConnection) {
 		String dbUser_<%=cid%> = <%=dbuser%>;
 		String dbPwd_<%=cid%> = <%=dbpwd%>;
 		dbschema_<%=cid%> = <%=tableSchema%>;	
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> start to connect " + url_<%=cid%>);
+		<%}%>	
 		
 <%
 		if(("ORACLE_WALLET").equals(connectionType)) {
@@ -255,6 +270,9 @@ if(useExistingConnection) {
 <%
 		}
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> connect to " + url_<%=cid%> + " successfully!");
+		<%}%>
 	}
 <%
 }
@@ -449,9 +467,15 @@ if(columnList != null && columnList.size()>0) {
 		    // Close the temporary CLOB 
 		    tempClob.close();    
 		  } catch( java.sql.SQLException sqlexp){
+		  	<%if(isLog4jEnabled){%>
+		  		log.error("<%=cid %> " + sqlexp.getMessage());
+		  	<%}%>
 		    tempClob.freeTemporary(); 
 		    sqlexp.printStackTrace();
 		  } catch(java.lang.Exception exp){
+		  	<%if(isLog4jEnabled){%>
+		  		log.error("<%=cid %> " + exp.getMessage());
+		  	<%}%>
 		    tempClob.freeTemporary(); 
 		    exp.printStackTrace();
 		  }

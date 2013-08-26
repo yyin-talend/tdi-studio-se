@@ -11,6 +11,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.utils.NodeUtil
     java.util.List
+    org.talend.core.model.process.IProcess
 " 
 %>
 
@@ -39,6 +40,8 @@ boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__
 
 String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
+IProcess process = node.getProcess();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 	
 %>
 String fileName_<%=cid%> = "";
@@ -370,6 +373,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		
     		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
 
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> start to write data into file by uncsv modle......");
+			<%}%>
 <%
 			if(!useStream){
 			//**************************** the following is the part of file Path***************************************
@@ -380,7 +386,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
                     java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
                     if(!dir_<%=cid%>.exists()) {
+                    	<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> start to create directory " + dir_<%=cid%>.getCanonicalPath());
+						<%}%>
                         dir_<%=cid%>.mkdirs();
+                    	<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> create directory "+ dir_<%=cid%>.getCanonicalPath() + " successfully!");
+						<%}%>
                     }
                 }
 <%
@@ -628,6 +640,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             		if (fieldSep.length() > 0 ){
             			field_Delim_<%=cid %> = fieldSep.toCharArray();
             		}else { 
+		            	<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Field Separator must be assigned a char.");
+						<%}%>
             			throw new IllegalArgumentException("Field Separator must be assigned a char.");
             		}
             		this.field_Delim = field_Delim_<%=cid %>[0];
@@ -651,6 +666,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             		if (rowSep.length() > 0 ){ 
             			row_Delim<%=cid %> = rowSep.toCharArray();
             		}else {
+		            	<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Row Separator must be assigned a char.");
+						<%}%>
             			throw new IllegalArgumentException("Row Separator must be assigned a char.");
             		}
             		this.row_Delim = row_Delim<%=cid%>[0];
@@ -665,6 +683,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             	       	        
         	    public void setEscapeAndTextEnclosure(String strEscape, String strTextEnclosure) throws IllegalArgumentException{
         	        if(strEscape.length() <= 0 ){ 
+		            	<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Escape Char must be assigned a char."); 
+						<%}%>
         	            throw new IllegalArgumentException("Escape Char must be assigned a char."); 
         	        }
         	        
@@ -674,6 +695,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	        if(strTextEnclosure.length() > 0 ){ 
               			textEnclosure_<%=cid %> = strTextEnclosure.toCharArray(); 
         			}else { 
+		            	<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> Text Enclosure must be assigned a char."); 
+						<%}%>
         	            throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
         	        }
 
@@ -710,6 +734,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             csvSettings_<%=cid %>.setFieldSeparator(<%=delim%>);
             csvSettings_<%=cid %>.setRowSeparator(<%=rowSeparator%>);
 			csvSettings_<%=cid %>.setEscapeAndTextEnclosure(<%=escapeChar1 %>,<%=textEnclosure1 %>);
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> start to write data into file by csv model ......");
+			<%}%>
             <%
 			if(!useStream){
 			//**************************** the following is the part of file Path***************************************
@@ -719,7 +746,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
                     java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
                     if(!dir_<%=cid%>.exists()) {
+                        <%if(isLog4jEnabled){%>
+							log.info("<%=cid%> start to create directory " +dir_<%=cid%>.getCanonicalPath());
+						<%}%>
                         dir_<%=cid%>.mkdirs();
+                    	<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> create directory " + dir_<%=cid%>.getCanonicalPath() + " successfully!");
+						<%}%>
                     }
                 }
                 <%

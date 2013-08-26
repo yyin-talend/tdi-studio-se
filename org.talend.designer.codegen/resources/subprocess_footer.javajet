@@ -10,6 +10,7 @@
 		org.talend.core.model.process.ElementParameterParser
 		java.util.List
 		java.util.Iterator
+        org.talend.core.model.process.IProcess
 	" 
 	class="SubProcessFooter" 
 %>
@@ -17,7 +18,8 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	boolean stat = codeGenArgument.isStatistics();
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
-	
+	IProcess process = subTree.getRootNode().getProcess();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 	for (INode node : subTree.getNodes()) {
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		List< ? extends IConnection> conns = node.getOutgoingConnections();
@@ -205,7 +207,9 @@
 
 	
 	} catch(java.lang.Exception e) {	
-
+		<%if(isLog4jEnabled){%>
+			log.error(currentComponent + " " + e.getMessage());
+		<%}%>
 		throw new TalendException(e, currentComponent, globalMap);
 	
 	} catch(java.lang.Error error) {

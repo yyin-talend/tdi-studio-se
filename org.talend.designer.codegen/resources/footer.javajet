@@ -33,6 +33,7 @@
     List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
     boolean exist_tParallelize = false;
     List<? extends INode> tParallelizeList = process.getNodesOfType("tParallelize");
@@ -90,6 +91,7 @@
     public String fatherNode = null;
     public long startTime = 0;
     public boolean isChildJob = false;
+    public String log4jLevel = null;
 
     private boolean execStat = true;
 
@@ -142,6 +144,12 @@
         final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
+        <%if(isLog4jEnabled){%>
+	        if(exitCode==0){
+		        log.info("TalendJob: <%=codeGenArgument.getJobName()%> finished !");
+	        }
+        <%}%>
+         
         System.exit(exitCode);
     }
 
@@ -182,6 +190,23 @@
             }
         }
 
+        <%if(isLog4jEnabled){%>
+	        if(log4jLevel!=null){
+        		if("debug".equalsIgnoreCase(log4jLevel)){
+        			log.setLevel(org.apache.log4j.Level.DEBUG);
+        		}else if("info".equalsIgnoreCase(log4jLevel)){
+        			log.setLevel(org.apache.log4j.Level.INFO);
+        		}else if("warn".equalsIgnoreCase(log4jLevel)){
+        			log.setLevel(org.apache.log4j.Level.WARN);
+        		}else if("error".equalsIgnoreCase(log4jLevel)){
+        			log.setLevel(org.apache.log4j.Level.ERROR);
+        		}else if("fatal".equalsIgnoreCase(log4jLevel)){
+        			log.setLevel(org.apache.log4j.Level.FATAL);
+        		}
+    	    }
+        	log.info("TalendJob:  <%=codeGenArgument.getJobName()%> start ");
+    	<%}%>
+    	
         if(clientHost == null) {
             clientHost = defaultClientHost;
         }
@@ -710,7 +735,9 @@ if (execStat) {
                     context_param.put(keyValue.substring(0, index), keyValue.substring(index + 1) );
                 }
             }
-        }
+        }else if (arg.startsWith("--log4jLevel=")) {
+            log4jLevel = arg.substring(13);
+		}
 
     }
 

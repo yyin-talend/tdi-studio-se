@@ -5,13 +5,17 @@ imports="
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.IConnection
     java.util.List
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.process.IProcess
 "
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	
+	IProcess process = node.getProcess();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
@@ -36,6 +40,12 @@ imports="
 	boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
 	
 	String indexAccuracy = ElementParameterParser.getValue(node, "__SPATIAL_INDEX_ACCURACY__");
+	
+	List<IMetadataColumn> rejectColumnList = null;
+    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+    if(metadataTable != null) {
+        rejectColumnList = metadataTable.getListColumns();      
+    }
 	
     if (useSpatialOptions && (("DROP_CREATE").equals(tableAction) || ("CREATE").equals(tableAction) 
     		|| ("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction))) {
@@ -68,7 +78,13 @@ imports="
 	        										+ "MDSYS.SDO_DIM_ARRAY(MDSYS.SDO_DIM_ELEMENT('x', " + extend.getMinX() + ", " + extend.getMaxX() + ", <%=indexAccuracy %>), "
 	        										+ "MDSYS.SDO_DIM_ELEMENT('y', " + extend.getMinY() + ", " + extend.getMaxY() + ", <%=indexAccuracy %>)), "
 	        										+ <%=targetSRID < 0 ? "\"NULL\"" : targetSRID %> +")";
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> start to excute " +  insertGeometryColumns_<%=cid %>);
+			<%}%>										
 	    	stmtCreateGeoColumns_<%=cid%>.execute(insertGeometryColumns_<%=cid %>);
+	    	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%>" excute " + insertGeometryColumns_<%=cid %> + " successfully !");
+			<%}%>
     	}
         
         stmtCreateGeoColumns_<%=cid%>.close();
@@ -87,16 +103,31 @@ imports="
 			// Drop spatial index if exists
 			String dropIndex_<%=cid %> = "DROP INDEX "+index_name;
 	        try {
+	        	<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> start to excute " + dropIndex_<%=cid %> );
+				<%}%>
 				stmtCreateIndex_<%=cid%>.execute(dropIndex_<%=cid %>);
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> excute " + dropIndex_<%=cid%> + " successfully!");
+				<%}%>
 			}
 			catch (java.sql.SQLException e_<%=cid%>) {
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> " +  e_<%=cid%>.getMessage());
+				<%}%>
 			}
 			
 			// Create spatial index using GIST on geometry columns
 			String createIndex_<%=cid %> = "CREATE INDEX "+index_name + " " 
 						+ "ON " + <%=tableName %> + "(" + geometryColumnName + ") "
 						+ "INDEXTYPE IS MDSYS.SPATIAL_INDEX";
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> start to excute " + createIndex_<%=cid %>);
+			<%}%>
 	        stmtCreateIndex_<%=cid%>.execute(createIndex_<%=cid %>);
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> excute " + createIndex_<%=cid%> + " successfully !");
+			<%}%>
 	        stmtCreateIndex_<%=cid%>.close();
 	    }
 		<%
@@ -151,6 +182,9 @@ imports="
 						pstmt_<%=cid %>.executeBatch();    
             	    }          	    
                 }catch (java.sql.BatchUpdateException e_<%=cid%>){
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+					<%}%>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e_<%=cid%>);
@@ -204,13 +238,23 @@ imports="
 		if(!("").equals(commitEvery) && !("0").equals(commitEvery))
 		{
 		    %>
-		    
-		    
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> start to commit");
+			<%}%>
 		    conn_<%=cid%>.commit();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> commit finished!");
+			<%}%>
 		    <%
 		}
 		%>	
-    	conn_<%=cid%> .close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> start to close conn_<%=cid%>");
+		<%}%>
+		conn_<%=cid%> .close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> close conn_<%=cid%> successfully!");
+		<%}%>
     	<%
 	}
     %>
@@ -225,3 +269,41 @@ imports="
     globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
+	<%
+	if(isLog4jEnabled){
+		if(("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) {
+    		if (("INSERT").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
+	<%
+    		}else if (("UPDATE").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
+	<%
+    		}else if (("DELETE").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> has delete "+nb_line_deleted_<%=cid%> + " records.");
+	<%
+    		}
+    	}else if("UPDATE_OR_INSERT".equals(dataAction)){
+	%>
+			log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
+			log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
+    <%
+    	}else if("INSERT_OR_UPDATE".equals(dataAction)){
+    %>
+			log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
+			log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
+    
+    <%
+    	}
+    	if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+	%>
+			log.info("<%=cid%> has reject "+nb_line_rejected_<%=cid%> + " records.");
+	<%
+		}
+	%>
+		log.info("<%=cid%> finish successfully!");
+	<%
+	}
+	%>

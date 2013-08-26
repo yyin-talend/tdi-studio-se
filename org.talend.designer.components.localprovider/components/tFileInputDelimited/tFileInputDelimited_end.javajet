@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser 
 		java.util.List
+		org.talend.core.model.process.IProcess
 	" 
 %>
 
@@ -25,7 +26,8 @@
 	if(destination!=null && !"".equals(destination)){
 		vcid = destination;
 	}
-	
+	IProcess process = node.getProcess();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
@@ -57,6 +59,10 @@
             if(fid_<%=cid %>!=null){
             	globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
             }
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> has read "+ nb_line_<%=cid%> + " records");
+						log.info("<%=cid%> finish successfully!");
+					<%}%>
         }
 <%
 			}else{
@@ -70,6 +76,10 @@
                 }
                 if(fid_<%=cid %>!=null){
                 	globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> has read "+ fid_<%=cid %>.getRowNumber() + " records");
+						log.info("<%=cid%> finish successfully!");
+					<%}%>
                 }
 			}
 <%
@@ -104,6 +114,10 @@
     			if(csvReader<%=cid %>!=null){
     				globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
     			}
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> has read "+ nb_line_<%=cid %> + " records");
+					log.info("<%=cid%> finish successfully!");
+				<%}%>
 			}
 <%
 		}

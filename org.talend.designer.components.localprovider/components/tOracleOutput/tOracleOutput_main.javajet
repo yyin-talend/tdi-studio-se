@@ -13,6 +13,7 @@ imports="
 	java.util.ArrayList
 	java.util.Map
 	java.util.HashMap
+	org.talend.core.model.process.IProcess
 	"
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -63,6 +64,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	//feature:2880
     ((OracleManager)getManager(dbmsId, cid, node)).setDbVersion(dbVersion);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
+    IProcess process = node.getProcess();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 	
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = getColumnList(node);
@@ -456,6 +459,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
                 <%
+                if(isLog4jEnabled){
+	    		%>
+					log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+				<%
+				}
                 if (("true").equals(dieOnError)) {
                     %>
                     throw(e_<%=cid%>);
@@ -574,6 +582,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
                 <%
+                if(isLog4jEnabled){
+	    		%>
+					log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+				<%
+				}
                 if (("true").equals(dieOnError)) {
                     %>
                     throw(e_<%=cid%>);
@@ -712,6 +725,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(java.lang.Exception e_<%=cid%>) {
                     whetherReject_<%=cid%> = true;
                     <%
+	                if(isLog4jEnabled){
+		    		%>
+						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+					<%
+					}
                     if (("true").equals(dieOnError)) {
                         %>
                         throw(e_<%=cid%>);
@@ -780,6 +798,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(java.lang.Exception e_<%=cid%>) {
                     whetherReject_<%=cid%> = true;
                     <%
+	                if(isLog4jEnabled){
+		    		%>
+						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+					<%
+					}
                     if (("true").equals(dieOnError)) {
                         %>
                         throw(e_<%=cid%>);
@@ -889,6 +912,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
                 <%
+	    		if(isLog4jEnabled){
+    			%>
+					log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+				<%
+				}
                 if (("true").equals(dieOnError)) {
                     %>
                     throw(e_<%=cid%>);
@@ -963,6 +991,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(java.lang.Exception e_<%=cid%>) {
                     whetherReject_<%=cid%> = true;
                     <%
+			    	if(isLog4jEnabled){
+		    		%>
+						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+					<%
+					}
                     if (("true").equals(dieOnError)) {
                         %>
                         throw(e_<%=cid%>);
@@ -1049,6 +1082,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
                 <%
+	    		if(isLog4jEnabled){
+    			%>
+					log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+				<%
+				}
                 if (("true").equals(dieOnError)) {
                     %>
                     throw(e_<%=cid%>);
@@ -1113,6 +1151,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	try {
 						pstmt_<%=cid %>.executeBatch();
                 	}catch (java.sql.BatchUpdateException e_<%=cid%>){
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+					<%}%>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e_<%=cid%>);
@@ -1158,6 +1199,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                try {
 		                		pstmt_<%=cid %>.executeBatch();
 		                }catch (java.sql.BatchUpdateException e_<%=cid%>){
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> " + e_<%=cid%>.getMessage());
+							<%}%>
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>
 								throw(e_<%=cid%>);
@@ -1186,7 +1230,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 		    	    	+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);
 	                <%
 	                }%>
-                	conn_<%=cid%>.commit();                
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> start to commit");
+					<%}%>
+		        	conn_<%=cid%>.commit();
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> commit finished!");
+					<%}%>                
                 	commitCounter_<%=cid%>=0;
                 }	
                 <%
