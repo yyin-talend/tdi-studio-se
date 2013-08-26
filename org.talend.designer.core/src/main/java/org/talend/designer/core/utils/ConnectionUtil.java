@@ -38,8 +38,9 @@ public class ConnectionUtil {
         if(linkName == null){
             return generateUniqueConnectionName(connectType, process);
         }
+        linkName = linkName.toUpperCase();
         linkName = linkName.replaceAll("\\s", "_");
-        if(!process.checkValidConnectionName(linkName)){
+        if(!process.checkValidConnectionName(linkName, false)){
             linkName = connector.getName();
         }
         return process.generateUniqueConnectionName(linkName.toLowerCase());
