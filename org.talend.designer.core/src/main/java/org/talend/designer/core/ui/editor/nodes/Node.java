@@ -3290,8 +3290,7 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         // test if the columns can be checked or not
-        if ((component.isSchemaAutoPropagated() || getComponent().getComponentType() == EComponentType.JOBLET)
-                && (getMetadataList().size() != 0)) {
+        if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
             IConnection inputConnecion = null;
             INodeConnector nodeConn = getConnectorFromName(EConnectionType.FLOW_MAIN.getName());
             if (nodeConn != null) {
@@ -3380,6 +3379,10 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+        if ((getComponent().getComponentType() == EComponentType.JOBLET)) {
+            checkJobletSchema();
+        }
+
         if (component.useMerge() && !this.getConnectorFromType(EConnectionType.FLOW_MERGE).isMergeAllowDifferentSchema()) {
             if (getMetadataList().get(0).getListColumns().size() == 0) {
                 String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
@@ -3417,6 +3420,157 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         syncSpecialSchema();
+    }
+
+    private void checkJobletSchema() {
+        if (getMetadataList().size() <= 0) {
+            return;
+        }
+        IConnection inputConnecion = null;
+        INodeConnector nodeConn = getConnectorFromName(EConnectionType.FLOW_MAIN.getName());
+        if (nodeConn != null) {
+            IMetadataTable inputMeta = null, outputMeta = null;
+            int maxFlowInput = nodeConn.getMaxLinkInput();
+            if (maxFlowInput > 1) {
+                List<? extends INode> listNode = this.getComponent().getProcess().getGraphicalNodes();
+                out: for (INode node : listNode) {
+                    inputMeta = null;
+                    outputMeta = null;
+                    if ((node instanceof Node) && (this.getComponent().getProcess() instanceof IProcess2)) {
+                        IElementParameter elePa = this.getElementParameter(node.getUniqueName());
+                        if (elePa != null) {
+                            outputMeta = getMetadataTable(elePa.getName());
+                            IElementParameter elechild = elePa.getChildParameters().get("CONNECTION");
+                            if (elechild != null) {
+                                in: for (IConnection connection : inputs) {
+                                    if (connection.isActivate() && connection.getUniqueName().equals(elechild.getValue())) {
+                                        inputMeta = connection.getMetadataTable();
+                                        inputConnecion = connection;
+                                        break in;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    if (inputMeta != null && outputMeta != null) {
+                        INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
+                        if (connector != null
+                                && connector.getMaxLinkInput() != 0
+                                && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                    && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                                String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                        inputConnecion.getName());
+                                Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                            } else {
+                                schemaSynchronized = false;
+                                String errorMessage = Messages.getString(
+                                        "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
+                        }
+                    }
+                    if (outputMeta != null) {
+                        for (int i = 0; i < outputMeta.getListColumns().size(); i++) {
+                            IMetadataColumn column = outputMeta.getListColumns().get(i);
+                            String sourceType = column.getType();
+                            String typevalue = column.getTalendType();
+                            String currentDbmsId = outputMeta.getDbms();
+                            // TDI-21862:when drag/drop a special schema onto a component,need check if this
+                            // schema's
+                            // dbType compatible with this component
+                            if (!typevalue.equals("id_Dynamic") && currentDbmsId != null
+                                    && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
+                                String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                            }
+                        }
+                    }
+
+                }
+
+            } else {
+
+                outputMeta = getMetadataList().get(0);
+                for (IConnection connection : inputs) {
+                    if (connection.isActivate()
+                            && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
+                                    EConnectionType.TABLE))) {
+                        inputMeta = connection.getMetadataTable();
+                        inputConnecion = connection;
+                    }
+                }
+
+                if (inputMeta != null && outputMeta != null) {
+                    INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
+                    if (connector != null
+                            && connector.getMaxLinkInput() != 0
+                            && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                            String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                    inputConnecion.getName());
+                            Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                        } else {
+                            schemaSynchronized = false;
+                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    }
+                }
+
+                if (outputMeta != null) {
+                    for (int i = 0; i < outputMeta.getListColumns().size(); i++) {
+                        IMetadataColumn column = outputMeta.getListColumns().get(i);
+                        String sourceType = column.getType();
+                        String typevalue = column.getTalendType();
+                        String currentDbmsId = outputMeta.getDbms();
+                        if (!typevalue.equals("id_Dynamic") && currentDbmsId != null
+                                && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
+                            String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                        }
+                    }
+                }
+            }
+
+        } else {
+            // for each schema in the component, check if for the connector there is the option INPUT_LINK_SELECTION
+            // if there is, check that the schema of the link selection is the same
+            for (IElementParameter param : this.getElementParameters()) {
+                if (param.isShow(getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    IMetadataTable table = getMetadataFromConnector(param.getContext());
+                    IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
+                    if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
+                        for (IConnection connection : inputs) {
+                            if (connection.isActivate() && connection.getName().equals(connParam.getValue())) {
+                                if (!table.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
+                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
+                                    schemaSynchronized = false;
+                                    String errorMessage = Messages.getString(
+                                            "Node.differentFromSchemaDefined", connection.getName()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private void syncSpecialSchema() {
