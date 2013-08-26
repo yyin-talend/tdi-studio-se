@@ -380,7 +380,8 @@ public class InsertNewColumnCommand extends Command {
         while (exists) {
             boolean found = false;
             for (AbstractNode node : nodeExisted) {
-                if (node.getName().equals(newName)) {
+                // TDI-26953: drag-and-drop column name should case-sensitive
+                if (node.getName().equalsIgnoreCase(newName)) {
                     found = true;
                     break;
                 }

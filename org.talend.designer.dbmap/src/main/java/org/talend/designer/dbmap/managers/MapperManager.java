@@ -333,6 +333,29 @@ public class MapperManager extends AbstractMapperManager {
         return this.tableManager.getVarsTables();
     }
 
+    public IDataMapTable getTableByName(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        for (InputTable table : getInputTables()) {
+            if (name.equals(table.getName())) {
+                return table;
+            }
+        }
+        for (VarsTable table : getVarsTables()) {
+            if (name.equals(table.getName())) {
+                return table;
+            }
+        }
+        for (OutputTable table : getOutputTables()) {
+            if (name.equals(table.getName())) {
+                return table;
+            }
+        }
+        return null;
+    }
+
     /**
      * Update the column in the tableEntriesManager.
      * 
@@ -473,8 +496,8 @@ public class MapperManager extends AbstractMapperManager {
 
         if (currentSelectedDataMapTableView != null) {
             String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
-            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
-                    .getString("MapperManager.removeInputTableTitle"), //$NON-NLS-1$
+            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(),
+                    Messages.getString("MapperManager.removeInputTableTitle"), //$NON-NLS-1$
                     Messages.getString("MapperManager.removeInputTableTitleMessage", new Object[] { tableName }))) { //$NON-NLS-1$
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeInputTableView(currentSelectedDataMapTableView);
@@ -491,8 +514,8 @@ public class MapperManager extends AbstractMapperManager {
         if (currentSelectedDataMapTableView != null) {
             OutputTable outputTable = (OutputTable) currentSelectedDataMapTableView.getDataMapTable();
             String tableTitle = ((AbstractDataMapTable) currentSelectedDataMapTableView.getDataMapTable()).getTitle();
-            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
-                    .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
+            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(),
+                    Messages.getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
                     Messages.getString("MapperManager.removeOutputTableTitleMessage", new Object[] { tableTitle }))) { //$NON-NLS-1$
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
@@ -527,21 +550,24 @@ public class MapperManager extends AbstractMapperManager {
         return tableEditorView == table;
     }
 
-    public TableEntryLocation findUniqueLocation(final TableEntryLocation proposedLocation, String[] columnsBeingCreated) {
+    public TableEntryLocation findUniqueLocation(final TableEntryLocation proposedLocation) {
         TableEntryLocation tableEntryLocation = new TableEntryLocation(proposedLocation);
         int counter = 1;
         boolean exists = true;
         while (exists) {
-            exists = retrieveTableEntry(tableEntryLocation) != null;
-            if (!exists) {
-                for (int i = 0; i < columnsBeingCreated.length; i++) {
-                    String columnBeingCreated = columnsBeingCreated[i];
-                    if (columnBeingCreated.equals(tableEntryLocation.columnName)) {
-                        exists = true;
+            boolean found = false;
+            IDataMapTable table = getTableByName(tableEntryLocation.tableName);
+            if (table != null) {
+                List<IColumnEntry> entryExisted = table.getColumnEntries();
+                for (IColumnEntry entry : entryExisted) {
+                    // TDI-26953: drag-and-drop column name should case-sensitive
+                    if (entry.getName().equalsIgnoreCase(tableEntryLocation.columnName)) {
+                        found = true;
                         break;
                     }
                 }
             }
+            exists = found;
             if (!exists) {
                 break;
             }
