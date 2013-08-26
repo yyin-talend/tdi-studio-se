@@ -151,7 +151,8 @@ public class DetecteViewImpactAction extends AContextualAction {
                             || objectType == ERepositoryObjectType.PIG_UDF || objectType == ERepositoryObjectType.JOB_SCRIPT
                             || objectType == ERepositoryObjectType.SQLPATTERNS || objectType == ERepositoryObjectType.JOB_DOC
                             || objectType == ERepositoryObjectType.JOBLET_DOC
-                            || objectType == ERepositoryObjectType.DOCUMENTATION) {
+                            || objectType == ERepositoryObjectType.DOCUMENTATION
+                            || objectType == ERepositoryObjectType.PROCESS_MR) {
                         canWork = false;
                     } else {
                         Object obj = selection.getFirstElement();
