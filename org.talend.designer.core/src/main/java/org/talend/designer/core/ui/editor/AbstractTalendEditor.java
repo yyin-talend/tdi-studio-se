@@ -194,6 +194,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
+import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.designer.core.utils.ModulesInstallerUtil;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.JobEditorInput;
@@ -1530,7 +1531,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                     ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                                             ICamelDesignerCoreService.class);
                                     if(camelService.isRouteBuilderNode(node)){
-                                        connectionType = EConnectionType.ROUTE;
+                                        connectionType = camelService.getTargetConnectionType(node);
                                     }
                                 }
                                 INodeConnector targetConnector = node.getConnectorFromType(connectionType);
@@ -1570,7 +1571,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                                 // INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
                                 // nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
-                                List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
+                                List<Object> nodeArgs = null;
+                                if(connectionType == EConnectionType.ROUTE || connectionType == EConnectionType.ROUTE_ENDBLOCK){
+                                    nodeArgs = new ArrayList<Object>();
+                                    nodeArgs.add(null);
+                                    nodeArgs.add(ConnectionUtil.generateUniqueConnectionName(connectionType, originalTarget.getProcess(), targetConnector));
+                                    nodeArgs.add(null);
+                                }else{
+                                    nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
+                                }
+                                
                                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
                                         nodeArgs, false);
                                 nodeCmd.setTarget(originalTarget);
