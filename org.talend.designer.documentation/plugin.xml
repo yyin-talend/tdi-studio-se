@@ -51,5 +51,28 @@
             name="Documentation">
       </seeker>
    </extension>
+   <extension
+         point="org.talend.core.repository.repository_node_provider">
+      <repositoryNode
+            folder="documentations"
+            isResouce="true"
+            key="repository.documentation"
+            label="Documentation"
+            ordinal="11"
+            products="DI"
+            type="DOCUMENTATION">
+      </repositoryNode>
+   </extension>
+   <extension
+         point="org.talend.repository.items.importexport.handler">
+      <importProvider
+            class="org.talend.repository.viewer.handler.DocumentationImportHandler"
+            id="org.talend.designer.documentation.importProvider"
+            name="Documentation importer"
+            priority="NORMAL">
+         <repType
+               type="DOCUMENTATION"></repType>
+      </importProvider>
+   </extension>
 
 </plugin>

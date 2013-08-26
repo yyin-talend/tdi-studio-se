@@ -165,5 +165,16 @@
             serviceId="IJsonFileService">
       </Service>
    </extension>
+   <extension
+         point="org.talend.repository.items.importexport.handler">
+      <importProvider
+            class="org.talend.repository.json.handler.JsonImportHandler"
+            id="org.talend.repository.json.importProvider"
+            name="Json importer"
+            priority="NORMAL">
+         <repType
+               type="JSON"></repType>
+      </importProvider>
+   </extension>
 
 </plugin>

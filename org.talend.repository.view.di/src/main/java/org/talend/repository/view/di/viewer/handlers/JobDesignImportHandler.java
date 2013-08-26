@@ -1,0 +1,139 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.repository.view.di.viewer.handlers;
+
+import java.io.IOException;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.talend.commons.emf.TalendXMIResource;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.repository.items.importexport.handlers.HandlerUtil;
+import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.ui.wizard.imports.managers.ResourcesManager;
+import org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord;
+
+/**
+ * DOC ggu class global comment. Detailled comment
+ */
+public class JobDesignImportHandler extends AbstractImportHandler {
+
+    /**
+     * DOC ggu JobDesignImportHandler constructor comment.
+     */
+    public JobDesignImportHandler() {
+        super();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#createItemResource(org.eclipse
+     * .emf.common.util.URI)
+     */
+    @Override
+    protected Resource createItemResource(URI pathUri) {
+        return new TalendXMIResource(pathUri);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#processImportingItem(org.talend
+     * .repository.items.importexport.ui.wizard.imports.models.ItemRecord)
+     */
+    @Override
+    protected void beforeCreatingItem(ItemRecord selectedItemRecord) {
+        Item tmpItem = selectedItemRecord.getItem();
+        if (tmpItem instanceof ProcessItem) {
+            ProcessItem processItem = (ProcessItem) tmpItem;
+            ParametersType paType = processItem.getProcess().getParameters();
+            boolean statsPSettingRemoved = false;
+
+            // for commanline import project setting
+            if (selectedItemRecord.isRemoveProjectStatslog()) {
+                if (paType != null) {
+                    String paramName = "STATANDLOG_USE_PROJECT_SETTINGS"; //$NON-NLS-1$
+                    EList listParamType = paType.getElementParameter();
+                    for (int j = 0; j < listParamType.size(); j++) {
+                        ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+                        if (pType != null && paramName.equals(pType.getName())) {
+                            pType.setValue(Boolean.FALSE.toString());
+                            statsPSettingRemoved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 14446: item apply project setting param if use project setting
+            String statslogUsePSetting = null;
+            String implicitUsePSetting = null;
+            if (paType != null) {
+                EList listParamType = paType.getElementParameter();
+                for (int j = 0; j < listParamType.size(); j++) {
+                    ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+                    if (pType != null) {
+                        if (!statsPSettingRemoved && "STATANDLOG_USE_PROJECT_SETTINGS".equals(pType.getName())) { //$NON-NLS-1$
+                            statslogUsePSetting = pType.getValue();
+                        }
+                        if ("IMPLICITCONTEXT_USE_PROJECT_SETTINGS".equals(pType.getName())) { //$NON-NLS-1$
+                            implicitUsePSetting = pType.getValue();
+                        }
+                        if (statsPSettingRemoved && implicitUsePSetting != null || !statsPSettingRemoved
+                                && implicitUsePSetting != null && statslogUsePSetting != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+                IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerCoreService.class);
+                if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting)) {
+                    designerCoreService.reloadParamFromProjectSettings(paType, "STATANDLOG_USE_PROJECT_SETTINGS"); //$NON-NLS-1$
+
+                }
+                if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting)) {
+                    designerCoreService.reloadParamFromProjectSettings(paType, "IMPLICITCONTEXT_USE_PROJECT_SETTINGS"); //$NON-NLS-1$
+
+                }
+            }
+
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#copyReferenceFiles(org.talend
+     * .repository.items.importexport.ui.wizard.imports.managers.ResourcesManager,
+     * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
+     */
+    @Override
+    protected boolean copyReferenceFiles(ResourcesManager resManager, ItemRecord selectedItemRecord) throws IOException {
+        HandlerUtil.copyScreenshotFile(resManager, selectedItemRecord);
+        return super.copyReferenceFiles(resManager, selectedItemRecord);
+    }
+
+}

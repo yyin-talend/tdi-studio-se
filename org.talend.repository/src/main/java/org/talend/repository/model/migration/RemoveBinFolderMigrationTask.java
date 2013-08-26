@@ -88,15 +88,17 @@ public class RemoveBinFolderMigrationTask extends AbstractProjectMigrationTask {
         if (PluginChecker.isMDMPluginLoaded()) {
             toReturn.add(ERepositoryObjectType.METADATA_MDMCONNECTION);
         }
-
+        toReturn.remove(null); // remove all null;
         return toReturn;
     }
 
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2010, 3, 23, 12, 0, 0);
         return gc.getTime();
     }
 
+    @Override
     public ExecutionResult execute(Project project) {
         XmiResourceManager xmiResourceManager = new XmiResourceManager();
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);

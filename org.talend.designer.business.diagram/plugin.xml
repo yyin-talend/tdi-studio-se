@@ -590,5 +590,16 @@
             type="BUSINESS_PROCESS">
       </repositoryNode>
    </extension>
+   <extension
+         point="org.talend.repository.items.importexport.handler">
+      <importProvider
+            class="org.talend.designer.business.diagram.views.handler.BusinessDiagramImportHandler"
+            id="org.talend.designer.business.diagram.importProvider"
+            name="Business Diagram importer"
+            priority="NORMAL">
+         <repType
+               type="BUSINESS_PROCESS"></repType>
+      </importProvider>
+   </extension>
    
 </plugin>

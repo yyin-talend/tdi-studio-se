@@ -55,6 +55,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         toReturn.add(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
 
         toReturn.add(ERepositoryObjectType.DOCUMENTATION);
+        toReturn.remove(null); // remove all null
         return toReturn;
     }
 
@@ -115,6 +116,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         }
     }
 
+    @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

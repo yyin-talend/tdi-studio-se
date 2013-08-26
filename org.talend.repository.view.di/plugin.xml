@@ -473,6 +473,52 @@
             products="DI"
             type="PROCESS">
       </repositoryNode>
+      <repositoryNode
+            folder="sqlPatterns"
+            icon="icons/sqlTemplates.png"
+            isResouce="true"
+            key="repository.metadataSQLPatterns"
+            label="%NavigatorContent.sqlTemplates"
+            ordinal="33"
+            products="DI"
+            type="SQLPATTERNS">
+      </repositoryNode>
+   </extension>
+   <extension
+         point="org.talend.repository.items.importexport.handler">
+      <importProvider
+            class="org.talend.repository.view.di.viewer.handlers.ContextImportHandler"
+            id="org.talend.repository.view.di.importProvider.context"
+            name="Context importer"
+            priority="NORMAL">
+         <repType
+               type="CONTEXT"></repType>
+      </importProvider>
+      <importProvider
+            class="org.talend.repository.view.di.viewer.handlers.JobDesignImportHandler"
+            id="org.talend.repository.view.di.importProvider.jobDesign"
+            name="Job importer"
+            priority="NORMAL">
+         <repType
+               type="PROCESS">
+         </repType>
+      </importProvider>
+      <importProvider
+            class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler"
+            id="org.talend.repository.view.di.importProvider.routine"
+            name="Routine importer"
+            priority="NORMAL">
+         <repType
+               type="ROUTINES"></repType>
+      </importProvider>
+      <importProvider
+            class="org.talend.repository.view.di.viewer.handlers.SqlTemplateImportHandler"
+            id="org.talend.repository.view.di.importProvider.sqlTemplate"
+            name="Sql Template importer"
+            priority="NORMAL">
+         <repType
+               type="SQLPATTERNS"></repType>
+      </importProvider>
    </extension>
 
 

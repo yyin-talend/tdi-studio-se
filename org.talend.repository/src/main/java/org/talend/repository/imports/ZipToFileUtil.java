@@ -130,8 +130,8 @@ public class ZipToFileUtil {
     }
 
     // delete the File
-    public static boolean deleteDirectory(String dir) {
-
+    public static boolean deleteDirectory(String folder) {
+        String dir = folder;
         if (!dir.endsWith(File.separator)) {
             dir = dir + File.separator;
         }
