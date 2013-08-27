@@ -101,8 +101,8 @@ public class Contexts {
      */
     public static void clearAll() {
         ContextsView cxtView = getView();
-        refreshView(cxtView);
         if (cxtView != null) {
+            refreshView(cxtView);
             cxtView.reset();
         }
     }
