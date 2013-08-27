@@ -28,7 +28,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,7 +50,6 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.utils.time.TimeMeasure;
@@ -228,16 +226,18 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.measureActive = false;
                 return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
                         Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
-            } finally {
-                try {
-                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    IProject project = workspace.getRoot().getProject(JET_PROJECT);
-                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-                    TimeMeasure.step("initialize Jet Emitters", "build project .JETEmitters"); //$NON-NLS-1$ //$NON-NLS-2$
-                } catch (CoreException e) {
-                    ExceptionHandler.process(e);
-                }
             }
+            // do not rebuild since in all cases there is already a build on TalendJetEmitter.initialize
+            // finally {
+            // try {
+            // IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            // IProject project = workspace.getRoot().getProject(JET_PROJECT);
+            // project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+            //                    TimeMeasure.step("initialize Jet Emitters", "build project .JETEmitters"); //$NON-NLS-1$ //$NON-NLS-2$
+            // } catch (CoreException e) {
+            // ExceptionHandler.process(e);
+            // }
+            // }
             TimeMeasure.end("initialize Jet Emitters"); //$NON-NLS-1$
             TimeMeasure.display = false;
             TimeMeasure.displaySteps = false;
@@ -336,7 +336,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         };
         job.setUser(false);
         job.setSystem(true);
-        job.setPriority(Job.INTERACTIVE);
+        job.setPriority(Job.LONG);
         job.schedule();
         job.wakeUp(); // start as soon as possible
 
