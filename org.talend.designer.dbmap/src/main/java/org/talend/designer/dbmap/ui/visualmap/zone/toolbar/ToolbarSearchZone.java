@@ -171,7 +171,8 @@ public class ToolbarSearchZone {
         hightLightAllButton.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
-                if (searchMaps.isEmpty() && hightLightAllButton.getSelection()) {
+                if (hightLightAllButton.getSelection()) {
+                    searchMaps.clear();
                     searchZoneMapper.search(searchMaps, searchText.getText());
                 }
                 searchZoneMapper.setHightlightAll(hightLightAllButton.getSelection());

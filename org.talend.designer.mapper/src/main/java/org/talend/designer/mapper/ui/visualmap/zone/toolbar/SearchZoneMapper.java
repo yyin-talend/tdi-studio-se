@@ -58,7 +58,7 @@ public class SearchZoneMapper {
         }
         // SearchPattern
         SearchPattern matcher = new SearchPattern();
-        matcher.setPattern(searchValue);
+        matcher.setPattern("*" + searchValue.trim() + "*");
 
         List<InputTable> inputTables = mapperManager.getInputTables();
         List<VarsTable> varsTables = mapperManager.getVarsTables();
