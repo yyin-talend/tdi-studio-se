@@ -26,8 +26,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.repository.items.importexport.handlers.HandlerUtil;
 import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
-import org.talend.repository.items.importexport.ui.wizard.imports.managers.ResourcesManager;
-import org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
  * DOC ggu class global comment. Detailled comment

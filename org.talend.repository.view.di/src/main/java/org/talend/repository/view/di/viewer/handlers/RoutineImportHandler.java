@@ -34,10 +34,10 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
-import org.talend.repository.items.importexport.ui.wizard.imports.managers.ProviderManager;
-import org.talend.repository.items.importexport.ui.wizard.imports.managers.ResourcesManager;
-import org.talend.repository.items.importexport.ui.wizard.imports.managers.ZipFileManager;
-import org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.manager.ResourcesManager;
+import org.talend.repository.items.importexport.ui.managers.ProviderManager;
+import org.talend.repository.items.importexport.ui.managers.ZipFileManager;
 import org.talend.repository.model.RepositoryConstants;
 
 /**

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Path;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
-import org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ItemRecord;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
