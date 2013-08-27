@@ -75,7 +75,9 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IExtendedNodeHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.ProjectManager;
@@ -125,11 +127,11 @@ class ExportItemWizardPage extends WizardPage {
 
     private Button exportDependencies;
 
-    Collection<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+    Collection repositoryNodes = new ArrayList();
 
-    Set<RepositoryNode> checkedNodes = new HashSet<RepositoryNode>();
+    Set checkedNodes = new HashSet();
 
-    Set<RepositoryNode> allNode = new HashSet<RepositoryNode>();
+    Set allNode = new HashSet();
 
     protected ExportItemWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName);
@@ -216,8 +218,8 @@ class ExportItemWizardPage extends WizardPage {
         // if user has select some items in repository view, mark them as checked
         if (selection != null && !selection.isEmpty()) {
             // for bug 10969
-            Set<RepositoryNode> newSelection = new HashSet<RepositoryNode>();
-            for (RepositoryNode currentNode : (List<RepositoryNode>) selection.toList()) {
+            Set newSelection = new HashSet();
+            for (Object currentNode : selection.toList()) {
                 // List<IRepositoryViewObject> objects = null;
                 // if (currentNode.getContentType() != null && currentNode.getObject() != null
                 // && currentNode.getObjectType() != ERepositoryObjectType.FOLDER) {
@@ -241,12 +243,15 @@ class ExportItemWizardPage extends WizardPage {
             repositoryNodes.addAll(newSelection);
             repositoryNodes.addAll(checkedNodes);
 
-            Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
+            Set nodes = new HashSet();
 
-            for (RepositoryNode node : repositoryNodes) {
-                expandRoot(node);
-                expandParent(exportItemsTreeViewer, node);
-                checkElement(node, nodes);
+            for (Object obj : repositoryNodes) {
+                if (obj instanceof RepositoryNode) {
+                    RepositoryNode node = (RepositoryNode) obj;
+                    expandRoot(node);
+                    expandParent(exportItemsTreeViewer, node);
+                    checkElement(node, nodes);
+                }
             }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
             exportItemsTreeViewer.setCheckedElements(nodes.toArray());
@@ -705,10 +710,13 @@ class ExportItemWizardPage extends WizardPage {
                     allNode.addAll(repositoryNodes);
                 }
                 Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
-                for (RepositoryNode node : allNode) {
-                    expandRoot(node);
-                    expandParent(exportItemsTreeViewer, node);
-                    checkElement(node, nodes);
+                for (Object obj : allNode) {
+                    if (obj instanceof RepositoryNode) {
+                        RepositoryNode node = (RepositoryNode) obj;
+                        expandRoot(node);
+                        expandParent(exportItemsTreeViewer, node);
+                        checkElement(node, nodes);
+                    }
                 }
                 exportItemsTreeViewer.setCheckedElements(nodes.toArray());
             }
@@ -779,7 +787,7 @@ class ExportItemWizardPage extends WizardPage {
                     @Override
                     public void run() {
                         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                        Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
+                        Set nodes = new HashSet();
                         nodes.addAll(repositoryNodes);
                         nodes.addAll(checkedNodes);
                         exportItemsTreeViewer.setCheckedElements(nodes.toArray());
@@ -981,9 +989,9 @@ class ExportItemWizardPage extends WizardPage {
         // add this if user use filter
         Set checkedElements = new HashSet();
         for (Object obj : filteredCheckboxTree.getCheckedLeafNodes()) {
-            if (obj instanceof RepositoryNode) {
-                checkedElements.add(obj);
-            }
+            // if (obj instanceof RepositoryNode) {
+            checkedElements.add(obj);
+            // }
         }
 
         // add this if user does not use filter
@@ -992,6 +1000,14 @@ class ExportItemWizardPage extends WizardPage {
                 RepositoryNode repositoryNode = (RepositoryNode) obj;
                 if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
                     checkedElements.add(obj);
+                }
+            } else {
+                for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                    if (nodeHandler.isExportEnable(obj)) {
+                        checkedElements.add(obj);
+                        break;
+                    }
+
                 }
             }
         }
@@ -1007,33 +1023,58 @@ class ExportItemWizardPage extends WizardPage {
         for (Object object : objects) {
             if (object instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) object;
-                collectNodes(items, repositoryNode);
+                IRepositoryViewObject repositoryObject = repositoryNode.getObject();
+                if (repositoryObject != null) {
+                    if (repositoryObject.getRepositoryObjectType().isResourceItem()) {
+                        Item item = repositoryObject.getProperty().getItem();
+                        items.put(item.getProperty().getId(), item);
+                    }
+                } else {
+                    if (repositoryNode.getParent() != null && repositoryNode.getParent().getObject() != null) {
+                        Item item = repositoryNode.getParent().getObject().getProperty().getItem();
+                        items.put(item.getProperty().getId(), item);
+                    }
+                }
+                if (filteredCheckboxTree != null && !isHadoopClusterNode(repositoryNode)) {
+                    IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
+                    if (contentProvider instanceof ITreeContentProvider) {
+                        Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
+                        collectNodes(items, children);
+                    }
+                }
+            } else {
+                for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                    Property property = nodeHandler.getProperty(object);
+                    if (property != null) {
+                        items.put(property.getId(), property.getItem());
+                    }
+                }
             }
         }
     }
 
-    private void collectNodes(Map<String, Item> items, RepositoryNode repositoryNode) {
-        IRepositoryViewObject repositoryObject = repositoryNode.getObject();
-        if (repositoryObject != null) {
-            if (repositoryObject.getRepositoryObjectType().isResourceItem()) {
-                Item item = repositoryObject.getProperty().getItem();
-                items.put(item.getProperty().getId(), item);
-            }
-        } else {
-            if (repositoryNode.getParent() != null && repositoryNode.getParent().getObject() != null) {
-                Item item = repositoryNode.getParent().getObject().getProperty().getItem();
-                items.put(item.getProperty().getId(), item);
-            }
-        }
-        if (filteredCheckboxTree != null && !isHadoopClusterNode(repositoryNode)) {
-            IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
-            if (contentProvider instanceof ITreeContentProvider) {
-                Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
-                collectNodes(items, children);
-            }
-        }
-
-    }
+    // private void collectNodes(Map<String, Item> items, RepositoryNode repositoryNode) {
+    // IRepositoryViewObject repositoryObject = repositoryNode.getObject();
+    // if (repositoryObject != null) {
+    // if (repositoryObject.getRepositoryObjectType().isResourceItem()) {
+    // Item item = repositoryObject.getProperty().getItem();
+    // items.put(item.getProperty().getId(), item);
+    // }
+    // } else {
+    // if (repositoryNode.getParent() != null && repositoryNode.getParent().getObject() != null) {
+    // Item item = repositoryNode.getParent().getObject().getProperty().getItem();
+    // items.put(item.getProperty().getId(), item);
+    // }
+    // }
+    // if (filteredCheckboxTree != null && !isHadoopClusterNode(repositoryNode)) {
+    // IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
+    // if (contentProvider instanceof ITreeContentProvider) {
+    // Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
+    // collectNodes(items, children);
+    // }
+    // }
+    //
+    // }
 
     public boolean performCancel() {
         return true;
