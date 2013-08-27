@@ -213,6 +213,11 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
         SubjobContainer targetSubjob = target.getNodeContainer().getSubjobContainer();
         if ((sourceSubjob == targetSubjob) && targetSubjob.isCollapsed()) {
             return false;
+        } else if (!connLabel.getConnection().isActivate() && sourceSubjob.isCollapsed()) {
+            if (sourceSubjob.getSubjobStartNode().getUniqueName().equals(source.getUniqueName())) {
+                return super.isSelectable();
+            }
+            return false;
         }
         return super.isSelectable();
     }
