@@ -851,7 +851,11 @@ public class RunProcessContext {
                 }
                 messageOut = extractMessage(outIs, MsgType.STD_OUT, flush);
                 if (messageOut != null) {
-                    processMessageManager.addMessage(messageOut);
+                    String[] splitLines = messageOut.getContent().split("\n");
+                    for (String lineContent : splitLines) {
+                        IProcessMessage lineMsg = new ProcessMessage(getLog4jMsgType(MsgType.STD_OUT, lineContent), lineContent);
+                        processMessageManager.addMessage(lineMsg);
+                    }
                 }
             } catch (IOException ioe) {
                 addErrorMessage(ioe);
@@ -888,7 +892,6 @@ public class RunProcessContext {
                         break;
                     }
                 }
-
                 msg = new ProcessMessage(type, sb.toString());
             } else {
                 msg = null;
@@ -916,6 +919,35 @@ public class RunProcessContext {
         }
 
         return false;
+    }
+
+    /**
+     * DOC ldong Comment method "getLog4jMsgType".
+     * 
+     * @param outType
+     * @param lineContent
+     * @return
+     */
+    private MsgType getLog4jMsgType(MsgType outType, String lineContent) {
+        MsgType msgLog4jType = null;
+        if (outType.equals(MsgType.STD_OUT)) {
+            if (lineContent.startsWith("[TRACE]")) {
+                return MsgType.LOG4J_TRACE;
+            } else if (lineContent.startsWith("[INFO ]")) {
+                return MsgType.LOG4J_INFO;
+            } else if (lineContent.startsWith("[DEBUG]")) {
+                return MsgType.LOG4J_DEBUG;
+            } else if (lineContent.startsWith("[WARN ]")) {
+                return MsgType.LOG4J_WARN;
+            } else if (lineContent.startsWith("[ERROR]")) {
+                return MsgType.LOG4J_ERROR;
+            } else if (lineContent.startsWith("[FATAL]")) {
+                return MsgType.LOG4J_FATAL;
+            } else {
+                return outType;
+            }
+        }
+        return msgLog4jType;
     }
 
     /**

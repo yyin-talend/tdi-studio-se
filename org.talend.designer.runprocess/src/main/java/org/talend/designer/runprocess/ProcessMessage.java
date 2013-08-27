@@ -28,6 +28,12 @@ public class ProcessMessage implements IProcessMessage {
     public enum MsgType implements IMsgType {
         STD_OUT,
         STD_ERR,
+        LOG4J_TRACE,
+        LOG4J_INFO,
+        LOG4J_WARN,
+        LOG4J_DEBUG,
+        LOG4J_ERROR,
+        LOG4J_FATAL,
         CORE_OUT,
         CORE_ERR
     }

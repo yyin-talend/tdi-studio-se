@@ -7,7 +7,7 @@
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 		 	<param name="ConversionPattern"  
-		  		value="[%-15.15t] %-30.30c{1} %-5p %m%n" />
+		  		value="[%-5p]: %c - %m%n" />
 		</layout>
 	</appender>
 	
@@ -17,12 +17,11 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
     
-    <!-- throwableRenderer -->  
-    <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>
+    <!-- throwableRenderer <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>-->  
     
     <!-- Root Logger -->  
 	<root>
-		<priority value ="info"/>
+		<priority value ="trace"/>
 		<appender-ref ref="CONSOLE"/>
 	</root>
 </log4j:configuration>

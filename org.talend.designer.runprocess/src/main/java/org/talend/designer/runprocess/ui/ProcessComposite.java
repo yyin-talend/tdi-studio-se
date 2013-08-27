@@ -1140,26 +1140,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // see feature 0004895: Font size of the output console are very small
         // setConsoleFont();
 
-        String[] rows = message.getContent().split("\n"); //$NON-NLS-1$
-        int rowLimit = getConsoleRowLimit();
-        String content = null;
-        if (rowLimit != SWT.DEFAULT) {
-            int currentRows = consoleText.getLineCount();
-            // if (consoleText.getText().equals("")) {
-            currentRows--;
-            // }
-            if (currentRows >= rowLimit) {
-                return;
-            } else if (currentRows + rows.length <= rowLimit) {
-                content = message.getContent();
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < rowLimit - currentRows; i++) {
-                    sb.append(rows[i]).append("\n"); //$NON-NLS-1$
-                }
-                content = sb.toString();
-            }
-        }
+        String content = getRowLimitContent(message);
 
         if (content == null) {
             content = message.getContent();
@@ -1182,22 +1163,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
             style.fontStyle = SWT.ITALIC;
         }
-        Color color;
-        switch ((MsgType) message.getType()) {
-        case CORE_OUT:
-            color = getDisplay().getSystemColor(SWT.COLOR_BLUE);
-            break;
-        case CORE_ERR:
-            color = getDisplay().getSystemColor(SWT.COLOR_DARK_RED);
-            break;
-        case STD_ERR:
-            color = getDisplay().getSystemColor(SWT.COLOR_RED);
-            break;
-        case STD_OUT:
-        default:
-            color = getDisplay().getSystemColor(SWT.COLOR_BLACK);
-            break;
-        }
+        Color color = getColor((MsgType) message.getType());
         style.foreground = color;
 
         // added by hyWang for bug 0007411
@@ -1235,11 +1201,45 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         if (consoleText == null || consoleText.isDisposed()) {
             return;
         }
-        consoleText.setText(""); //$NON-NLS-1$
+        List<StyleRange> styles = new ArrayList<StyleRange>();
+        StringBuffer consoleMsgText = new StringBuffer();
+        for (IProcessMessage message : messages) {
+            // see feature 0004895: Font size of the output console are very small
+            // setConsoleFont();
+            String content = getRowLimitContent(message);
 
-        for (IProcessMessage processMessage : messages) {
-            doAppendToConsole(processMessage);
+            if (content == null) {
+                content = message.getContent();
+            }
+
+            StyleRange style = new StyleRange();
+            style.start = consoleMsgText.length();
+
+            String[] contents = content.split("\n");
+            for (int i = 0; i < contents.length; i++) {
+                if (isPattern(contents[i]) || isPatternFor(contents[i])) {
+                    consoleMsgText.append(""); //$NON-NLS-1$
+                    content = ""; //$NON-NLS-1$
+                } else {
+                    consoleMsgText.append(contents[i]);
+                    consoleMsgText.append("\n");
+                }
+            }
+            style.length = content.length();
+            if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
+                style.fontStyle = SWT.ITALIC;
+            }
+            Color color = getColor((MsgType) message.getType());
+            style.foreground = color;
+
+            if ((style.start + style.length) > consoleMsgText.length()) {
+                style.length = consoleMsgText.length() - style.start;
+            }
+            styles.add(style);
         }
+        consoleText.setText(consoleMsgText.toString());
+        consoleText.setStyleRanges((StyleRange[]) styles.toArray(new StyleRange[0]));
+
         scrollToEnd();
     }
 
@@ -1249,6 +1249,61 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         }
         consoleText.setCaretOffset(consoleText.getText().length());
         consoleText.showSelection();
+    }
+
+    private String getRowLimitContent(IProcessMessage message) {
+        int currentRows = 0;
+        String content = null;
+        String[] rows = message.getContent().split("\n"); //$NON-NLS-1$
+        int rowLimit = getConsoleRowLimit();
+
+        if (rowLimit != SWT.DEFAULT) {
+            currentRows++;
+            if (currentRows >= rowLimit) {
+                return "";
+            } else if (currentRows + rows.length <= rowLimit) {
+                content = message.getContent();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < rowLimit - currentRows; i++) {
+                    sb.append(rows[i]).append("\n"); //$NON-NLS-1$
+                }
+                content = sb.toString();
+            }
+        }
+        return content;
+    }
+
+    private Color getColor(MsgType type) {
+        Color color = null;
+        switch (type) {
+        case CORE_OUT:
+            color = getDisplay().getSystemColor(SWT.COLOR_BLUE);
+            break;
+        case CORE_ERR:
+            color = getDisplay().getSystemColor(SWT.COLOR_DARK_RED);
+            break;
+        case STD_ERR:
+            color = getDisplay().getSystemColor(SWT.COLOR_RED);
+            break;
+        case LOG4J_TRACE:
+        case LOG4J_DEBUG:
+        case LOG4J_INFO:
+            color = getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN);
+            break;
+        case LOG4J_WARN:
+            color = getDisplay().getSystemColor(SWT.COLOR_DARK_YELLOW);
+            break;
+        case LOG4J_ERROR:
+        case LOG4J_FATAL:
+            color = getDisplay().getSystemColor(SWT.COLOR_RED);
+            break;
+        case STD_OUT:
+        default:
+            color = getDisplay().getSystemColor(SWT.COLOR_BLACK);
+            break;
+        }
+        return color;
     }
 
     /**
