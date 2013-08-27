@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -52,6 +53,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -574,8 +576,16 @@ public class TalendForgeDialog extends TrayDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 preferenceStore.setValue(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED, improveButton.getSelection());
+                if (preferenceStore instanceof ScopedPreferenceStore) {
+                    try {
+                        ((ScopedPreferenceStore) preferenceStore).save();
+                    } catch (IOException e1) {
+                        ExceptionHandler.process(e1);
+                    }
+                }
+
                 if (!improveButton.getSelection()) {
-                    TokenCollectorFactory.getFactory().send();
+                    TokenCollectorFactory.getFactory().send(true);
                 }
             }
         });
