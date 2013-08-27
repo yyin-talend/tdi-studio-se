@@ -25,6 +25,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
@@ -224,6 +225,15 @@ public class GuessSchemaProcess {
                 systemProperty = systemProperty + " System.setProperty(\"hive.metastore.local\", \"false\");\r\n"//$NON-NLS-1$ 
                         + " System.setProperty(\"hive.metastore.uris\", \"" + info.getThrifturi() + "\");\r\n"//$NON-NLS-1$ //$NON-NLS-2$ 
                         + "System.setProperty(\"hive.metastore.execute.setugi\", \"true\");\r\n";//$NON-NLS-1$ 
+            }
+        }
+        // add for bug TDI-27137 by fwang on 27 August, 2013.
+        EDatabaseTypeName dbType = EDatabaseTypeName.JAVADB_EMBEDED.getTypeFromDbType(info.getDbType());
+        if (EDatabaseTypeName.JAVADB_EMBEDED.equals(dbType)) {
+            IElementParameter dbPathElement = node.getElementParameter("DBPATH");
+            if (dbPathElement != null) {
+                String derbyPath = dbPathElement.getValue().toString().replace("\"", "").trim();
+                systemProperty = systemProperty + "System.setProperty(\"derby.system.home\",\"" + derbyPath + "\");\r\n";
             }
         }
         codeStart = systemProperty
