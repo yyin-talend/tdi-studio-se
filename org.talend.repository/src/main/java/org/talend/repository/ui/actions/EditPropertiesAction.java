@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -189,7 +190,8 @@ public class EditPropertiesAction extends AContextualAction {
             return;
         }
 
-        if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
+		if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES
+		|| node.getObjectType() == ERepositoryObjectType.valueOf("Beans"))) {
             return;
         }
         if (originalName.equals(node.getObject().getProperty().getLabel())) {
@@ -222,7 +224,8 @@ public class EditPropertiesAction extends AContextualAction {
             }
 
             // qli modified to fix the bug 5400 and 6185.
-            IPackageFragment routinesPkg = getPackageFragment(root);
+			// update for fix [TESB-6784]
+            IPackageFragment routinesPkg = getPackageFragment(root, node);
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {
@@ -295,8 +298,10 @@ public class EditPropertiesAction extends AContextualAction {
         }
     }
 
-    protected IPackageFragment getPackageFragment(IPackageFragmentRoot rootPackageFragment) {
-        return rootPackageFragment.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+    protected IPackageFragment getPackageFragment(IPackageFragmentRoot root, RepositoryNode node) {
+        String folder = node.getContentType().getFolder();
+        String packageName = Path.fromOSString(folder).lastSegment();
+        return root.getPackageFragment(packageName);
     }
 
     /**
