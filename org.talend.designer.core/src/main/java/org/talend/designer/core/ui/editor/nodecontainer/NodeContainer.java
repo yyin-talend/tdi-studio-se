@@ -263,7 +263,7 @@ public class NodeContainer extends Element {
         }
 
         if (parallelize) {
-            parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
+            parallelLocation.x = nodeLocation.x - parallelSize.width;
             parallelLocation.y = nodeLocation.y - parallelSize.height;
             parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
 
