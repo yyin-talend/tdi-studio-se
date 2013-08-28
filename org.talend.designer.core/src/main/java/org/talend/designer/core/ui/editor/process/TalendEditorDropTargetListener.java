@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -37,7 +36,6 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
@@ -157,7 +155,6 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.dialog.mergeorder.ChooseJobletDialog;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
-import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
@@ -166,6 +163,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
+import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
@@ -343,47 +341,57 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 return;
             }
 
-            RootEditPart rep = editor.getViewer().getRootEditPart().getRoot();
-
-            Point viewOriginalPosition = new Point();
-            if (rep instanceof ScalableFreeformRootEditPart) {
-                ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
-                Viewport viewport = (Viewport) root.getFigure();
-                viewOriginalPosition = viewport.getViewLocation();
+//            RootEditPart rep = editor.getViewer().getRootEditPart().getRoot();
+//
+//            Point viewOriginalPosition = new Point();
+//            if (rep instanceof ScalableFreeformRootEditPart) {
+//                ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+//                Viewport viewport = (Viewport) root.getFigure();
+//                viewOriginalPosition = viewport.getViewLocation();
+//            }
+//
+//            org.eclipse.swt.graphics.Point swtLocation = new org.eclipse.swt.graphics.Point(event.x + viewOriginalPosition.x,
+//                    event.y + viewOriginalPosition.y);
+//            Canvas canvas = (Canvas) editor.getViewer().getControl();
+//            swtLocation = canvas.toControl(swtLocation);
+//          //   System.out.println("topLeft:" + topLeftpoint + " / event:" + swtLocation);
+//            org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
+//
+//            double zoom = 1.0;
+//            if (editor.getViewer().getRootEditPart() instanceof TalendScalableFreeformRootEditPart) {
+//                ZoomManager zoomManager = ((TalendScalableFreeformRootEditPart) editor.getViewer().getRootEditPart())
+//                        .getZoomManager();
+//                zoom = zoomManager.getZoom();
+//            }
+//            List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionParts(editor.getProcessPart(),
+//                    draw2dPosition, (Node) o);
+//
+//            double minDistance = 1000000000;
+//            for (ConnectionPart part : connectionParts) {
+//                if (part.getFigure() instanceof PolylineConnection) {
+//                    PolylineConnection connection = (PolylineConnection) part.getFigure();
+//                    Point pt1 = connection.getStart();
+//                    Point pt2 = connection.getEnd();
+//                    double distance = CreateComponentOnLinkHelper.getDistanceOrthogonal(draw2dPosition.x, draw2dPosition.y, pt1,
+//                            pt2, zoom);
+//                    if (distance < minDistance) {
+//                        selectedConnectionPart = part;
+//                        minDistance = Math.min(distance, minDistance);
+//                    }
+//                }
+//            }
+            
+            org.eclipse.swt.graphics.Point toControlPosition = getViewer().getControl().toControl(event.x, event.y);
+            EditPart partOnCurrentPosition = getViewer().findObjectAt(new Point(toControlPosition.x, toControlPosition.y));
+            if(partOnCurrentPosition instanceof ConnLabelEditPart){
+                selectedConnectionPart = (ConnectionPart) ((ConnLabelEditPart)partOnCurrentPosition).getParent();
+            }else if(partOnCurrentPosition instanceof ConnectionPart){
+                selectedConnectionPart = (ConnectionPart) partOnCurrentPosition;
+            }else{
+                selectedConnectionPart = null;
             }
 
-            org.eclipse.swt.graphics.Point swtLocation = new org.eclipse.swt.graphics.Point(event.x + viewOriginalPosition.x,
-                    event.y + viewOriginalPosition.y);
-            Canvas canvas = (Canvas) editor.getViewer().getControl();
-            swtLocation = canvas.toControl(swtLocation);
-            // System.out.println("topLeft:" + topLeftpoint + " / event:" + swtLocation);
-            org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
-
-            double zoom = 1.0;
-            if (editor.getViewer().getRootEditPart() instanceof TalendScalableFreeformRootEditPart) {
-                ZoomManager zoomManager = ((TalendScalableFreeformRootEditPart) editor.getViewer().getRootEditPart())
-                        .getZoomManager();
-                zoom = zoomManager.getZoom();
-            }
-            List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionParts(editor.getProcessPart(),
-                    draw2dPosition, (Node) o);
-
-            double minDistance = 1000000000;
-            for (ConnectionPart part : connectionParts) {
-                if (part.getFigure() instanceof PolylineConnection) {
-                    PolylineConnection connection = (PolylineConnection) part.getFigure();
-                    Point pt1 = connection.getStart();
-                    Point pt2 = connection.getEnd();
-                    double distance = CreateComponentOnLinkHelper.getDistanceOrthogonal(draw2dPosition.x, draw2dPosition.y, pt1,
-                            pt2, zoom);
-                    if (distance < minDistance) {
-                        selectedConnectionPart = part;
-                        minDistance = Math.min(distance, minDistance);
-                    }
-                }
-            }
-
-            if (selectedConnectionPart != null && minDistance < 15) {
+            if (selectedConnectionPart != null) {
                 for (Object child : editor.getProcessPart().getChildren()) {
                     if (child instanceof SubjobContainerPart) {
                         CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
@@ -2002,8 +2010,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 execCommandStack(createCmd);
                 // reconnect the node
                 Node originalTarget = (Node) targetConnection.getTarget();
-                INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-                for (INodeConnector connector : node.getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+                
+                EConnectionType connectionType = EConnectionType.FLOW_MAIN;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            ICamelDesignerCoreService.class);
+                    if(camelService.isRouteBuilderNode(node)){
+                        connectionType = camelService.getTargetConnectionType(node);
+                    }
+                }
+                
+                INodeConnector targetConnector = node.getConnectorFromType(connectionType);
+                for (INodeConnector connector : node.getConnectorsFromType(connectionType)) {
                     if (connector.getMaxLinkOutput() != 0) {
                         targetConnector = connector;
                         break;
