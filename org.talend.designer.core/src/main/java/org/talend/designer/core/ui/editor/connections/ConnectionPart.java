@@ -249,14 +249,22 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         elements.add(((Connection) getModel()).getConnectionLabel());
         elements.add(((Connection) getModel()).getPerformance());
 
-        EditPart contents = getRoot().getContents();
         boolean monitorSupport = true;
-        if (contents.getModel() instanceof IProcess) {
-            IProcess currentProcess = (IProcess) contents.getModel();
+        if (getParent() != null && getRoot() != null) {
+            EditPart contents = getRoot().getContents();
+            if (contents.getModel() instanceof IProcess) {
+                IProcess currentProcess = (IProcess) contents.getModel();
+                if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().endsWith(currentProcess.getComponentsType())) {
+                    monitorSupport = false;
+                }
+            }
+        } else {
+            IProcess currentProcess = ((Connection) getModel()).getSource().getProcess();
             if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().endsWith(currentProcess.getComponentsType())) {
                 monitorSupport = false;
             }
         }
+
         if (monitorSupport) {
             if (((Connection) getModel()).getResuming() != null) {
                 elements.add(((Connection) getModel()).getResuming());
