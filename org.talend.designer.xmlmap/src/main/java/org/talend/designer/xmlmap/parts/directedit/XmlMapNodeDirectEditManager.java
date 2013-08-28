@@ -343,6 +343,20 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             // this one is created for direct doc child name , no use anymore...
             cellEditor = new TextCellEditor(composite);
             cellAndType.put(cellEditor, ((ITextCell) figure).getDirectEditType());
+            // for the search
+            XmlMapNodeCellEditorLocator lo = (XmlMapNodeCellEditorLocator) locator;
+            if (lo.getFigure() != null && lo.getFigure() instanceof VarNodeTextLabel) {
+                figure = (VarNodeTextLabel) lo.getFigure();
+                if (figure.getParent() != null && figure.getParent() instanceof XmlMapSearchZoneToolBar) {
+                    XmlMapSearchZoneToolBar searchZone = (XmlMapSearchZoneToolBar) figure.getParent();
+                    if (searchZone.getSearchMaps().size() > 0) {
+                        searchZone.getSearchZoneMapper().hightlightAll(searchZone.getSearchMaps(), false);
+                        searchZone.getSearchZoneMapper().setHightlightAll(false);
+                        searchZone.getSearchMaps().clear();
+                        searchZone.hightLightAll.setSelected(false);
+                    }
+                }
+            }
         } else if (figure instanceof IExpressionBuilderCell && model instanceof AbstractNode) {
             IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                     IExpressionBuilderDialogService.class);

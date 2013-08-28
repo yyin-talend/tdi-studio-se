@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.dbmap.ui.visualmap.zone.toolbar;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,18 +45,19 @@ public class SearchZoneMapper {
 
     private boolean isHightlightAll = false;
 
+    private SearchPattern matcher = new SearchPattern();
+
     public SearchZoneMapper(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
         uiManager = mapperManager.getUiManager();
     }
 
-    public void search(Map<Integer, ITableEntry> searchMaps, String searchValue) {
+    public void search(Map<Integer, Map<Integer, ITableEntry>> searchMaps, String searchValue) {
         if (searchValue.equals("")) {
             uiManager.unselectAllEntriesOfAllTables();
             return;
         }
         // SearchPattern
-        SearchPattern matcher = new SearchPattern();
         matcher.setPattern("*" + searchValue.trim() + "*");
 
         List<InputTable> inputTables = mapperManager.getInputTables();
@@ -63,12 +65,25 @@ public class SearchZoneMapper {
 
         int index = -1;
 
-        // for the Lookup InputTables
+        // for the InputTables
         for (InputTable inputTable : inputTables) {
             for (IColumnEntry column : inputTable.getColumnEntries()) {
+                int i = -1;
+                Map<Integer, ITableEntry> map = new HashMap<Integer, ITableEntry>();
+                boolean modified = false;
                 if (column.getExpression() != null && matcher.matches(column.getExpression())) {
+                    i++;
+                    map.put(i, column);
+                    modified = true;
+                }
+                if (column.getName() != null && matcher.matches(column.getName())) {
+                    i++;
+                    map.put(i, column);
+                    modified = true;
+                }
+                if (modified) {
                     index++;
-                    searchMaps.put(index, column);
+                    searchMaps.put(index, map);
                 }
             }
         }
@@ -78,62 +93,89 @@ public class SearchZoneMapper {
             // OutputTable Filters
             for (FilterTableEntry entry : outputTable.getFilterEntries()) {
                 if (entry.getExpression() != null && matcher.matches(entry.getExpression())) {
+                    Map<Integer, ITableEntry> map = new HashMap<Integer, ITableEntry>();
+                    map.put(0, entry);
                     index++;
-                    searchMaps.put(index, entry);
+                    searchMaps.put(index, map);
                 }
             }
             // OutputTable Columns
             for (IColumnEntry column : outputTable.getColumnEntries()) {
+                int i = -1;
+                Map<Integer, ITableEntry> map = new HashMap<Integer, ITableEntry>();
+                boolean modified = false;
                 if (column.getExpression() != null && matcher.matches(column.getExpression())) {
+                    i++;
+                    map.put(i, column);
+                    modified = true;
+                }
+                if (column.getName() != null && matcher.matches(column.getName())) {
+                    i++;
+                    map.put(i, column);
+                    modified = true;
+                }
+                if (modified) {
                     index++;
-                    searchMaps.put(index, column);
+                    searchMaps.put(index, map);
                 }
             }
         }
     }
 
-    public Integer selectHightlight(Map<Integer, ITableEntry> searchMaps, Integer selectKey, String option) {
+    public Integer selectHightlight(Map<Integer, Map<Integer, ITableEntry>> searchMaps, Integer selectKey, String option) {
         if (searchMaps.containsKey(selectKey)) {
             if (option.equals("next") && selectKey + 1 < searchMaps.size()) {
+                Map<Integer, ITableEntry> map = searchMaps.get(selectKey);
+                Map<Integer, ITableEntry> mapNext = searchMaps.get(selectKey + 1);
                 if (isHightlightAll) {
-                    setEntryState(mapperManager, EntryState.HIGHLIGHTALL, searchMaps.get(selectKey));
-                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(selectKey + 1));
+                    setEntryState(mapperManager, EntryState.HIGHLIGHTALL, map.get(0));
+                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, mapNext.get(0));
                 } else {
-                    setEntryState(mapperManager, EntryState.NONE, searchMaps.get(selectKey));
-                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(selectKey + 1));
+                    setEntryState(mapperManager, EntryState.NONE, map.get(0));
+                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, mapNext.get(0));
                 }
                 // move scrollBarZone at selected TableItem
-                moveScrollBarZoneAtSelectedTableItem(searchMaps.get(selectKey + 1));
+                moveScrollBarZoneAtSelectedTableItem(mapNext.get(0));
                 return selectKey + 1;
             } else if (option.equals("previous") && selectKey > 0) {
+                Map<Integer, ITableEntry> map = searchMaps.get(selectKey);
+                Map<Integer, ITableEntry> mapNext = searchMaps.get(selectKey - 1);
                 if (isHightlightAll) {
-                    setEntryState(mapperManager, EntryState.HIGHLIGHTALL, searchMaps.get(selectKey));
-                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(selectKey - 1));
+                    setEntryState(mapperManager, EntryState.HIGHLIGHTALL, map.get(0));
+                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, mapNext.get(0));
                 } else {
-                    setEntryState(mapperManager, EntryState.NONE, searchMaps.get(selectKey));
-                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(selectKey - 1));
+                    setEntryState(mapperManager, EntryState.NONE, map.get(0));
+                    setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, mapNext.get(0));
                 }
                 // move scrollBarZone at selected TableItem
-                moveScrollBarZoneAtSelectedTableItem(searchMaps.get(selectKey - 1));
+                moveScrollBarZoneAtSelectedTableItem(mapNext.get(0));
                 return selectKey - 1;
             } else if (option.equals("first")) {
-                setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(0));
+                setEntryState(mapperManager, EntryState.SEARCH_HIGHLIGHT, searchMaps.get(0).get(0));
                 // move scrollBarZone at selected TableItem
-                moveScrollBarZoneAtSelectedTableItem(searchMaps.get(0));
+                moveScrollBarZoneAtSelectedTableItem(searchMaps.get(0).get(0));
                 return 0;
             }
+        } else {
+            searchMaps.clear();
+            return 0;
         }
         return selectKey;
     }
 
-    public void hightlightAll(Map<Integer, ITableEntry> searchMaps, boolean isHightlight) {
+    public void hightlightAll(Map<Integer, Map<Integer, ITableEntry>> searchMaps, boolean isHightlight) {
         Iterator iter = searchMaps.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            if (isHightlight) {
-                setEntryState(mapperManager, EntryState.HIGHLIGHTALL, (ITableEntry) entry.getValue());
-            } else {
-                setEntryState(mapperManager, EntryState.NONE, (ITableEntry) entry.getValue());
+            Map<Integer, ITableEntry> map = (Map<Integer, ITableEntry>) entry.getValue();
+            Iterator it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry e = (Map.Entry) it.next();
+                if (isHightlight) {
+                    setEntryState(mapperManager, EntryState.HIGHLIGHTALL, (ITableEntry) e.getValue());
+                } else {
+                    setEntryState(mapperManager, EntryState.NONE, (ITableEntry) e.getValue());
+                }
             }
         }
     }
@@ -141,11 +183,21 @@ public class SearchZoneMapper {
     public void setEntryState(MapperManager mapperManager, EntryState entryState, ITableEntry entry) {
         if (entry != null && entry.getParent() instanceof InputTable) {
             TableItem tableItem = mapperManager.retrieveTableItem(entry);
-            tableItem.setBackground(4, entryState.getColor());
+            if (entry.getName() != null && matcher.matches(entry.getName())) {
+                tableItem.setBackground(2, entryState.getColor());
+            }
+            if (entry.getExpression() != null && matcher.matches(entry.getExpression())) {
+                tableItem.setBackground(4, entryState.getColor());
+            }
         } else {
             TableItem tableItem = mapperManager.retrieveTableItem(entry);
             // tableItem.setForeground(1, entryState.getColor());
-            tableItem.setBackground(1, entryState.getColor());
+            if (entry.getName() != null && matcher.matches(entry.getName())) {
+                tableItem.setBackground(2, entryState.getColor());
+            }
+            if (entry.getExpression() != null && matcher.matches(entry.getExpression())) {
+                tableItem.setBackground(1, entryState.getColor());
+            }
         }
     }
 
@@ -177,11 +229,19 @@ public class SearchZoneMapper {
         scrollComposite.setOrigin(0, scrollBarSelection);
     }
 
-    public Integer getSelectedKeyAtSelectedTableItem(Map<Integer, ITableEntry> searchMaps) {
+    public Integer getSelectedKeyAtSelectedTableItem(Map<Integer, Map<Integer, ITableEntry>> searchMaps) {
         Integer selectKey = 0;
         TableViewerCreator tableViewerCreator = null;
         if (uiManager.getCurrentSelectedInputTableView() != null) {
             tableViewerCreator = uiManager.getCurrentSelectedInputTableView().getTableViewerCreatorForColumns();
+            if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null) {
+                ISelection selection = tableViewerCreator.getTableViewer().getSelection();
+                if (selection == null || selection.isEmpty()) {
+                    if (uiManager.getCurrentSelectedOutputTableView() != null) {
+                        tableViewerCreator = uiManager.getCurrentSelectedOutputTableView().getTableViewerCreatorForColumns();
+                    }
+                }
+            }
         } else if (uiManager.getCurrentSelectedOutputTableView() != null) {
             tableViewerCreator = uiManager.getCurrentSelectedOutputTableView().getTableViewerCreatorForColumns();
         }
@@ -192,15 +252,20 @@ public class SearchZoneMapper {
                 if (list != null && !list.isEmpty()) {
                     ITableEntry tableEntry = list.get(0);
                     if (tableEntry != null) {
-                        if (searchMaps.containsValue(tableEntry)) {
-                            Iterator iter = searchMaps.entrySet().iterator();
-                            while (iter.hasNext()) {
-                                Map.Entry entry = (Map.Entry) iter.next();
-                                if (entry.getValue() != null && entry.getValue() instanceof ITableEntry) {
-                                    ITableEntry tableEntryTemp = (ITableEntry) entry.getValue();
-                                    if (tableEntry.equals(tableEntryTemp)) {
-                                        tableViewerCreator.getTableViewer().getTable().deselectAll();
-                                        return (Integer) entry.getKey();
+                        Iterator iter = searchMaps.entrySet().iterator();
+                        while (iter.hasNext()) {
+                            Map.Entry entry = (Map.Entry) iter.next();
+                            Map<Integer, ITableEntry> map = (Map<Integer, ITableEntry>) entry.getValue();
+                            if (map.containsValue(tableEntry)) {
+                                Iterator it = map.entrySet().iterator();
+                                while (it.hasNext()) {
+                                    Map.Entry e = (Map.Entry) it.next();
+                                    if (e.getValue() != null && e.getValue() instanceof ITableEntry) {
+                                        ITableEntry tableEntryTemp = (ITableEntry) e.getValue();
+                                        if (tableEntry.equals(tableEntryTemp)) {
+                                            tableViewerCreator.getTableViewer().getTable().deselectAll();
+                                            return (Integer) entry.getKey();
+                                        }
                                     }
                                 }
                             }

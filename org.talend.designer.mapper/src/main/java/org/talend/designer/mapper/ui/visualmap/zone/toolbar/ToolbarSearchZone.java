@@ -51,7 +51,7 @@ public class ToolbarSearchZone {
 
     private Integer selectKey = -1;
 
-    private Map<Integer, ITableEntry> searchMaps = new LinkedHashMap<Integer, ITableEntry>();
+    private Map<Integer, Map<Integer, ITableEntry>> searchMaps = new LinkedHashMap<Integer, Map<Integer, ITableEntry>>();
 
     public ToolbarSearchZone(Composite parent, int style, MapperManager manager) {
         this.mapperManager = manager;
@@ -102,15 +102,15 @@ public class ToolbarSearchZone {
         searchText.addKeyListener(new KeyListener() {
 
             public void keyPressed(KeyEvent e) {
+                // if change the search text ,need clear the data .
+                hightLightAllButton.setSelection(false);
+                searchZoneMapper.setHightlightAll(hightLightAllButton.getSelection());
+                if (searchMaps.size() > 0) {
+                    searchZoneMapper.hightlightAll(searchMaps, false);
+                    searchMaps.clear();
+                }
                 if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                     e.doit = false;
-                    // if change the search text ,need clear the data .
-                    if (searchMaps.size() > 0) {
-                        searchZoneMapper.hightlightAll(searchMaps, false);
-                        hightLightAllButton.setSelection(false);
-                        searchZoneMapper.setHightlightAll(hightLightAllButton.getSelection());
-                        searchMaps.clear();
-                    }
                     searchZoneMapper.search(searchMaps, searchText.getText());
                     selectKey = searchZoneMapper.selectHightlight(searchMaps, 0, "first");
                 }

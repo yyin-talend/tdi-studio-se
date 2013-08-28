@@ -165,6 +165,10 @@ public abstract class VarEntityFigure extends TableEntityFigure {
         return this.expression;
     }
 
+    public ComboCellLabel getTypeFigure() {
+        return type;
+    }
+
     public void updateVarNodeType(String type, boolean nullable) {
         this.type.setText(getTypeDisplayValue(type, nullable));
     }

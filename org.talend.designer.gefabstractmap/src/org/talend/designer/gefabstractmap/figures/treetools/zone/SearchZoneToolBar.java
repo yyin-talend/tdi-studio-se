@@ -60,7 +60,7 @@ public abstract class SearchZoneToolBar extends ZoneToolBar {
 
     protected abstract void hightlightAll();
 
-    class HightLightAllButton extends ToolBarButtonImageFigure {
+    public class HightLightAllButton extends ToolBarButtonImageFigure {
 
         public HightLightAllButton() {
             super(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider

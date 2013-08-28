@@ -101,4 +101,7 @@ public class XmlmapTreeNodeFigure extends TableTreeEntityFigure {
         }
     }
 
+    public TreeNode getTreeNode() {
+        return this.treeNode;
+    }
 }
