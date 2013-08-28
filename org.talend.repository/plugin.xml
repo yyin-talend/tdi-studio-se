@@ -1946,6 +1946,15 @@
               name="Modify tFileUnarchive ZIPFILE field value(DI_DEMOS)"
               version="5.3.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.AddAutoCommitValue4MDMConnection"
+              description="set auto_commit to true for the old tmdmconnection that no the checkbox"
+              id="org.talend.repository.model.migration.AddAutoCommitValue4MDMConnection"
+              name="AddAutoCommitValue4MDMConnection"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension

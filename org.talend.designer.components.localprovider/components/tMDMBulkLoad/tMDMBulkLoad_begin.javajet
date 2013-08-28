@@ -22,8 +22,18 @@ imports="
 	boolean validate = ("true").equals(ElementParameterParser.getValue(node,"__VALIDATE__"));
 	boolean isGenerateId = ("true").equals(ElementParameterParser.getValue(node,"__GENERATE_ID__"));
 	
+	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
+	String transactionProvider = ElementParameterParser.getValue(node,"__TRANSACTION_PROVIDER__");
+	String mdmTransaction = "mdmTransaction_" + transactionProvider;
+	
 %>
 org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
+<%if(useTransaction) {%>
+com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
+if(mdmTransaction_<%=cid%>!=null) {
+	bulkloadClient_<%=cid %>.setTransactionId(mdmTransaction_<%=cid%>.getId());
+}
+<%}%>
 bulkloadClient_<%=cid %>.startThreadCount();
 bulkloadClient_<%=cid %>.setOptions(new org.talend.mdm.bulkload.client.BulkloadOptions(<%=isGenerateId %>, <%=validate %>, <%=arraySize%>));
 int count_<%=cid%> = 0;
