@@ -1920,6 +1920,15 @@
               name="ExcleGenerationModeMigrationTask"
               version="5.3.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.3.1"
+              class="org.talend.repository.model.migration.CleanDBSchemaOntCreateTableMigrationTask"
+              description="set DBSchema to empty on tCreateTable when DBTYPE is MSSQL or SYBASE"
+              id="org.talend.repository.model.migration.CleanDBSchemaOntCreateTableMigrationTask"
+              name="CleanDBSchemaOntCreateTableMigrationTask"
+              version="5.3.2">
+        </projecttask>
    </extension>
    
    <extension

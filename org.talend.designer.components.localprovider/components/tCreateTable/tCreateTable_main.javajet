@@ -800,13 +800,15 @@ class MaxDBManager extends Manager {
 class MSSQLManager extends Manager {
     private String host;
     private String port;
+    private String dbSchema;
     private boolean useExistingConnection;
     private String connection;
     private String dbproperty;
-    public MSSQLManager(String host, String port, String dbName, String tableName, String userName, String password, boolean useExistingConnection, String connection, String cid, String dbproperty) {
+    public MSSQLManager(String host, String port, String dbName, String dbSchema, String tableName, String userName, String password, boolean useExistingConnection, String connection, String cid, String dbproperty) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
         this.port = port;
+        this.dbSchema = dbSchema;
         this.useExistingConnection = useExistingConnection;
         this.connection = connection;
         this.dbproperty = dbproperty;
@@ -848,6 +850,19 @@ class MSSQLManager extends Manager {
             javaCode.append(super.closeConnection());            
         }
         return javaCode.toString();
+    }
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"dbschema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();        
     }
 }
 class MysqlManager extends Manager {
@@ -1278,12 +1293,14 @@ class SQLiteManager extends Manager {
 class SybaseManager extends Manager {
     private String host;
     private String port;
+    private String dbSchema;
     private boolean useExistingConnection;
 	private String connection;
-    public SybaseManager(String host, String port, String dbName, String tableName, String userName, String password, String cid, boolean useExistingConnection, String connection) {
+    public SybaseManager(String host, String port, String dbName, String dbSchema, String tableName, String userName, String password, String cid, boolean useExistingConnection, String connection) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
         this.port = port;
+        this.dbSchema = dbSchema;
         this.useExistingConnection = useExistingConnection;
 		this.connection = connection;
     }
@@ -1328,6 +1345,19 @@ class SybaseManager extends Manager {
         }
         return javaCode.toString();
     }   
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"dbschema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();        
+    }
 }
 class ODBCManager extends Manager {
     public ODBCManager(String dbName, String tableName, String userName, String password, String cid) {
@@ -1790,12 +1820,13 @@ class ManagerFactory {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");            
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MSSQL__"));
             String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-            manager = new MSSQLManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, cid, dbproperties);
+            manager = new MSSQLManager(host, port, dbName,dbSchema, tableName, userName, password, useExistingConnection, connection, cid, dbproperties);
         } else if(("MYSQL").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
@@ -1859,11 +1890,12 @@ class ManagerFactory {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 			String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_SYBASE__"));
-            manager = new SybaseManager(host, port, dbName, tableName, userName, password, cid,useExistingConnection, connection);
+            manager = new SybaseManager(host, port, dbName, dbSchema, tableName, userName, password, cid,useExistingConnection, connection);
         } else if(("TERADATA").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
@@ -1946,6 +1978,9 @@ if(columnList != null && columnList.size() > 0) {
             <%
         } else {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+            %>
+            boolean whetherExist_<%=cid%> = false;
+            <%
             if("DBORACLE".equalsIgnoreCase(dbType)) {
 			%>
 				<%=manager.generateCode4TabelExist()%>
@@ -1956,7 +1991,6 @@ if(columnList != null && columnList.size() > 0) {
             		tableNameForSearch_<%=cid%> = tableNameForSearch_<%=cid%>.replaceAll("\"","");
             	}
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, tableNameForSearch_<%=cid%>, new String[]{"TABLE"});
-	            boolean whetherExist_<%=cid%> = false;
 	            if(rsTable_<%=cid%>.next()) {
 	            	whetherExist_<%=cid%> = true;
 	            }     
@@ -1965,7 +1999,6 @@ if(columnList != null && columnList.size() > 0) {
             %>
                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-                boolean whetherExist_<%=cid%> = false;
                 while(rsTable_<%=cid%>.next()) {
                     String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
                     String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
@@ -1975,13 +2008,11 @@ if(columnList != null && columnList.size() > 0) {
                         break;
                     }
                 }
-                rsTable_<%=cid%>.close();
             <%
             } else if ("GREENPLUM".equalsIgnoreCase(dbType) || "POSTGRE".equalsIgnoreCase(dbType) || "POSTGREPLUS".equalsIgnoreCase(dbType)) {
             %>                  
                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-                boolean whetherExist_<%=cid%> = false;
                 String defaultSchema_<%=cid%> = "public";
                 if(dbSchema_<%=cid%> == null || dbSchema_<%=cid%>.trim().length() == 0) {
                 	java.sql.Statement stmtSchema_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -2001,13 +2032,36 @@ if(columnList != null && columnList.size() > 0) {
                         break;
                     }
                 }
-                rsTable_<%=cid%>.close();
-<%          
+<%
+            } else if ("MSSQL".equalsIgnoreCase(dbType)){
+%>
+                java.sql.Statement rsTable_<%=cid%> = conn_<%=cid%>.createStatement();
+                try {
+                    rsTable_<%=cid%>.execute("SELECT TOP 1 1 FROM [" +  tableName_<%=cid%> + "]" );
+                    whetherExist_<%=cid%> = true;
+                } catch (Exception e){
+                    whetherExist_<%=cid%> = false;
+                }
+<%
+            } else if ( "SYBASE".equalsIgnoreCase(dbType)
+						|| "INFORMIX".equalsIgnoreCase(dbType) ) {
+%>
+				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            while(rsTable_<%=cid%>.next()) {
+	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=tableName%>) 
+	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbSchema_<%=cid%>) || dbSchema_<%=cid%>.trim().length() ==0)) {
+	                    whetherExist_<%=cid%> = true;
+	                    break;
+	                }
+	            }
+<%
             } else {
             %>
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-	            boolean whetherExist_<%=cid%> = false;
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
 	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=tableName%>)) {
