@@ -12,13 +12,17 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.varnode;
 
+import org.talend.designer.gefabstractmap.figures.table.entity.TableEntityElement;
 import org.talend.designer.gefabstractmap.figures.var.VarEntityFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 
 /**
  * created by Administrator on 2013-1-11 Detailled comment
  * 
  */
 public class VarNodeFigure extends VarEntityFigure {
+
+    private VarNode varNode;
 
     public VarNodeFigure(VarEntityManager entityManager) {
         super(entityManager);
@@ -27,6 +31,12 @@ public class VarNodeFigure extends VarEntityFigure {
     @Override
     protected VarEntityManager getEntityManager() {
         return (VarEntityManager) super.getEntityManager();
+    }
+
+    @Override
+    protected void createEntityItems(TableEntityElement entityElement) {
+        this.varNode = getEntityManager().getModel();
+        super.createEntityItems(entityElement);
     }
 
     @Override
@@ -54,4 +64,7 @@ public class VarNodeFigure extends VarEntityFigure {
         return getEntityManager().getModel().getType();
     }
 
+    public VarNode getVarNode() {
+        return this.varNode;
+    }
 }

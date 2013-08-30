@@ -240,15 +240,15 @@ public class SearchZoneMapper {
 
     public void moveScrollBarZoneAtSelectedTableItem(ITableEntry entry) {
         if (entry != null) {
+            DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(entry.getParent());
+            Rectangle tableViewBounds = dataMapTableView.getBounds();
             IDataMapTable table = entry.getParent();
             TableItem tableItem = mapperManager.retrieveTableItem(entry);
             if (table != null && tableItem != null) {
-                Rectangle bounds = tableItem.getBounds();
-                int selection = bounds.y - 30;
-
+                Rectangle tableItemBounds = tableItem.getBounds();
+                int selection = tableViewBounds.y + tableItemBounds.y;
                 ScrolledComposite scrollComposite = null;
                 if (table instanceof InputTable) {
-                    // selection = bounds.y + mainTableBounds * 30;
                     scrollComposite = uiManager.getScrolledCompositeViewInputs();
                 } else if (table instanceof VarsTable) {
                     scrollComposite = uiManager.getScrolledCompositeViewVars();

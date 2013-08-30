@@ -315,4 +315,28 @@ public abstract class MapperRootEditPart extends BaseEditPart {
         }
     }
 
+    public ScrollPane getInputScroll() {
+        return this.inputScroll;
+    }
+
+    public void setInputScroll(ScrollPane inputScroll) {
+        this.inputScroll = inputScroll;
+    }
+
+    public ScrollPane getVarScroll() {
+        return this.varScroll;
+    }
+
+    public void setVarScroll(ScrollPane varScroll) {
+        this.varScroll = varScroll;
+    }
+
+    public ScrollPane getOutputScroll() {
+        return this.outputScroll;
+    }
+
+    public void setOutputScroll(ScrollPane outputScroll) {
+        this.outputScroll = outputScroll;
+    }
+
 }

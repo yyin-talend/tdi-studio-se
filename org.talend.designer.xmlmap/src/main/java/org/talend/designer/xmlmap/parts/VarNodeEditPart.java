@@ -190,4 +190,11 @@ public class VarNodeEditPart extends TableEntityPart implements NodeEditPart {
 
     }
 
+    public XmlMapDataEditPart getMapDataEditPart() {
+        List children2 = getViewer().getRootEditPart().getChildren();
+        if (children2.size() == 1 && children2.get(0) instanceof XmlMapDataEditPart) {
+            return (XmlMapDataEditPart) children2.get(0);
+        }
+        return null;
+    }
 }

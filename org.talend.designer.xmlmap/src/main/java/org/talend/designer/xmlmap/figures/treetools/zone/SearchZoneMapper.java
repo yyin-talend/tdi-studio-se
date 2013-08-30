@@ -19,11 +19,10 @@ import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.talend.designer.gefabstractmap.figures.table.entity.TableEntityFigure;
 import org.talend.designer.gefabstractmap.figures.var.VarEntityFigure;
@@ -33,6 +32,7 @@ import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treesettings.XmlMapFilterContainer;
+import org.talend.designer.xmlmap.figures.varnode.VarNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -41,7 +41,11 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -220,8 +224,10 @@ public class SearchZoneMapper {
                     if (xmlMapTreeNodeFigure.getTreeNode() != null
                             && matcher.matches(xmlMapTreeNodeFigure.getTreeNode().getName())) {
                         if (XmlMapUtil.isSubElementOfDocument(xmlMapTreeNodeFigure.getTreeNode())) {
-                            xmlMapTreeNodeFigure.getBranchContent().setOpaque(true);
-                            xmlMapTreeNodeFigure.getBranchContent().setBackgroundColor(entryState.getColor());
+                            if (!xmlMapTreeNodeFigure.getTreeNode().getName().endsWith("(choice)")) {
+                                xmlMapTreeNodeFigure.getBranchContent().setOpaque(true);
+                                xmlMapTreeNodeFigure.getBranchContent().setBackgroundColor(entryState.getColor());
+                            }
                         } else {
                             xmlMapTreeNodeFigure.setOpaque(true);
                             xmlMapTreeNodeFigure.setBackgroundColor(entryState.getColor());
@@ -264,18 +270,36 @@ public class SearchZoneMapper {
     public void moveScrollBarZoneAtSelectedTableItem(Figure entry) {
         if (entry != null) {
             Rectangle bounds = entry.getBounds();
-            int selection = bounds.y - 30;
-            ScrolledComposite scrollComposite = null;
-            if (scrollComposite != null) {
-                setPositionOfVerticalScrollBarZone(scrollComposite, selection);
+            int selection = bounds.y - 100;
+            if (entry instanceof XmlmapTreeNodeFigure) {
+                XmlmapTreeNodeFigure xmlMapTreeNodeFigure = (XmlmapTreeNodeFigure) entry;
+                TreeNode treeNode = xmlMapTreeNodeFigure.getTreeNode();
+                if (treeNode != null) {
+                    for (Adapter adapter : treeNode.eAdapters()) {
+                        TreeNodeEditPart part = (TreeNodeEditPart) adapter;
+                        XmlMapDataEditPart xmlMapDataEditPart = part.getMapDataEditPart();
+                        if (adapter instanceof OutputTreeNodeEditPart) {
+                            Viewport viewport = xmlMapDataEditPart.getOutputScroll().getViewport();
+                            viewport.setViewLocation(viewport.getViewLocation().translate(bounds.x, selection));
+                        } else if (adapter instanceof TreeNodeEditPart) {
+                            Viewport viewport = xmlMapDataEditPart.getInputScroll().getViewport();
+                            viewport.setViewLocation(viewport.getViewLocation().translate(bounds.x, selection));
+                        }
+                    }
+                }
+            } else if (entry instanceof VarNodeFigure) {
+                VarNodeFigure varNodeFigure = (VarNodeFigure) entry;
+                VarNode varNode = varNodeFigure.getVarNode();
+                if (varNode != null) {
+                    for (Adapter adapter : varNode.eAdapters()) {
+                        VarNodeEditPart part = (VarNodeEditPart) adapter;
+                        XmlMapDataEditPart xmlMapDataEditPart = part.getMapDataEditPart();
+                        Viewport viewport = xmlMapDataEditPart.getVarScroll().getViewport();
+                        viewport.setViewLocation(viewport.getViewLocation().translate(bounds.x, selection));
+                    }
+                }
             }
         }
-    }
-
-    private void setPositionOfVerticalScrollBarZone(ScrolledComposite scrollComposite, int scrollBarSelection) {
-        ScrollBar verticalBar = scrollComposite.getVerticalBar();
-        verticalBar.setSelection(scrollBarSelection);
-        scrollComposite.setOrigin(0, scrollBarSelection);
     }
 
     public Integer getSelectedKeyAtSelectedTableItem(Map<Integer, Map<Integer, Figure>> searchMaps) {
