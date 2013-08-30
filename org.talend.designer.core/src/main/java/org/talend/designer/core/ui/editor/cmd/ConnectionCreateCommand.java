@@ -105,6 +105,7 @@ public class ConnectionCreateCommand extends Command {
      */
     public void setTarget(Node targetNode) {
         this.target = targetNode;
+        this.target.setTakeSchema(null);
     }
 
     private String askForConnectionName(String nodeLabel, String oldName) {
@@ -283,7 +284,7 @@ public class ConnectionCreateCommand extends Command {
             EConnectionType connecType;
             if (source.isELTComponent()) {
                 connecType = EConnectionType.TABLE;
-            }else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(source.getComponent().getType())) {
+            } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(source.getComponent().getType())) {
                 connecType = EConnectionType.ROUTE;
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                     ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -356,7 +357,7 @@ public class ConnectionCreateCommand extends Command {
                     connectionName = ConnectionUtil.generateUniqueConnectionName(connecType, source.getProcess(), source.getConnectorFromType(connecType));
                 } else {
                     IMetadataTable metaTable = source.getMetadataFromConnector(mainConnector.getName());
-                    if(metaTable != null){
+                    if (metaTable != null) {
                         metaName = metaTable.getTableName();
                     }
                     String baseName = source.getConnectionName();
