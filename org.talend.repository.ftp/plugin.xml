@@ -124,12 +124,16 @@
    <extension
          point="org.talend.repository.items.importexport.handler">
       <importProvider
-            class="org.talend.repository.ftp.ui.viewer.handler.FtpImportHandler"
             id="org.talend.repository.ftp.importProvider"
             name="Ftp importer"
             priority="NORMAL">
-         <repType
-               type="METADATA_FILE_FTP"></repType>
+         <handler
+               class="org.talend.repository.ftp.ui.viewer.handler.FtpImportHandler">
+            <parameter
+                  name="type"
+                  value="METADATA_FILE_FTP">
+            </parameter>
+         </handler>
       </importProvider>
    </extension>
 

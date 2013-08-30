@@ -15,13 +15,13 @@ package org.talend.repository.viewer.handler;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class DocumentationImportHandler extends AbstractImportHandler {
+public class DocumentationImportHandler extends ImportRepTypeHandler {
 
     /**
      * DOC ggu DocumentationImportHandler constructor comment.
@@ -30,14 +30,7 @@ public class DocumentationImportHandler extends AbstractImportHandler {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportHandler#validRelativePath(org.eclipse.core.runtime
-     * .IPath)
-     */
-    @Override
+     @Override
     protected boolean validRelativePath(IPath relativePath) {
         boolean valid = super.validRelativePath(relativePath);
         if (valid) { // ignore generated documentation

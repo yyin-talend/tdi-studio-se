@@ -33,7 +33,7 @@ import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 import org.talend.repository.items.importexport.handlers.model.ItemRecord;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 import org.talend.repository.items.importexport.ui.managers.ProviderManager;
@@ -43,7 +43,7 @@ import org.talend.repository.model.RepositoryConstants;
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class RoutineImportHandler extends AbstractImportHandler {
+public class RoutineImportHandler extends ImportRepTypeHandler {
 
     /**
      * DOC ggu RoutineImportHandler constructor comment.
@@ -52,13 +52,6 @@ public class RoutineImportHandler extends AbstractImportHandler {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportHandler#validRelativePath(org.eclipse.core.runtime
-     * .IPath)
-     */
     @Override
     protected boolean validRelativePath(IPath relativePath) {
         boolean valid = super.validRelativePath(relativePath);
@@ -78,7 +71,7 @@ public class RoutineImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#afterImportingItemRecords(org
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#afterImportingItemRecords(org
      * .eclipse.core.runtime.IProgressMonitor,
      * org.talend.repository.items.importexport.ui.wizard.imports.managers.ResourcesManager,
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)

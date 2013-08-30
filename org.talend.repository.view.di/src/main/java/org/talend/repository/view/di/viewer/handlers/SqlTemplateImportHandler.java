@@ -16,14 +16,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 import org.talend.repository.items.importexport.handlers.model.ItemRecord;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class SqlTemplateImportHandler extends AbstractImportHandler {
+public class SqlTemplateImportHandler extends ImportRepTypeHandler {
 
     /**
      * DOC ggu SqlTemplateImportHandler constructor comment.
@@ -32,13 +32,6 @@ public class SqlTemplateImportHandler extends AbstractImportHandler {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportHandler#validRelativePath(org.eclipse.core.runtime
-     * .IPath)
-     */
     @Override
     protected boolean validRelativePath(IPath relativePath) {
         boolean valid = super.validRelativePath(relativePath);
@@ -59,7 +52,7 @@ public class SqlTemplateImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#isSameName(org.talend.repository
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#isSameName(org.talend.repository
      * .items.importexport.ui.wizard.imports.models.ItemRecord, org.talend.core.model.repository.IRepositoryViewObject)
      */
     @Override

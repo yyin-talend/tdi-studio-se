@@ -487,37 +487,52 @@
    <extension
          point="org.talend.repository.items.importexport.handler">
       <importProvider
-            class="org.talend.repository.view.di.viewer.handlers.ContextImportHandler"
             id="org.talend.repository.view.di.importProvider.context"
             name="Context importer"
             priority="NORMAL">
-         <repType
-               type="CONTEXT"></repType>
+         <handler
+               class="org.talend.repository.view.di.viewer.handlers.ContextImportHandler">
+            <parameter
+                  name="type"
+                  value="CONTEXT">
+            </parameter>
+         </handler>
       </importProvider>
       <importProvider
-            class="org.talend.repository.view.di.viewer.handlers.JobDesignImportHandler"
             id="org.talend.repository.view.di.importProvider.jobDesign"
             name="Job importer"
             priority="NORMAL">
-         <repType
-               type="PROCESS">
-         </repType>
+         <handler
+               class="org.talend.repository.view.di.viewer.handlers.JobDesignImportHandler">
+            <parameter
+                  name="type"
+                  value="PROCESS">
+            </parameter>
+         </handler>
       </importProvider>
       <importProvider
-            class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler"
             id="org.talend.repository.view.di.importProvider.routine"
             name="Routine importer"
             priority="NORMAL">
-         <repType
-               type="ROUTINES"></repType>
+         <handler
+               class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler">
+            <parameter
+                  name="type"
+                  value="ROUTINES">
+            </parameter>
+         </handler>
       </importProvider>
       <importProvider
-            class="org.talend.repository.view.di.viewer.handlers.SqlTemplateImportHandler"
             id="org.talend.repository.view.di.importProvider.sqlTemplate"
             name="Sql Template importer"
             priority="NORMAL">
-         <repType
-               type="SQLPATTERNS"></repType>
+         <handler
+               class="org.talend.repository.view.di.viewer.handlers.SqlTemplateImportHandler">
+            <parameter
+                  name="type"
+                  value="SQLPATTERNS">
+            </parameter>
+         </handler>
       </importProvider>
    </extension>
 

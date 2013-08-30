@@ -25,14 +25,14 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.repository.items.importexport.handlers.HandlerUtil;
-import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 import org.talend.repository.items.importexport.handlers.model.ItemRecord;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class JobDesignImportHandler extends AbstractImportHandler {
+public class JobDesignImportHandler extends ImportRepTypeHandler {
 
     /**
      * DOC ggu JobDesignImportHandler constructor comment.
@@ -45,7 +45,7 @@ public class JobDesignImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#createItemResource(org.eclipse
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#createItemResource(org.eclipse
      * .emf.common.util.URI)
      */
     @Override
@@ -57,7 +57,7 @@ public class JobDesignImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#processImportingItem(org.talend
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#processImportingItem(org.talend
      * .repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
@@ -126,7 +126,7 @@ public class JobDesignImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#copyReferenceFiles(org.talend
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#copyReferenceFiles(org.talend
      * .repository.items.importexport.ui.wizard.imports.managers.ResourcesManager,
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */

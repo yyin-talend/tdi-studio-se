@@ -15,12 +15,12 @@ package org.talend.repository.view.di.viewer.handlers;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.emf.TalendXMIResource;
-import org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler;
+import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class ContextImportHandler extends AbstractImportHandler {
+public class ContextImportHandler extends ImportRepTypeHandler {
 
     /**
      * DOC ggu ContextImportHandler constructor comment.
@@ -33,7 +33,7 @@ public class ContextImportHandler extends AbstractImportHandler {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.items.importexport.handlers.imports.AbstractImportHandler#createItemResource(org.eclipse
+     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#createItemResource(org.eclipse
      * .emf.common.util.URI)
      */
     @Override

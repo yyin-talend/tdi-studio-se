@@ -66,12 +66,16 @@
    <extension
          point="org.talend.repository.items.importexport.handler">
       <importProvider
-            class="org.talend.repository.viewer.handler.DocumentationImportHandler"
             id="org.talend.designer.documentation.importProvider"
             name="Documentation importer"
             priority="NORMAL">
-         <repType
-               type="DOCUMENTATION"></repType>
+         <handler
+               class="org.talend.repository.viewer.handler.DocumentationImportHandler">
+            <parameter
+                  name="type"
+                  value="DOCUMENTATION">
+            </parameter>
+         </handler>
       </importProvider>
    </extension>
 

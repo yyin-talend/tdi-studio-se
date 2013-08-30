@@ -168,12 +168,16 @@
    <extension
          point="org.talend.repository.items.importexport.handler">
       <importProvider
-            class="org.talend.repository.json.handler.JsonImportHandler"
             id="org.talend.repository.json.importProvider"
             name="Json importer"
             priority="NORMAL">
-         <repType
-               type="JSON"></repType>
+         <handler
+               class="org.talend.repository.json.handler.JsonImportHandler">
+            <parameter
+                  name="type"
+                  value="JSON">
+            </parameter>
+         </handler>
       </importProvider>
    </extension>
 
