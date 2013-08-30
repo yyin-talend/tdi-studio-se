@@ -51,7 +51,7 @@ public class CleanDBSchemaOntCreateTableMigrationTask extends AbstractJobMigrati
 
                                 if ("MSSQL".equals(dbType.getValue()) || "SYBASE".equals(dbType.getValue())) {
                                     ElementParameterType schema_db = ComponentUtilities.getNodeProperty(node, "SCHEMA_DB");
-                                    if (schema_db != null && !"".equals(schema_db.getValue())) {
+                                    if (schema_db != null) {
                                         ComponentUtilities.getNodeProperty(node, "SCHEMA_DB").setValue("\"\"");
                                     }
                                 }
@@ -68,7 +68,7 @@ public class CleanDBSchemaOntCreateTableMigrationTask extends AbstractJobMigrati
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2013, 8, 29, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2013, 8, 30, 12, 0, 0);
         return gc.getTime();
     }
 }
