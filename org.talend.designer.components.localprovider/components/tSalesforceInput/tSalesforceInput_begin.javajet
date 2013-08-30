@@ -31,19 +31,6 @@ imports="
 int nb_line_<%=cid%> = 0;
 int limit_<%=cid %> = <%=limit %>;
 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-
-<%
-if(useProxy){
-%>
-    java.util.Properties props_<%=cid%> = System.getProperties();
-    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
-    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
-    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
-<%
-}
-%>
-
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
@@ -81,9 +68,103 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
 			boolean queryAll = ("true").equals(ElementParameterParser.getValue(node,"__QUERY_ALL__"));
 			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
-			%>
 			
-			<%if("soap".equals(api)){%>
+			String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
+			boolean useOAuth = "OAUTH".equals(loginType);
+			if(!useExistingConn){
+				if(useOAuth){
+					String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
+					String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
+					%>
+					org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
+					org.talend.salesforce.oauth.Token token_<%=cid%>;
+					String endpointURL_<%=cid%> = null;
+					String accessToken_<%=cid%> = null;
+					oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
+					oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
+					oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
+					String refreshToken_<%=cid%> = null;
+					<%
+					String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
+					if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+					%>
+						// Attempt to load existing refresh token
+						String tokenFile_<%=cid%> = <%=tokenFile%>;
+						if(tokenFile_<%=cid%> != null){
+							java.util.Properties properties_<%=cid%> = new java.util.Properties();
+							try{
+								java.io.FileInputStream inputStream_<%=cid%> = new java.io.FileInputStream(tokenFile_<%=cid%>);
+								properties_<%=cid%>.load(inputStream_<%=cid%>);
+								inputStream_<%=cid%>.close();
+							}catch(java.io.FileNotFoundException e_<%=cid%>){
+							}catch(java.io.IOException ee_<%=cid%>){
+							}
+							String storedRefreshToken_<%=cid%> = (String) properties_<%=cid%>.get("refreshtoken");
+							
+							// Check to see if the an existing refresh token was loaded.
+							// If so, create a credential and call refreshToken() to get a new
+							// access token.
+							if(storedRefreshToken_<%=cid%> != null){
+								// Request a new Access token using the refresh token.
+								token_<%=cid%> = oauthClient_<%=cid%>.refreshToken(storedRefreshToken_<%=cid%>);
+								<%
+								if("soap".equals(api)){
+								%>
+								endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+								<%
+								}else{
+								%>
+								endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+								<%
+								}
+								%>
+								accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+								refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+							}
+						}
+					<%
+					}
+					%>
+					if(accessToken_<%=cid%> == null || endpointURL_<%=cid%> == null){
+						<%
+						String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
+						String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
+						%>
+						oauthClient_<%=cid%>.setCallbackHost(<%=callbackHost%>);
+						oauthClient_<%=cid%>.setCallbackPort(<%=callbackPort%>);
+						token_<%=cid%> = oauthClient_<%=cid%>.getToken();
+						<%
+						if("soap".equals(api)){
+						%>
+						endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+						<%
+						}else{
+						%>
+						endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+						<%
+						}
+						%>
+						accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+						refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+					}
+					<%
+					if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+					%>
+						if(tokenFile_<%=cid%> != null && tokenFile_<%=cid%> != null){
+							// Store the refresh token for future use.
+							java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
+							storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
+							java.io.FileOutputStream outputStream_<%=cid%> = new java.io.FileOutputStream(tokenFile_<%=cid%>);
+							storeProperties_<%=cid%>.store(outputStream_<%=cid%>, null);
+							if(outputStream_<%=cid%> != null){
+							    outputStream_<%=cid%>.close();
+							}
+						}
+					<%
+					}
+				}
+			}
+			if("soap".equals(api)){%>
 				org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 				<%if(useExistingConn){%>
 					if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
@@ -93,40 +174,81 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						sfMgr_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
 					}
 					sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
-				<%}else{%>
-					<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
-						sfMgr_<%=cid%>.setClientID(<%=clientID%>);
-					<%}%>
-					boolean result_<%=cid%> = false;
-					try{
-						result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
-					}catch(Exception e){
-						//ignore exception when login
-					}
-					if(!result_<%=cid%>){
-						throw new RuntimeException("Login failed! Please check the username,password and endpoint");
-					}
 				<%
+				}else{
+					if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+					%>
+						sfMgr_<%=cid%>.setClientID(<%=clientID%>);
+					<%
+					}
+					if(useOAuth){
+					%>
+						boolean result_<%=cid%> = false;
+						try{
+							result_<%=cid%> = sfMgr_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);
+						}catch(Exception e){
+							//ignore exception when login
+						}
+						if(!result_<%=cid%>){
+							throw new RuntimeException("Login failed!");
+						}
+					<%
+					}else{
+						if(useProxy){
+						%>
+						    java.util.Properties props_<%=cid%> = System.getProperties();
+						    props_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);  
+						    props_<%=cid%>.put("socksProxyPort",<%=proxyPort%>);
+						    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername%>);
+						    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword%>); 
+						<%
+						}
+						%>
+						boolean result_<%=cid%> = false;
+						try{
+							result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+						}catch(Exception e){
+							//ignore exception when login
+						}
+						if(!result_<%=cid%>){
+							throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+						}
+					<%
+					}
 				}
-			}else{%>
+			}else{
+			%>
 				org.talend.salesforceBulk.SalesforceBulkAPI sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI();
-				<%if(useProxy){%>
-					sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
-				<%}
-				if(useExistingConn){%>
-					if(globalMap.get("conn_<%=connection %>")==null){
+				<%
+				if(useExistingConn){
+				%>
+					if(globalMap.get("conn_<%=connection%>")==null){
 						throw new RuntimeException("Get null connection from <%=connection %>");
 					}
 					sforceBulk_<%=cid%>.login((com.sforce.async.BulkConnection)globalMap.get("conn_<%=connection %>"));
-				<%}else{%>
+				<%
+				}else{
+				%>
 					sforceBulk_<%=cid%>.setNeedCompression(<%=needCompression%>);
 					sforceBulk_<%=cid%>.setNeedTraceMessage(<%=needTraceMessage%>);
-					sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
-				<%}
-			}%>
-			
-			
-			<%			
+					<%
+					if(useOAuth){
+					%>
+						sforceBulk_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>);
+					<%
+					}else{
+						if(useProxy){
+						%>
+							sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+						<%
+						}
+						%>
+						sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+					<%
+					}
+				}
+			}
+						
 			boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 			String sql = "";
 			String condition = null;

@@ -103,6 +103,10 @@ public class SalesforceBulkAPI {
         this.connection = getBulkConnection(endpoint, username, password, apiVersion);
     }
 
+    public void login(String sessionID, String endpointURL) throws ConnectionException, AsyncApiException {
+        this.connection = getBulkConnection(sessionID, endpointURL);
+    }
+
     private JobInfo job;
 
     private com.talend.csv.CSVReader baseFileReader;
@@ -216,17 +220,21 @@ public class SalesforceBulkAPI {
         // Creating the connection automatically handles login and stores
         // the session in partnerConfig
         new PartnerConnection(partnerConfig);
-        // When PartnerConnection is instantiated, a login is implicitly
-        // executed and, if successful,
-        // a valid session is stored in the ConnectorConfig instance.
-        // Use this key to initialize a BulkConnection:
-        ConnectorConfig config = new ConnectorConfig();
-        config.setSessionId(partnerConfig.getSessionId());
         // The endpoint for the Bulk API service is the same as for the normal
         // SOAP uri until the /Soap/ part. From here it's '/async/versionNumber'
         String soapEndpoint = partnerConfig.getServiceEndpoint();
         String restEndpoint = soapEndpoint.substring(0, soapEndpoint.indexOf("Soap/")) + "async/" + apiVersion;
-        config.setRestEndpoint(restEndpoint);
+        // When PartnerConnection is instantiated, a login is implicitly
+        // executed and, if successful,
+        // a valid session is stored in the ConnectorConfig instance.
+        // Use this key to initialize a BulkConnection:
+        return getBulkConnection(partnerConfig.getSessionId(), restEndpoint);
+    }
+
+    private BulkConnection getBulkConnection(String sessionID, String endpointURL) throws ConnectionException, AsyncApiException {
+        ConnectorConfig config = new ConnectorConfig();
+        config.setSessionId(sessionID);
+        config.setRestEndpoint(endpointURL);
         setProxyToConnection(config);
         // This should only be false when doing debugging.
         config.setCompression(needCompression);

@@ -62,28 +62,106 @@
 	      NUM_ROW="5"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	    />
-		
-		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
-		</PARAMETER>
-		
-		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
-		</PARAMETER>
+		<PARAMETER 
+            NAME="LOGIN_TYPE" 
+            FIELD="CLOSED_LIST" 
+            NUM_ROW="6" 
+            REQUIRED="true"
+            GROUP="LOGIN">
+            <ITEMS DEFAULT="BASIC">
+                <ITEM NAME="BASIC" VALUE="BASIC" />
+                <ITEM NAME="OAUTH" VALUE="OAUTH" />
+            </ITEMS>
+        </PARAMETER>
+		<PARAMETER 
+            NAME="ENDPOINT" 
+            FIELD="TEXT" 
+            NUM_ROW="10"
+            REQUIRED="true" 
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="LOGIN">
+            <DEFAULT IF="LOGIN_TYPE=='BASIC'">"https://login.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+            <DEFAULT IF="LOGIN_TYPE=='OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
+        </PARAMETER>
+		<PARAMETER 
+            NAME="USER" 
+            FIELD="TEXT" 
+            NUM_ROW="20"
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            GROUP="LOGIN">
+            <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"password"</DEFAULT>
-		</PARAMETER>
+        <PARAMETER 
+            NAME="PASS" 
+            FIELD="TEXT" 
+            NUM_ROW="20"
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            GROUP="LOGIN">
+            <DEFAULT>"password"</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true"  SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"25.0"</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="BULKFILENAME" FIELD="FILE" NUM_ROW="30"
+		<PARAMETER 
+            NAME="API_VERSION" 
+            FIELD="TEXT" 
+            NUM_ROW="20"
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"  
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>"25.0"</DEFAULT>
+        </PARAMETER>
+        <PARAMETER 
+            NAME="OAUTH_CLIENT_ID" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CLIENT_SECRET" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CALLBACK_HOST" 
+            FIELD="TEXT" 
+            NUM_ROW="35" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>"localhost"</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CALLBACK_PORT" 
+            FIELD="TEXT" 
+            NUM_ROW="35" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>8443</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_TOKEN_FILE" 
+            FIELD="FILE" 
+            NUM_ROW="38" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>"token.properties"</DEFAULT>
+        </PARAMETER>
+		<PARAMETER NAME="BULKFILENAME" FIELD="FILE" NUM_ROW="39"
 			REQUIRED="true">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sforce_bulk.csv"</DEFAULT>
 		</PARAMETER>
@@ -3378,6 +3456,12 @@
 	  <TEMPLATE_PARAM SOURCE="self.CONCURRENCY_MODE"   TARGET="tSBE.CONCURRENCY_MODE" />
       <TEMPLATE_PARAM SOURCE="self.IGNORE_NULL"   TARGET="tSOB.IGNORE_NULL" />
       <TEMPLATE_PARAM SOURCE="self.AWAIT_TIME"   TARGET="tSBE.AWAIT_TIME" />
+      <TEMPLATE_PARAM SOURCE="self.LOGIN_TYPE"   TARGET="tSBE.LOGIN_TYPE" />
+      <TEMPLATE_PARAM SOURCE="self.OAUTH_CLIENT_ID"   TARGET="tSBE.OAUTH_CLIENT_ID" />
+      <TEMPLATE_PARAM SOURCE="self.OAUTH_CLIENT_SECRET"   TARGET="tSBE.OAUTH_CLIENT_SECRET" />
+      <TEMPLATE_PARAM SOURCE="self.OAUTH_CALLBACK_HOST"   TARGET="tSBE.OAUTH_CALLBACK_HOST" />
+      <TEMPLATE_PARAM SOURCE="self.OAUTH_CALLBACK_PORT"   TARGET="tSBE.OAUTH_CALLBACK_PORT" />
+      <TEMPLATE_PARAM SOURCE="self.OAUTH_TOKEN_FILE"   TARGET="tSBE.OAUTH_TOKEN_FILE" />
     </TEMPLATES>	
 	</CODEGENERATION>
 	<RETURNS/>

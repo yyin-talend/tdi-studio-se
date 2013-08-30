@@ -50,29 +50,104 @@
 	    NUM_ROW="10"
 	    SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	/>
-
-    <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="20"
-		REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+    <PARAMETER 
+        NAME="LOGIN_TYPE" 
+        FIELD="CLOSED_LIST" 
+        NUM_ROW="15" 
+        REQUIRED="true"
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        GROUP="LOGIN">
+        <ITEMS DEFAULT="BASIC">
+            <ITEM NAME="BASIC" VALUE="BASIC" />
+            <ITEM NAME="OAUTH" VALUE="OAUTH" />
+        </ITEMS>
+    </PARAMETER>
+    <PARAMETER 
+        NAME="ENDPOINT" 
+        FIELD="TEXT" 
+        NUM_ROW="20"
+		REQUIRED="true" 
+        SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+        GROUP="LOGIN">
+        <DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+        <DEFAULT IF="LOGIN_TYPE == 'OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
 	</PARAMETER>
+    <PARAMETER 
+        NAME="API_VERSION" 
+        FIELD="TEXT" 
+        NUM_ROW="25"
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"  
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>"25.0"</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="30"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
+      REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+      GROUP="LOGIN">
       <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="40"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
+      NUM_ROW="30"
+      REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+      GROUP="LOGIN">
       <DEFAULT>"password"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER 
+        NAME="OAUTH_CLIENT_ID" 
+        FIELD="TEXT" 
+        NUM_ROW="30" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+        NAME="OAUTH_CLIENT_SECRET" 
+        FIELD="TEXT" 
+        NUM_ROW="30" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+        NAME="OAUTH_CALLBACK_HOST" 
+        FIELD="TEXT" 
+        NUM_ROW="40" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>"localhost"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+        NAME="OAUTH_CALLBACK_PORT" 
+        FIELD="TEXT" 
+        NUM_ROW="40" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>8443</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+        NAME="OAUTH_TOKEN_FILE" 
+        FIELD="FILE" 
+        NUM_ROW="41" 
+        REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+        GROUP="LOGIN">
+        <DEFAULT>"token.properties"</DEFAULT>
     </PARAMETER>
     <PARAMETER
 		NAME="TIMEOUT"
@@ -2463,6 +2538,16 @@
 			REQUIRED="true" />
 		<IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.9.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wstx-asl-3.2.9.jar"
 			REQUIRED="true" />
+        <!-- OAuth2 -->
+        <IMPORT NAME="salesforceOAuth"
+            MODULE="salesforceOAuth.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceOAuth.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+        <IMPORT NAME="jetty-all-8.1.12.v20130726"
+            MODULE="jetty-all-8.1.12.v20130726.jar" UrlPath="platform:/plugin/org.talend.libraries.jetty/lib/jetty-all-8.1.12.v20130726.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+        <IMPORT NAME="servlet-api-3.0"
+            MODULE="servlet-api-3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.servlet/lib/servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+        <IMPORT NAME="json_simple-1.1"
+            MODULE="json_simple-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+      
     </IMPORTS>
   </CODEGENERATION>
 

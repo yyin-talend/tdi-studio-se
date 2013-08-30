@@ -52,25 +52,113 @@ imports="
 	
 	String concurrencyMode = ElementParameterParser.getValue(node,"__CONCURRENCY_MODE__");
 	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
+	
+	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
+	boolean useOAuth = "OAUTH".equals(loginType);
+	if(useOAuth){
+		String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
+		String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
+		%>
+		org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
+		org.talend.salesforce.oauth.Token token_<%=cid%>;
+		String endpointURL_<%=cid%> = null;
+		String accessToken_<%=cid%> = null;
+		oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
+		oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
+		oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
+		String refreshToken_<%=cid%> = null;
+		<%
+		String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
+		if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+		%>
+			// Attempt to load existing refresh token
+			String tokenFile_<%=cid%> = <%=tokenFile%>;
+			if(tokenFile_<%=cid%> != null){
+				java.util.Properties properties_<%=cid%> = new java.util.Properties();
+				try{
+					java.io.FileInputStream inputStream_<%=cid%> = new java.io.FileInputStream(tokenFile_<%=cid%>);
+					properties_<%=cid%>.load(inputStream_<%=cid%>);
+					inputStream_<%=cid%>.close();
+				}catch(java.io.FileNotFoundException e_<%=cid%>){
+				}catch(java.io.IOException ee_<%=cid%>){
+				}
+				String storedRefreshToken_<%=cid%> = (String) properties_<%=cid%>.get("refreshtoken");
+				
+				// Check to see if the an existing refresh token was loaded.
+				// If so, create a credential and call refreshToken() to get a new
+				// access token.
+				if(storedRefreshToken_<%=cid%> != null){
+					// Request a new Access token using the refresh token.
+					token_<%=cid%> = oauthClient_<%=cid%>.refreshToken(storedRefreshToken_<%=cid%>);
+					endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+					accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+					refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+				}
+			}
+		<%
+		}
+		%>
+		if(accessToken_<%=cid%> == null || endpointURL_<%=cid%> == null){
+			<%
+			String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
+			String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
+			%>
+			oauthClient_<%=cid%>.setCallbackHost(<%=callbackHost%>);
+			oauthClient_<%=cid%>.setCallbackPort(<%=callbackPort%>);
+			token_<%=cid%> = oauthClient_<%=cid%>.getToken();
+			endpointURL_<%=cid%> = oauthClient_<%=cid%>.getBulkEndpoint(token_<%=cid%>, <%=apiVersion%>);
+			accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+			refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+		}
+		<%
+		if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+		%>
+			if(tokenFile_<%=cid%> != null && tokenFile_<%=cid%> != null){
+				// Store the refresh token for future use.
+				java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
+				storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
+				java.io.FileOutputStream outputStream_<%=cid%> = new java.io.FileOutputStream(tokenFile_<%=cid%>);
+				storeProperties_<%=cid%>.store(outputStream_<%=cid%>, null);
+				if(outputStream_<%=cid%> != null){
+				    outputStream_<%=cid%>.close();
+				}
+			}
+		<%
+		}
+	}
 	%>
 	int nb_line_<%=cid %> = 0;
     int nb_success_<%=cid%> = 0;
     int nb_reject_<%=cid%> = 0;
 	
 	org.talend.salesforceBulk.SalesforceBulkAPI sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI();
-	<%if(useProxy){%>
-		sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
-	<%}%>
-	<%if(useExistingConn){%>
+	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
+	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
+	<%
+	if(useExistingConn){
+	%>
 		if(globalMap.get("conn_<%=connection %>")==null){
 			throw new RuntimeException("Get null connection from <%=connection %>");
 		}
 		sforceBulk_<%=cid%>.login((com.sforce.async.BulkConnection)globalMap.get("conn_<%=connection %>"));
-	<%}else{%>
-		sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
-	<%}%>
-	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
-	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
+	<%
+	}else{
+		if(useOAuth){
+		%>
+			sforceBulk_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>);
+		<%
+		}else{
+			if(useProxy){
+			%>
+				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+			<%
+			}
+			%>
+			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+		<%
+		}
+	}
+	%>
 
 
 	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);

@@ -64,22 +64,27 @@ public class SforceManagementImpl implements SforceManagement {
 
     private CallOptions co;
 
+    @Override
     public SforceServiceStub getStub() {
         return stub;
     }
 
+    @Override
     public SessionHeader getSessionHeader() {
         return sh;
     }
 
+    @Override
     public CallOptions getCallOptions() {
         return co;
     }
 
+    @Override
     public void setCallOptions(CallOptions co) {
         this.co = co;
     }
 
+    @Override
     public void setClientID(String clientID) {
         if (co == null) {
             co = new CallOptions();
@@ -105,12 +110,15 @@ public class SforceManagementImpl implements SforceManagement {
         if (httpsHost != null) {
             ProxyProperties proxyProperties = new ProxyProperties();
             proxyProperties.setProxyName(httpsHost);
-            if (httpsPort != null)
+            if (httpsPort != null) {
                 proxyProperties.setProxyPort(Integer.parseInt(httpsPort));
-            if (httpsUser != null && !"".equals(httpsUser))
+            }
+            if (httpsUser != null && !"".equals(httpsUser)) {
                 proxyProperties.setUserName(httpsUser);
-            if (httpsPwd != null && !"".equals(httpsPwd))
+            }
+            if (httpsPwd != null && !"".equals(httpsPwd)) {
                 proxyProperties.setPassWord(httpsPwd);
+            }
             options.setProperty(HTTPConstants.PROXY, proxyProperties);
         } else {
             String host = System.getProperty("http.proxyHost");
@@ -120,12 +128,15 @@ public class SforceManagementImpl implements SforceManagement {
             if (host != null) {
                 ProxyProperties proxyProperties = new ProxyProperties();
                 proxyProperties.setProxyName(host);
-                if (port != null)
+                if (port != null) {
                     proxyProperties.setProxyPort(Integer.parseInt(port));
-                if (user != null && !"".equals(user))
+                }
+                if (user != null && !"".equals(user)) {
                     proxyProperties.setUserName(user);
-                if (pwd != null && !"".equals(pwd))
+                }
+                if (pwd != null && !"".equals(pwd)) {
                     proxyProperties.setPassWord(pwd);
+                }
                 options.setProperty(HTTPConstants.PROXY, proxyProperties);
             } else {
                 String socksHost = System.getProperty("socksProxyHost");
@@ -135,12 +146,15 @@ public class SforceManagementImpl implements SforceManagement {
                 if (socksHost != null) {
                     ProxyProperties proxyProperties = new ProxyProperties();
                     proxyProperties.setProxyName(socksHost);
-                    if (socksPort != null)
+                    if (socksPort != null) {
                         proxyProperties.setProxyPort(Integer.parseInt(socksPort));
-                    if (socksUser != null && !"".equals(socksUser))
+                    }
+                    if (socksUser != null && !"".equals(socksUser)) {
                         proxyProperties.setUserName(socksUser);
-                    if (socksPwd != null && !"".equals(socksPwd))
+                    }
+                    if (socksPwd != null && !"".equals(socksPwd)) {
                         proxyProperties.setPassWord(socksPwd);
+                    }
                     options.setProperty(HTTPConstants.PROXY, proxyProperties);
                 }
             }
@@ -149,20 +163,7 @@ public class SforceManagementImpl implements SforceManagement {
         // HTTPConstants.HEADER_PROTOCOL_10);
     }
 
-    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression)
-            throws Exception {
-        return login(endpoint, username, password, Integer.parseInt(timeout), needCompression);
-    }
-
-    public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
-            throws Exception {
-        if (endpoint == null || endpoint.trim().length() == 0)
-            return false;
-        if (username == null || username.trim().length() == 0)
-            return false;
-        if (password == null || password.trim().length() == 0)
-            return false;
-
+    private void _init() {
         this.commitLevel = 1;
 
         this.deleteItems = new ArrayList<ID>(commitLevel * 2);
@@ -170,7 +171,39 @@ public class SforceManagementImpl implements SforceManagement {
         this.updateItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
+    }
 
+    private void _init(int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception {
+        if (commitLevel < 0) {
+            commitLevel = 1;
+        } else if (commitLevel > 200) {
+            commitLevel = 200;
+        }
+
+        this.commitLevel = commitLevel;
+        this.exceptionForErrors = exceptionForErrors;
+        if (errorLogFile != null && errorLogFile.trim().length() > 0) {
+            logWriter = new java.io.BufferedWriter(new java.io.FileWriter(errorLogFile));
+        }
+
+        this.deleteItems = new ArrayList<ID>(commitLevel * 2);
+        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertKeyColumn = "";
+    }
+
+    private boolean _login(String endpoint, String username, String password, int timeout, boolean needCompression)
+            throws Exception {
+        if (endpoint == null || endpoint.trim().length() == 0) {
+            return false;
+        }
+        if (username == null || username.trim().length() == 0) {
+            return false;
+        }
+        if (password == null || password.trim().length() == 0) {
+            return false;
+        }
         stub = new SforceServiceStub(endpoint);
         Options options = stub._getServiceClient().getOptions();
 
@@ -185,9 +218,32 @@ public class SforceManagementImpl implements SforceManagement {
         login.setPassword(password);
 
         LoginResult loginResult = stub.login(login, null, co).getResult();
+        return _login(loginResult.getSessionId(), loginResult.getServerUrl(), timeout, needCompression);
+    }
+
+    private void _login(SforceServiceStub stub, SessionHeader sh) throws Exception {
+        if (stub == null) {
+            throw new RuntimeException("SforceServiceStub is null! Connection is unavailable!");
+        }
+        if (sh == null) {
+            throw new RuntimeException("SessionHeader is null! Connection is unavailable!");
+        }
+        this.stub = stub;
+        this.sh = sh;
+    }
+
+    private boolean _login(String sessionID, String endpoint, int timeout, boolean needCompression) throws Exception {
+
+        if (sessionID == null || sessionID.trim().length() == 0) {
+            return false;
+        }
+        if (endpoint == null || endpoint.trim().length() == 0) {
+            return false;
+        }
         sh = new SessionHeader();
-        sh.setSessionId(loginResult.getSessionId());
-        stub = new SforceServiceStub(loginResult.getServerUrl());
+        sh.setSessionId(sessionID);
+        stub = new SforceServiceStub(endpoint);
+        Options options = stub._getServiceClient().getOptions();
         options = stub._getServiceClient().getOptions();
 
         if (needCompression) {
@@ -199,22 +255,29 @@ public class SforceManagementImpl implements SforceManagement {
         return true;
     }
 
-    public void login(SforceServiceStub stub, SessionHeader sh) throws Exception {
-        this.commitLevel = 1;
+    @Override
+    public boolean login(String sessionID, String endpoint, int timeout, boolean needCompression) throws Exception {
+        _init();
+        return _login(sessionID, endpoint, timeout, needCompression);
+    }
 
-        this.deleteItems = new ArrayList<ID>(commitLevel * 2);
-        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertKeyColumn = "";
-        if (stub == null) {
-            throw new RuntimeException("SforceServiceStub is null! Connection is unavailable!");
-        }
-        if (sh == null) {
-            throw new RuntimeException("SessionHeader is null! Connection is unavailable!");
-        }
-        this.stub = stub;
-        this.sh = sh;
+    @Override
+    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression)
+            throws Exception {
+        return login(endpoint, username, password, Integer.parseInt(timeout), needCompression);
+    }
+
+    @Override
+    public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
+            throws Exception {
+        _init();
+        return _login(endpoint, username, password, timeout, needCompression);
+    }
+
+    @Override
+    public void login(SforceServiceStub stub, SessionHeader sh) throws Exception {
+        _init();
+        _login(stub, sh);
     }
 
     private boolean exceptionForErrors = false;
@@ -235,97 +298,39 @@ public class SforceManagementImpl implements SforceManagement {
 
     private String upsertKeyColumn;
 
+    @Override
+    public boolean login(String sessionID, String endpoint, int timeout, boolean needCompression, int commitLevel,
+            boolean exceptionForErrors, String errorLogFile) throws Exception {
+        _init(commitLevel, exceptionForErrors, errorLogFile);
+        return _login(sessionID, endpoint, timeout, needCompression);
+    }
+
+    @Override
     public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression,
             int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception {
         return login(endpoint, username, password, Integer.parseInt(timeout), needCompression, commitLevel, exceptionForErrors,
                 errorLogFile);
     }
 
+    @Override
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression,
             int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception {
-        if (username == null || username.trim().length() == 0)
-            return false;
-        if (password == null || password.trim().length() == 0)
-            return false;
-        if (endpoint == null || endpoint.trim().length() == 0)
-            return false;
-
-        if (commitLevel < 0)
-            commitLevel = 1;
-        else if (commitLevel > 200)
-            commitLevel = 200;
-
-        this.commitLevel = commitLevel;
-        this.exceptionForErrors = exceptionForErrors;
-        if (errorLogFile != null && errorLogFile.trim().length() > 0) {
-            logWriter = new java.io.BufferedWriter(new java.io.FileWriter(errorLogFile));
-        }
-
-        this.deleteItems = new ArrayList<ID>(commitLevel * 2);
-        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertKeyColumn = "";
-
-        stub = new SforceServiceStub(endpoint);
-        Options options = stub._getServiceClient().getOptions();
-
-        if (needCompression) {
-            needCompression(options);
-        }
-        setTimeout(options, timeout);
-        setHttpProxy(options);
-
-        Login login = new Login();
-        login.setUsername(username);
-        login.setPassword(password);
-
-        LoginResult loginResult = stub.login(login, null, co).getResult();
-        sh = new SessionHeader();
-        sh.setSessionId(loginResult.getSessionId());
-        stub = new SforceServiceStub(loginResult.getServerUrl());
-        options = stub._getServiceClient().getOptions();
-
-        if (needCompression) {
-            needCompression(options);
-        }
-        setTimeout(options, timeout);
-        setHttpProxy(options);
-
-        return true;
+        _init(commitLevel, exceptionForErrors, errorLogFile);
+        return _login(endpoint, username, password, timeout, needCompression);
     }
 
+    @Override
     public void login(SforceServiceStub stub, SessionHeader sh, int commitLevel, boolean exceptionForErrors, String errorLogFile)
             throws Exception {
-        if (commitLevel < 0)
-            commitLevel = 1;
-        else if (commitLevel > 200)
-            commitLevel = 200;
+        _init(commitLevel, exceptionForErrors, errorLogFile);
 
-        this.commitLevel = commitLevel;
-        this.exceptionForErrors = exceptionForErrors;
-        if (errorLogFile != null && errorLogFile.trim().length() > 0) {
-            logWriter = new java.io.BufferedWriter(new java.io.FileWriter(errorLogFile));
-        }
-
-        this.deleteItems = new ArrayList<ID>(commitLevel * 2);
-        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
-        this.upsertKeyColumn = "";
-        if (stub == null) {
-            throw new RuntimeException("SforceServiceStub is null! Connection is unavailable!");
-        }
-        if (sh == null) {
-            throw new RuntimeException("SessionHeader is null! Connection is unavailable!");
-        }
-        this.stub = stub;
-        this.sh = sh;
+        _login(stub, sh);
     }
 
     /**
      * logout
      */
+    @Override
     public void logout() throws Exception {
         Object returnObject = null;
         // if there are still records to be commited:
@@ -347,7 +352,8 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?""+(batch_idx+1):"Batch index out of bounds");
+                            errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? "" + (batch_idx + 1)
+                                    : "Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -362,9 +368,9 @@ public class SforceManagementImpl implements SforceManagement {
             }
             if (deleteItems.size() > 0) {
                 ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
-                changedItemKeys = new String[delIDs.length]; 
-                for(int ix=0;ix<delIDs.length;++ix) {
-                	changedItemKeys[ix]=delIDs[ix].getID();
+                changedItemKeys = new String[delIDs.length];
+                for (int ix = 0; ix < delIDs.length; ++ix) {
+                    changedItemKeys[ix] = delIDs[ix].getID();
                 }
                 Delete dels = new Delete();
                 dels.setIds(delIDs);
@@ -381,7 +387,8 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                            errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                    : "Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -396,9 +403,9 @@ public class SforceManagementImpl implements SforceManagement {
             }
             if (updateItems.size() > 0) {
                 SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
-                changedItemKeys = new String[upds.length]; 
-                for(int ix=0;ix<upds.length;++ix) {
-                	changedItemKeys[ix]=upds[ix].getId().getID();
+                changedItemKeys = new String[upds.length];
+                for (int ix = 0; ix < upds.length; ++ix) {
+                    changedItemKeys[ix] = upds[ix].getId().getID();
                 }
                 Update update = new Update();
                 update.setSObjects(upds);
@@ -415,7 +422,8 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                            errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                    : "Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -431,12 +439,12 @@ public class SforceManagementImpl implements SforceManagement {
             if (upsertItems.size() > 0) {
                 SObject[] upds = upsertItems.toArray(new SObject[upsertItems.size()]);
                 changedItemKeys = new String[upds.length];
-                for(int ix=0;ix<upds.length;++ix) {
-                    changedItemKeys[ix]="No value for "+upsertKeyColumn+" ";
+                for (int ix = 0; ix < upds.length; ++ix) {
+                    changedItemKeys[ix] = "No value for " + upsertKeyColumn + " ";
                     OMElement[] oms = upds[ix].getExtraElement();
-                    for(int iy=0;iy<oms.length;++iy) {
-                        if(upsertKeyColumn!=null && oms[iy]!=null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
-                            changedItemKeys[ix]=oms[iy].getText();
+                    for (int iy = 0; iy < oms.length; ++iy) {
+                        if (upsertKeyColumn != null && oms[iy] != null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
+                            changedItemKeys[ix] = oms[iy].getText();
                             break;
                         }
                     }
@@ -457,7 +465,8 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                            errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                    : "Batch index out of bounds");
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -481,9 +490,11 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * delete, one time one record.
      */
+    @Override
     public DeleteResult[] delete(String id) throws Exception {
-        if (id == null)
+        if (id == null) {
             return null;
+        }
 
         // String[] ids = new String[] { id };
         ID dID = new ID();
@@ -492,9 +503,9 @@ public class SforceManagementImpl implements SforceManagement {
 
         if (deleteItems.size() >= commitLevel) {
             ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
-            changedItemKeys = new String[delIDs.length]; 
-            for(int ix=0;ix<delIDs.length;++ix) {
-            	changedItemKeys[ix]=delIDs[ix].getID();
+            changedItemKeys = new String[delIDs.length];
+            for (int ix = 0; ix < delIDs.length; ++ix) {
+                changedItemKeys[ix] = delIDs[ix].getID();
             }
             Delete dels = new Delete();
             dels.setIds(delIDs);
@@ -511,7 +522,8 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                        errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                : "Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -527,6 +539,7 @@ public class SforceManagementImpl implements SforceManagement {
         return null;
     }
 
+    @Override
     public OMElement newOMElement(String name, String value) throws Exception {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement ome = fac.createOMElement(name, null);
@@ -537,12 +550,15 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * create, one time one record.
      */
+    @Override
     public SaveResult[] insert(String tablename, OMElement[] nameValues) throws Exception {
-        if (tablename == null || tablename.trim().length() == 0)
+        if (tablename == null || tablename.trim().length() == 0) {
             return null;
+        }
 
-        if (nameValues == null || nameValues.length == 0)
+        if (nameValues == null || nameValues.length == 0) {
             return null;
+        }
 
         SObject item = new SObject();
         item.setType(tablename);
@@ -567,7 +583,8 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?""+(batch_idx+1):"Batch index out of bounds");
+                        errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? "" + (batch_idx + 1)
+                                : "Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -586,6 +603,7 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * update, one record, one time.
      */
+    @Override
     public SaveResult[] update(String tablename, String idStr, OMElement[] updatefields, String[] fieldsToNull) throws Exception {
 
         SObject item = new SObject(); // create the account object to hold our changes
@@ -600,9 +618,9 @@ public class SforceManagementImpl implements SforceManagement {
         // call the update passing an array of object
         if (updateItems.size() >= commitLevel) {
             SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
-            changedItemKeys = new String[upds.length]; 
-            for(int ix=0;ix<upds.length;++ix) {
-            	changedItemKeys[ix]=upds[ix].getId().getID();
+            changedItemKeys = new String[upds.length];
+            for (int ix = 0; ix < upds.length; ++ix) {
+                changedItemKeys[ix] = upds[ix].getId().getID();
             }
             Update update = new Update();
             update.setSObjects(upds);
@@ -619,7 +637,8 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                        errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                : "Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -640,6 +659,7 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * upsert, one record, one time.
      */
+    @Override
     public UpsertResult[] upsert(String tablename, String upsertkey, OMElement[] updatefields, String[] fieldsToNull)
             throws Exception {
 
@@ -656,13 +676,13 @@ public class SforceManagementImpl implements SforceManagement {
         // call the update passing an array of object
         if (upsertItems.size() >= commitLevel) {
             SObject[] upds = upsertItems.toArray(new SObject[upsertItems.size()]);
-            changedItemKeys = new String[upds.length]; 
-            for(int ix=0;ix<upds.length;++ix) {
-                changedItemKeys[ix]="No value for "+upsertKeyColumn+" ";
+            changedItemKeys = new String[upds.length];
+            for (int ix = 0; ix < upds.length; ++ix) {
+                changedItemKeys[ix] = "No value for " + upsertKeyColumn + " ";
                 OMElement[] oms = upds[ix].getExtraElement();
-                for(int iy=0;iy<oms.length;++iy) {
-                    if(upsertKeyColumn!=null && oms[iy]!=null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
-                        changedItemKeys[ix]=oms[iy].getText();
+                for (int iy = 0; iy < oms.length; ++iy) {
+                    if (upsertKeyColumn != null && oms[iy] != null && upsertKeyColumn.equals(oms[iy].getLocalName())) {
+                        changedItemKeys[ix] = oms[iy].getText();
                         break;
                     }
                 }
@@ -683,7 +703,8 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        errors = addLog(result.getErrors(),batch_idx<changedItemKeys.length?changedItemKeys[batch_idx]:"Batch index out of bounds");
+                        errors = addLog(result.getErrors(), batch_idx < changedItemKeys.length ? changedItemKeys[batch_idx]
+                                : "Batch index out of bounds");
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -709,10 +730,10 @@ public class SforceManagementImpl implements SforceManagement {
                     logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
                     logWriter.newLine();
                     logWriter.newLine();
-                    logWriter.append("\tRowKey/RowNo: "+row_key);
+                    logWriter.append("\tRowKey/RowNo: " + row_key);
                     if (error.getFields() != null) {
-                    	logWriter.newLine();
-                    	logWriter.append("\tFields: ");
+                        logWriter.newLine();
+                        logWriter.append("\tFields: ");
                         boolean flag = false;
                         for (String field : error.getFields()) {
                             if (flag) {
@@ -741,18 +762,21 @@ public class SforceManagementImpl implements SforceManagement {
         return errors;
     }
 
+    @Override
     public Map<String, String> readResult(Object[] results) throws Exception {
         Map<String, String> resultMessage = null;
         if (results instanceof SaveResult[]) {
             for (SaveResult result : (SaveResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                if (result.getId() != null)
+                if (result.getId() != null) {
                     resultMessage.put("id", result.getId().getID());
+                }
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 if (!result.getSuccess()) {
                     for (Error error : result.getErrors()) {
-                        if (error.getStatusCode() != null)
+                        if (error.getStatusCode() != null) {
                             resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        }
                         if (error.getFields() != null) {
                             StringBuffer fields = new StringBuffer();
                             for (String field : error.getFields()) {
@@ -772,13 +796,15 @@ public class SforceManagementImpl implements SforceManagement {
         } else if (results instanceof DeleteResult[]) {
             for (DeleteResult result : (DeleteResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                if (result.getId() != null)
+                if (result.getId() != null) {
                     resultMessage.put("id", result.getId().getID());
+                }
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 if (!result.getSuccess()) {
                     for (Error error : result.getErrors()) {
-                        if (error.getStatusCode() != null)
+                        if (error.getStatusCode() != null) {
                             resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        }
                         resultMessage.put("Message", error.getMessage());
                     }
                 }
@@ -787,14 +813,16 @@ public class SforceManagementImpl implements SforceManagement {
         } else if (results instanceof UpsertResult[]) {
             for (UpsertResult result : (UpsertResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                if (result.getId() != null)
+                if (result.getId() != null) {
                     resultMessage.put("id", result.getId().getID());
+                }
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 resultMessage.put("created", String.valueOf(result.getCreated()));
                 if (!result.getSuccess()) {
                     for (Error error : result.getErrors()) {
-                        if (error.getStatusCode() != null)
+                        if (error.getStatusCode() != null) {
                             resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        }
                         if (error.getFields() != null) {
                             StringBuffer fields = new StringBuffer();
                             for (String field : error.getFields()) {
@@ -815,10 +843,12 @@ public class SforceManagementImpl implements SforceManagement {
         return null;
     }
 
+    @Override
     public Calendar getServerTimestamp() throws Exception {
         return stub.getServerTimestamp(new GetServerTimestamp(), sh, co).getResult().getTimestamp();
     }
 
+    @Override
     public ID[] getUpdated(String objectType, Calendar startDate, Calendar endDate) throws Exception {
         GetUpdated getUpdated = new GetUpdated();
         getUpdated.setSObjectType(objectType);
@@ -829,6 +859,7 @@ public class SforceManagementImpl implements SforceManagement {
         return ids;
     }
 
+    @Override
     public SObject[] retrieve(ID[] ids, String objectType, String fieldsList) throws Exception {
         Retrieve retrieve = new Retrieve();
         retrieve.setFieldList(fieldsList);
@@ -845,6 +876,7 @@ public class SforceManagementImpl implements SforceManagement {
         return results;
     }
 
+    @Override
     public GetDeletedResult getDeleted(String objectType, Calendar startDate, Calendar endDate) throws Exception {
         GetDeleted getDeleted = new GetDeleted();
         getDeleted.setSObjectType(objectType);
@@ -859,6 +891,7 @@ public class SforceManagementImpl implements SforceManagement {
         return result;
     }
 
+    @Override
     public QueryResult queryAll(String soql, int batchSize) throws Exception {
         QueryAll queryAll = new QueryAll();
         queryAll.setQueryString(soql);
@@ -868,6 +901,7 @@ public class SforceManagementImpl implements SforceManagement {
         return qr;
     }
 
+    @Override
     public QueryResult queryMore(QueryLocator queryLocator, int batchSize) throws Exception {
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setBatchSize(batchSize);
@@ -877,6 +911,7 @@ public class SforceManagementImpl implements SforceManagement {
         return qr;
     }
 
+    @Override
     public QueryResult query(String soql, int batchSize) throws Exception {
         Query query = new Query();
         query.setQueryString(soql);
@@ -885,4 +920,5 @@ public class SforceManagementImpl implements SforceManagement {
         QueryResult qr = stub.query(query, sh, co, queryOptions, null, null).getResult();
         return qr;
     }
+
 }

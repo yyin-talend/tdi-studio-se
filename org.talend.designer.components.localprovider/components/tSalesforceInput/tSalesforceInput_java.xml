@@ -27,25 +27,31 @@
 
 	<PARAMETERS>
 
-		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
-			NUM_ROW="5" REPOSITORY_VALUE="SALESFORCE" />
-		<PARAMETER
-	      NAME="USE_EXISTING_CONNECTION"
-	      FIELD="CHECK"
-	      NUM_ROW="10"
-	    >
-	      <DEFAULT>false</DEFAULT>
+		<PARAMETER 
+            NAME="PROPERTY" 
+            FIELD="PROPERTY_TYPE" 
+            SHOW="true"
+            NUM_ROW="1" 
+            REPOSITORY_VALUE="SALESFORCE" />
+		
+        <PARAMETER
+            NAME="USE_EXISTING_CONNECTION"
+            FIELD="CHECK"
+            NUM_ROW="5">
+            <DEFAULT>false</DEFAULT>
 	    </PARAMETER>
 
 	    <PARAMETER
-	      NAME="CONNECTION"
-	      FIELD="COMPONENT_LIST"
-	      FILTER="tSalesforceConnection"
-	      NUM_ROW="10"
-	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-	    />
+            NAME="CONNECTION"
+            FIELD="COMPONENT_LIST"
+            FILTER="tSalesforceConnection"
+            NUM_ROW="5"
+            SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
 
-	    <PARAMETER NAME="API" FIELD="CLOSED_LIST" NUM_ROW="15"
+	    <PARAMETER 
+            NAME="API" 
+            FIELD="CLOSED_LIST" 
+            NUM_ROW="10"
 			REQUIRED="true">
 			<ITEMS DEFAULT="soap">
 				<ITEM NAME="soap" VALUE="soap" />
@@ -53,21 +59,113 @@
 			</ITEMS>
 		</PARAMETER>
 
-		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true" REPOSITORY_VALUE="ENDPOINT" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+        <PARAMETER 
+            NAME="LOGIN_TYPE" 
+            FIELD="CLOSED_LIST" 
+            NUM_ROW="15" 
+            REQUIRED="true"
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="LOGIN">
+            <ITEMS DEFAULT="BASIC">
+                <ITEM NAME="BASIC" VALUE="BASIC" />
+                <ITEM NAME="OAUTH" VALUE="OAUTH" />
+            </ITEMS>
+        </PARAMETER>
+        
+		<PARAMETER 
+            NAME="ENDPOINT" 
+            FIELD="TEXT" 
+            NUM_ROW="20"
+			REQUIRED="true" 
+            REPOSITORY_VALUE="ENDPOINT" 
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="LOGIN">
+			<DEFAULT IF="LOGIN_TYPE == 'BASIC'">"https://login.salesforce.com/services/Soap/u/25.0"</DEFAULT>
+            <DEFAULT IF="LOGIN_TYPE == 'OAUTH'">"https://login.salesforce.com/services/oauth2"</DEFAULT>
 		</PARAMETER>
+    
+        <PARAMETER 
+            NAME="API_VERSION" 
+            FIELD="TEXT" 
+            NUM_ROW="25"
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((LOGIN_TYPE == 'OAUTH') OR (API == 'bulk'))"  
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND ((LOGIN_TYPE == 'OAUTH') OR (API == 'bulk'))"
+            GROUP="LOGIN">
+            <DEFAULT>"25.0"</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="30" REQUIRED="true"
-			REPOSITORY_VALUE="USER_NAME" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<PARAMETER 
+            NAME="USER" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+			REPOSITORY_VALUE="USER_NAME" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            GROUP="LOGIN">
 			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
-			REPOSITORY_VALUE="PASSWORD" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<PARAMETER 
+            NAME="PASS" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+			REPOSITORY_VALUE="PASSWORD" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
+            GROUP="LOGIN">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
 
+        <PARAMETER 
+            NAME="OAUTH_CLIENT_ID" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CLIENT_SECRET" 
+            FIELD="TEXT" 
+            NUM_ROW="30" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CALLBACK_HOST" 
+            FIELD="TEXT" 
+            NUM_ROW="40" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>"localhost"</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_CALLBACK_PORT" 
+            FIELD="TEXT" 
+            NUM_ROW="40" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>8443</DEFAULT>
+        </PARAMETER>
+        
+        <PARAMETER 
+            NAME="OAUTH_TOKEN_FILE" 
+            FIELD="FILE" 
+            NUM_ROW="41" 
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            GROUP="LOGIN">
+            <DEFAULT>"token.properties"</DEFAULT>
+        </PARAMETER>
+        
 		<PARAMETER
 			NAME="TIMEOUT"
 			FIELD="TEXT"
@@ -77,10 +175,7 @@
 			<DEFAULT>60000</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="45"
-			REQUIRED="true"  SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'bulk')">
-			<DEFAULT>"25.0"</DEFAULT>
-		</PARAMETER>
+		
 
 		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50"
 			REQUIRED="true" REPOSITORY_VALUE="MODULENAME">
@@ -2432,6 +2527,7 @@
 	       FIELD="CHECK"
 	       REQUIRED="true"
 		   NUM_ROW="10"
+           SHOW_IF="LOGIN_TYPE=='BASIC'"
 		   REPOSITORY_VALUE="UES_PROXY">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -2440,7 +2536,7 @@
 			NAME="PROXY_HOST"
 			FIELD="TEXT"
 			NUM_ROW="20"
-			SHOW_IF="USE_PROXY == 'true'"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
 			REPOSITORY_VALUE="PROXY_HOST">
 			<DEFAULT>"61.163.92.4"</DEFAULT>
 		</PARAMETER>
@@ -2449,7 +2545,7 @@
 			NAME="PROXY_PORT"
 			FIELD="TEXT"
 			NUM_ROW="30"
-			SHOW_IF="USE_PROXY == 'true'"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
 			REPOSITORY_VALUE="PROXY_PORT">
 			<DEFAULT>"1080"</DEFAULT>
 		</PARAMETER>
@@ -2458,7 +2554,7 @@
 			NAME="PROXY_USERNAME"
 			FIELD="TEXT"
 			NUM_ROW="40"
-			SHOW_IF="USE_PROXY == 'true'"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
 			REPOSITORY_VALUE="PROXY_USERNAME">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
@@ -2467,7 +2563,7 @@
 			NAME="PROXY_PASSWORD"
 			FIELD="TEXT"
 			NUM_ROW="50"
-			SHOW_IF="USE_PROXY == 'true'"
+			SHOW_IF="(LOGIN_TYPE=='BASIC') AND (USE_PROXY=='true')"
 			REPOSITORY_VALUE="PROXY_PASSWORD">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
@@ -2566,6 +2662,16 @@
 			<IMPORT NAME="wsc" MODULE="wsc.jar"
 				REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
 			<IMPORT NAME="CsvWriter" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.csv/lib/talendcsv.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
+      
+            <!-- OAuth2 -->
+            <IMPORT NAME="salesforceOAuth"
+                MODULE="salesforceOAuth.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/salesforceOAuth.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            <IMPORT NAME="jetty-all-8.1.12.v20130726"
+                MODULE="jetty-all-8.1.12.v20130726.jar" UrlPath="platform:/plugin/org.talend.libraries.jetty/lib/jetty-all-8.1.12.v20130726.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            <IMPORT NAME="servlet-api-3.0"
+                MODULE="servlet-api-3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.servlet/lib/servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+            <IMPORT NAME="json_simple-1.1"
+                MODULE="json_simple-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
 		</IMPORTS>
 	</CODEGENERATION>
 

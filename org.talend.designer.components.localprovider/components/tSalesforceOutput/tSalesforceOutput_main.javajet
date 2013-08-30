@@ -40,7 +40,9 @@ List<Map<String, String>> relationshipMappings = (List<Map<String,String>>)Eleme
 %>
 
 <%
-if(useProxy){
+	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
+	boolean useOAuth = "OAUTH".equals(loginType);
+if(!useOAuth && useProxy){
 %>
     java.util.Properties props_<%=cid%> = System.getProperties();
     props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  

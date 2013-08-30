@@ -44,6 +44,8 @@ public interface SforceManagement {
 
     public void setClientID(String clientID);
 
+    public boolean login(String sessionID, String endpoint, int timeout, boolean needCompression) throws Exception;
+
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
             throws Exception;
 
@@ -51,6 +53,9 @@ public interface SforceManagement {
             throws Exception;
 
     public void login(SforceServiceStub stub, SessionHeader sh) throws Exception;
+
+    public boolean login(String sessionID, String endpoint, int timeout, boolean needCompression, int commitLevel,
+            boolean exceptionForErrors, String errorLogFile) throws Exception;
 
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression,
             int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception;
