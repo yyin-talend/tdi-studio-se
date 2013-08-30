@@ -417,11 +417,15 @@ public class JobletContainer extends NodeContainer {
             Integer mrGroupId = node.getMrGroupId();
             List<? extends INode> mapReduceNodes = this.node.getProcess().getGraphicalNodes();
             List<Node> nodeList = new ArrayList<Node>();
-            for (INode inode : mapReduceNodes) {
-                if ((inode instanceof Node)) {
-                    Node temNode = (Node) inode;
-                    if (temNode.getMrGroupId() != null && mrGroupId != null && temNode.getMrGroupId().equals(mrGroupId)) {
-                        nodeList.add(temNode);
+            if (node.getNodeContainer().getSubjobContainer().isCollapsed()) {
+                nodeList.add(node);
+            } else {
+                for (INode inode : mapReduceNodes) {
+                    if ((inode instanceof Node)) {
+                        Node temNode = (Node) inode;
+                        if (temNode.getMrGroupId() != null && mrGroupId != null && temNode.getMrGroupId().equals(mrGroupId)) {
+                            nodeList.add(temNode);
+                        }
                     }
                 }
             }

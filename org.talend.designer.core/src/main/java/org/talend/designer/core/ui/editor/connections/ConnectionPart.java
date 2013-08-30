@@ -290,14 +290,17 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         Node target = (Node) conn.getTarget();
         SubjobContainer sourceSubjob = source.getNodeContainer().getSubjobContainer();
         SubjobContainer targetSubjob = target.getNodeContainer().getSubjobContainer();
-        if ((sourceSubjob == targetSubjob) && targetSubjob.isCollapsed()) {
-            return false;
-        } else if (!conn.isActivate() && sourceSubjob.isCollapsed()) {
-            if (sourceSubjob.getSubjobStartNode().getUniqueName().equals(source.getUniqueName())) {
-                return super.isSelectable();
+        if (sourceSubjob != null) {
+            if ((sourceSubjob == targetSubjob) && sourceSubjob.isCollapsed()) {
+                return false;
+            } else if (!conn.isActivate() && sourceSubjob.isCollapsed()) {
+                if (sourceSubjob.getSubjobStartNode().getUniqueName().equals(source.getUniqueName())) {
+                    return super.isSelectable();
+                }
+                return false;
             }
-            return false;
         }
+
         return super.isSelectable();
     }
 }
