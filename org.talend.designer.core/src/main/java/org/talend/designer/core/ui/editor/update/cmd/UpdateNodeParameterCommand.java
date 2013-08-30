@@ -520,7 +520,8 @@ public class UpdateNodeParameterCommand extends Command {
                                                     List<IMetadataColumn> newColumns = newTable.getListColumns();
                                                     for (IMetadataColumn column : tableExsit.getListColumns()) {
                                                         for (IMetadataColumn newColumn : newColumns) {
-                                                            if (newColumn.getLabel().equals(column.getLabel())) {
+                                                            if (tableExsit.getTableName().equals(newTable.getTableName())
+                                                                    && newColumn.getLabel().equals(column.getLabel())) {
                                                                 column.setTalendType(newColumn.getTalendType());
                                                                 column.setNullable(newColumn.isNullable());
                                                                 column.setComment(newColumn.getComment());
