@@ -682,7 +682,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     @Override
-    public List<? extends INode> getGeneratingNodes() {
+    public synchronized List<? extends INode> getGeneratingNodes() {
         if (generatingProcess == null) {
             generatingProcess = new DataProcess(this);
         }
