@@ -51,7 +51,7 @@ public class CleanDBSchemaOntCreateTableMigrationTask extends AbstractJobMigrati
 
                                 if ("MSSQL".equals(dbType.getValue()) || "SYBASE".equals(dbType.getValue())) {
                                     ElementParameterType schema_db = ComponentUtilities.getNodeProperty(node, "SCHEMA_DB");
-                                    if (schema_db != null && !"".equals(schema_db.getValue())) {
+                                    if (schema_db != null) {
                                         ComponentUtilities.getNodeProperty(node, "SCHEMA_DB").setValue("\"\"");
                                     }
                                 }
