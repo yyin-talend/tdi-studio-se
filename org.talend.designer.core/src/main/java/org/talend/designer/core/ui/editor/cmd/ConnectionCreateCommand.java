@@ -102,6 +102,7 @@ public class ConnectionCreateCommand extends Command {
      */
     public void setTarget(Node targetNode) {
         this.target = targetNode;
+        this.target.setTakeSchema(null);
     }
 
     private String askForConnectionName(String nodeLabel, String oldName) {
