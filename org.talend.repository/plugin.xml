@@ -1964,6 +1964,15 @@
               name="CleanDBSchemaOntCreateTableMigrationTask"
               version="5.2.4">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.ChangeDBName4Hive"
+              description="change db name to default value for hive components"
+              id="org.talend.repository.model.migration.ChangeDBName4Hive"
+              name="ChangeDBName4Hive"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension
