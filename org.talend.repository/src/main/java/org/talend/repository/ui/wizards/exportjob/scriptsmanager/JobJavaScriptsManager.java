@@ -410,7 +410,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
                 props.put(IExportJobConstants.PRODUCT_VERSION, VersionUtils.getVersion());
                 antPropertiesOutputStream = new FileOutputStream(antPropertiesFile);
-                props.store(new FileOutputStream(antPropertiesFile), "");
+                props.store(new FileOutputStream(antPropertiesFile), ""); //$NON-NLS-1$
             } finally {
                 antBuildFileOutputStream.close();
                 antPropertiesOutputStream.close();
@@ -675,8 +675,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             selectedJobVersion = this.getSelectedJobVersion();
         }
         if (progressMonitor != null) {
-            progressMonitor
-                    .subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
+            progressMonitor.subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion);  //$NON-NLS-1$//$NON-NLS-2$
         }
         String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
         // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -1820,7 +1819,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             } catch (PersistenceException e2) {
                 ExceptionHandler.process(e2);
             }
-            IPath temPath = fsProject.getLocation().append(File.separator + "temp");
+            IPath temPath = fsProject.getLocation().append(File.separator + "temp"); //$NON-NLS-1$
             ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
             if (repositoryBundleService != null) {
                 repositoryBundleService.retrieve(libs, temPath.toString());
@@ -1974,7 +1973,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     public URL getExportPigudfResources(ExportFileResource[] process) throws ProcessorException {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
-        ExportFileResource libResource = new ExportFileResource(null, "");
+        ExportFileResource libResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         // for pigudf
         List<URL> resource = getPigudfResource(process, isOptionChoosed(ExportChoice.needPigudf));
         if (!resource.isEmpty()) {

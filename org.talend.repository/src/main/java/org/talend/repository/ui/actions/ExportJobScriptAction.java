@@ -48,7 +48,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
  */
 public class ExportJobScriptAction extends AContextualAction {
 
-    protected static final String EXPORTJOBSCRIPTS = Messages.getString("ExportJobScriptAction.actionLabel"); //$NON-NLS-1$
+    protected static final String EXPORTJOBSCRIPTS = Messages.getString("ExportJobScriptAction.buildJob"); //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

@@ -104,7 +104,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(Messages.getString("JobScriptsExportWizard.exportJob")); //$NON-NLS-1$
+        setWindowTitle(Messages.getString("JobScriptsExportWizard.buildJob")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
 
