@@ -1558,10 +1558,12 @@ public class UIManager extends AbstractUIManager {
                     atLeastOneLinkHasBeenRemoved = true;
                 }
             }
-            if (dataMapTable instanceof OutputTable) {
-                List<FilterTableEntry> constraintEntries = ((OutputTable) dataMapTable).getFilterEntries();
-                for (FilterTableEntry entry : constraintEntries) {
-                    if (parseExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
+            // for the input/output table expression filter
+            if (dataMapTable instanceof AbstractInOutTable) {
+                ExpressionFilterEntry expressionFilterEntry = ((AbstractInOutTable) dataMapTable).getExpressionFilter();
+                if (expressionFilterEntry != null && expressionFilterEntry.getExpression() != null) {
+                    if (parseExpression(expressionFilterEntry.getExpression(), expressionFilterEntry, true, true, false)
+                            .isAtLeastOneLinkRemoved()) {
                         atLeastOneLinkHasBeenRemoved = true;
                     }
                 }
