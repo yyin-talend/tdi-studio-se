@@ -14,6 +14,7 @@ package org.talend.designer.codegen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -104,6 +105,59 @@ public class CodeGenerator implements ICodeGenerator {
     private static final long INIT_PAUSE = 1000; // 1s
 
     private static final boolean DEBUG = false;
+
+    private class OnRowsEndCode {
+
+        private int count = 0; // count onRowsEnd components generates how many times
+
+        private List<StringBuffer> bufferList = new ArrayList<StringBuffer>();
+
+        private Map<String, Boolean> markedMap = new HashMap<String, Boolean>();
+
+        public OnRowsEndCode() {
+            count = 0;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void increase() {
+            count++;
+        }
+
+        public void decrease() {
+            count--;
+        }
+
+        public void clear() {
+            count = 0;
+            bufferList.clear();
+            markedMap.clear();
+        }
+
+        public void add(StringBuffer buf) {
+            if (buf != null) {
+                bufferList.add(buf);
+            }
+        }
+
+        public List<StringBuffer> getBuffers() {
+            return this.bufferList;
+        }
+
+        public Boolean mark(String key) {
+            return this.markedMap.put(key, true);
+        }
+
+        public Boolean getMarked(String key) {
+            return this.markedMap.get(key);
+        }
+    }
+
+    // this one is used to store all the generated code of the subjobs which start with the IN of the virtual component
+    // with OnRowsEnd. It is used to fix TDI-26484
+    private OnRowsEndCode onRowsEndCode = new OnRowsEndCode();
 
     /**
      * Constructor : use the process and laguage to initialize internal components.
@@ -623,7 +677,7 @@ public class CodeGenerator implements ICodeGenerator {
         StringBuffer codeComponent = new StringBuffer();
         Boolean isMarked = subProcess.isMarkedNode(node, part);
         boolean isIterate = isSpecifyInputNode(node, incomingName, EConnectionType.ITERATE);
-        boolean isOnRowsEnd = isSpecifyInputNode(node, incomingName, EConnectionType.ON_ROWS_END);
+
         if ((isMarked != null) && (!isMarked)) {
             switch (part) {
             case BEGIN:
@@ -717,20 +771,52 @@ public class CodeGenerator implements ICodeGenerator {
 									+ node.getUniqueName() + "\")");
 						}
                     }
+                    // This code is used to generate the Virtual_IN--->Out part in previous
+                    boolean isNextOnRowsEnd = false;
+                    IConnection conn = null;
+                    if (node.getOutgoingConnections(EConnectionType.ON_ROWS_END).size() == 1) {
+                        conn = node.getOutgoingConnections(EConnectionType.ON_ROWS_END).get(0);
+                        isNextOnRowsEnd = isSpecifyInputNode(conn.getTarget(), conn.getName(), EConnectionType.ON_ROWS_END);
+                    }
+                    if (isNextOnRowsEnd && conn != null && (onRowsEndCode.getMarked(conn.getTarget().getUniqueName()) == null)) {
+                        StringBuffer buffer = new StringBuffer();
+                        onRowsEndCode.add(buffer);
+                        onRowsEndCode.mark(conn.getTarget().getUniqueName());
+                        onRowsEndCode.increase();
+
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.BEGIN, typeGen));
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.BEGIN, incomingName, typeGen));
+
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.MAIN, incomingName, typeGen));
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.MAIN, typeGen));
+
+                        buffer.append(generateComponentCode(subProcess, conn.getTarget(), ECodePart.END, incomingName, typeGen));
+                        buffer.append(generatesTreeCode(subProcess, conn.getTarget(), ECodePart.END, typeGen));
+
+                    }
+
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
                 }
                 break;
             case END:
+                boolean isOnRowsEnd = isSpecifyInputNode(node, incomingName, EConnectionType.ON_ROWS_END);
                 if (isOnRowsEnd) {
+                    // append the onRowsEnd code to the end part of the first virtual_Out
+                    onRowsEndCode.decrease();
+                    if (onRowsEndCode.getCount() == 0) {
+                        for (int i = 0; i < onRowsEndCode.getBuffers().size(); i++) {
+                            codeComponent.append(onRowsEndCode.getBuffers().get(i));
+                        }
+                        onRowsEndCode.clear();
+                    }
+//                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN, typeGen));
+//                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.BEGIN, incomingName, typeGen));
 
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN, typeGen));
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.BEGIN, incomingName, typeGen));
+//                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
+//                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
 
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
-
-                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName, typeGen));
-                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END, typeGen));
+//                    codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName, typeGen));
+//                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END, typeGen));
 
                 } else {
                     // if (!isIterate) {
