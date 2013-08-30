@@ -667,7 +667,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     @Override
-    public List<? extends INode> getGeneratingNodes() {
+    public synchronized List<? extends INode> getGeneratingNodes() {
         if (generatingProcess == null) {
             generatingProcess = new DataProcess(this);
         }
