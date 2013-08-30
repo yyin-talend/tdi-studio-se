@@ -19,6 +19,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -66,6 +67,11 @@ public class ConnectionsDialog extends TitleAreaDialog {
         }
         // RGB rgb = parentShell.getBackground().getRGB();
         // setTitleAreaColor(rgb);
+    }
+
+    @Override
+    public Button getOKButton() {
+        return this.getButton(OK);
     }
 
     @Override

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -308,9 +309,22 @@ public class ConnectionFormComposite extends Composite {
         return validateFields();
     }
 
+    private boolean isValidatedWorkspace(String workSpace) {
+        File file = new File(workSpace);
+        if (!file.exists() || !file.isDirectory()) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     private boolean validateFields() {
         String errorMsg = null;
         boolean valid = true;
+        if (dialog.getOKButton() != null) {
+            dialog.getOKButton().setEnabled(true);
+        }
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
@@ -333,6 +347,8 @@ public class ConnectionFormComposite extends Composite {
             errorMsg = Messages.getString("connections.form.malformedField.username"); //$NON-NLS-1$
         } else if (valid && emptyUrl != null) {
             errorMsg = Messages.getString("connections.form.dynamicFieldEmpty", emptyUrl.getLabel()); //$NON-NLS-1$
+        } else if (valid && !this.isValidatedWorkspace(this.getWorkspace())) {
+            errorMsg = Messages.getString("ConnectionFormComposite.workspaceInvalid"); //$NON-NLS-1$
         } else if (valid && isOnlyRemoteConnection) {
             // Uniserv feature 8,Add new Extension point to allow Uniserv to add some custom controls during TAC
             // connection check
@@ -347,6 +363,9 @@ public class ConnectionFormComposite extends Composite {
         }
         if (!valid) {
             dialog.setErrorMessage(errorMsg);
+            if (dialog.getOKButton() != null) {
+                dialog.getOKButton().setEnabled(false);
+            }
         } else {
             dialog.setErrorMessage(null);
         }

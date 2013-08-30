@@ -1959,7 +1959,11 @@ public class LoginComposite extends Composite {
         String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
         //        String filePath1 = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
         //        String filePath2 = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
-        return workspace.equals(defaultPath); // workspace.equals(filePath1) || workspace.equals(filePath2);
+        if (EnvironmentUtils.isWindowsSystem()) {
+            return workspace.equalsIgnoreCase(defaultPath);
+        } else {
+            return workspace.equals(defaultPath);// workspace.equals(filePath1) || workspace.equals(filePath2);
+        }
     }
 
     private void updateVisible() {
