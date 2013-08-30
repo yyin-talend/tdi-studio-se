@@ -23,7 +23,7 @@ imports="
 	    	isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	    	if(isLog4jEnabled){
 %>
-		    	log.info("<%=cid%> satrt to work ......");
+		    	log.info("<%=cid%> - Start to work.");
 <%			}
 	    }
 	    
@@ -61,11 +61,11 @@ imports="
 		        String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%>" +" start to connect " + url_<%=cid%>);
+					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "with the username '"+ dbUser_<%=cid%> +"'.");
 				<%}%>
 		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%>" +" connect to " + url_<%=cid%> + " successfully!");
+					log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
 				<%}%>
 		        <%this.afterUseNewConnection(node);%>
 		    }
@@ -135,7 +135,7 @@ imports="
                                 <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
                             } else {
 								<%if(isLog4jEnabled){%>
-									log.error("<%=cid %> "  + "Value is empty for column : '<%=column.getLabel()%>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
+									log.fatal("<%=cid %> - Value is empty for column : '<%=column.getLabel()%>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 								<%}%>
         			  			throw new RuntimeException(
         							"Value is empty for column : '<%=column.getLabel()%>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");							
@@ -182,7 +182,10 @@ imports="
                     <%=firstConnName%>.<%=column.getLabel()%> = null;
                     <%
                 } else {
-                    %>    
+                    %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Null value in non-Nullable column");
+					<%}%>    
                     throw new RuntimeException("Null value in non-Nullable column");
                     <%    
                 }

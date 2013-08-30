@@ -163,7 +163,8 @@ imports="
 		    String tmpContent_<%=cid%> = null;
 		    int column_index_<%=cid%> =1;
 		    <%if(isLog4jEnabled){%>
-		    	log.info("<%=cid%>" + " start to retrieve record from database!");
+			    StringBuffer sb_<%=cid%> = new StringBuffer();
+		    	log.info("<%=cid%> - Retrieving records from the database.");
 		    <%}%>
 		    while (rs_<%=cid %>.next()) {
 		        nb_line_<%=cid%>++;
@@ -286,6 +287,12 @@ imports="
 %>
 								<%dbInputBeginUtil.afterGenertorType( firstConnName, column,  currentColNo);%>
 		                    }
+							<%if(isLog4jEnabled){%>
+								sb_<%=cid%>.append(<%=firstConnName%>.<%=column.getLabel()%>);
+								<%if(columnList.size()>currentColNo){%>
+									sb_<%=cid%>.append("|");								
+								<%}
+							}%>
 <%  
 		                    currentColNo++;
 		                }

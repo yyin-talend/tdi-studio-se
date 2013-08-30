@@ -146,7 +146,7 @@
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
         <%if(isLog4jEnabled){%>
 	        if(exitCode==0){
-		        log.info("TalendJob: <%=codeGenArgument.getJobName()%> finished !");
+		        log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has finished.");
 	        }
         <%}%>
          
@@ -204,7 +204,7 @@
         			log.setLevel(org.apache.log4j.Level.FATAL);
         		}
     	    }
-        	log.info("TalendJob:  <%=codeGenArgument.getJobName()%> start ");
+        	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has started.");
     	<%}%>
     	
         if(clientHost == null) {
