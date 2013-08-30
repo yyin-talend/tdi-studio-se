@@ -378,7 +378,7 @@ public class TalendJetEmitter extends JETEmitter {
                                             marker.getAttribute(IMarker.MESSAGE),
                                             (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
                                                     targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) }))));
-                            classAvailable = false;
+                            setClassAvailable(false);
                         }
                     }
 
@@ -515,6 +515,10 @@ public class TalendJetEmitter extends JETEmitter {
      */
     public boolean isClassAvailable() {
         return this.classAvailable;
+    }
+
+    public void setClassAvailable(boolean classAvailable) {
+        this.classAvailable = classAvailable;
     }
 
     /*
