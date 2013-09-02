@@ -132,10 +132,12 @@
 	</service>
 
 #if ($endpoint.useAuthorization)
+#[[
 	<bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor" 
         			 id="XACMLInterceptor">
 		<property name="pdpAddress" value="$service{tesb.pdp.address}"/>
 	</bean>
+]]#
 #end	
 
 	<!-- Wiring the counter repository -->
