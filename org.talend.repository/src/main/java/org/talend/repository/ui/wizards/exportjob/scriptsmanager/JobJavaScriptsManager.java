@@ -1372,11 +1372,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
                 list.add(log4jFile.toURL());
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         return list;
@@ -1395,11 +1393,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
                 list.add(log4jFile.toURL());
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         libResource.addResources(list);
