@@ -251,6 +251,9 @@ class ExportItemWizardPage extends WizardPage {
                     expandRoot(node);
                     expandParent(exportItemsTreeViewer, node);
                     checkElement(node, nodes);
+                } else {
+                    // for transform node
+                    nodes.add(obj);
                 }
             }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
@@ -305,7 +308,7 @@ class ExportItemWizardPage extends WizardPage {
         allNode.addAll(checkedNodes);
     }
 
-    private void checkElement(RepositoryNode node, Set<RepositoryNode> nodes) {
+    private void checkElement(RepositoryNode node, Set nodes) {
         if (node == null) {
             return;
         }
@@ -462,6 +465,14 @@ class ExportItemWizardPage extends WizardPage {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 if (element instanceof RepositoryNode) {
                     return selectRepositoryNode(viewer, (RepositoryNode) element);
+                } else {
+                    for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                        boolean exportFilter = nodeHandler.exportFilter(viewer, parentElement, element);
+                        if (!exportFilter) {
+                            return exportFilter;
+                        }
+
+                    }
                 }
                 return true;
             }
