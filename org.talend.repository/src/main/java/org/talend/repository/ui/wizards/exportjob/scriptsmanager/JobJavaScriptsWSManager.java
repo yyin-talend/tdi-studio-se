@@ -58,6 +58,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 
 /**
  * DOC x class global comment. Detailled comment <br/>
@@ -140,6 +141,11 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
+        // Add log4j files if needed
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            addLog4jXmlToLibs(libResource);
+        }
+
         for (ExportFileResource proces : process) {
             ProcessItem processItem = (ProcessItem) proces.getItem();
 
@@ -204,7 +210,6 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(process);
         libResource.addResources(userRoutineList);
-
 
         // Gets axis libraries
         List<String> newAxisLib = new ArrayList<String>(axisLib);

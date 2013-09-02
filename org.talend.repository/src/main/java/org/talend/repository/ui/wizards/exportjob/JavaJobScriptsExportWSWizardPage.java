@@ -740,7 +740,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-            applyLog4jToChildrenButton.setSelection(settings.getBoolean(APPLY_LOG4J_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
             if (chkButton.isVisible()) {
                 zipOption = String.valueOf(chkButton.getSelection());
@@ -805,7 +804,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-            applyLog4jToChildrenButton.setSelection(settings.getBoolean(APPLY_LOG4J_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
             zipOption = String.valueOf(chkButton.getSelection());
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
@@ -893,9 +891,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             if (jobItemButton != null && !jobItemButton.isDisposed()) {
                 settings.put(STORE_JOB_ID, jobItemButton.getSelection());
-            }
-            if (applyLog4jToChildrenButton != null && !applyLog4jToChildrenButton.isDisposed()) {
-                settings.put(APPLY_LOG4J_TO_CHILDREN_ID, applyLog4jToChildrenButton.getSelection());
             }
 
             if (log4jLevelCombo != null && !log4jLevelCombo.isDisposed()) {
@@ -1430,9 +1425,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
         applyToChildrenButton.setSelection(true);
 
-        applyLog4jToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        applyLog4jToChildrenButton.setSelection(true);
-        applyLog4jToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyLog4jToChildren"));//$NON-NLS-1$
+        Label label = new Label(optionsGroup, SWT.None);
+        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
 
         log4jLevelCombo = new Combo(optionsGroup, SWT.PUSH);
         gd = new GridData();

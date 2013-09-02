@@ -606,9 +606,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         });
-        applyLog4jToChildrenButton = new Button(topGroup, SWT.CHECK | SWT.LEFT);
-        applyLog4jToChildrenButton.setSelection(true);
-        applyLog4jToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyLog4jToChildren"));//$NON-NLS-1$
+
+        Label label = new Label(topGroup, SWT.None);
+        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
 
         log4jLevelCombo = new Combo(topGroup, SWT.PUSH);
         gd = new GridData();
@@ -1395,7 +1395,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needJobScript, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
-        exportChoiceMap.put(ExportChoice.applyLog4jToChildren, applyLog4jToChildrenButton.getSelection());
         // exportChoice.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
         // exportChoice.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());

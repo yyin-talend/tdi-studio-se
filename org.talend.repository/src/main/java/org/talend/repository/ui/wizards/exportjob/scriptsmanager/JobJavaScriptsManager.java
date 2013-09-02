@@ -675,7 +675,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             selectedJobVersion = this.getSelectedJobVersion();
         }
         if (progressMonitor != null) {
-            progressMonitor.subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion);  //$NON-NLS-1$//$NON-NLS-2$
+            progressMonitor
+                    .subTask(Messages.getString("JobJavaScriptsManager.buildJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$//$NON-NLS-2$
         }
         String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
         // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -724,9 +725,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             } else {
                 childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                        jobProcess, processItem, selectedJobVersion, resources, new String[] {
-                                isOptionChoosed(ExportChoice.applyLog4jToChildren) == true ? LOG4J_ENABLE : null,
-                                getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel() : null });
+                        jobProcess, processItem, selectedJobVersion, resources,
+                        new String[] { getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel() : null });
             }
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -792,6 +792,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // Add libraries which are needed by build scripts.
         List<URL> buildScriptLibraries = getBuildScriptLibraries();
         libResource.addResources(buildScriptLibraries);
+
+        // Add log4jFiles to lib folder if log4j is enable
+        addLog4jXmlToLibs(libResource);
         return libResource;
     }
 
@@ -1150,17 +1153,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected void addLog4jSetting(ExportFileResource resource) {
         try {
-            if (Log4jUtil.isEnable()
-                    && Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE)
-                            .equals("true")) {
-                IPath srcPath = getSrcRootLocation();
-                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
-                File commonLogFile = (srcPath.append(Log4jPrefsConstants.COMMON_LOGGING_FILE)).toFile();
+            if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+                IPath srcRootPath = getSrcRootLocation();
+                File log4jFileForRoot = (srcRootPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
                 List<URL> log4jFileUrls = new ArrayList<URL>();
-                log4jFileUrls.add(FileLocator.toFileURL(log4jFile.toURL()));
-                log4jFileUrls.add(FileLocator.toFileURL(commonLogFile.toURL()));
-                resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY, log4jFileUrls);
-
+                log4jFileUrls.add(FileLocator.toFileURL(log4jFileForRoot.toURL()));
+                resource.addResources(PATH_SEPARATOR, log4jFileUrls);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -1327,7 +1325,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             }
         }
-
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            addLog4jToJarList(listModulesReallyNeeded);
+        }
         for (File tempFile : files) {
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
@@ -1348,6 +1348,77 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // }
         // }
         // return libraries;
+    }
+
+    /**
+     * Gets required java jars.
+     * 
+     * @param process
+     * 
+     * @param boolean1
+     * @return
+     */
+    protected List<URL> getLog4jFiles() {
+        List<URL> list = new ArrayList<URL>();
+        if (Log4jUtil.isEnable()
+                && Log4jPrefsSettingManager.getInstance().getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+            try {
+                IPath srcPath = getSrcRootLocation();// .append(JavaUtils.JAVA_SRC_DIRECTORY);
+                File file = srcPath.toFile();
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
+
+                list.add(log4jFile.toURL());
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    protected void addLog4jXmlToLibs(ExportFileResource libResource) {
+        List<URL> list = new ArrayList<URL>();
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            try {
+                IPath srcPath = getSrcRootLocation();// .append(JavaUtils.JAVA_SRC_DIRECTORY);
+                File file = srcPath.toFile();
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                File log4jFile = (srcPath.append(Log4jPrefsConstants.LOG4J_FILE_NAME)).toFile();
+
+                list.add(log4jFile.toURL());
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        libResource.addResources(list);
+    }
+
+    protected boolean addLog4jToJarList(Collection<String> jarList) {
+        boolean added = false;
+        boolean foundLog4jJar = false;
+        for (String jar : jarList) {
+            if (jar.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                foundLog4jJar = true;
+            }
+        }
+        if (!foundLog4jJar) {
+            jarList.add("log4j-1.2.15.jar"); //$NON-NLS-1$
+            added = true;
+        }
+
+        return added;
     }
 
     /**

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -20,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.utils.Log4jUtil;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.repository.model.ResourceModelUtils;
@@ -132,9 +135,32 @@ public class Log4jPrefsSettingManager {
     }
 
     public static String[] getLevel() {
-        String[] levels = { Log4jPrefsConstants.DEBUG, Log4jPrefsConstants.INFO, Log4jPrefsConstants.WARNING,
-                Log4jPrefsConstants.ERROR, Log4jPrefsConstants.FATAL };
+        String[] levels = { Log4jPrefsConstants.TRACE, Log4jPrefsConstants.DEBUG, Log4jPrefsConstants.INFO,
+                Log4jPrefsConstants.WARNING, Log4jPrefsConstants.ERROR, Log4jPrefsConstants.FATAL };
         return levels;
+    }
+
+    public boolean addLog4jToJarList(Collection<String> jarList) {
+        boolean added = false;
+        boolean foundLog4jJar = false;
+        for (String jar : jarList) {
+            if (jar.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                foundLog4jJar = true;
+            }
+        }
+        if (!foundLog4jJar) {
+            jarList.add("log4j-1.2.15.jar"); //$NON-NLS-1$
+            added = true;
+        }
+
+        return added;
+    }
+
+    public boolean isLog4jEnable() {
+        if (Log4jUtil.isEnable() && getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+            return true;
+        }
+        return false;
     }
 
 }
