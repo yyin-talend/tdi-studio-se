@@ -135,7 +135,13 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.RestoreFolderUtil;
 
 /**
+ * 
+ * @deprecated won't use this class, and shouldn't do any modification in this class too.
+ * 
+ * it had moved to new import system (IImportHandler) with extension point
+ * "org.talend.repository.items.importexport.handler".
  */
+@Deprecated
 public class ImportItemUtil {
 
     private static Logger log = Logger.getLogger(ImportItemUtil.class);
