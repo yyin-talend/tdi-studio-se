@@ -124,6 +124,7 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -878,7 +879,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         boolean exportingJob = ProcessorUtilities.isExportConfig();
 
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
-        if (!exportingJob) {
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
             JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
         }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);

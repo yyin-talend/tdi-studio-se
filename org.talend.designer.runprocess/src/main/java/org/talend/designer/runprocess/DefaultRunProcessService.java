@@ -352,8 +352,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             // ResourceModelHelper.getProject(ProjectManager.getInstance().getCurrentProject()), ".settings", false);
             Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
             IFolder srcFolder = project.getFolder(path);
-            IFile commonLogFile = srcFolder.getFile("common-logging.properties");
-            IFile log4jFile = srcFolder.getFile("log4j.xml");
+            IFile log4jFile = srcFolder.getFile(Log4jPrefsConstants.LOG4J_FILE_NAME);
             // create the .prefs file and save log4j.xml and common-logging.properties's content into it
             if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
                 Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE, "false");
@@ -366,19 +365,6 @@ public class DefaultRunProcessService implements IRunProcessService {
                 return;
             }
             if (isLogForJob) { // when execute or export job need the log4j files under .src folder
-                String commonLogStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.COMMON_LOGGING_NODE);
-                if (commonLogStr != null) {
-                    File clFile = new File(commonLogFile.getLocation().toOSString());
-                    if (!clFile.exists()) {
-                        FileOutputStream clFileFileOutputStream = null;
-                        try {
-                            clFileFileOutputStream = new FileOutputStream(clFile);
-                            clFileFileOutputStream.write(commonLogStr.getBytes());
-                        } finally {
-                            clFileFileOutputStream.close();
-                        }
-                    }
-                }
                 String log4jStr = getTemplateStrFromPreferenceStore(Log4jPrefsConstants.LOG4J_CONTENT_NODE);
                 if (log4jStr != null) {
                     File ljFile = new File(log4jFile.getLocation().toOSString());

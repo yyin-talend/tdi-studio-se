@@ -189,8 +189,6 @@ public class RunProcessContext {
         setSaveBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSAVEBEFORERUN));
         setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore()
                 .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
-        setApplyLog4jToChildren(RunProcessPlugin.getDefault().getPreferenceStore()
-                .getBoolean(RunProcessPrefsConstants.ISAPPLYLOG4J));
         setLog4jLevel(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
     }
 
@@ -490,7 +488,6 @@ public class RunProcessContext {
                             }
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
-                            final String applyLog4j = RunProcessContext.this.isApplyLog4jToChildren() ? LOG4J_ENABLE : null;
                             String level = RunProcessContext.this.getLog4jLevel();
                             if (level != null) {
                                 level = LOG4J_LEVEL_ARG + (level.equals("") ? "debug" : level);
@@ -522,7 +519,7 @@ public class RunProcessContext {
                                                 // before launching
                                                 if (!JobErrorsChecker.hasErrors(shell)) {
                                                     ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
-                                                            applyLog4j, log4jLevel, progressMonitor, processMessageManager);
+                                                            log4jLevel, progressMonitor, processMessageManager);
                                                 }
 
                                                 if (ps != null && !progressMonitor.isCanceled()) {
