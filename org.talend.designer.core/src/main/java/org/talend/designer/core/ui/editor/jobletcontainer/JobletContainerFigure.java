@@ -67,7 +67,7 @@ public class JobletContainerFigure extends Figure {
 
     private RGB green = new RGB(130, 240, 100);
 
-    private Map<String, RectangleFigure> mrFigures = new HashMap<String, RectangleFigure>();
+    private Map<String, SimpleHtmlFigure> mrFigures = new HashMap<String, SimpleHtmlFigure>();
 
     /**
      * DOC hwang JobletContainerFigure constructor comment.
@@ -233,11 +233,11 @@ public class JobletContainerFigure extends Figure {
                 outlineFigure.setVisible(false);
             }
 
-            Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+            Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
             while (ite.hasNext()) {
-                Entry<String, RectangleFigure> entry = ite.next();
+                Entry<String, SimpleHtmlFigure> entry = ite.next();
                 String key = entry.getKey();
-                RectangleFigure value = entry.getValue();
+                SimpleHtmlFigure value = entry.getValue();
                 Double percent = new Double(0);
                 if (key.startsWith("map_")) {
                     if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
@@ -293,17 +293,17 @@ public class JobletContainerFigure extends Figure {
         outlineFigure.setForegroundColor(ColorUtils.getCacheColor(new RGB(220, 120, 120)));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
-        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         int i = 0;
         while (ite.hasNext()) {
-            Entry<String, RectangleFigure> entry = ite.next();
+            Entry<String, SimpleHtmlFigure> entry = ite.next();
             String key = entry.getKey();
-            RectangleFigure value = entry.getValue();
+            SimpleHtmlFigure value = entry.getValue();
             Integer count = this.jobletContainer.getNode().getMrJobInGroupCount();
             i = Integer.parseInt(key.substring(key.indexOf("_") + 1));
             int mry = preferedSize.height * i;
             if (key.startsWith("map_")) {
-                value.setLocation(new Point(location.x, location.y + rectangle.height - count * preferedSize.height + mry));
+                value.setLocation(new Point(location.x+10, location.y + rectangle.height - count * preferedSize.height + mry));
             }
             if (key.startsWith("reduce_")) {
                 value.setLocation(new Point(location.x + 120, location.y + rectangle.height - count * preferedSize.height + mry));
@@ -351,10 +351,10 @@ public class JobletContainerFigure extends Figure {
             outlineFigure.getBackgroundColor().dispose();
         }
 
-        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         while (ite.hasNext()) {
-            Entry<String, RectangleFigure> entry = ite.next();
-            RectangleFigure value = entry.getValue();
+            Entry<String, SimpleHtmlFigure> entry = ite.next();
+            SimpleHtmlFigure value = entry.getValue();
             if (value.getForegroundColor() != null && !value.getForegroundColor().isDisposed()) {
                 value.getForegroundColor().dispose();
                 // for (Object o : value.getChildren()) {
@@ -417,10 +417,10 @@ public class JobletContainerFigure extends Figure {
             add(rectFig, null, 1);
         }
 
-        Iterator<Entry<String, RectangleFigure>> ite = mrFigures.entrySet().iterator();
+        Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         while (ite.hasNext()) {
-            Entry<String, RectangleFigure> entry = ite.next();
-            RectangleFigure value = entry.getValue();
+            Entry<String, SimpleHtmlFigure> entry = ite.next();
+            SimpleHtmlFigure value = entry.getValue();
             add(value, null, 2);
         }
 
@@ -491,8 +491,8 @@ public class JobletContainerFigure extends Figure {
         }
         if (mrCount != null) {
             for (int i = 0; i < mrCount; i++) {
-                RectangleFigure progressMap = new RectangleFigure();
-                progressMap.setOutline(false);
+                SimpleHtmlFigure progressMap = new SimpleHtmlFigure();
+                // progressMap.setOutline(false);
                 progressMap.setOpaque(false);
                 Label mapTip = new Label();
                 mapTip.setText("Map ");
@@ -524,8 +524,8 @@ public class JobletContainerFigure extends Figure {
                         mapTitle.getPreferredSize().height + 1);
                 mrFigures.put("map_" + i, progressMap);
                 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                RectangleFigure progressReduce = new RectangleFigure();
-                progressReduce.setOutline(false);
+                SimpleHtmlFigure progressReduce = new SimpleHtmlFigure();
+                // progressReduce.setOutline(false);
                 progressReduce.setOpaque(false);
                 Label reduceTip = new Label();
                 reduceTip.setText("Reduce ");
