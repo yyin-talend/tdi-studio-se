@@ -42,6 +42,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 				
 				String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+				boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 				String viewName = ElementParameterParser.getValue(node, "__VIEWNAME__");
 				
 				List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
@@ -80,7 +81,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
 				<%}%>
 				
-				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
 				
 				org.talend.mdm.webservice.WSWhereCondition wc_<%=cid %> = null;
 				java.util.List<org.talend.mdm.webservice.WSWhereItem> conditions_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSWhereItem>();

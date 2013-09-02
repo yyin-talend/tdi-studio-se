@@ -1080,6 +1080,15 @@
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.4.0"
+             class="org.talend.repository.model.migration.SetTypeToStagingForMDMComponent"
+             description="If the data container contains #STAGING, then we remove this tag and we set the closed list to STAGING"
+             id="org.talend.repository.model.migration.SetTypeToStagingForMDMComponent"
+             name="If the data container contains #STAGING, then we remove this tag and we set the closed list to STAGING"
+             version="5.4.0">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
              breaks="5.1.1"
              class="org.talend.repository.model.migration.MigrationTaskForIssue7547"
              description="Brackets Server field value of tAlfrescoOutput with double quotation marks for issue 7547"

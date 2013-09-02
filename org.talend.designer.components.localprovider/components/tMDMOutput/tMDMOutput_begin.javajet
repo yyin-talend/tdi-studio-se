@@ -23,6 +23,7 @@ imports="
 	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
 	String dataModule = ElementParameterParser.getValue(node, "__DATAMODEL__");
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 	
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
@@ -85,7 +86,7 @@ int nb_line_<%=cid %> = 0;
 	org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
 <%}%>
 
-org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
 org.talend.mdm.webservice.WSDataModelPK dataModel_<%=cid %> = new org.talend.mdm.webservice.WSDataModelPK(<%=dataModule %>);
 
 String input_<%=cid %>;

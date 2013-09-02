@@ -17,6 +17,7 @@ imports="
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 	String spName = ElementParameterParser.getValue(node, "__SPNAME__");
 %>       
 	int nb_line_<%=cid %> = 0;
@@ -42,7 +43,7 @@ imports="
 	}
 %>
 
-	org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+	org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
 
 	org.talend.mdm.webservice.WSExecuteStoredProcedure wsExeProc_<%=cid %> = new org.talend.mdm.webservice.WSExecuteStoredProcedure();
 	wsExeProc_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);

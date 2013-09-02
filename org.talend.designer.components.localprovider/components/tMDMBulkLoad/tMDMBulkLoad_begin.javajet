@@ -16,6 +16,7 @@ imports="
 	String version = ElementParameterParser.getValue(node, "__UNIVERSE__");
 	String dataModule = ElementParameterParser.getValue(node, "__DATAMODEL__");
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 	String dataEntity = ElementParameterParser.getValue(node, "__DATACONCEPT__");
 	String arraySize = ElementParameterParser.getValue(node,"__MASS_LEVEL__");
 	
@@ -27,7 +28,7 @@ imports="
 	String mdmTransaction = "mdmTransaction_" + transactionProvider;
 	
 %>
-org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
+org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %> + "<%=isStaging?"#STAGING":""%>", <%=dataEntity %>, <%=dataModule%>);
 <%if(useTransaction) {%>
 com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
 if(mdmTransaction_<%=cid%>!=null) {

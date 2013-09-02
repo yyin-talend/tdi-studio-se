@@ -47,6 +47,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 				String concept = ElementParameterParser.getValue(node, "__CONCEPT__");
 				
 				String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+				boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
 				
 				boolean isSingle = ("true").equals(ElementParameterParser.getValue(node, "__USE_ITEMS__"));
 				List<Map<String, String>> ids = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__IDS__");
@@ -84,7 +85,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
 				<%}%>
 				
-				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %> + "<%=isStaging?"#STAGING":""%>");
 
 				<%if(!isSingle){//item%>
 					String[] ids_<%=cid %> = {
