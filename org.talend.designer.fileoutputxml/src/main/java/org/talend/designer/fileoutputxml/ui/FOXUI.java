@@ -685,7 +685,17 @@ public class FOXUI {
 
             }
         }
+    }
 
+    public void updateNode(FOXTreeNode node, String schema) {
+        if (node != null) {
+            if (node.getRow() == null) {
+                node.setRow(schema);
+            }
+            for (FOXTreeNode child : node.getChildren()) {
+                updateNode(child, schema);
+            }
+        }
     }
 
     private boolean existedLoopNode(FOXTreeNode node) {
