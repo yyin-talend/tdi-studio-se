@@ -199,6 +199,10 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         }
 
         if (changed) {
+            // updateNode
+            for (FOXTreeNode node : newInput) {
+                foxui.updateNode(node, getSelectedSchema());
+            }
             List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(getSelectedSchema());
             treeData.clear();
             treeData.addAll(newInput);
