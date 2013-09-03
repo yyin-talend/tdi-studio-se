@@ -411,7 +411,8 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
             } else {
                 String columnName = transferableEntry.getTableEntrySource().getName();
-                tableEntryLocationTarget = getMapperManager().findUniqueLocation(tableEntryLocationTarget);
+                tableEntryLocationTarget = getMapperManager().findUniqueLocation(tableEntryLocationTarget,
+                        dataMapTableViewTarget.getDataMapTable());
                 columnName = tableEntryLocationTarget.columnName;
                 if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
                     currentIndex = tableViewerCreatorTarget.getInputList().size();
