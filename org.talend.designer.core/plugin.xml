@@ -671,6 +671,21 @@
          </action>
     		
       </actionSet>
+    <actionSet
+          id="org.talend.designer.core.assist.actionSet"
+          label="Enable Component Creation Assistant"
+          visible="false">
+       <action
+             class="org.talend.designer.core.assist.TalendEditorComponentCreationAssistAction"
+             icon="icons/assist.gif"
+             id="org.talend.designer.core.assist.action"
+             label="Enable Component Creation Assistant"
+             state="false"
+             style="toggle"
+             toolbarPath="Default"
+             tooltip="Enable Component Creation Assistant">
+       </action>
+    </actionSet>
    </extension>
     <extension
           point="org.talend.core.migrationTask">
