@@ -231,11 +231,11 @@ public class SearchZoneMapper {
                         } else {
                             xmlMapTreeNodeFigure.setOpaque(true);
                             xmlMapTreeNodeFigure.setBackgroundColor(entryState.getColor());
-                        }
-                        if (xmlMapTreeNodeFigure.getExpressionFigure() != null
-                                && !matcher.matches(xmlMapTreeNodeFigure.getExpressionFigure().getText())) {
-                            xmlMapTreeNodeFigure.getExpressionFigure().setOpaque(true);
-                            xmlMapTreeNodeFigure.getExpressionFigure().setBackgroundColor(EntryState.NONE.getColor());
+                            if (xmlMapTreeNodeFigure.getExpressionFigure() != null
+                                    && !matcher.matches(xmlMapTreeNodeFigure.getExpressionFigure().getText())) {
+                                xmlMapTreeNodeFigure.getExpressionFigure().setOpaque(true);
+                                xmlMapTreeNodeFigure.getExpressionFigure().setBackgroundColor(EntryState.NONE.getColor());
+                            }
                         }
                     }
                 }
@@ -249,7 +249,8 @@ public class SearchZoneMapper {
                     if (varEntityFigure.getVarName() != null && matcher.matches(varEntityFigure.getVarName())) {
                         varEntityFigure.setOpaque(true);
                         varEntityFigure.setBackgroundColor(entryState.getColor());
-                        if (varEntityFigure.getExpression() == null || "".equals(varEntityFigure.getExpression().getText())) {
+                        if (varEntityFigure.getExpression() == null
+                                || !matcher.matches(varEntityFigure.getExpression().getText())) {
                             varEntityFigure.getExpression().setOpaque(true);
                             varEntityFigure.getExpression().setBackgroundColor(EntryState.NONE.getColor());
                         }
