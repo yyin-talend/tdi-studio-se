@@ -231,10 +231,11 @@ public class SearchZoneMapper {
                         } else {
                             xmlMapTreeNodeFigure.setOpaque(true);
                             xmlMapTreeNodeFigure.setBackgroundColor(entryState.getColor());
+                            xmlMapTreeNodeFigure.setOpaque(false);
                             if (xmlMapTreeNodeFigure.getExpressionFigure() != null
                                     && !matcher.matches(xmlMapTreeNodeFigure.getExpressionFigure().getText())) {
-                                xmlMapTreeNodeFigure.getExpressionFigure().setOpaque(true);
-                                xmlMapTreeNodeFigure.getExpressionFigure().setBackgroundColor(EntryState.NONE.getColor());
+                                // xmlMapTreeNodeFigure.getExpressionFigure().setOpaque(true);
+                                // xmlMapTreeNodeFigure.getExpressionFigure().setBackgroundColor(EntryState.NONE.getColor());
                             }
                         }
                     }

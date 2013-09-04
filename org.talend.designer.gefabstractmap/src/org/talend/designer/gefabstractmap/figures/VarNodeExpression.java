@@ -12,36 +12,10 @@
 // ============================================================================
 package org.talend.designer.gefabstractmap.figures;
 
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * DOC talend class global comment. Detailled comment
  */
 public class VarNodeExpression extends ExpressionFigure {
-
-    @Override
-    protected void paintFigure(Graphics graphics) {
-
-        if (isOpaque()) {
-            super.paintFigure(graphics);
-        }
-        Rectangle bounds = getBounds();
-        graphics.translate(bounds.x, bounds.y);
-        if (getIcon() != null) {
-            graphics.drawImage(getIcon(), getIconLocation());
-        }
-        if (!isEnabled()) {
-            graphics.translate(1, 1);
-            graphics.setForegroundColor(ColorConstants.buttonLightest);
-            graphics.drawText(getSubStringText(), getTextLocation());
-            graphics.translate(-1, -1);
-            graphics.setForegroundColor(ColorConstants.buttonDarker);
-        }
-        graphics.drawText(getSubStringText(), getTextLocation());
-        graphics.translate(-bounds.x, -bounds.y);
-
-    }
 
 }

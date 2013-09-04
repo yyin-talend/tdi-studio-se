@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.gefabstractmap.figures;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
@@ -51,6 +52,12 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
     @Override
     protected void paintFigure(Graphics graphics) {
         super.paintFigure(graphics);
+        graphics.setForegroundColor(ColorConstants.menuBackground);
+        paintLines(this, graphics);
     }
 
+    protected void paintLines(ExpressionFigure entity, Graphics graphics) {
+        graphics.drawLine(entity.getTextBounds().x - 6, entity.getTextBounds().getBottom().y + 1, entity.getTextBounds()
+                .getRight().x + 500, entity.getTextBounds().getBottom().y + 1);
+    }
 }
