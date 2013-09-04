@@ -109,6 +109,7 @@
 			boolean hasCXFComponentConsumer = false;
 			boolean hasCXFRegistryProvider = false;
 			boolean hasCXFRegistryConsumer = false;
+			boolean hasCXFCorrelationConsumer = false;
 			boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
@@ -128,6 +129,13 @@
 					int incomingConnections = n.getIncomingConnections().size();
 					if(!hasCXFComponentConsumer && incomingConnections>0){
 						hasCXFComponentConsumer = true;
+					}
+					String useCorrelation = ElementParameterParser.getValue(n, "__ENABLE_CORRELATION__");
+					if("false".equals(useCorrelation)){
+						useCorrelation = useRegistry;
+					}
+					if("true".equals(useCorrelation) && incomingConnections>0 ){
+						hasCXFCorrelationConsumer = true;
 					}
 					if("true".equals(useRegistry)){
 						useSecurity = "false";
@@ -165,6 +173,34 @@
 					}
 				}
 			}
+			
+			
+if(hasCXFCorrelationConsumer){
+%>
+		class RouteCXFCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler{
+			private String correlationId;
+			public RouteCXFCorrelationCallbackHandler(String correlationId) {
+				this.correlationId = correlationId == null?null:(correlationId.length() > 0 ?correlationId:null );
+			}
+		
+			public String getCorrelationId() {
+				return correlationId;
+			}
+		}
+		
+		private void setupCorrelationOnCxfConsumer(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, boolean isRegistry, String correlationValue){
+			Map<String, Object> properties = cxfEndpoint.getProperties();
+			if(properties == null){
+				properties = new HashMap<String, Object>();
+				cxfEndpoint.setProperties(properties);
+			}
+			properties.put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, new RouteCXFCorrelationCallbackHandler(correlationValue));
+			if(!isRegistry){
+				cxfEndpoint.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
+			}
+		}
+<%
+}
 			
 			if(hasCXFComponent){
 %>
@@ -810,6 +846,22 @@ if (isProvider) {
 <%			
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
+			String useCorrelation = ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__");
+			String correlationValue = ElementParameterParser.getValue(node, "__CORRELATION_VALUE__");
+			if(correlationValue != null && "".equals(correlationValue.trim())){
+				correlationValue = null;
+			}
+			
+			if(!isProvider && ("true".equals(useRegistry) || "true".equals(useCorrelation))){
+%>
+				setupCorrelationOnCxfConsumer(<%=endpointVar%>, <%="true".equals(useRegistry)%>, <%=correlationValue%>);
+<%					
+			}
+			
+			if ("true".equals(useCorrelation) && isProvider && "false".equals(useRegistry)) {
+%>
+				<%=endpointVar%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
+<%			}
 			if ("true".equals(useSL) && (isProvider || "false".equals(useRegistry))) {
 				List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
 %>
