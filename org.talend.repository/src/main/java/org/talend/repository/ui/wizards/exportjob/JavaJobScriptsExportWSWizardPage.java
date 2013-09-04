@@ -345,7 +345,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         GridLayout layout = new GridLayout();
         optionsGroup.setLayout(layout);
         optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-        optionsGroup.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ExportType")); //$NON-NLS-1$
+        optionsGroup.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.BuildType")); //$NON-NLS-1$
         optionsGroup.setFont(parent.getFont());
 
         optionsGroup.setLayout(new GridLayout(1, true));
@@ -355,7 +355,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         left.setLayout(new GridLayout(3, false));
 
         Label label = new Label(left, SWT.NONE);
-        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ExportyLabel")); //$NON-NLS-1$
+        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.BuildLabel")); //$NON-NLS-1$
 
         exportTypeCombo = new Combo(left, SWT.PUSH);
         GridData gd = new GridData();
