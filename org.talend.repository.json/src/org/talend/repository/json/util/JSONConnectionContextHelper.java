@@ -460,11 +460,6 @@ public final class JSONConnectionContextHelper {
         if (connection == null) {
             return null;
         }
-        // TDI-17320
-        Shell sqlBuilderDialogShell = ContextUtils.getSqlBuilderDialogShell();
-        if (sqlBuilderDialogShell != null && !sqlBuilderDialogShell.isDisposed() && shell == null) {
-            shell = sqlBuilderDialogShell;
-        }
         ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
         if (contextItem != null && connection.isContextMode()) {
             if (defaultContext) {
@@ -476,6 +471,7 @@ public final class JSONConnectionContextHelper {
 
                                 // method may be called from other threads.
 
+                                @Override
                                 public void run() {
                                     setsDialog.open();
                                 }

@@ -20,9 +20,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.model.context.ContextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -72,6 +72,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * 
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
+    @Override
     public ImageDescriptor getImageDescriptor() {
         return img;
     }
@@ -81,6 +82,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
+    @Override
     public String getText() {
         return Messages.getString("SQLEditor.Actions.Execute"); //$NON-NLS-1$
     }
@@ -90,6 +92,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
+    @Override
     public String getToolTipText() {
         return Messages.getString("SQLEditor.Actions.Execute.ToolTip"); //$NON-NLS-1$
     }
@@ -99,6 +102,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
+    @Override
     public void run() {
         int maxresults = max;
         try {
@@ -121,6 +125,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                 final int largeResults = maxresults;
                 Display.getDefault().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0],
                                 Messages.getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages //$NON-NLS-1$
@@ -149,7 +154,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         SessionTreeNode runNode = null;
 
         try {
-            ContextUtils.setSqlBuilderDialogShell(editor.getDialog().getShell());
+            ConnectionContextHelper.setSqlBuilderDialogShell(editor.getDialog().getShell());
             runNode = nodeManager.getSessionTreeNode(node, editor.getDialog().getSelectedContext());
         } catch (Exception e) {
             // e.printStackTrace();
@@ -172,7 +177,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         try {
             // Diaplay data in sqlResult Composites
             while (!queryStrings.isEmpty()) {
-                String querySql = (String) queryStrings.remove(0);
+                String querySql = queryStrings.remove(0);
                 if (querySql != null) {
                     SQLExecution sqlExe = new SQLExecution(querySql, maxRows, runNode);
                     resultViewer.addSQLExecution(sqlExe);
