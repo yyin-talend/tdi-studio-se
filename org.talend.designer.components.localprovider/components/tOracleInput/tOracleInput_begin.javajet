@@ -58,19 +58,6 @@ imports="
 <%
 		}
 		
-		//For TDI-25351 set log4j debug paramters
-	    public void setLog4jDebugParamters(INode node,String cid,String dbproperties,String dbhost,String dbport,String dbname,String dbuser,String dbpwd){
-			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-	 		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-	 		String table_schema = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
-	 		String use_cursor = ElementParameterParser.getValue(node,"__USE_CURSOR__");
-	 		String trim_all_column = ElementParameterParser.getValue(node,"__TRIM_ALL_COLUMN__");
-	 		String no_null_values = ElementParameterParser.getValue(node,"__NO_NULL_VALUES__");
-%>
-				String log4jDebugParamters_<%=cid%> = "\r\n" + "CONNECTION_TYPE = <%=connectionType%>" + "\r\n" + "HOST = " + <%=dbhost%>+ "\r\n" + "PORT = " +<%=dbport%>+ "\r\n" + "DBNAME =" +<%=dbname%>+ "\r\n" + "USER = " +<%=dbuser%>+ "\r\n" + "SCHEMA_DB = " +<%=table_schema%>+ "\r\n" + "QUERY = " +<%=getQueryString(node)%>+ "\r\n" + "USE_CURSOR = " +<%=use_cursor%>+ "\r\n" + "TRIM_ALL_COLUMN = " +<%=trim_all_column%> + "\r\n" + "NO_NULL_VALUES = " +<%=no_null_values%> + "\r\n" + "PROPERTIES = " +<%=dbproperties%>;
-<%
-	    }
-		
 		public String getDirverClassName(INode node){
 			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 			if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){
@@ -106,8 +93,12 @@ imports="
 				if(isLog4jEnabled){
 %>
 					log.debug("<%=cid%> - Driver ClassName: <%=this.getDirverClassName(node) %>.");
-					<%this.setLog4jDebugParamters(node,cid,dbproperties,dbhost,dbport,dbname,dbuser,dbpwd);%>
-					log.debug("<%=cid%> - Parameters:" + log4jDebugParamters_<%=cid%>);
+					<%@ include file="../templates/Log4jDBConnUtil.javajet"%>
+					<%
+					log4jCodeGenerateUtil.dbConnectionParams(node);
+					log4jCodeGenerateUtil.generateConnectionParams();
+					%>
+					log.debug(log4jDebugParamters_<%=cid%>);
 					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the user name '" + dbUser_<%=cid %> + "'.");
 <%
 				}

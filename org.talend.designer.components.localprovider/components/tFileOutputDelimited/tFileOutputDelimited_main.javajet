@@ -25,6 +25,7 @@ if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schema
 	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
 }
 int dynamic_column_index=-1;
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
@@ -330,6 +331,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		            <%
     		        }
     		        %>
+					<%if(isLog4jEnabled){%>
+						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + sb_<%=cid %>);
+					<%}%>
     		        <% 
     		        	if (isParallelize) {
     				%>
@@ -694,6 +698,16 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             		
             			}
             			%>
+						<%if(isLog4jEnabled){%>
+							for(int i = 0;i<row<%=cid%>.length;i++){
+								log4jSb_<%=cid%>.append(row<%=cid%>[i]);
+								if(i!=row<%=cid%>.length-1){
+									log4jSb_<%=cid%>.append("|");
+								}
+							}
+							log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+							log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+						<%}%>
 <% 
 						if ( isParallelize) {
 %>

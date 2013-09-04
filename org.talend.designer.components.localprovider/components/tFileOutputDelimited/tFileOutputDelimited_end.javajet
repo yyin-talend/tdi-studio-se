@@ -165,6 +165,6 @@ if(out<%=cid %>!=null) {
 }
 %>
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> has wrote "+nb_line_<%=cid%> + " records");
-	log.info("<%=cid%> finish successfully!");
+	log.info("<%=cid%> - Wrote count: "+nb_line_<%=cid%> + ".");
+	log.info("<%=cid%> - Has finished.");
 <%}%>

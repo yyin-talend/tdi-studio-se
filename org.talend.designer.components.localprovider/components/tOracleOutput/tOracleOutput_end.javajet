@@ -79,11 +79,11 @@ imports="
 	        										+ "MDSYS.SDO_DIM_ELEMENT('y', " + extend.getMinY() + ", " + extend.getMaxY() + ", <%=indexAccuracy %>)), "
 	        										+ <%=targetSRID < 0 ? "\"NULL\"" : targetSRID %> +")";
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> start to excute " +  insertGeometryColumns_<%=cid %>);
+				log.info("<%=cid%> - Excuting '" +  insertGeometryColumns_<%=cid %> + "'.");
 			<%}%>										
 	    	stmtCreateGeoColumns_<%=cid%>.execute(insertGeometryColumns_<%=cid %>);
 	    	<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> excute " + insertGeometryColumns_<%=cid %> + " successfully !");
+				log.info("<%=cid%> - Excute '" + insertGeometryColumns_<%=cid %> + "' has succeeded.");
 			<%}%>
     	}
         
@@ -104,16 +104,16 @@ imports="
 			String dropIndex_<%=cid %> = "DROP INDEX "+index_name;
 	        try {
 	        	<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> start to excute " + dropIndex_<%=cid %> );
+					log.info("<%=cid%> - Excuting '" + dropIndex_<%=cid %> + "'.");
 				<%}%>
 				stmtCreateIndex_<%=cid%>.execute(dropIndex_<%=cid %>);
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> excute " + dropIndex_<%=cid%> + " successfully!");
+					log.info("<%=cid%> - Excute '" + dropIndex_<%=cid%> + "' has succeeded.");
 				<%}%>
 			}
 			catch (java.sql.SQLException e_<%=cid%>) {
 				<%if(isLog4jEnabled){%>
-					log.warn("<%=cid%> " +  e_<%=cid%>.getMessage());
+					log.warn("<%=cid%> - " +  e_<%=cid%>.getMessage());
 				<%}%>
 			}
 			
@@ -122,11 +122,11 @@ imports="
 						+ "ON " + <%=tableName %> + "(" + geometryColumnName + ") "
 						+ "INDEXTYPE IS MDSYS.SPATIAL_INDEX";
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> start to excute " + createIndex_<%=cid %>);
+				log.info("<%=cid%> - Excuting '" + createIndex_<%=cid %> + "'.");
 			<%}%>
 	        stmtCreateIndex_<%=cid%>.execute(createIndex_<%=cid %>);
         	<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> excute " + createIndex_<%=cid%> + " successfully !");
+				log.info("<%=cid%> - Excute " + createIndex_<%=cid%> + "' has succeeded.");
 			<%}%>
 	        stmtCreateIndex_<%=cid%>.close();
 	    }
@@ -182,15 +182,18 @@ imports="
 						pstmt_<%=cid %>.executeBatch();    
             	    }          	    
                 }catch (java.sql.BatchUpdateException e_<%=cid%>){
-					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%> " + e_<%=cid%>.getMessage());
-					<%}%>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+						<%}%>
                 		throw(e_<%=cid%>);
                 	<%
                 	}else {
                 	%>
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+					<%}%>
                 	System.out.println(e_<%=cid%>.getMessage());
                 	<%
                 	}%>                	
@@ -239,21 +242,21 @@ imports="
 		{
 		    %>
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> start to commit");
+				log.info("<%=cid%> - Starting to commit.");
 			<%}%>
 		    conn_<%=cid%>.commit();
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> commit finished!");
+				log.info("<%=cid%> - Commit has succeeded.");
 			<%}%>
 		    <%
 		}
 		%>	
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> start to close conn_<%=cid%>");
+			log.info("<%=cid%> - Closing the connection to the database.");
 		<%}%>
 		conn_<%=cid%> .close();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> close conn_<%=cid%> successfully!");
+			log.info("<%=cid%> - Connection to the database closed.");
 		<%}%>
     	<%
 	}
@@ -303,7 +306,7 @@ imports="
 	<%
 		}
 	%>
-		log.info("<%=cid%> finish successfully!");
+		log.info("<%=cid%> - Has finished.");
 	<%
 	}
 	%>

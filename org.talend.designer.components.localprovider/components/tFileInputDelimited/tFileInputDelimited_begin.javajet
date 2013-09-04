@@ -102,7 +102,7 @@
 			int footer_value_<%=cid %> = <%=footer %>, random_value_<%=cid %> = <%=random %>;
 			if(footer_value_<%=cid %> >0 || random_value_<%=cid %> > 0){
 				<%if(isLog4jEnabled){%>
-					log.error("<%=cid%>" + "When the input source is a stream,footer and random shouldn't be bigger than 0.");
+					log.error("<%=cid%> - When the input source is a stream,footer and random shouldn't be bigger than 0.");
 				<%}%>
 				throw new java.lang.Exception("When the input source is a stream,footer and random shouldn't be bigger than 0.");				
 			}
@@ -114,7 +114,7 @@
 			int footer_value_<%=cid %> = <%=footer %>;
 			if(footer_value_<%=cid%> > 0){
 				<%if(isLog4jEnabled){%>
-					log.error("<%=cid%>" + "When the input source is a stream,footer shouldn't be bigger than 0.");
+					log.fatal("<%=cid%> - When the input source is a stream,footer shouldn't be bigger than 0.");
 				<%}%>
 				throw new java.lang.Exception("When the input source is a stream,footer shouldn't be bigger than 0.");
 			}
@@ -122,6 +122,11 @@
 		}
 	}
 	GenerateCode generateCode = new GenerateCode();
+	%>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Start to work.");
+	<%}%>
+	<%
 
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,7 +278,7 @@
 							if(defaultValue == null) {
 							%>
 								<%if(isLog4jEnabled){%>
-									log.error("<%=cid%>" + "Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
+									log.fatal("<%=cid%> - Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
 								<%}%>
 								throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
 							<%
@@ -286,18 +291,25 @@
 						}
 					<%
 					}
-				}
+					%>
+					<%if(isLog4jEnabled){%>
+		               	log4jSb_<%=cid%>.append(<%=targetConnName %>.<%=column.getLabel() %>);
+			               if(columnIndexWithD_<%=cid%> < <%=end%>-1){
+			               	log4jSb_<%=cid%>.append("|");
+			               }
+					<%}%>
+				<%}
 				%>
 				<%if(checkNum) {%>
 				 	int filedsum = <%=sourceValueName%>.getColumnsCountOfCurrentRow();
 				 	if(filedsum < (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)){
 						<%if(isLog4jEnabled){%>
-							log.error("<%=cid%>" + " Column(s) missing");
+							log.fatal("<%=cid%> - Column(s) missing");
 						<%}%>
 					 	throw new RuntimeException("Column(s) missing");
 					 } else if(filedsum > (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)) {
 						<%if(isLog4jEnabled){%>
-							log.error("<%=cid%>" + " Too many columns");
+							log.fatal("<%=cid%> - Too many columns");
 						<%}%>
 					 	throw new RuntimeException("Too many columns");
 					 }     
@@ -418,12 +430,15 @@
 								zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
 							}
 						} catch(java.lang.Exception e) {
-							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> " +e.getMessage());
-							<%}%>
 							<% if(dieOnError) {%>
+								<%if(isLog4jEnabled){%>
+									log.fatal("<%=cid%> - " +e.getMessage());
+								<%}%>
 								throw e;
 							<% } else { %>
+								<%if(isLog4jEnabled){%>
+									log.error("<%=cid%> - " +e.getMessage());
+								<%}%>
 								System.err.println(e.getMessage());
 							<% } %>
 						}
@@ -433,12 +448,15 @@
 							try {
 								entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
 							} catch(java.lang.Exception e) {
-								<%if(isLog4jEnabled){%>
-									log.error("<%=cid%> " +e.getMessage());
-								<%}%>
 								<% if(dieOnError) {%>
+									<%if(isLog4jEnabled){%>
+										log.fatal("<%=cid%> - " +e.getMessage());
+									<%}%>
 									throw e;
 								<% } else { %>
+									<%if(isLog4jEnabled){%>
+										log.error("<%=cid%> - " +e.getMessage());
+									<%}%>
 									System.err.println(e.getMessage());
 									break;
 								<% } %>
@@ -452,12 +470,15 @@
 							try {
 								fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 							} catch(java.lang.Exception e) {
-								<%if(isLog4jEnabled){%>
-									log.error("<%=cid%> " +e.getMessage());
-								<%}%>
 								<% if(dieOnError) {%>
+									<%if(isLog4jEnabled){%>
+										log.fatal("<%=cid%> - " +e.getMessage());
+									<%}%>
 									throw e;
 								<% } else { %>
+									<%if(isLog4jEnabled){%>
+										log.error("<%=cid%> - " +e.getMessage());
+									<%}%>
 									System.err.println(e.getMessage());
 								<% } %>
 							}
@@ -473,12 +494,15 @@
 						try {
 							fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 						} catch(java.lang.Exception e) {
-							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> " +e.getMessage());
-							<%}%>
 							<% if(dieOnError) {%>
+								<%if(isLog4jEnabled){%>
+									log.fatal("<%=cid%> - " +e.getMessage());
+								<%}%>
 								throw e;
 							<% } else { %>
+								<%if(isLog4jEnabled){%>
+									log.error("<%=cid%> - " +e.getMessage());
+								<%}%>
 								System.err.println(e.getMessage());
 							<% } %>
 						}
@@ -486,7 +510,8 @@
 					}
 					%>
 				    <%if(isLog4jEnabled){%>
-				    	log.info("<%=cid%>" + " start to read data from file!");
+						StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+				    	log.info("<%=cid%> - Retrieving records from the datasource.");
 				    <%}%>
 					while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
 						<%
@@ -528,15 +553,18 @@
 							
 			    					} catch (java.lang.Exception e) {
 			        					whetherReject_<%=cid%> = true;
-										<%if(isLog4jEnabled){%>
-											log.error("<%=cid%> " +e.getMessage());
-										<%}%>
 			        					<%
 			        					if (dieOnError) {
 			            				%>
+											<%if(isLog4jEnabled){%>
+												log.fatal("<%=cid%> - " +e.getMessage());
+											<%}%>
 			            					throw(e);
 			            				<%
 			        					} else {
+											if(isLog4jEnabled){%>
+												log.error("<%=cid%> - " +e.getMessage());
+											<%}
 			            					if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							                %>                    
 			                    				<%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -631,7 +659,7 @@
 					fieldSeparator_<%=cid %>_ListType = ((String)<%=delim1%>).toCharArray();
 				}else {			
 					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%>" + " Field Separator must be assigned a char." );
+						log.fatal("<%=cid%> - Field Separator must be assigned a char." );
 					<%}%>		
 					throw new IllegalArgumentException("Field Separator must be assigned a char."); 
 				}
@@ -766,6 +794,12 @@
 						}else{
 							<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
 						}
+						<%if(isLog4jEnabled){%>
+		                	log4jSb_<%=cid%>.append(<%=targetConnName %>.<%=column.getLabel() %>);
+			                if(columnIndexWithD_<%=cid%>< <%=end%>-1){
+			                	log4jSb_<%=cid%>.append("|");
+			                }
+						<%}%>
 					<%
 					}
 					%>
@@ -774,12 +808,12 @@
  					int filedsum = <%=sourceValueName%>.length;
  					if(filedsum < (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%>-1<%}%>)){
 						<%if(isLog4jEnabled){%>
-							log.error("<%=cid%>" + " Column(s) missing" );
+							log.fatal("<%=cid%> - Column(s) missing" );
 						<%}%>
  						throw new java.lang.Exception("Column(s) missing");
  					} else if(filedsum > (<%=metadata.getListColumns().size() %> <%if(metadata.isDynamicSchema()){%>+ dynamic_column_count_<%=cid%> -1<%}%>)) {
 						<%if(isLog4jEnabled){%>
-							log.error("<%=cid%>" + " Too many columns" );
+							log.fatal("<%=cid%> - Too many columns" );
 						<%}%>
  						throw new RuntimeException("Too many columns");
  					}     
@@ -899,7 +933,7 @@
 					fieldSeparator_<%=cid %> = ((String)<%=delim1%>).toCharArray();
 				}else {			
 				<%if(isLog4jEnabled){%>
-					log.error("<%=cid%>" + " Field Separator must be assigned a char." );
+					log.fatal("<%=cid%> - Field Separator must be assigned a char." );
 				<%}%>		
 					throw new IllegalArgumentException("Field Separator must be assigned a char."); 
 				}
@@ -911,7 +945,7 @@
 					rowSeparator_<%=cid %> = ((String)<%=rowSeparator1%>).toCharArray();
 				}else {
 					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%>" + " Row Separator must be assigned a char." );
+						log.fatal("<%=cid%> - Row Separator must be assigned a char." );
 					<%}%>
 					throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 				}
@@ -931,12 +965,15 @@
 		        				zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
 		        			}
 	        			} catch(java.lang.Exception e) {
-							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> " + e.getMessage());
-							<%}%>
 	        				<% if(dieOnError) {%>
+								<%if(isLog4jEnabled){%>
+									log.fatal("<%=cid%> - " + e.getMessage());
+								<%}%>
 								throw e;
 							<% } else { %>
+								<%if(isLog4jEnabled){%>
+									log.error("<%=cid%> - " + e.getMessage());
+								<%}%>
 								System.err.println(e.getMessage());
 							<% } %>
 	        			}
@@ -946,12 +983,15 @@
 			        		try {
 	        					entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
 	        				} catch(java.lang.Exception e) {
-								<%if(isLog4jEnabled){%>
-									log.error("<%=cid%> " + e.getMessage());
-								<%}%>
 	        					<% if(dieOnError) {%>
+									<%if(isLog4jEnabled){%>
+										log.fatal("<%=cid%> - " + e.getMessage());
+									<%}%>
 									throw e;
 								<% } else { %>
+									<%if(isLog4jEnabled){%>
+										log.error("<%=cid%> - " + e.getMessage());
+									<%}%>
 									System.err.println(e.getMessage());
 									break;
 								<% } %>
@@ -1004,7 +1044,7 @@
 	  							textEnclosure_<%=cid %> = ((String)textEnclosure1_<%=cid %>).toCharArray(); 
 							}else { 
 								<%if(isLog4jEnabled){%>
-									log.error("<%=cid%>" +" Text Enclosure must be assigned a char."); 
+									log.fatal("<%=cid%> - Text Enclosure must be assigned a char."); 
 								<%}%>
 	            				throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
 	        				}
@@ -1036,6 +1076,9 @@
 					        if(((String)escapeChar1_<%=cid %>).length() > 0 ){ 
 					        	escapeChar_<%=cid %> = ((String)escapeChar1_<%=cid %>).toCharArray(); 
 					  		}else { 
+								<%if(isLog4jEnabled){%>
+									log.fatal("<%=cid%> - Escape Char must be assigned a char."); 
+								<%}%>
 		        			    throw new IllegalArgumentException("Escape Char must be assigned a char."); 
 		        			}
 		       				if(escapeChar_<%=cid %>[0] == '\\'){
@@ -1056,9 +1099,6 @@
 							csvReader<%=cid %>.readNext();
 						}
 						csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-					    <%if(isLog4jEnabled){%>
-					    	log.info("<%=cid%>" + " start to read data from file!");
-					    <%}%>
 			            while (csvReader<%=cid %>.readNext()) {
 							<%
 						   	if(("true").equals(removeEmptyRow)){
@@ -1146,16 +1186,23 @@
 			        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
 	        
 	    		} catch(java.lang.Exception e) {
-					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%> " +e.getMessage());
-					<%}%>
 					<% if(dieOnError) {%>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " +e.getMessage());
+						<%}%>
 						throw e;
 					<% } else { %>
+						<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " +e.getMessage());
+						<%}%>
 						System.err.println(e.getMessage());
 					<% } %>
 	    		}//TD110 end
 	        
+			    <%if(isLog4jEnabled){%>
+					StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+			    	log.info("<%=cid%> - Retrieving records from the datasource.");
+			    <%}%>
 	        	while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && csvReader<%=cid %>.readNext() ) { 
 	        
 		        	row<%=cid %>=csvReader<%=cid %>.getValues();
@@ -1220,15 +1267,18 @@
 									%>
 	    						} catch (java.lang.Exception e) {
 							        whetherReject_<%=cid%> = true;
-							        <%if(isLog4jEnabled){%>
-										log.error("<%=cid%> " +e.getMessage());
-									<%}%>
         							<%
         							if (dieOnError) {
             						%>
+								        <%if(isLog4jEnabled){%>
+											log.fatal("<%=cid%> - " +e.getMessage());
+										<%}%>
             							throw(e);
             						<%
         							} else {
+								        if(isLog4jEnabled){%>
+											log.error("<%=cid%> - " +e.getMessage());
+										<%}
             							if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 						                %>
 						                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
