@@ -51,6 +51,7 @@ imports="
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	
 	String concurrencyMode = ElementParameterParser.getValue(node,"__CONCURRENCY_MODE__");
+	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
 	%>
 	int nb_line_<%=cid %> = 0;
     int nb_success_<%=cid%> = 0;
@@ -69,6 +70,7 @@ imports="
 		sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
 	<%}%>
 	sforceBulk_<%=cid%>.setConcurrencyMode("<%=concurrencyMode%>");
+	sforceBulk_<%=cid%>.setAwaitTime(<%=awaitTime%>);
 
 
 	sforceBulk_<%=cid%>.executeBulk(<%=sObject%>,"<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
