@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.regex.Pattern;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -50,10 +49,10 @@ import org.talend.core.model.general.Project;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.utils.ProjectUtils;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 
 /**
@@ -560,7 +559,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
                     Messages.getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
             technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
-            if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())) {
+            if (ProjectUtils.isValidProjectName(nameText.getText())) {
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                         Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
