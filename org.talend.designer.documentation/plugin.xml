@@ -65,18 +65,18 @@
    </extension>
    <extension
          point="org.talend.repository.items.importexport.handler">
-      <importProvider
+      <importItemsProvider
             id="org.talend.designer.documentation.importProvider"
             name="Documentation importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.viewer.handler.DocumentationImportHandler">
             <parameter
                   name="type"
                   value="DOCUMENTATION">
             </parameter>
-         </handler>
-      </importProvider>
+         </importItemsHandler>
+      </importItemsProvider>
    </extension>
 
 </plugin>

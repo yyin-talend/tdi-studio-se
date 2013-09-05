@@ -486,54 +486,54 @@
    </extension>
    <extension
          point="org.talend.repository.items.importexport.handler">
-      <importProvider
+      <importItemsProvider
             id="org.talend.repository.view.di.importProvider.context"
             name="Context importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.ContextImportHandler">
             <parameter
                   name="type"
                   value="CONTEXT">
             </parameter>
-         </handler>
-      </importProvider>
-      <importProvider
+         </importItemsHandler>
+      </importItemsProvider>
+      <importItemsProvider
             id="org.talend.repository.view.di.importProvider.jobDesign"
             name="Job importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.JobDesignImportHandler">
             <parameter
                   name="type"
                   value="PROCESS">
             </parameter>
-         </handler>
-      </importProvider>
-      <importProvider
+         </importItemsHandler>
+      </importItemsProvider>
+      <importItemsProvider
             id="org.talend.repository.view.di.importProvider.routine"
             name="Routine importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler">
             <parameter
                   name="type"
                   value="ROUTINES">
             </parameter>
-         </handler>
-      </importProvider>
-      <importProvider
+         </importItemsHandler>
+      </importItemsProvider>
+      <importItemsProvider
             id="org.talend.repository.view.di.importProvider.sqlTemplate"
             name="Sql Template importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.SqlTemplateImportHandler">
             <parameter
                   name="type"
                   value="SQLPATTERNS">
             </parameter>
-         </handler>
-      </importProvider>
+         </importItemsHandler>
+      </importItemsProvider>
    </extension>
 
 

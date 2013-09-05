@@ -167,18 +167,18 @@
    </extension>
    <extension
          point="org.talend.repository.items.importexport.handler">
-      <importProvider
+      <importItemsProvider
             id="org.talend.repository.json.importProvider"
             name="Json importer"
             priority="NORMAL">
-         <handler
+         <importItemsHandler
                class="org.talend.repository.json.handler.JsonImportHandler">
             <parameter
                   name="type"
                   value="JSON">
             </parameter>
-         </handler>
-      </importProvider>
+         </importItemsHandler>
+      </importItemsProvider>
    </extension>
 
 </plugin>
