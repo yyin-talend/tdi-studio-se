@@ -674,7 +674,7 @@
     <actionSet
           id="org.talend.designer.core.assist.actionSet"
           label="Enable Component Creation Assistant"
-          visible="false">
+          visible="true">
        <action
              class="org.talend.designer.core.assist.TalendEditorComponentCreationAssistAction"
              icon="icons/assist.gif"
