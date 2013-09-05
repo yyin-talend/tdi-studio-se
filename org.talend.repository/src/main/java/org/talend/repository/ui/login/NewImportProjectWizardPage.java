@@ -15,7 +15,6 @@ package org.talend.repository.ui.login;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -32,9 +31,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.swt.colorstyledtext.jedit.KeywordMap;
-import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
-import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
@@ -42,10 +38,10 @@ import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.utils.ProjectUtils;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -212,8 +208,7 @@ public class NewImportProjectWizardPage extends WizardPage {
             if (!nameText.getText().endsWith(" ")) {//$NON-NLS-1$
                 technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
             }
-            if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())
-                    || isKeywords(nameText.getText().toLowerCase()) || "java".equalsIgnoreCase(nameText.getText())) {//$NON-NLS-1$
+            if (ProjectUtils.isValidProjectName(nameText.getText())) {//$NON-NLS-1$
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                         Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
@@ -274,32 +269,6 @@ public class NewImportProjectWizardPage extends WizardPage {
             setMessage(status.getMessage());
             setErrorMessage(null);
         }
-    }
-
-    public static boolean isKeywords(String itemName) {
-
-        if (keywords == null || keywords.isEmpty()) {
-            initKeyWords();
-        }
-        if (keywords.contains(itemName.trim())) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static void initKeyWords() {
-        if (keywords == null) {
-            keywords = new ArrayList<String>();
-        }
-        keywords.clear();
-        Mode mode = Modes.getMode("java.xml"); //$NON-NLS-1$
-        KeywordMap keywordMap = mode.getDefaultRuleSet().getKeywords();
-        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD1"))); //$NON-NLS-1$
-        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD2"))); //$NON-NLS-1$
-        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD3"))); //$NON-NLS-1$
-        keywords.addAll(Arrays.asList(keywordMap.get("LITERAL2"))); //$NON-NLS-1$
-        keywords.addAll(Arrays.asList(keywordMap.get("INVALID"))); //$NON-NLS-1$
     }
 
     Project[] projects;

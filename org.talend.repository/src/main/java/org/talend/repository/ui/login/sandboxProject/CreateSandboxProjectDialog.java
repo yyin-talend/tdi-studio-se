@@ -56,11 +56,11 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.utils.ProjectUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
-import org.talend.repository.ui.wizards.newproject.NewProjectWizardPage;
 
 /**
  * ggu class global comment. Detailled comment
@@ -318,9 +318,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.needCheckMessages")); //$NON-NLS-1$
         } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(MAIL_PATTERN, userLoginText.getText()))) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
-        } else if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, projectLabel)
-                || NewProjectWizardPage.isKeywords(projectLabel.toLowerCase())
-                || ECodeLanguage.JAVA.getName().equalsIgnoreCase(projectLabel)) {
+        } else if (ProjectUtils.isValidProjectName(projectLabel)) {
             setErrorMessage(Messages.getString("NewProjectWizardPage.illegalCharacter")); //$NON-NLS-1$
             enableProjectLabel = true;
         } else if (isProjectNameAlreadyUsed(projectLabel)) {
