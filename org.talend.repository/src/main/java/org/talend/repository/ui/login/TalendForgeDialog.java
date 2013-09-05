@@ -62,9 +62,9 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.service.IExchangeService;
 import org.talend.core.token.TokenCollectorFactory;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -565,7 +565,7 @@ public class TalendForgeDialog extends TrayDialog {
         improveButton.setBackground(createAccount.getBackground());
         improveButton.setFont(font);
         improveButton.setSelection(true);
-        final IPreferenceStore preferenceStore = CoreRuntimePlugin.getInstance().getPreferenceStore();
+        final IPreferenceStore preferenceStore = CoreUIPlugin.getDefault().getPreferenceStore();
         if (preferenceStore.getBoolean(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED)) {
             improveButton.setSelection(true);
         } else {

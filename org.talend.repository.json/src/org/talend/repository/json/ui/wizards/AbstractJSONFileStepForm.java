@@ -36,7 +36,7 @@ import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.repository.model.ResourceModelUtils;
-import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -117,7 +117,7 @@ public abstract class AbstractJSONFileStepForm extends AbstractJSONStepForm {
     }
 
     protected void initMetadataTable(List<FOXTreeNode> list, EList columnList) {
-        int maxColumnsNumber = CoreRuntimePlugin.getInstance().getPreferenceStore()
+        int maxColumnsNumber = CoreUIPlugin.getDefault().getPreferenceStore()
                 .getInt(ITalendCorePrefConstants.MAXIMUM_AMOUNT_OF_COLUMNS_FOR_XML);
         for (FOXTreeNode node : list) {
             if (columnList.size() > maxColumnsNumber) {
