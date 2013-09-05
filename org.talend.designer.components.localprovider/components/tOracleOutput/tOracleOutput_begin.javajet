@@ -15,7 +15,7 @@ imports="
 	" 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -48,6 +48,8 @@ boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(
 IProcess process = node.getProcess();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
+log4jCodeGenerateUtil.infoComponentStart(node);
+log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 if (useSpatialOptions) {
 	int targetSRID = -1;
 	try {
@@ -108,10 +110,6 @@ for(Column column : stmtStructure) {
 }
 %>
 
-<%if(isLog4jEnabled){%>
-	StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-	log.info("<%=cid%> - Start to work.");
-<%}%>
 <%
 if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction)) {
     int updateKeyCount = 0;
@@ -241,18 +239,14 @@ if(useExistingConnection) {
 		String dbUser_<%=cid%> = <%=dbuser%>;
 		String dbPwd_<%=cid%> = <%=dbpwd%>;
 		dbschema_<%=cid%> = <%=tableSchema%>;	
+		<%
+		if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){
+		    log4jCodeGenerateUtil.debugConnectionParams(node,"oracle.jdbc.OracleDriver");	
+		}else {
+			log4jCodeGenerateUtil.debugConnectionParams(node,"oracle.jdbc.driver.OracleDriver");	
+		}
+		%>	
 		<%if(isLog4jEnabled){%>
-			<%if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){%>
-				log.debug("<%=cid%> - Driver ClassName: oracle.jdbc.OracleDriver.");	
-			<%}else {%>
-				log.debug("<%=cid%> - Driver ClassName: oracle.jdbc.driver.OracleDriver.");
-			<%}%>
-			<%@ include file="../templates/Log4jDBConnUtil.javajet"%>
-			<%
-			log4jCodeGenerateUtil.dbConnectionParams(node);
-			log4jCodeGenerateUtil.generateConnectionParams();
-			%>
-			log.debug(log4jDebugParamters_<%=cid%>);
 			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> +"' with the username '" + dbUser_<%=cid%> + "'.");
 		<%}%>	
 		

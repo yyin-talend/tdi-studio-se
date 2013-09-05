@@ -9,6 +9,7 @@ imports="
 	//this util class use by set log4j debug paramters
 	class DefaultLog4jCodeGenerateUtil {
 	
+		INode node = null;
 	    String cid = null;
 		String dbproperties = null;
 		String dbhost = null;
@@ -24,8 +25,14 @@ imports="
  		String noNullValues = null;
  		String dbquery= null;
  		String table = null;
-
-	    public void dbConnectionParams(INode node){
+ 		boolean isLog4jEnabled = false;
+ 		
+	    public void beforeComponentProcess(INode node){
+	    	this.node = node;
+	    	init();
+	    }
+	    
+		private void init() {
 	    	cid = node.getUniqueName();
 			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
@@ -43,8 +50,43 @@ imports="
 			dbquery = dbquery.replaceAll("\n"," ");
 			dbquery = dbquery.replaceAll("\r"," ");
 			table= ElementParameterParser.getValue(node, "__TABLE__");
+			isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		}
 		
+		public void infoComponentStart(INode node) {
+			beforeComponentProcess(node);
+			if (isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Start to work");
+<%
+			}
+		}
+		
+		public void initDbDebugRowBuffer() {
+			if (isLog4jEnabled) {
+%>
+				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+<%
+			}
+		}
+		
+		public void debugDriverClassName(String driverClass) {
+%>
+			log.debug("<%=cid%> - Driver ClassName: <%=driverClass %>.");
+<%
+		}
+		
+		public void debugConnectionParams(INode node,String driverClass) {
+			beforeComponentProcess(node);
+			generateConnectionParams();
+			debugDriverClassName(driverClass);
+			if (isLog4jEnabled) {
+%>
+				log.debug(log4jDebugParamters_<%=cid%>);
+<%
+			}
+		}
+	
 		public void dbConnectionParamsForELT(INode previousNode){
 			cid = previousNode.getUniqueName();
 			dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
