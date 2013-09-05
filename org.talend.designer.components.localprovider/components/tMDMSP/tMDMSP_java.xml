@@ -80,11 +80,11 @@
 		</PARAMETER>
 
         <PARAMETER NAME="DATACLUSTER" FIELD="TEXT" REQUIRED="true"
-            NUM_ROW="35" GROUP="CONTAINER">
+            NUM_ROW="35">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
         <PARAMETER NAME="CONTAINER_TYPE" FIELD="CLOSED_LIST" NUM_ROW="35"
-            REQUIRED="true" GROUP="CONTAINER">
+            REQUIRED="true">
             <ITEMS DEFAULT="MASTER">
                 <ITEM NAME="MASTER" VALUE="MASTER" />
                 <ITEM NAME="STAGING" VALUE="STAGING" />
