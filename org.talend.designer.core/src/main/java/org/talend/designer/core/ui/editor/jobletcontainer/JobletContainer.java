@@ -203,6 +203,7 @@ public class JobletContainer extends NodeContainer {
 
         }
 
+        changeWidth(totalRectangle);
         jobletRectangle = totalRectangle.getCopy();
         return totalRectangle;
     }
@@ -728,5 +729,40 @@ public class JobletContainer extends NodeContainer {
 
     public void setMrName(String mrName) {
         this.mrName = mrName;
+    }
+
+    private void changeWidth(Rectangle totalRectangle) {
+        if (this.getMrName() != null && !"".equals(this.getMrName())) {
+            if (totalRectangle.width < 240 && this.getNode().isMapReduceStart()) {
+                Integer distance = null;
+                for (NodeContainer nc : this.getSubjobContainer().getNodeContainers()) {
+                    if (nc.getNode().getUniqueName().equals(this.getNode().getUniqueName())) {
+                        continue;
+                    }
+                    if (this.getNode().getMrGroupId() != null && nc.getNode().getMrGroupId() != null
+                            && this.getNode().getMrGroupId().equals(nc.getNode().getMrGroupId())) {
+                        continue;
+                    }
+                    int w = nc.getNodeContainerRectangle().x - totalRectangle.x;
+                    if (w <= 0) {
+                        continue;
+                    }
+                    if (distance == null) {
+                        distance = w;
+                    } else if (w < distance) {
+                        distance = w;
+                    }
+                }
+                if (distance == null) {
+                    totalRectangle.width = 240;
+                } else if (distance >= 240) {
+                    totalRectangle.width = 240;
+                } else if (distance < totalRectangle.width) {
+                    return;
+                } else {
+                    totalRectangle.width = distance;
+                }
+            }
+        }
     }
 }
