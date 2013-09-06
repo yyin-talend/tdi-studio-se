@@ -1123,8 +1123,8 @@ public class Node extends Element implements IGraphicalNode {
             }
             if (!mainConnector.isMultiSchema()
                     && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
-                            || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
-                            .getInputId() == 1))) && ((Process) getProcess()).isActivate()) {
+                            || (connection.getLineStyle() == EConnectionType.TABLE) || (connection.getLineStyle() == EConnectionType.FLOW_MERGE))
+                    && ((Process) getProcess()).isActivate()) {
 
                 boolean repositoryMode = false;
                 IMetadataTable mainTargetTable = this.getMetadataFromConnector(mainConnector.getName());
