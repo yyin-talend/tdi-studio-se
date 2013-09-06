@@ -71,9 +71,11 @@ imports="
 		}
 		
 		public void debugDriverClassName(String driverClass) {
+			if (isLog4jEnabled) {
 %>
-			log.debug("<%=cid%> - Driver ClassName: <%=driverClass %>.");
+				log.debug("<%=cid%> - Driver ClassName: <%=driverClass %>.");
 <%
+			}
 		}
 		
 		public void debugConnectionParams(INode node,String driverClass) {
@@ -104,61 +106,63 @@ imports="
 		}
 		
 		public void generateConnectionParams() {
+			if(isLog4jEnabled) {
 %>
-			String log4jDebugParamters_<%=cid%> = "\r\n";
-			<%if(dbproperties != null && !("\"\"").equals(dbproperties) && !("").equals(dbproperties)){%>
-				String dbproperties_log4j_<%=cid%> = <%=dbproperties%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PROPERTIES = " + dbproperties_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbhost!= null && !("\"\"").equals(dbhost) && !("").equals(dbhost)){%>
-				String dbhost_log4j_<%=cid%> = <%=dbhost%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "HOST = " + dbhost_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbport!= null && !("\"\"").equals(dbport) && !("").equals(dbport)){%>
-				String dbport_log4j_<%=cid%> = <%=dbport%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PORT = " + dbport_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbname!= null && !("\"\"").equals(dbname) && !("").equals(dbname)){%>
-				String dbname_log4j_<%=cid%> = <%=dbname%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBNAME = " + dbname_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbuser!= null && !("\"\"").equals(dbuser) && !("").equals(dbuser)){%>
-				String dbuser_log4j_<%=cid%> = <%=dbuser%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USERNAME = " + dbuser_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbpwd != null && !("\"\"").equals(dbpwd) && !("").equals(dbpwd)){%>
-				String dbpwd_log4j_<%=cid%> = <%=dbpwd%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PASSWORD = " + dbpwd_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(connectionType!= null && !("\"\"").equals(connectionType) && !("").equals(connectionType)){%>
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "CONNECTION_TYPE = <%=connectionType%>" + "\r\n";
-			<%}%>
-			<%if(dbVersion!= null && !("\"\"").equals(dbVersion) && !("").equals(dbVersion)){%>
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBVERSION = <%=dbVersion%>" + "\r\n";
-			<%}%>
-			<%if(dbSchema!= null && !("\"\"").equals(dbSchema) && !("").equals(dbSchema)){%>
-				String dbSchema_log4j_<%=cid%> = <%=dbSchema%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBSCHEMA = " + dbSchema_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(useCursor!= null && !("\"\"").equals(useCursor) && !("").equals(useCursor)){%>	
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USE_CURSOR = <%=useCursor%>" + "\r\n";
-			<%}%>
-			<%if(trimAllColumn!= null && !("\"\"").equals(trimAllColumn) && !("").equals(trimAllColumn)){%>
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TRIM_ALL_COLUMN = <%=trimAllColumn%>" + "\r\n";
-			<%}%>
-			<%if(noNullValues!= null && !("\"\"").equals(noNullValues) && !("").equals(noNullValues)){%>
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "NO_NULL_VALUES = <%=noNullValues%>" + "\r\n";
-			<%}%>
-			<%if(table!= null && !("\"\"").equals(table) && !("").equals(table)){%>
-				String table_log4j_<%=cid%> = <%=table%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TABLE = " + table_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			<%if(dbquery!= null && !("\"\"").equals(dbquery) && !("").equals(dbquery)){%>
-				String dbquery_log4j_<%=cid%> = <%=dbquery%>;
-				log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "QUERY = " + dbquery_log4j_<%=cid%> + "\r\n";
-			<%}%>
-			log4jDebugParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jDebugParamters_<%=cid%>;
-<%
+				String log4jDebugParamters_<%=cid%> = "\r\n";
+				<%if(dbproperties != null && !("\"\"").equals(dbproperties) && !("").equals(dbproperties)){%>
+					String dbproperties_log4j_<%=cid%> = <%=dbproperties%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PROPERTIES = " + dbproperties_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbhost!= null && !("\"\"").equals(dbhost) && !("").equals(dbhost)){%>
+					String dbhost_log4j_<%=cid%> = <%=dbhost%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "HOST = " + dbhost_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbport!= null && !("\"\"").equals(dbport) && !("").equals(dbport)){%>
+					String dbport_log4j_<%=cid%> = <%=dbport%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PORT = " + dbport_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbname!= null && !("\"\"").equals(dbname) && !("").equals(dbname)){%>
+					String dbname_log4j_<%=cid%> = <%=dbname%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBNAME = " + dbname_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbuser!= null && !("\"\"").equals(dbuser) && !("").equals(dbuser)){%>
+					String dbuser_log4j_<%=cid%> = <%=dbuser%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USERNAME = " + dbuser_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbpwd != null && !("\"\"").equals(dbpwd) && !("").equals(dbpwd)){%>
+					String dbpwd_log4j_<%=cid%> = <%=dbpwd%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PASSWORD = " + dbpwd_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(connectionType!= null && !("\"\"").equals(connectionType) && !("").equals(connectionType)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "CONNECTION_TYPE = <%=connectionType%>" + "\r\n";
+				<%}%>
+				<%if(dbVersion!= null && !("\"\"").equals(dbVersion) && !("").equals(dbVersion)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBVERSION = <%=dbVersion%>" + "\r\n";
+				<%}%>
+				<%if(dbSchema!= null && !("\"\"").equals(dbSchema) && !("").equals(dbSchema)){%>
+					String dbSchema_log4j_<%=cid%> = <%=dbSchema%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBSCHEMA = " + dbSchema_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(useCursor!= null && !("\"\"").equals(useCursor) && !("").equals(useCursor)){%>	
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USE_CURSOR = <%=useCursor%>" + "\r\n";
+				<%}%>
+				<%if(trimAllColumn!= null && !("\"\"").equals(trimAllColumn) && !("").equals(trimAllColumn)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TRIM_ALL_COLUMN = <%=trimAllColumn%>" + "\r\n";
+				<%}%>
+				<%if(noNullValues!= null && !("\"\"").equals(noNullValues) && !("").equals(noNullValues)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "NO_NULL_VALUES = <%=noNullValues%>" + "\r\n";
+				<%}%>
+				<%if(table!= null && !("\"\"").equals(table) && !("").equals(table)){%>
+					String table_log4j_<%=cid%> = <%=table%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TABLE = " + table_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				<%if(dbquery!= null && !("\"\"").equals(dbquery) && !("").equals(dbquery)){%>
+					String dbquery_log4j_<%=cid%> = <%=dbquery%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "QUERY = " + dbquery_log4j_<%=cid%> + "\r\n";
+				<%}%>
+				log4jDebugParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jDebugParamters_<%=cid%>;
+<%	
+			}
 	    }
 	}
 	
