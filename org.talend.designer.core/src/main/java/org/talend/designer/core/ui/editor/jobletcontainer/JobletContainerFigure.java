@@ -36,6 +36,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -249,7 +250,13 @@ public class JobletContainerFigure extends Figure {
                 if (key.startsWith("reduce_")) {
                     if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
                         percent = jobletContainer.getPercentReduce() * 10;
-                        value.setVisible(true);
+                        for (NodeContainer nc : this.jobletContainer.getNodeContainers()) {
+                            if (nc.getNode().isMrContainsReduce()) {
+                                value.setVisible(true);
+                                break;
+                            }
+                        }
+
                     }
                 }
 
@@ -303,7 +310,7 @@ public class JobletContainerFigure extends Figure {
             i = Integer.parseInt(key.substring(key.indexOf("_") + 1));
             int mry = preferedSize.height * i;
             if (key.startsWith("map_")) {
-                value.setLocation(new Point(location.x+10, location.y + rectangle.height - count * preferedSize.height + mry));
+                value.setLocation(new Point(location.x + 10, location.y + rectangle.height - count * preferedSize.height + mry));
             }
             if (key.startsWith("reduce_")) {
                 value.setLocation(new Point(location.x + 120, location.y + rectangle.height - count * preferedSize.height + mry));

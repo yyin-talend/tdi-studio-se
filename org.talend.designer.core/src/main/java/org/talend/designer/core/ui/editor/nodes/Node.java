@@ -265,6 +265,9 @@ public class Node extends Element implements IGraphicalNode {
 
     private Integer mrJobIDInGroup;
 
+    // mrContainsReduce of is true,then show Reduce progressbar
+    private boolean mrContainsReduce;
+
     /**
      * Getter for index.
      * 
@@ -4501,6 +4504,14 @@ public class Node extends Element implements IGraphicalNode {
 
     public void setMrJobIDInGroup(Integer mrJobIDInGroup) {
         this.mrJobIDInGroup = mrJobIDInGroup;
+    }
+
+    public boolean isMrContainsReduce() {
+        return mrContainsReduce;
+    }
+
+    public void setMrContainsReduce(boolean mrContainsReduce) {
+        this.mrContainsReduce = mrContainsReduce;
     }
 
 }

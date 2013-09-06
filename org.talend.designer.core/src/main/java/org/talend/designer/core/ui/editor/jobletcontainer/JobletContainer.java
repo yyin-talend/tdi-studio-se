@@ -732,6 +732,12 @@ public class JobletContainer extends NodeContainer {
     }
 
     private void changeWidth(Rectangle totalRectangle) {
+        int temWidth = 114;
+        for (NodeContainer nc : nodeContainers) {
+            if (nc.getNode().isMrContainsReduce()) {
+                temWidth = 240;
+            }
+        }
         if (this.getMrName() != null && !"".equals(this.getMrName())) {
             if (totalRectangle.width < 240 && this.getNode().isMapReduceStart()) {
                 Integer distance = null;
@@ -754,9 +760,9 @@ public class JobletContainer extends NodeContainer {
                     }
                 }
                 if (distance == null) {
-                    totalRectangle.width = 240;
-                } else if (distance >= 240) {
-                    totalRectangle.width = 240;
+                    totalRectangle.width = temWidth;
+                } else if (distance >= temWidth) {
+                    totalRectangle.width = temWidth;
                 } else if (distance < totalRectangle.width) {
                     return;
                 } else {
