@@ -42,17 +42,18 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.model.components.IComponentConstants;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IRepositoryContextService;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -62,6 +63,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -82,6 +84,7 @@ import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.model.utils.CloneConnectionUtils;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
@@ -136,7 +139,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  * 
  */
 
-public class RepositoryService implements IRepositoryService {
+public class RepositoryService implements IRepositoryService, IRepositoryContextService {
 
     /*
      * (non-Javadoc)
@@ -528,6 +531,11 @@ public class RepositoryService implements IRepositoryService {
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
             String selectedContext) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, selectedContext);
+    }
+
+    @Override
+    public FileConnection cloneOriginalValueConnection(FileConnection fileConn) {
+        return CloneConnectionUtils.cloneOriginalValueConnection(fileConn, false);
     }
 
     @Override

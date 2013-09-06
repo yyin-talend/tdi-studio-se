@@ -256,7 +256,7 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             @Override
             public void widgetSelected(SelectionEvent e) {
                 processContext.setLog4jLevel(log4jLevel.getText());
-                processContext.setLog4jLevel(log4jLevel.getText());
+                processManager.setLog4jLevel(log4jLevel.getText());
             }
         });
     }
