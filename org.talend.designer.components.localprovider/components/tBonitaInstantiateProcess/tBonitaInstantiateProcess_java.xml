@@ -256,7 +256,7 @@
 			<IMPORT NAME="slf4j_jdk14_161" MODULE="slf4j-jdk14-1.6.1.jar" REQUIRED_IF="DB_VERSION=='BONITA_561'" />
 
 			<!-- Bonita Http Client -->
-			<IMPORT NAME="bonita_http_client" MODULE="bonita-client-5.2.3.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-client-5.2.3.jar" REQUIRED_IF="CLIENT_MODE=='HTTP_CLIENT'" />
+			<IMPORT NAME="apache_commons_codec_1_7" MODULE="commons-codec-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.7.jar" REQUIRED_IF="CLIENT_MODE=='HTTP_CLIENT'" />
 	     </IMPORTS>
 	</CODEGENERATION>
 
