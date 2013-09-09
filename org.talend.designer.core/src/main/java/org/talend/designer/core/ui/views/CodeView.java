@@ -39,10 +39,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -225,12 +227,21 @@ public class CodeView extends ViewPart {
     }
 
     public static void refreshCodeView(final IElement element) {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(CodeView.ID);
-        if (view != null) {
-            final CodeView codeView = (CodeView) view;
-            codeView.refresh(element);
-        }
+        DisplayUtils.getDisplay().syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                if (ww != null) {
+                    IWorkbenchPage page = ww.getActivePage();
+                    IViewPart view = page.findView(CodeView.ID);
+                    if (view != null) {
+                        final CodeView codeView = (CodeView) view;
+                        codeView.refresh(element);
+                    }
+                }
+            }
+        });
     }
 
     private void refresh(IElement element) {
@@ -272,38 +283,38 @@ public class CodeView extends ViewPart {
                 if (selectedNode != null) {
                     generatedCode = ""; //$NON-NLS-1$
 
-                    // joblet or joblet node
-                    boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(selectedNode.getProcess());
-                    if (!isJoblet && PluginChecker.isJobLetPluginLoaded()) {
-                        IJobletProviderService jobletSservice = (IJobletProviderService) GlobalServiceRegister.getDefault()
-                                .getService(IJobletProviderService.class);
-                        if (jobletSservice != null && jobletSservice.isJobletComponent(selectedNode)) {
-                            isJoblet = true;
-                        }
-                    }
-                    if (isJoblet) {
-                        return org.eclipse.core.runtime.Status.OK_STATUS;
-                    }
-
-                    generatingNode = null;
-                    for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
-                        if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
-                            generatingNode = node;
-                        }
-                    }
-                    if (generatingNode == null) {
-                        generatedCode = Messages.getString("CodeView.MultipleComponentError");
-                        return org.eclipse.core.runtime.Status.OK_STATUS;
-                    }
-                    if (codeGenerator == null) {
-                        ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
-                        codeGenerator = service.createCodeGenerator();
-                    }
-                    viewStartAction.setChecked(false);
-                    viewMainAction.setChecked(false);
-                    viewEndAction.setChecked(false);
-                    viewAllAction.setChecked(false);
                     try {
+                        // joblet or joblet node
+                        boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(selectedNode.getProcess());
+                        if (!isJoblet && PluginChecker.isJobLetPluginLoaded()) {
+                            IJobletProviderService jobletSservice = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                                    .getService(IJobletProviderService.class);
+                            if (jobletSservice != null && jobletSservice.isJobletComponent(selectedNode)) {
+                                isJoblet = true;
+                            }
+                        }
+                        if (isJoblet) {
+                            return org.eclipse.core.runtime.Status.OK_STATUS;
+                        }
+
+                        generatingNode = null;
+                        for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
+                            if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
+                                generatingNode = node;
+                            }
+                        }
+                        if (generatingNode == null) {
+                            generatedCode = Messages.getString("CodeView.MultipleComponentError");
+                            return org.eclipse.core.runtime.Status.OK_STATUS;
+                        }
+                        if (codeGenerator == null) {
+                            ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
+                            codeGenerator = service.createCodeGenerator();
+                        }
+                        viewStartAction.setChecked(false);
+                        viewMainAction.setChecked(false);
+                        viewEndAction.setChecked(false);
+                        viewAllAction.setChecked(false);
                         switch (codeView) {
                         case CODE_START:
                             viewStartAction.setChecked(true);
@@ -328,6 +339,10 @@ public class CodeView extends ViewPart {
                     } catch (SystemException e) {
                         generatedCode = Messages.getString("CodeView.Error"); //$NON-NLS-1$
                         ExceptionHandler.process(e);
+                    } catch (Exception e) {
+                        // Some exceptions can appear in case we close some jobs while generating
+                        // Just ignore them, and set blank directly to the code view
+                        generatedCode = ""; //$NON-NLS-1$ 
                     }
                 }
                 return org.eclipse.core.runtime.Status.OK_STATUS;
