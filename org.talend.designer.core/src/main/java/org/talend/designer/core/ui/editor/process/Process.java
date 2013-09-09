@@ -682,27 +682,29 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     @Override
-    public synchronized List<? extends INode> getGeneratingNodes() {
+    public List<? extends INode> getGeneratingNodes() {
         if (generatingProcess == null) {
             generatingProcess = new DataProcess(this);
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
-        if (isProcessModified() || routinesDependencies == null || routinesDependencies.isEmpty()) {
-            checkRoutineDependencies();
-        }
-        if (isProcessModified()) {
-            if (isBuilding()) {
-                return generatedNodeList;
+        if (!isBuilding()) {
+            if (isProcessModified() || routinesDependencies == null || routinesDependencies.isEmpty()) {
+                checkRoutineDependencies();
             }
-            setBuilding(true);
-            List<INode> sortedFlow = sortNodes(nodes);
-            if (sortedFlow.size() != nodes.size()) {
-                sortedFlow = nodes;
+            if (isProcessModified()) {
+                if (isBuilding()) {
+                    return generatedNodeList;
+                }
+                setBuilding(true);
+                List<INode> sortedFlow = sortNodes(nodes);
+                if (sortedFlow.size() != nodes.size()) {
+                    sortedFlow = nodes;
+                }
+                generatingProcess.buildFromGraphicalProcess(sortedFlow);
+                generatedNodeList = generatingProcess.getNodeList();
+                processModified = false;
+                setBuilding(false);
             }
-            generatingProcess.buildFromGraphicalProcess(sortedFlow);
-            generatedNodeList = generatingProcess.getNodeList();
-            processModified = false;
-            setBuilding(false);
         }
         return generatedNodeList;
     }
