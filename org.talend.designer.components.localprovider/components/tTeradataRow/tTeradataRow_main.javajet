@@ -17,6 +17,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String cid =  node.getUniqueName();
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
@@ -138,9 +139,15 @@ try {
         <%
         if (("true").equals(dieOnError)) {
             %>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e.getMessage());
+			<%}%>
             throw(e);
             <%
         } else {
+			if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + e.getMessage());
+			<%}
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                 %>
                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -205,7 +212,13 @@ if(!useExistingConn) {
         commitCounter_<%=cid%>++;
         if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
         
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Starting to commit.");
+			<%}%>
         	conn_<%=cid%>.commit();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Commit has succeeded.");
+			<%}%>
         	
         	commitCounter_<%=cid%>=0;
         	

@@ -65,6 +65,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 					hasOutputRow = true;
 		}
 	}
+	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 
 <%
@@ -72,6 +74,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	%>
 		outputStream_<%=cid%>.flush();
 		outputStream_<%=cid%>.close();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Loading data into database.");
+				<%}%>
 	<%
 		if (useNamedPiped) { // wait for nzload thread to finish
 			%>
@@ -84,6 +89,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 			nzloadThread_<%=cid%>.join(0);
 			<%
 		}
+				if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Loaded data finished.");
+				<%}
 	}
 %>
 				// added "show log output" feature
@@ -109,6 +117,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 							in.close();
 						}
 						catch (java.lang.Exception e) {
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - " + e.getMessage());
+							<%}%>
 							// System.err.println("Error Reading Log File " + e.getMessage());
 							
 						}
@@ -118,4 +129,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				%>
 				// end "show log output"
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Has finished.");
+				<%}%>
 				

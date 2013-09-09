@@ -16,6 +16,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -58,6 +59,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 	boolean extendedInsert = false;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jCodeGenerateUtil.infoComponentStart(node);
+	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 	
 	String dbVersion = "" ;
 	
@@ -111,6 +115,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
         if(updateKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For update ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For update, Schema must have a key");
         }
         <%
@@ -126,6 +133,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For delete ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For delete, Schema must have a key");
         }
         <%
@@ -214,7 +224,16 @@ if(useExistingConnection) {
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;    
 		java.lang.Class.forName("<%=javaDbDriver %>");
+		<%
+	   		log4jCodeGenerateUtil.debugConnectionParams(node,javaDbDriver);	
+		%>	
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
+		<%}%>	
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
+		<%}%>
 	}
 	<%
 }	

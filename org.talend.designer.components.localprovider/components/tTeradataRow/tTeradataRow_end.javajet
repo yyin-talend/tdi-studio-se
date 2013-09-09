@@ -14,6 +14,7 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	%>
 <%		
 	if (usePrepareStatement) {
@@ -30,7 +31,13 @@ imports="
     	    %>
             if(commitEvery_<%=cid%> > commitCounter_<%=cid%>) {
             
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Starting to commit.");
+				<%}%>
             	conn_<%=cid%>.commit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Commit has succeeded.");
+				<%}%>
             	
             	commitCounter_<%=cid%> = 0;
             	
@@ -38,7 +45,16 @@ imports="
             <%
 		}
     	%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the database.");
+		<%}%>
     	conn_<%=cid %> .close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the database closed.");
+		<%}%>
     	<%
 	}
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Has finished.");
+<%}%>

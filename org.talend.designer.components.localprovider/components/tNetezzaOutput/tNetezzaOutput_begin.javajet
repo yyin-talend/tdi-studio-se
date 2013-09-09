@@ -13,6 +13,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -35,6 +36,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jCodeGenerateUtil.infoComponentStart(node);
+	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 %>
 
 <%
@@ -59,6 +64,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
         if(updateKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For update ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For update, Schema must have a key");
         }
         <%
@@ -74,6 +82,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For delete ,Shcema must have a key");
+			<%}%>	
             throw new RuntimeException("For delete, Schema must have a key");
         }
         <%
@@ -132,7 +143,16 @@ else
 	%>
 	String dbUser_<%=cid %> = <%=dbuser%>;
 	String dbPwd_<%=cid %> = <%=dbpwd%>;
+	<%
+   		log4jCodeGenerateUtil.debugConnectionParams(node,"org.netezza.Driver");	
+	%>	 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
+	<%}%>	
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
+	<%}%>
 	<%
 }	
 
@@ -142,14 +162,32 @@ if(columnList != null && columnList.size() > 0) {
         if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
             <%
         } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creata table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
             <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
@@ -168,17 +206,35 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");            
+		        	<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+					<%}%>
+		            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+		        	<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+					<%}%>          
                 }                
                 <%
             } else {
                 %>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+		        	<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Droping tableName_<%=cid%>!");
+					<%}%>
                     stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+		        	<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
+					<%}%>
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");                
+	        	<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+				<%}%>
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+	        	<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+				<%}%>
             <%
             }
         } else if(("TRUNCATE").equals(tableAction)) {
@@ -186,7 +242,13 @@ if(columnList != null && columnList.size() > 0) {
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Truncating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Truncate table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
             }
@@ -194,7 +256,13 @@ if(columnList != null && columnList.size() > 0) {
         } else if (("CLEAR").equals(tableAction)){
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+            <%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Clearing table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Clear table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
             stmtClear_<%=cid%>.close();
             <%
         }

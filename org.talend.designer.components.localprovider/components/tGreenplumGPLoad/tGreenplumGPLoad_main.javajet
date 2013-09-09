@@ -65,6 +65,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}
 		}
 	}
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	if (nullValue.startsWith("'") && nullValue.endsWith("'") && nullValue.length() > 2)
 		nullValue = nullValue.substring(1,(nullValue.length()-1));
 %>
@@ -185,6 +186,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 		// -------------------------------------------
 		%>
 		outputStream_<%=cid%>.write(sb_<%=cid%>.toString().getBytes());
+		<%if(isLog4jEnabled){%>
+            log4jSb_<%=cid%>.append(sb_<%=cid%>.toString());
+			log.debug("<%=cid%> - Loading the record :" + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}%>
 		sb_<%=cid%> = null;
 		<%
 		

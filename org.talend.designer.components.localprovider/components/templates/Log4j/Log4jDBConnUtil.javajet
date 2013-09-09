@@ -118,7 +118,7 @@ imports="
 					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "HOST = " + dbhost_log4j_<%=cid%> + "\r\n";
 				<%}%>
 				<%if(dbport!= null && !("\"\"").equals(dbport) && !("").equals(dbport)){%>
-					String dbport_log4j_<%=cid%> = <%=dbport%>;
+					String dbport_log4j_<%=cid%> = <%=dbport.replace("'", "\"")%>;
 					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PORT = " + dbport_log4j_<%=cid%> + "\r\n";
 				<%}%>
 				<%if(dbname!= null && !("\"\"").equals(dbname) && !("").equals(dbname)){%>

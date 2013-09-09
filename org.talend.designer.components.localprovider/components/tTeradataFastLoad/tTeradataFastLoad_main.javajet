@@ -57,6 +57,7 @@ imports="
     }
     
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 ///////////////Inner Class Column///////////////////////////
 class Column{
@@ -348,9 +349,15 @@ if(incomingConnName != null && columnList != null){
             <%
             if (("true").equals(dieOnError)) {
                 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
                 throw(e);
                 <%
             } else {
+				if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -406,9 +413,15 @@ if(incomingConnName != null && columnList != null){
             <%
             if (("true").equals(dieOnError)) {
                 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
                 throw(e);
                 <%
             } else {
+				if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -479,9 +492,15 @@ if(incomingConnName != null && columnList != null){
 	            <%
 	            if (("true").equals(dieOnError)) {
 	                %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e.getMessage());
+					<%}%>
 	                throw(e);
 	                <%
 	            } else {
+					if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}
 	                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 	                    for(IMetadataColumn column : columnList) {
 	                        %>
@@ -518,9 +537,15 @@ if(incomingConnName != null && columnList != null){
 	            <%
 	            if (("true").equals(dieOnError)) {
 	                %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e.getMessage());
+					<%}%>
 	                throw(e);
 	                <%
 	            } else {
+					if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}
 	                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 	                    for(IMetadataColumn column : columnList) {
 	                        %>
@@ -580,9 +605,15 @@ if(incomingConnName != null && columnList != null){
         <%
         if (("true").equals(dieOnError)) {
             %>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e.getMessage());
+			<%}%>
             throw(e);
             <%
         } else {
+			if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + e.getMessage());
+			<%}
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                 for(IMetadataColumn column : columnList) {
                     %>
@@ -622,9 +653,15 @@ if(incomingConnName != null && columnList != null){
             <%
             if (("true").equals(dieOnError)) {
                 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
                 throw(e);
                 <%
             } else {
+				if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -670,9 +707,15 @@ if(incomingConnName != null && columnList != null){
             <%
             if (("true").equals(dieOnError)) {
                 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
                 throw(e);
                 <%
             } else {
+				if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -693,6 +736,19 @@ if(incomingConnName != null && columnList != null){
 	<%
 	}
 	
+	if(isLog4jEnabled){
+			int count = 0;
+			for(IMetadataColumn column : columnList) {
+				count++;
+		%>
+                log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
+                <%if(count < columnList.size()){%>
+                	log4jSb_<%=cid%>.append("|");
+                <%}
+            }%>
+			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+	<%}
 	if(outgoingConns != null && outgoingConns.size() > 0) {
 	    for(IConnection outgoingConn : outgoingConns) {
 	        if(!outgoingConn.getName().equals(rejectConnName) &&

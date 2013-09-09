@@ -16,6 +16,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <% 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -86,6 +87,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	if (!gploadExePathGiven) {
 		gploadExePath = "\"gpload\"";
 	}
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jCodeGenerateUtil.infoComponentStart(node);
+	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 	
 %>
 	int deletedCount_<%=cid%> = 0;
@@ -111,6 +115,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 		boolean missConfiguration_<%=cid%> = true;
 		String missConfigurationMsg_<%=cid%> = "<%=missConfigurationMsg%>";
 		if (missConfiguration_<%=cid%>) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + missConfigurationMsg_<%=cid%>);
+			<%}%>
 			throw new java.lang.Exception(missConfigurationMsg_<%=cid%>);
 		}
 		<%
@@ -137,20 +144,50 @@ skeleton="../templates/db_output_bulk.skeleton"
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpass%>;
 		java.sql.Connection conn_<%=cid%> = null;
+		<%
+	   		log4jCodeGenerateUtil.debugConnectionParams(node,"org.postgresql.Driver");	
+		%>	
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
+		<%}%>
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded." );
+		<%}%>
 		<%
 		
         if(("DROP_CREATE").equals(tableAction)) {
             %>
 			java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
+			<%}%>
 			stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded." );
+			<%}%>
 			java.sql.Statement stmtCreate_<%=cid%> =  null;
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+				<%}%>
 				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded." );
+				<%}%>
 			}catch(java.sql.SQLException e){
-				if(<%=dieOnError%>)
-					 throw new RuntimeException ("Failure on DROP_CREATE action, process terminated");
+				if(<%=dieOnError%>){
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+					<%}%>
+					throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+				}else{
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+					<%}%>
+					 e.printStackTrace();
+				}
 			}
             <%
         } else if(("CREATE").equals(tableAction)) {
@@ -158,12 +195,25 @@ skeleton="../templates/db_output_bulk.skeleton"
 			java.sql.Statement stmtCreate_<%=cid%> = null; 
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+				<%}%>
 				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded." );
+				<%}%>
 			}catch(java.sql.SQLException e){
-				if(<%=dieOnError%>)
+				if(<%=dieOnError%>){
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated");
+					<%}%>
 					 throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
-				else
+				}else{
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated");
+					<%}%>
 					 e.printStackTrace();
+				}
 			}
             <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
@@ -196,13 +246,26 @@ skeleton="../templates/db_output_bulk.skeleton"
 					java.sql.Statement stmtCreate_<%=cid%> = null;
 					try{
 						stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)"); 
+						<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+						<%}%>
+						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+						<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded." );
+						<%}%> 
 					}catch(java.sql.SQLException e){
-						if(<%=dieOnError%>)
+						if(<%=dieOnError%>){
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated ");
+							<%}%>
 							 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
-						
-						else
+						}else{
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated ");
+							<%}%>
 							 e.printStackTrace();
+						}
+						
 					}
 				}                
                 <%
@@ -212,24 +275,49 @@ skeleton="../templates/db_output_bulk.skeleton"
                     java.sql.Statement stmtDrop_<%=cid%> = null;
                     try{
                     	stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+						<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
+						<%}%>
                     	stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+						<%if(isLog4jEnabled){%>
+							log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
+						<%}%>
                     }catch(java.sql.SQLException e){
-                    	if(<%=dieOnError%>)
-							 throw new RuntimeException ("Failure to drop table '" + tableName4Load_<%=cid%>  + "'. process terminated");
-                    	
-                    	else
+                    	if(<%=dieOnError%>){
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+							<%}%>
+							 throw new RuntimeException ("Failure to drop table '" + tableName4Load_<%=cid%>  + "'. process terminated  ");
+                    	}else{
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+							<%}%>
 							 e.printStackTrace();
+                    	}
                     }
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = null;
                 try{
                 stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");           
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+				<%}%>
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded." );
+				<%}%>           
                 }catch(java.sql.SQLException e){
-                	if(<%=dieOnError%>)
+                	if(<%=dieOnError%>){
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+						<%}%>
 						 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
-                	else
+                	}else{
+						<%if(isLog4jEnabled){%>
+							log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+						<%}%>
 						 e.printStackTrace();
+                	}
                 }
             <%
             }
@@ -238,7 +326,13 @@ skeleton="../templates/db_output_bulk.skeleton"
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Truncating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Truncate table '" + tableName_<%=cid%> + "' has succeeded." );
+			<%}%>
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> = rsClearCount_<%=cid%>.getInt(1);
             }
@@ -248,13 +342,26 @@ skeleton="../templates/db_output_bulk.skeleton"
             java.sql.Statement stmtClear_<%=cid%> = null;
             try{
             	stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Clearing table '" + tableName_<%=cid%> + "'.");
+				<%}%>
             	deletedCount_<%=cid%> = stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%>- Clear table '" + tableName_<%=cid%> +  "' has succeeded." );
+				<%}%>
             	stmtClear_<%=cid%>.close();
             }catch(java.sql.SQLException e){
-            	if(<%=dieOnError%>)
+            	if(<%=dieOnError%>){
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated");
+					<%}%>
 					 throw new RuntimeException ("Failure to clear table '" + tableName4Load_<%=cid%>  + "'. process terminated");
-            	else
+            	}else{
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+					<%}%>
 					 e.printStackTrace();
+            	}
             }
             <%
         }
@@ -402,6 +509,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 			}
 			catch (java.lang.Exception e) {
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
 				globalMap.put("<%=cid%>_GPLOAD_ERROR",e.getMessage());
 				throw new RuntimeException(e.getMessage(),e.getCause());
 			}
@@ -431,10 +541,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	} else { // no input connections
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Loading data into database.");
+		<%}%>
 	gploadThread_<%=cid%>.start();
 	gploadThread_<%=cid%>.join(0);
 	globalMap.put("<%=cid%>_GPLOAD_OUTPUT", gploadOutput_<%=cid%>.toString());
 	globalMap.put("<%=cid%>_NB_LINE", insertedCount_<%=cid%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Loaded records count:" + insertedCount_<%=cid%> + ".");
+			log.info("<%=cid%> - Has finished.");
+		<%}%>
 <%
 	}
 %>

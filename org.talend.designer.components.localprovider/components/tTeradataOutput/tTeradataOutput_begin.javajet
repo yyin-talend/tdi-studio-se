@@ -15,6 +15,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -56,6 +57,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jCodeGenerateUtil.infoComponentStart(node);
+	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -124,6 +129,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
         if(updateKeyCount_<%=cid%> < 1) {
+        	<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For update, Schema must have a key");
+			<%}%>
             throw new RuntimeException("For update, Schema must have a key");
         }
         <%
@@ -139,6 +147,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         %>
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
+        	<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - For delete, Schema must have a key");
+			<%}%>
             throw new RuntimeException("For delete, Schema must have a key");
         }
         <%
@@ -166,7 +177,16 @@ if(useExistingConnection) {
 	}       
     String dbUser_<%=cid %> = <%=dbuser%>;        
     String dbPwd_<%=cid %> = <%=dbpwd%>;        
+	<%
+   		log4jCodeGenerateUtil.debugConnectionParams(node,"com.teradata.jdbc.TeraDriver");	
+	%>	 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
+	<%}%>       
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
+	<%}%>
     <%
 }
 if(!useExistingConnection) {

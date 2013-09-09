@@ -32,6 +32,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
      boolean isEnableDebug = false;//not support.("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
      
+     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     //feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
@@ -142,9 +143,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if (("true").equals(dieOnError)) {
                         %>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
                         throw(e);
                         <%
                     } else {
+		                if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e.getMessage());
+						<%}
                         if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                             <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                             <%
@@ -229,9 +236,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
                 if (("true").equals(dieOnError)) {
                     %>
+	                <%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e.getMessage());
+					<%}%>
                     throw(e);
                     <%
                 } else {
+	                if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}
                     if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                     <%
@@ -337,9 +350,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if (("true").equals(dieOnError)) {
                         %>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
                         throw(e);
                         <%
                     } else {
+		                if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e.getMessage());
+						<%}
                         if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                         <%
@@ -384,9 +403,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if (("true").equals(dieOnError)) {
                         %>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
                         throw(e);
                         <%
                     } else {
+		                if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e.getMessage());
+						<%}
                         if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                         <%
@@ -461,9 +486,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
                 if (("true").equals(dieOnError)) {
                     %>
+	                <%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e.getMessage());
+					<%}%>
                     throw(e);
                     <%
                 } else {
+	                if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}
                     if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                     <%
@@ -506,9 +537,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if (("true").equals(dieOnError)) {
                         %>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
                         throw(e);
                         <%
                     } else {
+		                if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e.getMessage());
+						<%}
                         if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                             for(IMetadataColumn column : columnList) {
                                 %>
@@ -579,9 +616,15 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
             if (("true").equals(dieOnError)) {
                 %>
+	            <%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
                 throw(e);
                 <%
             } else {
+	            if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                 <%
@@ -609,6 +652,20 @@ skeleton="../templates/db_output_bulk.skeleton"
     	<%
     	}
     	
+    	if(isLog4jEnabled){
+			int count = 0;
+			for(IMetadataColumn column : columnList) {
+				count++;
+		%>
+                log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
+                <%if(count < columnList.size()){%>
+                	log4jSb_<%=cid%>.append("|");
+                <%}
+            }%>
+			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}
+		
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
             if(!whetherReject_<%=cid%>) {
@@ -659,15 +716,24 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
 						throw(e);
                 	<%
                 	}else {
                 	%>
+	                <%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
                 
                 }catch (java.sql.SQLException e){
+	                <%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}%>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
@@ -718,10 +784,16 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
 						throw(e);
                 	<%
                 	}else {
                 	%>
+		                <%if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e.getMessage());
+						<%}%>
                         System.out.println(e.getMessage());
                 	<%
                 	}%>
@@ -729,17 +801,29 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
+		                <%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e.getMessage());
+						<%}%>
                 		throw(e);
                 	<%
                 	}else {
                 	%>
+	                <%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
                 }            	                              
                 <%
                 }%>
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Starting to commit.");
+					<%}%>
                 	conn_<%=cid%>.commit();
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Commit has succeeded.");
+					<%}%>
                 	commitCounter_<%=cid%>=0;
                 
                 }	

@@ -12,6 +12,7 @@ imports="
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
 	String cid = node.getUniqueName();
 	
@@ -139,10 +140,16 @@ imports="
 			}
                 	<%if(("true").equals(dieOnError)) {
                 	%>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e3.getMessage());
+					<%}%>
 				throw(e3);
                 	<%
                 	}else {
                 	%>
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e3.getMessage());
+					<%}%>
 				System.err.println(e3.getMessage());
                 	<%
                 	}%>                	
@@ -163,11 +170,23 @@ imports="
 	    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
 	        %>
 			if (commitCounter_<%=cid%> > 0)
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Starting to commit.");
+				<%}%>
 	            conn_<%=cid%>.commit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Commit has succeeded.");
+				<%}%>
 	        <%
 	    }
 	    %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the database.");
+		<%}%>
 	    conn_<%=cid%> .close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the database closed.");
+		<%}%>
 	    <%
 	}
     %>
@@ -182,3 +201,8 @@ imports="
     globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
+    
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - There are " + nb_line_<%=cid%> + " counts be effected. Inesrted count: " + nb_line_inserted_<%=cid%> + ", Updated count: " + nb_line_update_<%=cid%> + ", Deleted count: " + nb_line_deleted_<%=cid%> + ", Rejected count: " + nb_line_rejected_<%=cid%> );
+		log.info("<%=cid%> - Has finished.");
+	<%}%>

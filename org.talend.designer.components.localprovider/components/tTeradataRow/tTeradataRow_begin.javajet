@@ -5,6 +5,7 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -25,6 +26,8 @@ imports="
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
     boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jCodeGenerateUtil.infoComponentStart(node);
     if(useExistingConn) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
@@ -43,8 +46,18 @@ imports="
 		}       
 	    String dbUser_<%=cid %> = <%=dbuser%>;
 	    String dbPwd_<%=cid %> = <%=dbpwd%>;
+		<%
+	   		log4jCodeGenerateUtil.debugConnectionParams(node,"com.teradata.jdbc.TeraDriver");	
+		%>	 
+	    <%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
+		<%}%>
 	    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 	    <%
+		if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
+		<%}%>
+		<%
 	}
 %>
 

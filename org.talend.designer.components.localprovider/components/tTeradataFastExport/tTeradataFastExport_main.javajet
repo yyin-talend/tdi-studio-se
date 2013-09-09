@@ -8,6 +8,7 @@ imports="
     java.util.List
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -56,6 +57,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		columnList = metadata.getListColumns();
 	}
 }
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")); 
+log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 <%
@@ -122,14 +125,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	fw_<%=cid %>.close();
 	
 	<%//run fexp command----------------------------------------------------%>
+	String sb__<%=cid%> = null;
 	<%
 	if("Windows".equals(execution)){
 	%>
-	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
+	sb__<%=cid%> = "fexp < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1";
+	String[] sb_<%=cid%> = {"cmd","/c", sb__<%=cid%>};
 	<%}else{%>
-	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+" > \""+<%=errorFile%>+"\" 2>&1"};
+	sb__<%=cid%> = "fexp < "+<%=scriptPath%>+<%=table%>+".scr"+" > \""+<%=errorFile%>+"\" 2>&1";
+	String[] sb_<%=cid%> = {"sh","-c",sb__<%=cid%>};
 	<%}%>
-	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Execting '" + sb__<%=cid%> + "'.");
+	<%}%>
+	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>);
 	
 	Thread normal_<%=cid %> = new Thread() {
 	    public void run() {
@@ -145,6 +154,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    	         reader.close();
 	    	    }
 	        }catch(java.io.IOException ioe) {
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + ioe.getMessage());
+				<%}%>
 	    		ioe.printStackTrace();
 	    	}
 	    }
@@ -164,6 +176,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					reader.close();
 				}
 			} catch(java.io.IOException ioe) {
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + ioe.getMessage());
+				<%}%>
 			   ioe.printStackTrace();
 			}
 		}
@@ -175,3 +190,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	normal_<%=cid %>.interrupt();
 	
 	error_<%=cid %>.interrupt();
+	
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Excute '" + sb__<%=cid%> + "' has succeeded.");
+	   	log.info("<%=cid%> - Has finished.");
+	<%}%>

@@ -43,6 +43,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	}
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 
 <%
@@ -50,6 +51,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	%>
 		outputStream_<%=cid%>.flush();
 		outputStream_<%=cid%>.close();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Loading data into database.");
+			<%}%>
 	<%
 		if (useNamedPiped) { // wait for gpload thread to finish
 			%>
@@ -61,6 +65,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 			gploadThread_<%=cid%>.join(0);
 			<%
 		}
+			if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Loaded records count:"+insertedCount_<%=cid%> + ".");
+				log.info("<%=cid%> - Has finished.");
+			<%}
 	}
 %>
 	globalMap.put("<%=cid%>_GPLOAD_OUTPUT", gploadOutput_<%=cid%>.toString());
