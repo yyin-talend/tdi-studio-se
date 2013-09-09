@@ -169,7 +169,8 @@ package <%= packageName %>;
 
 	for (INode node : graphicalNodes) {
 		String useRegistry = "false";
-		if(isStudioEEVersion){
+		String dataFormat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+		if(isStudioEEVersion && !"RAW".equals(dataFormat) && !"CXF_MESSAGE".equals(dataFormat)){
 		 	useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
 		}
 		if("cCXF".equals(node.getComponent().getName()) 
@@ -480,10 +481,23 @@ for (INode node : graphicalNodes) {
 
 	} else if ("cCXF".equals(componentName)) {
 		String url = ElementParameterParser.getValue(node, "__ADDRESS__").trim();
-
+		
+		
+		String dataformat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+		
+		String useServiceRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
+		if(!isStudioEEVersion || "RAW".equals(dataformat) || "CXF_MESSAGE".equals(dataformat)){
+			useServiceRegistry = "false";
+		}
+		
+		String useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
+		if("true".equals(useServiceRegistry) || "RAW".equals(dataformat) || "CXF_MESSAGE".equals(dataformat)){
+			useSecurity = "false";
+		}
+		
 		List<? extends IConnection> conns = node.getIncomingConnections();
 		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__")) 
-				&& (!isStudioEEVersion || "false".equals(ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__")))) {
+				&&  "false".equals(useServiceRegistry)) {
 			if (!conns.isEmpty()) {
 				// consumer role
 				url = "((null == bundleContext) ? " + url + " : \"locator://locator/\")";
@@ -514,7 +528,7 @@ for (INode node : graphicalNodes) {
 		}
 
 
-		String dataformat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+
 		sb.append("+\"&dataFormat=" + dataformat + "\"");
 
 		String specifyService = ElementParameterParser.getValue(node, "__SPECIFY_SERVICE__");
@@ -532,6 +546,8 @@ for (INode node : graphicalNodes) {
 		
 		if(!conns.isEmpty()){
 			sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
+		}else if("true".equals(useServiceRegistry) || ("true".equals(useSecurity) && "SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__")))) {
+			sb.append("+\"&cxfBinding=#DEFAULT_CXF_BINDING\"");
 		}
 		uri = sb.toString();
 

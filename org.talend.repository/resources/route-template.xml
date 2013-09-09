@@ -45,10 +45,9 @@
 #[[
 		<property name="policies">
 			<map>
-				<entry key="policy.token" value="$job{policy.token}" />
+				<entry key="policy.username" value="$job{policy.username}" />
 				<entry key="policy.saml" value="$job{policy.saml}" />
-				<entry key="policy.saml.authz.service" value="$job{policy.saml.authz.service}" />
-				<entry key="policy.saml.authz.client" value="$job{policy.saml.authz.client}" />
+				<entry key="policy.saml.authz" value="$job{policy.saml.authz}" />
 			</map>
 		</property>
 ]]#

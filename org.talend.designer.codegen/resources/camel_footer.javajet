@@ -72,14 +72,34 @@
 			camelContext.setRegistry(contextRegister);
 
 <%
+			boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
 				boolean hasCXFConsumer = false;
+				boolean hasCXFSAMLProvider = false;
 				for(INode n: cxfNodes){
 					int incomingConnections = n.getIncomingConnections().size();
 					if(incomingConnections > 0){
 						hasCXFConsumer = true;
-						break;
+					}else{
+						String dataformat = ElementParameterParser.getValue(n, "__DATAFORMAT__");
+						
+						String useServiceRegistry = ElementParameterParser.getValue(n, "__ENABLE_REGISTRY__");
+						if(!isStudioEEVersion || "RAW".equals(dataformat) || "CXF_MESSAGE".equals(dataformat)){
+							useServiceRegistry = "false";
+						}
+						
+						String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
+						if("true".equals(useServiceRegistry) || "RAW".equals(dataformat) || "CXF_MESSAGE".equals(dataformat)){
+							useSecurity = "false";
+						}
+						
+						if("true".equals(useServiceRegistry) || ("true".equals(useSecurity) && "SAML".equals(ElementParameterParser.getValue(n, "__SECURITY_TYPE__")))){
+							hasCXFSAMLProvider = true;
+						}
+						if(hasCXFConsumer && hasCXFSAMLProvider){
+							break;
+						}
 					}
 				}
 				if(hasCXFConsumer){
@@ -87,10 +107,12 @@
 					contextRegister.register("CXF_PAYLOAD_HEADER_FILTER", new CxfConsumerSoapHeaderFilter());
 <%
 				}
-			}
+				if(hasCXFSAMLProvider){
 %>
-
-<%
+					contextRegister.register("DEFAULT_CXF_BINDING", new CXFProviderBinding());
+<%				}
+			}
+			
 			//then process cBeanRegister components
 			List<? extends INode> beanRegisterNodes = process.getNodesOfType("cBeanRegister");
 			if(beanRegisterNodes != null && beanRegisterNodes.size()>0){

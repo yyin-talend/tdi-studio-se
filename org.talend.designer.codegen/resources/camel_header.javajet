@@ -201,6 +201,28 @@ if(hasCXFCorrelationConsumer){
 		}
 <%
 }
+
+			if(hasCXFRegistryProvider || hasCXFSamlTokenProvider){
+%>
+				class CXFProviderBinding extends org.apache.camel.component.cxf.DefaultCxfBinding{	
+					
+					@Override
+					protected void propagateHeadersFromCxfToCamel( org.apache.cxf.message.Message cxfMessage,
+							org.apache.camel.Message camelMessage, org.apache.camel.Exchange camelExchange) {
+						super.propagateHeadersFromCxfToCamel(cxfMessage, camelMessage, camelExchange);
+						org.apache.cxf.security.SecurityContext securityContext = cxfMessage.get(org.apache.cxf.security.SecurityContext.class);
+						if(securityContext != null && securityContext instanceof org.apache.cxf.interceptor.security.SAMLSecurityContext){
+							org.apache.cxf.interceptor.security.SAMLSecurityContext ssc = (org.apache.cxf.interceptor.security.SAMLSecurityContext) securityContext;
+							org.w3c.dom.Element assertionElement = ssc.getAssertionElement();
+							if(assertionElement != null){
+								camelExchange.getIn().setHeader("samlToken", assertionElement);
+							}
+						}
+					}
+				}
+<%
+			}
+
 			
 			if(hasCXFComponent){
 %>
@@ -562,14 +584,12 @@ public void registerPolicies(org.apache.cxf.Bus bus) {
         org.apache.neethi.PolicyRegistry policyRegistry =
                 bus.getExtension(org.apache.cxf.ws.policy.PolicyEngine.class).getRegistry();
         policyRegistry.register("org.talend.esb.job.token.policy",
-        		loadPolicy(policies.get("policy.token"), bus));
+        		loadPolicy(policies.get("policy.username"), bus));
         policyRegistry.register("org.talend.esb.job.saml.policy",
         		loadPolicy(policies.get("policy.saml"), bus));
         
         policyRegistry.register("org.talend.esb.job.saml.authz.policy",
-        		loadPolicy(policies.get("policy.saml.authz.service"), bus));
-        policyRegistry.register("org.talend.esb.job.saml.authz.client.policy",
-        		loadPolicy(policies.get("policy.saml.authz.client"), bus));
+        		loadPolicy(policies.get("policy.saml.authz"), bus));
 	}
 }
 
