@@ -14,9 +14,11 @@ package org.talend.designer.core.ui.routine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -90,8 +92,11 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         Project currentProject = projectManager.getCurrentProject();
 
         initModels(currentProject);
-        initRefProjects(currentProject);
+        Set<Project> referenceProjects = new HashSet<Project>();
+        this.getAllReferenceProjects(currentProject, referenceProjects);
+        initRefProjects(referenceProjects);
         List<RoutinesParameterType> routinesDependencies = process.getParameters().getRoutinesParameter();
+        List<String> typeNames = new ArrayList<String>();
         for (RoutinesParameterType type : routinesDependencies) {
             RoutineItemRecord record = new RoutineItemRecord();
 
@@ -109,16 +114,27 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
                 if (((RoutineItem) property.getItem()).isBuiltIn()) {
                     systemRoutines.add(record);
                 } else {
-                    userRoutines.add(record);
+                    if (typeNames.contains(type.getName())) {
+                        break;
+                    } else {
+                        typeNames.add(type.getName());
+                        userRoutines.add(record);
+                    }
                 }
             }
         }
     }
 
-    private void initRefProjects(Project currentProject) {
+    private void getAllReferenceProjects(Project currentProject, Set<Project> referenceProjects) {
         for (Project p : ProjectManager.getInstance().getReferencedProjects(currentProject)) {
+            referenceProjects.add(p);
+            getAllReferenceProjects(p, referenceProjects);
+        }
+    }
+
+    private void initRefProjects(Set<Project> referenceProjects) {
+        for (Project p : referenceProjects) {
             initModels(p);
-            initRefProjects(p);
         }
     }
 
