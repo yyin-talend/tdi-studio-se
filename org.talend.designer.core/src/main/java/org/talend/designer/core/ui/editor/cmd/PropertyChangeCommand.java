@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.EComponentType;
@@ -81,6 +82,16 @@ public class PropertyChangeCommand extends Command {
     private String propertyTypeName;
 
     private final String updataComponentParamName;
+
+    private static ExecutionLimiter codeViewUpdater = new ExecutionLimiter(500, true) {
+
+        @Override
+        protected void execute(boolean isFinalExecution, Object data) {
+            if (isFinalExecution && data instanceof IElement) {
+                CodeView.refreshCodeView((IElement) data);
+            }
+        }
+    };
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
@@ -374,7 +385,6 @@ public class PropertyChangeCommand extends Command {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
         // see bug 9151:100% CPU when typing text.
-        boolean updateCode = false;
         if (getNewValue() instanceof String && elem instanceof INode) {
             INode curNode = (INode) elem;
             String uniqueName = curNode.getUniqueName();
@@ -386,7 +396,7 @@ public class PropertyChangeCommand extends Command {
                     process2.setProcessModified(false);
                     generatingNodes = process2.getGeneratingNodes();
                     if (generatingNodes != null) {
-                        for (INode genNode : generatingNodes) {
+                        for (INode genNode : new ArrayList<INode>(generatingNodes)) {
                             if (genNode.getUniqueName().equals(uniqueName)) {
                                 IElementParameter genParam = genNode.getElementParameter(propName);
                                 if (genParam != null) {
@@ -397,16 +407,11 @@ public class PropertyChangeCommand extends Command {
                         }
                     }
 
-                    CodeView.refreshCodeView(elem);
                     process2.setProcessModified(true);
-                    updateCode = true;
+                    codeViewUpdater.startIfExecutable(elem);
                 }
-
             }
         }
-        // if (!updateCode) {
-        // CodeView.refreshCodeView(elem);
-        // }
         //
         if (elem instanceof IGraphicalNode) {
             ((IGraphicalNode) elem).checkAndRefreshNode();
