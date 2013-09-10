@@ -495,11 +495,6 @@ for (INode node : graphicalNodes) {
 			useSecurity = "false";
 		}
 		
-		String useCorrelation = ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__");
-		if("true".equals(useServiceRegistry)){
-			useCorrelation = "true";
-		}
-		
 		List<? extends IConnection> conns = node.getIncomingConnections();
 		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__")) 
 				&&  "false".equals(useServiceRegistry)) {
@@ -550,16 +545,7 @@ for (INode node : graphicalNodes) {
 		}
 		
 		if(!conns.isEmpty()){
-			
-			if("true".equals(useCorrelation)){
-				String correlationValue = ElementParameterParser.getValue(node, "__CORRELATION_VALUE__");
-				sb.append("+\"&properties.endpointId=\"+\"");
-				sb.append(node.getUniqueName());
-				sb.append("\"+\"&properties.correlationID=\"+");
-				sb.append(correlationValue);
-			}else{
-				sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
-			}
+			sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
 		}else if("true".equals(useServiceRegistry) || ("true".equals(useSecurity) && "SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__")))) {
 			sb.append("+\"&cxfBinding=#DEFAULT_CXF_BINDING\"");
 		}

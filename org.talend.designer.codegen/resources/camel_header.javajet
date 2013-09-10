@@ -175,55 +175,7 @@
 			}
 			
 			
-if(hasCXFCorrelationConsumer){
-%>
-class RouteCXFCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler{
-	private org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint;
-	public RouteCXFCorrelationCallbackHandler(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint) {
-		this.cxfEndpoint = cxfEndpoint;
-	}
-
-	public String getCorrelationId() {
-		return (String)cxfEndpoint.getProperties().get("correlationID");
-	}
-}
-
-class CXFConsumerBinding extends org.apache.camel.component.cxf.DefaultCxfBinding {
-
-	private org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint;
-
-	public CXFConsumerBinding(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint) {
-		this.cxfEndpoint = cxfEndpoint;
-		setHeaderFilterStrategy(headerFilterStrategy);
-	}
-
-	@Override
-	public void populateCxfRequestFromExchange(
-			org.apache.cxf.message.Exchange cxfExchange,
-			org.apache.camel.Exchange camelExchange,
-			Map<String, Object> requestContextMap) {
-		cxfEndpoint.getProperties().put("correlationID", simple(
-								(String) cxfEndpoint.getProperties().get(
-										"correlationID")).evaluate(
-								camelExchange, String.class));
-		super.populateCxfRequestFromExchange(cxfExchange, camelExchange,
-				requestContextMap);
-	}
-
-}
-
-private void setupCorrelationOnCxfConsumer(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
-		boolean isRegistry) {
-	cxfEndpoint.setCxfBinding(new CXFConsumerBinding(cxfEndpoint));
-	cxfEndpoint.getProperties().put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, new RouteCXFCorrelationCallbackHandler(cxfEndpoint));
-	if (!isRegistry) {
-		cxfEndpoint.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
-	}
-}
-<%
-}
-
-			if(hasCXFRegistryProvider || hasCXFSamlTokenProvider){
+		if(hasCXFRegistryProvider || hasCXFSamlTokenProvider){
 %>
 				class CXFProviderBinding extends org.apache.camel.component.cxf.DefaultCxfBinding{	
 					
@@ -250,6 +202,7 @@ private void setupCorrelationOnCxfConsumer(org.apache.camel.component.cxf.CxfEnd
 			
 			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider,  boolean useAuthorization, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
+
 <%if(hasCXFUsernameTokenProvider || hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer || hasCXFHTTPAuthProvider || hasCXFRegistryProvider || hasCXFRegistryConsumer){%>
 				if( null != bundleContext ){
 					<%if(hasCXFUsernameTokenProvider || hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer || hasCXFRegistryProvider || hasCXFRegistryConsumer){%>
@@ -444,7 +397,7 @@ class WSPasswordCallbackHandler implements javax.security.auth.callback.Callback
 
 if(hasCXFComponentConsumer){
 %>
-org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy headerFilterStrategy = new org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy(){
+class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy{
 	public boolean applyFilterToCamelHeaders(String headerName,
 			Object headerValue, org.apache.camel.Exchange exchange) {
 		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
@@ -460,7 +413,7 @@ org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy headerFilte
 		}
 		return super.applyFilterToExternalHeaders(headerName, headerValue, exchange);
 	}
-};
+}
 <%
 }
 if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
@@ -893,13 +846,7 @@ if (isProvider) {
 				correlationValue = null;
 			}
 			
-			if(!isProvider && ("true".equals(useRegistry) || "true".equals(useCorrelation))){
-%>
-				setupCorrelationOnCxfConsumer(<%=endpointVar%>, <%="true".equals(useRegistry)%>);
-<%					
-			}
-			
-			if ("true".equals(useCorrelation) && isProvider && "false".equals(useRegistry)) {
+			if ("true".equals(useCorrelation) && "false".equals(useRegistry)) {
 %>
 				<%=endpointVar%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
 <%			}
