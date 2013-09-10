@@ -31,5 +31,13 @@
                version="5.1.2">
          </projecttask>
       </extension>
+      <extension
+            point="org.talend.core.runtime.itemRelationship">
+         <itemHandler
+               class="org.talend.designer.mapper.handlers.MapperSchemaTypeItemRelationshipHandler"
+               id="org.talend.designer.mapper.itemHandler.mapperSchema"
+               name="Mapper Schema">
+         </itemHandler>
+      </extension>
 
 </plugin>

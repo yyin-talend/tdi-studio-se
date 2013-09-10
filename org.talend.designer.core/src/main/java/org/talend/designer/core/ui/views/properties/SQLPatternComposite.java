@@ -79,6 +79,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.relationship.Relation;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -742,7 +743,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         try {
             List<IRepositoryViewObject> list = null;
             if (isItemIndexChecked() && modifySQL) {
-                List<RelationshipItemBuilder.Relation> relations = new ArrayList<RelationshipItemBuilder.Relation>();
+                List<Relation> relations = new ArrayList<Relation>();
                 IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                 List<IRepositoryViewObject> updateList = new ArrayList<IRepositoryViewObject>();
                 for (Map map : tableInput) {
@@ -750,7 +751,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     relations.addAll(RelationshipItemBuilder.getInstance().getItemsRelatedTo(id, ItemCacheManager.LATEST_VERSION,
                             RelationshipItemBuilder.SQLPATTERN_RELATION));
                 }
-                for (RelationshipItemBuilder.Relation relation : relations) {
+                for (Relation relation : relations) {
                     try {
                         IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
                         if (obj != null) {

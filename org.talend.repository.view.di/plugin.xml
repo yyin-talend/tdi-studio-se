@@ -535,6 +535,14 @@
          </importItemsHandler>
       </importItemsProvider>
    </extension>
+   <extension
+         point="org.talend.core.runtime.itemRelationship">
+      <parameterHandler
+            class="org.talend.repository.view.di.viewer.handlers.SqlTemplateParameterRelationshipHandler"
+            id="org.talend.repository.view.di.parameterHandler.sqlpatternList"
+            name="SQLPattern List">
+      </parameterHandler>
+   </extension>
 
 
 </plugin>

@@ -74,6 +74,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.relationship.Relation;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -206,6 +207,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         // event
         treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 List<ItemVersionObject> objects = new ArrayList<ItemVersionObject>();
@@ -232,10 +234,12 @@ public class VersionManagementPage extends ProjectSettingPage {
         });
         treeViewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 //
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 // refreshCheckedTreeView();
             }
@@ -402,10 +406,12 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         versionColumn.addControlListener(new ControlListener() {
 
+            @Override
             public void controlMoved(ControlEvent e) {
                 //
             }
 
+            @Override
             public void controlResized(ControlEvent e) {
                 if (!isFixedVersion()) {
                     refreshTableItems();
@@ -573,10 +579,10 @@ public class VersionManagementPage extends ProjectSettingPage {
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         for (ItemVersionObject object : getModifiedVersionItems()) {
             if (object.getRepositoryNode() != null) {
-                List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(object.getRepositoryNode().getId(),
-                        object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+                List<Relation> relations = builder.getItemsRelatedTo(object.getRepositoryNode().getId(), object.getOldVersion(),
+                        RelationshipItemBuilder.JOB_RELATION);
 
-                for (RelationshipItemBuilder.Relation relation : relations) {
+                for (Relation relation : relations) {
                     IRepositoryViewObject obj = null;
                     try {
                         if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
@@ -616,9 +622,9 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         for (ItemVersionObject object : getModifiedVersionItems()) {
             if (object.getRepositoryNode() != null) {
-                List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode()
-                        .getId(), object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
-                for (RelationshipItemBuilder.Relation relation : relations) {
+                List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
+                        object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+                for (Relation relation : relations) {
                     try {
                         IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
                         if (obj != null) {
@@ -652,9 +658,9 @@ public class VersionManagementPage extends ProjectSettingPage {
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         // for (ItemVersionObject object : getModifiedVersionItems()) {
         if (object.getRepositoryNode() != null) {
-            List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
-                    object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
-            for (RelationshipItemBuilder.Relation relation : relations) {
+            List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(), object.getOldVersion(),
+                    RelationshipItemBuilder.JOB_RELATION);
+            for (Relation relation : relations) {
                 try {
                     IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
                     if (obj != null) {
@@ -692,9 +698,9 @@ public class VersionManagementPage extends ProjectSettingPage {
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         for (ItemVersionObject object : jobList) {
             if (object.getRepositoryNode() != null) {
-                List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode()
-                        .getId(), object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
-                for (RelationshipItemBuilder.Relation relation : relations) {
+                List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
+                        object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+                for (Relation relation : relations) {
                     try {
                         IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
                         if (obj != null) {
@@ -1028,6 +1034,7 @@ public class VersionManagementPage extends ProjectSettingPage {
     private void updateItemsVersion() {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+            @Override
             public void run(final IProgressMonitor monitor) throws CoreException {
                 RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(project, "Update items version") {
 
@@ -1109,6 +1116,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 try {
