@@ -49,12 +49,14 @@ public class OAuthClient {
     private int callbackPort;
 
     private String baseOAuthURL;
+    
+    private HttpsService service;
 
     public String getBulkEndpoint(Token token, String version) {
         return token.getInstance_url() + "/services/async/" + version;
     }
 
-    public String getSOAPEndpoint(Token token, String version) throws MalformedURLException, IOException, ParseException {
+    public String getSOAPEndpoint(Token token, String version) throws MalformedURLException, IOException ,ParseException{
         URLConnection idConn = new URL(token.getId()).openConnection();
         idConn.setRequestProperty("Authorization", "Bearer " + token.getAccess_token());
         String endpointURL = null;
@@ -65,7 +67,7 @@ public class OAuthClient {
             JSONObject json = (JSONObject) jsonParser.parse(reader);
             JSONObject urls = (JSONObject) json.get("urls");
             endpointURL = urls.get("partner").toString().replace("{version}", version);
-        } finally {
+        }finally {
             if (reader != null) {
                 try {
                     reader.close();
@@ -135,6 +137,92 @@ public class OAuthClient {
         }
 
         return newToken;
+    }
+    
+    public String getUrl()throws Exception{
+        URL callback_url = new URL("https", callbackHost, callbackPort, "");
+        String oauth2_authorize_url = baseOAuthURL.endsWith("/") ? baseOAuthURL + OAUTH2_AUTHORIZE : baseOAuthURL + "/"
+                + OAUTH2_AUTHORIZE;
+        String authorize_url = String.format("%s?response_type=%s&client_id=%s&redirect_uri=%s", oauth2_authorize_url,// &scope=%s
+                "code", clientID, URLEncoder.encode(callback_url.toString(), UTF8));// , "full%20refresh_token"
+        return authorize_url;
+    }
+    
+    public void startServer() throws Exception{
+        service = new HttpsService(callbackPort);
+    }
+    
+    public HttpsService getServer(){
+        return service;
+    }
+    
+    public void stopServer() throws Exception{
+        if(service!=null){
+            service.stop();
+        }
+    }
+    
+    public Token getTokenForWizard(String code) throws Exception{
+        Token token = new Token();
+
+        URL callback_url = new URL("https", callbackHost, callbackPort, "");
+
+        String oauth2_authorize_url = baseOAuthURL.endsWith("/") ? baseOAuthURL + OAUTH2_AUTHORIZE : baseOAuthURL + "/"
+                + OAUTH2_AUTHORIZE;
+        String authorize_url = String.format("%s?response_type=%s&client_id=%s&redirect_uri=%s", oauth2_authorize_url,// &scope=%s
+                "code", clientID, URLEncoder.encode(callback_url.toString(), UTF8));// , "full%20refresh_token"
+       
+        String token_url = baseOAuthURL.endsWith("/") ? baseOAuthURL + OAUTH2_TOKEN : baseOAuthURL + "/" + OAUTH2_TOKEN;
+        URLConnection conn = new URL(token_url).openConnection();
+        conn.setDoOutput(true);// post
+        String query = String.format("grant_type=%s&client_id=%s&client_secret=%s&redirect_uri=%s&code=%s", "authorization_code",
+                clientID, clientSecret, URLEncoder.encode(callback_url.toString(), UTF8), code);
+        OutputStream output = null;
+        try {
+            output = conn.getOutputStream();
+            output.write(query.getBytes(UTF8));
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        InputStream input = conn.getInputStream();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(input));
+            JSONParser jsonParser = new JSONParser();
+            JSONObject json = (JSONObject) jsonParser.parse(reader);
+            if (json.get("access_token") != null) {
+                token.setAccess_token(json.get("access_token").toString());
+            }
+            if (json.get("refresh_token") != null) {
+                token.setRefresh_token(json.get("refresh_token").toString());
+            }
+            if (json.get("instance_url") != null) {
+                token.setInstance_url(json.get("instance_url").toString());
+            }
+            if (json.get("id") != null) {
+                token.setId(json.get("id").toString());
+            }
+            if (json.get("issued_at") != null) {
+                token.setIssued_at(Long.parseLong(json.get("issued_at").toString()));
+            }
+            if (json.get("signature") != null) {
+                token.setSignature(json.get("signature").toString());
+            }
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ignore) {
+
+                }
+            }
+        }
+        return token;
     }
 
     public Token getToken() throws Exception {
