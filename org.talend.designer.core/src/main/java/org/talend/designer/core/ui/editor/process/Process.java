@@ -34,8 +34,11 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
@@ -140,6 +143,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
@@ -361,7 +365,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param = new ElementParameter(this);
         param.setName(EParameterName.LOG4J_ACTIVATE.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setFieldType(EParameterFieldType.DIRECTORY);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setDisplayName(EParameterName.LOG4J_ACTIVATE.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
@@ -3313,6 +3317,21 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
     };
 
+    IPreferenceChangeListener preferenceEventListener = new IPreferenceChangeListener() {
+
+        @Override
+        public void preferenceChange(PreferenceChangeEvent event) {
+            if (event.getKey().equals(Log4jPrefsConstants.LOG4J_ENABLE_NODE)) {
+                if (getCommandStack() != null) {
+                    Process.this.getCommandStack()
+                            .execute(
+                                    new PropertyChangeCommand(Process.this, EParameterName.LOG4J_ACTIVATE.getName(), event
+                                            .getNewValue()));
+                }
+            }
+        }
+    };
+
     private IContext lastRunContext;
 
     private boolean needRegenerateCode;
@@ -3332,7 +3351,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
             getUpdateManager().updateAll();
-
+            ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+                    .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
+            projectPreferences.addPreferenceChangeListener(preferenceEventListener);
         }
     }
 
@@ -3341,6 +3362,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (editor != null && !duplicate) {
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.removeCommandStackEventListener(commandStackEventListener);
+
+            ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+                    .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
+            projectPreferences.removePreferenceChangeListener(preferenceEventListener);
         }
         generatingProcess = null;
         editor = null;

@@ -30,6 +30,8 @@ public class RunProcessPrefsConstants {
 
     public static final String ISCLEARBEFORERUN = "clearBeforeRun"; //$NON-NLS-1$
 
+    public static final String CUSTOMLOG4J = "customLog4j"; //$NON-NLS-1$
+
     public static final String ISEXECTIMERUN = "execTimeRun"; //$NON-NLS-1$
 
     public static final String LOG4JLEVEL = "log4jLevel"; //$NON-NLS-1$

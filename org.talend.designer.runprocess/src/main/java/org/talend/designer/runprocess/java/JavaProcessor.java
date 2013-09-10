@@ -96,6 +96,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -124,7 +125,6 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -879,7 +879,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         boolean exportingJob = ProcessorUtilities.isExportConfig();
 
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
-        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+        if (isLog4jEnabled) {
             JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
         }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);

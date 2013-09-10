@@ -52,6 +52,9 @@ public class ProcessManager {
     private Boolean clearBeforeExec = RunProcessPlugin.getDefault().getPreferenceStore()
             .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN);
 
+    private Boolean customLog4j = RunProcessPlugin.getDefault().getPreferenceStore()
+            .getBoolean(RunProcessPrefsConstants.CUSTOMLOG4J);
+
     private String log4jLevel = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL);
 
     private boolean trace = true;
@@ -194,6 +197,14 @@ public class ProcessManager {
 
     public void setLog4jLevel(String log4jLevel) {
         this.log4jLevel = log4jLevel;
+    }
+
+    public Boolean getCustomLog4j() {
+        return customLog4j;
+    }
+
+    public void setCustomLog4j(Boolean customLog4j) {
+        this.customLog4j = customLog4j;
     }
 
 }

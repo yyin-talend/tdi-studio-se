@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
@@ -63,6 +62,8 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
     private JobVMArgumentsComposite argumentsViewer;
 
     private ProcessManager processManager;
+
+    private Button customLog4j;
 
     private Combo log4jLevel;
 
@@ -148,28 +149,9 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         clearBeforeExec.setLayoutData(layouDatacb);
         clearBeforeExec.setEnabled(false);
 
-        Label label = new Label(panel, SWT.NONE);
-        label.setText(Messages.getString("ProcessComposite.log4jLevel")); //$NON-NLS-1$
-
-        FormData layouDatale = new FormData();
-        layouDatale.left = new FormAttachment(clearBeforeExec, 20, SWT.RIGHT);
-        layouDatale.right = new FormAttachment(0, 400);
-        layouDatale.top = new FormAttachment(0, 30);
-        layouDatale.bottom = new FormAttachment(0, 50);
-        label.setLayoutData(layouDatale);
-
-        log4jLevel = new Combo(panel, SWT.READ_ONLY);
-        log4jLevel.setText("Log4j Level");
-        log4jLevel.setBackground(panel.getBackground());
-        log4jLevel.setItems(Log4jPrefsSettingManager.getLevel());
-        log4jLevel.select(0);
-
-        FormData layouDatall = new FormData();
-        layouDatall.left = new FormAttachment(clearBeforeExec, 98, SWT.RIGHT);
-        layouDatall.right = new FormAttachment(0, 460);
-        layouDatall.top = new FormAttachment(0, 30);
-        layouDatall.bottom = new FormAttachment(0, 50);
-        log4jLevel.setLayoutData(layouDatall);
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            createLog4jOptions(panel);
+        }
 
         Group execGroup = new Group(panel, SWT.NONE);
         execGroup.setText("JVM Setting"); //$NON-NLS-1$
@@ -180,7 +162,11 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         FormData layouDatag = new FormData();
         layouDatag.left = new FormAttachment(0, 10);
         layouDatag.right = new FormAttachment(100, 0);
-        layouDatag.top = new FormAttachment(0, 55);
+        if (customLog4j != null) {
+            layouDatag.top = new FormAttachment(watchBtn, 25);
+        } else {
+            layouDatag.top = new FormAttachment(watchBtn, 0);
+        }
         layouDatag.bottom = new FormAttachment(100, 0);
         execGroup.setLayoutData(layouDatag);
 
@@ -210,7 +196,13 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
                 .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN));
 
-        log4jLevel.setText(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
+        if (customLog4j != null) {
+            customLog4j.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
+                    .getBoolean(RunProcessPrefsConstants.CUSTOMLOG4J));
+        }
+        if (log4jLevel != null) {
+            log4jLevel.setText(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
+        }
     }
 
     /**
@@ -251,14 +243,6 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
                 processManager.setClearBeforeExec(clearBeforeExec.getSelection());
             }
         });
-        log4jLevel.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                processContext.setLog4jLevel(log4jLevel.getText());
-                processManager.setLog4jLevel(log4jLevel.getText());
-            }
-        });
     }
 
     /*
@@ -279,8 +263,14 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         this.processContext = processContext;
         watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
+        if (customLog4j != null) {
+            customLog4j.setSelection(processContext != null && processContext.isUseCustomLevel());
+        }
         if (processContext != null && processContext.getLog4jLevel() != null) {
-            log4jLevel.setText(processContext.getLog4jLevel());
+            if (log4jLevel != null) {
+                log4jLevel.setText(processContext.getLog4jLevel());
+                log4jLevel.setEnabled(processContext.isUseCustomLevel());
+            }
         }
         boolean disableAll = false;
         if (processContext != null) {
@@ -463,4 +453,55 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
 
     }
 
+    private void createLog4jOptions(Composite parent) {
+        customLog4j = new Button(parent, SWT.CHECK);
+        customLog4j.setText(Messages.getString("ProcessComposite.log4jLevel")); //$NON-NLS-1$
+        customLog4j.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (customLog4j.getSelection()) {
+                    log4jLevel.setEnabled(true);
+                } else {
+                    log4jLevel.setEnabled(false);
+                }
+                processContext.setUseCustomLevel(customLog4j.getSelection());
+                processManager.setCustomLog4j(customLog4j.getSelection());
+            }
+        });
+
+        FormData layouDatale = new FormData();
+        layouDatale.left = new FormAttachment(0, 10);
+        layouDatale.right = new FormAttachment(0, 200);
+        layouDatale.top = new FormAttachment(watchBtn, 0);
+        layouDatale.bottom = new FormAttachment(watchBtn, 50);
+        customLog4j.setLayoutData(layouDatale);
+
+        log4jLevel = new Combo(parent, SWT.READ_ONLY);
+        log4jLevel.setText("Log4j Level");
+        log4jLevel.setBackground(parent.getBackground());
+        log4jLevel.setItems(Log4jPrefsSettingManager.getLevel());
+        log4jLevel.select(2);
+        log4jLevel.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (log4jLevel.isEnabled()) {
+                    processContext.setLog4jLevel(log4jLevel.getText());
+                    processManager.setLog4jLevel(log4jLevel.getText());
+                } else {
+                    processContext.setLog4jLevel(null);
+                    processManager.setLog4jLevel(null);
+                }
+            }
+        });
+
+        FormData layouDatall = new FormData();
+        layouDatall.left = new FormAttachment(0, 200);
+        layouDatall.right = new FormAttachment(0, 260);
+        layouDatall.top = new FormAttachment(watchBtn, 0);
+        layouDatall.bottom = new FormAttachment(watchBtn, 50);
+        log4jLevel.setLayoutData(layouDatall);
+        log4jLevel.setEnabled(false);
+    }
 }

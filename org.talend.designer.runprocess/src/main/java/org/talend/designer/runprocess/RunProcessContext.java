@@ -163,7 +163,7 @@ public class RunProcessContext {
 
     private boolean startingMessageWritten;
 
-    private boolean applyLog4jToChildren = false;
+    private boolean useCustomLevel = false;
 
     private String log4jLevel;
 
@@ -190,6 +190,7 @@ public class RunProcessContext {
         setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore()
                 .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
         setLog4jLevel(RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.LOG4JLEVEL));
+        setUseCustomLevel(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.CUSTOMLOG4J));
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -489,8 +490,12 @@ public class RunProcessContext {
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
                             String level = RunProcessContext.this.getLog4jLevel();
-                            if (level != null) {
-                                level = LOG4J_LEVEL_ARG + (level.equals("") ? "debug" : level);
+                            if (!isUseCustomLevel()) {
+                                level = null;
+                            } else {
+                                if (level != null) {
+                                    level = LOG4J_LEVEL_ARG + (level.equals("") ? "info" : level.toLowerCase());
+                                }
                             }
                             final String log4jLevel = level;
                             processor.setContext(context);
@@ -1436,33 +1441,20 @@ public class RunProcessContext {
         }
     }
 
-    /**
-     * Getter for isApplyLog4jToChildren.
-     * 
-     * @return the isApplyLog4jToChildren
-     */
-    public boolean isApplyLog4jToChildren() {
-        return this.applyLog4jToChildren;
-    }
-
-    /**
-     * Sets the isApplyLog4jToChildren.
-     * 
-     * @param isApplyLog4jToChildren the isApplyLog4jToChildren to set
-     */
-    public void setApplyLog4jToChildren(boolean applyLog4j) {
-        if (this.applyLog4jToChildren != applyLog4j) {
-            this.applyLog4jToChildren = applyLog4j;
-            firePropertyChange(PROR_SWITCH_TIME, Boolean.valueOf(!applyLog4jToChildren), Boolean.valueOf(applyLog4jToChildren));
-        }
-    }
-
     public String getLog4jLevel() {
         return log4jLevel;
     }
 
     public void setLog4jLevel(String log4jLevel) {
         this.log4jLevel = log4jLevel;
+    }
+
+    public boolean isUseCustomLevel() {
+        return useCustomLevel;
+    }
+
+    public void setUseCustomLevel(boolean useCustomLevel) {
+        this.useCustomLevel = useCustomLevel;
     }
 
     public ITargetExecutionConfig getSelectedTargetExecutionConfig() {
@@ -1697,5 +1689,4 @@ public class RunProcessContext {
             }
         });
     }
-
 }
