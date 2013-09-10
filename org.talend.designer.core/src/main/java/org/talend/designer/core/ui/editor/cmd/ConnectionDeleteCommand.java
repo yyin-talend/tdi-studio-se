@@ -22,6 +22,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -72,6 +73,7 @@ public class ConnectionDeleteCommand extends Command {
     public void undo() {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
+            collpseJoblet(connection);
             connection.reconnect();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();
@@ -111,5 +113,16 @@ public class ConnectionDeleteCommand extends Command {
             ((Node) source).getNodeContainer().getOutputs().remove(connection);
         }
         return false;
+    }
+
+    private void collpseJoblet(Connection conn) {
+        INode source = conn.getSource();
+        if ((source instanceof Node) && ((Node) source).isJoblet()) {
+            ((JobletContainer) ((Node) source).getNodeContainer()).setCollapsed(true);
+        }
+        INode target = conn.getTarget();
+        if ((target instanceof Node) && ((Node) target).isJoblet()) {
+            ((JobletContainer) ((Node) target).getNodeContainer()).setCollapsed(true);
+        }
     }
 }
