@@ -3390,32 +3390,40 @@ public class Node extends Element implements IGraphicalNode {
             } else {
                 // see bug 0004139: Schema check error on tUnite.
                 if (inputs.size() > 0) { // avoid index out of bound exception
-                    IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
-                    boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
-                    if (!isSame) {
-                        String warningMessage = Messages.getString("Node.inputLinkDifferentFromSchemaDefined", getUniqueName()); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                    boolean firstIsMerge = inputs.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE);
+                    if (firstIsMerge) {
+                        IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
+                        boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
+                        if (!isSame) {
+                            String warningMessage = Messages.getString(
+                                    "Node.inputLinkDifferentFromSchemaDefined", getUniqueName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                        }
                     }
+
                 }
             }
 
             if (inputs.size() > 1) {
-                IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
-                boolean isSame = true;
-                for (int i = 1; i < inputs.size(); i++) {
-                    // ignore dbtype to make the schema as same, see bug 0004961: tUnite" should unite different
-                    // datastreams
-                    if (!firstSchema.sameMetadataAs(inputs.get(i).getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                            | IMetadataColumn.OPTIONS_IGNORE_DEFAULT | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                            | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
-                        isSame = false;
-                        break;
+                boolean firstIsMerge = inputs.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE);
+                if (firstIsMerge) {
+                    IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
+                    boolean isSame = true;
+                    for (int i = 1; i < inputs.size(); i++) {
+                        // ignore dbtype to make the schema as same, see bug 0004961: tUnite" should unite different
+                        // datastreams
+                        if (!firstSchema.sameMetadataAs(inputs.get(i).getMetadataTable(),
+                                IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                        | IMetadataColumn.OPTIONS_IGNORE_COMMENT | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                            isSame = false;
+                            break;
+                        }
                     }
-                }
 
-                if (!isSame) {
-                    String warningMessage = Messages.getString("Node.schemaNotSame", getUniqueName()); //$NON-NLS-1$
-                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                    if (!isSame) {
+                        String warningMessage = Messages.getString("Node.schemaNotSame", getUniqueName()); //$NON-NLS-1$
+                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                    }
                 }
             }
         }
