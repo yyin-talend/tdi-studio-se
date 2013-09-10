@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -16,6 +17,8 @@ String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__")
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.debugRetriveData(node);
 if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 %>
 }
@@ -27,10 +30,22 @@ if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 	} catch(java.lang.Exception e) {
 		if(!(e.getCause() instanceof org.talend.xml.sax.exception.EnoughDataException))
 	<% if(dieOnError) { %>
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - " +  e.getMessage());
+		<%}%>
 		throw(e);
 	<% } else { %>
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid%> - " +  e.getMessage());
+		<%}%>
 		System.err.println(e.getMessage());	
 	<% } %>
 	}
 <% } %>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+<%
+	log4jFileUtil.retrievedDataNumberInfo();
+	log4jFileUtil.componentFinishInfo(node);
+%>
+
+	

@@ -10,6 +10,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
 "
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -21,6 +22,7 @@ boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node
 
 boolean inputIsDocument = "true".equals(ElementParameterParser.getValue(node, "__INPUT_IS_DOCUMENT__"));
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(!inputIsDocument) {
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -99,6 +101,7 @@ if(("true").equals(split)){
 	}
 <%
 }
+log4jFileUtil.writeDataFinishInfo(node);
 %>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 	}
@@ -115,3 +118,4 @@ if(("true").equals(split)){
 		file_<%=cid %>.delete();
 	}		
 <%}%>	
+<%log4jFileUtil.componentFinishInfo(node);%>

@@ -192,17 +192,21 @@
 
         <%if(isLog4jEnabled){%>
 	        if(log4jLevel!=null){
-        		if("debug".equalsIgnoreCase(log4jLevel)){
-        			log.setLevel(org.apache.log4j.Level.DEBUG);
-        		}else if("info".equalsIgnoreCase(log4jLevel)){
-        			log.setLevel(org.apache.log4j.Level.INFO);
-        		}else if("warn".equalsIgnoreCase(log4jLevel)){
-        			log.setLevel(org.apache.log4j.Level.WARN);
-        		}else if("error".equalsIgnoreCase(log4jLevel)){
-        			log.setLevel(org.apache.log4j.Level.ERROR);
-        		}else if("fatal".equalsIgnoreCase(log4jLevel)){
-        			log.setLevel(org.apache.log4j.Level.FATAL);
-        		}
+				if("trace".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.TRACE);
+				}else if("debug".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.DEBUG);
+				}else if("info".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.INFO);
+				}else if("warn".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.WARN);
+				}else if("error".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.ERROR);
+				}else if("fatal".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.FATAL);
+				}else if ("off".equalsIgnoreCase(log4jLevel)){
+					log.setLevel(org.apache.log4j.Level.OFF);
+				}
     	    }
         	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has started.");
     	<%}%>

@@ -13,6 +13,7 @@ imports="
     java.util.Map
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -64,6 +65,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     	List<IMetadataColumn> columns = metadata.getListColumns();
+		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+		log4jFileUtil.componentStartInfo(node);
     	if(!version07){//version judgement
 %>
 		int nb_line_<%=cid%> = 0;
@@ -87,7 +90,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //create directory only if not exists		  
           java.io.File parentFile_<%=cid %> = file_<%=cid %>.getParentFile();
           if (parentFile_<%=cid %> != null && !parentFile_<%=cid %>.exists()) {
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating directory '" +parentFile_<%=cid %>.getCanonicalPath() + "'.");
+			<%}%>
              parentFile_<%=cid %>.mkdirs();
+        	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Create directory '"+parentFile_<%=cid %>.getCanonicalPath()+"' has succeeded.");
+			<%}%>
           }
 <%
 			}
@@ -196,6 +205,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}else{
 %>
 		if(true){
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Date pattern must be set for column <%=column.getLabel() %> in the schema of component <%=cid %>!");
+			<%}%>
 			throw new RuntimeException("Date pattern must be set for column <%=column.getLabel() %> in the schema of component <%=cid %>!");
 		}
 <%				}

@@ -8,6 +8,7 @@
 		org.talend.core.model.process.IProcess
 	" 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -164,7 +165,7 @@ if(out<%=cid %>!=null) {
 	}
 }
 %>
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Wrote count: "+nb_line_<%=cid%> + ".");
-	log.info("<%=cid%> - Has finished.");
-<%}%>
+<%
+log4jFileUtil.writeDataFinishInfo(node);
+log4jFileUtil.componentFinishInfo(node);
+%>

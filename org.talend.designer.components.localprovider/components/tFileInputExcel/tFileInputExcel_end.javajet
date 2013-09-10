@@ -5,6 +5,7 @@
 		org.talend.core.model.process.ElementParameterParser
 	" 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -15,8 +16,10 @@
 	
 	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 				nb_line_<%=cid%>++;
+				<%log4jFileUtil.debugRetriveData(node);%>
 			}
 			<%if(version07 && eventMode) {%>
 			try {
@@ -26,12 +29,19 @@
 			} catch(java.lang.Exception e_<%=cid%>) {
 				if(!(e_<%=cid%>.getCause() instanceof com.talend.excel.xssf.event.EnoughDataException))
 				<% if(dieOnError) { %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+					<%}%>
 				throw(e_<%=cid%>);
 				<% } else { %>
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid %> - " + e_<%=cid%>.getMessage());
+					<%}%>
 				System.err.println(e_<%=cid%>.getMessage());	
 				<% } %>
 			}
 			<%}%>
+			<%log4jFileUtil.retrievedDataNumberInfo();%>
 			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 			<%if((version07 && !eventMode) || !version07) {%>
 				}
@@ -49,4 +59,5 @@
 				
 				}%>
 		}	
+		<%log4jFileUtil.componentFinishInfo(node);%>
 		

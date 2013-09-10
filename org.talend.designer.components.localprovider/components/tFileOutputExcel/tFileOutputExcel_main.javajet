@@ -12,6 +12,7 @@
 		java.util.List
 	"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -44,6 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
 		List<IMetadataColumn> columns = metadata.getListColumns();
+		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		
 		if(!version07){//version judgement
     	
@@ -65,10 +67,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				}
 %>
 				<%@ include file="./putValue.javajet"%>
+				<%if(isLog4jEnabled){%>
+	                log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+	                <%if(i < sizeColumns-1){%>
+	                	log4jSb_<%=cid%>.append("|");
+	                <%}
+				}%>
 <%
 				}
 %>
     			nb_line_<%=cid %>++;
+				<%log4jFileUtil.debugWriteData(node);%>
     <%
     		}
     	}
@@ -93,10 +102,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	        		}
 %>
 				<%@ include file="./putValue2007.javajet"%>
+				<%if(isLog4jEnabled){%>
+	                log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+	                <%if(i < sizeColumns-1){%>
+	                	log4jSb_<%=cid%>.append("|");
+	                <%}
+				}%>
 <%
     			}
     			%>
     			nb_line_<%=cid %>++;
+				<%log4jFileUtil.debugWriteData(node);%>
 <%
 				if(flushOnRow && (useStream || !isAppendFile)){
 %>

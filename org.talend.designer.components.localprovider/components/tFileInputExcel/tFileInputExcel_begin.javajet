@@ -13,6 +13,7 @@
 		org.talend.core.model.metadata.types.JavaType
 	" 
 %>	
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -53,6 +54,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
 		boolean eventMode = "EVENT_MODE".equals(mode);
 		
+		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+		log4jFileUtil.componentStartInfo(node);
 		if(!version07){//version judgement
 			boolean bReadRealValue = ("true").equals(ElementParameterParser.getValue(node, "__READ_REAL_VALUE__"));
 			boolean notNeedValidateOnCell = !("false").equals(ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__"));//make wizard work
@@ -133,6 +136,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(toClose_<%=cid%>), workbookSettings_<%= cid %>);
             }else{
             	workbook_<%= cid %> = null;
+            	<%if(isLog4jEnabled){%>
+            		log.fatal("<%=cid %> - The data source should be specified as Inputstream or File Path!");
+            	<%}%>
             	throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
             } 
         } finally {
@@ -158,6 +164,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 %>
         if(sheetList_<%= cid %>.size() <= 0){
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Special sheets not exist!");
+			<%}%>
         	throw new RuntimeException("Special sheets not exist!");
         }
         
@@ -198,7 +207,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         //for the number format
         java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
 		char separatorChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
-        
+		<%log4jFileUtil.startRetriveDataInfo();%>
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
         
         	int emptyColumnCount_<%= cid %> = 0;
@@ -339,6 +348,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getOffset(dateGMT_<%=cid %>.getTime()));
 				}catch(java.lang.Exception e){
 					<% // for bug TDI-19404 %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid %> - The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
+					<%}%>
 					throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 				}
 			}
@@ -370,6 +382,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						if(defaultValue == null) {
 //
 //end%>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid %> - Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
+					<%}%>
 				throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
 //start
@@ -386,6 +401,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 //end%>
 		}
+						<%if(isLog4jEnabled){%>
+							log4jSb_<%=cid%>.append(<%=firstConnName %>.<%=column.getLabel() %>);
+							<%if(i < size-1){%>
+								log4jSb_<%=cid%>.append("|");								
+							<%}
+						}%>
 <%
 //start
 //
@@ -408,9 +429,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         <%
         if (dieOnError) {
             %>
+	        <%if(isLog4jEnabled){%>
+				log.fatal("<%=cid %> - " + e.getMessage());
+			<%}%>
             throw(e);
             <%
         } else {
+	        if(isLog4jEnabled){%>
+				log.fatal("<%=cid %> - " + e.getMessage());
+			<%}
             if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
@@ -520,6 +547,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
      		workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook((java.io.InputStream)source_<%=cid %>);
 		} else{
 			workbook_<%=cid%> = null;
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid %> - The data source should be specified as Inputstream or File Path!");
+			<%}%>
 			throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
 		}
 		try {
@@ -544,6 +574,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 %>
     	if(sheetList_<%= cid %>.size() <= 0){
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Special sheets not exist!");
+			<%}%>
             throw new RuntimeException("Special sheets not exist!");
         }
 		
@@ -585,7 +618,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//for the number format        
         java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
         char decimalChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
-        
+		<%log4jFileUtil.startRetriveDataInfo();%>
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
        
         	int emptyColumnCount_<%= cid %> = 0;
@@ -796,6 +829,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						else{
                             java.util.Date tempDate_<%=cid%> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
                             if(tempDate_<%=cid%>.after((new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS")).parse("9999/12/31 23:59:59.999"))||tempDate_<%=cid%>.before((new SimpleDateFormat("yyyy/MM/dd")).parse("1900/01/01"))){
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
+							<%}%>
                                 throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
                             }else{
                                 <%=firstConnName %>.<%=column.getLabel() %> = tempDate_<%=cid%>;
@@ -803,6 +839,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 					}catch(java.lang.Exception e){
 						<% // for bug TDI-19404 %>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
+						<%}%>						
 						throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 					}
 				}
@@ -833,6 +872,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 						if(defaultValue == null) {
 %>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
+						<%}%>
 					throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
 						} else {
@@ -843,6 +885,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 %>
 			}
+						<%if(isLog4jEnabled){%>
+							log4jSb_<%=cid%>.append(<%=firstConnName %>.<%=column.getLabel() %>);
+							<%if(i < size-1){%>
+								log4jSb_<%=cid%>.append("|");								
+							<%}
+						}%>
 <%
 					}
 %>
@@ -862,10 +910,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		        if (dieOnError) {
 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
 	            throw(e);
 <%
 		        }
 		        else{
+					if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e.getMessage());
+					<%}
 					if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {//15
 %>
 					<%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -930,6 +984,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(source_<%=cid %> instanceof java.io.InputStream || source_<%=cid %> instanceof String){
 			excelReader_<%=cid%> = new com.talend.excel.xssf.event.ExcelReader();
 		}else{
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - The data source should be specified as Inputstream or File Path!");
+			<%}%>
 			throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
 		}
 		
@@ -956,6 +1013,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 		
 		if(end_column_<%= cid %><0 || start_column_<%= cid %><0) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Error start column and end column.");
+			<%}%>
 			throw new RuntimeException("Error start column and end column.");
 		}
 		
@@ -979,6 +1039,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			excelReader_<%=cid%>.next();
 		}
 		
+		<%log4jFileUtil.startRetriveDataInfo();%>
 		while(excelReader_<%=cid%>.hasNext()) {
 			int emptyColumnCount_<%= cid %> = 0;
 		
@@ -1072,6 +1133,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 				}catch(java.lang.Exception e){
 					<% // for bug TDI-19404 %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
+					<%}%>
 					throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 				}
 				
@@ -1101,6 +1165,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 						if(defaultValue == null) {
 %>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
+					<%}%>
 					throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
 						} else {
@@ -1111,6 +1178,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 %>
 			}
+						<%if(isLog4jEnabled){%>
+							log4jSb_<%=cid%>.append(<%=firstConnName %>.<%=column.getLabel() %>);
+							<%if(i < size-1){%>
+								log4jSb_<%=cid%>.append("|");								
+							<%}
+						}%>
 <%
 					}//TD128
 %>
@@ -1131,10 +1204,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		        if (dieOnError) {
 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e.getMessage());
+				<%}%>
 	            throw(e);
 <%
 		        }
 		        else{
+					if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e.getMessage());
+					<%}
 					if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {//15
 %>
 					<%=rejectConnName %> = new <%=rejectConnName %>Struct();

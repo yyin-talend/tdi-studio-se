@@ -13,6 +13,7 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -50,6 +51,8 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 boolean ignoreDTD="true".equals(ElementParameterParser.getValue(node, "__IGNORE_DTD__"));
 
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.componentStartInfo(node);
 %>
 int nb_line_<%=cid%> = 0;
 
@@ -337,8 +340,14 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
 	<%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	System.err.println(e.getMessage());
 	<%}%>
 }
@@ -364,8 +373,14 @@ try{
     }
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
 <%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	System.err.println(e.getMessage());
 	isValidFile_<%=cid %> = false;
 <%}%>
@@ -382,6 +397,7 @@ org.w3c.dom.NodeList nodelist_<%=cid %> = xml_api_<%=cid%>.getNodeList(doc_<%=ci
 
 org.w3c.dom.Node node_<%=cid%>  = null;
 String str_<%=cid%> = null;
+<%log4jFileUtil.startRetriveDataInfo();%>
 for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid %>++) {
 	org.w3c.dom.Node tmp_<%=cid %> = nodelist_<%=cid %>.item(i_<%=cid %>);
 <%
@@ -581,8 +597,14 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
 	<%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	System.err.println(e.getMessage());
 	<%}%>
 }
@@ -615,8 +637,14 @@ try {
 	output_<%=cid %>.close();
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
 	<%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	System.err.println(e.getMessage());
 	<%}%>
 } finally {
@@ -644,8 +672,14 @@ try{
 	}
 }catch(java.lang.Exception e){
 <%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
 <%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	System.err.println(e.getMessage());
 	isValidFile_<%=cid %> = false;
 <%}%>
@@ -692,7 +726,7 @@ xTmp<%=i%>_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
 		}
 	}
 %>
-
+<%log4jFileUtil.startRetriveDataInfo();%>
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%
 // *** SAX *** //
@@ -767,7 +801,13 @@ try {
 	filename_<%=cid %> = <%=filename %>;
 } catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
 	throw(e);
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 	<%}else{%>
 	System.err.println(e.getMessage());
 	<%}%>
@@ -783,6 +823,7 @@ if(filename_<%=cid %> instanceof java.io.InputStream){
 	looper_<%=cid%>.parse(String.valueOf(filename_<%=cid %>));
 }
 java.util.Iterator<java.util.Map<String, String>> it_<%=cid%>  = looper_<%=cid%>.iterator();
+<%log4jFileUtil.startRetriveDataInfo();%>
 while (it_<%=cid%>.hasNext()) {
 	java.util.Map<String, String> row_<%=cid%> = it_<%=cid%>.next();
 <%
@@ -875,6 +916,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						if(isWrongConfig) {
 %>
 	if(true) {
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
+		<%}%>
 		throw new RuntimeException("Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
 	}
 <%
@@ -1037,6 +1081,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
 								}
+								if(isLog4jEnabled){%>
+									log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+									<%if(i < mapping.size()-1){%>
+										log4jSb_<%=cid%>.append("|");
+							       <%}
+								}
 %>
 	}
 <%
@@ -1052,9 +1102,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if (dieOnError) {
             %>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e.getMessage());
+			<%}%>
             throw(e);
             <%
         } else {
+			if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + e.getMessage());
+			<%}
             if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>

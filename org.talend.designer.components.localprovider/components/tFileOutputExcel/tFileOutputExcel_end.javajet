@@ -10,6 +10,7 @@
         java.util.Map
 	"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -46,6 +47,7 @@
 		return "";
 	}
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	if(!version07){//version judgement
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -118,9 +120,17 @@
 	<%	}else{%>
 		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%	}%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating directory '" + file_<%=cid %>.getCanonicalPath() + "'.");
+			<%}%>
 			file_<%=cid %>.delete();
+	    	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Create directory '"+ file_<%=cid %>.getCanonicalPath() + "' has succeeded.");
+			<%}%>
 		}		
 	<%}
+		log4jFileUtil.writeDataFinishInfo(node);
+		log4jFileUtil.componentFinishInfo(node);
 	}else{//version judgement /***excel 2007 xlsx*****/
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -207,8 +217,16 @@
 	<%	}else{%>
 		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%	}%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating directory '" + file_<%=cid %>.getCanonicalPath() + "'.");
+			<%}%>
 			file_<%=cid %>.delete();
+	    	<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Create directory '"+ file_<%=cid %>.getCanonicalPath() + "' has succeeded.");
+			<%}%>
 		}		
 	<%}
+log4jFileUtil.writeDataFinishInfo(node);
+log4jFileUtil.componentFinishInfo(node);
 	}
 	%>	
