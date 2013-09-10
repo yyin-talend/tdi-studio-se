@@ -177,28 +177,49 @@
 			
 if(hasCXFCorrelationConsumer){
 %>
-		class RouteCXFCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler{
-			private String correlationId;
-			public RouteCXFCorrelationCallbackHandler(String correlationId) {
-				this.correlationId = correlationId == null?null:(correlationId.length() > 0 ?correlationId:null );
-			}
-		
-			public String getCorrelationId() {
-				return correlationId;
-			}
-		}
-		
-		private void setupCorrelationOnCxfConsumer(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, boolean isRegistry, String correlationValue){
-			Map<String, Object> properties = cxfEndpoint.getProperties();
-			if(properties == null){
-				properties = new HashMap<String, Object>();
-				cxfEndpoint.setProperties(properties);
-			}
-			properties.put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, new RouteCXFCorrelationCallbackHandler(correlationValue));
-			if(!isRegistry){
-				cxfEndpoint.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
-			}
-		}
+class RouteCXFCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler{
+	private org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint;
+	public RouteCXFCorrelationCallbackHandler(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint) {
+		this.cxfEndpoint = cxfEndpoint;
+	}
+
+	public String getCorrelationId() {
+		return (String)cxfEndpoint.getProperties().get("correlationID");
+	}
+}
+
+class CXFConsumerBinding extends org.apache.camel.component.cxf.DefaultCxfBinding {
+
+	private org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint;
+
+	public CXFConsumerBinding(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint) {
+		this.cxfEndpoint = cxfEndpoint;
+		setHeaderFilterStrategy(headerFilterStrategy);
+	}
+
+	@Override
+	public void populateCxfRequestFromExchange(
+			org.apache.cxf.message.Exchange cxfExchange,
+			org.apache.camel.Exchange camelExchange,
+			Map<String, Object> requestContextMap) {
+		cxfEndpoint.getProperties().put("correlationID", simple(
+								(String) cxfEndpoint.getProperties().get(
+										"correlationID")).evaluate(
+								camelExchange, String.class));
+		super.populateCxfRequestFromExchange(cxfExchange, camelExchange,
+				requestContextMap);
+	}
+
+}
+
+private void setupCorrelationOnCxfConsumer(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
+		boolean isRegistry) {
+	cxfEndpoint.setCxfBinding(new CXFConsumerBinding(cxfEndpoint));
+	cxfEndpoint.getProperties().put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, new RouteCXFCorrelationCallbackHandler(cxfEndpoint));
+	if (!isRegistry) {
+		cxfEndpoint.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
+	}
+}
 <%
 }
 
@@ -423,7 +444,7 @@ class WSPasswordCallbackHandler implements javax.security.auth.callback.Callback
 
 if(hasCXFComponentConsumer){
 %>
-class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy{
+org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy headerFilterStrategy = new org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy(){
 	public boolean applyFilterToCamelHeaders(String headerName,
 			Object headerValue, org.apache.camel.Exchange exchange) {
 		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
@@ -439,7 +460,7 @@ class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.
 		}
 		return super.applyFilterToExternalHeaders(headerName, headerValue, exchange);
 	}
-}
+};
 <%
 }
 if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
@@ -874,7 +895,7 @@ if (isProvider) {
 			
 			if(!isProvider && ("true".equals(useRegistry) || "true".equals(useCorrelation))){
 %>
-				setupCorrelationOnCxfConsumer(<%=endpointVar%>, <%="true".equals(useRegistry)%>, <%=correlationValue%>);
+				setupCorrelationOnCxfConsumer(<%=endpointVar%>, <%="true".equals(useRegistry)%>);
 <%					
 			}
 			
