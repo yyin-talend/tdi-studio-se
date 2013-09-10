@@ -155,6 +155,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITalendEditor;
+import org.talend.designer.core.assist.TalendEditorComponentCreationAssistAction;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.NodePartKeyHander;
@@ -947,11 +948,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
 
+        IAction assistAction = new TalendEditorComponentCreationAssistAction();
+        getActionRegistry().registerAction(assistAction);
         if (getProcess().isSubjobEnabled()) {
             // toggle subjobs action
             IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
             getActionRegistry().registerAction(toggleSubjobsAction);
-
+            
             for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
                 String actionID = (String) iterator.next();
                 IAction action = getActionRegistry().getAction(actionID);
@@ -1525,12 +1528,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                                 // reconnect the node
                                 Node originalTarget = (Node) targetConnection.getTarget();
-                                
-                                EConnectionType connectionType =  EConnectionType.FLOW_MAIN;
+
+                                EConnectionType connectionType = EConnectionType.FLOW_MAIN;
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                                            ICamelDesignerCoreService.class);
-                                    if(camelService.isRouteBuilderNode(node)){
+                                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
+                                            .getDefault().getService(ICamelDesignerCoreService.class);
+                                    if (camelService.isRouteBuilderNode(node)) {
                                         connectionType = camelService.getTargetConnectionType(node);
                                     }
                                 }
@@ -1572,15 +1575,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
                                 // nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                                 List<Object> nodeArgs = null;
-                                if(connectionType == EConnectionType.ROUTE || connectionType == EConnectionType.ROUTE_ENDBLOCK){
+                                if (connectionType == EConnectionType.ROUTE || connectionType == EConnectionType.ROUTE_ENDBLOCK) {
                                     nodeArgs = new ArrayList<Object>();
                                     nodeArgs.add(null);
-                                    nodeArgs.add(ConnectionUtil.generateUniqueConnectionName(connectionType, originalTarget.getProcess(), targetConnector));
+                                    nodeArgs.add(ConnectionUtil.generateUniqueConnectionName(connectionType,
+                                            originalTarget.getProcess(), targetConnector));
                                     nodeArgs.add(null);
-                                }else{
+                                } else {
                                     nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
                                 }
-                                
+
                                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
                                         nodeArgs, false);
                                 nodeCmd.setTarget(originalTarget);
@@ -1829,10 +1833,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
                 INodeConnector tmp = null;
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                            ICamelDesignerCoreService.class);
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                            .getService(ICamelDesignerCoreService.class);
                     tmp = node.getConnectorFromType(camelService.getTargetConnectionType(node));
-                }else{
+                } else {
                     tmp = node.getConnectorFromType(EConnectionType.ROUTE);
                 }
                 mainConnector = tmp;

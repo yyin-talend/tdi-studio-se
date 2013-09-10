@@ -78,4 +78,6 @@ public class TalendDesignerPrefConstants {
 
     public static final String DISPLAY_METHOD_SIZE = "displayMethodSize"; //$NON-NLS-1$
 
+    public static final String COMPONENT_ASSIST = "componentsAssist"; //$NON-NLS-1$
+
 }

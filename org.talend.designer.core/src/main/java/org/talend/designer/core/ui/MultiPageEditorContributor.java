@@ -38,7 +38,9 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.talend.designer.core.assist.TalendEditorComponentCreationAssistAction;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.action.ComponentAssistRetargetAction;
 import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.action.ToggleSubjobsRetargetAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -103,6 +105,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
         addDesignRetargetAction(new ToggleSubjobsRetargetAction());
 
+        addDesignRetargetAction(new ComponentAssistRetargetAction());
+
         addDesignActionKey(ActionFactory.COPY.getId());
         addDesignActionKey(ActionFactory.PASTE.getId());
         addDesignActionKey(ActionFactory.PRINT.getId());
@@ -159,9 +163,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         if ((activeEditorPart == activeEditor) || (activeEditor == null)) {
             return;
         }
-        
+
         activeEditorPart = activeEditor;
-        
+
         if (activeEditor instanceof TalendEditor) {
             RootEditPart editPart = ((TalendEditor) activeEditor).getViewer().getRootEditPart();
             if (editPart != null && editPart instanceof TalendScalableFreeformRootEditPart) {
@@ -185,6 +189,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
                     getAction(activeEditor, ActionFactory.SELECT_ALL.getId()));
             actionBars.setGlobalActionHandler(ToggleSubjobsAction.ID, getAction(activeEditor, ToggleSubjobsAction.ID));
+            actionBars.setGlobalActionHandler(TalendEditorComponentCreationAssistAction.ID,
+                    getAction(activeEditor, TalendEditorComponentCreationAssistAction.ID));
             // see bug 0003656: Actions in the main menu "View" are always disabled.
             activateActionsInViewMenu(activeEditor, actionBars, VIEW_MENU_ACTIONS_ID);
             // MOD mzhao bug 8710
@@ -193,7 +199,6 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             }
             actionBars.updateActionBars();
 
-            
         }
     }
 
@@ -239,6 +244,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
         toolBarManager.add(getAction(ActionFactory.REDO.getId()));
         toolBarManager.add(getAction(ToggleSubjobsAction.ID));
+        toolBarManager.add(getAction(TalendEditorComponentCreationAssistAction.ID));
         String[] zoomStrings = new String[] { ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
         item = new ZoomComboContributionItem(getPage(), zoomStrings);
         toolBarManager.add(item);
