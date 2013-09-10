@@ -14,17 +14,22 @@ package org.talend.designer.runprocess;
 
 import java.io.File;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -64,52 +69,93 @@ public class DeleteAllJobWhenStartUp implements IStartup {
             return;
         }
 
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceRoot workspaceRoot = workspace.getRoot();
 
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IWorkspaceRoot workspaceRoot = workspace.getRoot();
-
-                IProject rootProject = null;
-                try {
-                    rootProject = JavaProcessorUtilities.getProcessorProject();
-                } catch (CoreException e1) {
-                    ExceptionHandler.process(e1);
-                }
-                IResource javaRecs;
-                if (rootProject != null) {
-                    try {
-                        javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator
-                                + JavaUtils.JAVA_SRC_DIRECTORY);
-                        if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
-                            IFolder javaSrcFolder = (IFolder) javaRecs;
-
-                            IResource[] javaProRecs = javaSrcFolder.members();
-                            if (javaProRecs.length > 0) {
-                                for (IResource javaProRec : javaProRecs) {
-                                    javaProRec.delete(true, null);
-                                }
-                            }
-
-                        }
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            };
-
-        };
-
+        IProject rootProject = null;
         try {
-            ISchedulingRule schedulingRule = workspace.getRoot();
-            // the update the project files need to be done in the workspace runnable to avoid all
-            // notification
-            // of changes before the end of the modifications.
-            workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
+            rootProject = JavaProcessorUtilities.getProcessorProject();
+        } catch (CoreException e1) {
+            ExceptionHandler.process(e1);
         }
+        IResource javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME);
+        if (javaRecs != null && javaRecs.getType() == IResource.PROJECT) {
+            rootProject = (IProject) javaRecs;
+            try {
+                if (!rootProject.isOpen()) {
+                    rootProject.open(null);
+                }
+                javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + JavaUtils.JAVA_SRC_DIRECTORY);
+                if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
+                    IFolder javaSrcFolder = (IFolder) javaRecs;
+
+                    IResource[] javaProRecs = javaSrcFolder.members();
+                    if (javaProRecs.length > 0) {
+                        for (IResource javaProRec : javaProRecs) {
+                            javaProRec.delete(true, null);
+                        }
+                    }
+
+                }
+
+                IResource libRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + "lib");
+                if (libRecs != null && libRecs.getType() == IResource.FOLDER) {
+                    IFolder javaLibFolder = (IFolder) libRecs;
+
+                    IResource[] javaProRecs = javaLibFolder.members();
+                    if (javaProRecs.length > 0) {
+                        for (IResource javaProRec : javaProRecs) {
+                            javaProRec.delete(true, null);
+                        }
+                    }
+
+                }
+                IExtensionRegistry registry = Platform.getExtensionRegistry();
+                IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
+
+                if (rootProject.getNature(JavaCore.NATURE_ID) == null && nature != null) {
+                    IProjectDescription description = rootProject.getDescription();
+                    String[] natures = description.getNatureIds();
+                    String[] newNatures = new String[natures.length + 1];
+                    System.arraycopy(natures, 0, newNatures, 0, natures.length);
+                    newNatures[natures.length] = JavaCore.NATURE_ID;
+                    description.setNatureIds(newNatures);
+                    rootProject.open(IResource.BACKGROUND_REFRESH, null);
+                    rootProject.setDescription(description, null);
+                }
+                IJavaProject javaProject = JavaCore.create(rootProject);
+
+                IClasspathEntry[] entries = new IClasspathEntry[] {};
+
+                IClasspathEntry jreClasspathEntry = JavaCore
+                        .newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+                IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
+                        JavaUtils.JAVA_SRC_DIRECTORY));
+
+                entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
+                entries = (IClasspathEntry[]) ArrayUtils.add(entries, classpathEntry);
+
+                javaProject.setRawClasspath(entries, null);
+                javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        // no need to synchronize the routines here, as it will be done in the code generation.
+
+        // // fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
+        // Display.getDefault().asyncExec(new Runnable() {
+        //
+        // public void run() {
+        // try {
+        // RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
+        // });
 
         executed = true;
 
