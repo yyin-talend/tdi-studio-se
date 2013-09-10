@@ -143,7 +143,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         // Add log4j files if needed
         if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
-            addLog4jXmlToLibs(libResource);
+            addLog4jXmlToRes(contextResource);
         }
 
         for (ExportFileResource proces : process) {

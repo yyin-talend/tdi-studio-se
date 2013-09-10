@@ -42,15 +42,17 @@ public class Log4jPrefsConstants {
 
     public static final String COMMON_LOGGING_FILE = "common-logging.properties";
 
-    public static final String TRACE = "trace";
+    public static final String OFF = "Off";
 
-    public static final String DEBUG = "debug";
+    public static final String TRACE = "Trace";
 
-    public static final String INFO = "info";
+    public static final String DEBUG = "Debug";
 
-    public static final String WARNING = "warn";
+    public static final String INFO = "Info";
 
-    public static final String ERROR = "error";
+    public static final String WARNING = "Warn";
 
-    public static final String FATAL = "fatal";
+    public static final String ERROR = "Error";
+
+    public static final String FATAL = "Fatal";
 }

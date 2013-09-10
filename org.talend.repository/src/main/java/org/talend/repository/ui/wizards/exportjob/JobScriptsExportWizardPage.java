@@ -94,6 +94,7 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
@@ -133,6 +134,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button jobScriptButton;
 
+    protected Button log4jButton;
+
     // protected ExportFileResource[] process;
 
     protected ProcessItem processItem = null;
@@ -150,8 +153,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected Button setParametersValueButton2;
 
     protected Combo log4jLevelCombo;
-
-    protected Button applyLog4jToChildrenButton;
 
     protected RepositoryNode[] nodes;
 
@@ -606,14 +607,30 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         });
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            log4jButton = new Button(topGroup, SWT.CHECK | SWT.LEFT);
+            log4jButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
+            log4jButton.setSelection(true);
+            log4jButton.setFont(font);
+            log4jButton.setSelection(false);
+            log4jButton.addSelectionListener(new SelectionAdapter() {
 
-        Label label = new Label(topGroup, SWT.None);
-        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (log4jButton.getSelection()) {
+                        log4jLevelCombo.setEnabled(true);
+                    } else {
+                        log4jLevelCombo.setEnabled(false);
+                    }
+                }
+            });
 
-        log4jLevelCombo = new Combo(topGroup, SWT.PUSH);
-        gd = new GridData();
-        gd.horizontalSpan = 2;
-        log4jLevelCombo.setLayoutData(gd);
+            log4jLevelCombo = new Combo(topGroup, SWT.PUSH);
+            gd = new GridData();
+            gd.horizontalSpan = 2;
+            log4jLevelCombo.setLayoutData(gd);
+            log4jLevelCombo.setEnabled(false);
+        }
 
         // second group
         Group bottomGroup = new Group(optionsGroup, SWT.NONE);

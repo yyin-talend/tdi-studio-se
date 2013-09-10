@@ -135,8 +135,8 @@ public class Log4jPrefsSettingManager {
     }
 
     public static String[] getLevel() {
-        String[] levels = { Log4jPrefsConstants.TRACE, Log4jPrefsConstants.DEBUG, Log4jPrefsConstants.INFO,
-                Log4jPrefsConstants.WARNING, Log4jPrefsConstants.ERROR, Log4jPrefsConstants.FATAL };
+        String[] levels = { Log4jPrefsConstants.OFF, Log4jPrefsConstants.TRACE, Log4jPrefsConstants.INFO,
+                Log4jPrefsConstants.DEBUG, Log4jPrefsConstants.WARNING, Log4jPrefsConstants.ERROR, Log4jPrefsConstants.FATAL };
         return levels;
     }
 
@@ -157,10 +157,12 @@ public class Log4jPrefsSettingManager {
     }
 
     public boolean isLog4jEnable() {
+        if (!org.talend.core.PluginChecker.isCoreTISPluginLoaded()) {
+            return false;
+        }
         if (Log4jUtil.isEnable() && getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
             return true;
         }
         return false;
     }
-
 }

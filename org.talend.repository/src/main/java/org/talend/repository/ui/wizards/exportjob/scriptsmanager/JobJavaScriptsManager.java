@@ -726,7 +726,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             } else {
                 childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
                         jobProcess, processItem, selectedJobVersion, resources,
-                        new String[] { getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel() : null });
+                        new String[] { getLog4jLevel() != null ? LOG4J_LEVEL_ARG + getLog4jLevel().toLowerCase() : null });
             }
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -794,7 +794,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         libResource.addResources(buildScriptLibraries);
 
         // Add log4jFiles to lib folder if log4j is enable
-        addLog4jXmlToLibs(libResource);
+        // addLog4jXmlToRes(libResource);
         return libResource;
     }
 
@@ -1380,7 +1380,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return list;
     }
 
-    protected void addLog4jXmlToLibs(ExportFileResource libResource) {
+    protected void addLog4jXmlToRes(ExportFileResource libResource) {
         List<URL> list = new ArrayList<URL>();
         if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
             try {

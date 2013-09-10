@@ -437,12 +437,22 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     @Override
     public JobScriptsManager createJobScriptsManager() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
+        String log4jLevel = "";
         String launcher = (getCurrentExportType1() == JobExportType.POJO) ? launcherCombo.getText() : "all";
         String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
-        String log4jLevel = (log4jLevelCombo == null || log4jLevelCombo.isDisposed()) ? "debug" : log4jLevelCombo.getText();
+
         JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher,
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType1());
         manager.setDestinationPath(getDestinationValue());
+        if (log4jLevelCombo != null && !log4jLevelCombo.isDisposed()) {
+            if (log4jLevelCombo.isEnabled()) {
+                log4jLevel = log4jLevelCombo.getText();
+            } else {
+                log4jLevel = null;
+            }
+        } else {
+            log4jLevel = null;
+        }
         manager.setLog4jLevel(log4jLevel);
         return manager;
     }
@@ -765,7 +775,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (log4jLevelCombo != null) {
             log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
             if (Log4jPrefsSettingManager.getLevel().length > 0) {
-                log4jLevelCombo.select(0);
+                log4jLevelCombo.select(2);
             }
         }
     }
@@ -842,7 +852,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (log4jLevelCombo != null) {
             log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
             if (Log4jPrefsSettingManager.getLevel().length > 0) {
-                log4jLevelCombo.select(0);
+                log4jLevelCombo.select(2);
             }
         }
     }
@@ -1425,13 +1435,30 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
         applyToChildrenButton.setSelection(true);
 
-        Label label = new Label(optionsGroup, SWT.None);
-        label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
+        if (Log4jPrefsSettingManager.getInstance().isLog4jEnable()) {
+            log4jButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+            log4jButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.LOG4jLEVEL")); //$NON-NLS-1$
+            log4jButton.setSelection(true);
+            log4jButton.setFont(font);
+            log4jButton.setSelection(false);
+            log4jButton.addSelectionListener(new SelectionAdapter() {
 
-        log4jLevelCombo = new Combo(optionsGroup, SWT.PUSH);
-        gd = new GridData();
-        gd.horizontalSpan = 2;
-        log4jLevelCombo.setLayoutData(gd);
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (log4jButton.getSelection()) {
+                        log4jLevelCombo.setEnabled(true);
+                    } else {
+                        log4jLevelCombo.setEnabled(false);
+                    }
+                }
+            });
+
+            log4jLevelCombo = new Combo(optionsGroup, SWT.PUSH);
+            gd = new GridData();
+            gd.horizontalSpan = 2;
+            log4jLevelCombo.setLayoutData(gd);
+            log4jLevelCombo.setEnabled(false);
+        }
 
         restoreWidgetValuesForWS();
 
