@@ -29,8 +29,10 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -69,12 +71,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     public void init(IDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
 
         tables = new ArrayList<AbstractDataMapTable>();
-        for (int i = 0; i < zones.length; i++) {
-            if (zones[i] == Zone.INPUTS) {
+        for (Zone zone : zones) {
+            if (zone == Zone.INPUTS) {
                 tables.addAll(mapperManager.getInputTables());
-            } else if (zones[i] == Zone.OUTPUTS) {
+            } else if (zone == Zone.OUTPUTS) {
                 tables.addAll(mapperManager.getOutputTables());
-            } else if (zones[i] == Zone.VARS) {
+            } else if (zone == Zone.VARS) {
                 tables.addAll(mapperManager.getVarsTables());
             }
         }
@@ -103,6 +105,14 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 sourceEntryLocation.columnName = entrySource.getName();
                 if (mapperManager.getUiManager().checkSourceLocationIsValid(entrySource, currentModifiedEntry)) {
                     proposals.add(new EntryContentProposal(entrySource, this.currentLanguage));
+                }
+            }
+            // for the globalMap
+            if (table instanceof InputTable) {
+                InputTable inputTable = (InputTable) table;
+                List<GlobalMapEntry> globalMapEntries = inputTable.getGlobalMapEntries();
+                for (GlobalMapEntry entry : globalMapEntries) {
+                    proposals.add(new EntryContentProposal(entry, this.currentLanguage));
                 }
             }
         }
