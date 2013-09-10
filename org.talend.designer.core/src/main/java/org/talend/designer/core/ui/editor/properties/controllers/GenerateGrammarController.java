@@ -190,14 +190,14 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         if (numInRow == 1) {
             if (lastControl != null) {
                 data.left = new FormAttachment(lastControl, currentLabelWidth);
-                data.right = new FormAttachment(lastControl, currentLabelWidth + STANDARD_BUTTON_WIDTH);
+                data.right = new FormAttachment(lastControl, currentLabelWidth + STANDARD_BUTTON_WIDTH + 8);
             } else {
                 data.left = new FormAttachment(0, currentLabelWidth);
-                data.right = new FormAttachment(0, currentLabelWidth + STANDARD_BUTTON_WIDTH);
+                data.right = new FormAttachment(0, currentLabelWidth + STANDARD_BUTTON_WIDTH + 8);
             }
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-            data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
+            data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH + 8, SWT.RIGHT);
         }
         data.top = new FormAttachment(0, top);
         btnEdit.setLayoutData(data);
@@ -226,7 +226,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         {
             data.top = new FormAttachment(0, top);
         }
-        data.height = STANDARD_BUTTON_WIDTH + 1;
+        data.height = STANDARD_HEIGHT + 5;
         data.width = STANDARD_BUTTON_WIDTH;
         btnImport.setLayoutData(data);
         if (numInRow != 1) {
@@ -249,7 +249,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         {
             data.top = new FormAttachment(0, top);
         }
-        data.height = STANDARD_BUTTON_WIDTH + 1;
+        data.height = STANDARD_HEIGHT + 5;
         data.width = STANDARD_BUTTON_WIDTH;
         btnExport.setLayoutData(data);
         dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);

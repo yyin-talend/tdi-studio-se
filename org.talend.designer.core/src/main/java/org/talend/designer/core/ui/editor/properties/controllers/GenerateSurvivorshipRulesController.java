@@ -161,14 +161,14 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
         if (numInRow == 1) {
             if (lastControl != null) {
                 data.left = new FormAttachment(lastControl, currentLabelWidth);
-                data.right = new FormAttachment(lastControl, currentLabelWidth + STANDARD_BUTTON_WIDTH);
+                data.right = new FormAttachment(lastControl, currentLabelWidth + STANDARD_BUTTON_WIDTH + 8);
             } else {
                 data.left = new FormAttachment(0, currentLabelWidth);
-                data.right = new FormAttachment(0, currentLabelWidth + STANDARD_BUTTON_WIDTH);
+                data.right = new FormAttachment(0, currentLabelWidth + STANDARD_BUTTON_WIDTH + 8);
             }
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-            data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
+            data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH + 8, SWT.RIGHT);
         }
         data.top = new FormAttachment(0, top);
         btnEdit.setLayoutData(data);
