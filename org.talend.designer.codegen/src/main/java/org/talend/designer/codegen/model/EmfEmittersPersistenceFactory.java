@@ -17,7 +17,6 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -25,7 +24,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
-import org.eclipse.jdt.core.JavaCore;
 import org.talend.core.language.ECodeLanguage;
 
 /**
@@ -77,11 +75,7 @@ public final class EmfEmittersPersistenceFactory {
                 project.create(new SubProgressMonitor(progressMonitor, 1));
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
                         new Object[] { project.getName() }));
-                IProjectDescription description = workspace.newProjectDescription(project.getName());
-                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                description.setLocation(null);
                 project.open(new SubProgressMonitor(progressMonitor, 1));
-                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
             }
         } catch (CoreException e) {
             log.error(e.getMessage(), e);
