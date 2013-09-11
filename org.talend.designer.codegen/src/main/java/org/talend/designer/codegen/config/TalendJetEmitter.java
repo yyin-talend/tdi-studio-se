@@ -16,32 +16,34 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.jet.JETCompiler;
@@ -50,14 +52,20 @@ import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.Monitor;
+import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.compiler.CompilationProgress;
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
+import org.osgi.framework.Bundle;
 import org.talend.commons.debug.TalendDebugHandler;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.core.model.components.ComponentBundleToPath;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -162,8 +170,6 @@ public class TalendJetEmitter extends JETEmitter {
 
         IProject project;
 
-        IJavaProject javaProject;
-
         public TalendEclipseHelper(IProgressMonitor progressMonitor, TalendJetEmitter jetEmitter, boolean rebuild)
                 throws JETException {
             progressMonitor.beginTask("", 10); //$NON-NLS-1$
@@ -191,26 +197,6 @@ public class TalendJetEmitter extends JETEmitter {
                     project.open(new SubProgressMonitor(progressMonitor, 5));
                     project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
                 }
-                IProjectDescription description = project.getDescription();
-                // only in case it's one old workspace and got no nature defined.
-                if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
-                    description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                    project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
-                }
-
-                javaProject = JavaCore.create(project);
-
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETInitializingProject_message", //$NON-NLS-1$
-                        new Object[] { project.getName() }));
-                IClasspathEntry classpathEntry = JavaCore.newSourceEntry(new Path("/" + project.getName() + "/src")); //$NON-NLS-1$ //$NON-NLS-2$
-
-                IClasspathEntry jreClasspathEntry = JavaCore
-                        .newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-
-                Set<IClasspathEntry> classpath = new HashSet<IClasspathEntry>();
-                classpath.add(classpathEntry);
-                classpath.add(jreClasspathEntry);
-                classpath.addAll(jetEmitter.getClasspathEntries());
 
                 IFolder sourceFolder = project.getFolder(new Path("src")); //$NON-NLS-1$
                 if (!sourceFolder.exists()) {
@@ -219,14 +205,6 @@ public class TalendJetEmitter extends JETEmitter {
                 IFolder runtimeFolder = project.getFolder(new Path("runtime")); //$NON-NLS-1$
                 if (!runtimeFolder.exists()) {
                     runtimeFolder.create(false, true, new SubProgressMonitor(progressMonitor, 1));
-                }
-
-                if (isClasspathDifferent(javaProject, classpath)) {
-                    IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
-                    javaProject.setRawClasspath(classpathEntryArray, new SubProgressMonitor(progressMonitor, 1));
-                    javaProject.setOutputLocation(new Path("/" + project.getName() + "/runtime"), new SubProgressMonitor( //$NON-NLS-1$ //$NON-NLS-2$
-                            progressMonitor, 1));
-                    javaProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
                 }
 
                 progressMonitor.done();
@@ -319,7 +297,8 @@ public class TalendJetEmitter extends JETEmitter {
                     }
                 }
                 boolean needRebuild = true;
-                IFile targetFile = sourceContainer.getFile(new Path(jetCompiler.getSkeleton().getClassName() + ".java")); //$NON-NLS-1$
+                String targetFileName = jetCompiler.getSkeleton().getClassName() + ".java"; //$NON-NLS-1$
+                IFile targetFile = sourceContainer.getFile(new Path(targetFileName));
                 if (!targetFile.exists()) {
                     subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreating_message", //$NON-NLS-1$
                             new Object[] { targetFile.getFullPath() }));
@@ -360,26 +339,17 @@ public class TalendJetEmitter extends JETEmitter {
                 if (needRebuild || jetEmitter.method == null) {
                     subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message", //$NON-NLS-1$
                             new Object[] { project.getName() }));
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    compileSingleClass(project, targetFile, baos);
+                    String output = baos.toString();
+                    // project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new
+                    // SubProgressMonitor(subProgressMonitor, 1));
 
-                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
-
-                    IMarker[] markers = targetFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
                     boolean errors = false;
-                    for (int i = 0; i < markers.length; ++i) {
-                        IMarker marker = markers[i];
-                        if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR) {
-                            errors = true;
-                            subProgressMonitor.subTask(marker.getAttribute(IMarker.MESSAGE) + " : " //$NON-NLS-1$
-                                    + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
-                                            targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
-                            log.error(jetEmitter.templateURI.substring(jetEmitter.templateURI.lastIndexOf("/") + 1) //$NON-NLS-1$
-                                    + Messages.getString(
-                                            "TalendJetEmitter.compileFail", //$NON-NLS-1$
-                                            marker.getAttribute(IMarker.MESSAGE),
-                                            (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
-                                                    targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) }))));
-                            setClassAvailable(false);
-                        }
+                    if (!output.isEmpty()) {
+                        errors = true;
+                        log.error(output);
+                        setClassAvailable(false);
                     }
 
                     if (!errors) {
@@ -388,8 +358,7 @@ public class TalendJetEmitter extends JETEmitter {
 
                         // Construct a proper URL for relative lookup.
                         //
-                        URL url = new File(project.getLocation()
-                                + "/" + javaProject.getOutputLocation().removeFirstSegments(1) + "/") //$NON-NLS-1$ //$NON-NLS-2$
+                        URL url = new File(project.getLocation() + "/" + "runtime" + "/") //$NON-NLS-1$ //$NON-NLS-2$
                                 .toURL();
                         URLClassLoader theClassLoader = new URLClassLoader(new URL[] { url }, jetEmitter.classLoader);
                         Class theClass = theClassLoader.loadClass((packageName.length() == 0 ? "" : packageName + ".") //$NON-NLS-1$ //$NON-NLS-2$
@@ -429,6 +398,163 @@ public class TalendJetEmitter extends JETEmitter {
                 progressMonitor.done();
             }
         }
+    }
+
+    private void compileSingleClass(IProject project, IFile javaFile, OutputStream errorMsgStream) {
+        compileSingleClass(project, javaFile, null, errorMsgStream, null);
+    }
+
+    /**
+     * DOC ycbai Comment method "compileSingleClass".
+     * <p>
+     * Compile one class directly.
+     * 
+     * @param project
+     * @param javaFile
+     * @param standardMsgStream
+     * @param errorMsgStream
+     * @param progress
+     */
+    private void compileSingleClass(IProject project, IFile javaFile, OutputStream standardMsgStream,
+            OutputStream errorMsgStream, CompilationProgress progress) {
+        OutputStream msgStream = standardMsgStream;
+        OutputStream errorStream = errorMsgStream;
+        if (msgStream == null) {
+            msgStream = System.out;
+        }
+        if (errorStream == null) {
+            errorStream = System.err;
+        }
+        BatchCompiler.compile(getBatchCompilerCmd(project, javaFile), new PrintWriter(msgStream), new PrintWriter(errorStream),
+                progress);
+    }
+
+    /**
+     * DOC ycbai Comment method "getBatchCompilerCmd".
+     * 
+     * @param project
+     * @param javaFile
+     * @return
+     */
+    private String[] getBatchCompilerCmd(IProject project, IFile javaFile) {
+        List<String> cmdList = new ArrayList<String>();
+        cmdList.add(javaFile.getLocation().toPortableString());
+        String classpathStr = getClasspathStr();
+        if (!classpathStr.isEmpty()) {
+            cmdList.add("-classpath"); //$NON-NLS-1$
+            cmdList.add(classpathStr);
+        }
+        //cmdList.add("-time"); //$NON-NLS-1$
+        cmdList.add("-g:none"); //$NON-NLS-1$
+        cmdList.add("-warn:none"); //$NON-NLS-1$
+        cmdList.add("-1.5"); //$NON-NLS-1$
+        cmdList.add("-d"); //$NON-NLS-1$
+        cmdList.add(getClassOutputPath(project, javaFile));
+
+        return cmdList.toArray(new String[0]);
+    }
+
+    /**
+     * DOC ycbai Comment method "getClassOutputPath".
+     * <p>
+     * Get class output folder of project.
+     * 
+     * @param project
+     * @param javaFile
+     * @return
+     */
+    private String getClassOutputPath(IProject project, IFile javaFile) {
+        IFolder runtimeFolder = project.getFolder("runtime"); //$NON-NLS-1$
+        return runtimeFolder.getLocation().toPortableString();
+    }
+
+    /**
+     * DOC ycbai Comment method "getClasspathStr".
+     * <p>
+     * Get character string of classpath with separator.
+     * 
+     * @return
+     */
+    private String getClasspathStr() {
+        StringBuffer cps = new StringBuffer();
+        String classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
+        List<IClasspathEntry> cpes = getClasspathEntries();
+        for (IClasspathEntry cpe : cpes) {
+            String classpath = getClasspathFromEntry(cpe);
+            cps.append(classpath).append(classPathSeparator);
+        }
+        if (cps.length() > 0) {
+            cps.deleteCharAt(cps.length() - 1);
+        }
+
+        return cps.toString();
+    }
+
+    /**
+     * DOC ycbai Comment method "getClasspathFromEntry".
+     * <p>
+     * Get the absolute classpath.
+     * 
+     * @param entry
+     * @return
+     */
+    private String getClasspathFromEntry(IClasspathEntry entry) {
+        if (entry == null) {
+            return null;
+        }
+        IClasspathAttribute[] extraAttributes = entry.getExtraAttributes();
+        if (extraAttributes.length > 0) {
+            for (IClasspathAttribute ca : extraAttributes) {
+                if ("plugin_id".equals(ca.getName())) { //$NON-NLS-1$
+                    String pluginId = ca.getValue();
+                    if (pluginId != null) {
+                        File plugin = new File(ComponentBundleToPath.getPathFromBundle(pluginId));
+                        String pluginPath = plugin.getAbsolutePath();
+                        if (Platform.inDevelopmentMode() && plugin.isDirectory()) {
+                            String output;
+                            try {
+                                output = getIdeOutputSubDir(Platform.getBundle(pluginId));
+                                if (output != null) {
+                                    pluginPath = pluginPath + File.separator + output;
+                                }
+                            } catch (IOException e) {
+                                // for dev only so just keep a print stacktrace
+                                e.printStackTrace();
+                            }
+                        }
+                        return pluginPath;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * DOC ycbai Comment method "getIdeOutputSubDir".
+     * <p>
+     * Get class folder path of bundle. Just use for development environment.
+     * 
+     * @param bundle
+     * @return
+     * @throws IOException
+     */
+    private String getIdeOutputSubDir(Bundle bundle) throws IOException {
+        String outputSubDir = null;
+        // get output folder path in case we are running from the IDE
+        URL buildPropUrl = bundle.getEntry("/build.properties"); //$NON-NLS-1$
+        if (buildPropUrl != null) {
+            Properties buildProp = new Properties();
+            InputStream buildPropStream = buildPropUrl.openStream();
+            try {
+                buildProp.load(buildPropStream);
+                outputSubDir = buildProp.getProperty("output..", null); //$NON-NLS-1$
+            } finally {
+                buildPropStream.close();
+            }
+        }
+        return outputSubDir;
     }
 
     /*

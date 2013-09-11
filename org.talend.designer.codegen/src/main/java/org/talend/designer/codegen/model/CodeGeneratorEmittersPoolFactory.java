@@ -22,13 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,12 +41,10 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.utils.StringUtils;
@@ -228,16 +223,17 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.measureActive = false;
                 return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
                         Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
-            } finally {
-                try {
-                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    IProject project = workspace.getRoot().getProject(JET_PROJECT);
-                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-                    TimeMeasure.step("initialize Jet Emitters", "build project .JETEmitters"); //$NON-NLS-1$ //$NON-NLS-2$
-                } catch (CoreException e) {
-                    ExceptionHandler.process(e);
-                }
             }
+            // finally {
+            // try {
+            // IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            // IProject project = workspace.getRoot().getProject(JET_PROJECT);
+            // project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+            //                    TimeMeasure.step("initialize Jet Emitters", "build project .JETEmitters"); //$NON-NLS-1$ //$NON-NLS-2$
+            // } catch (CoreException e) {
+            // ExceptionHandler.process(e);
+            // }
+            // }
             TimeMeasure.end("initialize Jet Emitters"); //$NON-NLS-1$
             TimeMeasure.display = false;
             TimeMeasure.displaySteps = false;
@@ -291,12 +287,6 @@ public final class CodeGeneratorEmittersPoolFactory {
             if (!project.isOpen()) {
                 project.open(new SubProgressMonitor(progressMonitor, 5));
                 project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
-            }
-            IProjectDescription description = project.getDescription();
-            // only in case it's one old workspace and got no nature defined.
-            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
-                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
             }
         }
 
