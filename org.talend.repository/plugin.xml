@@ -1985,6 +1985,15 @@
               id="org.talend.repository.model.migration.ChangeDBName4Hive"
               name="ChangeDBName4Hive"
               version="5.2.4">
+        </projecttask>        
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.AddNewFieldsForTDQHadoopComponentsTask"
+              description="set NAMENODE_URI value based on the HOST and PORT value, set DISTRIBUTION value based on DB_VERSION"
+              id="org.talend.repository.model.migration.AddNewFieldsForTDQHadoopComponentsTask"
+              name="AddNewFieldsForTDQHadoopComponentsTask"
+              version="5.4.0">
         </projecttask>
    </extension>
    
