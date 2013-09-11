@@ -41,7 +41,7 @@ parameters_<%=cid%>.append("&variables=<map>");
 %>
 parameters_<%=cid%>.append("<entry><string><%=columns.get(i).getLabel() %></string><string>");
 parameters_<%=cid%>.append("<![CDATA[");
-parameters_<%=cid%>.append(String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>).replaceAll("&","%26"));
+parameters_<%=cid%>.append(java.net.URLEncoder.encode(java.net.URLEncoder.encode(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>, utf8Charset),utf8Charset));
 parameters_<%=cid%>.append("]]>");
 parameters_<%=cid%>.append("</string></entry>");
 <%
