@@ -78,6 +78,18 @@ public class CLASS {
         	return insertIndex;
         }
         
+        public List<XMLNode> getNextSiblings(){
+            List<XMLNode> result = new ArrayList<XMLNode>();
+            if(parent!=null && parent.elements!=null){
+                for(XMLNode tmpNode: parent.elements){
+                    if(order < tmpNode.order){
+                        result.add(tmpNode);
+                    }
+                }
+            }
+            return result;
+        }
+        
         public int getCurrGroupPos(){
         	int currPos =0;
         	if(5==(special & 5)){//group and loop main node

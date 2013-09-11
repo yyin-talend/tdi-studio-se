@@ -159,20 +159,33 @@ class GenerateToolByDom4j{
 			}
 			if(isAppend){
 %>
-		int app_size_<%=cid %>=<%=parentName%>_<%=cid%>.elements("<%=node.name%>").size();
+		List currentList_<%=cid %> = <%=parentName%>_<%=cid%>.elements("<%=node.name%>");
+		int app_size_<%=cid %> = currentList_<%=cid %>.size();
 		if(app_size_<%=cid %> > 0){
-			orders_<%=cid %>[<%=currPos %>] =1+ <%=parentName%>_<%=cid%>.elements().indexOf(<%=parentName%>_<%=cid%>.elements("<%=node.name%>").get(app_size_<%=cid %>-1));
-		}else{
+			orders_<%=cid %>[<%=currPos %>] =1+ <%=parentName%>_<%=cid%>.elements().indexOf(currentList_<%=cid %>.get(app_size_<%=cid %>-1));
+		}else{//when the group or loop element appear first time
 <%
-				if(currPos==0){
+				List<XMLNode> nextSiblings = node.getNextSiblings();
 %>
-			orders_<%=cid %>[<%=currPos %>] = <%=parentName%>_<%=cid%>.elements().size();
+			List allList_<%=cid %> = <%=parentName%>_<%=cid%>.elements();
+			//append tail as default action
+			orders_<%=cid %>[<%=currPos %>] = allList_<%=cid%>.size();
 <%
-				}else{
+				if(nextSiblings.size() > 0) {
 %>
-			orders_<%=cid %>[<%=currPos %>] = <%=node.getNodeInsertIndex() %>;
-			if(orders_<%=cid %>[<%=currPos %>] == 0 && <%=parentName%>_<%=cid%>.elements().size() != 0 && !bl_<%=cid%>) {
-				orders_<%=cid %>[<%=currPos %>] = <%=parentName%>_<%=cid%>.elements().size();
+			List siblingList_<%=cid %> = null;
+			boolean findInsertPosition_<%=cid%> = false;
+<%
+				}
+				
+				for(XMLNode sibling : nextSiblings) {
+%>
+			if(!findInsertPosition_<%=cid%> && allList_<%=cid%>.size()!=0) {
+				siblingList_<%=cid%> = <%=parentName%>_<%=cid%>.elements("<%=sibling.name%>");
+				if(siblingList_<%=cid %>.size() > 0) {
+					findInsertPosition_<%=cid%> = true;
+					orders_<%=cid %>[<%=currPos %>] = allList_<%=cid %>.indexOf(siblingList_<%=cid %>.get(0));
+				}
 			}
 <%
 				}
