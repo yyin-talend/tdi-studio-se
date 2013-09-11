@@ -25,6 +25,7 @@ imports="
 			List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
 			
 			boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+			boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
 			
 			if(hiveServer!=null && !"".equals(hiveServer.trim()) && (isCustom || ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "Cloudera_CDH4".equals(hiveVersion)))) {
 				hiveServer = hiveServer.toLowerCase();
@@ -51,7 +52,7 @@ imports="
 				} 
 			}
 			
-			if(setMapredJT) {
+			if(((isCustom && !useYarn) || (!isCustom && !"PIVOTAL_HD_1_0_1".equals(hiveVersion))) && setMapredJT) {
 				String mapredJT = ElementParameterParser.getValue(node, "__MAPRED_JT__");
 %>
 				System.setProperty("mapred.job.tracker", <%=mapredJT%>);
@@ -108,6 +109,20 @@ imports="
 	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
 	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
 	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
+	
+	boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+	boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
+	boolean setResourceManager = "true".equals(ElementParameterParser.getValue(node, "__SET_RESOURCE_MANAGER__"));
+	
+	if(((isCustom && useYarn) || (!isCustom && "PIVOTAL_HD_1_0_1".equals(hiveVersion))) && setResourceManager) {
+		String resourceManager = ElementParameterParser.getValue(node, "__RESOURCE_MANAGER__");
+%>
+    	java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
+    	init_<%=cid%>.execute("SET mapreduce.framework.name=yarn");
+    	init_<%=cid%>.execute("SET yarn.resourcemanager.address=" + <%=resourceManager%>);
+    	init_<%=cid%>.close();
+<%
+	}
 %>
 	String dbname_<%=cid%> = <%=dbname%>;
 	if(dbname_<%=cid%>!=null && !"".equals(dbname_<%=cid%>.trim()) && !"default".equals(dbname_<%=cid%>.trim())) {
