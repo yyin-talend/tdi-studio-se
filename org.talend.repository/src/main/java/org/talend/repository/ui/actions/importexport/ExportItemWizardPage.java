@@ -93,7 +93,7 @@ import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
  */
-class ExportItemWizardPage extends WizardPage {
+public class ExportItemWizardPage extends WizardPage {
 
     private Button itemFromDirectoryRadio;
 
@@ -144,7 +144,7 @@ class ExportItemWizardPage extends WizardPage {
         TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
     }
 
-    private CheckboxTreeViewer getItemsTreeViewer() {
+    protected CheckboxTreeViewer getItemsTreeViewer() {
         return filteredCheckboxTree.getViewer();
     }
 
@@ -216,6 +216,10 @@ class ExportItemWizardPage extends WizardPage {
 
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
+        checkSelectedElements(exportItemsTreeViewer);
+    }
+
+    protected void checkSelectedElements(CheckboxTreeViewer exportItemsTreeViewer) {
         if (selection != null && !selection.isEmpty()) {
             // for bug 10969
             Set newSelection = new HashSet();
@@ -332,7 +336,6 @@ class ExportItemWizardPage extends WizardPage {
         } else {
             nodes.add(node);
         }
-
     }
 
     private void expandParent(TreeViewer viewer, RepositoryNode node) {

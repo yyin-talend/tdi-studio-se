@@ -25,7 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class ExportItemWizard extends Wizard implements IImportWizard {
 
-    private ExportItemWizardPage mainPage;
+    protected ExportItemWizardPage mainPage;
 
     private IStructuredSelection selection;
 
@@ -45,9 +45,9 @@ public class ExportItemWizard extends Wizard implements IImportWizard {
             section = workbenchSettings.addNewSection("ExportItemWizard"); //$NON-NLS-1$
         }
         setDialogSettings(section);
-
     }
 
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }
@@ -61,5 +61,4 @@ public class ExportItemWizard extends Wizard implements IImportWizard {
     public boolean performFinish() {
         return mainPage.performFinish();
     }
-
 }
