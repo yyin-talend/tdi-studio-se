@@ -135,6 +135,25 @@ public class NodeParamsHelper {
     }
 
     /**
+     * Gets string parameter by {@code key}. Especially, if the parameter's
+     * controller is not visible, then also return {@code ""}.
+     * 
+     * @param key
+     *            the key
+     * @return the parameter value
+     */
+    public String getVisibleStringParam(String key) {
+        String value = getStringParam(key);
+        if (!("").equals(value)) {
+            IElementParameter param = getParameter(key);
+            if (param.isShow(node.getElementParametersWithChildrens())) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    /**
      * Gets the object param. </br>//TODO Not used name map yet, and be improve
      * by expose methods from {@link ElementParameterParser}
      * 
@@ -203,6 +222,9 @@ public class NodeParamsHelper {
      */
     @SuppressWarnings("unchecked")
     private static String getDisplayValue(final IElementParameter param) {
+        if (param == null) {
+            return "";
+        }
         Object value = param.getValue();
 
         if (value instanceof String) {
