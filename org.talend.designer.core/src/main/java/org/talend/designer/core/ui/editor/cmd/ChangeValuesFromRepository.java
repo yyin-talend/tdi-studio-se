@@ -177,6 +177,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         this.table = table;
     }
 
+    public ChangeValuesFromRepository(IElement elem, Connection connection, IMetadataTable table, String propertyName,
+            String value) {
+        this(elem, connection, propertyName, value);
+        this.table = table;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {

@@ -1369,6 +1369,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // && selectedNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
                 if (selectedNode.getObject() instanceof IMetadataTable) {
                     metadataTable = (IMetadataTable) selectedNode.getObject();
+                    if (metadataTable != null && repositoryTableMap.get(metadataTable.getId()) != null) {
+                        metadataTable = repositoryTableMap.get(metadataTable.getId());
+                    }
                 }
                 // }
                 ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, metadataTable,
