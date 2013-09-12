@@ -3955,8 +3955,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
             for (INode node : getGraphicalNodes()) {
                 if (jobletService.isJobletComponent(node)) {
-                    listRoutines.addAll(getJobletRoutines(((JobletProcessItem) jobletService.getJobletComponentItem(node)
-                            .getItem()).getJobletProcess()));
+                    listRoutines.addAll(getJobletRoutines(jobletService, node));
                 }
             }
         }
@@ -3996,21 +3995,19 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     }
 
-    private Set<String> getJobletRoutines(ProcessType processType) {
+    private Set<String> getJobletRoutines(IJobletProviderService jobletService, INode jobletComponent) {
+        List<Node> nodes = (List<Node>) jobletService.getGraphNodesForJoblet(jobletComponent);
         Set<String> listRoutines = new HashSet<String>();
-        for (RoutinesParameterType routine : (List<RoutinesParameterType>) processType.getParameters().getRoutinesParameter()) {
-            if (!StringUtils.isEmpty(routine.getId()) && !StringUtils.isEmpty(routine.getName())) {
-                listRoutines.add(routine.getName());
+        if (!nodes.isEmpty()) {
+            for (RoutinesParameterType routine : ((Process) nodes.get(0).getProcess()).getRoutineDependencies()) {
+                if (!StringUtils.isEmpty(routine.getId()) && !StringUtils.isEmpty(routine.getName())) {
+                    listRoutines.add(routine.getName());
+                }
             }
-        }
 
-        IJobletProviderService jobletService = null;
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
-            for (NodeType node : (List<NodeType>) processType.getNode()) {
-                ProcessType process = jobletService.getJobletProcess(node);
-                if (process != null) {
-                    listRoutines.addAll(getJobletRoutines(process));
+            for (Node node : nodes) {
+                if (jobletService.isJobletComponent(node)) {
+                    listRoutines.addAll(getJobletRoutines(jobletService, node));
                 }
             }
         }
