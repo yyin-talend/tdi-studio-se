@@ -405,7 +405,7 @@ if (sftp) { // *** sftp *** //
           java.io.FileOutputStream fout = new java.io.FileOutputStream(localFile, true);
           ftpClient.get(fout, remoteFileName);
 			<%if(isLog4jEnabled){%>
-				log.debug("Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+				log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 			<%}%>
           msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");

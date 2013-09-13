@@ -28,7 +28,7 @@ imports="
     }catch(java.lang.Exception e){
     		e.printStackTrace();
     		<%if(isLog4jEnabled){%>
-    			log.warn("<%=cid%> put file fails.");
+    			log.warn("<%=cid%> - Put file fails.");
     		<%}%>
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }
