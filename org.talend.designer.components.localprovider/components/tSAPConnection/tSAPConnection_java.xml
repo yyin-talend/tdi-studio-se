@@ -90,7 +90,15 @@
 		</PARAMETER>
 	
 	</PARAMETERS>
-
+    <ADVANCED_PARAMETERS>
+        <PARAMETER
+          NAME="FTP_HTTP_FUNCTION"
+          FIELD="CHECK"
+          NUM_ROW="10"
+        >
+            <DEFAULT>false</DEFAULT>
+        </PARAMETER>
+    </ADVANCED_PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="false" />

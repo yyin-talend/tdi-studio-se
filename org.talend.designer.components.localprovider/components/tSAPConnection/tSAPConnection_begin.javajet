@@ -22,6 +22,7 @@
     String serverType = ElementParameterParser.getValue(node,"__SERVERTYPE__");
     String systemId = ElementParameterParser.getValue(node,"__SYSTEMID__");
     String groupName = ElementParameterParser.getValue(node,"__GROUPNAME__");
+    boolean useFtpHttp = ("true").equals(ElementParameterParser.getValue(node,"__FTP_HTTP_FUNCTION__"));
 %>
 <%if("sapjco.jar".equals(version)){%>
 	com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
@@ -45,7 +46,10 @@
 	<%}%>
 	// Open the connection
 	client_<%=cid %>.connect();
-	
+	<%if(useFtpHttp){%>
+	com.sap.mw.jco.JCO.setMiddlewareProperty("jco.middleware.allow_start_of_programs", "ftp;sapftp;sapftpa;sapkprotp;http;saphttp;saphttpa");
+	client_<%=cid %>.setSapGui(2);
+	<%}%>
 	globalMap.put("conn_<%=cid %>", client_<%=cid %>);
 <%}else{%>
 	org.talend.sap.TalendDestinationData destinationData_<%=cid%> = null;
@@ -67,6 +71,10 @@
 	<%}%>
     org.talend.sap.TalendDestinationDataProvider destinationDataProvider_<%=cid%> = org.talend.sap.TalendDestinationDataProvider.getInstance();
     destinationDataProvider_<%=cid%>.addDestination("SAP_SERVER_<%=cid%>", destinationData_<%=cid%>);
+    <%if(useFtpHttp){%>
+    destinationDataProvider_<%=cid%>.getDestinationProperties("SAP_SERVER_<%=cid%>").setProperty(com.sap.conn.jco.ext.DestinationDataProvider.JCO_USE_SAPGUI, "2");
+	com.sap.conn.jco.JCo.setMiddlewareProperty("jco.middleware.allow_start_of_programs", "ftp;sapftp;sapftpa;sapkprotp;http;saphttp;saphttpa");
+	<%}%>
     try {
     	com.sap.conn.jco.ext.Environment.registerDestinationDataProvider(destinationDataProvider_<%=cid%>);
 	} catch (java.lang.IllegalStateException ex) {
