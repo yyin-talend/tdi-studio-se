@@ -142,20 +142,28 @@
 
   </PARAMETERS>
   <ADVANCED_PARAMETERS>
+    <PARAMETER
+      NAME="FTP_HTTP_FUNCTION"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
   	<PARAMETER
       NAME="CLOSE"
       FIELD="CHECK"
-      NUM_ROW="10"
+      NUM_ROW="20"
     >
-    <DEFAULT>true</DEFAULT>
+        <DEFAULT>true</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
   <CODEGENERATION>
-     <IMPORTS>
-       <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="false" />       
-       <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED="false" />
-       <IMPORT NAME="talend-sap" MODULE="talend-sap.jar" REQUIRED="true" />       
-     </IMPORTS>
+    <IMPORTS>
+      <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="false" />       
+      <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED="false" />
+      <IMPORT NAME="talend-sap" MODULE="talend-sap.jar" REQUIRED="true" />       
+    </IMPORTS>
   </CODEGENERATION>
   
   <RETURNS/>
