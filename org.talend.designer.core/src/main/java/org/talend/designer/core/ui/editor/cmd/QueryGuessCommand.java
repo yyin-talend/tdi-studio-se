@@ -361,7 +361,7 @@ public class QueryGuessCommand extends Command {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
         if ((isJdbc && conn != null) || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
-                || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_RAC.getDisplayName()))) {
+                || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName()))) {
             schema = getDefaultSchema(realTableName);
         }
         // Mssql query need add catalog before the table

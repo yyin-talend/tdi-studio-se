@@ -1423,7 +1423,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
             // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
             // to get the Oracle RAC url.
-            if (EDatabaseTypeName.ORACLE_RAC.getXmlName().equals(type)) {
+            if (EDatabaseTypeName.ORACLE_CUSTOM.getXmlName().equals(type)) {
                 url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
             }
         }
@@ -1546,7 +1546,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // "RAC_" + EConnectionParameterName.URL.getName(), context));
             // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
             // to get the Oracle RAC url.
-            if (EDatabaseTypeName.ORACLE_RAC.getDisplayName().equals(dbType)) {
+            if (EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName().equals(dbType)) {
                 url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
                         + EConnectionParameterName.URL.getName(), context));
             }

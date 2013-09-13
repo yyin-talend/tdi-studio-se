@@ -46,7 +46,7 @@ public class ETLMapRepositoryComponentDndFilter extends DefaultRepositoryCompone
                 String product = null;
                 List<EDatabaseTypeName> list = Arrays.asList(dbTypes);
                 if (list.contains(EDatabaseTypeName.ORACLEFORSID) || list.contains(EDatabaseTypeName.ORACLESN)
-                        || list.contains(EDatabaseTypeName.ORACLE_OCI) || list.contains(EDatabaseTypeName.ORACLE_RAC)) {
+                        || list.contains(EDatabaseTypeName.ORACLE_OCI) || list.contains(EDatabaseTypeName.ORACLE_CUSTOM)) {
                     product = EDatabaseTypeName.ORACLEFORSID.getProduct();
                 } else {
                     product = dbTypes[0].getDisplayName();
