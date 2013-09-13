@@ -12,12 +12,15 @@
 // ============================================================================
 package org.talend.repository;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.talend.commons.bridge.ReponsitoryContextBridge;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
@@ -26,11 +29,19 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
+import org.talend.core.model.metadata.builder.connection.HL7Connection;
+import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
+import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * ADD sizhaoliu 2013-04-16
@@ -261,5 +272,108 @@ public class StandaloneConnectionContextUtils {
 
     private static ContextType getContextTypeForContextMode(DatabaseConnection conn, String contextName) {
         return null;
+    }
+
+    public static FileConnection cloneOriginalValueConnection(FileConnection fileConn, Properties contextProperties) {
+        if (fileConn == null) {
+            return null;
+        }
+
+        FileConnection cloneConn = null;
+        if (fileConn instanceof DelimitedFileConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createDelimitedFileConnection();
+        } else if (fileConn instanceof PositionalFileConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createPositionalFileConnection();
+        } else if (fileConn instanceof RegexpFileConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createRegexpFileConnection();
+        } else if (fileConn instanceof FileExcelConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createFileExcelConnection();
+        } else if (fileConn instanceof HL7Connection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createHL7Connection();
+        } else if (fileConn instanceof EbcdicConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createEbcdicConnection();
+        }
+
+        if (cloneConn != null) {
+            String filePath = getOriginalValue(contextProperties, fileConn.getFilePath());
+            String encoding = getOriginalValue(contextProperties, fileConn.getEncoding());
+            String headValue = getOriginalValue(contextProperties, fileConn.getHeaderValue());
+            String footerValue = getOriginalValue(contextProperties, fileConn.getFooterValue());
+            String limitValue = getOriginalValue(contextProperties, fileConn.getLimitValue());
+
+            filePath = TalendQuoteUtils.removeQuotes(filePath);
+            // qli modified to fix the bug 6995.
+            encoding = TalendQuoteUtils.removeQuotes(encoding);
+            cloneConn.setFilePath(filePath);
+            cloneConn.setEncoding(encoding);
+            cloneConn.setHeaderValue(headValue);
+            cloneConn.setFooterValue(footerValue);
+            cloneConn.setLimitValue(limitValue);
+
+            //
+            if (fileConn instanceof DelimitedFileConnection || fileConn instanceof PositionalFileConnection
+                    || fileConn instanceof RegexpFileConnection) {
+                String fieldSeparatorValue = getOriginalValue(contextProperties, fileConn.getFieldSeparatorValue());
+                String rowSeparatorValue = getOriginalValue(contextProperties, fileConn.getRowSeparatorValue());
+
+                cloneConn.setFieldSeparatorValue(fieldSeparatorValue);
+                cloneConn.setRowSeparatorValue(rowSeparatorValue);
+
+                if (fileConn instanceof DelimitedFileConnection) {
+                    ((DelimitedFileConnection) cloneConn).setFieldSeparatorType(((DelimitedFileConnection) fileConn)
+                            .getFieldSeparatorType());
+                }
+            }
+            // excel
+            if (fileConn instanceof FileExcelConnection) {
+                FileExcelConnection excelConnection = (FileExcelConnection) fileConn;
+                FileExcelConnection cloneExcelConnection = (FileExcelConnection) cloneConn;
+
+                String thousandSeparator = getOriginalValue(contextProperties, excelConnection.getThousandSeparator());
+                String decimalSeparator = getOriginalValue(contextProperties, excelConnection.getDecimalSeparator());
+                String firstColumn = getOriginalValue(contextProperties, excelConnection.getFirstColumn());
+                String lastColumn = getOriginalValue(contextProperties, excelConnection.getLastColumn());
+
+                cloneExcelConnection.setThousandSeparator(thousandSeparator);
+                cloneExcelConnection.setDecimalSeparator(decimalSeparator);
+                cloneExcelConnection.setFirstColumn(firstColumn);
+                cloneExcelConnection.setLastColumn(lastColumn);
+
+                cloneExcelConnection.setSelectAllSheets(excelConnection.isSelectAllSheets());
+                cloneExcelConnection.setSheetName(excelConnection.getSheetName());
+
+                ArrayList sheetList = excelConnection.getSheetList();
+                cloneExcelConnection.setSheetList((ArrayList) sheetList.clone());
+
+                EList sheetColumns = excelConnection.getSheetColumns();
+                if (sheetColumns != null && sheetColumns instanceof BasicEList) {
+                    cloneExcelConnection.getSheetColumns().addAll((EList) ((BasicEList) sheetColumns).clone());
+                }
+
+                cloneExcelConnection.setAdvancedSpearator(excelConnection.isAdvancedSpearator());
+
+                cloneConn.setFieldSeparatorValue(fileConn.getFieldSeparatorValue());
+                cloneConn.setRowSeparatorType(fileConn.getRowSeparatorType());
+                cloneConn.setRowSeparatorValue(fileConn.getRowSeparatorValue());
+            }
+
+            cloneConn.setRowSeparatorType(fileConn.getRowSeparatorType());
+
+            cloneConn.setCsvOption(fileConn.isCsvOption());
+            cloneConn.setEscapeChar(fileConn.getEscapeChar());
+            cloneConn.setEscapeType(fileConn.getEscapeType());
+            cloneConn.setFirstLineCaption(fileConn.isFirstLineCaption());
+            cloneConn.setFormat(fileConn.getFormat());
+            cloneConn.setRemoveEmptyRow(fileConn.isRemoveEmptyRow());
+            cloneConn.setServer(fileConn.getServer());
+            cloneConn.setTextEnclosure(fileConn.getTextEnclosure());
+            cloneConn.setTextIdentifier(fileConn.getTextIdentifier());
+            cloneConn.setUseFooter(fileConn.isUseFooter());
+            cloneConn.setUseHeader(fileConn.isUseHeader());
+            cloneConn.setUseLimit(fileConn.isUseLimit());
+
+            ConnectionContextHelper.cloneConnectionProperties(fileConn, cloneConn);
+        }
+        return cloneConn;
     }
 }

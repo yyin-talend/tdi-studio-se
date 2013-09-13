@@ -62,6 +62,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -122,6 +123,7 @@ import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
@@ -528,6 +530,11 @@ public class RepositoryService implements IRepositoryService {
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
             String selectedContext) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, selectedContext);
+    }
+
+    @Override
+    public FileConnection cloneOriginalValueConnection(FileConnection fileConn) {
+        return FileConnectionContextUtils.cloneOriginalValueConnection(fileConn);
     }
 
     @Override

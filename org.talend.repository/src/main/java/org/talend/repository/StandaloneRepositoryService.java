@@ -26,6 +26,7 @@ import org.eclipse.ui.IEditorPart;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -295,6 +296,11 @@ public class StandaloneRepositoryService implements IRepositoryService {
     @Override
     public void setMetadataConnectionParameter(DatabaseConnection dbConn, IMetadataConnection metaConn) {
         StandaloneConnectionContextUtils.setMetadataConnectionParameter(dbConn, metaConn, contextProperties);
+    }
+
+    @Override
+    public FileConnection cloneOriginalValueConnection(FileConnection fileConn) {
+        return StandaloneConnectionContextUtils.cloneOriginalValueConnection(fileConn, contextProperties);
     }
 
     /*
