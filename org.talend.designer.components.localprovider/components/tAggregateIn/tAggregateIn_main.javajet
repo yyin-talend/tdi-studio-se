@@ -17,6 +17,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 String cid = origin;
 
@@ -156,6 +157,10 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
             				    %>;
             				    <%
     						}
+							if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Group colum value is : " + <%= outputConn.getName() %>.<%=outputGroupColumn %>);
+								log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+							<%}
     						continue next_column;
     					} // T_InMain_AggR_606
     				} // T_InMain_AggR_605
@@ -420,7 +425,10 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                                 
     							
     						} // T_InMain_AggR_636
-
+							if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Operation function is : '<%=function%>' and column value is : " +  <%= outputConn.getName() %>.<%=outOperation %>);
+								log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+							<%}
                 			continue next_column;                			
                 		} // T_InMain_AggR_616
 

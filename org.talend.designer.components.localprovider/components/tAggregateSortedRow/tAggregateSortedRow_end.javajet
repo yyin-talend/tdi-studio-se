@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.process.IConnectionCategory
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+    org.talend.core.model.process.ElementParameterParser
 "
 %>
 
@@ -14,6 +15,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -27,6 +29,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
     	if (metadata != null && inMetadata != null) { 
 %>globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Has finished.");
+		<%}%>
 <%		}
 	}
 }

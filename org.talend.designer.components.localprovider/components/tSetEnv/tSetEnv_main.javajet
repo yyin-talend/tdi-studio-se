@@ -18,28 +18,39 @@ imports="
         if (metadata!=null) {
             // component id
             String cid = node.getUniqueName();
+            boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")); 
             List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
-            for (int i = 0; i < params.size(); i++) {
-                Map<String, String> line = params.get(i);
-                if(("true").equals(line.get("APPEND"))==true)
-                    {
+				if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Start to work.");
+		        	log.info("<%=cid%> - Setting env.");
+    				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+				<%}
+        	    for (int i = 0; i < params.size(); i++) {
+    	            Map<String, String> line = params.get(i);
+	                if(("true").equals(line.get("APPEND"))==true){
 %>
-                        if(System.getProperty(<%= line.get("NAME") %>)!=null)
-                        {
+                        if(System.getProperty(<%= line.get("NAME") %>)!=null){
                             System.setProperty(<%= line.get("NAME") %>, System.getProperty(<%= line.get("NAME") %>)+System.getProperty("path.separator")+<%= line.get("VALUE") %>);
-                        }else
-                        {
+                        }else{
                            System.setProperty(<%= line.get("NAME") %>,<%= line.get("VALUE") %>);                         
                         }
 <%
-                    }else
-                    {
+               		}else{
                         
  %>
                         System.setProperty(<%= line.get("NAME") %>,<%= line.get("VALUE") %>);
  <%
                     }
+%>
+					<%if(isLog4jEnabled){%>
+						log.debug("<%=cid%> - Set env : " + <%=line.get("NAME")%> + " value is '" + <%=line.get("VALUE")%> + "'.");
+						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+					<%}%>
+<%
                 }
-            }
+				if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Has finished!");
+				<%}
         }
+    }
    %>

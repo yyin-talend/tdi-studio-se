@@ -26,10 +26,18 @@
         }
     }
     List< ? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     if(columnList != null && columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
         %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Start to work.");
+		<%}%>
         int nb_line_<%=cid %> = 0;
         java.util.List<String> assignList_<%=cid %> = new java.util.ArrayList<String>();
+        <%if(isLog4jEnabled){%>
+        	log.info("<%=cid%> - Dumping context.");
+        	StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+        <%}%>
         for( java.util.Enumeration<?> en_<%=cid %> = context.propertyNames() ; en_<%=cid %>.hasMoreElements() ; ) {        
             nb_line_<%=cid %>++;
             Object key_<%=cid %> = en_<%=cid %>.nextElement();
@@ -60,7 +68,10 @@
 						}
 						%>
 					<%}%>
-                    
+					<%if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append("Key is "+<%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> + " | ");
+		               	log4jSb_<%=cid%>.append("Value is "+ <%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%>);
+					<%}%>                    
 <%
                 }
             }

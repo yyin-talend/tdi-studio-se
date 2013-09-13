@@ -23,6 +23,7 @@ String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
 boolean pty = "true".equals(ElementParameterParser.getValue(node, "__PTY__"));
 List<IMetadataTable> metadatas = node.getMetadataList();
 String cid = node.getUniqueName();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
@@ -109,7 +110,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		 /* Close this session */
 		
 		sess_<%=cid%>.close();
-		
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Command line standard result: " + stringStdout_<%=cid%>.toString());
+			log.debug("<%=cid%> - Command line error result: " + stringStderr_<%=cid%>.toString());
+		<%}%>
 <%
 		//-----begin to handle output
 		if(("TO_GLOBAL_VARIABLE").equals(standardOutput)){

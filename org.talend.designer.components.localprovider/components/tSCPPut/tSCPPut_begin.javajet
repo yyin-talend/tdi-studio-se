@@ -11,10 +11,14 @@ imports="
 <%
         CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
         INode node = (INode)codeGenArgument.getArgument();
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
         String cid = node.getUniqueName();
         
         List<Map<String, String>> filelist =(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
 %>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Start to work.");
+	<%}%>
 	int nb_file_<%=cid%> = 0;
 	globalMap.put("<%=cid %>_STATUS", "");
 
@@ -54,21 +58,35 @@ imports="
         }
 %>
               /* Now connect */
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "'.");
+		<%}%>
         conn_<%=cid%>.connect();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + hostname_<%=cid%> + "' has succeeded.");
+		<%}%>
 <%        
         if (("PUBLICKEY").equals(authMethod)) {
 %>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
             boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
-              if (isAuthenticated_<%=cid%> == false)
-                      throw new RuntimeException("Authentication failed.");
+              if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+                 throw new RuntimeException("Authentication failed.");
+			  }	
 <%
         }
         if (("PASSWORD").equals(authMethod)) {
 %>
-        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
-        if (isAuthenticated_<%=cid%> == false)
-            throw new RuntimeException("Authentication failed.");
+        	boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
+        	if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+            	throw new RuntimeException("Authentication failed.");
+        	}
 <%
         }
         if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
@@ -90,8 +108,12 @@ imports="
         		}
         	}	
         );
-        if (isAuthenticated_<%=cid%> == false)
-            throw new RuntimeException("Authentication failed.");
+        	if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+            	throw new RuntimeException("Authentication failed.");
+        	}
 <%
         }
 	}//if(isExistConnection)

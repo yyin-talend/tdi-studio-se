@@ -33,6 +33,15 @@
 	
 	boolean array_command = ("true").equals(ElementParameterParser.getValue(node, "__USE_ARRAY_COMMAND__"));
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+	if(isLog4jEnabled){
+%>
+		log.info("<%=cid%> - Start to work.");
+		StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+<%
+	} 
+	
 	if(array_command){
 		List<Map<String,String>> list_data = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ARRAY_COMMAND__");
 %>
@@ -133,11 +142,20 @@ Thread normal_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - "  + ioe.getMessage());
+			<%}%>
 			ioe.printStackTrace();
 		}
 	}
 };
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Executing command.");
+<%}%>
 normal_<%=cid %>.start();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Execue command has successed.");
+<%}%>
 
 Thread error_<%=cid %> = new Thread() {
 	public void run() {
@@ -182,6 +200,9 @@ Thread error_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - "  + ioe.getMessage());
+			<%}%>
 			ioe.printStackTrace();
 		}
 	}
@@ -214,6 +235,10 @@ if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput))
 %>
 							<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
 <%
+			                if(isLog4jEnabled){%>
+									log4jSb_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
+<%
+							}
 						}
 					}
 				}

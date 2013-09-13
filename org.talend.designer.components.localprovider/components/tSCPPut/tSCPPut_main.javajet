@@ -9,6 +9,7 @@ imports="
 <%
         CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
         INode node = (INode)codeGenArgument.getArgument();
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
         String cid = node.getUniqueName();      
 
         String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
@@ -16,6 +17,9 @@ imports="
 	try{
         if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
             scp_<%=cid%>.put(sourceFileNames_<%=cid%> , <%=remotedir %>, "0644"); 
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - Put file '" + sourceList_<%=cid %>.toString() + "' to remote directory '" + <%=remotedir %>+ "' has successed.");
+			<%}%>
             nb_file_<%=cid %> = sourceFileNames_<%=cid %>.length;
             globalMap.put("<%=cid %>_STATUS", "File put OK.");
         }else{
@@ -23,5 +27,8 @@ imports="
         }
     }catch(java.lang.Exception e){
     		e.printStackTrace();
+    		<%if(isLog4jEnabled){%>
+    			log.warn("<%=cid%> put file fails.");
+    		<%}%>
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }

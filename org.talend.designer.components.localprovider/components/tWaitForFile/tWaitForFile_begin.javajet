@@ -22,6 +22,13 @@
     boolean waitRelease = ("true").equals(ElementParameterParser.getValue(node, "__WAIT_RELEASE__"));
     boolean nonUpdate = "true".equals(ElementParameterParser.getValue(node, "__NON_UPDATE__"));
     String interval = ElementParameterParser.getValue(node, "__INTERVAL_CHECK__");
+	
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    if(isLog4jEnabled){
+%>
+		log.info("<%=cid%> - Start to work.");
+<%
+	}
 %>
        
         class Util_<%=cid %> {
@@ -78,11 +85,17 @@
                         }
                     }
                 } catch(java.lang.Exception ex) {
+                	<%if(isLog4jEnabled){%>
+                		log.warn("<%=cid %> - " + ex.getMessage());
+                	<%}%>
                 } finally {
                 	if(fis != null) {
                 		try {
                 			fis.close();
                 		} catch(java.lang.Exception ex) {
+                		<%if(isLog4jEnabled){%>
+                			log.warn("<%=cid%> - " + ex.getMessage());
+                		<%}%>
                 		}
                 	}
                 }
@@ -223,6 +236,9 @@
                 %>              
     			if( count_<%=cid %> < originalFiles_<%=cid %>.size()) {
                     java.io.File file_<%=cid %> = new java.io.File(originalFiles_<%=cid %>.get(count_<%=cid %>));
+					<%if (isLog4jEnabled) {%>
+						log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was created.");
+					<%}%>
                     globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                     globalMap.put("<%=cid %>_PRESENT_FILE", file_<%=cid %>.getAbsolutePath());
                     found_<%=cid %> = true;
@@ -266,6 +282,9 @@
             		<%
             		}
             		%>
+					<%if (isLog4jEnabled) {%>
+						log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was created.");
+					<%}%>
                     globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                     globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                     found_<%=cid %> = true;
@@ -281,6 +300,9 @@
             		int index_delete_<%=cid%> = java.util.Arrays.binarySearch(arrayFetchFilesOneTime_<%=cid%>,str_<%=cid %>);
                     if(index_delete_<%=cid%> < 0) {
 	            		java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
+						<%if (isLog4jEnabled) {%>
+							log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was deleted.");
+						<%}%>
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;  
@@ -322,6 +344,9 @@
                         originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
                         String fileMD5_<%=cid%> = util_<%=cid %>.getFileChecksum(file_<%=cid%>);
 						if(!fileMD5_<%=cid%>.equals(originalContentMap_<%=cid%>.get(str_<%=cid%>))){
+							<%if (isLog4jEnabled) {%>
+								log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was updated.");
+							<%}%>
 	                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
 	                        globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
 	                       	found_<%=cid %> = true;
@@ -341,12 +366,18 @@
 	            			globalMap.put("<%=cid %>_NOT_UPDATED_FILE", null);
 	            			found_<%=cid%> = false;
             			}else{
+							<%if (isLog4jEnabled) {%>
+								log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was updated.");
+							<%}%>
 	                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
 	                    	globalMap.put("<%=cid %>_NOT_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
 	                    	found_<%=cid%> = true;
 	                    	break;
                     	}
                    	}else{                   
+						<%if (isLog4jEnabled) {%>
+							log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was updated.");
+						<%}%>
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                     	globalMap.put("<%=cid %>_NOT_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                     	found_<%=cid %> = true;
@@ -365,6 +396,9 @@
                 	int index_fileall_<%=cid%> = java.util.Arrays.binarySearch(arrayFetchFilesOneTime_<%=cid%>,str_<%=cid %>);
                     if(index_fileall_<%=cid%> < 0 ) {
 	                	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
+						<%if (isLog4jEnabled) {%>
+							log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was deleted.");
+						<%}%>
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
@@ -401,6 +435,9 @@
 <%
         	    	}
             		%>
+					<%if (isLog4jEnabled) {%>
+						log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was created.");
+					<%}%>
                     globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                     globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                     found_<%=cid %> = true;
@@ -440,6 +477,9 @@
                         String fileMD5_<%=cid%> = util_<%=cid %>.getFileChecksum(file_<%=cid%>);
                         if(!fileMD5_<%=cid%>.equals(originalContentMap_<%=cid%>.get(str_<%=cid%>))){
                         	originalContentMap_<%=cid%>.put(str_<%=cid%>,fileMD5_<%=cid%>);
+							<%if (isLog4jEnabled) {%>
+								log.debug("<%=cid%> - File for '" + file_<%=cid %>.getName() + "' was updated.");
+							<%}%>
 	                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
 	                        globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
 	                        found_<%=cid %> = true;

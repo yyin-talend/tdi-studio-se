@@ -58,6 +58,7 @@ String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
@@ -65,6 +66,9 @@ if(useDynamicJob){
 	useIndependentProcess = true;
 	%>
 	if(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid %> - The child job named " + <%=dynamicJobName%> + " is not in the job list.");
+		<%}%>
 		throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
 	}
 	paraList_<%=cid %>.addAll(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
@@ -278,7 +282,13 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
 <%if(originalContext){%>  
   childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
 <%}%>  
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Child job start to work.");
+	<%}%>
   String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Child job has finished.");
+	<%}%>
   <%
   if (childJob != null) {
     if (isRunInMultiThread ){
@@ -299,6 +309,9 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
   
     <%if (dieOnError) { %> 
       if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - Child job running failed.");
+		<%}%>
         throw new RuntimeException("Child job running failed");
       }
     <%}
@@ -374,11 +387,20 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
           reader.close();
         }
       } catch(java.io.IOException ioe) {
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid %> - " + ioe.getMessage());
+		<%}%>
         ioe.printStackTrace();
       }
     }
   };
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Child job start to work.");
+<%}%>
   normal_<%=cid %>.start();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Child job has finished.");
+<%}%>
 
   final StringBuffer errorMsg_<%=cid %> = new StringBuffer();
   Thread error_<%=cid %> = new Thread() {
@@ -394,6 +416,9 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
           reader.close();
         }
       } catch(java.io.IOException ioe) {
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid %> - " + ioe.getMessage());
+		<%}%>
         ioe.printStackTrace();
       }
     }
@@ -409,8 +434,14 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
   if(result_<%=cid %> != 0){
    		globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE",errorMsg_<%=cid %>.toString());
 	<%if (dieOnError) { %>  
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid %> - Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+		<%}%>
 	    throw new RuntimeException("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 	<%}else{%>
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid %> - Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+		<%}%>
 		System.err.println("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 	<%}%>
   }
@@ -431,6 +462,9 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
     if(inConns == null || inConns.size() == 0){//c
     %>
       {
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid %> - Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+		<%}%>
       	System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
     <%}else{//c
     //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
@@ -444,3 +478,6 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
 <%
 }//AAAAAAAAAAAA
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Has finished.");
+<%}%>

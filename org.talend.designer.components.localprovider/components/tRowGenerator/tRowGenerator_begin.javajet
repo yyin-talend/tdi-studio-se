@@ -19,9 +19,12 @@
 	
 	String cid = node.getUniqueName();
 	List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__VALUES__");
-
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Start to work.");
+	<%}%>
 int nb_line_<%=cid%> = 0;
 int nb_max_row_<%=cid%> = <%=(("").equals(ElementParameterParser.getValue(node, "__NB_ROWS__"))? 100: ElementParameterParser.getValue(node, "__NB_ROWS__"))%>;
 
@@ -60,7 +63,11 @@ class <%=cid %>Randomizer {
 %>
 }
 	<%=cid %>Randomizer rand<%=cid%> = new <%=cid %>Randomizer();
-
+	
+    <%if(isLog4jEnabled){%>
+		StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+    	log.info("<%=cid%> - Generating records.");
+    <%}%>
 	for (int i<%=cid %>=0; i<%=cid %><nb_max_row_<%=cid%> ;i<%=cid %>++) {
 <%
 		List< ? extends IConnection> conns = node.getOutgoingConnections();
@@ -68,10 +75,18 @@ class <%=cid %>Randomizer {
 			IConnection conn = conns.get(i);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) 
 			   && (!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH))) {
+			    int currentColNo = 0;
 				for (IMetadataColumn column: metadata.getListColumns()) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = rand<%=cid%>.getRandom<%=column.getLabel() %>();
+					<%if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+						<%if(currentColNo < metadata.getListColumns().size()-1){%>
+							log4jSb_<%=cid%>.append("|");								
+						<%}
+					}%>
 <%
+                currentColNo++;
 				}
 			}
 		}

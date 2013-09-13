@@ -20,6 +20,7 @@ boolean sftp = false;
 
 boolean usePerl5 = ("true").equals(ElementParameterParser.getValue(node, "__PERL5_REGEX__"));
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ("true".equals(useExistingConn)) {
   List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 
@@ -63,8 +64,14 @@ try {
   getter_<%=cid %>.chdir(root_<%=cid %>);
 } catch(java.lang.Exception e) {
   <%if ("true".equals(dieOnError)){%>
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - " + e.getMessage());
+	<%}%>
     throw(e);
   <%}else{%>
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     System.err.print(e.getMessage());
   <%}%>
 }

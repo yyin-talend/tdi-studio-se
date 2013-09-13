@@ -12,6 +12,7 @@ imports="
         String cid = node.getUniqueName();
         String remoteDir = ElementParameterParser.getValue(node,"__REMOTEDIR__");
         String fileExists = ElementParameterParser.getValue(node,"__EXISTFILE__");
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 		
 		//initial the command
@@ -48,7 +49,13 @@ imports="
 		 /* Close this session */			
 		sess_<%=cid%>.close();
 		if(("").equals(stringStderr_<%=cid %>.toString()) || stringStderr_<%=cid %>.toString() == null){
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - '" + <%=fileExists %> + "' is existsed in remote directory '"+ <%=remoteDir %> + "' .");
+			<%}%>
 			globalMap.put("<%=cid %>_STATUS", "File exists.");
 		}else{
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - '" + <%=fileExists %> + "' is not existsed in remote directory '"+ <%=remoteDir %> + "' .");
+			<%}%>
         	globalMap.put("<%=cid %>_STATUS", stringStderr_<%=cid %>.toString());
         }

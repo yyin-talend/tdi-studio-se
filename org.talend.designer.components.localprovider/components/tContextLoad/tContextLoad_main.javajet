@@ -22,6 +22,7 @@ IProcess process=node.getProcess();
 List<IContextParameter> params = new ArrayList<IContextParameter>();
 params=process.getContextManager().getDefaultContext().getContextParameterList();
 List<IMetadataTable> metadatas = node.getMetadataList();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
@@ -157,9 +158,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}
 	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
     }catch(java.lang.Exception e){    	
+    	<%if(isLog4jEnabled){%>
+    		log.error("<%=cid%> - Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
+    	<%}%>
     	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
     }
     	nb_line_<%=cid %>++;
+		<%if(isLog4jEnabled){%>
+			log4jSb_<%=cid%>.append("Key is " + key_<%=cid %> + " | Value is " + value_<%=cid %>);
+			log.debug("<%=cid%> - Loading the context " + nb_line_<%=cid %> + " : " + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}%>
     }
 <%
         	}

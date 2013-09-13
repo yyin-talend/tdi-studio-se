@@ -24,6 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 
 <%    
         String cid = node.getUniqueName();
+        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
             	
     	//get the input Main and Lookup connection
     	IConnection inMainCon = null;
@@ -154,6 +155,9 @@ for (IConnection conn : connsFilter) {
 	
 	<%=outputConnName %> = new <%=outputConnName %>Struct();	
 <%
+		if(isLog4jEnabled){%>
+			StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+		<%}
 		//first, iterate with minSize
 		for (int i = 0; i < minSize; i++) {//4
 			IMetadataColumn column = columns.get(i);
@@ -161,7 +165,17 @@ for (IConnection conn : connsFilter) {
 %>					
 	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
 <%
+				if(isLog4jEnabled){%>
+	                log4jSb_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
+					<%if(i < minSize-1){%>
+	                	log4jSb_<%=cid%>.append("|");
+					<%}
+				}
 		} //4
+		if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Output records :" + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}
 	}
 }
 %>		

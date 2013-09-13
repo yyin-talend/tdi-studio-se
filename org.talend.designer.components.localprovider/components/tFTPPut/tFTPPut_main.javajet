@@ -20,6 +20,7 @@
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	boolean sftp = false;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	boolean useGlob = ("true").equals(ElementParameterParser.getValue(node, "__PERL5_REGEX__"));
 	if(("true").equals(useExistingConn)){
 		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
@@ -40,6 +41,9 @@ try{
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
       	for (String key<%=cid %> : keySet<%=cid %>){
 			if(key<%=cid %> == null || "".equals(key<%=cid%>)){
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - file name invalid!");
+				<%}%>
 				System.err.println("file name invalid!");
 				continue;
 			}
@@ -91,12 +95,17 @@ try{
 		    				// add info to list will return
 		    				msg_<%=cid%>.add("file: " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + ", size: "
 		                    	+ listings<%=cid %>[m<%=cid %>].length() + " bytes upload successfully");
-		                                            
+							<%if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+							<%}%>
 		    				globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 		    				if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		    					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
 		    				}
 		    			}catch(com.jcraft.jsch.SftpException e_<%=cid%>) {
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - File transfer fail.");
+							<%}%>
 		                	globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
 		                	if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		                		globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
@@ -104,15 +113,24 @@ try{
 		            <%
         				if(("true").equals(dieOnError)){
 					%>
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
+							<%}%>
            					throw(e_<%=cid%>);
 					<%
 						}else{
 					%>
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
+							<%}%>
 							System.err.println("File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
 					<%
 						}
 					%>     
 		                }catch(java.lang.Exception e_<%=cid%>){
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - File '" + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + "' not found?");
+							<%}%>
 		                   if(!(e_<%=cid%> instanceof com.jcraft.jsch.SftpException)) {
 		                		msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 		                   		
@@ -124,6 +142,9 @@ try{
 	      			}
 	    		}
 	    	}else{
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - No match file exist!");
+				<%}%>
 	    		System.err.println("No match file exist!");
 	    	}
 	    	
@@ -134,6 +155,9 @@ try{
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 		   		}catch(com.jcraft.jsch.SftpException e_<%=cid%>){
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - File rename fail.");
+					<%}%>
 		   			throw e_<%=cid%>;
 	   			}
    			}  
@@ -216,6 +240,9 @@ try{
 	                                        + file_in_localDir.length() + " bytes upload successfully");
 								 	
 						 	currentStatus_<%=cid %> = "File rename OK.";
+							<%if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+							<%}%>
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				
 							<%}else if(("never").equals(overwrite)){%>
@@ -227,6 +254,9 @@ try{
 	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                            
 	        					currentStatus_<%=cid %> = "File rename OK.";
+								<%if(isLog4jEnabled){%>
+									log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+								<%}%>
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            		}
 		            		<%}else if(("always").equals(overwrite)){%>
@@ -237,6 +267,9 @@ try{
 	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                        
 	        				currentStatus_<%=cid %> = "File rename OK.";
+							<%if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+							<%}%>
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            				 
 		            		<%}else if(("size_differ").equals(overwrite)){%>
@@ -252,6 +285,9 @@ try{
 	                                        	+ file_in_localDir.length() + " bytes upload successfully"); 
 	                                        
 	        						currentStatus_<%=cid %> = "File rename OK.";
+									<%if(isLog4jEnabled){%>
+										log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+									<%}%>
 	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 	        					}
 		            		}else{
@@ -262,12 +298,18 @@ try{
 	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                                        
 	        					currentStatus_<%=cid %> = "File rename OK.";
+								<%if(isLog4jEnabled){%>
+									log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+								<%}%>
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            		}
 		            		<%}%>
 		            		nb_file_<%=cid%>++;
 		      			}
 		      		}catch(com.enterprisedt.net.ftp.FTPException e_<%=cid%>){
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - File " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
+						<%}%>
 		      				
 	  					msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 	  					
@@ -278,6 +320,9 @@ try{
 		      		}
 	    		}
 	    	}else{
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - No match file exist!");
+				<%}%>
 	    		System.err.println("No match file exist!");
 	    	}
 	    	  
@@ -289,10 +334,16 @@ try{
 <%
         if(("true").equals(dieOnError)){
 %>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+			<%}%>
             throw(e_<%=cid%>);
 <%
 		}else{
 %>
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+			<%}%>
 			System.err.print(e_<%=cid%>.getMessage());
 <%
 		}

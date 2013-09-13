@@ -33,6 +33,7 @@ String conn= "conn_" + connection;
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 boolean sftp = false;
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if (("true").equals(useExistingConn)) {
   List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 
@@ -44,7 +45,11 @@ if (("true").equals(useExistingConn)) {
 } else {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
-
+	if(isLog4jEnabled){
+%>
+		log.info("<%=cid%> - Start to work.");
+<%
+	}
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
 //And it can not work with the FTP proxy directly, only support the socks proxy.
 if (useProxy) {
@@ -85,6 +90,9 @@ if (sftp) {
     final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host%> + "'.");
+	<%}%>
     <%if (("PUBLICKEY").equals(authMethod)) {%>
       jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
     <%}%>
@@ -106,6 +114,9 @@ if (sftp) {
     session_<%=cid%>.connect();
     com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
     channel_<%=cid%>.connect();
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host%> + "' has succeeded.");
+	<%}%>
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%
@@ -124,6 +135,9 @@ if (sftp) {
     ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
   <%} else {%>    
     ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host%> + "'.");
+	<%}%>
     ftp_<%=cid %>.setRemoteHost(<%=host %>);
     ftp_<%=cid %>.setRemotePort(<%=port %>);
 
@@ -135,6 +149,9 @@ if (sftp) {
     ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
     ftp_<%=cid %>.connect();  
     ftp_<%=cid %>.login(<%=username %>, <%=password %>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host%>  + "' has succeeded.");
+	<%}%>
   <%  
   }
 }%>

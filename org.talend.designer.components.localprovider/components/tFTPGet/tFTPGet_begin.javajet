@@ -40,6 +40,7 @@ String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__")
 boolean sftp = false;
 boolean ftps = false;
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if ("true".equals(useExistingConn)) {
   List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 
@@ -54,6 +55,10 @@ if ("true".equals(useExistingConn)) {
   ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__"));
 }
 %>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Start to work.");
+		final StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+	<%}%>
 int nb_file_<%=cid%> = 0;
 <%
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
@@ -199,6 +204,10 @@ if (sftp) { // *** sftp *** //
           }
           %>
         );
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}%>
         msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
         <%if (bPrintMsg) {%>
           System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -210,6 +219,9 @@ if (sftp) { // *** sftp *** //
           msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
           globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
         }
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - " + e.getMessage());
+		<%}%>
         throw e;
       }
       count++;
@@ -228,6 +240,9 @@ if (sftp) { // *** sftp *** //
   } else{
   %>    
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host%> + "'.");
+	<%}%>
 
     <%if ("PUBLICKEY".equals(authMethod)){%>
       jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
@@ -251,6 +266,9 @@ if (sftp) { // *** sftp *** //
     session_<%=cid%>.connect();
     com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
     channel_<%=cid%>.connect();
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+	<%}%>
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%
@@ -284,6 +302,9 @@ if (sftp) { // *** sftp *** //
         ftpFileNames = ftpClient.dir(null, false);
         //Bug 13272, the same as getFiles().
       } catch (com.enterprisedt.net.ftp.FTPException e){
+		<%if(isLog4jEnabled){%>
+			log.warn("<%=cid%> - " + e.getMessage());
+		<%}%>
         ftpFileNames = null;
         ftpFiles = ftpClient.dirDetails(".");
       }
@@ -296,6 +317,9 @@ if (sftp) { // *** sftp *** //
           try {
             downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
           } catch (com.enterprisedt.net.ftp.FTPException e) {
+			<%if(isLog4jEnabled){%>
+				log.warn("<%=cid%> - " + e.getMessage());
+			<%}%>
             java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFileName);
             
             if (!localFile.exists()) {
@@ -336,6 +360,9 @@ if (sftp) { // *** sftp *** //
         ftpFileNames = ftpClient.dir(null, false);
         //Bug 13272, if dir() throw exception, use dirDetails().
       } catch (com.enterprisedt.net.ftp.FTPException e){
+		<%if(isLog4jEnabled){%>
+			log.warn("<%=cid%> - " + e.getMessage());
+		<%}%>
         ftpFileNames = null;
         ftpFiles = ftpClient.dirDetails(".");
       }
@@ -377,6 +404,10 @@ if (sftp) { // *** sftp *** //
         <%if (append) {%>
           java.io.FileOutputStream fout = new java.io.FileOutputStream(localFile, true);
           ftpClient.get(fout, remoteFileName);
+			<%if(isLog4jEnabled){%>
+				log.debug("Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
           msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
           <%if (bPrintMsg) {%>
             System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -387,6 +418,10 @@ if (sftp) { // *** sftp *** //
         %>
           if (!localFile.exists()) {
             ftpClient.get(localFileName, remoteFileName);
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
             msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
             <%if (bPrintMsg) {%>
               System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -400,6 +435,10 @@ if (sftp) { // *** sftp *** //
         } else if ("always".equals(overwrite)){
         %>
           ftpClient.get(localFileName, remoteFileName);
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
           msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
           <%if (bPrintMsg) {%>
             System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -413,6 +452,10 @@ if (sftp) { // *** sftp *** //
 
             if (ftpSize != localSize) {
               ftpClient.get(localFileName, remoteFileName);
+				<%if(isLog4jEnabled){%>
+					log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+				<%}%>
               msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
               <%if (bPrintMsg) {%>
               	System.out.println("file [" + remoteFileName + "] downloaded successfully.");
@@ -436,6 +479,9 @@ if (sftp) { // *** sftp *** //
       } catch (com.enterprisedt.net.ftp.FTPException e) {
         msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - " + e.getMessage());
+		<%}%>
         throw e;
       }
       count++;
@@ -450,6 +496,9 @@ if (sftp) { // *** sftp *** //
     ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
   <%} else {%>    
     ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "'.");
+	<%}%>
     ftp_<%=cid %>.setRemoteHost(<%=host %>);
     ftp_<%=cid %>.setRemotePort(<%=port %>);
 
@@ -467,6 +516,9 @@ if (sftp) { // *** sftp *** //
     ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
     ftp_<%=cid %>.connect();
     ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+	<%}%>  
   <%} %>
   msg_<%=cid%>.clearAll();
   FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>();
@@ -551,6 +603,10 @@ if (sftp) { // *** sftp *** //
       
       java.io.File localFile = new java.io.File(localFileName);
       ftpClient.download(remoteFileName, localFile);
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}%>
       count++;
     }
   }
@@ -587,6 +643,9 @@ if (sftp) { // *** sftp *** //
     <%  
     if ("false".equals(useExistingConn)){
     %>
+	  <%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "'.");
+	  <%}%>
       sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
       myTrust_<%=cid%> = new MyTrust_<%=cid%>();
       trustManager = myTrust_<%=cid%>.getTrustManagers();
@@ -607,6 +666,9 @@ if (sftp) { // *** sftp *** //
 %>
       ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
       ftp_<%=cid %>.login(<%=user %>, <%=pass %>);
+	  	<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		<%}%>
     <%  
     } else {
       String conn= "conn_" + connection;
@@ -620,12 +682,24 @@ if (sftp) { // *** sftp *** //
     remotedir_<%=cid%> = <%=remotedir%>;
     ftp_<%=cid %>.changeDirectory(remotedir_<%=cid %>);
   } catch (java.lang.IllegalStateException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (java.io.IOException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (it.sauronsoftware.ftp4j.FTPIllegalReplyException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (it.sauronsoftware.ftp4j.FTPException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   }
 <%
@@ -663,4 +737,7 @@ if (!dirHandle_<%=cid %>.exists()) {
 }
 String root_<%=cid %> = getter_<%=cid %>.pwd();
 
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Getting file from server.");
+<%}%>
 for (String maskStr_<%=cid%> : maskList_<%=cid%>) { 

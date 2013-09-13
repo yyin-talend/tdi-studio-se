@@ -29,6 +29,11 @@ String keystorePass = ElementParameterParser.getValue(node, "__KEYSTORE_PASS__")
 String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	if(isLog4jEnabled){
+%>
+		log.info("<%=cid%> - Start to work.");
+<%	}
 if (useProxy) {
 %>  
   java.util.Properties props_<%=cid%> = System.getProperties();
@@ -51,8 +56,14 @@ if (!sftp && !ftps) { // *** ftp *** //
     ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
   <%}%>
   ftp_<%=cid %>.setControlEncoding(<%=sEncoding%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "'.");
+	<%}%>
   ftp_<%=cid %>.connect();  
   ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+  	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+	<%}%>
   globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
 <%
 } else if (!ftps) { // *** sftp *** //
@@ -101,9 +112,15 @@ if (!sftp && !ftps) { // *** ftp *** //
   		session_<%=cid%>.setProxy(proxy_<%=cid%>);
   	}
 	<%}%>
+  	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "'.");
+	<%}%>
   session_<%=cid%>.connect();
   com.jcraft.jsch. Channel channel_<%=cid%> = session_<%=cid%>.openChannel("sftp"); 
   channel_<%=cid%>.connect();
+  	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+	<%}%>
   com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
   c_<%=cid%>.setFilenameEncoding(<%=sEncoding%>);
   globalMap.put("conn_<%=cid%>", c_<%=cid%>);
@@ -148,18 +165,39 @@ if (!sftp && !ftps) { // *** ftp *** //
 <%
     }
 %>
+  	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "'.");
+	<%}%>
     ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
+  	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+	<%}%>
     ftp_<%=cid %>.login(<%=user %>, <%=pass %>);
   } catch (java.lang.IllegalStateException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (java.io.IOException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (it.sauronsoftware.ftp4j.FTPIllegalReplyException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   } catch (it.sauronsoftware.ftp4j.FTPException e) {
+	<%if(isLog4jEnabled){%>
+		log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
     e.printStackTrace();
   }
   globalMap.put("conn_<%=cid%>", ftp_<%=cid %>);
 <%
 }
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Has finished ");
+<%}%>

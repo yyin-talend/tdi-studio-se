@@ -15,6 +15,7 @@
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	boolean sftp = false;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	if(("true").equals(useExistingConn)){
 		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 		for(INode n : nodeList){
@@ -31,7 +32,13 @@
 <%
 	if(!("true").equals(useExistingConn)){
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the server.");
+		<%}%>
     	session_<%=cid%>.disconnect(); 
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the server closed.");
+		<%}%>
 <%
 	}
 %>
@@ -62,14 +69,29 @@
  			if(("true").equals(ignoreFailureAtQuit)){
 %>
 				try{
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Closing the connection to the server.");
+					<%}%>
 					ftp_<%=cid %>.quit();
+					<%if(isLog4jEnabled){%>
+						log.info("<%=cid%> - Connection to the server closed.");
+					<%}%>
 				}catch(java.net.SocketException se_<%=cid%>){
+					<%if(isLog4jEnabled){%>
+						log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
+					<%}%>
 					//ignore failure
 				}
 <%
 			}else{
 %>
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Closing the connection to the server.");
+				<%}%>
 				ftp_<%=cid %>.quit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Connection to the server closed.");
+				<%}%>
 <%
 			}
 		}
@@ -78,4 +100,8 @@
 	
 	
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Put files counts :" + nb_file_<%=cid%> +  ".");
+	log.info("<%=cid%> - Has finished.");	
+<%}%>
 

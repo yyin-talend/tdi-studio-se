@@ -14,6 +14,7 @@ INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")); 
 String cid = node.getUniqueName();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -66,6 +67,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String standardOutput  = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
 		String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
+		if (isLog4jEnabled) {
+%>
+			log.info("<%=cid%> - Start to work.");
+<%
+		}
 		if (("NORMAL_OUTPUT").equals(standardOutput)||("NORMAL_OUTPUT").equals(errorOuput)) {
 %>
 			final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
@@ -79,6 +85,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	globalMap.remove("<%=cid %>_STDERR");
 
 	/* Create a connection instance */
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" +hostname_<%=cid%> + "'.");
+		<%}%>
 <%
         if(("").equals(port)){
 %>
@@ -108,15 +117,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
 		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
-			  if (isAuthenticated_<%=cid%> == false)
-				      throw new RuntimeException("Authentication failed.");
+			  if (isAuthenticated_<%=cid%> == false){
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Authentication failed.");
+					<%}%>
+			      throw new RuntimeException("Authentication failed.");
+			  }
 <%
         }
         if (("PASSWORD").equals(authMethod)) {
 %>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
-		if (isAuthenticated_<%=cid%> == false)
-			throw new RuntimeException("Authentication failed.");
+			if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+				throw new RuntimeException("Authentication failed.");
+			}
 <%
         }
         
@@ -139,12 +156,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		}
         	}	
         );
-        if (isAuthenticated_<%=cid%> == false)
-            throw new RuntimeException("Authentication failed.");
+        	if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+            	throw new RuntimeException("Authentication failed.");
+        	}
 <%
         }
 %>
-        
+        <%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" +hostname_<%=cid%> + "' has succeeded.");
+		<%}%>
 <%
     }
 }

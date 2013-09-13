@@ -16,6 +16,7 @@
     boolean disInfo=ElementParameterParser.getValue(node, "__DISABLE_INFO__").equals("true");
     String newVariable = ElementParameterParser.getValue(node, "__LOAD_NEW_VARIABLE__");
     String oldVariable = ElementParameterParser.getValue(node, "__NOT_LOAD_OLD_VARIABLE__");
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>	
 	java.util.Enumeration<?> enu_<%=cid %> = context.propertyNames();
     while(enu_<%=cid %>.hasMoreElements())
@@ -32,8 +33,14 @@
 		|| (newVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :newPropertyList_<%=cid%>){
-		System.<%=newVariable.equals("Error")?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+		<%if(isLog4jEnabled){%>
+			log.<%="Error".equals(newVariable)?"error(":"info("%>"<%=cid%> - <%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+		<%}%>
+		System.<%="Error".equals(newVariable)?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
         <%if (bDieOnError && newVariable.equals("Error")){%>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - <%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+			<%}%>
 		  throw new RuntimeException("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
 		<%}%>        
 	}
@@ -44,8 +51,14 @@
 		|| (oldVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
+		<%if(isLog4jEnabled){%>
+			log.<%=oldVariable.equals("Error")?"error(":"info("%>"<%=cid%> - <%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
+		<%}%>
 		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 		<%if (bDieOnError && oldVariable.equals("Error")){%>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - <%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
+			<%}%>
 		  throw new RuntimeException("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 		<%}%>
 	}
@@ -65,3 +78,8 @@
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
     
 	resumeUtil.addLog("NODE", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));    
+    <%if(isLog4jEnabled){%>
+    	log.info("<%=cid%> - Loaded context records count: " + nb_line_<%=cid %> + " .");
+		log.info("<%=cid%> - Has finished.");
+    <%}%>
+    
