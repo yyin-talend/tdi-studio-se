@@ -55,6 +55,8 @@ public final class DemoProjectsProvider extends RegistryReader {
 
         String projectUrl;
 
+        String iconUrl;
+
         /*
          * 
          */
@@ -119,6 +121,8 @@ public final class DemoProjectsProvider extends RegistryReader {
                     demoBean.setPluginId(demoProvider.pluginId);
                     demoBean.setDescriptionFilePath(demoProvider.descHtml);
                     demoBean.setDemoProjectFilePath(demoProvider.projectUrl);
+                    demoBean.setIconUrl(demoProvider.iconUrl);
+                    demoBean.setDemoDesc(demoProvider.description);
                     if (demoBean.getDemoProjectFilePath().endsWith(FileExtensions.ZIP_FILE_SUFFIX)
                             || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_FILE_SUFFIX)
                             || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_GZ_FILE_SUFFIX)) {
@@ -146,6 +150,7 @@ public final class DemoProjectsProvider extends RegistryReader {
                     String description = element.getAttribute("description"); //$NON-NLS-1$
                     String descHtml = element.getAttribute("descHtml"); //$NON-NLS-1$
                     String projectUrl = element.getAttribute("projectUrl"); //$NON-NLS-1$
+                    String iconUrl = element.getAttribute("icon"); //$NON-NLS-1$
                     if (StringUtils.isEmpty(id) || StringUtils.isEmpty(name) || StringUtils.isEmpty(descHtml)
                             || StringUtils.isEmpty(projectUrl)) {
                         log.error("Some provider miss some attributes: id=" + id + ", name= " + name); //$NON-NLS-1$//$NON-NLS-2$
@@ -174,6 +179,7 @@ public final class DemoProjectsProvider extends RegistryReader {
                     demoProvider.overrideId = overrideId;
                     demoProvider.descHtml = descHtml;
                     demoProvider.projectUrl = projectUrl;
+                    demoProvider.iconUrl = iconUrl;
 
                     demoProvider.pluginId = element.getContributor().getName();
                     allDemoProviders.put(id, demoProvider);

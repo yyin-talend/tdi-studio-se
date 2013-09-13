@@ -32,7 +32,7 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
 
     @Override
     public boolean performFinish() {
-        return true;
+        return demoProjectPage.prefromFinish();
     }
 
     public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -55,4 +55,5 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
     public int getSelectedDemoProjectIndex() {
         return demoProjectPage.getSelectedDemoProjectIndex();
     }
+
 }

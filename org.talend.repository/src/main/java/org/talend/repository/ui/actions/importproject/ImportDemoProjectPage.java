@@ -13,10 +13,12 @@
 package org.talend.repository.ui.actions.importproject;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
@@ -24,6 +26,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.SashForm;
@@ -34,12 +38,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.login.NewImportProjectWizard;
 
 /**
  * This class is used for creating a page for importing demo project.<br/>
@@ -202,5 +210,56 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     public int getSelectedDemoProjectIndex() {
         return selectedDemoProjectIndex;
+    }
+
+    public boolean prefromFinish() {
+        final DemoProjectBean selectPro = this.demoProjectList.get(selectedDemoProjectIndex);
+
+        NewImportProjectWizard newPrjWiz = new NewImportProjectWizard();
+        WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
+        newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
+        if (newProjectDialog.open() == Window.OK) {
+            final String projectName = newPrjWiz.getName().trim().replace(' ', '_');
+            // final String demoProjName = selectPro.getProjectName();
+
+            //
+            ProgressDialog progressDialog = new ProgressDialog(getShell()) {
+
+                private IProgressMonitor monitorWrap;
+
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                    try {
+                        // final List<DemoProjectBean> demoProjectsList = ImportProjectsUtilities.getAllDemoProjects();
+                        // DemoProjectBean demoProjectBean = null;
+                        // for (DemoProjectBean demoBean : demoProjectsList) {
+                        // if (demoBean.getProjectName().equals(demoProjName)) {
+                        // demoProjectBean = demoBean;
+                        // break;
+                        // }
+                        // }
+                        if (null == selectPro) {
+                            throw new IOException("cannot find selected demo project"); //$NON-NLS-1$
+                        }
+                        ImportProjectsUtilities.importDemoProject(getShell(), projectName, selectPro, monitor);
+                    } catch (Exception e1) {
+                        throw new InvocationTargetException(e1);
+                    }
+
+                    monitorWrap.done();
+                }
+            };
+
+            try {
+                progressDialog.executeProcess();
+            } catch (InvocationTargetException e1) {
+                MessageBoxExceptionHandler.process(e1.getTargetException(), getShell());
+            } catch (InterruptedException e1) {
+                // Nothing to do
+            }
+        }
+        return true;
     }
 }

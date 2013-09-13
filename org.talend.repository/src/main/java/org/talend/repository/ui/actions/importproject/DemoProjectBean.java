@@ -43,6 +43,10 @@ public class DemoProjectBean {
 
     private String descriptionContents;
 
+    private String iconUrl;
+
+    private String demoDesc;
+
     /**
      * the plugin id where the demo src is
      */
@@ -187,4 +191,25 @@ public class DemoProjectBean {
 
         return ""; //$NON-NLS-1$
     }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public void setDescriptionContents(String descriptionContents) {
+        this.descriptionContents = descriptionContents;
+    }
+
+    public String getDemoDesc() {
+        return demoDesc;
+    }
+
+    public void setDemoDesc(String demoDesc) {
+        this.demoDesc = demoDesc;
+    }
+
 }

@@ -12,21 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
-import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
@@ -74,54 +66,7 @@ public final class ImportDemoProjectAction extends Action {
         ImportDemoProjectWizard demoProjectWizard = new ImportDemoProjectWizard(demoProjectList);
 
         WizardDialog dialog = new WizardDialog(shell, demoProjectWizard);
-        if (dialog.open() != 1 && demoProjectWizard.getSelectedDemoProjectIndex() != Integer.MAX_VALUE) {
-            final int selectedDemoProjectIndex = demoProjectWizard.getSelectedDemoProjectIndex();
-
-            ProgressDialog progressDialog = new ProgressDialog(shell) {
-
-                private IProgressMonitor monitorWrap;
-
-                @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitorWrap = new EventLoopProgressMonitor(monitor);
-
-                    try {
-                        DemoProjectBean demoProjectBean = demoProjectList.get(selectedDemoProjectIndex);
-                        String projectName = demoProjectBean.getProjectName();
-
-                        if (checkProjectIsExisting(projectName)) {
-                            boolean reImportFlag = MessageDialog.openQuestion(shell,
-                                    Messages.getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages //$NON-NLS-1$
-                                            .getString("ImportDemoProjectAction.alertDialog.message")); //$NON-NLS-1$
-                            if (!reImportFlag) {
-                                return;
-                            }
-                        }
-                        ImportProjectsUtilities.importDemoProject(shell, projectName, demoProjectBean, monitor);
-                        lastImportedName = projectName;
-
-                    } catch (Exception e) {
-                        throw new InvocationTargetException(e);
-                    }
-
-                    monitorWrap.done();
-                    MessageDialog.openInformation(shell,
-                            Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
-                            Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
-                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                            .getPreferenceStore());
-                    prefManipulator.setValue(DEMO_ALREADY_IMPORTED, true);
-                }
-            };
-
-            try {
-                progressDialog.executeProcess();
-            } catch (InvocationTargetException e) {
-                MessageBoxExceptionHandler.process(e.getTargetException(), shell);
-            } catch (InterruptedException e) {
-                // Nothing to do
-            }
-        }
+        dialog.open();
     }
 
     public String getProjectName() {

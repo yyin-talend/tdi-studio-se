@@ -365,6 +365,21 @@
                style="push"
                toolbarPath="Default"
                tooltip="%ExportItemAction.tooltip"/>
+         <action
+               class="org.talend.repository.ui.actions.importexport.ImportDemoItemAction"
+               icon="platform:/plugin/org.talend.common.ui.runtime/icons/import.gif"
+               id="org.talend.repository.actions.importDemo"
+               label="导入demo"
+               style="push"
+               toolbarPath="Default"
+               tooltip="%ImportDemoAction.tooltip">
+            <enablement>
+               <systemProperty
+                     name="ReadOnlyUser"
+                     value="false">
+               </systemProperty>
+            </enablement>
+         </action>
       </actionSet>
    </extension>
    <extension
