@@ -129,6 +129,8 @@ public class ExportItemWizardPage extends WizardPage {
 
     Collection repositoryNodes = new ArrayList();
 
+    Collection<IRepositoryViewObject> implicitDependences = new ArrayList<IRepositoryViewObject>();
+
     Set checkedNodes = new HashSet();
 
     Set allNode = new HashSet();
@@ -748,7 +750,7 @@ public class ExportItemWizardPage extends WizardPage {
      */
     private void exportDependenciesSelected() {
         final Collection<Item> selectedItems = getSelectedItems();
-
+        implicitDependences.clear();
         // addTreeCheckedSelection();
 
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -785,6 +787,8 @@ public class ExportItemWizardPage extends WizardPage {
                                 if (repositoryNode != null && !repositoryNodes.contains(repositoryNode)) {
                                     repositoryNodes.add(repositoryNode);
                                     checkedNodes.add(repositoryNode);
+                                } else {
+                                    implicitDependences.add(repositoryObject);
                                 }
 
                             }
@@ -963,6 +967,11 @@ public class ExportItemWizardPage extends WizardPage {
             }
         }
         Collection<Item> selectedItems = getSelectedItems();
+        if (exportDependencies.getSelection() && !implicitDependences.isEmpty()) {
+            for (IRepositoryViewObject object : implicitDependences) {
+                selectedItems.add(object.getProperty().getItem());
+            }
+        }
         try {
             ExportItemUtil exportItemUtil = new ExportItemUtil();
             if (itemFromArchiveRadio.getSelection()) {
