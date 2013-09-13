@@ -62,6 +62,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.jface.viewers,
    org.osgi.framework,
    org.talend.designer.codegen",
+ org.talend.designer.core.assist,
  org.talend.designer.core.debug,
  org.talend.designer.core.i18n,
  org.talend.designer.core.model.components,

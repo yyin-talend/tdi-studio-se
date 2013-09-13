@@ -155,7 +155,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITalendEditor;
-import org.talend.designer.core.assist.TalendEditorComponentCreationAssistAction;
+import org.talend.designer.core.assist.TalendEditorComponentCreationUtil;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.NodePartKeyHander;
@@ -255,6 +255,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
         createGraphicalViewer(talendSplitter);
         talendSplitter.setGraphicalControl(getGraphicalControl());
+        TalendEditorComponentCreationUtil.updateAssistListener(this);
         Object hookPage;
         try {
             // get the field page using reflection
@@ -948,13 +949,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
 
-        IAction assistAction = new TalendEditorComponentCreationAssistAction();
-        getActionRegistry().registerAction(assistAction);
         if (getProcess().isSubjobEnabled()) {
             // toggle subjobs action
             IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
             getActionRegistry().registerAction(toggleSubjobsAction);
-            
+
             for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
                 String actionID = (String) iterator.next();
                 IAction action = getActionRegistry().getAction(actionID);

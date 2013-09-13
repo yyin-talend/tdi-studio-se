@@ -47,6 +47,9 @@ import org.talend.core.model.components.ComponentPaletteUtilities;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.assist.TalendEditorComponentCreationUtil;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -62,6 +65,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     private CheckBoxFieldEditor doNotShowJobletAfterDoubleClickCheckBoxField;
 
+    private CheckBoxFieldEditor enableComponentAssistCheckBoxField;
+
     private DirectoryFieldEditor filePathTemp;
 
     private final String dataViewer = "Data Viewer"; //$NON-NLS-1$
@@ -71,6 +76,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     private final String tRunJob = "tRunJob"; //$NON-NLS-1$
 
     private final String joblet = "Joblet"; //$NON-NLS-1$
+
+    private final String assist = "Component Assist"; //$NON-NLS-1$
 
     private static String oldPath = null;
 
@@ -190,6 +197,16 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         return group;
     }
 
+    protected Composite createForComponentAssist(Composite parent) {
+        Group group = createGroup(parent);
+        group.setText(assist);
+        Composite composite = createComposite(group);
+        addFontAndColorFieldsForAssist(composite);
+        GridLayout layout = createLayout();
+        composite.setLayout(layout);
+        return group;
+    }
+
     protected Group createGroup(Composite parent) {
         Group group = new Group(parent, SWT.NONE);
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -246,6 +263,12 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(doNotShowJobletAfterDoubleClickCheckBoxField);
     }
 
+    protected void addFontAndColorFieldsForAssist(Composite composite) {
+        enableComponentAssistCheckBoxField = new CheckBoxFieldEditor(TalendDesignerPrefConstants.COMPONENT_ASSIST,
+                Messages.getString("ComponentsPreferencePage.componentAssist"), composite); //$NON-NLS-1$
+        addField(enableComponentAssistCheckBoxField);
+    }
+
     @Override
     public void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
@@ -262,7 +285,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
             public void modifyText(ModifyEvent e) {
                 String newPath = filePathTemp.getTextControl(parent).getText();
                 File file = new File(newPath);
-                if (!file.exists() && !"".equals(newPath)) {
+                if (!file.exists() && !"".equals(newPath)) { //$NON-NLS-1$
                     // getPreferenceStore().setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, "");
                     filePathTemp.showErrorMessage();
                     setValid(false);
@@ -281,6 +304,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         if (PluginChecker.isJobLetPluginLoaded()) {
             createForJoblet(parent);
         }
+        createForComponentAssist(parent);
         parent.pack();
     }
 
@@ -295,6 +319,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     @Override
     public void init(IWorkbench workbench) {
+
     }
 
     @Override
@@ -302,19 +327,22 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         boolean flag = super.performOk();
         String newPath = CodeGeneratorActivator.getDefault().getPreferenceStore()
                 .getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
-        if ("".equals(oldPath)) {
+        if ("".equals(oldPath)) { //$NON-NLS-1$
             oldPath = null;
         }
-        if ("".equals(newPath)) {
+        if ("".equals(newPath)) { //$NON-NLS-1$
             newPath = null;
         }
+        DesignerPlugin.getDefault().getPreferenceStore()
+                .setValue(TalendDesignerPrefConstants.COMPONENT_ASSIST, enableComponentAssistCheckBoxField.getBooleanValue());
+        TalendEditorComponentCreationUtil.updateAssistListener();
         if (this.oldPath != newPath) {
 
             final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
                 @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("Loading user component ......", 100);
+                    monitor.beginTask("Loading user component ......", 100); //$NON-NLS-1$
                     Display display = Display.getCurrent();
                     if (display == null) {
                         display = Display.getDefault();
