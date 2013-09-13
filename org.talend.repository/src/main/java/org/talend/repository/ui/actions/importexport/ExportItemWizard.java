@@ -29,14 +29,21 @@ public class ExportItemWizard extends Wizard implements IImportWizard {
 
     private IStructuredSelection selection;
 
+    private String baseViewId;
+
     public ExportItemWizard() {
         super();
+    }
+
+    public ExportItemWizard(String baseViewId) {
+        super();
+        this.baseViewId = baseViewId;
     }
 
     @Override
     public void addPages() {
         super.addPages();
-        mainPage = new ExportItemWizardPage(getWindowTitle(), selection);
+        mainPage = new ExportItemWizardPage(getWindowTitle(), selection, baseViewId);
         addPage(mainPage);
         AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
         IDialogSettings workbenchSettings = plugin.getDialogSettings();

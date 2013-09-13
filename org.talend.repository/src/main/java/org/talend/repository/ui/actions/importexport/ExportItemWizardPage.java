@@ -133,9 +133,12 @@ public class ExportItemWizardPage extends WizardPage {
 
     Set allNode = new HashSet();
 
-    protected ExportItemWizardPage(String pageName, IStructuredSelection selection) {
+    private String baseViewId;
+
+    protected ExportItemWizardPage(String pageName, IStructuredSelection selection, String baseViewId) {
         super(pageName);
         this.selection = selection;
+        this.baseViewId = baseViewId;
         setDescription(Messages.getString("ExportItemWizardPage.description")); //$NON-NLS-1$
         setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ));
 
@@ -439,6 +442,9 @@ public class ExportItemWizardPage extends WizardPage {
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
                 RepoCommonViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
+                if (baseViewId != null) {
+                    provider.setViewId(baseViewId);
+                }
 
                 return (CheckboxTreeViewer) provider.createViewer(parent);
 
