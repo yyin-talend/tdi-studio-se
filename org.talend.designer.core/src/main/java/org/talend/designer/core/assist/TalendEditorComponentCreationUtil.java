@@ -1,5 +1,9 @@
 package org.talend.designer.core.assist;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.events.KeyEvent;
@@ -7,10 +11,13 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 public class TalendEditorComponentCreationUtil {
 
@@ -25,15 +32,15 @@ public class TalendEditorComponentCreationUtil {
         KeyListener listener = new KeyListener() {
 
             public void keyReleased(KeyEvent e) {
+            }
+
+            public void keyPressed(KeyEvent e) {
                 if (Character.isISOControl(e.character) || Character.isSpaceChar(e.character)) {
                     return;
                 }
                 TalendEditorComponentCreationAssist assist = new TalendEditorComponentCreationAssist(categoryName,
                         graphicalViewer, commandStack);
                 assist.showComponentCreationAssist(e.character);
-            }
-
-            public void keyPressed(KeyEvent e) {
             }
         };
         graphicalViewer.getControl().addKeyListener(listener);
@@ -101,5 +108,44 @@ public class TalendEditorComponentCreationUtil {
         } else {
             removeComponentCreationAssist(talendEditor);
         }
+    }
+    
+    
+    /**
+     * read all components belongs to some category (DI, CAMEL etc.) then store it into a map which can be reused
+     * 
+     * @param categoryName
+     * @param entries
+     */
+    /*
+     * TODO this can be improved after refactoring org.talend.core.model.components.IComponentsHandler implementation in each editor
+     */
+    private static void readComponentsInCategory(String categoryName, Map<String, IComponent> entries) {
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+        Set<IComponent> allComponents = componentsFactory.getComponents();
+        for (IComponent component : allComponents) {
+            String compType = component.getPaletteType();
+            if (!component.isTechnical() && compType != null && categoryName.equals(compType)) {
+                entries.put(component.getName(), component);
+            }
+        }
+    }
+
+    private static Map<String, Map<String, IComponent>> entries = new HashMap<String, Map<String, IComponent>>();
+
+    /**
+     * get all components belongs to some category
+     * 
+     * @param categoryName
+     * @return
+     */
+    public static Map<String, IComponent> getComponentsInCategory(String categoryName) {
+        Map<String, IComponent> map = entries.get(categoryName);
+        if (map == null) {
+            map = new HashMap<String, IComponent>();
+            entries.put(categoryName, map);
+            readComponentsInCategory(categoryName, map);
+        }
+        return map;
     }
 }
