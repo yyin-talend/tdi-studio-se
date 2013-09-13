@@ -1995,6 +1995,15 @@
               name="AddNewFieldsForTDQHadoopComponentsTask"
               version="5.4.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.RenameOracleRACToOracleCustomMigrationTask"
+              description="Rename the name Oracle RAC to Oracle Custom"
+              id="org.talend.repository.model.migration.RenameOracleRACToOracleCustomMigrationTask"
+              name="RenameOracleRACToOracleCustomMigrationTask"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension
