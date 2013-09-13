@@ -40,27 +40,25 @@ class TalendEditorComponentCreationAssist {
     private Map<String, IComponent> components;
 
     private ContentProposalAdapter contentProposalAdapter;
-    
+
     /*
-     * this used to disable all other key listeners
-     * registered on Display during assistant activate
+     * this used to disable all other key listeners registered on Display during assistant activate
      */
     private IBindingService bindingService = null;
+
     private boolean isKeyFilterEnabled = true;
 
     public TalendEditorComponentCreationAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack) {
         this.graphicViewer = viewer;
         this.graphicControl = viewer.getControl();
         this.components = TalendEditorComponentCreationUtil.getComponentsInCategory(categoryName);
-        
+
         Object service = DesignerPlugin.getDefault().getWorkbench().getService(IBindingService.class);
-        if(service != null && service instanceof IBindingService){
+        if (service != null && service instanceof IBindingService) {
             bindingService = (IBindingService) service;
             isKeyFilterEnabled = bindingService.isKeyFilterEnabled();
         }
     }
-
-
 
     /**
      * open the creation assist according to the trigger character
@@ -70,7 +68,7 @@ class TalendEditorComponentCreationAssist {
     public void showComponentCreationAssist(char triggerChar) {
 
         org.eclipse.swt.graphics.Point cursorRelativePosition = calculatePosition();
-        if(cursorRelativePosition == null){
+        if (cursorRelativePosition == null) {
             return;
         }
 
@@ -78,7 +76,7 @@ class TalendEditorComponentCreationAssist {
          * only one assist text at the same time in all editors
          */
         disposeAssistText();
-        
+
         createAssistText(cursorRelativePosition);
 
         /*
@@ -89,8 +87,6 @@ class TalendEditorComponentCreationAssist {
 
         activateAssist(triggerChar);
     }
-
-
 
     private org.eclipse.swt.graphics.Point calculatePosition() {
         /*
@@ -105,8 +101,6 @@ class TalendEditorComponentCreationAssist {
         return cursorRelativePosition;
     }
 
-
-
     private void activateAssist(char triggerChar) {
         // set init text content
         assistText.setText(triggerChar + "");
@@ -120,14 +114,14 @@ class TalendEditorComponentCreationAssist {
     }
 
     private void createAssistText(org.eclipse.swt.graphics.Point cursorRelativePosition) {
-        //disable key event filter on Display
-        if(bindingService != null){
+        // disable key event filter on Display
+        if (bindingService != null) {
             bindingService.setKeyFilterEnabled(false);
         }
-        
+
         // create assist input text
         assistText = new Text((Composite) graphicControl, SWT.BORDER);
-        assistText.setLocation(cursorRelativePosition.x, cursorRelativePosition.y);
+        assistText.setLocation(cursorRelativePosition.x, cursorRelativePosition.y - assistText.getLineHeight());
         assistText.setSize(200, assistText.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
         assistText.setFocus();
 
@@ -136,8 +130,7 @@ class TalendEditorComponentCreationAssist {
          */
         // TODO the trigger way may need improved, currently, any visible character will trigger it
         TalendEditorComponentProposalProvider proposalProvider = new TalendEditorComponentProposalProvider(components);
-        contentProposalAdapter = new ContentProposalAdapter(assistText, new TextContentAdapter(),
-                proposalProvider, null, null);
+        contentProposalAdapter = new ContentProposalAdapter(assistText, new TextContentAdapter(), proposalProvider, null, null);
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
         contentProposalAdapter.setLabelProvider(new TalendEditorComponentLabelProvider(components));
     }
@@ -199,11 +192,9 @@ class TalendEditorComponentCreationAssist {
      */
     protected void acceptProposal() {
         String componentName = assistText.getText().trim();
-        org.eclipse.swt.graphics.Point componentLocation = assistText
-                .getLocation();
+        org.eclipse.swt.graphics.Point componentLocation = assistText.getLocation();
         disposeAssistText();
-        Object createdNode = createComponent(components.get(componentName),
-                componentLocation);
+        Object createdNode = createComponent(components.get(componentName), componentLocation);
         selectComponent(createdNode);
     }
 
@@ -215,12 +206,11 @@ class TalendEditorComponentCreationAssist {
     }
 
     protected Object createComponent(IComponent component, org.eclipse.swt.graphics.Point location) {
-        if(component == null){
+        if (component == null) {
             return null;
         }
         /*
-         * TODO
-         * support to insert the component on Connection
+         * TODO support to insert the component on Connection
          */
         Event e = new Event();
         e.x = location.x;
@@ -230,28 +220,28 @@ class TalendEditorComponentCreationAssist {
         e.stateMask = 0;
         e.widget = graphicControl;
         MouseEvent mouseEvent = new MouseEvent(e);
-        
+
         TalendAssistantCreationTool creationTool = new TalendAssistantCreationTool(new PaletteComponentFactory(component));
         creationTool.mouseMove(mouseEvent, graphicViewer);
-        
+
         graphicViewer.getEditDomain().setActiveTool(creationTool);
-        
+
         graphicViewer.getEditDomain().mouseMove(mouseEvent, graphicViewer);
         graphicViewer.getEditDomain().mouseDown(mouseEvent, graphicViewer);
         graphicViewer.getEditDomain().mouseUp(mouseEvent, graphicViewer);
         return creationTool.getCreateRequest().getNewObject();
-//        CreateRequest createRequest = new CreateRequest();
-//        createRequest.setLocation(new Point(location.x, location.y));
-//        createRequest.setFactory(new PaletteComponentFactory(component));
-//        Command command = graphicViewer.getContents().getCommand(createRequest);
-//        if (!command.canExecute()) {
-//            MessageDialog.openWarning(graphicControl.getShell(), "Failed", "Component can't be created here");
-//            return null;
-//        }
-//        commandStack.execute(command);
-//        Object obj = createRequest.getNewObject();
-//        createRequest = null;
-//        return obj;
+        // CreateRequest createRequest = new CreateRequest();
+        // createRequest.setLocation(new Point(location.x, location.y));
+        // createRequest.setFactory(new PaletteComponentFactory(component));
+        // Command command = graphicViewer.getContents().getCommand(createRequest);
+        // if (!command.canExecute()) {
+        // MessageDialog.openWarning(graphicControl.getShell(), "Failed", "Component can't be created here");
+        // return null;
+        // }
+        // commandStack.execute(command);
+        // Object obj = createRequest.getNewObject();
+        // createRequest = null;
+        // return obj;
     }
 
     /*
@@ -272,22 +262,24 @@ class TalendEditorComponentCreationAssist {
             assistText.dispose();
         }
         assistText = null;
-        //restore key event filter on Display
-        if(bindingService != null){
+        // restore key event filter on Display
+        if (bindingService != null) {
             bindingService.setKeyFilterEnabled(isKeyFilterEnabled);
         }
     }
-    
-    class TalendAssistantCreationTool extends CreationTool{
+
+    class TalendAssistantCreationTool extends CreationTool {
+
         private CreateRequest request = null;
+
         public TalendAssistantCreationTool(CreationFactory aFactory) {
             super(aFactory);
         }
 
         @Override
         public CreateRequest getCreateRequest() {
-            if(request == null){
-                request= super.getCreateRequest();
+            if (request == null) {
+                request = super.getCreateRequest();
             }
             return request;
         }
