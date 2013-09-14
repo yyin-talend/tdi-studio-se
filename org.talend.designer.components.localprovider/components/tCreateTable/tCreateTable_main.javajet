@@ -56,6 +56,19 @@ abstract class  Manager {
         javaCode.append("String tableName_" + cid + " = " + tableName + ";\r\n");
         return javaCode.toString();
     }
+    protected boolean contaionsSpaces(String columnName) {
+        if (columnName != null) {
+            if (columnName.startsWith("\" + ") && columnName.endsWith(" + \"")) {
+                return false;
+            }
+            
+            if (columnName.contains(" ")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getDropTableSQL() {
         StringBuilder dropTableSQL = new StringBuilder();
         dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -1704,6 +1717,120 @@ class VerticaManager extends Manager {
 		return javaCode.toString();
 	}
 }
+class SAPHanaManager extends Manager {
+    private String host;
+    private String port;
+    private String userName;
+    private String dbSchema;
+    private boolean useExistingConnection;
+    private String connection;
+    private String[] sapHanaReservedWords= {
+            "ALL","ALTER","AS","BEFORE","BEGIN","BOTH","CASE","CHAR",
+            "CONDITION","CONNECT","CROSS","CUBE","CURRENT_CONNECTION",
+            "CURRENT_DATE","CURRENT_SCHEMA","CURRENT_TIME",
+            "CURRENT_TIMESTAMP","CURRENT_USER","CURRENT_UTCDATE",
+            "CURRENT_UTCTIME","CURRENT_UTCTIMESTAMP","CURRVAL","CURSOR",
+            "DECLARE","DISTINCT","ELSE","ELSEIF","ELSIF","END","EXCEPT",
+            "EXCEPTION","EXEC","FOR","FROM","FULL","GROUP","HAVING",
+            "IF","IN","INNER","INOUT","INTERSECT","INTO","IS","JOIN",
+            "LEADING","LEFT","LIMIT","LOOP","MINUS","NATURAL","NEXTVAL",
+            "NULL","ON","ORDER","OUT","PRIOR","RETURN","RETURNS","REVERSE",
+            "RIGHT","ROLLUP","ROWID","SELECT","SET","SQL","START","SYSDATE",
+            "SYSTIME","SYSTIMESTAMP","SYSUUID","TOP","TRAILING","UNION",
+            "USING","UTCDATE","UTCTIME","UTCTIMESTAMP","VALUES","WHEN","WHERE","WHILE","WITH"
+            };
+    public SAPHanaManager(String host, String port, String tableName, String userName, String password, String cid, String dbSchema,boolean useExistingConnection, String connection) {
+        super("", tableName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.userName = userName;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "com.sap.db.jdbc.Driver";
+    }
+    public String getConnectionURL() {
+        return "\"jdbc:sap://\" + " + host + " + \":\" + " + port;
+    }
+    protected String getDBMSId() {
+        return "saphana_id";
+    }
+    protected String getLProtectedChar() {
+        return "";
+    }
+    protected String getRProtectedChar() {
+        return "";
+    }   
+    protected boolean isSapHanaReservedWords (String keyword) {
+        for (int i=0 ; i < sapHanaReservedWords.length ; i++){
+            if (sapHanaReservedWords[i].equalsIgnoreCase(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    protected String getLProtectedChar(String keyword) {
+        if (isSapHanaReservedWords(keyword) || contaionsSpaces(keyword)){
+            return "\\\"";
+        }
+        return getLProtectedChar();
+    }
+    protected String getRProtectedChar(String keyword) {
+        return getLProtectedChar(keyword);
+    }    
+
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append(retrieveTable());
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append(super.getConnection());
+        }
+        return javaCode.toString();
+    }  
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append(super.closeConnection());            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"dbschema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();
+    }
+    protected String getConnectionName() {
+        return ElementParameterParser.getValue(node,"__CONNECTION_SAPHANA__");
+    }
+    
+    protected String getTableName4Search(boolean useExistingConnection, String connection) {
+        return "\""+getLProtectedChar()+ "\" + ((String)" + ElementParameterParser.getValue(node,"__TABLE__") + ")" +" + \"" + getRProtectedChar() + "\""; 
+    }
+    
+    protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+        return "dbSchema_" + cid + ".toUpperCase()"; 
+    }   
+    
+    protected boolean hasSchema() {
+        return true;
+    }
+
+}    
+
 class StringUtil {
     public String getString(String source) {
         String tmp = null;
@@ -1932,7 +2059,16 @@ class ManagerFactory {
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_"+dbType+"__"));
             manager = new VerticaManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid,db_version);
-        }
+        }else if(("SAPHANA").equals(dbType)) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_"+dbType+"__"));
+            manager = new SAPHanaManager(host, port, tableName, userName, password, cid, dbSchema,useExistingConnection, connection);
+        } 
         return manager;
     }
 }
@@ -1981,7 +2117,7 @@ if(columnList != null && columnList.size() > 0) {
             %>
             boolean whetherExist_<%=cid%> = false;
             <%
-            if("DBORACLE".equalsIgnoreCase(dbType)) {
+            if("DBORACLE".equalsIgnoreCase(dbType) || "SAPHANA".equalsIgnoreCase(dbType)) {
 			%>
 				<%=manager.generateCode4TabelExist()%>
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
@@ -1995,7 +2131,7 @@ if(columnList != null && columnList.size() > 0) {
 	            	whetherExist_<%=cid%> = true;
 	            }     
             <%
-            } else if("DB2".equalsIgnoreCase(dbType) ){
+            } else if("DB2".equalsIgnoreCase(dbType)){
             %>
                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});

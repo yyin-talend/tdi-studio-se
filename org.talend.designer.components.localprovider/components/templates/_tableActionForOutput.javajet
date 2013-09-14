@@ -142,7 +142,7 @@ if (!isParallelize) {
 				}
 				isExistStmt_<%=cid%>.close();
 <%
-			} else if (ORACLE.equalsIgnoreCase(dbmsId)) {
+			} else if (ORACLE.equalsIgnoreCase(dbmsId) || SAPHANA.equalsIgnoreCase(dbmsId)) {
 %>   
 				<%=manager.generateCode4TabelExist()%>
 				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();

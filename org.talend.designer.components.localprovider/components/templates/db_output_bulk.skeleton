@@ -40,6 +40,7 @@ public class CLASS {
     public static final String ODBC = "MSODBC";
     public static final String JDBC = "JDBC";
     public static final String EXASOL = "Exasol_id";
+    public static final String SAPHANA = "saphana_id";
     private static Map<String, Manager> managerMap = new HashMap<String, Manager>();
     public class Column {
         IMetadataColumn column;
@@ -261,6 +262,19 @@ public class CLASS {
       protected  String getRProtectedChar(String columName) {
     	  return getRProtectedChar();        
       }
+      protected boolean contaionsSpaces(String columnName) {
+          if (columnName != null) {
+              if (columnName.startsWith("\" + ") && columnName.endsWith(" + \"")) {
+                  return false;
+              }
+              
+              if (columnName.contains(" ")) {
+                  return true;
+              }
+          }
+          return false;
+      }
+
         public String getSelectionSQL() {
             StringBuilder selectionSQL = new StringBuilder();
             selectionSQL.append("SELECT COUNT(1) FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -2419,19 +2433,6 @@ public class CLASS {
             }
         	return false;
         }
-        protected boolean contaionsSpaces(String columnName) {
-        	if (columnName != null) {
-        	    //bug0016837 when use Additional column the coulmn name like: " + "columnNmae" + "
-        	    if (columnName.startsWith("\" + ") && columnName.endsWith(" + \"")) {
-        	        return false;
-        	    }
-        	    
-        		if (columnName.contains(" ")) {
-        			return true;
-        		}
-        	}
-        	return false;
-        }
         protected String getLProtectedChar(String keyword) {
         	if (isOracleKeyword(keyword) || contaionsSpaces(keyword)){
         		return "\\\"";
@@ -3646,6 +3647,68 @@ public class CLASS {
             return "";
         }        
     }    
+    public class SAPHanaManager extends Manager {
+
+        private String[] sapHanaReservedWords = { "ALL", "ALTER", "AS", "BEFORE", "BEGIN", "BOTH", "CASE", "CHAR", "CONDITION",
+                "CONNECT", "CROSS", "CUBE", "CURRENT_CONNECTION", "CURRENT_DATE", "CURRENT_SCHEMA", "CURRENT_TIME",
+                "CURRENT_TIMESTAMP", "CURRENT_USER", "CURRENT_UTCDATE", "CURRENT_UTCTIME", "CURRENT_UTCTIMESTAMP", "CURRVAL",
+                "CURSOR", "DECLARE", "DISTINCT", "ELSE", "ELSEIF", "ELSIF", "END", "EXCEPT", "EXCEPTION", "EXEC", "FOR", "FROM",
+                "FULL", "GROUP", "HAVING", "IF", "IN", "INNER", "INOUT", "INTERSECT", "INTO", "IS", "JOIN", "LEADING", "LEFT",
+                "LIMIT", "LOOP", "MINUS", "NATURAL", "NEXTVAL", "NULL", "ON", "ORDER", "OUT", "PRIOR", "RETURN", "RETURNS",
+                "REVERSE", "RIGHT", "ROLLUP", "ROWID", "SELECT", "SET", "SQL", "START", "SYSDATE", "SYSTIME", "SYSTIMESTAMP",
+                "SYSUUID", "TOP", "TRAILING", "UNION", "USING", "UTCDATE", "UTCTIME", "UTCTIMESTAMP", "VALUES", "WHEN", "WHERE",
+                "WHILE", "WITH" };
+
+        public SAPHanaManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return SAPHANA;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }   
+        protected boolean isSapHanaReservedWords (String keyword) {
+            for (int i=0 ; i < sapHanaReservedWords.length ; i++){
+                if (sapHanaReservedWords[i].equalsIgnoreCase(keyword)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        protected String getLProtectedChar(String keyword) {
+            if (isSapHanaReservedWords(keyword) || contaionsSpaces(keyword)){
+                return "\\\"";
+            }
+            return getLProtectedChar();
+        }
+        protected String getRProtectedChar(String keyword) {
+            return getLProtectedChar(keyword);
+        }    
+        protected String getTableName4Search(boolean useExistingConnection, String connection) {
+            return "\""+getLProtectedChar()+ "\" + ((String)" + ElementParameterParser.getValue(node,"__TABLE__") + ")" +" + \"" + getRProtectedChar() + "\""; 
+        }
+        
+        protected String getUserName4Search(boolean useExistingConnection, String connection) {
+            if (useExistingConnection) {
+                return "((String)globalMap.get(\"username_" + connection + "\")).toUpperCase()";
+            } else {
+                return "((String)" + ElementParameterParser.getValue(node,"__USER__") + ").toUpperCase()";
+            }    
+        }
+
+        protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+            return "dbschema_" + cid + ".toUpperCase()"; 
+        }   
+        
+        protected boolean hasSchema() {
+            return true;
+        }
+
+    }    
     
     public class ExasolManager extends Manager{
    	 	public ExasolManager(String cid) {
@@ -3736,6 +3799,8 @@ public class CLASS {
                 manager = new JDBCManager(cid);
             } else if(dbmsId.equalsIgnoreCase(EXASOL)) {
                 manager = new ExasolManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(SAPHANA)) {
+                manager = new SAPHanaManager(cid);
             } else {
                 manager = new UnDefinedManager(cid);
                 ((UnDefinedManager)manager).setDBMSId(dbmsId);
