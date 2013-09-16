@@ -193,6 +193,7 @@ class TalendEditorComponentCreationAssist {
     protected void acceptProposal() {
         String componentName = assistText.getText().trim();
         org.eclipse.swt.graphics.Point componentLocation = assistText.getLocation();
+        componentLocation.y += assistText.getLineHeight();
         disposeAssistText();
         Object createdNode = createComponent(components.get(componentName), componentLocation);
         selectComponent(createdNode);
