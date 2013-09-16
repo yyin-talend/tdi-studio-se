@@ -2019,6 +2019,13 @@
               name="RenameOracleRACToOracleCustomMigrationTask"
               version="5.4.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.FixWrongDbTypesMigrationTask"
+              id="org.talend.repository.model.migration.FixWrongDbTypesMigrationTask"
+              name="Fix Wrong DB Types"
+              version="5.1.2">
+        </projecttask>
    </extension>
    
    <extension
