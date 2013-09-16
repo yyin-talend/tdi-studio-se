@@ -8,6 +8,7 @@ imports="
 			org.talend.core.model.process.IConnectionCategory
 			org.talend.core.model.metadata.IMetadataColumn
 			org.talend.core.model.metadata.IMetadataTable
+			org.talend.core.model.metadata.types.JavaTypesManager
 " 
 %>
 
@@ -40,9 +41,15 @@ parameters_<%=cid%>.append("&variables=<map>");
 									}
 %>
 parameters_<%=cid%>.append("<entry><string><%=columns.get(i).getLabel() %></string><string>");
+<%if(!JavaTypesManager.isJavaPrimitiveType(columns.get(i).getTalendType(), columns.get(i).isNullable())) {%>
+if(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%> != null) {
+<%}%>
 parameters_<%=cid%>.append("<![CDATA[");
-parameters_<%=cid%>.append(java.net.URLEncoder.encode(java.net.URLEncoder.encode(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>, utf8Charset),utf8Charset));
+parameters_<%=cid%>.append(java.net.URLEncoder.encode(java.net.URLEncoder.encode(String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>), utf8Charset),utf8Charset));
 parameters_<%=cid%>.append("]]>");
+<%if(!JavaTypesManager.isJavaPrimitiveType(columns.get(i).getTalendType(), columns.get(i).isNullable())) {%>
+}
+<%}%>
 parameters_<%=cid%>.append("</string></entry>");
 <%
 									if (i==sizeColumns-1) {
