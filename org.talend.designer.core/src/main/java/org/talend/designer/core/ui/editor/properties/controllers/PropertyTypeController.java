@@ -29,8 +29,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -354,9 +352,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     CompoundCommand compoundCommand = new CompoundCommand();
                     RepositoryNode selectNode = dialog.getResult();
                     ChangeValuesFromRepository changeValuesFromRepository = null;
-                    if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                    if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION
+                            && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                         IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                        IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
+                        IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService()
+                                .getCurrentProcess();
                         String currentJobId = process.getProperty().getId();
 
                         String serviceId = item.getProperty().getId();
@@ -400,6 +400,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         repositoryFileItem = null;
                     }
                 }
+
+                if (repositoryFileItem == null && item instanceof FileItem) {
+                    repositoryFileItem = (FileItem) item;
+                }
+
                 if (repositoryFileItem != null) {
                     CompoundCommand compoundCommand = new CompoundCommand();
                     final String showId = repositoryFileItem.getProperty().getId();

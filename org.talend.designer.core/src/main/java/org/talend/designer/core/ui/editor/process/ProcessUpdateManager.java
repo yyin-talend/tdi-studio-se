@@ -1636,7 +1636,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                            .isUseCustomModuleName())) {
+                                                .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -1995,8 +1995,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         result = new UpdateCheckResult(node);
                         result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                     }
-                } else {
+                } else if (item instanceof FileItem) {
+                    // only for
+                    IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    if (param == null || lastVersion == null) {
+                        result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
+                    }
 
+                } else {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                 }
