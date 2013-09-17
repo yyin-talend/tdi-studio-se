@@ -72,6 +72,9 @@ public class FixWrongDbTypesMigrationTask extends AbstractJobMigrationTask {
             NodeType nodeType = (NodeType) nodeTypeObject;
             IComponent component = ComponentsFactoryProvider.getInstance().get(nodeType.getComponentName(),
                     ComponentCategory.CATEGORY_4_DI.getName());
+            if (component == null) {
+                continue; // in case original component doesn't exist here
+            }
             FakeNode fNode = new FakeNode(component);
             IElementParameter mappingParameter = fNode.getElementParameterFromField(EParameterFieldType.MAPPING_TYPE);
             if (mappingParameter != null && mappingParameter.getValue() != null) {
