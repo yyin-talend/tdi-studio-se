@@ -41,11 +41,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.utils.TalendPropertiesUtil;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.NewImportProjectWizard;
 
@@ -66,6 +64,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
     private List<DemoProjectBean> demoProjectList;
 
     private int selectedDemoProjectIndex = Integer.MAX_VALUE;
+
+    private final static String DEFAUTL_DEMO_ICON = "icons/java.png";
 
     /**
      * ImportDemoProjectPage constructor.
@@ -142,7 +142,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
 
             TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
             tableItem.setText(demoProject.getProjectName());
-            tableItem.setImage(getFullImagePath());
+            tableItem.setImage(getFullImagePath(demoProject));
         }
     }
 
@@ -152,17 +152,24 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      * @param languageName
      * @return
      */
-    private Image[] getFullImagePath() {
-        String relatedImagePath = "icons/java.png"; //$NON-NLS-1$;
-        Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+    private Image[] getFullImagePath(DemoProjectBean node) {
         URL url = null;
         String pluginPath = null;
+        String relatedImagePath = null;
+        Bundle bundle = null;
+        if (node != null) {
+            relatedImagePath = node.getIconUrl();//$NON-NLS-1$;
+            bundle = Platform.getBundle(node.getPluginId());
+        }
         try {
-            // url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
-            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
-            pluginPath = new Path(url.getFile()).toOSString();
+            if (FileLocator.find(bundle, new Path(relatedImagePath), null) != null) {
+                url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
+                pluginPath = new Path(url.getFile()).toOSString();
+            } else {
+                url = FileLocator.find(bundle, new Path(DEFAUTL_DEMO_ICON), null);
+                pluginPath = new Path(url.getFile()).toOSString();
+            }
         } catch (IOException e1) {
-            ExceptionHandler.process(e1);
         }
 
         return new Image[] { new Image(null, pluginPath) };
