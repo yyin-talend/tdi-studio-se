@@ -143,7 +143,7 @@
             REQUIRED_IF="LOGIN_TYPE=='OAUTH'" 
             SHOW_IF="LOGIN_TYPE=='OAUTH'"
             GROUP="LOGIN">
-            <DEFAULT>"token.properties"</DEFAULT>
+            <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/token.properties"</DEFAULT>
         </PARAMETER>
     
 		<PARAMETER
