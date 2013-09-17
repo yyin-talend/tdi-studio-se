@@ -110,6 +110,7 @@
 			boolean hasCXFRegistryProvider = false;
 			boolean hasCXFRegistryConsumer = false;
 			boolean hasCXFCorrelationConsumer = false;
+			boolean hasCXFSAMLPropagateConsumer = false;
 			boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
 			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 			if( null != cxfNodes && cxfNodes.size() >0 ){
@@ -143,17 +144,26 @@
 								hasCXFRegistryProvider = true;
 						}else{
 							hasCXFRegistryConsumer = true;
+							if(!hasCXFSAMLPropagateConsumer && Boolean.parseBoolean(ElementParameterParser.getValue(n, "__USE_PROPAGATE_CREDENTIAL__"))){
+								hasCXFSAMLPropagateConsumer = true;
+							}
 						}
 					}
 					if("true".equals(useSecurity)){
-						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer)){
+						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer || !hasCXFSAMLPropagateConsumer)){
 							if(incomingConnections == 0){
 								hasCXFSamlTokenProvider = true;
 							}else{
 								hasCXFSamlTokenConsumer = true;
-								if(isStudioEEVersion){
+								if(!hasCXFSamlTokenAuthorizationConsumer && isStudioEEVersion){
 									if("true".equals(ElementParameterParser.getValue(n, "__USE_AUTHORIZATION__"))){
 										hasCXFSamlTokenAuthorizationConsumer = true;
+									}
+								}
+								if(!hasCXFSAMLPropagateConsumer){
+									String samlSecurityType = ElementParameterParser.getValue(n, "__SAML_SECURITY_TYPES__");
+									if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
+									   hasCXFSAMLPropagateConsumer = true;
 									}
 								}
 							}
@@ -175,6 +185,38 @@
 			}
 			
 			
+		if(hasCXFSAMLPropagateConsumer){
+%>
+			class CXFConsumerBinding extends org.apache.camel.component.cxf.DefaultCxfBinding {
+				private org.apache.camel.component.cxf.CxfEndpoint endpoint;
+				
+				public CXFConsumerBinding(org.apache.camel.component.cxf.CxfEndpoint endpoint){
+					this.endpoint = endpoint;
+					setHeaderFilterStrategy(consumerSoapHeaderFilter);
+				}
+				@Override
+				protected void propagateHeadersFromCamelToCxf(org.apache.camel.Exchange camelExchange,
+						Map<String, Object> camelHeaders, org.apache.cxf.message.Exchange cxfExchange,
+						Map<String, Object> cxfContext) {
+					super.propagateHeadersFromCamelToCxf(camelExchange, camelHeaders, cxfExchange, cxfContext);
+					Object samlToken = camelHeaders.get("samlToken");
+					if(samlToken == null){
+						return;
+					}
+					
+					Map<String, Object> properties = endpoint.getProperties();
+					if(properties == null){
+						return;
+					}
+					Object object = properties.get(org.apache.cxf.ws.security.SecurityConstants.STS_CLIENT);
+					if(object == null || !(object instanceof org.apache.cxf.ws.security.trust.STSClient)){
+						return;
+					}
+					org.apache.cxf.ws.security.trust.STSClient stsClient = (org.apache.cxf.ws.security.trust.STSClient) object;
+					stsClient.setOnBehalfOf(samlToken);
+				}
+			}
+<%		}
 		if(hasCXFRegistryProvider || hasCXFSamlTokenProvider){
 %>
 				class CXFProviderBinding extends org.apache.camel.component.cxf.DefaultCxfBinding{	
@@ -183,6 +225,7 @@
 					protected void propagateHeadersFromCxfToCamel( org.apache.cxf.message.Message cxfMessage,
 							org.apache.camel.Message camelMessage, org.apache.camel.Exchange camelExchange) {
 						super.propagateHeadersFromCxfToCamel(cxfMessage, camelMessage, camelExchange);
+						camelExchange.getIn().removeHeader("samlToken");
 						org.apache.cxf.security.SecurityContext securityContext = cxfMessage.get(org.apache.cxf.security.SecurityContext.class);
 						if(securityContext != null && securityContext instanceof org.apache.cxf.interceptor.security.SAMLSecurityContext){
 							org.apache.cxf.interceptor.security.SAMLSecurityContext ssc = (org.apache.cxf.interceptor.security.SAMLSecurityContext) securityContext;
@@ -397,7 +440,7 @@ class WSPasswordCallbackHandler implements javax.security.auth.callback.Callback
 
 if(hasCXFComponentConsumer){
 %>
-class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy{
+org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy consumerSoapHeaderFilter = new org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy(){
 	public boolean applyFilterToCamelHeaders(String headerName,
 			Object headerValue, org.apache.camel.Exchange exchange) {
 		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
@@ -413,7 +456,7 @@ class CxfConsumerSoapHeaderFilter extends org.apache.camel.component.cxf.common.
 		}
 		return super.applyFilterToExternalHeaders(headerName, headerValue, exchange);
 	}
-}
+};
 <%
 }
 if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
@@ -803,13 +846,22 @@ if (isProvider) {
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
 			String isUseAuthorization = "false";
 			String securityToken = "(String[])null";
+			boolean isUsePropagateSamlUP = false;
 			if("true".equals(useRegistry)){
 				securityToken = "\"Registry\"";
+					String usePropagate = ElementParameterParser.getValue(node, "__USE_PROPAGATE_CREDENTIAL__");
+					if("true".equals(usePropagate)){
+					    isUsePropagateSamlUP = true;
+					}
 			}else if("true".equals(useSecurity)){
 				if("USER".equals(securityType)){
 					securityToken = "\"UsernameToken\"";
 				}else if("SAML".equals(securityType)){
 					securityToken = "\"SAMLToken\"";
+					String samlSecurityType = ElementParameterParser.getValue(node, "__SAML_SECURITY_TYPES__");
+					if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
+							isUsePropagateSamlUP = true;
+					}
 					if(isStudioEEVersion){
 						isUseAuthorization =  ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__");
 					}
@@ -838,6 +890,12 @@ if (isProvider) {
 %>
 						);
 <%			
+
+			if(isUsePropagateSamlUP && !isProvider){
+%>
+				<%=endpointVar%>.setCxfBinding(new CXFConsumerBinding(<%=endpointVar%>));
+<%
+			}
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
 			String useCorrelation = ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__");

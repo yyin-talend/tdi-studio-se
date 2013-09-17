@@ -104,7 +104,7 @@
 				}
 				if(hasCXFConsumer){
 %>
-					contextRegister.register("CXF_PAYLOAD_HEADER_FILTER", new CxfConsumerSoapHeaderFilter());
+					contextRegister.register("CXF_PAYLOAD_HEADER_FILTER", consumerSoapHeaderFilter);
 <%
 				}
 				if(hasCXFSAMLProvider){
