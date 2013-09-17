@@ -374,8 +374,8 @@ public class RepositoryReviewDialog extends Dialog {
         addFilter(filter);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed add Filters"); //$NON-NLS-1$
 
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "set input"); //$NON-NLS-1$ 
-        repositoryTreeViewer.expandAll();
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "set input"); //$NON-NLS-1$
+        repositoryTreeViewer.expandToLevel(2);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "expandAll"); //$NON-NLS-1$
 
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
