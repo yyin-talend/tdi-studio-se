@@ -4388,6 +4388,10 @@ public class Node extends Element implements IGraphicalNode {
             this.isMapReduceStart = false;
             return;
         }
+        if (!this.isActivate()) {
+            this.isMapReduceStart = false;
+            return;
+        }
         List<? extends INode> gNodeList = this.getProcess().getGraphicalNodes();
         boolean alreadyHave = false;
         for (INode node : gNodeList) {

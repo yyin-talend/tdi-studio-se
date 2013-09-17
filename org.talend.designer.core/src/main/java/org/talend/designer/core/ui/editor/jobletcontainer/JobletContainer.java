@@ -435,6 +435,9 @@ public class JobletContainer extends NodeContainer {
             jobletElements.clear();
 
             for (Node inode : nodeList) {
+                if (!inode.isActivate()) {
+                    continue;
+                }
                 NodeContainer nodeContainer = inode.getNodeContainer();
                 // inode.setJobletnode(this.node);
                 // inode.setJoblet_unique_name(inode.getUniqueName());
