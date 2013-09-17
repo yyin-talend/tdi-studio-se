@@ -113,7 +113,7 @@ public enum EDatabaseComponentName implements IComponentName {
 
     SAS(DatabaseConnectionItem.class, EDatabaseTypeName.SAS, "tSasInput", "tSasOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
-    SAP(DatabaseConnectionItem.class, EDatabaseTypeName.SAP, "tSAPInput", "tSAPOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    SAPHana(DatabaseConnectionItem.class, EDatabaseTypeName.SAPHana, "tSAPHanaInput", "tSAPHanaOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     // Changed by Marvin Wang on Sep. 3, 2012 for bug TDI-22566.
     HIVE(DatabaseConnectionItem.class, EDatabaseTypeName.HIVE, "tHiveInput", "tHiveOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
