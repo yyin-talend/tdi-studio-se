@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -56,7 +54,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.utils.TalendPropertiesUtil;
@@ -238,14 +235,6 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         wizardSelectionViewer.setInput(this.demoProjectList);
     }
 
-    private Set<String> getDemoProjectNodes() {
-        Set<String> demoProjectNodes = new HashSet<String>();
-        for (DemoProjectBean pro : this.demoProjectList) {
-            demoProjectNodes.add(pro.getDescriptionContents());
-        }
-        return demoProjectNodes;
-    }
-
     /**
      * getFullImagePath.
      * 
@@ -260,16 +249,16 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         if (node != null) {
             relatedImagePath = node.getIconUrl();//$NON-NLS-1$;
             bundle = Platform.getBundle(node.getPluginId());
-        } else {
-            relatedImagePath = DEFAUTL_DEMO_ICON;
-            bundle = Platform.getBundle(org.talend.repository.RepositoryPlugin.PLUGIN_ID);
         }
         try {
-            // url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
-            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
-            pluginPath = new Path(url.getFile()).toOSString();
+            if (FileLocator.find(bundle, new Path(relatedImagePath), null) != null) {
+                url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
+                pluginPath = new Path(url.getFile()).toOSString();
+            } else {
+                url = FileLocator.find(bundle, new Path(DEFAUTL_DEMO_ICON), null);
+                pluginPath = new Path(url.getFile()).toOSString();
+            }
         } catch (IOException e1) {
-            ExceptionHandler.process(e1);
         }
 
         return new Image(null, pluginPath);

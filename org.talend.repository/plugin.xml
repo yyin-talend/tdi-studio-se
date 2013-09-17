@@ -365,14 +365,19 @@
                style="push"
                toolbarPath="Default"
                tooltip="%ExportItemAction.tooltip"/>
+      </actionSet>
+      <actionSet
+            id="org.talend.repository.demoprojcet.actionSet"
+            label="Action set"
+            visible="false">
          <action
                class="org.talend.repository.ui.actions.importexport.ImportDemoItemAction"
-               icon="platform:/plugin/org.talend.common.ui.runtime/icons/import.gif"
+               icon="icons/import_projects_action.gif"
                id="org.talend.repository.actions.importDemo"
                label="导入demo"
                style="push"
                toolbarPath="Default"
-               tooltip="%ImportDemoAction.tooltip">
+               tooltip="导入Demo Project">
             <enablement>
                <systemProperty
                      name="ReadOnlyUser"
