@@ -567,6 +567,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         endpointInfo.put("serviceNamespace", //$NON-NLS-1$
                 EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)); //$NON-NLS-1$
 
+        // correlation id
+        endpointInfo.put("useBusinesCorrelation", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("USE_BUSINESS_CORRELATION", restRequestComponent)); //$NON-NLS-1$
+        
         return endpointInfo;
     }
 

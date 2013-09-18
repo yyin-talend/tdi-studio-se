@@ -67,6 +67,9 @@
 #if ($endpoint.logMessages)
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 #end
+#if ($endpoint.useBusinesCorrelation)
+			<bean class="org.talend.esb.policy.correlation.feature.CorrelationIDFeature" />
+#end
 		</jaxrs:features>
 		<jaxrs:properties>
 #if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
