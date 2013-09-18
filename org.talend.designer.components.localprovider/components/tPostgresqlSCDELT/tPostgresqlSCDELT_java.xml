@@ -17,11 +17,11 @@
     <FAMILY>Databases/PostgreSQL</FAMILY>
     <FAMILY>Business_Intelligence/DB_SCD</FAMILY>
   </FAMILIES>
-  
+
   <DOCUMENTATION>
     <URL />
   </DOCUMENTATION>
-  
+
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MIN_INPUT="0" MAX_INPUT="1" MAX_OUTPUT="0" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
@@ -31,7 +31,7 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR" />
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
-  
+
   <PARAMETERS>
 
     <PARAMETER
@@ -43,22 +43,33 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
-  	<PARAMETER 
-  	  NAME="USE_EXISTING_CONNECTION" 
+  	<PARAMETER
+  	  NAME="USE_EXISTING_CONNECTION"
   	  FIELD="CHECK"
 	  NUM_ROW="11">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
 
-	<PARAMETER 
-	  NAME="CONNECTION" 
+	<PARAMETER
+	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
-	  FILTER="tPostgresqlConnection" 
+	  FILTER="tPostgresqlConnection"
 	  NUM_ROW="11"
-	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'" 
+	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	  DYNAMIC_SETTINGS="true"
 	 />
-    
+
+    <PARAMETER
+			NAME="DB_VERSION"
+			FIELD="CLOSED_LIST"
+			NUM_ROW="15"
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<ITEMS DEFAULT="PRIOR_TO_V9">
+				<ITEM NAME="PRIOR_TO_V9" VALUE="PRIOR_TO_V9" />
+				<ITEM NAME="V9_X" VALUE="V9_X" />
+			</ITEMS>
+		</PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
@@ -68,7 +79,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -78,7 +89,7 @@
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -100,7 +111,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-     
+ 	 
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -121,7 +132,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -132,7 +143,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE_SRC"
       FIELD="TEXT"
@@ -141,7 +152,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -159,7 +170,7 @@
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE"/>
-        <ITEM NAME="CREATE" VALUE="CREATE"/>        
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
         <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
         <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
         <ITEM NAME="DROP_IF_EXISTS_AND_CREATE" VALUE="DROP_IF_EXISTS_AND_CREATE" />
@@ -183,7 +194,7 @@
       SHOW="true"
     >
       <DEFAULT></DEFAULT>
-    </PARAMETER>	
+    </PARAMETER>
 
     <PARAMETER
       NAME="SK_CREATION"
@@ -206,7 +217,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
@@ -217,7 +228,7 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
@@ -225,7 +236,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L1_FIELDS"
       FIELD="TABLE"
@@ -237,7 +248,7 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L2"
       FIELD="CHECK"
@@ -245,7 +256,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L2_FIELDS"
       FIELD="TABLE"
@@ -257,7 +268,7 @@
         <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L2_STARTDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -265,7 +276,7 @@
       SHOW_IF="USE_L2 == 'true'"
     >
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L2_ENDDATE_FIELD"
       FIELD="COLUMN_LIST"
@@ -273,7 +284,7 @@
       SHOW_IF="USE_L2 == 'true'"
     >
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L2_ACTIVE"
       FIELD="CHECK"
@@ -282,7 +293,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L2_ACTIVE_FIELD"
       FIELD="COLUMN_LIST"
@@ -290,7 +301,7 @@
       SHOW_IF="(USE_L2_ACTIVE == 'true') and (USE_L2 == 'true')"
     >
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USE_L2_VERSION"
       FIELD="CHECK"
@@ -299,7 +310,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
@@ -307,18 +318,18 @@
       SHOW_IF="(USE_L2_VERSION == 'true') and (USE_L2 == 'true')"
     >
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
       NUM_ROW="90"
       SHOW="false"
-    >       
+    >
       <DEFAULT>postgres_id</DEFAULT>
     </PARAMETER>
-    
+
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
 
     <PARAMETER
@@ -331,7 +342,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
@@ -339,14 +350,15 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-  
+
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+			<IMPORT NAME="Driver-Postgres9" MODULE="postgresql-9.2-1003.jdbc3.jar" REQUIRED_IF="(DB_VERSION =='V9_X') AND (USE_EXISTING_CONNECTION == 'false')" />
+			<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED_IF="(DB_VERSION =='PRIOR_TO_V9') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
   </CODEGENERATION>
-  
+
   <RETURNS />
 </COMPONENT>

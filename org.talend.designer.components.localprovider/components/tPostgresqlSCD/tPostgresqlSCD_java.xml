@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
+
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -45,7 +45,7 @@
       REPOSITORY_VALUE="DATABASE:POSTGRESQL"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-	
+
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -53,7 +53,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
@@ -61,9 +61,20 @@
       NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
-    />         
-        
+    />
+
     <PARAMETER
+			NAME="DB_VERSION"
+			FIELD="CLOSED_LIST"
+			NUM_ROW="30"
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<ITEMS DEFAULT="PRIOR_TO_V9">
+				<ITEM NAME="PRIOR_TO_V9" VALUE="PRIOR_TO_V9" />
+				<ITEM NAME="V9_X" VALUE="V9_X" />
+			</ITEMS>
+		</PARAMETER>
+
+			<PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="40"
@@ -72,7 +83,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -82,7 +93,7 @@
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
@@ -92,8 +103,8 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-     <PARAMETER 
+
+     <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="41"
@@ -102,7 +113,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -112,7 +123,7 @@
     >
       <DEFAULT>Postgresql</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -122,7 +133,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
@@ -132,7 +143,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
@@ -149,9 +160,9 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="70">
-         <DEFAULT/>  
+         <DEFAULT/>
     </PARAMETER>
 
     <PARAMETER
@@ -162,7 +173,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SK_CREATION"
       FIELD="CLOSED_LIST"
@@ -187,7 +198,7 @@
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SK_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
@@ -197,7 +208,7 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SK_ROUTINE"
       FIELD="TEXT"
@@ -207,7 +218,7 @@
     >
       <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
     </PARAMETER>
-	
+
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
@@ -227,7 +238,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
       NAME="SOURCE_KEY_INC_NULL"
       FIELD="CHECK"
@@ -444,8 +455,8 @@
         <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-    
-        
+
+
 	<PARAMETER
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
@@ -457,8 +468,8 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER> 
-    
+    </PARAMETER>
+
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -466,9 +477,9 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
   </PARAMETERS>
-  
+
   <ADVANCED_PARAMETERS>
   	<PARAMETER
       NAME="DEBUG"
@@ -477,15 +488,16 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+			<IMPORT NAME="Driver-Postgres9" MODULE="postgresql-9.2-1003.jdbc3.jar" REQUIRED_IF="(DB_VERSION =='V9_X') AND (USE_EXISTING_CONNECTION == 'false')" />
+			<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar"  REQUIRED_IF="(DB_VERSION =='PRIOR_TO_V9') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS>
   </CODEGENERATION>
-   
+
   <RETURNS>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
     <RETURN NAME="NB_LINE_INSERTED" TYPE="id_Integer" AVAILABILITY="AFTER"/>
