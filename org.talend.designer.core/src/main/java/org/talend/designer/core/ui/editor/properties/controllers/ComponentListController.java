@@ -270,6 +270,9 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
+                if (node.getJobletNode() != null) {
+                    node = node.getJobletNode();
+                }
                 String uniqueName = node.getUniqueName();
                 if (uniqueName.equals(currentNode.getUniqueName())) {
                     continue;

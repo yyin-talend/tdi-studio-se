@@ -285,7 +285,7 @@ public class JobletContainer extends NodeContainer {
             if (!canCollapse()) {
                 Shell shell = Display.getCurrent().getActiveShell();
 
-                MessageDialog dlg = new MessageDialog(new Shell(shell), "ERROR", null, "Please attach connection!",
+                MessageDialog dlg = new MessageDialog(new Shell(shell), "ERROR", null, "Please attach connection correctly!",
                         MessageDialog.QUESTION, new String[] { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL }, 0);
                 dlg.open();
                 return;
@@ -674,16 +674,54 @@ public class JobletContainer extends NodeContainer {
     }
 
     public boolean canCollapse() {
+        List<String> connList = new ArrayList<String>();
+        List<String> metaList = new ArrayList<String>();
         if (node.getIncomingConnections().size() > 1) {
+            for (IConnection conn : node.getIncomingConnections()) {
+                if (conn.getConnectorName().startsWith("TRIGGER")) {
+                    metaList.add(conn.getMetaName());
+                }
+            }
             for (NodeContainer nodeContainer : this.nodeContainers) {
                 Node connNode = nodeContainer.getNode();
                 IElementParameter elePa = this.node.getElementParameter(connNode.getJoblet_unique_name());
                 if (elePa != null) {
-                    IElementParameter elechild = elePa.getChildParameters().get("CONNECTION");
-                    if (elechild != null && (elechild.getValue() == null || "".equals(elechild.getValue()))) {
-                        return false;
+                    boolean isTri = false;
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        isTri = service.isTriggerNode(connNode);
                     }
+                    if (isTri) {
+                        IElementParameter elechild = elePa.getChildParameters().get("COMPONENT_LIST");
+                        if (elechild != null) {
+                            if (elechild.getValue() != null && (elechild.getValue() instanceof String)) {
+                                metaList.remove(elechild.getValue());
+                            }
+                        }
+
+                    } else {
+                        IElementParameter elechild = elePa.getChildParameters().get("CONNECTION");
+                        if (elechild != null) {
+                            if ((elechild.getValue() == null || "".equals(elechild.getValue()))) {
+                                return false;
+                            } else {
+                                if (elechild.getValue() instanceof String) {
+                                    if (connList.contains((String) elechild.getValue())) {
+                                        return false;
+                                    } else {
+                                        connList.add((String) elechild.getValue());
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
                 }
+            }
+            if (metaList.size() > 0) {
+                return false;
             }
         }
         return true;
