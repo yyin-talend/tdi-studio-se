@@ -196,7 +196,11 @@ public class JobletConnectionReconnectCommand extends Command {
                 boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isMultiSchema();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     setSchemaToNotBuiltInNode(oldSource, newSource, oldMetadataTable);
-                    connection.setMetaName(newSource.getUniqueName());
+                    if (newSource.getJobletNode() != null) {
+                        connection.setMetaName(newSource.getJobletNode().getUniqueName());
+                    } else {
+                        connection.setMetaName(newSource.getUniqueName());
+                    }
                 } else {
                     if (!builtInNewSource) {
                         int num = 0;
@@ -208,7 +212,11 @@ public class JobletConnectionReconnectCommand extends Command {
                         }
                         oldSource.getMetadataList().remove(num);
                         setSchemaToNotBuiltInNode(oldSource, newSource, oldMetadataTable);
-                        connection.setMetaName(newSource.getUniqueName());
+                        if (newSource.getJobletNode() != null) {
+                            connection.setMetaName(newSource.getJobletNode().getUniqueName());
+                        } else {
+                            connection.setMetaName(newSource.getUniqueName());
+                        }
                     }
                     if (!builtInOldSource) {
                         IMetadataTable meta = oldMetadataTable.clone();
@@ -236,7 +244,11 @@ public class JobletConnectionReconnectCommand extends Command {
                     oldSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 }
             } else {
-                connection.setMetaName(newSource.getUniqueName());
+                if (newSource.getJobletNode() != null) {
+                    connection.setMetaName(newSource.getJobletNode().getUniqueName());
+                } else {
+                    connection.setMetaName(newSource.getUniqueName());
+                }
             }
             connection.reconnect(newSource, oldTarget, newLineStyle);
             connection.updateName();
@@ -314,7 +326,11 @@ public class JobletConnectionReconnectCommand extends Command {
                 boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isMultiSchema();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     setSchemaToNotBuiltInNode(newSource, oldSource, oldMetadataTable);
-                    connection.setMetaName(oldSource.getUniqueName());
+                    if (oldSource.getJobletNode() != null) {
+                        connection.setMetaName(oldSource.getJobletNode().getUniqueName());
+                    } else {
+                        connection.setMetaName(oldSource.getUniqueName());
+                    }
                 } else {
                     if (!builtInNewSource) {
                         oldSource.getMetadataList().add(oldMetadataTable);
@@ -330,7 +346,11 @@ public class JobletConnectionReconnectCommand extends Command {
                         }
                         newSource.getMetadataList().remove(num);
                         setSchemaToNotBuiltInNode(newSource, oldSource, oldMetadataTable);
-                        connection.setMetaName(oldSource.getUniqueName());
+                        if (oldSource.getJobletNode() != null) {
+                            connection.setMetaName(oldSource.getJobletNode().getUniqueName());
+                        } else {
+                            connection.setMetaName(oldSource.getUniqueName());
+                        }
                     }
                     if ((builtInOldSource) && (builtInNewSource)) {
                         int num = 0;
@@ -354,7 +374,11 @@ public class JobletConnectionReconnectCommand extends Command {
                     oldSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), oldSourceSchemaType);
                 }
             } else {
-                connection.setMetaName(oldSource.getUniqueName());
+                if (oldSource.getJobletNode() != null) {
+                    connection.setMetaName(oldSource.getJobletNode().getUniqueName());
+                } else {
+                    connection.setMetaName(oldSource.getUniqueName());
+                }
             }
         } else if (newTarget != null) {
             INodeConnector connector = oldTarget.getConnectorFromType(oldLineStyle);
