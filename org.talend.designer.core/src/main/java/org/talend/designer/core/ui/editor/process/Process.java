@@ -2265,7 +2265,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         List<String> connectionsProblems = new ArrayList<String>();
 
         Hashtable<ConnectionType, Connection> connectionsHashtable = new Hashtable<ConnectionType, Connection>();
-
+        List<String> connectionUniqueNames = new ArrayList<String>();
         for (int i = 0; i < connecList.size(); i++) {
             cType = (ConnectionType) connecList.get(i);
             source = nodesHashtable.get(cType.getSource());
@@ -2289,6 +2289,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     connectionTypeFound = true;
                 }
             }
+            String connectionLabel = cType.getLabel();
 
             // fix to correct the bug of the metaname after renaming the output of a tMap
             String metaname = cType.getMetaname();
@@ -2300,7 +2301,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     if (source.getMetadataList().size() > 0) {
                         metaname = source.getMetadataList().get(0).getTableName();
                     }
-                    connectionsProblems.add(cType.getLabel());
+                    connectionsProblems.add(connectionLabel);
                 }
             }
             // end of fix
@@ -2321,6 +2322,24 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
                         cType.getLabel(), cType.getMetaname(), monitorConnection);
             }
+            String uniqueName = connec.getUniqueName();
+            // at this point we should have the uniquename set correctly in the connection.
+            if (!connectionUniqueNames.contains(uniqueName) && checkValidConnectionName(uniqueName, false)) {
+                try {
+                    source.getProcess().addUniqueConnectionName(uniqueName);
+                } catch (Exception e) {
+                    // nothing, since it should be added already in fact.
+                }
+            } else {
+                boolean labelSameAsUniqueName = connec.getName().equals(uniqueName);
+                uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
+                if (labelSameAsUniqueName) {
+                    connec.setName(uniqueName);
+                }
+                source.getProcess().addUniqueConnectionName(uniqueName);
+            }
+            connectionUniqueNames.add(uniqueName);
+
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
             // }
