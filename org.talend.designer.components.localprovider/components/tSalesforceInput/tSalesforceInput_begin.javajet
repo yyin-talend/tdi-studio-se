@@ -150,7 +150,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					<%
 					if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
 					%>
-						if(tokenFile_<%=cid%> != null && tokenFile_<%=cid%> != null){
+						if(tokenFile_<%=cid%> != null && refreshToken_<%=cid%> != null){
 							// Store the refresh token for future use.
 							java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
 							storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
