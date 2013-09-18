@@ -182,8 +182,10 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
 
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                List<URL> allJobScripts = new ArrayList<URL>();
                 getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, srcResource, exportChoice, selectedJobVersion);
+                        processedJob, allJobScripts, srcResource, exportChoice, selectedJobVersion);
+                libResource.addResources(allJobScripts);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -270,9 +272,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         // Extra SU parameters: the output attachments the SE will query
         for (ContextTypeDefinition def : PetalsTemporaryOptionsKeeper.INSTANCE.getContexts()) {
             if (def.getExportType() != ContextExportType.OUT_ATTACHMENT
-                    && def.getExportType() != ContextExportType.PARAMETER_AND_OUT_ATTACHMENT)
+                    && def.getExportType() != ContextExportType.PARAMETER_AND_OUT_ATTACHMENT) {
                 continue;
-
+            }
             sb.append("\t\t\t<talend:output-attachment>"); //$NON-NLS-1$
             sb.append(def.getDefinition().getName());
             sb.append("</talend:output-attachment>\n"); //$NON-NLS-1$

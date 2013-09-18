@@ -65,7 +65,7 @@ import org.talend.repository.documentation.ExportFileResource;
  */
 public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
-    private String outputSuffix;
+    private final String outputSuffix;
 
     public JobJavaScriptsWSManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort, String suffix) {
@@ -205,7 +205,6 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         List<URL> userRoutineList = getUserRoutine(process);
         libResource.addResources(userRoutineList);
 
-
         // Gets axis libraries
         List<String> newAxisLib = new ArrayList<String>(axisLib);
         for (URL libUrl : talendLibraries) {
@@ -231,20 +230,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                List<URL> allJobScripts = new ArrayList<URL>();
                 getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, srcResource, exportChoice, selectedJobVersion);
+                        processedJob, allJobScripts, srcResource, exportChoice, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
         }
-
-        for (JobInfo jobInfo : list) {
-            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                    isOptionChoosed(ExportChoice.needJobScript)));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
-                    isOptionChoosed(ExportChoice.needContext));
-        }
-
     }
 
     private void copyServerConfigFileToTempDir() {

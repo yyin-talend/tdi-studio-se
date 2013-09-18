@@ -268,21 +268,14 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                List<URL> allJobScripts = new ArrayList<URL>();
                 getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, srcResource, exportChoice, selectedJobVersion);
+                        processedJob, allJobScripts, srcResource, exportChoice, selectedJobVersion);
+                libResource.addResources(allJobScripts);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
         }
-
-        for (JobInfo jobInfo : list) {
-            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), true));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
-                    isOptionChoosed(ExportChoice.needContext));
-            addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies)
-                    && isOptionChoosed(ExportChoice.needJobItem), srcResource);
-        }
-
     }
 
     protected void prepareESBFiles(HashMap<String, String> jobMap, Map<ExportChoice, Object> exportChoice) {

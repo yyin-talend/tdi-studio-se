@@ -31,6 +31,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
@@ -556,13 +557,18 @@ public class Node extends Element implements IGraphicalNode {
 
         size = new Dimension();
         if (getIcon32() != null) {
-            size.height = getIcon32().getImageData().height;
-            size.width = getIcon32().getImageData().width;
+            ImageData data = getIcon32().getImageData();
+            size.height = data.height;
+            size.width = data.width;
         } else {
             size.height = DEFAULT_SIZE;
             size.width = DEFAULT_SIZE;
         }
-        if (!getProcess().isDuplicate()) { // only for graphical process
+        if (!getProcess().isDuplicate() || CommonsPlugin.isHeadless() || this.process.getEditor() == null) { // only for
+                                                                                                             // graphical
+                                                                                                             // process
+            // note that the subtree start is calculated just after load the process
+            // so it's no use when load without editor
             calculateSubtreeStartAndEnd();
         }
     }
@@ -957,7 +963,10 @@ public class Node extends Element implements IGraphicalNode {
      */
     private void updateVisibleDataForExistingConnection(Node connNode) {
         IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
-        IElementParameter connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$
+        IElementParameter connParam = null;
+        if (useConn != null) {
+            connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$ 
+        }
         if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
             String connName = (String) connParam.getValue();
             if (connNode.getUniqueName().equals(connName)) {
@@ -987,7 +996,7 @@ public class Node extends Element implements IGraphicalNode {
     public void updateVisibleData() {
         // if it's a duplicate process, it's a process used only for code generation, so no need to update any graphical
         // data.
-        if (this.process.isDuplicate() || CommonsPlugin.isHeadless()) {
+        if (this.process.isDuplicate() || CommonsPlugin.isHeadless() || this.process.getEditor() == null) {
             return;
         }
         String newLabel = label;
@@ -997,7 +1006,10 @@ public class Node extends Element implements IGraphicalNode {
         // when using existing connection
         boolean useConnection = false;
         IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
-        IElementParameter connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$
+        IElementParameter connParam = null;
+        if (useConn != null) {
+            connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$ 
+        }
         if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
 
             String connName = (String) connParam.getValue();

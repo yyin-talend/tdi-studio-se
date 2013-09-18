@@ -105,7 +105,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
-import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.XmiResourceManager;
@@ -218,7 +217,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private AbstractMultiPageTalendEditor editor;
 
-    private Map<Node, SubjobContainer> mapSubjobStarts = new HashMap<Node, SubjobContainer>();
+    private final Map<Node, SubjobContainer> mapSubjobStarts = new HashMap<Node, SubjobContainer>();
 
     private boolean duplicate = false;
 
@@ -228,7 +227,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     protected EMap<?, ?> screenshots = null;
 
-    private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
+    private final List<byte[]> externalInnerContents = new ArrayList<byte[]>();
 
     private Set<String> neededRoutines;
 
@@ -2888,15 +2887,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (!isDuplicate()) {
             for (INode inode : nodes) {
                 Node node = (Node) inode;
-                node.setSubtreeStart(node.isDesignSubjobStartNode() && !node.isThereLinkWithHash());
-                IElementParameter param = getElementParameter(EParameterName.END_OF_FLOW.getName());
-                if (param != null) {
-                    if (NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA).isEmpty()) {
-                        param.setValue(Boolean.TRUE);
-                    } else {
-                        param.setValue(Boolean.FALSE);
-                    }
-                }
+                node.calculateSubtreeStartAndEnd();
             }
             ConnectionListController.updateConnectionList(this);
             updateSubjobContainers();
