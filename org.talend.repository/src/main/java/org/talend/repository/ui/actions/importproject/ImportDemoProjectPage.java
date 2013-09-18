@@ -141,7 +141,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
             DemoProjectBean demoProject = this.demoProjectList.get(i);
 
             TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
-            tableItem.setText(demoProject.getProjectName());
+            tableItem.setText(demoProject.getDemoDesc());
             tableItem.setImage(getFullImagePath(demoProject));
         }
     }
