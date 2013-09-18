@@ -808,6 +808,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) { //$NON-NLS-1$
                         hasSAM = true;
                     }
+                    // https://jira.talendforge.org/browse/TESB-10601
+                    if (EmfModelUtils.computeCheckElementValue("USE_BUSINESS_CORRELATION", restRequestComponent)){ //$NON-NLS-1$
+                        importPackages.add("org.talend.esb.policy.correlation.feature"); //$NON-NLS-1$
+                    }
                 }
                 for (NodeType node : EmfModelUtils.getComponentsByName(pi, "tRESTClient")) {
                     // https://jira.talendforge.org/browse/TESB-8066
