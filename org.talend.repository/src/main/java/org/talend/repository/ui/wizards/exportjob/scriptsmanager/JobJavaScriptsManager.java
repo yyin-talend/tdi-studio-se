@@ -1178,43 +1178,36 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ExportFileResource resource, Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
+        List<URL> allJobScripts = new ArrayList<URL>();
         try {
             List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
             getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
-                    processedJob, resource, exportChoice, selectedJobVersion);
+                    processedJob, allJobScripts, resource, exportChoice, selectedJobVersion);
         } catch (Exception e) {
             ExceptionHandler.process(e);
-        }
-
-        List<URL> allJobScripts = new ArrayList<URL>();
-        if (needChildren) {
-            ProjectManager projectManager = ProjectManager.getInstance();
-            for (JobInfo jobInfo : list) {
-                Project project = projectManager.getProject(jobInfo.getProcessItem());
-                String childProjectName = projectName;
-                if (project != null) {
-                    childProjectName = project.getTechnicalLabel().toLowerCase(); // hywang modify for 7932
-                }
-                allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                        isOptionChoosed(ExportChoice.needJobScript)));
-                addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
-                        isOptionChoosed(ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies)
-                        && isOptionChoosed(ExportChoice.needJobItem), resource);
-            }
         }
 
         return allJobScripts;
     }
 
     protected void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<JobInfo> list,
-            ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
-            Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
+            ProcessItem process, String projectName, List<ProcessItem> processedJob, List<URL> allJobScripts,
+            ExportFileResource resource, Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
+        ProjectManager projectManager = ProjectManager.getInstance();
+        Project project = projectManager.getProject(process);
+        String childProjectName = projectName;
+        if (project != null) {
+            childProjectName = project.getTechnicalLabel().toLowerCase(); // hywang modify for 7932
+        }
+        allJobScripts.addAll(getJobScripts(childProjectName, process.getProperty().getLabel(),
+                process.getProperty().getVersion(), isOptionChoosed(ExportChoice.needJobScript)));
+        addContextScripts(process, process.getProperty().getLabel(), process.getProperty().getVersion(), resource,
+                isOptionChoosed(ExportChoice.needContext));
         addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies)
                 && isOptionChoosed(ExportChoice.needJobItem), resource);
@@ -1228,7 +1221,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
             list.add(subjobInfo);
             getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
-                    resource, exportChoice);
+                    allJobScripts, resource, exportChoice);
         }
     }
 
