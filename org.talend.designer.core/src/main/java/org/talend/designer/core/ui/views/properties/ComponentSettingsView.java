@@ -213,6 +213,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     isCompactView = false;
                 }
                 tabFactory.getTabbedPropertyComposite().setCompactViewVisible(true);
+                tabFactory.getTabbedPropertyComposite().setCompactView(isCompactView);
                 dc = new MissingSettingsMultiThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                         element, isCompactView);
 
