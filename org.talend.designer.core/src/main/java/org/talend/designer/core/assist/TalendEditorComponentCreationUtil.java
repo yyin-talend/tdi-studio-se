@@ -13,6 +13,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -28,6 +29,7 @@ public class TalendEditorComponentCreationUtil {
         final GraphicalViewer graphicalViewer = (GraphicalViewer) talendEditor.getAdapter(GraphicalViewer.class);
         final CommandStack commandStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         final String categoryName = talendEditor.getComponenentsHandler().extractComponentsCategory().getName();
+        final IProcess2 process = talendEditor.getProcess();
 
         KeyListener listener = new KeyListener() {
 
@@ -39,7 +41,7 @@ public class TalendEditorComponentCreationUtil {
                     return;
                 }
                 TalendEditorComponentCreationAssist assist = new TalendEditorComponentCreationAssist(categoryName,
-                        graphicalViewer, commandStack);
+                        graphicalViewer, commandStack, process);
                 assist.showComponentCreationAssist(e.character);
             }
         };
