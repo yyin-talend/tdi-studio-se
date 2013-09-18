@@ -217,6 +217,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.ui.part,
    org.eclipse.swt.widgets",
  org.talend.designer.core.ui.views.properties,
+ org.talend.designer.core.ui.views.properties.composites,
  org.talend.designer.core.ui.views.statsandlogs,
  org.talend.designer.core.ui.wizards,
  org.talend.designer.core.utils,

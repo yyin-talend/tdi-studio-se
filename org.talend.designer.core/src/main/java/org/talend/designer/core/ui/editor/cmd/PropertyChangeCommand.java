@@ -355,7 +355,16 @@ public class PropertyChangeCommand extends Command {
                     }
                 }
                 if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
-                    if (testedParam.getListItemsShowIf() != null) {
+                    /*
+                     * TUP-968, In order to refresh for missing modules top messages.
+                     */
+                    if (EParameterName.DB_VERSION.getName().equals(currentParam.getName())
+                            || "HBASE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                            || "HIVE_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                            || "HCAT_VERSION".equals(currentParam.getName()) //$NON-NLS-1$
+                            || "DISTRIBUTION".equals(currentParam.getName())) {//$NON-NLS-1$
+                        toUpdate = true;
+                    } else if (testedParam.getListItemsShowIf() != null) {
                         for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
                             showIf = testedParam.getListItemsShowIf()[j];
                             notShowIf = testedParam.getListItemsNotShowIf()[j];

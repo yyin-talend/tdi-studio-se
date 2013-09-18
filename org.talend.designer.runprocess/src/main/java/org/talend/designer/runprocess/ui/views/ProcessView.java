@@ -255,8 +255,6 @@ public class ProcessView extends ViewPart {
         // dc = processComposite;
         // createBasicComposite(tabFactory.getTabComposite(), element, null);
         tabFactory.getTabComposite().layout();
-        tabFactory.getTabbedPropertyComposite().getComposite().dispose();
-        tabFactory.getTabbedPropertyComposite().pack();
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override

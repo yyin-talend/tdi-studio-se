@@ -196,7 +196,6 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.core.utils.ConnectionUtil;
-import org.talend.designer.core.utils.ModulesInstallerUtil;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -1650,8 +1649,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 }
                             }
                         }
-                        IComponent component = ((Node) cRequest.getNewObject()).getComponent();
-                        ModulesInstallerUtil.installModules(getSite().getShell(), component);
+                        // IComponent component = ((Node) cRequest.getNewObject()).getComponent();
+                        // ModulesInstallerUtil.installModules(getSite().getShell(), component);
                     }
                 }
 

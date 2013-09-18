@@ -176,7 +176,6 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
-import org.talend.designer.core.utils.ModulesInstallerUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
@@ -431,14 +430,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         return factory;
     }
 
-    private void checkRequiredModules() {
-        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
-        if (newObject instanceof Node) {
-            IComponent component = ((Node) newObject).getComponent();
-            Shell shell = Display.getCurrent().getActiveShell();
-            ModulesInstallerUtil.installModules(new Shell(shell), component);
-        }
-    }
+    // private void checkRequiredModules() {
+    // Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+    // if (newObject instanceof Node) {
+    // IComponent component = ((Node) newObject).getComponent();
+    // Shell shell = Display.getCurrent().getActiveShell();
+    // ModulesInstallerUtil.installModules(new Shell(shell), component);
+    // }
+    // }
 
     /*
      * (non-Javadoc)
@@ -468,7 +467,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (o instanceof Node) {
                     createComponentOnLink((Node) o, location);
                 }
-                checkRequiredModules();
+                // checkRequiredModules();
                 return;
             } else if (getTargetEditPart() instanceof ProcessPart) {
                 // for palette dnd, feature 6457
@@ -479,7 +478,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         execCommandStack(command);
                     }
                 }
-                checkRequiredModules();
+                // checkRequiredModules();
                 return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
                 JobletContainerPart jobletPart = (JobletContainerPart) getTargetEditPart();
@@ -506,7 +505,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                     }
                                 }
                             }
-                            checkRequiredModules();
+                            // checkRequiredModules();
                             return;
                         } else {
                             part = getParentPart(part);
@@ -518,7 +517,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                     execCommandStack(command);
                                 }
                             }
-                            checkRequiredModules();
+                            // checkRequiredModules();
                             return;
                         }
 
@@ -1089,8 +1088,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             // setselecte(part, lastUniqname);
         }
-        Shell shell = Display.getCurrent().getActiveShell();
-        ModulesInstallerUtil.installModules(new Shell(shell), components);
+        // Shell shell = Display.getCurrent().getActiveShell();
+        // ModulesInstallerUtil.installModules(new Shell(shell), components);
 
     }
 
