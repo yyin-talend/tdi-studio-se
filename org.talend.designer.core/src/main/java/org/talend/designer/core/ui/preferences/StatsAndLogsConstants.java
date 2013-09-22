@@ -116,13 +116,13 @@ public class StatsAndLogsConstants {
             "mysql-connector-java-5.1.22-bin.jar", "mysql-connector-java-3.1.14-bin.jar" };//$NON-NLS-1$ 
 
     public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8", "MySQL 5",
-            "MySQL 4", "Access 2003", "Access 2007" };
+            "MySQL 4", "Access 2003", "Access 2007", "Prior to v9", "v9 +" };
 
     public static final String[] DB_VERSION_CODE = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
-            "MYSQL_4", "ACCESS_2003", "ACCESS_2007" };
+            "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
 
     public static final String[] DB_VERSION_DRIVER = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
-        "MYSQL_4", "ACCESS_2003", "ACCESS_2007" };
+            "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
 
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -134,7 +134,14 @@ public class StatsAndLogsConstants {
 
     public static final String[] AS400_VERSION_CODE = new String[] { "AS400_V5R4_V6R1", "AS400_V5R2_V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
-    public static final String[] AS400_VERSION_DRIVER = new String[] { "jt400_V5R3.jar", "jt400_V5R2.jar" }; //$NON-NLS-1$ 
+    public static final String[] AS400_VERSION_DRIVER = new String[] { "jt400_V5R3.jar", "jt400_V5R2.jar" }; //$NON-NLS-1$
+
+    public static final String[] PSQL_VERSION_DISPLAY = new String[] { "Prior to v9", "v9 +" }; //$NON-NLS-1$ //$NON-NLS-2$
+
+    public static final String[] PSQL_VERSION_CODE = new String[] { "PRIOR_TO_V9", "V9_X" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    public static final String[] PSQL_VERSION_DRIVER = new String[] {
+            "postgresql-8.3-603.jdbc3.jar", "postgresql-9.2-1003.jdbc3.jar" }; //$NON-NLS-1$ 
 
     public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
 
