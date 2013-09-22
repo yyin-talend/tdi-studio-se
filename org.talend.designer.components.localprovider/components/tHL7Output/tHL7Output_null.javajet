@@ -84,7 +84,7 @@ imports="
 								}
 							} else { // use the default value
 %>
-tmpValue_<%=cid %> = <%=xmlNodes.get(i).defaultValue %>;
+tmpValue_<%=cid %> = <%=(xmlNodes.get(i).defaultValue==null || "".equals(xmlNodes.get(i).defaultValue)? "\"\"":xmlNodes.get(i).defaultValue) %>;
 <%
 							}
 %>
