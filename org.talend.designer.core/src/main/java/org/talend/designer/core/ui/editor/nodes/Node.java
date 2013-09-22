@@ -527,6 +527,7 @@ public class Node extends Element implements IGraphicalNode {
             setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
             setPropertyValue(EParameterName.HINT.getName(), hintToParse);
             setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
+            connectionName = ElementParameterParser.parse(this, connectionToParse);
             setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
             setPropertyValue(EParameterName.VALIDATION_RULES.getName(), hasValidationRule);
         }
