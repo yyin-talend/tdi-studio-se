@@ -5,6 +5,7 @@ imports="
             org.talend.core.model.process.IConnection
             org.talend.core.model.process.INode
             org.talend.designer.codegen.config.CodeGeneratorArgument
+            org.talend.core.model.process.ElementParameterParser
 " 
 %>
 
@@ -12,6 +13,14 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
+String version = ElementParameterParser.getValue(node,"__HL7_VER__");
+if ("NULL".equals(mode)) {
+%>
+org.talend.hl7.HL7Message msg_<%=cid %> = new org.talend.hl7.HL7Message();
+msg_<%=cid %>.setVersion("<%=version %>");
+<%
+} else { // HAPI
 %>
 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
@@ -27,6 +36,6 @@ int i_<%=incomingConn.getName() %>_<%=cid %> = 0;
 %>
 ca.uhn.hl7v2.util.Terser terser_<%=cid %> = null;
 ca.uhn.hl7v2.model.Message msg_<%=cid %> = null;
-
+<%}%>
 String tmpValue_<%=cid %> = "";
 
