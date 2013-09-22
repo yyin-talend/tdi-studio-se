@@ -215,7 +215,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         if (item instanceof ConnectionItem) {
                             ConnectionItem connectionItem = (ConnectionItem) item;
                             Connection connection = connectionItem.getConnection();
-                            if (connection.isReadOnly()) {
+                            if (connection == null || connection.isReadOnly()) {
                                 continue;
                             }
                             for (Object tableObj : ConnectionHelper.getTables(connection)) {
