@@ -192,7 +192,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER
+                    && notification.getEventType() != Notification.RESOLVE) {
                 int featureID = notification.getFeatureID(Properties.class);
                 if (featureID == PropertiesPackage.PROPERTY__INFORMATIONS) {
                     // || featureID == PropertiesPackage.PROPERTY__MODIFICATION_DATE) {
