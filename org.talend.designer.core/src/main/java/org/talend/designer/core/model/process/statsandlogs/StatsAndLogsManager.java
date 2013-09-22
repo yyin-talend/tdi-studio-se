@@ -78,7 +78,7 @@ public class StatsAndLogsManager {
         if (!dbFlag) {
             dbOutput = null;
         } else {
-            dbOutput = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue(); //$NON-NLS-1$
+            dbOutput = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue();
             if (dbOutput == null || dbOutput.equals("")) { //$NON-NLS-1$
                 dbOutput = null;
                 dbFlag = false;
@@ -106,7 +106,7 @@ public class StatsAndLogsManager {
         if (!dbFlag) {
             dbOutput = null;
         } else {
-            dbOutput = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue(); //$NON-NLS-1$
+            dbOutput = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue();
             dbOutput = OracleComponentHelper.filterOracleComponentName(dbOutput);
             if (dbOutput == null || dbOutput.equals("")) { //$NON-NLS-1$
                 dbOutput = null;
@@ -131,7 +131,7 @@ public class StatsAndLogsManager {
                 && process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName())
                         .isShow(process.getElementParameters());
 
-        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).getValue()) //$NON-NLS-1$
+        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).getValue())
                 && process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).isShow(
                         process.getElementParameters());
 
@@ -167,7 +167,8 @@ public class StatsAndLogsManager {
                     } else {
                         commitComponentName = "tOracleCommit";//$NON-NLS-1$
                     }
-                    commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName,ComponentCategory.CATEGORY_4_DI.getName());
+                    commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName,
+                            ComponentCategory.CATEGORY_4_DI.getName());
                     if (commitComponentName.indexOf("Informix") != -1) {
                         isNotInformixDB = false;
                     }
@@ -179,7 +180,7 @@ public class StatsAndLogsManager {
                         commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(CONNECTION_UID);
                         IElementParameter elementParameter = commitNode.getElementParameter("CLOSE");
                         if (elementParameter != null) {
-                            elementParameter.setValue(Boolean.FALSE); //$NON-NLS-1$
+                            elementParameter.setValue(Boolean.FALSE);
                         }
 
                         commitNode.setProcess(process);
@@ -197,7 +198,7 @@ public class StatsAndLogsManager {
                                 + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue() + ")"); //$NON-NLS-1$
             } else {
                 logsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
-                        basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue()); //$NON-NLS-1$
+                        basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue());
             }
             if (dbFlag) {
                 if (commitNode != null && isNotInformixDB) {
@@ -244,7 +245,7 @@ public class StatsAndLogsManager {
                                 + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue() + ")"); //$NON-NLS-1$
             } else {
                 statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
-                        basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
+                        basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue());
             }
             if (dbFlag) {
                 if (commitNode != null && isNotInformixDB) {
@@ -375,7 +376,7 @@ public class StatsAndLogsManager {
             for (String dbComponent : javaDbComponents) {
                 String connectionComponentName = null;
                 if (OracleComponentHelper.filterOracleConnectionType(
-                        (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {//$NON-NLS-1$
+                        (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {
                     if (dbComponent.endsWith("Output")) { //$NON-NLS-1$
                         String substring = dbComponent.substring(0, dbComponent.lastIndexOf("Output")); //$NON-NLS-1$
                         connectionComponentName = substring + "Connection"; //$NON-NLS-1$
@@ -394,8 +395,8 @@ public class StatsAndLogsManager {
                         IElementParameter elementParameter = connectionNode
                                 .getElementParameter(EParameterName.USE_SHARED_CONNECTION.getName());
 
-                        if (elementParameter != null && elementParameter.getName() != null) {//$NON-NLS-1$
-                            elementParameter.setValue(Boolean.TRUE);//$NON-NLS-1$
+                        if (elementParameter != null && elementParameter.getName() != null) {
+                            elementParameter.setValue(Boolean.TRUE);
                             final String sharedConnName = "StatsAndLog_Shared_Connection"; //$NON-NLS-1$
                             if ((Boolean) process.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
                                     .getValue()) {
@@ -422,7 +423,8 @@ public class StatsAndLogsManager {
                         connectionNode.setProcess(process);
                         nodeList.add(connectionNode);
 
-                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get(TPREJOB,ComponentCategory.CATEGORY_4_DI.getName());
+                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get(TPREJOB,
+                                ComponentCategory.CATEGORY_4_DI.getName());
                         DataNode preNode = new DataNode(prejobComponent, PRE_STA_LOG_CON);
                         preNode.setStart(true);
                         preNode.setSubProcessStart(true);
@@ -646,7 +648,8 @@ public class StatsAndLogsManager {
         logsNode.getMetadataList().clear();
 
         // load the tLogCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tLogCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(
+                "tLogCatcher", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -675,7 +678,8 @@ public class StatsAndLogsManager {
         statsNode.getMetadataList().clear();
 
         // load the tStatCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tStatCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(
+                "tStatCatcher", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -704,7 +708,8 @@ public class StatsAndLogsManager {
         statsNode.getMetadataList().clear();
 
         // load the tFlowMeterCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tFlowMeterCatcher",ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(
+                "tFlowMeterCatcher", ComponentCategory.CATEGORY_4_DI.getName()); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -860,8 +865,8 @@ public class StatsAndLogsManager {
 
         // stats log encoding
         ElementParameter encodingParam = new ElementParameter(process);
-        encodingParam.setName(EParameterName.ENCODING.getName()); //$NON-NLS-1$
-        encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
+        encodingParam.setName(EParameterName.ENCODING.getName());
+        encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());
         encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
         encodingParam.setFieldType(EParameterFieldType.ENCODING_TYPE);
         encodingParam
@@ -949,7 +954,7 @@ public class StatsAndLogsManager {
         param.setListItemsValue(new String[] {});
         param.setNumRow(51);
         param.setFieldType(EParameterFieldType.TECHNICAL);
-        param.setValue(preferenceStore.getString(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())); //$NON-NLS-1$
+        param.setValue(preferenceStore.getString(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
         param.setShow(false);
         param.setRequired(true);
         // paramList.add(param);
@@ -990,7 +995,7 @@ public class StatsAndLogsManager {
             param.setNumRow(52);
             param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
             param.setRequired(true);
-            param.setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+            param.setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'POSTGRESQL' or DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
             paramList.add(param);
         }
 
@@ -1198,7 +1203,7 @@ public class StatsAndLogsManager {
 
         // Metter table
         param = new ElementParameter(process);
-        param.setName(EParameterName.TABLE_METER.getName()); //$NON-NLS-1$
+        param.setName(EParameterName.TABLE_METER.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METER.getName())));
         param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
         param.setFieldType(EParameterFieldType.DBTABLE);
@@ -1215,6 +1220,7 @@ public class StatsAndLogsManager {
      */
     private final static class IgnoreCaseComparator implements Comparator<String> {
 
+        @Override
         public int compare(String o1, String o2) {
             return o1.compareToIgnoreCase(o2);
         }
