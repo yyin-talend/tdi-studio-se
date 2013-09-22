@@ -61,6 +61,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.ITransformService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -289,18 +290,41 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 }
 
             }
-            RepositoryReviewDialog dialog = null;
-            if (dbTypeParam != null) {
-                String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
-                        param.getRepositoryValue(), listRepositoryItems);
-            } else {
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
-                        param.getRepositoryValue());
-            }
-            if (dialog.open() == RepositoryReviewDialog.OK) {
-                String id = dialog.getResult().getObject().getId();
+            Item item = null;
+            String id = null;
+            RepositoryNode selectNode = null;
 
+            ERepositoryObjectType type = ERepositoryObjectType.getType(param.getRepositoryValue());
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
+                ITransformService tService = (ITransformService) GlobalServiceRegister.getDefault().getService(
+                        ITransformService.class);
+                if (tService.isTransformType(type)) {
+                    id = tService.getSelectedNodeId(type);
+                    if (id == null) {
+                        return null;
+                    }
+                }
+
+            }
+
+            if (id == null) {
+                RepositoryReviewDialog dialog = null;
+                if (dbTypeParam != null) {
+                    String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
+                    dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                            param.getRepositoryValue(), listRepositoryItems);
+                } else {
+                    dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                            param.getRepositoryValue());
+                }
+
+                if (dialog.open() == RepositoryReviewDialog.OK) {
+                    selectNode = dialog.getResult();
+                    id = selectNode.getObject().getId();
+                }
+            }
+            if (id != null && !"".equals(id)) {
                 IElementParameter repositoryParam = param.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
@@ -311,7 +335,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 // dynamicProperty.getRepositoryConnectionItemMap();
 
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                Item item = null;
+
                 try {
                     IRepositoryViewObject repobj = factory.getLastVersion(id);
                     if (repobj != null) {
@@ -330,27 +354,15 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 } else {
                     repositoryConnection = null;
                     if (repositoryParam != null) {
-                        item = dialog.getResult().getObject().getProperty().getItem();
+                        item = selectNode.getObject().getProperty().getItem();
                         if (item instanceof ConnectionItem) {
                             repositoryConnection = ((ConnectionItem) item).getConnection();
                         }
                     }
                 }
-                // if (repositoryConnectionItemMap.containsKey(id)) {
-                // repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
-                // } else {
-                // repositoryConnection = null;
-                // if (repositoryParam != null) {
-                // Item item = dialog.getResult().getObject().getProperty().getItem();
-                // if (item instanceof ConnectionItem) {
-                // repositoryConnection = ((ConnectionItem) item).getConnection();
-                // }
-                // }
-                // }
 
                 if (repositoryConnection != null) {
                     CompoundCommand compoundCommand = new CompoundCommand();
-                    RepositoryNode selectNode = dialog.getResult();
                     ChangeValuesFromRepository changeValuesFromRepository = null;
                     if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION
                             && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
