@@ -3,6 +3,96 @@
  */
 public class CLASS {
 
+
+// *************************************************************************
+//  the following part is for NULL
+//*************************************************************************
+    static class HL7Node {
+
+        // table parameter of component
+
+        public String path = null;
+
+        public String column = null;
+        
+        public String defaultValue = "";
+        
+        public String connName = "";
+        
+        public String hl7Type = "";
+
+        // column
+        public IMetadataColumn relatedColumn = null;
+
+
+        public HL7Node(String path, String column, String value) {
+            String[] paths = path.split("/");
+            String xpath= paths[paths.length-1];
+            if (xpath.contains("[")) {
+                xpath = xpath.substring(0, xpath.indexOf("["));
+            }
+            this.path = xpath;
+            this.hl7Type = this.path.split("-")[0];
+            this.column = column;
+            if(this.column.contains(":")) {
+                this.connName = this.column.substring(0, this.column.indexOf(":"));
+            } else {
+                this.connName = this.column;
+            }
+            if(value!=null){
+                this.defaultValue = value;
+            }
+        }
+       
+    }
+    
+
+    
+   
+    // return [0] is root(HL7Node), [1] is groups(List<HL7Node>), [2] loop(HL7Node)
+    public List<HL7Node> getTree(List<Map<String, String>> rootTable, List<IMetadataColumn> colList, String incomingName) {
+        
+        List<HL7Node> nodes = new java.util.ArrayList<HL7Node>();
+
+        List<Map<String, String>> maps = getTable(rootTable, incomingName);
+
+        Map<String, String> prevMap = null;
+        for (Map<String, String> tmpMap : maps) {
+            if (prevMap!=null) {
+                if (!tmpMap.get("PATH").startsWith(prevMap.get("PATH"))) {
+                    HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
+                    setIMetadataColumn(node, colList);
+                    nodes.add(node);
+                }
+            }
+            prevMap = tmpMap;
+        }
+        HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
+        setIMetadataColumn(node, colList);
+        nodes.add(node);
+
+        return nodes;
+    }
+
+    private void setIMetadataColumn(HL7Node node, List<IMetadataColumn> colList) {
+        String value = null;
+        JavaType javaType = null;
+        String[] str = node.column.split(":");
+        if (node.column != null && node.column.length() > 0 && node.column.indexOf(":")>0) {
+            for (IMetadataColumn column : colList) {
+                if (column.getLabel().equals(node.column.substring(node.column.indexOf(":")+1))) {
+                    node.relatedColumn = column;
+                    break;
+                }
+            }
+        }
+        // test
+//        System.out.println("xpath:"+node.path+",column:"+node.column+"relatedColumn:"+node.relatedColumn+",defaultValue="+node.defaultValue);
+    }
+    
+// *************************************************************************
+//                      the following part is for HAPI
+// *************************************************************************
     static class XMLNode {
 
         // table parameter of component

@@ -37,7 +37,7 @@
 		</PARAMETER>
 	
 		<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="10" REQUIRED="true">
-			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/HL7Out.txt"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="ROOT" FIELD="TABLE" REQUIRED="true"
@@ -70,8 +70,16 @@
 	    </PARAMETER>
 		
 	</PARAMETERS>
-	
+
 	<ADVANCED_PARAMETERS>
+	
+        <PARAMETER NAME="GENERATION_MODE" FIELD="CLOSED_LIST" NUM_ROW="10">
+          <ITEMS DEFAULT="NULL">
+            <ITEM NAME="NULL" VALUE="NULL" />
+            <ITEM NAME="HAPI" VALUE="HAPI"/>
+          </ITEMS>
+        </PARAMETER>
+        
 		<PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="true"
 			NUM_ROW="20">
 			<DEFAULT>true</DEFAULT>
@@ -85,22 +93,23 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="commons_cli" MODULE="commons-cli-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_lang" MODULE="commons-lang-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_base" MODULE="hapi-base-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V21" MODULE="hapi-structures-v21-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V22" MODULE="hapi-structures-v22-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V23" MODULE="hapi-structures-v23-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V231" MODULE="hapi-structures-v231-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V24" MODULE="hapi-structures-v24-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V25" MODULE="hapi-structures-v25-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V251" MODULE="hapi-structures-v251-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="hapi_structures_V26" MODULE="hapi-structures-v26-1.0.1.jar" REQUIRED="true" />
-			<IMPORT NAME="jboss_j2ee" MODULE="jboss-j2ee-4.0.2.jar" REQUIRED="true" />
-			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" />
-			<IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" BundleID="" />
-			<IMPORT NAME="XercesImpl" MODULE="xercesImpl-2.4.0.jar" REQUIRED="true" />
+			<IMPORT NAME="commons_cli" MODULE="commons-cli-1.0.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="commons_lang" MODULE="commons-lang-1.0.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.0.4.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_base" MODULE="hapi-base-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V21" MODULE="hapi-structures-v21-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V22" MODULE="hapi-structures-v22-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V23" MODULE="hapi-structures-v23-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V231" MODULE="hapi-structures-v231-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V24" MODULE="hapi-structures-v24-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V25" MODULE="hapi-structures-v25-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V251" MODULE="hapi-structures-v251-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="hapi_structures_V26" MODULE="hapi-structures-v26-1.0.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="jboss_j2ee" MODULE="jboss-j2ee-4.0.2.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" BundleID="" />
+			<IMPORT NAME="XercesImpl" MODULE="xercesImpl-2.4.0.jar" REQUIRED_IF="GENERATION_MODE=='HAPI'" />
+			<IMPORT NAME="talendHL7" MODULE="talendHL7.jar" REQUIRED_IF="GENERATION_MODE=='NULL'" />
 		</IMPORTS>
 	</CODEGENERATION>
 
