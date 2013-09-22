@@ -20,8 +20,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.runtime.image.EImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -34,7 +32,9 @@ public class MessagesWithActionComposite extends MessagesComposite {
         super(parent, style);
         actionBtn = new Button(this, SWT.PUSH);
         // default
-        updateActionButton(null, ImageProvider.getImage(EImage.THREE_DOTS_ICON));
+        // updateActionButton(null, ImageProvider.getImage(EImage.THREE_DOTS_ICON));
+        // use text always
+        updateActionButton("...", null); //$NON-NLS-1$
     }
 
     @Override
@@ -67,7 +67,13 @@ public class MessagesWithActionComposite extends MessagesComposite {
             } else {
                 actionBtn.setText(BLANK);
             }
-            actionBtn.setImage(image);
+            /*
+             * Don't set the image, there is a different effect between win and linux.
+             * 
+             * in win, if set a non-null image first. then try to set a null image, there is a unknown image to be set
+             * still. more strange.
+             */
+            // actionBtn.setImage(image);
         }
     }
 
