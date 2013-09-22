@@ -49,8 +49,10 @@ public class ChangeMode2HAPI4HL7Output extends AbstractJobMigrationTask {
                 if (modes == null) {
                     ComponentUtilities.addNodeProperty(node, "GENERATION_MODE", "CLOSED_LIST");//$NON-NLS-1$ //$NON-NLS-2$
                 }
-
-                ComponentUtilities.setNodeValue(node, "GENERATION_MODE", "HAPI"); //$NON-NLS-1$ //$NON-NLS-2$
+                String mode = ComponentUtilities.getNodePropertyValue(node, "GENERATION_MODE"); //$NON-NLS-1$
+                if (mode == null || "".equals(mode.trim())) { //$NON-NLS-1$
+                    ComponentUtilities.setNodeValue(node, "GENERATION_MODE", "HAPI"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
 
         };
