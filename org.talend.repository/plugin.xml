@@ -2026,6 +2026,7 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.9"
               class="org.talend.repository.model.migration.FixWrongDbTypesMigrationTask"
               id="org.talend.repository.model.migration.FixWrongDbTypesMigrationTask"
               name="Fix Wrong DB Types"
