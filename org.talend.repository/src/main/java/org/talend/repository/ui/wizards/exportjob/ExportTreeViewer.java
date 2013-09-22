@@ -67,6 +67,18 @@ public class ExportTreeViewer {
 
     public ExportTreeViewer(IStructuredSelection selection, JobScriptsExportWizardPage jobScriptExportWizardPage) {
         this.selection = selection;
+        if (this.selection != null && !this.selection.isEmpty()) {
+            this.repositoryNodes.addAll(this.selection.toList());
+        }
+        this.jobScriptExportWizardPage = jobScriptExportWizardPage;
+    }
+
+    public ExportTreeViewer(RepositoryNode[] repNodes, JobScriptsExportWizardPage jobScriptExportWizardPage) {
+        if (repNodes != null) {
+            for (RepositoryNode repNode : repNodes) {
+                this.repositoryNodes.add(repNode);
+            }
+        }
         this.jobScriptExportWizardPage = jobScriptExportWizardPage;
     }
 
@@ -148,8 +160,7 @@ public class ExportTreeViewer {
         exportItemsTreeViewer.expandToLevel(4);
 
         // if user has select some items in repository view, mark them as checked
-        if (!selection.isEmpty()) {
-            repositoryNodes.addAll(selection.toList());
+        if (!repositoryNodes.isEmpty()) {
             exportItemsTreeViewer.setCheckedElements(repositoryNodes.toArray());
             for (RepositoryNode node : repositoryNodes) {
                 expandParent(exportItemsTreeViewer, node);

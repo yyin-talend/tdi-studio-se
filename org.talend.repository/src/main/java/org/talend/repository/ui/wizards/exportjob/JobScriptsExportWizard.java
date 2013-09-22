@@ -97,17 +97,23 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     /*
      * (non-Javadoc) Method declared on IWorkbenchWizard.
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         selection = currentSelection;
         List selectedResources = IDE.computeSelectedResources(currentSelection);
         if (!selectedResources.isEmpty()) {
             selection = new StructuredSelection(selectedResources);
         }
+        populateUIMessage();
+    }
 
+    /**
+     * DOC xqliu Comment method "populateUIMessage".
+     */
+    protected void populateUIMessage() {
         setWindowTitle(Messages.getString("JobScriptsExportWizard.buildJob")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
-
     }
 
     /*

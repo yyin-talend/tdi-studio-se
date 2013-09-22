@@ -213,7 +213,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         super(name, null);
         this.selection = selection;
         manager = null;
-        nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        if (selection != null) {
+            nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        }
     }
 
     protected RepositoryNode[] getCheckNodes() {
