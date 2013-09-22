@@ -234,7 +234,7 @@ public class OAuthClient {
                 + OAUTH2_AUTHORIZE;
         String authorize_url = String.format("%s?response_type=%s&client_id=%s&redirect_uri=%s", oauth2_authorize_url,// &scope=%s
                 "code", clientID, URLEncoder.encode(callback_url.toString(), UTF8));// , "full%20refresh_token"
-        System.out.println("Paste this URL into a web browser to authorize BigQuery Access:");
+        System.out.println("Paste this URL into a web browser to authorize Salesforce Access:");
         System.out.println(authorize_url);
 
         // start a service to get Authorization code

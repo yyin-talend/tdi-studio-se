@@ -3,7 +3,7 @@
 	
 	<property name="component.plugin.home" value="../../../org.talend.designer.components.localprovider/components" />
 	<property name="jetty.dir" value="../../../org.talend.libraries.jetty/lib" />
-	<property name="servlet.dir" value="../../../org.talend.libraries.servlet/lib" />
+	<property name="servlet.dir" value="../../../org.talend.libraries.salesforce/lib" />
 	<property name="jackson.dir" value="../../../org.talend.libraries.jackson/lib" />
 	<property name="lib.dir" value="../../../org.talend.libraries.salesforce/lib" />
 
