@@ -202,7 +202,7 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void updateLibraries(Set<String> jobModuleList, IProcess process) {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), null);
+            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
         default:
             // nothing
         }

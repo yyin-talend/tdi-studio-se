@@ -56,6 +56,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
@@ -480,6 +481,11 @@ public class JavaProcessorUtilities {
             if (!jarsNeedRetrieve.isEmpty()) {
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+                if (process instanceof IProcess2) {
+                    ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
+                    moduleService.resetModulesNeeded();
+                    ((IProcess2) process).checkProcess();
+                }
             }
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
@@ -611,7 +617,7 @@ public class JavaProcessorUtilities {
                                  */
                                 @Override
                                 protected void setShellStyle(int newShellStyle) {
-                                    super.setShellStyle(getShellStyle() | SWT.NONE);
+                                    super.setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
                                 }
                             };
                             dialog.open();
