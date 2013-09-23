@@ -28,3 +28,4 @@
 			}
 	}
 %>
+	globalMap.put("<%=cid%>_NB_LINE", tos_count_<%=cid%>);

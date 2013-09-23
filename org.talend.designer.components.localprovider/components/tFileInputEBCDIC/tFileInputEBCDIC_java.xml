@@ -97,5 +97,7 @@
 			<IMPORT NAME="cobolX" MODULE="cobolX.jar" UrlPath="platform:/plugin/org.talend.libraries.ebcdic/lib/cobolX.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
-	<RETURNS />
+	<RETURNS>
+		<RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer" />
+	</RETURNS>
 </COMPONENT>
