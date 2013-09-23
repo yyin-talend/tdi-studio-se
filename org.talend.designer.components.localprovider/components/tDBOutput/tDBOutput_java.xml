@@ -149,6 +149,23 @@
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+        NAME="PROPERTIES"
+        FIELD="TEXT"
+        NUM_ROW="1"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+        NAME="NOTE"
+        FIELD="LABEL"
+        NUM_ROW="2"
+    >
+            <DEFAULT>*Note: Example for Additional ODBC Parameters: "parameterName1=value1&amp;&amp;parameterName2=value2"</DEFAULT>
+    </PARAMETER>
+
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"

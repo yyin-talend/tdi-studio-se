@@ -53,6 +53,7 @@
 	
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	boolean useStatement = ("true").equals(ElementParameterParser.getValue(node,"__USE_STATEMENT__"));
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
@@ -132,7 +133,18 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 java.lang.Class.forName("<%=javaDbDriver %>");
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+String dbProperties_<%=cid%> = <%=dbproperties%>;
+java.sql.Connection conn_<%=cid%> = null;
+if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+}else{
+	dbProperties_<%=cid%> = dbProperties_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(dbProperties_<%=cid%>.getBytes()));
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+}
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(("true").equals(tableAction)) {
