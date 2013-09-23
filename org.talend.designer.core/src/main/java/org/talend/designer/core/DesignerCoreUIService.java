@@ -108,9 +108,20 @@ public class DesignerCoreUIService implements IDesignerCoreUIService {
      * org.eclipse.gef.commands.Command)
      */
     @Override
-    public boolean executeCommand(IGEFProcess process, Command cmd) {
+    public boolean executeCommand(final IGEFProcess process, final Command cmd) {
         if (cmd != null && process instanceof org.talend.designer.core.ui.editor.process.Process) {
-            ((org.talend.designer.core.ui.editor.process.Process) process).getCommandStack().execute(cmd);
+            final org.talend.designer.core.ui.editor.process.Process p = ((org.talend.designer.core.ui.editor.process.Process) process);
+            if (p.getEditor() != null) {
+                p.getEditor().getEditorSite().getShell().getDisplay().syncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        p.getCommandStack().execute(cmd);
+                    }
+                });
+            } else {
+                p.getCommandStack().execute(cmd);
+            }
             return true;
         }
         return false;
