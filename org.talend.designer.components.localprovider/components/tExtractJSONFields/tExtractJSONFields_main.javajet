@@ -114,7 +114,7 @@ if (outConn!=null) {
         loopQuery_<%=cid %> = cjs_<%=cid %>.getLoopString4XML();
         bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes(<%=encoding%>));
         javax.xml.stream.XMLEventReader xmlEventReader_<%=cid %> = jsonXMLInputFactory_<%=cid %>.createXMLEventReader(bais_<%=cid %>);
-        javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = xmlOutputFactory_<%=cid %>.createXMLEventWriter(baos_<%=cid %>);
+        javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = xmlOutputFactory_<%=cid %>.createXMLEventWriter(baos_<%=cid %>,<%=encoding%>);
         xmLEventWriter_<%=cid %>.add(xmlEventReader_<%=cid %>);
         //convert json string to xml
         xmlStr_<%=cid%> = baos_<%=cid %>.toString();  
