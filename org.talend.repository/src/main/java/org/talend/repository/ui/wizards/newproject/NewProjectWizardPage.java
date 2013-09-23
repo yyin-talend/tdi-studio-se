@@ -262,7 +262,7 @@ public class NewProjectWizardPage extends WizardPage {
             if (!nameText.getText().endsWith(" ")) {//$NON-NLS-1$
                 technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
             }
-            if (ProjectUtils.isValidProjectName(nameText.getText())) {//$NON-NLS-1$
+            if (ProjectUtils.isNotValidProjectName(nameText.getText())) {//$NON-NLS-1$
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                         Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
