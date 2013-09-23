@@ -170,7 +170,7 @@ boolean isGetWholeJson_<%=cid %> = false;
                 			baos = new java.io.ByteArrayOutputStream();
                 			config = new de.odysseus.staxon.json.JsonXMLConfigBuilder().multiplePI(false).autoArray(true).build();
                 			jxof = new de.odysseus.staxon.json.JsonXMLOutputFactory(config);
-                			javax.xml.stream.XMLEventReader xmlEventReader = javax.xml.stream.XMLInputFactory.newInstance().createXMLEventReader(bais);
+                			javax.xml.stream.XMLEventReader xmlEventReader = javax.xml.stream.XMLInputFactory.newInstance().createXMLEventReader(bais,encoding);
                 			javax.xml.stream.XMLEventWriter xmLEventWriter = jxof.createXMLEventWriter(baos);
     						xmLEventWriter.add(xmlEventReader);
     						xmlEventReader.close();
