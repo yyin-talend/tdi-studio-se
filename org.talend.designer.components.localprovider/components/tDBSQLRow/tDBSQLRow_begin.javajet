@@ -11,8 +11,6 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
@@ -21,6 +19,7 @@
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
@@ -29,7 +28,18 @@ String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+String dbProperties_<%=cid%> = <%=dbproperties%>;
+java.sql.Connection conn_<%=cid%> = null;
+if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+}else{
+	dbProperties_<%=cid%> = dbProperties_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(dbProperties_<%=cid%>.getBytes()));
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+}
 
 boolean whetherReject_<%=cid%> = false;
 
