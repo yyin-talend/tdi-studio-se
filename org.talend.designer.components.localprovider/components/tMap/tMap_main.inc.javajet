@@ -33,7 +33,6 @@
 	org.talend.core.model.process.BlockCode
 	org.talend.core.model.process.IMatchingMode
 	org.talend.core.model.process.INode
-	org.talend.core.model.process.IProcess
 	" 
 	skeleton="tMap_commons.skeleton"
 
@@ -70,8 +69,7 @@
 			}
 		}
 	}
-	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1459,6 +1457,7 @@ if(!isVirtualOut) { // T_TM_M_320
         // ///////////////////////////////////////////////////////////////////
         // run through output tables list for generating intilization of outputs arrays
         int dummyVarCounter = 0;
+        int curCount = 0;
         for (int indexCurrentTable = 0; indexCurrentTable < lstSizeOutputs; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
@@ -1638,6 +1637,17 @@ if(!isVirtualOut) { // T_TM_M_320
 	                            }
 	                        }
     	                    String expression = assignationVar + " = " + outputExpression + ";";
+							if(isLog4jEnabled){
+								if(curCount!=0){
+%>
+									log4jSb_<%=componentName%>.append("|");
+<%
+								}
+%>
+								log4jSb_<%=componentName%>.append(<%=outputExpression%>);
+<%
+								curCount++;
+							}
 	
 	                        sb.append(cr).append(expression);
 	
@@ -1726,6 +1736,10 @@ if(!isVirtualOut) { // T_TM_M_320
 
 %>
 <%= sb.toString()%>
+<%if(isLog4jEnabled){%>
+	log.debug("<%=componentName%> - Outputting records : " + log4jSb_<%=componentName%>);
+	log4jSb_<%=componentName%>.delete(0,log4jSb_<%=componentName%>.length());
+<%}%>
 
 
 <%
@@ -1735,7 +1749,7 @@ if(!isVirtualOut) { // T_TM_M_320
 		} catch (java.lang.Exception e) {
 			//if anohter java.lang.Exception when processing an java.lang.Exception
     		<%if(isLog4jEnabled){%>
-    			log.error("<%=componentName%> " + e.getMessage());
+    			log.error("<%=componentName%> - " + e.getMessage());
     		<%}%>
 			try{//EE
         <%
@@ -1912,7 +1926,7 @@ if(!isVirtualOut) { // T_TM_M_320
             %>
          } catch (java.lang.Exception ee) {//EE
         		<%if(isLog4jEnabled){%>
-        			log.error("<%=componentName%>" + ee.getMessage());
+        			log.error("<%=componentName%> - " + ee.getMessage());
         		<%}%>
 				ee.printStackTrace();
             <%

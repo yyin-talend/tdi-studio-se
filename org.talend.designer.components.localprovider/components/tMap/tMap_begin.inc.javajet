@@ -25,7 +25,6 @@
 	org.talend.core.model.process.INode
 	org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE
 	org.talend.core.model.utils.TalendTextUtils
-	org.talend.core.model.process.IProcess
 	" 
 	skeleton="tMap_commons.skeleton"
 %>
@@ -57,13 +56,16 @@
 		String rowsBufferSize = ElementParameterParser.getValue(node, "__ROWS_BUFFER_SIZE__");
 		
 		
-		IProcess process = node.getProcess();
-		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		
 		
 %>
 
 
+<%if(isLog4jEnabled){%>
+	log.info("<%=componentName%> - Start to work.");
+	StringBuffer log4jSb_<%=componentName%> = new StringBuffer();
+<%}%>
 
 // ###############################
 // # Lookup's keys initialization
@@ -302,9 +304,6 @@ class  <%=className%>  {
 
 %>
 
-<%if(isLog4jEnabled){%>
-	log.info("<%=componentName%> start to work ......");
-<%}%>
 <%
 
 HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
@@ -742,7 +741,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	    %>
         	} catch (IOException e) {
         		<%if(isLog4jEnabled){%>
-        			log.error("<%=componentName%> " + e.getMessage());
+        			log.fatal("<%=componentName%> - " + e.getMessage());
         		<%}%>
 	            throw new RuntimeException(e);
         <%
@@ -754,7 +753,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		%>
 			} catch(ClassNotFoundException eCNFE) {
         		<%if(isLog4jEnabled){%>
-        			log.error("<%=componentName%> " + eCNFE.getMessage());
+        			log.fatal("<%=componentName%> - " + eCNFE.getMessage());
         		<%}%>
 				 throw new RuntimeException(eCNFE);
 		<%
@@ -906,7 +905,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	    %>
         	} catch (IOException e) {
         		<%if(isLog4jEnabled){%>
-        			log.error("<%=componentName%> " + e.getMessage());
+        			log.fatal("<%=componentName%> - " + e.getMessage());
         		<%}%>
 	            throw new RuntimeException(e);
         <%
