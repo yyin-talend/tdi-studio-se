@@ -540,6 +540,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                 ClearTraceAction clearTraceAction = new ClearTraceAction();
                 clearTraceAction.setProcess(processContext.getProcess());
                 clearTraceAction.run();
+                consoleText.setText(""); //$NON-NLS-1$
+                processContext.clearMessages();
             }
         });
 
