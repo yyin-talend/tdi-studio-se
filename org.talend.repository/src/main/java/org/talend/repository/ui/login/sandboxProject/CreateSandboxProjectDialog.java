@@ -318,7 +318,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.needCheckMessages")); //$NON-NLS-1$
         } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(MAIL_PATTERN, userLoginText.getText()))) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
-        } else if (ProjectUtils.isValidProjectName(projectLabel)) {
+        } else if (ProjectUtils.isNotValidProjectName(projectLabel)) {
             setErrorMessage(Messages.getString("NewProjectWizardPage.illegalCharacter")); //$NON-NLS-1$
             enableProjectLabel = true;
         } else if (isProjectNameAlreadyUsed(projectLabel)) {

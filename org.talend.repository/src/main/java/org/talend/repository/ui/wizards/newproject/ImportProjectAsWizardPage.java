@@ -559,7 +559,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
                     Messages.getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
             technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
-            if (ProjectUtils.isValidProjectName(nameText.getText())) {
+            if (ProjectUtils.isNotValidProjectName(nameText.getText())) {
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                         Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
