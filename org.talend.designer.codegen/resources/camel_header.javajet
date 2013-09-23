@@ -443,7 +443,13 @@ if(hasCXFComponentConsumer){
 org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy consumerSoapHeaderFilter = new org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy(){
 	public boolean applyFilterToCamelHeaders(String headerName,
 			Object headerValue, org.apache.camel.Exchange exchange) {
+		//filter propagated cxf header
 		if(org.apache.cxf.headers.Header.HEADER_LIST.equals(headerName)){
+			return true;
+		}
+		//remove correlationID header, if it's null or empty
+		if(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.MESSAGE_CORRELATION_ID.equals(headerName)
+				&& (headerValue == null || "".equals(headerValue.toString()))){
 			return true;
 		}
 		return super.applyFilterToCamelHeaders(headerName, headerValue, exchange);
