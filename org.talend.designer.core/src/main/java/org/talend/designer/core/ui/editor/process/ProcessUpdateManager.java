@@ -1757,6 +1757,42 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             } else {
                                                 sameValues = false;
                                             }
+                                        } else if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") && oldList != null //$NON-NLS-1$
+                                                && objectValue instanceof List) {
+                                            List objectList = (List) objectValue;
+                                            if (oldList.size() != objectList.size()) {
+                                                sameValues = false;
+                                            } else {
+                                                for (int i = 0; i < oldList.size(); i++) {
+                                                    Map<String, Object> oldMap = oldList.get(i);
+                                                    Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
+                                                    if (oldMap.get("PROPERTY").equals(objectMap.get("PROPERTY"))
+                                                            && oldMap.get("VALUE").equals(objectMap.get("VALUE"))) { //$NON-NLS-1$
+                                                        sameValues = true;
+                                                    } else {
+                                                        sameValues = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        } else if (param.getName().equals("HBASE_PARAMETERS") && oldList != null //$NON-NLS-1$
+                                                && objectValue instanceof List) {
+                                            List objectList = (List) objectValue;
+                                            if (oldList.size() != objectList.size()) {
+                                                sameValues = false;
+                                            } else {
+                                                for (int i = 0; i < oldList.size(); i++) {
+                                                    Map<String, Object> oldMap = oldList.get(i);
+                                                    Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
+                                                    if (oldMap.get("PROPERTY").equals(objectMap.get("PROPERTY"))
+                                                            && oldMap.get("VALUE").equals(objectMap.get("VALUE"))) { //$NON-NLS-1$
+                                                        sameValues = true;
+                                                    } else {
+                                                        sameValues = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
                                         } else
                                         // fix 18011 :after change the jars in wizard, the update manager can't detect
                                         // it in jobs

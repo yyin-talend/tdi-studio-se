@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.update.cmd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -401,6 +402,16 @@ public class UpdateNodeParameterCommand extends Command {
                                                     }
                                                 }
                                             }
+                                        } else if ((name.equals("HADOOP_ADVANCED_PROPERTIES") || name.equals("HBASE_PARAMETERS")
+                                                && objectValue instanceof List)) {
+                                            List<HashMap<String, Object>> oldValue = (List<HashMap<String, Object>>) param
+                                                    .getValue();
+                                            for (HashMap<String, Object> map : oldValue) {
+                                                if (map.get("BUILDIN") != null && !map.get("BUILDIN").equals("")) {
+                                                    ((List<HashMap<String, Object>>) objectValue).add(map);
+                                                }
+                                            }
+                                            param.setValue(objectValue);
                                         } else
                                         // fix 18011 :after change the jars in wizard, the update manager can't detect
                                         // it in jobs

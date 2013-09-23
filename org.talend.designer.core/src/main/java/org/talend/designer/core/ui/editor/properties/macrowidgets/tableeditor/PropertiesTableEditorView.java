@@ -456,6 +456,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     if (((i == 0) && (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()))
                             || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || currentParam.isReadOnly()) {
                         // read only cell
+                        if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals("HBASE_PARAMETERS")) {
+                            if (currentParam.isNoContextAssist()) {
+                                tcEditor = new TextCellEditor(table);
+                            } else {
+                                TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
+                                textCellEditor.setContentProposalProvider(processProposalProvider);
+                                tcEditor = textCellEditor;
+                            }
+                        }
                     } else {
                         // writable cell
                         if (currentParam.isNoContextAssist()) {
@@ -475,6 +484,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                     @Override
                     public boolean canModify(Object bean) {
+                        if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals("HBASE_PARAMETERS")) {
+                            Map<String, Object> valueMap = (Map<String, Object>) bean;
+                            if (valueMap.get("BUILDIN") != null && valueMap.get("BUILDIN").equals("TRUE")) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
                         boolean canModify = super.canModify(bean);
                         if (canModify) {
                             Map<String, Object> valueMap = (Map<String, Object>) bean;
@@ -501,6 +518,12 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             ((ElementParameter) currentParam).setCurrentRow(index);
                             if (currentParam.isReadOnly(element.getElementParameters())) {
                                 return AbstractMetadataTableEditorView.READONLY_CELL_BG_COLOR;
+                            }
+                        }
+                        if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals("HBASE_PARAMETERS")) {
+                            if (valueMap.get("BUILDIN") == null || valueMap.get("BUILDIN") != null
+                                    && valueMap.get("BUILDIN").equals("")) {
+                                return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
                             }
                         }
                         return null;

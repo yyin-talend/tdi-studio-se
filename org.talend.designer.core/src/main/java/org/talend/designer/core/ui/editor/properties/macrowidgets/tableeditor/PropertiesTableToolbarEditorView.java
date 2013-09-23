@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddAllPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddAllPushButtonForExtendedTable;
@@ -95,6 +97,11 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
+                if (model != null
+                        && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
+                                .getName().equals("HBASE_PARAMETERS"))) {
+                    return true;
+                }
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
 
@@ -389,6 +396,24 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
+                if (model != null
+                        && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
+                                .getName().equals("HBASE_PARAMETERS"))) {
+                    if (getExtendedTableViewer().getTable().getSelectionIndex() > 0) {
+                        TableItem item = extendedTableViewer.getTable().getSelection()[0];
+                        HashMap<String, String> itemMap = (HashMap<String, String>) item.getData();
+                        List<HashMap<String, String>> parameterValue = (List<HashMap<String, String>>) model.getElemParameter()
+                                .getValue();
+                        for (HashMap<String, String> parameterValueMap : parameterValue) {
+                            if (parameterValueMap.get("PROPERTY").equals(itemMap.get("PROPERTY"))
+                                    && parameterValueMap.get("VALUE").equals(itemMap.get("VALUE"))) {
+                                if (parameterValueMap.get("BUILDIN") != null && parameterValueMap.get("BUILDIN").equals("TRUE")) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
         };
