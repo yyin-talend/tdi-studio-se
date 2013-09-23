@@ -146,7 +146,7 @@
         FIELD="LABEL"
         NUM_ROW="2"
     >
-            <DEFAULT>*Note: Example for Additional OJDBC Parameters: "parameterName1=value1&amp;&amp;parameterName2=value2"</DEFAULT>
+            <DEFAULT>*Note: Example for Additional ODBC Parameters: "parameterName1=value1&amp;&amp;parameterName2=value2"</DEFAULT>
     </PARAMETER>
 	<PARAMETER
       	NAME="ENCODING"
