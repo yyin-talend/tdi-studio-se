@@ -207,6 +207,7 @@
 				}else if ("off".equalsIgnoreCase(log4jLevel)){
 					log.setLevel(org.apache.log4j.Level.OFF);
 				}
+				org.apache.log4j.Logger.getRootLogger().setLevel(log.getLevel());
     	    }
         	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has started.");
     	<%}%>
