@@ -220,7 +220,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						<%}%>
 						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
 						<%if(isLog4jEnabled){%>
-							log.info("<%=cid%>  create table " + tableName_<%=cid%> + "' has succeeded. ");
+							log.info("<%=cid%> - Create table " + tableName_<%=cid%> + "' has succeeded. ");
 						<%}%> 
 						stmtCreate_<%=cid%>.close();
 					}catch(java.sql.SQLException e){
@@ -255,6 +255,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 						stmtDrop_<%=cid%>.close();
                     }catch(java.sql.SQLException e){
                     	if(<%=dieOnError%>)
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
+							<%}%>
 							 throw new RuntimeException ("Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
                     	
                     	else
@@ -318,7 +321,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%}%>
             	deletedCount_<%=cid%> = stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%>- Clear table '" + tableName_<%=cid%> + "' has succeeded.");
+					log.info("<%=cid%> - Clear table '" + tableName_<%=cid%> + "' has succeeded.");
 				<%}%>
             	stmtClear_<%=cid%>.close();
             }catch(java.sql.SQLException e){
