@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -118,6 +119,9 @@ public class DeleteNodeContainerCommand extends Command {
                             Connection nextNodeConnection = (Connection) nextNode.getIncomingConnections().get(i);
                             nextNodeConnection.updateName();
                         }
+                    }
+                    if (nextNode.getExternalNode() instanceof AbstractNode) {
+                        ((AbstractNode) nextNode.getExternalNode()).removeInput(connection);
                     }
                 }
                 if (!builtIn) {

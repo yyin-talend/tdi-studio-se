@@ -331,6 +331,27 @@ public class DbMapComponent extends AbstractMapComponent {
         return emfMapperData;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractNode#removeInput(org.talend.core.model.process.IConnection)
+     */
+    @Override
+    public void removeInput(IConnection connection) {
+        DBMapData externalEmfData = (DBMapData) getExternalEmfData();
+        InputTable toRemove = null;
+        for (InputTable inputTable : externalEmfData.getInputTables()) {
+            if (inputTable.getTableName() != null && inputTable.getTableName().equals(connection.getName())) {
+                toRemove = inputTable;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            externalEmfData.getInputTables().remove(toRemove);
+            buildExternalData(externalEmfData);
+        }
+    }
+
     @Override
     public void renameInputConnection(String oldConnectionName, String newConnectionName) {
         if (oldConnectionName == null || newConnectionName == null) {
