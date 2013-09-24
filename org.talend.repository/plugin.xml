@@ -2032,15 +2032,6 @@
               name="Fix Wrong DB Types"
               version="5.1.2">
         </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="5.2.3"
-              class="org.talend.repository.model.migration.ChangeMode2HAPI4HL7Output"
-              description="migrate the old jobs to new versions, change the mode to hapi because we add a mode choose drop-down list"
-              id="org.talend.repository.model.migration.changeMode2HAPI4HL7Output"
-              name="changeMode2HAPI4HL7Output"
-              version="5.2.4">
-        </projecttask>
    </extension>
    
    <extension
