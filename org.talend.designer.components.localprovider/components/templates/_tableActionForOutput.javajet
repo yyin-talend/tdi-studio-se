@@ -349,6 +349,9 @@ if (!isParallelize) {
   	    	<%if(isLog4jEnabled_tableAction){%>
 				log.info("<%=cid%> - Trancating table '" + tableName_<%=cid%> + "'.");
 			<%}%>
+			<%if(DB2.equalsIgnoreCase(dbmsId)){%>
+			conn_<%=cid%>.commit();
+			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
    	    	<%if(isLog4jEnabled_tableAction){%>
 				log.info("<%=cid%> - Truncate table '" + tableName_<%=cid%> + "' has succeeded.");
@@ -367,6 +370,9 @@ if (!isParallelize) {
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
   	    	<%if(isLog4jEnabled_tableAction){%>
 				log.info("<%=cid%> - Truncating reuse stroage table '" + tableName_<%=cid%> + "'.");
+			<%}%>
+			<%if(DB2.equalsIgnoreCase(dbmsId)){%>
+			conn_<%=cid%>.commit();
 			<%}%>
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateReuseStroageTableSQL()%>");
    	    	<%if(isLog4jEnabled_tableAction){%>

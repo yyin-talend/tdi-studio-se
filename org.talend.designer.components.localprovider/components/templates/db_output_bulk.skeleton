@@ -1354,7 +1354,19 @@ public class CLASS {
         }
         protected String getRProtectedChar() {
             return "\\\"";
-        }        
+        }       
+        
+        public String getTruncateTableSQL() {
+            StringBuilder truncateTableSQL = new StringBuilder();
+            truncateTableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + " IMMEDIATE");
+            return truncateTableSQL.toString();
+        }
+        
+        public String getTruncateReuseStroageTableSQL() {
+            StringBuilder truncate_reuse_stroage_TableSQL = new StringBuilder();
+            truncate_reuse_stroage_TableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + " REUSE STORAGE IMMEDIATE");
+            return truncate_reuse_stroage_TableSQL.toString();
+        }
         
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             // try to build a sql like 
@@ -1760,11 +1772,11 @@ public class CLASS {
 			return copyBulkSQL.toString();
 		} 
 
-	public String getTruncateTableSQL() {
-		StringBuilder truncateTableSQL = new StringBuilder();
-		truncateTableSQL.append("MODIFY " + getLProtectedChar() + "\" + tableName_" 
-		+ cid + " + \"\\\" TO TRUNCATED");
-		return truncateTableSQL.toString();
+    	public String getTruncateTableSQL() {
+    		StringBuilder truncateTableSQL = new StringBuilder();
+    		truncateTableSQL.append("MODIFY " + getLProtectedChar() + "\" + tableName_" 
+    		+ cid + " + \"\\\" TO TRUNCATED");
+    		return truncateTableSQL.toString();
 		}				        
     }
     
