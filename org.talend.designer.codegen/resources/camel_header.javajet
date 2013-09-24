@@ -448,7 +448,7 @@ org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy consumerSoa
 			return true;
 		}
 		//remove correlationID header, if it's null or empty
-		if(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.MESSAGE_CORRELATION_ID.equals(headerName)
+		if("CorrelationID".equals(headerName)
 				&& (headerValue == null || "".equals(headerValue.toString()))){
 			return true;
 		}
