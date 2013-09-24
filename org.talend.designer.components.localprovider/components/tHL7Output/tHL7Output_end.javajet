@@ -12,7 +12,6 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
 %>
 java.io.OutputStream os_<%=cid %> = null;
 Object file_<%=cid %> = <%=fileName %>; 
@@ -41,12 +40,7 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 	os_<%=cid %> = new java.io.FileOutputStream(fileName_<%=cid%>);
 }
-<%if ("NULL".equals(mode)) { %>
-String resultMsg_<%=cid %> = msg_<%=cid%>.message();
-<%} else { // HAPI
-%>
 String resultMsg_<%=cid %> = msg_<%=cid %>.encode();
-<%}%>
 java.io.Writer out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(os_<%=cid %>,<%=encoding%>));
 out<%=cid %>.write(resultMsg_<%=cid %>);
 if(!(file_<%=cid %> instanceof java.io.OutputStream)){

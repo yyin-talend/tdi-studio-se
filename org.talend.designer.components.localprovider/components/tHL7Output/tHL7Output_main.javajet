@@ -22,9 +22,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 final String cid = node.getUniqueName();
 
-String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 String hl7Version = ElementParameterParser.getValue(node, "__HL7_VER__");
-final String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 
 String incomingName = (String)codeGenArgument.getIncomingName();
 
@@ -34,13 +33,95 @@ List<Map<String, String>> rootTable = (List<Map<String,String>>)ElementParameter
     
 List< ? extends IConnection> incomingConns = node.getIncomingConnections();
 
-if ("NULL".equals(mode)) {
+	if (incomingName == null && incomingConns.size() > 0) {
+		   incomingName = incomingConns.get(0).getName(); 
+	}
+	
+	IMetadataTable preMetadataTable = null;
+	for (IConnection incomingConn : incomingConns) {
+		if ( incomingConn.getLineStyle().equals(EConnectionType.FLOW_MERGE) && incomingConn.getName().equals(incomingName)) {
+			preMetadataTable = incomingConn.getMetadataTable();
+		    break;
+		}
+	}
+	
+	if(preMetadataTable==null){
+		return "";
+	}
+
+	if (incomingConns != null && incomingConns.size() > 0) {
+		if (incomingConns.get(0).getName().equals(incomingName) ) { // the first connector
 %>
-<%@ include file="./tHL7Output_null.javajet"%>
+	if(msg_<%=cid %>==null){
+		msg_<%=cid %>= new ca.uhn.hl7v2.model.v<%=hl7Version%>.message.<%=getHL7MsgType(rootTable) %>();
+		terser_<%=cid %> = new ca.uhn.hl7v2.util.Terser(msg_<%=cid %>);
+		util_<%=cid %>.findSegments(msg_<%=cid %>,map2Seg_<%=cid %>);
+	}
 <%
-} else { //HAPI
+		}
+		for (IConnection conn : incomingConns) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) && conn.getName().equals(incomingName)){
+
+				IMetadataTable metadata = conn.getMetadataTable();
+				if(metadata!=null) {
+					List<IMetadataColumn> columns = metadata.getListColumns();
+					List<HL7Node> xmlNodes = getTree(rootTable, columns, incomingName);
+					
+					if(xmlNodes != null && xmlNodes.size() > 0) {
+						if (!isHL7Group(xmlNodes)) {
 %>
-<%@ include file="./tHL7Output_hapi.javajet"%>
+	hl7Spec_<%=cid %> = util_<%=cid %>.getSegSpecPath(map2Seg_<%=cid %>.get("<%=xmlNodes.get(0).hl7SegType %>"));
 <%
-}
+						}
+						for (int i = 0 ; i< xmlNodes.size(); i++) {
+							IMetadataColumn column = xmlNodes.get(i).relatedColumn;
+							if (column != null) {
+								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+								boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+				    			if(!isPrimitive) {
+%>
+	if(<%=incomingName %>.<%=column.getLabel() %> != null) {
+<% 
+    						} 
+%>
+	tmpValue_<%=cid %> =
+ <%
+		    			        String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+		    			        if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+    			            %>
+    						FormatterUtils.format_Date(<%=incomingName %>.<%=column.getLabel() %>, <%=pattern %>);
+    						<%	
+								} else if(javaType == JavaTypesManager.BIGDECIMAL){
+    						%>
+    						<%=column.getPrecision() == null? incomingName + "." + column.getLabel() : incomingName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString();
+							<%
+								} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+    						%>
+    						java.nio.charset.Charset.forName(<%=encoding %>).decode(java.nio.ByteBuffer.wrap(<%=incomingName %>.<%=column.getLabel() %>)).toString();
+    						<%
+    			        		} else {
+    			            %>
+    						String.valueOf(<%=incomingName %>.<%=column.getLabel() %>);
+    						<%				
+	    			        	}
+								if(!isPrimitive) {
+%>   				
+	}
+<%
+								}
+							} else { // use the default value
+%>
+tmpValue_<%=cid %> = <%=(xmlNodes.get(i).defaultValue==null || "".equals(xmlNodes.get(i).defaultValue)? "\"\"":xmlNodes.get(i).defaultValue) %>;
+<%
+							}
+%>
+	terser_<%=cid %>.set(hl7Spec_<%=cid %> + "<%=xmlNodes.get(i).path%>",tmpValue_<%=cid %>);
+<%
+						} // for (int i = 0 ; i< xmlNodes.size(); i++);
+					}
+				} //if(metadata!=null)
+				break; // each input connector generate one segment
+			}
+		} // for (IConnection conn : incomingConns)
+	}
 %>
