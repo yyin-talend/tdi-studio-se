@@ -54,6 +54,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
@@ -277,7 +278,9 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
                 String path = tableItem.getText();
                 if (path != null) {
                     TreeItem treeItem = getTreeItem(treeNode);
-                    addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), (FOXTreeNode) treeItem.getData());
+                    if (treeItem != null) {
+                        addLoopLink(tableItem, tableItem.getData(), xmlViewer.getTree(), (FOXTreeNode) treeItem.getData());
+                    }
                 }
             }
             createLoopLinks(treeNode.getChildren());
@@ -294,47 +297,56 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
         return path;
     }
 
-    public TreeItem getTreeItem(FOXTreeNode foxTreeNode) {
-        String path = getAbsoluteXPath(foxTreeNode);
-
-        TreeItem[] items = xmlViewer.getTree().getItems();
+    public TreeItem getTreeItem(TreeItem[] items, FOXTreeNode treeNode, boolean expandedOnly) {
         TreeItem item = null;
-        while (!path.isEmpty()) {
-            for (TreeItem curItem : items) {
-                if (path.equals("/" + curItem.getText()) || path.startsWith("/" + curItem.getText() + "/")) {
-                    item = curItem;
-                    path = path.replaceFirst("/" + curItem.getText(), "");
-                    break;
+        for (TreeItem curItem : items) {
+            // call getText method since we are in a lazy tree.
+            // it will force to load this item in the GUI (since it should be displayed in all cases)
+            // without this, the data will be null, and we can't retrieve anything
+            curItem.getText();
+            if (curItem.getData() != null) {
+                if (curItem.getData().equals(treeNode)) {
+                    return curItem;
                 }
-            }
-            if (!path.isEmpty()) {
-                items = item.getItems();
+                // will check if one of the parent of the treeNode is this one.
+                if (containsTreeNode((FOXTreeNode) curItem.getData(), treeNode)) {
+                    if (!expandedOnly || curItem.getExpanded()) {
+                        return getTreeItem(curItem.getItems(), treeNode, expandedOnly);
+                    } else {
+                        return curItem;
+                    }
+                }
             }
         }
         return item;
     }
 
-    public TreeItem getFirstVisibleTreeItemOfPath(FOXTreeNode foxTreeNode) {
-        String path = getAbsoluteXPath(foxTreeNode);
-
-        TreeItem[] items = xmlViewer.getTree().getItems();
-        TreeItem item = null;
-        while (!path.isEmpty()) {
-            for (TreeItem curItem : items) {
-                if (path.equals("/" + curItem.getText()) || path.startsWith("/" + curItem.getText() + "/")) {
-                    item = curItem;
-                    path = path.replaceFirst("/" + curItem.getText(), "");
-                    break;
-                }
+    /**
+     * DOC nrousseau Comment method "containsTreeNode".
+     * 
+     * @param data
+     * @param treeNode
+     * @return
+     */
+    private boolean containsTreeNode(FOXTreeNode currentNode, FOXTreeNode leafNode) {
+        FOXTreeNode parentOfLeafNode = leafNode.getParent();
+        if (parentOfLeafNode != null) {
+            if (parentOfLeafNode.equals(currentNode)) {
+                return true;
             }
-            if (!path.isEmpty()) {
-                if (!item.getExpanded()) {
-                    return item;
-                }
-                items = item.getItems();
-            }
+            return containsTreeNode(currentNode, parentOfLeafNode);
         }
-        return item;
+        return false;
+    }
+
+    public TreeItem getTreeItem(FOXTreeNode foxTreeNode) {
+        TreeItem[] items = xmlViewer.getTree().getItems();
+        return getTreeItem(items, foxTreeNode, false);
+    }
+
+    public TreeItem getFirstVisibleTreeItemOfPath(FOXTreeNode foxTreeNode) {
+        TreeItem[] items = xmlViewer.getTree().getItems();
+        return getTreeItem(items, foxTreeNode, true);
     }
 
     /**
