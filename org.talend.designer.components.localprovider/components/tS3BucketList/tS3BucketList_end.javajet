@@ -20,6 +20,7 @@ imports="
 		if(conn_<%=cid%> !=null){
 			conn_<%=cid%>.shutdown();
 		}
+	}
 <%
 	}
 %>
