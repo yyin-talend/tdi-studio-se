@@ -93,6 +93,9 @@
 				<entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
 				<entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}" />
 				<entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}" />
+
+				<entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
+				<entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
 			</map>
 		</property>
 ]]#

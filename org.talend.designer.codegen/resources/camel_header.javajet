@@ -243,7 +243,7 @@
 			if(hasCXFComponent){
 %>
 			
-			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider,  boolean useAuthorization, String... token){
+			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider, boolean useAuthorization, boolean usePropagateSamlAP, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
 
 <%if(hasCXFUsernameTokenProvider || hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer || hasCXFHTTPAuthProvider || hasCXFRegistryProvider || hasCXFRegistryConsumer){%>
@@ -272,13 +272,13 @@
 
 %>
 			        if(token!=null&&"SAMLToken".equals(token[0])){
-			        	addSAMLToken(cxfEndpoint, bus, isProvider, useAuthorization, token);
+			        	addSAMLToken(cxfEndpoint, bus, isProvider, useAuthorization, usePropagateSamlAP, token);
 			        }
 <%					}
 					if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
 %>
 			        if(token!=null&&"Registry".equals(token[0])){
-			        	addRegistry(cxfEndpoint, bus, isProvider, token);
+			        	addRegistry(cxfEndpoint, bus, isProvider, usePropagateSamlAP, token);
 			        }
 <%}%>
 				}
@@ -468,22 +468,16 @@ org.apache.camel.component.cxf.common.header.CxfHeaderFilterStrategy consumerSoa
 if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
 %>
 private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, org.apache.cxf.Bus bus,
-		boolean isProvider, final String... token) {
+		boolean isProvider, boolean usePropagateSamlAP, final String... token) {
 <%if(hasCXFRegistryConsumer){
 %>
 
 	if(!isProvider){
 			org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
 					bus);
-			
-			
-			stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
 			stsClient.setServiceQName(new javax.xml.namespace.QName(
 					stsProperties.get("sts.namespace"), stsProperties
-							.get("sts.service.name")));
-			stsClient.setEndpointQName(new javax.xml.namespace.QName(
-					stsProperties.get("sts.namespace"), stsProperties
-							.get("sts.endpoint.name")));
+					.get("sts.service.name")));
 
 			Map<String, Object> stsProps = new HashMap<String, Object>();
 
@@ -494,12 +488,25 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 				}
 			}
 
-			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
-					token[1]);
-			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
-					token[2]);
+			if(usePropagateSamlAP) {
+				stsClient.setWsdlLocation(stsProperties.get("sts.x509.wsdl.location"));
+				stsClient.setEndpointQName(new javax.xml.namespace.QName(
+						stsProperties.get("sts.namespace"), stsProperties
+						.get("sts.x509.endpoint.name")));
+				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME,
+						token[4]);
+			}else {
+				stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
+				stsClient.setEndpointQName(new javax.xml.namespace.QName(
+						stsProperties.get("sts.namespace"), stsProperties
+						.get("sts.endpoint.name")));
+				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
+						token[1]);
+				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
+						token[2]);
+			}
 			stsClient.setProperties(stsProps);
-			
+
             if (!(token[3]/*Role*/.equals(""))) {
                 stsClient.setClaimsCallbackHandler(new ClaimValueCallbackHandler());
             }
@@ -509,7 +516,7 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
                     token[1]);
             clientProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
             		token[2]);
-            
+
 			clientProps.put(
 					org.apache.cxf.ws.security.SecurityConstants.STS_CLIENT,
 					stsClient);
@@ -520,13 +527,21 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 					clientProps.put(entry.getKey(), entry.getValue());
 				}
 			}
-			clientProps
-					.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-							new WSPasswordCallbackHandler(
-									clientProperties
-											.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
-									clientProperties
-											.get("ws-security.signature.password")));
+
+			if(usePropagateSamlAP) {
+				clientProps.put(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME, token[4]);
+				clientProps
+				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
+						new WSPasswordCallbackHandler(token[4], token[2]));
+			}else {
+				clientProps
+				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
+						new WSPasswordCallbackHandler(
+								clientProperties
+								.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
+								clientProperties
+								.get("ws-security.signature.password")));
+			}
 			clientProps.put("soap.no.validate.parts", Boolean.TRUE);
 			clientProps.put("use.service.registry", "true");
 			// set the cxfEndpoint Properties
@@ -669,20 +684,17 @@ if(hasCXFSamlTokenConsumer || hasCXFSamlTokenProvider){
 %>
 
 private void addSAMLToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, org.apache.cxf.Bus bus,
-		boolean isProvider, boolean useAuthorization,  String... token) {
+		boolean isProvider, boolean useAuthorization, boolean usePropagateSamlAP, String... token) {
 <%
 if(hasCXFSamlTokenConsumer){
 %>
 	if (!isProvider) {
 		org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
 				bus);
-		stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
 		stsClient.setServiceQName(new javax.xml.namespace.QName(
 				stsProperties.get("sts.namespace"), stsProperties
-						.get("sts.service.name")));
-		stsClient.setEndpointQName(new javax.xml.namespace.QName(
-				stsProperties.get("sts.namespace"), stsProperties
-						.get("sts.endpoint.name")));
+				.get("sts.service.name")));
+
 
 		Map<String, Object> stsProps = new HashMap<String, Object>();
 
@@ -693,10 +705,23 @@ if(hasCXFSamlTokenConsumer){
 			}
 		}
 
-		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
-				token[1]);
-		stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
-				token[2]);
+		if(usePropagateSamlAP) {
+			stsClient.setWsdlLocation(stsProperties.get("sts.x509.wsdl.location"));
+			stsClient.setEndpointQName(new javax.xml.namespace.QName(
+					stsProperties.get("sts.namespace"), stsProperties
+					.get("sts.x509.endpoint.name")));
+			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME,
+					token[4]);
+		}else {
+			stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
+			stsClient.setEndpointQName(new javax.xml.namespace.QName(
+					stsProperties.get("sts.namespace"), stsProperties
+					.get("sts.endpoint.name")));
+			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
+					token[1]);
+			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
+					token[2]);
+		}
 		stsClient.setProperties(stsProps);
 <%if(hasCXFSamlTokenAuthorizationConsumer){%>
         if (token[3] != null && !("".equals(token[3]))) {
@@ -716,13 +741,20 @@ if(hasCXFSamlTokenConsumer){
 				clientProps.put(entry.getKey(), entry.getValue());
 			}
 		}
-		clientProps
-				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-						new WSPasswordCallbackHandler(
-								clientProperties
-										.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
-								clientProperties
-										.get("ws-security.signature.password")));
+		if(usePropagateSamlAP) {
+			clientProps.put(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME, token[4]);
+			clientProps
+			.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
+					new WSPasswordCallbackHandler(token[4], token[2]));
+		}else {
+			clientProps
+			.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
+					new WSPasswordCallbackHandler(
+							clientProperties
+							.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
+							clientProperties
+							.get("ws-security.signature.password")));
+		}
 		// set the cxfEndpoint Properties
 		cxfEndpoint.setProperties(clientProps);
 
@@ -758,7 +790,9 @@ if (isProvider) {
 		Map<String, Object> props = new HashMap<String, Object>();
 		props.put(
 				org.apache.ws.security.handler.WSHandlerConstants.ACTION,
-				org.apache.ws.security.handler.WSHandlerConstants.SAML_TOKEN_SIGNED);
+				org.apache.ws.security.handler.WSHandlerConstants.ENCRYPT+" "
+						+org.apache.ws.security.handler.WSHandlerConstants.SAML_TOKEN_SIGNED+" "
+						+org.apache.ws.security.handler.WSHandlerConstants.SIGNATURE);
 		props.put(
 				org.apache.ws.security.handler.WSHandlerConstants.SIG_PROP_FILE,
 				properties);
@@ -849,15 +883,23 @@ if (isProvider) {
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String roleName = "\"\"";
+			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__");
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
 			String isUseAuthorization = "false";
 			String securityToken = "(String[])null";
 			boolean isUsePropagateSamlUP = false;
+			boolean isUsePropagateSamlAP = false;
 			if("true".equals(useRegistry)){
 				securityToken = "\"Registry\"";
 					String usePropagate = ElementParameterParser.getValue(node, "__USE_PROPAGATE_CREDENTIAL__");
 					if("true".equals(usePropagate)){
-					    isUsePropagateSamlUP = true;
+					    if(alias == null || alias.matches("\"?\\s*\"?")) {
+					    	//no alias.
+					    	isUsePropagateSamlUP = true;
+					    }else {
+					    	isUsePropagateSamlUP = false;
+						}
+					    isUsePropagateSamlAP = !isUsePropagateSamlUP;
 					}
 			}else if("true".equals(useSecurity)){
 				if("USER".equals(securityType)){
@@ -865,8 +907,11 @@ if (isProvider) {
 				}else if("SAML".equals(securityType)){
 					securityToken = "\"SAMLToken\"";
 					String samlSecurityType = ElementParameterParser.getValue(node, "__SAML_SECURITY_TYPES__");
-					if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
+					if("PROPAGATE_UP".equals(samlSecurityType)) {
 							isUsePropagateSamlUP = true;
+					}else if ("PROPAGATE_AP".equals(samlSecurityType)) {
+						isUsePropagateSamlAP = true;
+						username = "null";
 					}
 					if(isStudioEEVersion){
 						isUseAuthorization =  ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__");
@@ -886,18 +931,18 @@ if (isProvider) {
 			
 %>
 				// CXF endpoint for <%=cid%>
-				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=securityToken%>
+				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=isUsePropagateSamlAP%>, <%=securityToken%>
 <%
 				if(("true".equals(useSecurity)||"true".equals(useRegistry)) && !isProvider){
 %>				
-							,<%=username%>,<%=password%>, <%=roleName%>
+							,<%=username%>,<%=password%>, <%=roleName%>, <%=alias%>
 <%
 				}
 %>
 						);
 <%			
 
-			if(isUsePropagateSamlUP && !isProvider){
+			if((isUsePropagateSamlUP || isUsePropagateSamlAP) && !isProvider){
 %>
 				<%=endpointVar%>.setCxfBinding(new CXFConsumerBinding(<%=endpointVar%>));
 <%
