@@ -16,7 +16,14 @@ imports="
 <%@ include file="../tS3Connection/S3Client.javajet" %>
 int nb_bucket_<%=cid%> = 0;
 java.util.List<com.amazonaws.services.s3.model.Bucket> buckets_<%=cid%> = conn_<%=cid%>.listBuckets();
-for (com.amazonaws.services.s3.model.Bucket bucket_<%=cid%> : buckets_<%=cid%>) {
-	nb_bucket_<%=cid%>++;
-	String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
-	globalMap.put("<%=cid%>_CURRENT_BUCKET_NAME", currentBucketName_<%=cid%>);
+<%
+	if(!("true").equals(useExistingConn)) {
+%>
+try{
+<%
+	}
+%>
+	for (com.amazonaws.services.s3.model.Bucket bucket_<%=cid%> : buckets_<%=cid%>) {
+		nb_bucket_<%=cid%>++;
+		String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
+		globalMap.put("<%=cid%>_CURRENT_BUCKET_NAME", currentBucketName_<%=cid%>);

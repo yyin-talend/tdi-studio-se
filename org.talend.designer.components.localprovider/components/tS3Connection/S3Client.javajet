@@ -11,7 +11,7 @@ if(("true").equals(useExistingConn)) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;;
 	%>
-	com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("<%=conn%>");
+	com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("<%=conn%>");
 <%
 }else{
 %>
@@ -56,11 +56,11 @@ if(("true").equals(useExistingConn)) {
 <%
 		}
 %>
-		com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
+		com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
 <%
 	}else{
 %>
-		com.amazonaws.services.s3.AmazonS3 conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
+		com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
 <%
 	}
 }

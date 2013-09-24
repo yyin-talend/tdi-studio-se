@@ -31,5 +31,13 @@ imports="
 		System.err.println(e_<%=cid%>.getMessage());
 <%
 		}
+		if(!("true").equals(useExistingConn)) {
+%>
+	}finally{
+		if(conn_<%=cid%> !=null){
+			conn_<%=cid%>.shutdown();
+		}
+<%
+		}
 %>
 	}

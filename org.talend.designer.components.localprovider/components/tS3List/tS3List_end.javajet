@@ -15,6 +15,7 @@ imports="
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean listAll = "true".equals(ElementParameterParser.getValue(node,"__LISTALL__"));
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	if(listAll || buckets.size()>0){
 %>
 
@@ -34,6 +35,14 @@ imports="
 		} else {
 %>
 		System.err.println(e_<%=cid%>.getMessage());
+<%
+		}
+		if(!("true").equals(useExistingConn)) {
+%>
+	}finally{
+		if(conn_<%=cid%> !=null){
+			conn_<%=cid%>.shutdown();
+		}
 <%
 		}
 %>
