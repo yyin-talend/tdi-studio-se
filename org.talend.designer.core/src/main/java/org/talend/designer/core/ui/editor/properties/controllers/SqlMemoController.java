@@ -225,7 +225,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setEnabled(!param.isReadOnly());
         openSQLEditorButton.addSelectionListener(listenerSelection);
         if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
-            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
         }
 
         // Added by Marvin Wang on Dec.13, 2012 for bug TDI-7559.

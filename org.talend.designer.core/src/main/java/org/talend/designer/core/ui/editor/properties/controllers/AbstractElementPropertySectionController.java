@@ -1340,6 +1340,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     private void setAllConnectionParameters(String typ, IElement element) {
         String type = null;
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         if (typ != null && !typ.equals("")) { //$NON-NLS-1$
             type = typ;
         } else {
@@ -1442,9 +1443,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
             String dbTypeByClassName = "";
             if (driverJar != null && !"".equals(driverJar)) {
-                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClass, driverJar);
+                dbTypeByClassName = extractMeta.getDbTypeByClassNameAndDriverJar(driverClass, driverJar);
             } else {
-                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
+                dbTypeByClassName = extractMeta.getDbTypeByClassName(driverClass);
             }
 
             if (dbTypeByClassName != null) {
@@ -1558,7 +1559,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
         // for jdbc connection from reposiotry
-        final String dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(connParameters.getDriverClass());
+        final String dbTypeByClassName = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(connParameters.getDriverClass());
         if (connParameters.getDbType() == null || EDatabaseTypeName.MYSQL.getDisplayName().equals(connParameters.getDbType())
                 && !EDatabaseTypeName.MYSQL.getProduct().equals(dbTypeByClassName)) {
             if (dbTypeByClassName != null && !"".equals(dbTypeByClassName)) {
@@ -1806,7 +1807,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         java.sql.Connection connection = null;
         try {
             List list = new ArrayList();
-            list = ExtractMetaDataUtils.connect(metadataConnection.getDbType(), metadataConnection.getUrl(),
+            list = ExtractMetaDataUtils.getInstance().connect(metadataConnection.getDbType(), metadataConnection.getUrl(),
                     metadataConnection.getUsername(), metadataConnection.getPassword(), metadataConnection.getDriverClass(),
                     metadataConnection.getDriverJarPath(), metadataConnection.getDbVersionString(),
                     metadataConnection.getAdditionalParams());

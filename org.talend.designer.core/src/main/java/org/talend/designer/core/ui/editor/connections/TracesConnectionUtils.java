@@ -263,6 +263,7 @@ public class TracesConnectionUtils {
      * DOC hwang Comment method "createConnection".
      */
     public static DatabaseConnection createConnection(ConnectionParameters parameters) {
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         String dbType = parameters.getDbType();
         boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(dbType).isNeedSchema();
         String productName = EDatabaseTypeName.getTypeFromDisplayName(dbType).getProduct();
@@ -317,7 +318,7 @@ public class TracesConnectionUtils {
         if (parameters.getDriverClass() != null) {
             driverClassByDbType = parameters.getDriverClass();
         } else {
-            driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+            driverClassByDbType = extractMeta.getDriverClassByDbType(dbType);
         }
         String driverJar = parameters.getDriverJar();
         connection.setDriverClass(driverClassByDbType);
@@ -330,9 +331,9 @@ public class TracesConnectionUtils {
             }
             String dbTypeByClassName = "";
             if (driverJar != null && !"".equals(driverJar)) {
-                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassByDbType, driverJar);
+                dbTypeByClassName = extractMeta.getDbTypeByClassNameAndDriverJar(driverClassByDbType, driverJar);
             } else {
-                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClassByDbType);
+                dbTypeByClassName = extractMeta.getDbTypeByClassName(driverClassByDbType);
             }
 
             if (dbTypeByClassName != null) {

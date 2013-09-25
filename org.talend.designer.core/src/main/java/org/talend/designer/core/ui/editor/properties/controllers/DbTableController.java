@@ -426,7 +426,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
         if (param.getFieldType() == EParameterFieldType.DBTABLE) {
-            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
         }
         openSQLEditorButton.addSelectionListener(openSQLListener);
 

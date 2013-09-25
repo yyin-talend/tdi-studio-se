@@ -169,7 +169,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         button.setEnabled(!param.isReadOnly());
         if (!param.isReadOnly()) {
             if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
-                button.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+                button.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
             }
         }
 

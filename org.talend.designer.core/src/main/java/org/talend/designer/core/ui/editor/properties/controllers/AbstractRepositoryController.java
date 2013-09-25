@@ -125,7 +125,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
                     || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
                     || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
-                combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+                combo.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
             }
         }
 

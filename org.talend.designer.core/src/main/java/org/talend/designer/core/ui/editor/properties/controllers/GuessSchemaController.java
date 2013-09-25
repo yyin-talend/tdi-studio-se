@@ -479,7 +479,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
             }
         } catch (ProcessorException e) {
-            ExtractMetaDataUtils.closeConnection();
+            ExtractMetaDataUtils.getInstance().closeConnection();
             final String strExcepton = e.getMessage();
             Display.getDefault().asyncExec(new Runnable() {
 
@@ -951,6 +951,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     DatabaseConnection connt = service.createConnection(connParameters);
                     IMetadataConnection iMetadataConnection = null;
                     boolean isStatus = false;
+                    ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
                     if (connt != null) {
                         iMetadataConnection = ConvertionHelper.convert(connt);
                         isStatus = checkConnection(iMetadataConnection);
@@ -958,14 +959,14 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     if (!monitor.isCanceled()) {
                         try {
                             if (isStatus) {
-                                ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+                                extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                                         iMetadataConnection.getUsername(), iMetadataConnection.getPassword(),
                                         iMetadataConnection.getDatabase(), iMetadataConnection.getSchema(),
                                         iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                                         iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
-                                if (ExtractMetaDataUtils.conn != null) {
-                                    Statement smst = ExtractMetaDataUtils.conn.createStatement();
-                                    ExtractMetaDataUtils.setQueryStatementTimeout(smst);
+                                if (extractMeta.getConn() != null) {
+                                    Statement smst = extractMeta.getConn().createStatement();
+                                    extractMeta.setQueryStatementTimeout(smst);
                                     ResultSet rs = smst.executeQuery(memoSQL);
                                     ResultSetMetaData rsmd = rs.getMetaData();
                                     int numbOfColumn = rsmd.getColumnCount();
@@ -986,7 +987,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
                                     refreshMetaDataTable(rsmd, cvsArrays);
 
-                                    ExtractMetaDataUtils.closeConnection();
+                                    extractMeta.closeConnection();
                                 }
                             } else {
                                 Display.getDefault().asyncExec(new Runnable() {
@@ -1004,7 +1005,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                 });
                             }
                         } catch (Exception e) {
-                            ExtractMetaDataUtils.closeConnection();
+                            extractMeta.closeConnection();
                             ExceptionHandler.process(e);
                             final String strExcepton = "Connect to DB error ,or some errors in SQL query string, or 'Guess Schema' not compatible with current SQL query string."
                                     + System.getProperty("line.separator");

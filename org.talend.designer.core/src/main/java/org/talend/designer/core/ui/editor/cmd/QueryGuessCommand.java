@@ -198,7 +198,7 @@ public class QueryGuessCommand extends Command {
 
     private String generateNewQuery() {
         // used for generating new Query.
-
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         if (realDBType != null) {
             dbType = realDBType;
         }
@@ -275,9 +275,9 @@ public class QueryGuessCommand extends Command {
                 if (isContextMode) {
                     driverJarName = JavaProcessUtil.getContextOriginalValue(process, driverJarName);
                 }
-                dbType = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassName, driverJarName);
+                dbType = extractMeta.getDbTypeByClassNameAndDriverJar(driverClassName, driverJarName);
             } else {
-                dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+                dbType = extractMeta.getDbTypeByClassName(driverClassName);
             }
 
             DatabaseConnection dbConn = null;
@@ -287,7 +287,7 @@ public class QueryGuessCommand extends Command {
                         dbConn = (DatabaseConnection) conn;
                     }
                     driverClassName = DatabaseConnectionParameterUtil.getTrueParamValue(dbConn, driverClassName);
-                    dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+                    dbType = extractMeta.getDbTypeByClassName(driverClassName);
                 }
             }
             if (dbType == null) {

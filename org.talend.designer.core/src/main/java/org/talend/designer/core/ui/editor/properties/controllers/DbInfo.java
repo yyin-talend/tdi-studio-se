@@ -186,15 +186,16 @@ public class DbInfo {
 
     private void getConnFromNode() {
         DriverShim wapperDriver = null;
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         try {
             List list = null;
             if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
-                list = ExtractMetaDataUtils.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath,
-                        dbVersion, additionalParams);
+                list = extractMeta.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath, dbVersion,
+                        additionalParams);
             } else {
                 // driverJarPath set to null,to reget driverJarPath
                 driverJarPath = "";
-                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion,
+                list = extractMeta.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion,
                         additionalParams);
             }
             if (list != null && list.size() > 0) {
@@ -247,7 +248,7 @@ public class DbInfo {
                 driverClassName = EDatabase4DriverClassName.HIVE.getDriverClass();
             }
         }
-        driverClassName = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+        driverClassName = ExtractMetaDataUtils.getInstance().getDriverClassByDbType(dbType);
     }
 
     private void genarateDriverJarPath() {
@@ -256,7 +257,7 @@ public class DbInfo {
         if (drivers.size() == 1) {
             String driverName = EDatabaseVersion4Drivers.getDriversStr(dbType, dbVersion);
             if (driverName != null) {
-                driverJarPath = ExtractMetaDataUtils.getJavaLibPath() + driverName;
+                driverJarPath = ExtractMetaDataUtils.getInstance().getJavaLibPath() + driverName;
             }
         } else {
             driverJarPath = null;
@@ -264,11 +265,11 @@ public class DbInfo {
     }
 
     private String getTrueDBType(String className, String driverJar) {
-        return ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(className, driverJar);
+        return ExtractMetaDataUtils.getInstance().getDbTypeByClassNameAndDriverJar(className, driverJar);
     }
 
     private String getTrueDBType(String className) {
-        return ExtractMetaDataUtils.getDbTypeByClassName(className);
+        return ExtractMetaDataUtils.getInstance().getDbTypeByClassName(className);
     }
 
     /**

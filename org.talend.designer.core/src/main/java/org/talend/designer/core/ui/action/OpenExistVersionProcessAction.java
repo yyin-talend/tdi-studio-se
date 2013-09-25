@@ -91,7 +91,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
 
     @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        if (!ExtractMetaDataUtils.haveLoadMetadataNode()) {
+        if (!ExtractMetaDataUtils.getInstance().haveLoadMetadataNode()) {
             setEnabled(false);
             return;
         }

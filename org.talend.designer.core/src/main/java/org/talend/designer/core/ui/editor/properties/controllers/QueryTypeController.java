@@ -116,7 +116,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         guessQueryButton = (Button) dField1.getControl();
         guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         buttonControl.setBackground(subComposite.getBackground());
-        guessQueryButton.setEnabled(!param.isReadOnly() || !ExtractMetaDataUtils.haveLoadMetadataNode());
+        guessQueryButton.setEnabled(!param.isReadOnly() || !ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
         guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
         guessQueryButton.setData(PARAMETER_NAME, param.getName());
         guessQueryButton.setText(GUESS_QUERY_NAME);

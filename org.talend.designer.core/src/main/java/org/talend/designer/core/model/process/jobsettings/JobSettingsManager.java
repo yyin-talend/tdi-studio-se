@@ -1079,7 +1079,8 @@ public class JobSettingsManager {
     }
 
     private static IMetadataTable getSchemaTablefromComponent(final String componentName, final String tableName) {
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(componentName,ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
 
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         for (int k = 0; k < tmpNode.getElementParameters().size(); k++) {
@@ -1182,9 +1183,10 @@ public class JobSettingsManager {
             if (isContextMode) {
                 driverJarValue = JavaProcessUtil.getContextOriginalValue(process, driverJarValue);
             }
-            realDbTypeForJDBC = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassValue, driverJarValue);
+            realDbTypeForJDBC = ExtractMetaDataUtils.getInstance().getDbTypeByClassNameAndDriverJar(driverClassValue,
+                    driverJarValue);
         } else {
-            realDbTypeForJDBC = ExtractMetaDataUtils.getDbTypeByClassName(driverClassValue);
+            realDbTypeForJDBC = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(driverClassValue);
         }
         return realDbTypeForJDBC;
     }
