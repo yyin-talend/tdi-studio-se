@@ -20,7 +20,7 @@ imports="
 <%@ include file="../tS3Connection/S3Client.javajet" %>
 	try{
 		conn_<%=cid%>.getObject(new com.amazonaws.services.s3.model.GetObjectRequest(<%=bucket%>, <%=key%>),new java.io.File(<%=file%>));
-	}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
+	}catch(java.lang.Exception e_<%=cid%>){
 <%
 		if (("true").equals(dieOnError)) {
 %>

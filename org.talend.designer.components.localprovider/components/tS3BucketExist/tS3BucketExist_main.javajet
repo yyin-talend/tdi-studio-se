@@ -19,7 +19,7 @@ imports="
 boolean bucketExist_<%=cid%>=false;
 	try{
 		bucketExist_<%=cid%> = conn_<%=cid%>.doesBucketExist(<%=bucket%>);
-	}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
+	}catch(java.lang.Exception e_<%=cid%>){
 <%
 		if (("true").equals(dieOnError)) {
 %>

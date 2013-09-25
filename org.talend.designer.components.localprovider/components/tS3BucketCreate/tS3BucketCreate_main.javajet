@@ -18,7 +18,7 @@ imports="
 <%@ include file="../tS3Connection/S3Client.javajet" %>
 	try{
 		conn_<%=cid%>.createBucket(<%=bucket%>);
-	}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
+	}catch(java.lang.Exception e_<%=cid%>){
 <%
 		if (("true").equals(dieOnError)) {
 %>
