@@ -10,8 +10,7 @@
 #end
 
 #if ($job.useSAM || $endpoint.useSAM)
-	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
-		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
 	<jaxrs:server xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
@@ -87,9 +86,9 @@
 #end
 		</jaxrs:properties>
 #if ($endpoint.useAuthorization)
-     <jaxrs:inInterceptors>
-        	 <ref component-id="XACMLInterceptor"/>
-	 </jaxrs:inInterceptors>
+		<jaxrs:inInterceptors>
+			<ref component-id="XACMLInterceptor"/>
+		</jaxrs:inInterceptors>
 #end
 	</jaxrs:server>
 
@@ -136,12 +135,11 @@
 
 #if ($endpoint.useAuthorization)
 #[[
-	<bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor" 
-        			 id="XACMLInterceptor">
+	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
 		<property name="pdpAddress" value="$service{tesb.pdp.address}"/>
 	</bean>
 ]]#
-#end	
+#end
 
 	<!-- Wiring the counter repository -->
 	<bean class="org.apache.cxf.management.counters.CounterRepository">

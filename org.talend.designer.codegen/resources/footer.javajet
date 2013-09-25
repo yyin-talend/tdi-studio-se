@@ -106,9 +106,9 @@
 
 <% if (hasSAM4RS) { %>
     // ESB Service Activity Monitor Feature
-    private org.apache.cxf.feature.AbstractFeature eventFeature;
+    private org.apache.cxf.feature.Feature eventFeature;
 
-    public void setEventFeature(org.apache.cxf.feature.AbstractFeature eventFeature) {
+    public void setEventFeature(org.apache.cxf.feature.Feature eventFeature) {
         this.eventFeature = eventFeature;
     }
 <% } %>
@@ -149,7 +149,7 @@
 		        log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has finished.");
 	        }
         <%}%>
-         
+
         System.exit(exitCode);
     }
 
@@ -177,7 +177,7 @@
     public int runJobInTOS(String[] args) {
 	   	// reset status
 	   	status = "";
-	   	
+
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
@@ -211,7 +211,7 @@
     	    }
         	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' has started.");
     	<%}%>
-    	
+
         if(clientHost == null) {
             clientHost = defaultClientHost;
         }

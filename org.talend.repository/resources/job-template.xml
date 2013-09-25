@@ -4,8 +4,7 @@
 	<!-- Talend Job OSGi blueprint descriptor -->
 
 #if ($job.useSAM)
-	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
-		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
 #if ($job.useSAML)
