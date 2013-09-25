@@ -109,7 +109,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                 .getStrings(GeneralParameters.PROJECTS_EXCLUDED_FROM_EXPORT));
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < projects.length; i++) {
-            if (projects[i].isOpen() && !notExportProjects.contains(projects[i].getName())) {
+            if (!projects[i].getResourceAttributes().isReadOnly() && projects[i].isOpen()
+                    && !notExportProjects.contains(projects[i].getName())) {
                 if (!login && pro.getLabel().toLowerCase().equals(projects[i].getName().toLowerCase())) {
 
                 } else {
