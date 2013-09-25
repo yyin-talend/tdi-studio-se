@@ -55,17 +55,18 @@ public class MapperSchemaTypeItemRelationshipHandler extends AbstractJobItemRela
                 if (o instanceof NodeType) {
                     NodeType currentNode = (NodeType) o;
                     AbstractExternalData nodeData = currentNode.getNodeData();
-                    List<String> schemaIds = service.getRepositorySchemaIds(nodeData);
-                    if (schemaIds.size() > 0) {
-                        for (String schemaId : schemaIds) {
-                            Relation addedRelation = new Relation();
-                            addedRelation.setId(schemaId);
-                            addedRelation.setType(RelationshipItemBuilder.SCHEMA_RELATION);
-                            addedRelation.setVersion(RelationshipItemBuilder.LATEST_VERSION);
-                            relationSet.add(addedRelation);
+                    if (nodeData != null) {
+                        List<String> schemaIds = service.getRepositorySchemaIds(nodeData);
+                        if (schemaIds != null && schemaIds.size() > 0) {
+                            for (String schemaId : schemaIds) {
+                                Relation addedRelation = new Relation();
+                                addedRelation.setId(schemaId);
+                                addedRelation.setType(RelationshipItemBuilder.SCHEMA_RELATION);
+                                addedRelation.setVersion(RelationshipItemBuilder.LATEST_VERSION);
+                                relationSet.add(addedRelation);
+                            }
                         }
                     }
-
                 }
             }
         }
