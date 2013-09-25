@@ -322,6 +322,34 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
+     */
+    @Override
+    protected void initialize() {
+        super.initialize();
+        // Because should save the value of TalendDesignerPrefConstants.COMPONENT_ASSIST in
+        // DesignerPlugin.getDefault().getPreferenceStore()
+        enableComponentAssistCheckBoxField.setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
+        enableComponentAssistCheckBoxField.load();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performDefaults()
+     */
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        // Because should save the value of TalendDesignerPrefConstants.COMPONENT_ASSIST in
+        // DesignerPlugin.getDefault().getPreferenceStore(), also PreferenceInitializer
+        enableComponentAssistCheckBoxField.setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
+        enableComponentAssistCheckBoxField.loadDefault();
+    }
+
     @Override
     public boolean performOk() {
         boolean flag = super.performOk();
