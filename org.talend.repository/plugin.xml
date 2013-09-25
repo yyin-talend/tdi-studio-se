@@ -374,10 +374,10 @@
                class="org.talend.repository.ui.actions.importexport.ImportDemoItemAction"
                icon="icons/import_projects_action.gif"
                id="org.talend.repository.actions.importDemo"
-               label="导入demo"
+               label="%ImportDemoAction.title"
                style="push"
                toolbarPath="Default"
-               tooltip="导入Demo Project">
+               tooltip="%ImportDemoAction.tooltip">
             <enablement>
                <systemProperty
                      name="ReadOnlyUser"
