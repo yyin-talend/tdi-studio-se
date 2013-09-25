@@ -1000,7 +1000,7 @@ if (isProvider) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {
-					((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(eventFeature);
+					((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add((org.apache.cxf.feature.AbstractFeature)eventFeature);
 				}
 <%
 			}

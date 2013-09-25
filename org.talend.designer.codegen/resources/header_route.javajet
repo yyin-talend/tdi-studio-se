@@ -177,9 +177,9 @@ package <%= packageName %>;
 							&& "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))  
 							&& !"RAW".equals(ElementParameterParser.getValue(node, "__DATAFORMAT__"))&& !"true".equals(useRegistry) ) { %>
 			//ESB Service Activity Monitor Feature
-			private org.apache.cxf.feature.AbstractFeature eventFeature;
+			private org.apache.cxf.feature.Feature eventFeature;
 
-			public void setEventFeature(org.apache.cxf.feature.AbstractFeature eventFeature) {
+			public void setEventFeature(org.apache.cxf.feature.Feature eventFeature) {
 				this.eventFeature = eventFeature;
 			}
 			<% break;
