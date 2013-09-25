@@ -116,7 +116,8 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                                         .doSwitch(migratedResource.getContents().get(0));
                                 // do not check for null caus DB connection is already check above
                                 String databaseType = databaseConnection.getDatabaseType();
-                                databaseConnection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(databaseType));
+                                databaseConnection.setDriverClass(ExtractMetaDataUtils.getInstance().getDriverClassByDbType(
+                                        databaseType));
                                 EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
                                 EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
                                 EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
