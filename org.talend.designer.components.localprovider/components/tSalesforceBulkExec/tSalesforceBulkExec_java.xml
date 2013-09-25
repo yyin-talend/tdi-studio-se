@@ -3418,7 +3418,7 @@
             <IMPORT NAME="jetty-all-8.1.12.v20130726"
                 MODULE="jetty-all-8.1.12.v20130726.jar" UrlPath="platform:/plugin/org.talend.libraries.jetty/lib/jetty-all-8.1.12.v20130726.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
             <IMPORT NAME="servlet-api-3.0"
-                MODULE="servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
+                MODULE="servlet-api-3.0.jar" UrlPath="platform:/plugin/org.talend.libraries.salesforce/lib/servlet-api-3.0.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
             <IMPORT NAME="json_simple-1.1"
                 MODULE="json_simple-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" REQUIRED_IF="LOGIN_TYPE=='OAUTH'" />
          
