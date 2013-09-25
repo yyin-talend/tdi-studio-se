@@ -234,6 +234,12 @@ public class JobletContainerFigure extends Figure {
                 outlineFigure.setVisible(false);
             }
 
+            if (this.jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
+                initMRFigures();
+            }
+            if (!this.jobletContainer.getNode().isMapReduceStart() && !mrFigures.isEmpty()) {
+                mrFigures.clear();
+            }
             Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
             while (ite.hasNext()) {
                 Entry<String, SimpleHtmlFigure> entry = ite.next();
@@ -262,7 +268,10 @@ public class JobletContainerFigure extends Figure {
 
                 if (value.isVisible()) {
                     Integer i = Integer.parseInt(key.substring(key.indexOf("_") + 1)) + 1;
-                    if (i.toString().equals(jobletContainer.getMrName()) || isClear) {
+                    boolean hun = percent.equals(new Double(10));
+                    Integer mrCount = this.jobletContainer.getNode().getMrJobInGroupCount();
+                    boolean refreshPro = hun && (mrCount.toString().equals(jobletContainer.getMrName()));
+                    if (i.toString().equals(jobletContainer.getMrName()) || isClear || refreshPro) {
                         List object = value.getChildren();
                         for (Object o : object) {
                             if (o instanceof RectangleFigure) {
@@ -300,6 +309,12 @@ public class JobletContainerFigure extends Figure {
         outlineFigure.setForegroundColor(ColorUtils.getCacheColor(new RGB(220, 120, 120)));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
+        if (this.jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
+            initMRFigures();
+        }
+        if (!this.jobletContainer.getNode().isMapReduceStart() && !mrFigures.isEmpty()) {
+            mrFigures.clear();
+        }
         Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         int i = 0;
         while (ite.hasNext()) {
@@ -424,6 +439,12 @@ public class JobletContainerFigure extends Figure {
             add(rectFig, null, 1);
         }
 
+        if (this.jobletContainer.getNode().isMapReduceStart() && mrFigures.isEmpty()) {
+            initMRFigures();
+        }
+        if (!this.jobletContainer.getNode().isMapReduceStart() && !mrFigures.isEmpty()) {
+            mrFigures.clear();
+        }
         Iterator<Entry<String, SimpleHtmlFigure>> ite = mrFigures.entrySet().iterator();
         while (ite.hasNext()) {
             Entry<String, SimpleHtmlFigure> entry = ite.next();

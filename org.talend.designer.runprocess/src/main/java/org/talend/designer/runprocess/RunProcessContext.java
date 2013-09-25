@@ -1681,8 +1681,10 @@ public class RunProcessContext {
                             && ((Node) node).getMrGroupId().equals(groupID)) {
                         if (((Node) node).getNodeContainer() instanceof JobletContainer) {
                             ((JobletContainer) ((Node) node).getNodeContainer()).setMrName(mrName);
-                            ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
-                                    "UPDATE_STATUS", mrName, percentMap, percentReduce); //$NON-NLS-1$
+                            if (((Node) node).isMapReduceStart()) {
+                                ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
+                                        "UPDATE_STATUS", mrName, percentMap, percentReduce); //$NON-NLS-1$
+                            }
                         }
                     }
                 }

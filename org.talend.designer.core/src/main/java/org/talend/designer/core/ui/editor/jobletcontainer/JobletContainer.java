@@ -118,16 +118,8 @@ public class JobletContainer extends NodeContainer {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
         boolean mapStart = this.getNode().isMapReduceStart();
-        // List<INode> jobletNodes = new ArrayList<INode>();
-        // if (this.getNode().isJoblet()) {
-        // IProcess jobletProcess = this.getNode().getComponent().getProcess();
-        // jobletNodes.addAll(jobletProcess.getGraphicalNodes());
-        // } else if (mapStart) {
-        // jobletNodes.addAll(this.getNode().getProcess().getGraphicalNodes());
-        // }
 
         if ((!collapsed || mapStart) && nodeContainers.size() > 0) {
-            Rectangle jobletNodeRec = this.node.getNodeContainer().getNodeContainerRectangle();
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
                 if (node.getNodeContainer() instanceof JobletContainer) {
@@ -147,9 +139,6 @@ public class JobletContainer extends NodeContainer {
                     }
                 }
 
-                // if (container.getNode().isDesignSubjobStartNode()) {
-                // totalRectangle = curRect.getCopy();
-                // } else {
                 if (totalRectangle == null) {
                     totalRectangle = curRect.getCopy();
                 } else {
@@ -773,9 +762,10 @@ public class JobletContainer extends NodeContainer {
     }
 
     private void changeWidth(Rectangle totalRectangle) {
+        boolean subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
         int temWidth = 114;
         for (NodeContainer nc : nodeContainers) {
-            if (nc.getNode().isMrContainsReduce()) {
+            if (nc.getNode().isMrContainsReduce() && !subjobCollapsed) {
                 temWidth = 240;
             }
         }
