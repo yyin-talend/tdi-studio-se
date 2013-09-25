@@ -198,7 +198,7 @@ public class CatalogNode extends AbstractNode {
         if (schema != null && schema.length() == 0) {
             return null;
         }
-        return ExtractMetaDataUtils.schema;
+        return ExtractMetaDataUtils.getInstance().getSchema();
     }
 
     /**

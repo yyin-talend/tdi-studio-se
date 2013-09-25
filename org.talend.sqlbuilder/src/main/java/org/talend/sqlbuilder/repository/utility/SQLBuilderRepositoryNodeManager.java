@@ -423,7 +423,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (status) {
             // /Get MetadataTable From DB
             List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(iMetadataConnection);
-            ExtractMetaDataUtils.isReconnect = false;
+            ExtractMetaDataUtils.getInstance().setReconnect(false);
             // Get MetadataTable From EMF(Old RepositoryNode)
 
             Set<MetadataTable> tablesetFromEMF = ConnectionHelper.getTables(connection);
@@ -470,7 +470,7 @@ public class SQLBuilderRepositoryNodeManager {
                 tableFromEMF.setDivergency(true);
             }
         }
-        ExtractMetaDataUtils.isReconnect = true;
+        ExtractMetaDataUtils.getInstance().setReconnect(true);
     }
 
     /**
@@ -613,7 +613,7 @@ public class SQLBuilderRepositoryNodeManager {
             try {
                 List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(
                         iMetadataConnection, 500);
-                ExtractMetaDataUtils.isReconnect = false;
+                ExtractMetaDataUtils.getInstance().setReconnect(false);
                 for (MetadataTable table : tablesFromDB) {
                     List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
                     columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
@@ -626,7 +626,7 @@ public class SQLBuilderRepositoryNodeManager {
                     table.setLabel(""); //$NON-NLS-1$
                     ConnectionHelper.getTables(connection).add(table);
                 }
-                ExtractMetaDataUtils.isReconnect = true;
+                ExtractMetaDataUtils.getInstance().setReconnect(true);
             } catch (Exception e) {
                 if (parameters != null) {
                     parameters.setConnectionComment(e.getMessage());
@@ -671,6 +671,7 @@ public class SQLBuilderRepositoryNodeManager {
         }
         Driver derbyDriver = null;
         java.sql.Connection sqlConn = null;
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         // get dbType before get connection so that the dbtype won't be null.TDI-18366
         String dbType = metadataConnectionTemp.getDbType();
         DatabaseConnection dbConn = (DatabaseConnection) metadataConnectionTemp.getCurrentConnection();
@@ -693,7 +694,7 @@ public class SQLBuilderRepositoryNodeManager {
                 if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
                     dm = HiveConnectionManager.getInstance().extractDatabaseMetaData(metadataConnectionTemp);
                 } else {
-                    dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType, false, metadataConnectionTemp.getDatabase());
+                    dm = extractMeta.getDatabaseMetaData(sqlConn, dbType, false, metadataConnectionTemp.getDatabase());
                 }
                 MetadataFillFactory.getDBInstance().fillCatalogs(dbConn, dm,
                         MetadataConnectionUtils.getPackageFilter(dbConn, dm, true));
@@ -708,7 +709,7 @@ public class SQLBuilderRepositoryNodeManager {
                             || dbType.equals(EDatabaseTypeName.HSQLDB_SERVER.getDisplayName())
                             || dbType.equals(EDatabaseTypeName.HSQLDB_WEBSERVER.getDisplayName()) || dbType
                                 .equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()))) {
-                ExtractMetaDataUtils.closeConnection();
+                extractMeta.closeConnection();
             }
             if (derbyDriver != null) {
                 try {
@@ -796,7 +797,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (parameters.getDriverClass() != null) {
             driverClassByDbType = parameters.getDriverClass();
         } else {
-            driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+            driverClassByDbType = ExtractMetaDataUtils.getInstance().getDriverClassByDbType(dbType);
         }
 
         connection.setDriverClass(driverClassByDbType);
@@ -862,7 +863,8 @@ public class SQLBuilderRepositoryNodeManager {
      */
     public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException, SQLException {
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
+        extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                 iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
@@ -872,8 +874,8 @@ public class SQLBuilderRepositoryNodeManager {
         if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
             dbMetaData = HiveConnectionManager.getInstance().extractDatabaseMetaData(iMetadataConnection);
         } else {
-            dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType,
-                    iMetadataConnection.isSqlMode(), iMetadataConnection.getDatabase());
+            dbMetaData = extractMeta.getDatabaseMetaData(extractMeta.getConn(), dbType, iMetadataConnection.isSqlMode(),
+                    iMetadataConnection.getDatabase());
         }
         return dbMetaData;
     }

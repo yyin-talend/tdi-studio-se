@@ -63,8 +63,8 @@ public class ColumnInfoTab extends AbstractDataSetTab {
                 String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
                         .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(), ti.getSchemaName(),
-                        realTableName, "%"); //$NON-NLS-1$
+                resultSet = treeNode.getMetaData().getJDBCMetaData()
+                        .getColumns(ti.getCatalogName(), ti.getSchemaName(), realTableName, "%"); //$NON-NLS-1$
 
             } else {
 
@@ -96,7 +96,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'"; //$NON-NLS-1$ //$NON-NLS-2$
             Statement sta;
             sta = conn.createStatement();
-            ExtractMetaDataUtils.setQueryStatementTimeout(sta);
+            ExtractMetaDataUtils.getInstance().setQueryStatementTimeout(sta);
             ResultSet resultSet = sta.executeQuery(sql);
             while (resultSet.next()) {
                 return resultSet.getString("TABLE_NAME"); //$NON-NLS-1$

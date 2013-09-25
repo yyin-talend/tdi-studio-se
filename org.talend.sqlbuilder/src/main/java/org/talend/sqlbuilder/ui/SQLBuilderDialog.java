@@ -468,7 +468,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             Connection connection = null;
             DriverShim wapperDriver = null;
             try {
-                List list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName,
+                List list = ExtractMetaDataUtils.getInstance().connect(dbType, url, username, pwd, driverClassName,
                         iMetadataConnection.getDriverJarPath(), dbVersion, iMetadataConnection.getAdditionalParams());
                 if (list != null && list.size() > 0) {
                     for (int i = 0; i < list.size(); i++) {
@@ -779,7 +779,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                             && (driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
                                                     || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
                                                     || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName()) || dbType
-                                                    .equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()))) {
+                                                        .equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()))) {
                                         try {
                                             wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                                         } catch (SQLException e) {

@@ -234,7 +234,7 @@ public class ErDiagramComposite extends SashForm {
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
                 .getConnection();
 
-        String dbType = ExtractMetaDataUtils.getDbTypeByClassName(connection.getDriverClass());
+        String dbType = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(connection.getDriverClass());
         if (dbType == null) {
             dbType = connection.getDatabaseType();
         }

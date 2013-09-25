@@ -172,8 +172,8 @@ public class SessionTreeNodeUtils {
      */
     protected static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
             throws Exception {
-        Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
-        ExtractMetaDataUtils.checkDBConnectionTimeout();
+        Class.forName(ExtractMetaDataUtils.getInstance().getDriverClassByDbType(dbType)).newInstance();
+        ExtractMetaDataUtils.getInstance().checkDBConnectionTimeout();
         Connection connection = DriverManager.getConnection(url, userName, password);
         SQLConnection sqlConnection = new SQLConnection(connection, null);
         return sqlConnection;
@@ -182,11 +182,12 @@ public class SessionTreeNodeUtils {
     private static List createSQLConnection(DatabaseConnection con, String selectedContext,
             IMetadataConnection iMetadataConnection) throws Exception {
         // bug 17980
-        List list = ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+        ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
+        List list = extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                 iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
-        SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
+        SQLConnection sqlConnection = new SQLConnection(extractMeta.getConn(), null);
         if (sqlConnection != null) {
             list.add(sqlConnection);
         }
