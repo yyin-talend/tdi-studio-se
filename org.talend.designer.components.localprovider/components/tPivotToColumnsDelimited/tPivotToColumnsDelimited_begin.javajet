@@ -36,6 +36,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
     	
+    	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
+    	
     	if(("'").equals(escapeChar)) escapeChar = "\\'";
         
         String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
@@ -95,16 +97,25 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
 	}
 <%
   }
-
-  if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) { %>
-    
-    java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
-
-<%}else{%>
-    
-    com.talend.csv.CSVWriter CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)));
+%>
+	java.io.FileOutputStream fos_<%=cid%> = null;
+    java.io.OutputStreamWriter osw_<%=cid%> = null;
+    java.io.BufferedWriter out<%=cid %> = null;
+<%
+  if(csvOption) { 
+%>
+    com.talend.csv.CSVWriter CsvWriter<%=cid%> =null;
+<%
+  }
+%>
+   try{
+	fos_<%=cid%>=new java.io.FileOutputStream(fileName_<%=cid%>, false);
+	osw_<%=cid%>=new java.io.OutputStreamWriter(fos_<%=cid%>,<%=encoding%>);
+	out<%=cid %> = new java.io.BufferedWriter(osw_<%=cid%>);
+<%
+  if(csvOption) { 
+%>
+    CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(out<%=cid %>);
     CsvWriter<%=cid%>.setSeparator('<%=delim%>');  
     
 <%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
