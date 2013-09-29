@@ -12,6 +12,8 @@ public class CLASS {
         // table parameter of component
 
         public String path = null;
+        
+        public String addPath = "";
 
         public String column = null;
         
@@ -61,6 +63,8 @@ public class CLASS {
 //            System.out.println("xpath after:"+xpath +",SegType=" + this.hl7SegType);
             if (!path.startsWith("/" + this.hl7SegType + "/")) { // this path is a group path
                 this.path = path.substring(0, path.indexOf("/" + this.hl7SegType + "/")+1) + this.path;
+            } else {
+                this.path = "/" + this.path;
             }
             
         }
@@ -79,6 +83,23 @@ public class CLASS {
                 this.defaultValue = value;
             }
         }
+        
+        public boolean isRepeating = false;
+        public void calAddPath(List<String> repeatingNodes) {
+            if(repeatingNodes == null || repeatingNodes.size() == 0) {
+                return;
+            }
+            
+            for (String repeatingNode : repeatingNodes) {
+                int index = this.path.indexOf("/"+repeatingNode);
+                if (index >= 0) {
+                    this.addPath = this.path.substring(index+repeatingNode.length()+1);
+                    this.path = this.path.substring(0, index + repeatingNode.length()+1);
+                    this.isRepeating = true;
+                    break;
+                }
+            }
+        }
        
     }
     
@@ -94,19 +115,41 @@ public class CLASS {
         }
         return resultTable;
     }
-   
+
+    /**
+     * result Map:
+     * key: segment/group name
+     * value: the original path
+     */
+    public java.util.List<String> findRepeatingNodes (List<Map<String, String>> rootTable) {
+        java.util.List<String> result = new java.util.ArrayList<String>();
+        for (Map<String, String> map : rootTable) {
+            String strTemp = map.get("REPEATABLE");
+            
+            if ("true".equalsIgnoreCase(strTemp)) {
+                String[] tempArr = map.get("PATH").split("/");
+                result.add(tempArr[tempArr.length-1]);
+            }
+        }
+        return result;
+        
+    }
+    
     // return [0] is root(HL7Node), [1] is groups(List<HL7Node>), [2] loop(HL7Node)
     public List<HL7Node> getTree(List<Map<String, String>> rootTable, List<IMetadataColumn> colList, String incomingName) {
         
         List<HL7Node> nodes = new java.util.ArrayList<HL7Node>();
 
         List<Map<String, String>> maps = getTable(rootTable, incomingName);
+        
+        List<String> repeativeNodes = findRepeatingNodes (rootTable);
 
         Map<String, String> prevMap = null;
         for (Map<String, String> tmpMap : maps) {
             if (prevMap!=null) {
                 if (!tmpMap.get("PATH").startsWith(prevMap.get("PATH"))) {
                     HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
+                    node.calAddPath(repeativeNodes);
                     setIMetadataColumn(node, colList);
                     nodes.add(node);
                 }
@@ -114,6 +157,7 @@ public class CLASS {
             prevMap = tmpMap;
         }
         HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
+        node.calAddPath(repeativeNodes);
         setIMetadataColumn(node, colList);
         nodes.add(node);
 

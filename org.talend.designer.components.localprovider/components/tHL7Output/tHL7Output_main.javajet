@@ -66,13 +66,10 @@ List< ? extends IConnection> incomingConns = node.getIncomingConnections();
 				if(metadata!=null) {
 					List<IMetadataColumn> columns = metadata.getListColumns();
 					List<HL7Node> xmlNodes = getTree(rootTable, columns, incomingName);
-					
+//					boolean isHL7TreeWithGroup = isHL7Group(xmlNodes);
 					if(xmlNodes != null && xmlNodes.size() > 0) {
-						if (!isHL7Group(xmlNodes)) {
 %>
-	hl7Spec_<%=cid %> = util_<%=cid %>.getSegSpecPath(map2Seg_<%=cid %>.get("<%=xmlNodes.get(0).hl7SegType %>"));
 <%
-						}
 						for (int i = 0 ; i< xmlNodes.size(); i++) {
 							IMetadataColumn column = xmlNodes.get(i).relatedColumn;
 							if (column != null) {
@@ -82,7 +79,7 @@ List< ? extends IConnection> incomingConns = node.getIncomingConnections();
 %>
 	if(<%=incomingName %>.<%=column.getLabel() %> != null) {
 <% 
-    						} 
+    							} 
 %>
 	tmpValue_<%=cid %> =
  <%
@@ -114,10 +111,21 @@ List< ? extends IConnection> incomingConns = node.getIncomingConnections();
 tmpValue_<%=cid %> = <%=(xmlNodes.get(i).defaultValue==null || "".equals(xmlNodes.get(i).defaultValue)? "\"\"":xmlNodes.get(i).defaultValue) %>;
 <%
 							}
+							StringBuilder nodePath = new StringBuilder("\"");
+							if (xmlNodes.get(i).isRepeating) {
+								nodePath.append(xmlNodes.get(i).path);
+								nodePath.append("(\"+i_" + incomingName + "_" + cid + "+\")"+xmlNodes.get(i).addPath);
+							} else {
+								nodePath.append(xmlNodes.get(i).path);
+							}
+							nodePath.append("\"");
 %>
-	terser_<%=cid %>.set(hl7Spec_<%=cid %> + "<%=xmlNodes.get(i).path%>",tmpValue_<%=cid %>);
+	terser_<%=cid %>.set(<%=nodePath.toString()%>,tmpValue_<%=cid %>);
 <%
 						} // for (int i = 0 ; i< xmlNodes.size(); i++);
+%>
+	i_<%=incomingName %>_<%=cid %>++;
+<%
 					}
 				} //if(metadata!=null)
 				break; // each input connector generate one segment
