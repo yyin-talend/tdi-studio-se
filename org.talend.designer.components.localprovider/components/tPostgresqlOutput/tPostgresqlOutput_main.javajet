@@ -351,6 +351,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try {
+                nb_line_<%=cid%>++;
 				<%if(showSavePoint){%>
                 	sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 				<%}%>
@@ -358,7 +359,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 				<%}%>
-                nb_line_<%=cid%>++;
             } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
@@ -479,6 +479,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try {
+                nb_line_<%=cid%>++;
 				<%if(showSavePoint){%>
 	                sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	            <%}%>
@@ -486,7 +487,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%if(showSavePoint){%>
                 	conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
                 <%}%>	
-                nb_line_<%=cid%>++;
             } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);

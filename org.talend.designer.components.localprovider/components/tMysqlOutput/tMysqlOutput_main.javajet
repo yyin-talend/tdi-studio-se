@@ -772,8 +772,8 @@ if(columnList != null && columnList.size() > 0) {
 		    		}else {    		
 		    		%>
 	                try {
-	                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	                    nb_line_<%=cid%>++;
+	                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	                } catch(java.lang.Exception e) {
 	                    whetherReject_<%=cid%> = true;
 	                    <%
@@ -846,8 +846,8 @@ if(columnList != null && columnList.size() > 0) {
                 }                
                 %>
                 try {
-                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
+                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
@@ -961,8 +961,8 @@ if(columnList != null && columnList.size() > 0) {
     		}else {    		
     		%>
             try {
-                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
+                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
@@ -1645,8 +1645,8 @@ if(columnList != null && columnList.size() > 0) {
                 }                
                 %>
                 try {
-                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
+                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
