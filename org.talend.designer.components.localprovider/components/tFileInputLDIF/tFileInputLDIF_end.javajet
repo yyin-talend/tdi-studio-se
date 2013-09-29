@@ -22,9 +22,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    	if(dis_<%=cid%>!=null){
    		dis_<%=cid%>.close();
    	}
-   	if(fis_<%=cid%>!=null){
-   		fis_<%=cid%>.close();
-   	}
    }
 	globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
         

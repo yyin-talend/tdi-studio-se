@@ -38,7 +38,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean isBase64 = false;
 %>
 ///////////////////////////////////
-		java.io.FileInputStream fis_<%=cid%> = null;
 		java.io.DataInputStream dis_<%=cid%> = null;
 
         String[] filters_<%=cid %> = new String[] {         
@@ -67,8 +66,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         ///////////////////////////////////
 	  try{
-	  	fis_<%=cid%>=new java.io.FileInputStream(<%=filename %>);
-	  	dis_<%=cid%>=new java.io.DataInputStream(fis_<%=cid%>);
+	  	dis_<%=cid%>=new java.io.DataInputStream(new java.io.FileInputStream(<%=filename %>));
         netscape.ldap.util.LDIF ldif_<%=cid %> = new netscape.ldap.util.LDIF(dis_<%=cid%>);
         for (netscape.ldap.util.LDIFRecord record_<%=cid %> = ldif_<%=cid %>.nextRecord(); record_<%=cid %> != null; record_<%=cid %> = ldif_<%=cid %>.nextRecord()) {
 

@@ -26,11 +26,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int nb_line_<%=cid%> = 0;
 		int totalLine<%=cid %> = 0;
 		String filename<%=cid%>=<%=filename%>;
-		java.io.FileReader reader_<%=cid%> = null;
 		java.io.BufferedReader bufferedReader_<%=cid%> = null;
 		try{
-			reader_<%=cid%>=new java.io.FileReader(filename<%=cid%>);
-			bufferedReader_<%=cid%>=new java.io.BufferedReader(reader_<%=cid%>);
+			bufferedReader_<%=cid%>=new java.io.BufferedReader(new java.io.FileReader(filename<%=cid%>));
 			weka.core.Instances data<%=cid%> = new weka.core.Instances(bufferedReader_<%=cid%>);
         	data<%=cid%>.setClassIndex(data<%=cid%>.numAttributes()-1);
         	//read line

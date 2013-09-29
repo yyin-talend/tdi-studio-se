@@ -16,8 +16,5 @@ String cid = node.getUniqueName();
 			if(bufferedReader_<%=cid%>!=null){
 				bufferedReader_<%=cid%>.close();
 			}
-			if(reader_<%=cid%>!=null){
-				reader_<%=cid%>.close();
-			}
 		}
 		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
