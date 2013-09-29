@@ -58,7 +58,7 @@
 	    NAME="AUTO_COMMIT"
 	    FIELD="CHECK"
 	    NUM_ROW="40">
-	    <DEFAULT>false</DEFAULT>
+	    <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

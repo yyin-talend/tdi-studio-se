@@ -1981,15 +1981,6 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.4.0"
-              class="org.talend.repository.model.migration.AddAutoCommitValue4MDMConnection"
-              description="set auto_commit to true for the old tmdmconnection that no the checkbox"
-              id="org.talend.repository.model.migration.AddAutoCommitValue4MDMConnection"
-              name="AddAutoCommitValue4MDMConnection"
-              version="5.4.0">
-        </projecttask>
-        <projecttask
-              beforeLogon="false"
               breaks="5.2.3"
               class="org.talend.repository.model.migration.CleanDBSchemaOntCreateTableMigrationTask"
               description="set DBSchema to empty on tCreateTable when DBTYPE is MSSQL or SYBASE"
