@@ -155,21 +155,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 %>
 	}finally{
-		if(out<%=cid %>!=null){
-		 	out<%=cid %>.flush();
-		 	out<%=cid %>.close();
-		}
-		if(osw_<%=cid%>!=null){
-			osw_<%=cid%>.close();
-		}
-		if(fos_<%=cid%>!=null){
-			fos_<%=cid%>.close();
-		}
 <%
 	if(isCsvOption) {
 %>
 		if(CsvWriter<%=cid%>!=null){
 			CsvWriter<%=cid%>.close();
+		}
+<%
+	}else{
+%>
+		if(out<%=cid %>!=null){
+		 	out<%=cid %>.flush();
+		 	out<%=cid %>.close();
 		}
 <%
 	}
