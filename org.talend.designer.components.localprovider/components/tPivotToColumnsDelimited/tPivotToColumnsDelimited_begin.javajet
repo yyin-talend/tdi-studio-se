@@ -109,9 +109,7 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
   }
 %>
    try{
-	fos_<%=cid%>=new java.io.FileOutputStream(fileName_<%=cid%>, false);
-	osw_<%=cid%>=new java.io.OutputStreamWriter(fos_<%=cid%>,<%=encoding%>);
-	out<%=cid %> = new java.io.BufferedWriter(osw_<%=cid%>);
+	out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
 <%
   if(csvOption) { 
 %>
