@@ -162,7 +162,8 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%>;    
 }
 <%
-if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+if(!useExistingConnection && !("").equals(commitEvery) && !("0").equals(commitEvery)) {
 %>
 conn_<%=cid%>.setAutoCommit(false);
         

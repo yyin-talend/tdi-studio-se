@@ -890,37 +890,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     			}
     		<%	
     		}
-    	}else if(useExistingConnection && !batchMode){//useExistingConnection is true and batchMode is false
-    	if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
-                %>                                                
-                try {
-						pstmt_<%=cid %>.executeBatch();                	
-            	    	<%if (("INSERT").equals(dataAction)) {
-            	    	%>
-            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
-            	    	<%
-            	    	}else if (("UPDATE").equals(dataAction)) {
-            	    	%>
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
-            	    	<%
-            	    	}else if (("DELETE").equals(dataAction)) {
-            	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
-            	    	<%
-            	    	}%>                         	    	
-                }catch (java.sql.BatchUpdateException e){
-                	<%if(("true").equals(dieOnError)) {
-                	%>
-                		throw(e);
-                	<%
-                	}else {
-                	%>
-                	System.err.println(e.getMessage());
-                	<%
-                	}%>
-                }
-                <%
-                }
     	}
     	////////////commit every////////////
     	if(!useExistingConnection && (!("VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)) || !"COPY".equals(dataAction))) {

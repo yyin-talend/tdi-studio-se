@@ -24,8 +24,22 @@ imports="
 <%
 	//batch mode
 	if (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) {
-%>                
-    try {
+		boolean batchMode = ("true").equals(ElementParameterParser.getValue(node, "__BATCH_MODE__"));
+		if(batchMode) {
+%>
+			if (pstmt_<%=cid %> !=null && batchSizeCounter_<%=cid%> > 0 ) { 
+<%
+		} else if (!useExistingConnection) { //use batch is not ticked
+%>
+			if (pstmt_<%=cid %> !=null && commitCounter_<%=cid%> > 0 ) {
+<%
+		}else {
+%>
+			if (pstmt_<%=cid %> !=null) {
+<%
+		} 
+%> 
+	try {
 			pstmt_<%=cid %>.executeBatch();                	
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
@@ -51,17 +65,18 @@ imports="
     	<%
     	}%>                	
 	}                                  
+	}
 <%
 	}
 %>
-    <%if(("INSERT_OR_UPDATE").equals(dataAction)){%>
+    <%if(!useExistingConnection && ("INSERT_OR_UPDATE").equals(dataAction)){%>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");              
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmt_<%=cid%>.executeUpdate();
         pstmtInsert_<%=cid %>.executeUpdate();
         pstmtUpdate_<%=cid%>.executeUpdate();
-    <%}else if(("UPDATE_OR_INSERT").equals(dataAction)){%>         
+    <%}else if(!useExistingConnection && ("UPDATE_OR_INSERT").equals(dataAction)){%>         
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");    
         pstmtInsert_<%=cid %>.executeUpdate();
