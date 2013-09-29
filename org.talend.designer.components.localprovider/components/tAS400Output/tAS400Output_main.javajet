@@ -271,8 +271,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
+                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.sql.SQLException e) {
                 whetherReject_<%=cid%> = true;
                 <%
@@ -369,8 +369,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
+                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.sql.SQLException e) {
                 whetherReject_<%=cid%> = true;
                 <%
