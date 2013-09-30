@@ -3341,6 +3341,10 @@ public class Node extends Element implements IGraphicalNode {
                                         "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
+                        } else if (connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
+                            schemaSynchronized = false;
+                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
                         }
                     }
                     if (outputMeta != null) {
