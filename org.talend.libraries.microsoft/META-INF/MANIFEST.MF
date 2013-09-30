@@ -3,3 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Microsoft
 Bundle-SymbolicName: org.talend.libraries.microsoft
 Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy

@@ -3,3 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jax
 Bundle-SymbolicName: org.talend.libraries.jax
 Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy

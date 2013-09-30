@@ -10,3 +10,4 @@ Bundle-ClassPath: .,
  lib/uniserv.jar
 Export-Package: 
  org.talend.uniserv
+Bundle-ActivationPolicy: lazy

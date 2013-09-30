@@ -15,3 +15,4 @@ Export-Package: org.jboss.serial,
  org.jboss.serial.persister,
  org.jboss.serial.references,
  org.jboss.serial.util
+Bundle-ActivationPolicy: lazy

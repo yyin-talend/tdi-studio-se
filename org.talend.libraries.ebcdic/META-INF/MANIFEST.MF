@@ -3,4 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ebcdic
 Bundle-SymbolicName: org.talend.libraries.ebcdic
 Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy
 

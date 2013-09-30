@@ -7,3 +7,4 @@ Bundle-ClassPath: .,
  lib/talend_file_enhanced_20070724.jar
 Export-Package: org.talend.fileprocess,
  org.talend.fileprocess.delimited
+Bundle-ActivationPolicy: lazy
