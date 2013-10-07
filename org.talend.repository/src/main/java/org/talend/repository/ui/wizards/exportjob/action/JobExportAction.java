@@ -76,6 +76,8 @@ public class JobExportAction implements IRunnableWithProgress {
 
     private String type = "Job";
 
+    private boolean isBuildSuccessful;
+
     public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
             String directoryName, String type) {
         this(nodes, jobVersion, bundleVersion, manager, directoryName);
@@ -110,15 +112,19 @@ public class JobExportAction implements IRunnableWithProgress {
                     ProcessItem item = ItemCacheManager.getProcessItem(nodes.get(0).getId(),
                             RelationshipItemBuilder.LATEST_VERSION);
                     String version = item.getProperty().getVersion();
-                    exportJobScript(nodes, version, version, monitor);
+                    isBuildSuccessful = exportJobScript(nodes, version, version, monitor);
                 } else {
-                    exportJobScript(nodes, jobVersion, bundleVersion, monitor);
+                    isBuildSuccessful = exportJobScript(nodes, jobVersion, bundleVersion, monitor);
                 }
             }
         } finally {
             monitor.done();
             ProcessorUtilities.resetExportConfig();
         }
+    }
+
+    public boolean isBuildSuccessful() {
+        return isBuildSuccessful;
     }
 
     private List<ExportFileResource> getProcesses(List<RepositoryNode> nodes, String path) {
