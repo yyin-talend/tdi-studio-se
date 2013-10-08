@@ -53,6 +53,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		encodingBase64_<%=cid%> = false;
 		String value_<%=column.getLabel() %>_<%=cid %> = "";
+		<%//For bug TDI-26863
+		String modify_operation = null;
+		for(Map<String, String> line:modifyColumns){
+			String columnName = line.get("SCHEMA_COLUMN");				
+			if(column.getLabel().equals(columnName)){
+				modify_operation = line.get("OPERATION");
+				break;
+			}
+		}		
+		if("modify".equals(changetype) && !("none".equals(modify_operation))) {
+		%>
+			if(needSeparator_<%=cid %>){
+				sb_<%=cid %>.append("-\n");
+			} 
+			needSeparator_<%=cid %> = false;
+		<%
+		}
+		%>
 <%					
 					if(!isPrimitive) {
 %>   				
@@ -158,9 +176,6 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
 %>
 
 <%if(!"none".equals(operation)){%>
-	if(needSeparator_<%=cid %>){
-		sb_<%=cid %>.append("-\n");
-	}  
 	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
 	<%if(isMultiValue){%>		
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
