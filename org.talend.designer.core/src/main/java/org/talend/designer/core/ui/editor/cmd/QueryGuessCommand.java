@@ -218,28 +218,28 @@ public class QueryGuessCommand extends Command {
             }
         }
         boolean isJdbc = false;
-        // hywang add for bug 7575
-        if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
-            isJdbc = true;
-            INode connectionNode = null;
+        INode connectionNode = null;
 
-            IElementParameter existConnection = node.getElementParameter("USE_EXISTING_CONNECTION");
-            boolean useExistConnection = (existConnection == null ? false : (Boolean) existConnection.getValue());
+        IElementParameter existConnection = node.getElementParameter("USE_EXISTING_CONNECTION");
+        boolean useExistConnection = (existConnection == null ? false : (Boolean) existConnection.getValue());
 
-            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString();
-            if (useExistConnection) {
-                IElementParameter connector = node.getElementParameter("CONNECTION");
-                if (connector != null) {
-                    String connectorValue = connector.getValue().toString();
-                    List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-                    for (INode node : graphicalNodes) {
-                        if (node.getUniqueName().equals(connectorValue)) {
-                            connectionNode = node;
-                            break;
-                        }
+        if (useExistConnection) {
+            IElementParameter connector = node.getElementParameter("CONNECTION");
+            if (connector != null) {
+                String connectorValue = connector.getValue().toString();
+                List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+                for (INode node : graphicalNodes) {
+                    if (node.getUniqueName().equals(connectorValue)) {
+                        connectionNode = node;
+                        break;
                     }
                 }
             }
+        }
+        // hywang add for bug 7575
+        if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+            isJdbc = true;
+            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString();
             if (connectionNode != null) {
                 driverClassName = connectionNode.getElementParameter("DRIVER_CLASS").getValue().toString();
             }
@@ -309,7 +309,11 @@ public class QueryGuessCommand extends Command {
             isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
         }
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
-            for (IElementParameter param : this.node.getElementParameters()) {
+            List<? extends IElementParameter> elementParameters = this.node.getElementParameters();
+            if (useExistConnection) {
+                elementParameters = connectionNode.getElementParameters();
+            }
+            for (IElementParameter param : elementParameters) {
                 if (param.getRepositoryValue() != null) {
                     if ((!isTeradata && param.getRepositoryValue().equals("SCHEMA")) //$NON-NLS-1$
                             || (isTeradata && param.getRepositoryValue().equals("SID"))) {// check if dbtype is //$NON-NLS-1$
@@ -372,32 +376,6 @@ public class QueryGuessCommand extends Command {
         }// ~
 
         return TalendTextUtils.addSQLQuotes(newQuery);
-    }
-
-    private String getMssqlCatalog(String realTableName) {
-        Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(this.conn);
-        for (Catalog cata : catalog) {
-            for (ModelElement ele : cata.getOwnedElement()) {
-                if (ele instanceof Schema) {
-                    for (ModelElement child : ((Schema) ele).getOwnedElement()) {
-                        String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
-                                TalendTextUtils.declareString(child.getName()), dbType, true);
-                        if (childeleName.startsWith(TalendTextUtils.QUOTATION_MARK)
-                                && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
-                            childeleName = childeleName.substring(1, childeleName.length() - 1);
-                        }
-                        if (cata.getName().contains("-")) {
-                            return realTableName;
-                        } else if (childeleName.equals(realTableName)) {
-                            return cata.getName() + "." + ele.getName() + "." + realTableName;
-                        } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
-                            return cata.getName() + "." + realTableName;
-                        }
-                    }
-                }
-            }
-        }
-        return realTableName;
     }
 
     // Added TDQ-5616 yyin 20121206
