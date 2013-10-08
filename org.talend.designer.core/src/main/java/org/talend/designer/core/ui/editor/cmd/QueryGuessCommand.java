@@ -364,13 +364,6 @@ public class QueryGuessCommand extends Command {
                 || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName()))) {
             schema = getDefaultSchema(realTableName);
         }
-        // Mssql query need add catalog before the table
-        if (dbType != null
-                && (dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
-                && conn != null) {
-            schema = "";
-            realTableName = getMssqlCatalog(realTableName);
-        }
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
         // Added yyin TDQ-5616: if there are where clause, append it to the query
