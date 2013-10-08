@@ -65,7 +65,7 @@ public class QueryGuessCommand extends Command {
 
     private Object oldValue;
 
-    private IMetadataTable newOutputMetadataTable;
+    private final IMetadataTable newOutputMetadataTable;
 
     private Map<String, String> dbNameAndDbTypeMap;
 
@@ -363,13 +363,6 @@ public class QueryGuessCommand extends Command {
         if ((isJdbc && conn != null) || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
                 || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_RAC.getDisplayName()))) {
             schema = getDefaultSchema(realTableName);
-        }
-        // Mssql query need add catalog before the table
-        if (dbType != null
-                && (dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
-                && conn != null) {
-            schema = "";
-            realTableName = getMssqlCatalog(realTableName);
         }
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
