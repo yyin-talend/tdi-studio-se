@@ -331,9 +331,8 @@ public class LoginDialog extends TrayDialog {
 
                             @Override
                             public void run() {
-                                // Display display = new Display();
-                                Shell shell = new Shell(Display.getDefault(), SWT.ON_TOP | SWT.APPLICATION_MODAL);
-                                TalendForgeDialog tfDialog = new TalendForgeDialog(shell, project);
+                                TalendForgeDialog tfDialog = new TalendForgeDialog(getShell(), project);
+                                tfDialog.setBlockOnOpen(true);
                                 tfDialog.open();
                             }
 
