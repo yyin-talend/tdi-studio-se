@@ -16,6 +16,9 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 String needCheck = ElementParameterParser.getValue(node,"__ISINVOKE__");
@@ -148,7 +151,7 @@ if (metadatas != null && metadatas.size()>0) {
 			
 			org.talend.mdm.webservice.WSPutItem item_<%=cid %> = new org.talend.mdm.webservice.WSPutItem(dataCluster_<%=cid %>,input_<%=cid %>,dataModel_<%=cid %>, <%=isUpdate %>);
 	      	<%
-		    if (withReport) {%>
+		    if (!isStaging && withReport) {%>
 	        	org.talend.mdm.webservice.WSPutItemWithReport itemReport_<%=cid %> = new org.talend.mdm.webservice.WSPutItemWithReport(item_<%=cid %>,<%=sourceName %>,<%=needCheck %>);
 		
 		        <%if (isMassInsert) {%>

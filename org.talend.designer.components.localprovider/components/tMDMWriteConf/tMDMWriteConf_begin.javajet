@@ -61,7 +61,7 @@ int nb_line_<%=cid %> = 0;
 		Util_<%=cid%> util_<%=cid%> = new Util_<%=cid%>();
 	<%}%>
 	<%if(isMassInsert){
-		if(withReport){%>
+		if(!isStaging && withReport){%>
 			java.util.List <org.talend.mdm.webservice.WSPutItemWithReport> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItemWithReport>();
 	<%	}else{%>
 			java.util.List <org.talend.mdm.webservice.WSPutItem> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItem>();

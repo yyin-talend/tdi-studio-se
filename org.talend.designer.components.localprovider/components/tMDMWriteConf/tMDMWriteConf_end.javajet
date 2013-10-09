@@ -18,6 +18,9 @@ imports="
 	if(destination!=null && !"".equals(destination)){
 		cid = destination;
 	}
+	
+	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+	
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
@@ -57,7 +60,7 @@ globalMap.remove("<%=virtualcid%>_FINISH");
 <%
 if(!usePartialUpdate){
 	if(isMassInsert){
-		if(withReport){
+		if(!isStaging && withReport){
 %> 
 	if(miList_<%=cid %>.size() > 0){
 		wspks_<%=cid %> = xtentisWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[miList_<%=cid %>.size()]));
