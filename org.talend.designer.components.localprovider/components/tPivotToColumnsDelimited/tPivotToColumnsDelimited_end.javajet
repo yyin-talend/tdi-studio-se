@@ -40,6 +40,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
 %>
 
+nb_line_out_<%=cid%> = group_Keys<%=cid%>.size();
+
 <% if(!isCsvOption) { %>
   ////////////////////////////////  Delimited  /////////  
 <%  for (int i=0; i<groupbys.size(); i++) {
@@ -184,5 +186,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 %>
 
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE_OUT", nb_line_out_<%=cid %>);
 
