@@ -19,7 +19,10 @@ imports="
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	boolean isSpecifyprojectID=("true").equals(ElementParameterParser.getValue(node,"__SPECIFY_PROJECT__"));
 	String projectID=ElementParameterParser.getValue(node,"__PROJECT_ID__");
+	List<Map<String, String>> keys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");
+	String objects_prefix=ElementParameterParser.getValue(node,"__OBJECTS_PREFIX__");
 	String delimiter=ElementParameterParser.getValue(node,"__DELIMITER__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	
 	String outputsDir = ElementParameterParser.getValue(node, "__DIRECTORY__");
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
@@ -45,9 +48,7 @@ imports="
 <%
 	boolean getList = "true".equals(ElementParameterParser.getValue(node,"__GETLIST__"));
 	boolean useKeysList = "true".equals(ElementParameterParser.getValue(node,"__USE_KEYS_LIST__"));
-	if(!getList){
-		String objects_prefix=ElementParameterParser.getValue(node,"__OBJECTS_PREFIX__");
-		List<Map<String, String>> keys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");
+	if(!getList && !useKeysList){
 		if(isSpecifyprojectID){
 %>
 		org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets(<%=projectID%>);
@@ -57,34 +58,6 @@ imports="
 		org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets();
 <%
 		}
-		if(useKeysList){
-%>
-		java.util.Map<String,String> keys_buckets_<%=cid%> = new java.util.HashMap<String,String>();
-		java.util.Map<String,String> newNames_<%=cid%> = new java.util.HashMap<String,String>();
-<%
-			for(Map<String, String> objKey: keys){
-				String bucket_name =objKey.get("BUCKET_NAME");
-				String key =objKey.get("KEY");
-				String newName =objKey.get("NEW_NAME");
-				if(key!=null && key.trim().length()>0){
-					if(bucket_name!=null && ("\"\"".equals(bucket_name.trim()) || "\"\"".equals(bucket_name.trim()))){
-						bucket_name=null;
-					}
-%>
-			keys_buckets_<%=cid%>.put(<%=key%>,<%=bucket_name%>);
-<%
-					if(newName!=null && !"".equals(newName.trim()) && !"\"\"".equals(newName.trim())){
-%>
-			newNames_<%=cid%>.put(<%=key%>,<%=newName%>);
-<%
-					}else{
-%>
-			newNames_<%=cid%>.put(<%=key%>,<%=key%>);
-<%					
-					}
-				}
-			}
-		}
 %>
 		for (org.jets3t.service.model.GSBucket bucket_<%=cid%> : buckets_<%=cid%>) {
 			String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
@@ -93,59 +66,116 @@ imports="
 			<%if(delimiter!=null && delimiter.trim().length()>0){%><%=delimiter%><% }else{%> null <%}%>
 			);
 <%
-	} else if(buckets.size()>0){
+	}else if(useKeysList && keys.size()>0){
 %>
-			java.util.List<String> buckets_<%=cid%> = new java.util.ArrayList<String>();
-			java.util.Map<String,String> object_prefixs_<%=cid%> = new java.util.HashMap<String,String>();
-			java.util.Map<String,String> object_delimiter_<%=cid%> = new java.util.HashMap<String,String>();
+		java.util.List<java.util.Map<String,String>> list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
 <%
-		for(Map<String, String> map: buckets){
+		for(int i=0;i<keys.size();i++){
+			Map<String, String> objKey=keys.get(i);
+			String bucket_name =objKey.get("BUCKET_NAME");
+			String key =objKey.get("KEY");
+			String newName =objKey.get("NEW_NAME");
+			if(key!=null && key.trim().length()>0){
+%>
+			java.util.Map<String,String> map_<%=cid %>_<%=i %> = new java.util.HashMap<String,String>();
+			map_<%=cid %>_<%=i %>.put("BUCKET_NAME",<%=bucket_name%>);
+			map_<%=cid %>_<%=i %>.put("OBJECT_KEY",<%=key%>);
+<%
+				if(newName!=null && !"".equals(newName.trim()) && !"\"\"".equals(newName.trim())){
+%>
+			map_<%=cid %>_<%=i %>.put("OBJECT_NEWNAME",<%=newName%>);
+<%
+				}else{
+%>
+			map_<%=cid %>_<%=i %>.put("OBJECT_NEWNAME",<%=key%>);
+<%					
+				}
+			}
+%>
+			list_<%=cid%>.add(map_<%=cid %>_<%=i %>);
+<%
+		}
+	} else if(getList && buckets.size()>0){
+%>
+			java.util.List<java.util.Map<String,String>> list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
+<%
+		for(int i=0;i<buckets.size();i++){
+			Map<String, String> map=buckets.get(i);
 			String bucket_name =map.get("BUCKET_NAME");
 			String object_prefix =map.get("OBJECT_PREFIX");
 			String object_delimiter =map.get("OBJECT_DELIMITER");
+%>
+			java.util.Map<String,String> map_<%=cid %>_<%=i %> = new java.util.HashMap<String,String>();
+			map_<%=cid %>_<%=i %>.put("BUCKET_NAME",<%=bucket_name%>);
+<%
 			if(object_prefix!=null && object_prefix.trim().length()>0){
 %>
-			object_prefixs_<%=cid%>.put(<%=bucket_name%>,<%=object_prefix%>);
+			map_<%=cid %>_<%=i %>.put("OBJECT_PREFIX",<%=object_prefix%>);
 <%
 			}
 			if(object_delimiter!=null && object_delimiter.trim().length()>0){
 %>
-			object_delimiter_<%=cid%>.put(<%=bucket_name%>,<%=object_delimiter%>);
+			map_<%=cid %>_<%=i %>.put("OBJECT_DELIMITER",<%=object_delimiter%>);
 <%
 			}
 %>
-			buckets_<%=cid%>.add(<%=bucket_name%>);
+			list_<%=cid%>.add(map_<%=cid %>_<%=i %>);
 <%
 		}
 %>
-			for (String currentBucketName_<%=cid%> : buckets_<%=cid%>) {
-				org.jets3t.service.model.GSObject[] objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,
-				object_prefixs_<%=cid%>.get(currentBucketName_<%=cid%>),object_delimiter_<%=cid%>.get(currentBucketName_<%=cid%>));
+			for (java.util.Map<String, String> map_<%=cid %>: list_<%=cid%>) {
+				String currentBucketName_<%=cid%>=map_<%=cid %>.get("BUCKET_NAME");
+				org.jets3t.service.model.GSObject[] objects_<%=cid%> =new org.jets3t.service.model.GSObject[0];
+				try {
+					objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,map_<%=cid %>.get("OBJECT_PREFIX"),map_<%=cid %>.get("OBJECT_DELIMITER"));
+				}catch(java.lang.Exception e_<%=cid%>){
+<%
+		if (("true").equals(dieOnError)) {
+%>
+					throw(e_<%=cid%>);
+<%
+		} else {
+%>
+					System.err.println(e_<%=cid%>.getMessage());
+<%
+		}
+%>
+				}
 <%
 	}
-	if(!getList || buckets.size()>0){
+	if((!getList && !useKeysList) || (useKeysList && keys.size()>0) || (getList && buckets.size()>0)){
+		if(!useKeysList){
 %>
 				for (org.jets3t.service.model.GSObject objectSummary_<%=cid%> : objects_<%=cid%>) {
 					nb_line_<%=cid%>++;
 					String objkey_<%=cid%> = objectSummary_<%=cid%>.getKey();
-<%
-		if(!getList && useKeysList){
-%>
-					String keyBuckt_<%=cid%>=keys_buckets_<%=cid%>.get(objkey_<%=cid%>);
-					if(!keys_buckets_<%=cid%>.containsKey(objkey_<%=cid%>) || (keyBuckt_<%=cid%>!=null && !keyBuckt_<%=cid%>.equals(currentBucketName_<%=cid%>))){
-						continue;
-					}
-					keys_buckets_<%=cid%>.remove(keyBuckt_<%=cid%>);
-					java.io.File file_<%=cid%> = new java.io.File(<%=outputsDir%>+newNames_<%=cid%>.get(objkey_<%=cid%>));
-					newNames_<%=cid%>.remove(objkey_<%=cid%>);
+					java.io.File file_<%=cid%> = new java.io.File(<%=outputsDir%>+objkey_<%=cid%>);
+					org.jets3t.service.model.GSObject obj_<%=cid%> = service_<%=cid%>.getObject(currentBucketName_<%=cid%>, objkey_<%=cid%>);
 <%
 		}else{
 %>
-					java.io.File file_<%=cid%> = new java.io.File(<%=outputsDir%>+objkey_<%=cid%>);
+				for (java.util.Map<String, String> map_<%=cid %>: list_<%=cid%>) {
+					String currentBucketName_<%=cid%>=map_<%=cid %>.get("BUCKET_NAME");
+					java.io.File file_<%=cid%> = new java.io.File(<%=outputsDir%>+map_<%=cid %>.get("OBJECT_NEWNAME"));
+					org.jets3t.service.model.GSObject obj_<%=cid%> =null;
+					try {
+						obj_<%=cid%> = service_<%=cid%>.getObject(currentBucketName_<%=cid%>, map_<%=cid %>.get("OBJECT_KEY"));
+					}catch(java.lang.Exception e_<%=cid%>){
+<%
+			if (("true").equals(dieOnError)) {
+%>
+						throw(e_<%=cid%>);
+<%
+			} else {
+%>
+						System.err.println(e_<%=cid%>.getMessage());
+<%
+			}
+%>
+					}
 <%
 		}
 %>
-					org.jets3t.service.model.GSObject obj_<%=cid%> = service_<%=cid%>.getObject(currentBucketName_<%=cid%>, objkey_<%=cid%>);
 					if(obj_<%=cid%>!=null){
 						boolean isDirectory_<%=cid%>=false;
 						String fileName_<%=cid%> =file_<%=cid%> .getAbsolutePath();
@@ -180,6 +210,6 @@ imports="
 							out_<%=cid%>.close(); 
 						}
 						obj_<%=cid%>.closeDataInputStream();
-	<%
+<%
 	}
 %>

@@ -80,7 +80,7 @@
 	      	FIELD="TEXT"
 	      	NUM_ROW="35"
 	      	REQUIRED="false"
-	      	SHOW_IF="(GETLIST == 'false')"
+	      	SHOW_IF="(GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
 	      	GROUP="QUERY_CONFIG"
 	    >
 	    	<DEFAULT>""</DEFAULT>
@@ -91,16 +91,37 @@
 	      	FIELD="TEXT"
 	      	NUM_ROW="35"
 	      	REQUIRED="false"
-	      	SHOW_IF="(GETLIST == 'false')"
+	      	SHOW_IF="(GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
 	      	GROUP="QUERY_CONFIG"
 	    >
 	    	<DEFAULT>""</DEFAULT>
 	    </PARAMETER>
 	    
+	    <PARAMETER 
+		    NAME="SPECIFY_PROJECT" 
+		    FIELD="CHECK"
+	        NUM_ROW="45"  
+	        SHOW_IF="(GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
+	        GROUP="QUERY_CONFIG"
+  		>
+        	<DEFAULT>false</DEFAULT>
+    	</PARAMETER>
+    	
+     	<PARAMETER
+	      	NAME="PROJECT_ID"
+	      	FIELD="TEXT"
+	      	NUM_ROW="45"
+	     	REQUIRED_IF="(SPECIFY_PROJECT == 'true') AND (GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
+	      	SHOW_IF="(SPECIFY_PROJECT == 'true') AND (GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
+	      	GROUP="QUERY_CONFIG"
+    	>
+        	<DEFAULT>""</DEFAULT>
+    	</PARAMETER>
+	    
 	    <PARAMETER
 	      	NAME="USE_KEYS_LIST"
 	      	FIELD="CHECK"
-	      	NUM_ROW="45"
+	      	NUM_ROW="50"
 	      	REQUIRED="true"
 	      	SHOW_IF="(GETLIST == 'false')"
 	      	GROUP="QUERY_CONFIG"
@@ -111,7 +132,7 @@
 	    <PARAMETER 
 			NAME="KEYS"
 			FIELD="TABLE"
-			NUM_ROW="50"
+			NUM_ROW="55"
 			REQUIRED_IF="(USE_KEYS_LIST == 'true') AND (GETLIST == 'false')"
 			NB_LINES="5"
 			SHOW_IF="(USE_KEYS_LIST == 'true') AND (GETLIST == 'false')"
@@ -123,27 +144,6 @@
 	            <ITEM NAME="NEW_NAME" VALUE="&quot;&quot;" />
 	        </ITEMS>
 	    </PARAMETER>
-	    
-	    <PARAMETER 
-		    NAME="SPECIFY_PROJECT" 
-		    FIELD="CHECK"
-	        NUM_ROW="55"  
-	        SHOW_IF="(GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
-	        GROUP="QUERY_CONFIG"
-  		>
-        	<DEFAULT>false</DEFAULT>
-    	</PARAMETER>
-    	
-     	<PARAMETER
-	      	NAME="PROJECT_ID"
-	      	FIELD="TEXT"
-	      	NUM_ROW="55"
-	     	REQUIRED_IF="(SPECIFY_PROJECT == 'true') AND (GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
-	      	SHOW_IF="(SPECIFY_PROJECT == 'true') AND (GETLIST == 'false') AND (USE_KEYS_LIST == 'false')"
-	      	GROUP="QUERY_CONFIG"
-    	>
-        	<DEFAULT>""</DEFAULT>
-    	</PARAMETER>
 	    
 	    <PARAMETER
 	      	NAME="GETLIST"

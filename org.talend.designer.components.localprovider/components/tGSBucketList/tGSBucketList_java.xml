@@ -79,7 +79,6 @@
 		    NAME="SPECIFY_PROJECT" 
 		    FIELD="CHECK"
 	        NUM_ROW="25"  
-	        GROUP="CONNECTION_CONFIG"
   		>
         	<DEFAULT>false</DEFAULT>
     	</PARAMETER>
@@ -89,7 +88,6 @@
 	      	FIELD="TEXT"
 	      	NUM_ROW="30"
 	      	REQUIRED="true"
-	      	GROUP="CONNECTION_CONFIG"
 	      	SHOW_IF="SPECIFY_PROJECT == 'true'"
     	>
         	<DEFAULT>""</DEFAULT>

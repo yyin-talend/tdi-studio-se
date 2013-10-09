@@ -78,7 +78,6 @@
 	      	FIELD="TEXT"
 	      	NUM_ROW="25"
 	      	REQUIRED="true"
-	      	GROUP="CONNECTION_CONFIG"
 	    >
 	    	<DEFAULT>""</DEFAULT>
 	    </PARAMETER>
