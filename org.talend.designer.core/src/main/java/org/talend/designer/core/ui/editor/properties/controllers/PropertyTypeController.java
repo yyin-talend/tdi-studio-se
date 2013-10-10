@@ -61,7 +61,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.service.ITransformService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -293,20 +292,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
             Item item = null;
             String id = null;
             RepositoryNode selectNode = null;
-
-            ERepositoryObjectType type = ERepositoryObjectType.getType(param.getRepositoryValue());
-
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
-                ITransformService tService = (ITransformService) GlobalServiceRegister.getDefault().getService(
-                        ITransformService.class);
-                if (tService.isTransformType(type)) {
-                    id = tService.getSelectedNodeId(type);
-                    if (id == null) {
-                        return null;
-                    }
-                }
-
-            }
 
             if (id == null) {
                 RepositoryReviewDialog dialog = null;
