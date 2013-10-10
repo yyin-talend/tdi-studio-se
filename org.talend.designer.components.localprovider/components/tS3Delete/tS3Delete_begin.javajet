@@ -18,8 +18,9 @@ imports="
 %>
 <%@ include file="../tS3Connection/S3Client.javajet" %>
 	try{
-		if(<%=key%>!=null && <%=key%>.trim().length()>0){
-			conn_<%=cid%>.deleteObject(<%=bucket%>, <%=key%>);
+		String key_<%=cid%> = <%=key%>;
+		if(key_<%=cid%>!=null && key_<%=cid%>.trim().length()>0){
+			conn_<%=cid%>.deleteObject(<%=bucket%>, key_<%=cid%>);
 		}else{
 			throw(new RuntimeException("Please set key!"));
 		}
