@@ -22,6 +22,25 @@ imports="
 		            }
 		            objects_<%=cid%> = conn_<%=cid%>.listNextBatchOfObjects(objects_<%=cid%>);
 		    } while (objects_<%=cid%>.isTruncated());
+<%
+		    if(!listAll){
+%>
+				}catch(com.amazonaws.AmazonClientException e_<%=cid%>){
+<%
+					if (("true").equals(dieOnError)) {
+%>
+						throw(e_<%=cid%>);
+<%
+					} else {
+%>
+						System.err.println(e_<%=cid%>.getMessage());
+<%
+					}
+%>
+				}
+<%
+			}
+%>
 		}
 <%
 	}

@@ -31,24 +31,35 @@ if(listAll){
 <%
 } else if(buckets.size()>0){
 %>
-	java.util.List<String> buckets_<%=cid%> = new java.util.ArrayList<String>();
-	java.util.Map<String,String> object_prefixs_<%=cid%> = new java.util.HashMap<String,String>();
+	java.util.List<java.util.Map<String,String>> buckets_map_list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
+	java.util.Map<String,String> bucket_prefix_map_<%=cid%> = null;
+	String object_prefix_<%=cid%> = "";
 <%
 	for(Map<String, String> map: buckets){
 		String bucket_name =map.get("BUCKET_NAME");
 		String object_prefix =map.get("OBJECT_PREFIX");
 		if(object_prefix!=null && object_prefix.trim().length()>0){
 %>
-			object_prefixs_<%=cid%>.put(<%=bucket_name%>,<%=object_prefix%>);
+			object_prefix_<%=cid%> = <%=object_prefix%>;
 <%
 		}
 %>
-		buckets_<%=cid%>.add(<%=bucket_name%>);
+		bucket_prefix_map_<%=cid%> = new java.util.HashMap<String,String>();
+		bucket_prefix_map_<%=cid%>.put(<%=bucket_name%>,object_prefix_<%=cid%>);
+		buckets_map_list_<%=cid%>.add(bucket_prefix_map_<%=cid%>);
+		object_prefix_<%=cid%> = "";
 <%
 	}
 %>
-	for (String currentBucketName_<%=cid%> : buckets_<%=cid%>) {
-		com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,object_prefixs_<%=cid%>.get(currentBucketName_<%=cid%>));
+	for (java.util.Map<String,String> bucketMap_<%=cid%>: buckets_map_list_<%=cid%>) {
+		String currentBucketName_<%=cid%> = "";
+		String currentPrefix_<%=cid%> = "";
+		for(java.util.Map.Entry<String,String> entry_<%=cid%>:bucketMap_<%=cid%>.entrySet()){
+			currentBucketName_<%=cid%> = entry_<%=cid%>.getKey();
+			currentPrefix_<%=cid%> = entry_<%=cid%>.getValue();
+		}
+		try{
+		com.amazonaws.services.s3.model.ObjectListing objects_<%=cid%> = conn_<%=cid%>.listObjects(currentBucketName_<%=cid%>,currentPrefix_<%=cid%>);
 <%
 }
 if(listAll || buckets.size()>0){
