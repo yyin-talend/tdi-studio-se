@@ -49,7 +49,7 @@
 					return String.valueOf(obj);
 				}
 			}
-			
+
 <%
 			List<? extends INode> cMailNodes = process.getNodesOfType("cMail");
 			if(cMailNodes.size() > 0){
@@ -1000,7 +1000,7 @@ if (isProvider) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {
-					((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add((org.apache.cxf.feature.AbstractFeature)eventFeature);
+					((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(new FeatureWrapper(eventFeature));
 				}
 <%
 			}
