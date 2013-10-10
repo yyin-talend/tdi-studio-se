@@ -1518,7 +1518,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         Connection targetConnection = (Connection) selectedConnectionPart.getModel();
 
                         if (targetConnection != null) {
-                            NodeContainer nodeContainer = new NodeContainer(node);
+                            NodeContainer nodeContainer = null;
+                            if (node.isJoblet() || node.isMapReduce()) {
+                                nodeContainer = new JobletContainer(node);
+                            } else {
+                                nodeContainer = new NodeContainer(node);
+                            }
                             if (getProcess() instanceof Process) {
                                 CreateNodeContainerCommand createCmd = new CreateNodeContainerCommand((Process) getProcess(),
                                         nodeContainer, point);

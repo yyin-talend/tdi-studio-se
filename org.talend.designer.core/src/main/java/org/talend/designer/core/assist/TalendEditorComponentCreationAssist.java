@@ -34,6 +34,7 @@ import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -59,10 +60,11 @@ class TalendEditorComponentCreationAssist {
     private boolean isKeyFilterEnabled = true;
 
     private IProcess2 process;
-    
+
     private static ConnectionFigure overedConnection = null;
 
-    public TalendEditorComponentCreationAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack, IProcess2 process) {
+    public TalendEditorComponentCreationAssist(String categoryName, GraphicalViewer viewer, CommandStack commandStack,
+            IProcess2 process) {
         this.graphicViewer = viewer;
         this.graphicControl = viewer.getControl();
         this.components = TalendEditorComponentCreationUtil.getComponentsInCategory(categoryName);
@@ -135,7 +137,7 @@ class TalendEditorComponentCreationAssist {
         }
 
         highlightOveredConnection(cursorRelativePosition);
-        
+
         // create assist input text
         assistText = new Text((Composite) graphicControl, SWT.BORDER);
         assistText.setLocation(cursorRelativePosition.x, cursorRelativePosition.y - assistText.getLineHeight());
@@ -153,17 +155,17 @@ class TalendEditorComponentCreationAssist {
     }
 
     private void highlightOveredConnection(org.eclipse.swt.graphics.Point cursorRelativePosition) {
-        if(overedConnection != null){
+        if (overedConnection != null) {
             overedConnection.setLineWidth(1);
             overedConnection = null;
         }
         EditPart findObjectAt = graphicViewer.findObjectAt(new Point(cursorRelativePosition.x, cursorRelativePosition.y));
-        if(findObjectAt instanceof ConnectionPart){
-           overedConnection = (ConnectionFigure) ((ConnectionPart)findObjectAt).getFigure();
-        }else if(findObjectAt instanceof ConnLabelEditPart){
-           overedConnection = (ConnectionFigure)( (ConnectionPart)((ConnLabelEditPart)findObjectAt).getParent()).getFigure();
+        if (findObjectAt instanceof ConnectionPart) {
+            overedConnection = (ConnectionFigure) ((ConnectionPart) findObjectAt).getFigure();
+        } else if (findObjectAt instanceof ConnLabelEditPart) {
+            overedConnection = (ConnectionFigure) ((ConnectionPart) ((ConnLabelEditPart) findObjectAt).getParent()).getFigure();
         }
-        if(overedConnection != null){
+        if (overedConnection != null) {
             overedConnection.setLineWidth(2);
         }
     }
@@ -256,12 +258,12 @@ class TalendEditorComponentCreationAssist {
         MouseEvent mouseEvent = new MouseEvent(e);
 
         TalendAssistantCreationTool creationTool = new TalendAssistantCreationTool(new PaletteComponentFactory(component));
-        
+
         Object newNode = creationTool.getCreateRequest().getNewObject();
-        if(!canCreateAt(newNode, new Point(e.x, e.y))){
+        if (!canCreateAt(newNode, new Point(e.x, e.y))) {
             return null;
         }
-        
+
         creationTool.mouseMove(mouseEvent, graphicViewer);
 
         graphicViewer.getEditDomain().setActiveTool(creationTool);
@@ -273,20 +275,26 @@ class TalendEditorComponentCreationAssist {
     }
 
     public boolean canCreateAt(Object node, Point location) {
-        if(node == null || location == null){
+        if (node == null || location == null) {
             MessageDialog.openWarning(graphicControl.getShell(), "Failed", "Component can't be created here");
             return false;
         }
-        if(process instanceof Process && node instanceof Node){
-            boolean canExecute = new CreateNodeContainerCommand((Process) process, new NodeContainer((Node) node), location).canExecute();
-            if(!canExecute){
+        if (process instanceof Process && node instanceof Node) {
+            NodeContainer nc = null;
+            if (((Node) node).isJoblet() || ((Node) node).isMapReduce()) {
+                nc = new JobletContainer(((Node) node));
+            } else {
+                nc = new NodeContainer(((Node) node));
+            }
+            boolean canExecute = new CreateNodeContainerCommand((Process) process, nc, location).canExecute();
+            if (!canExecute) {
                 MessageDialog.openWarning(graphicControl.getShell(), "Failed", "Component can't be created here");
             }
             return canExecute;
         }
         return true;
     }
-    
+
     /*
      * this used to judge the cursor is inside the editor or not
      */
@@ -309,7 +317,7 @@ class TalendEditorComponentCreationAssist {
         if (bindingService != null) {
             bindingService.setKeyFilterEnabled(isKeyFilterEnabled);
         }
-        if(overedConnection != null){
+        if (overedConnection != null) {
             overedConnection.setLineWidth(1);
             overedConnection = null;
         }

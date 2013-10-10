@@ -13,8 +13,11 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -134,8 +137,10 @@ public class JobletContainer extends NodeContainer {
 
                 if (this.getNode().isMapReduceStart()) {
                     Integer count = this.getNode().getMrJobInGroupCount();
+                    Image image = ImageProvider.getImage(ECoreImage.MRGREEBAR);
+                    int progressHeight = image.getBounds().height + 1;
                     if (count != null && count > 1) {
-                        curRect.setSize(curRect.width, curRect.height + 20 * (count - 1));
+                        curRect.setSize(curRect.width, curRect.height + progressHeight * (count - 1) + 10);
                     }
                 }
 
@@ -772,10 +777,10 @@ public class JobletContainer extends NodeContainer {
         if (totalRectangle.width > temWidth) {
             return;
         }
-        if (this.getMrName() != null && !"".equals(this.getMrName())) {
-            if (totalRectangle.width < temWidth) {
-                totalRectangle.width = temWidth;
-            }
+        // if (this.getMrName() != null && !"".equals(this.getMrName())) {
+        if (totalRectangle.width < temWidth) {
+            totalRectangle.width = temWidth;
         }
+        // }
     }
 }
