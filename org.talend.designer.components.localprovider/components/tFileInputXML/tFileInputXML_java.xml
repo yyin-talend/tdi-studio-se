@@ -133,9 +133,9 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar"
+			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar" BundleID="org.apache.servicemix.bundles.dom4j"
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
-			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
+			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar" BundleID="org.apache.servicemix.bundles.jaxen"
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
 				REQUIRED_IF="(GENERATION_MODE == 'XERCES') OR (GENERATION_MODE == 'SAX')" />
