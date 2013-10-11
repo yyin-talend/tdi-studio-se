@@ -97,6 +97,15 @@ public class SearchZoneMapper {
             }
             // TreeNode
             for (TreeNode node : inputXmlTree.getNodes()) {
+                // id_Document type
+                if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
+                    for (TreeNode nodeTemp : XmlMapUtil.getFlatChildrenList(node)) {
+                        if (getMatcherNodeFigure(nodeTemp).size() > 0) {
+                            index++;
+                            searchMaps.put(index, getMatcherNodeFigure(nodeTemp));
+                        }
+                    }
+                }
                 if (getMatcherNodeFigure(node).size() > 0) {
                     index++;
                     searchMaps.put(index, getMatcherNodeFigure(node));
