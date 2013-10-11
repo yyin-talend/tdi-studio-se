@@ -290,6 +290,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 if (process instanceof IProcess2) {
                                     ((IProcess2) process).checkProcess();
                                 }
+                                // enable to refresh component setting after change modules.
+                                // so far, for cMessagingEndpoint (TUP-1119)
+                                if (element != null && "LIBPATH".equals(copyOfTmpParam.getName())) { //$NON-NLS-1$
+                                    IElementParameter updateComponentsParam = element
+                                            .getElementParameter(EParameterName.UPDATE_COMPONENTS.getName());
+                                    if (updateComponentsParam != null) {
+                                        updateComponentsParam.setValue(Boolean.TRUE);
+                                    }
+                                }
                             }
 
                         }
