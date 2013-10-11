@@ -183,6 +183,12 @@ if(useDynamicJob){
 	  }    
 	  <%
 	}
+		if(isLog4jEnabled){//For TDI-27659
+		%>
+			if(log4jLevel!=null){
+				paraList_<%=cid %>.add("--log4jLevel="+log4jLevel);
+			}
+		<%}
 }
 %>
 //for feature:10589
