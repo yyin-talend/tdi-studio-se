@@ -99,7 +99,7 @@
 				<contentExtension
 					pattern="org.talend.componentdesigner.resourceContent" />
 				<contentExtension
-					pattern="org.eclipse.ui.navigator.resources.filters.*" />
+					pattern="org.talend.componentdesigner.ui.navigator.resources.filters.*" />
 			</includes>
 		</viewerContentBinding>
 		<viewerActionBinding
@@ -267,7 +267,7 @@
 			</filterExpression>
 			</commonFilter> -->
 		<commonFilter
-			id="org.eclipse.ui.navigator.resources.filters.nonComponentProject"
+			id="org.talend.componentdesigner.ui.navigator.resources.filters.nonComponentProject"
 			name="nonComponentProject" description="not the component project"
 			activeByDefault="true">
 			<filterExpression>
