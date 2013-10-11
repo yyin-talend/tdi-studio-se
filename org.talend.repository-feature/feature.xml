@@ -155,7 +155,6 @@
       <import plugin="org.talend.common.ui.runtime"/>
       <import plugin="org.talend.metadata.managment.ui"/>
       <import plugin="org.talend.libraries.jexcel"/>
-      <import plugin="org.talend.libraries.jdom"/>
       <import plugin="org.eclipse.jdt.groovy.core"/>
    </requires>
 
@@ -789,12 +788,6 @@
 
    <plugin
          id="org.talend.libraries.jdbc.mysql"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.jdom"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

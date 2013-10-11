@@ -242,7 +242,6 @@
       <import plugin="com.ibm.icu" version="4.2.1.v20100412" match="equivalent"/>
       <import plugin="org.eclipse.wst.common.core" version="1.1.201" match="compatible"/>
       <import plugin="org.eclipse.osgi.util" version="3.1.300" match="compatible"/>
-      <import plugin="org.talend.libraries.jdom"/>
       <import plugin="org.talend.common.ui.runtime"/>
       <import plugin="org.talend.libraries.jdbc.mysql"/>
       <import plugin="org.talend.libraries.jdbc.jtds"/>
@@ -1388,12 +1387,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.talend.libraries.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.talend.libraries.jexcel"
