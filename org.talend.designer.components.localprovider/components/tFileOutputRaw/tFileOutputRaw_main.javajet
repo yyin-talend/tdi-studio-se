@@ -1,0 +1,71 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+		
+	boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+	
+	java.util.List<IMetadataColumn> columnList = null;
+	java.util.List<IMetadataTable> metadatas = node.getMetadataList();
+	if(metadatas != null && metadatas.size() > 0) {
+		IMetadataTable metadata = metadatas.get(0);
+		if(metadata != null) {
+		    columnList = metadata.getListColumns();
+		}
+	}
+	java.util.List< ? extends IConnection> incomingConns = node.getIncomingConnections();
+	if(columnList!=null && incomingConns!=null && incomingConns.size()>0) {
+		for(IConnection incomingConn : incomingConns) {
+			if(incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+				try {
+					Object content_<%=cid%> = <%=incomingConn.getName()%>.<%=columnList.get(0).getLabel()%>;
+					if(content_<%=cid%> != null) {
+						if(content_<%=cid%> instanceof String) {
+							org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File(<%=filename %>), content_<%=cid%>.toString(), <%=encoding%>);
+						} else if(content_<%=cid%> instanceof byte[]) {
+							org.apache.commons.io.FileUtils.writeByteArrayToFile(new java.io.File(<%=filename %>), (byte[])content_<%=cid%>);
+						} else if(content_<%=cid%> instanceof java.io.FileInputStream) {
+							java.io.FileInputStream fis_<%=cid%> = (java.io.FileInputStream)content_<%=cid%>;
+							java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(new java.io.File(<%=filename%>));
+							int c_<%=cid%>;
+							while((c_<%=cid%> = fis_<%=cid%>.read())!=-1) {
+								fos_<%=cid%>.write(c_<%=cid%>);
+							}
+							fis_<%=cid%>.close();
+							fos_<%=cid%>.close();
+						}
+					}
+				} catch (java.lang.Exception e_<%=cid%>) {
+<%
+					if(dieOnError) {
+%>
+						throw e_<%=cid%>;
+<%
+					} else {
+%>
+						System.err.println(e_<%=cid%>);
+<%
+					}
+%>
+				}
+<%
+			}
+		}
+	}
+%>
