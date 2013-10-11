@@ -31,6 +31,10 @@ import org.talend.commons.ui.utils.image.ColorUtils;
  */
 public class MessagesComposite extends Composite {
 
+    protected static final int H_SPACE_WIDTH = 3;
+
+    protected static final int V_SPACE_WIDTH = 5;
+
     protected static final String BLANK = ""; //$NON-NLS-1$
 
     protected Label messageImage, messageLabel;
@@ -45,14 +49,14 @@ public class MessagesComposite extends Composite {
 
         messageImage = new Label(this, SWT.NONE);
         FormData imageData = new FormData();
-        imageData.left = new FormAttachment(0, 5);
-        imageData.top = new FormAttachment(0, 5);
+        imageData.left = new FormAttachment(0, H_SPACE_WIDTH);
+        imageData.top = new FormAttachment(0, V_SPACE_WIDTH);
         messageImage.setLayoutData(imageData);
 
         messageLabel = new Label(this, SWT.NONE);
         FormData labelData = new FormData();
-        labelData.left = new FormAttachment(messageImage, 3);
-        labelData.top = new FormAttachment(0, 5);
+        labelData.left = new FormAttachment(messageImage, H_SPACE_WIDTH);
+        labelData.top = new FormAttachment(0, V_SPACE_WIDTH);
         messageLabel.setLayoutData(labelData);
 
     }
@@ -71,9 +75,11 @@ public class MessagesComposite extends Composite {
         if (messageLabel != null && !messageLabel.isDisposed()) {
             if (messages != null && !messages.isEmpty()) {
                 messageLabel.setText(messages);
+                messageLabel.setToolTipText(messages);
                 hidden = false;
             } else { // clean the message and hide top message area.
                 messageLabel.setText(BLANK);
+                messageLabel.setToolTipText(BLANK);
             }
         }
 

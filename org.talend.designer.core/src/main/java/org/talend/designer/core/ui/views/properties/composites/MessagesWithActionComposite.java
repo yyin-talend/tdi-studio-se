@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.views.properties.composites;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
@@ -52,9 +51,8 @@ public class MessagesWithActionComposite extends MessagesComposite {
             actionBtn.setVisible(show);
             if (show) {
                 FormData btnData = new FormData();
-                Point size = actionBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                btnData.right = new FormAttachment(100, -size.x - 5);
-                btnData.top = new FormAttachment(0, 3);
+                btnData.right = new FormAttachment(100, -H_SPACE_WIDTH);
+                btnData.top = new FormAttachment(0, V_SPACE_WIDTH);
                 actionBtn.setLayoutData(btnData);
             }
         }
