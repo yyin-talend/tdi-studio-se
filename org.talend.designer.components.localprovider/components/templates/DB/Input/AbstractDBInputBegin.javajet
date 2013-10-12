@@ -79,6 +79,13 @@ imports="
 		    
 		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
 		    
+<%
+	if (("oracle_id".equalsIgnoreCase(dbms))) {
+%>		    
+		try{
+<%
+	}
+%>
 		    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(dbquery_<%=cid%>);
 		    java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
 		    int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();

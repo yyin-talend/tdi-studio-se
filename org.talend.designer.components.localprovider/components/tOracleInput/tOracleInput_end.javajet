@@ -20,6 +20,7 @@ imports="
 		log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 	<%}%>
 }
+}finally{
 stmt_<%=cid %>.close();
 
 <%
@@ -36,6 +37,7 @@ if(!("true").equals(useExistingConn))
 	<%
 }
 %>
+}
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
 <%if(isLog4jEnabled){%>
