@@ -62,7 +62,7 @@ public class HL7MessageTreeLabelProvider extends LabelProvider implements ITable
         // }
         if (element instanceof Group) {
             Group group = (Group) element;
-            String groupName = group.getClass().getName();
+            String groupName = group.getName();
             groupName = groupName.substring(groupName.lastIndexOf('.') + 1, groupName.length());
             return groupName;
         }
