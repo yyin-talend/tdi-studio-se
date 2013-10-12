@@ -13,6 +13,7 @@
 package org.talend.repository.ui.dialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -36,8 +37,6 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
 
 /**
@@ -67,6 +66,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         if (typeToShow != null) {
             typesToShow.add(typeToShow);
         }
+        typesToShow.addAll(getParentTypes(typesToShow));
     }
 
     protected ExtendedNodeReviewDialog(Shell parentShell, ERepositoryObjectType rootType, List<ERepositoryObjectType> typesToShow) {
@@ -75,6 +75,20 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         if (typesToShow != null) {
             this.typesToShow.addAll(typesToShow);
         }
+        typesToShow.addAll(getParentTypes(typesToShow));
+    }
+
+    private List<ERepositoryObjectType> getParentTypes(List<ERepositoryObjectType> typesToShow) {
+        List<ERepositoryObjectType> parentTypes = new ArrayList<ERepositoryObjectType>();
+        for (ERepositoryObjectType type : typesToShow) {
+            if (type.getParentTypesArray().length != 0) {
+                for (ERepositoryObjectType parentType : type.getParentTypesArray()) {
+                    parentTypes.add(parentType);
+                }
+                parentTypes.addAll(getParentTypes(Arrays.asList(type.getParentTypesArray())));
+            }
+        }
+        return parentTypes;
     }
 
     @Override
@@ -103,13 +117,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
 
         createFilterField(container);
 
-        RepoCommonViewerProvider provider = new RepoCommonViewerProvider() {
-
-            @Override
-            protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
-                return ExtendedNodeReviewDialog.this.getInputRoot(projectRepoNode);
-            }
-        };
+        RepoCommonViewerProvider provider = new RepoCommonViewerProvider();
         treeViewer = provider.createViewer(container);
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -140,10 +148,6 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         treeViewer.expandAll();
 
         return container;
-    }
-
-    protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
-        return projectRepoNode.getRootRepositoryNode(rootType);
     }
 
     private void createFilterField(Composite container) {
