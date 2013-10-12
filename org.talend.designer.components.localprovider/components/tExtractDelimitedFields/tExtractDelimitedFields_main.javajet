@@ -22,6 +22,12 @@ String cid = node.getUniqueName();
 String field = ElementParameterParser.getValue(node, "__FIELD__");
 String separator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
+
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -113,16 +119,16 @@ try{
 
 //set original columns
 List<IMetadataColumn> newColumnList = new ArrayList<IMetadataColumn>();
+List<IMetadataColumn> oirginalColumnsList = new ArrayList<IMetadataColumn>();
 IMetadataTable outputMetadataTable = outConn.getMetadataTable();
+int sizeColumns=outputMetadataTable.getListColumns().size();
 
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
 		boolean isOirginalColumn = false;
 		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
-%>
-	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%> ;
-<%
+				oirginalColumnsList.add(outputCol);
 				break;
 			}
 		}
@@ -134,6 +140,20 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 			}
 		}
 	}
+	for(int i=0; i<oirginalColumnsList.size();i++){
+		IMetadataColumn column = oirginalColumnsList.get(i);
+		if(sizeColumns> schemaOptNum){//D1
+			if(i%schemaOptNum==0){
+%>
+		optimizedCodeUtil_<%=cid%>.putOirginalValue_<%=i/schemaOptNum%>(<%=inConn.getName() %>,<%=outConn.getName()%>);
+<%
+			}
+		}else{
+%>
+		<%=outConn.getName()%>.<%=column.getLabel()%> = <%=inConn.getName()%>.<%=column.getLabel()%> ;
+<%
+		}//D1
+	}
 %>
 	String temp_<%=cid%> = null;
 <%
@@ -142,11 +162,18 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 		String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+		if(sizeColumns> schemaOptNum){//D2
+			if(i%schemaOptNum==0){
+%>
+		optimizedCodeUtil_<%=cid%>.putExtractValue_<%=i/schemaOptNum%>(<%=inConn.getName() %>,<%=outConn.getName()%>,length_<%=cid%>,newFields_<%=cid%>,temp_<%=cid%> );
+<%
+			}
+		}else{
+		  if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
 %>
 	<%=outConn.getName()%>.<%=column.getLabel() %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
 <%
-		}else{ 
+		  }else{ 
 %>
 	temp_<%=cid %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
 	if(temp_<%=cid %>.length() > 0) {
@@ -190,6 +217,7 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 %>
 	}
 <%
+		 }
 		}
 	}
 	
@@ -222,10 +250,19 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 %>
 	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-            for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+			for(int i=0; i<sizeColumns;i++){
+				IMetadataColumn column = outputMetadataTable.getListColumns().get(i);
+				if(sizeColumns> schemaOptNum){//D1
+					if(i%schemaOptNum==0){
+%>
+	optimizedCodeUtil_<%=cid%>.putRejectValue_<%=i/schemaOptNum%>(<%=firstConnName %>,<%=rejectConnName%>);
+<%
+					}
+				}else{
 %>
     <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName %>.<%=column.getLabel() %>;
 <%
+				}
 			}
 %>    
     <%=rejectConnName%>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
