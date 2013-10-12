@@ -474,9 +474,11 @@ public class ExportItemWizardPage extends WizardPage {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
+                boolean select = true;
                 if (element instanceof RepositoryNode) {
-                    return selectRepositoryNode(viewer, (RepositoryNode) element);
-                } else {
+                    select = selectRepositoryNode(viewer, (RepositoryNode) element);
+                }
+                if (select) {
                     for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                         boolean exportFilter = nodeHandler.exportFilter(viewer, parentElement, element);
                         if (!exportFilter) {
@@ -485,7 +487,7 @@ public class ExportItemWizardPage extends WizardPage {
 
                     }
                 }
-                return true;
+                return select;
             }
         });
     }
