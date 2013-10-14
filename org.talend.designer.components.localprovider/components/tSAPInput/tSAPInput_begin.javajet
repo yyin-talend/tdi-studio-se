@@ -151,6 +151,8 @@
 		<%if(useExistingConn){%>	    
 			client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 		<%}else{%>
+		<%//big try%>
+		try{
 			<%if("ApplicationServer".equals(serverType)){%>
 				//Create a client connection to a dedicated R/3 system
 				client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
@@ -199,6 +201,8 @@
 		<%if(useExistingConn){%>	
 			dest_<%=cid%> = (com.sap.conn.jco.JCoDestination)globalMap.get("conn_<%=connection %>");
 		<%}else{%>
+		<%//big try%>
+		try{
 			org.talend.sap.TalendDestinationData destinationData_<%=cid%> = null;
 			<%if("ApplicationServer".equals(serverType)){%>
 				destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
