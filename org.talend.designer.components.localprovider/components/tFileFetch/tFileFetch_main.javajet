@@ -258,7 +258,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 							|| (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_TEMPORARY_REDIRECT)) {
 					method_<%=cid%>.releaseConnection();
 
-					if (method_<%=cid%>.getResponseHeader("location").getValue().substring(0, 4).equals("http")) {
+					if (method_<%=cid%>.getResponseHeader("location").getValue().startsWith("http")) {
 						method_<%=cid%> = new org.apache.commons.httpclient.methods.<%if(post){%>Post<%}else{%>Get<%}%>Method(method_<%=cid%>.getResponseHeader("location").getValue());
 					} else {
 						method_<%=cid%> = new org.apache.commons.httpclient.methods.<%if(post){%>Post<%}else{%>Get<%}%>Method("http://" + method_<%=cid%>.getURI().getHost() + method_<%=cid%>.getResponseHeader("location").getValue());
