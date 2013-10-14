@@ -145,7 +145,7 @@
       		</ITEMS>
 		</PARAMETER>-->
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="62" SHOW="false"  REPOSITORY_VALUE="ENDPOINT">
-			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx?WSDL"</DEFAULT>
+			<DEFAULT>"http://www.webservicex.net/country.asmx?WSDL"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="SERVICE_NS" FIELD="TEXT" REQUIRED="true" NUM_ROW="63" SHOW="false" REPOSITORY_VALUE="SERVICE_NS">
