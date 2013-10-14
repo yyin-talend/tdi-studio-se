@@ -131,7 +131,7 @@ COMPATIBILITY="ALL"
 		<IMPORT NAME="commons-io-2_4" MODULE="commons-io-2.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-io-2.4.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
 		<IMPORT NAME="ec2-1_5_7" MODULE="ec2-1.5.7.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
 		<IMPORT NAME="gson-2_2" MODULE="gson-2.2.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
-		<IMPORT NAME="guava-13_0" MODULE="guava-13.0.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
+		<IMPORT NAME="guava-13_0" MODULE="guava-13.0.jar"  UrlPath="platform:/plugin/org.talend.libraries.guava/lib/guava-13.0.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
 		<IMPORT NAME="guice-3_0" MODULE="guice-3.0.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
 		<IMPORT NAME="guice-assistedinject-3_0" MODULE="guice-assistedinject-3.0.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
 		<IMPORT NAME="javax_inject-1" MODULE="javax.inject-1.jar" REQUIRED_IF="PROVIDER=='AWS_EC2'"/>
