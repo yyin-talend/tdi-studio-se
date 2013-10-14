@@ -420,6 +420,11 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         if (event.getElement() instanceof DemoProjectBean) {
             DemoProjectBean proNode = (DemoProjectBean) event.getElement();
             showDescriptionIn(proNode);
+            if (getCheckedElements().size() == 0) {
+                setPageComplete(false);
+            } else {
+                setPageComplete(true);
+            }
         }
     }
 }

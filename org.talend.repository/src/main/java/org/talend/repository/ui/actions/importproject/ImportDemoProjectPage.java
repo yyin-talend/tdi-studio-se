@@ -190,6 +190,12 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         DemoProjectBean demoProjectBean = this.demoProjectList.get(selectedDemoProjectIndex);
         String demoDescription = demoProjectBean.getDescriptionContents();
 
+        if (demoProjectBean != null) {
+            setPageComplete(true);
+        } else {
+            setPageComplete(false);
+        }
+
         // ~21138
         if (descriptionBrowser != null && TalendPropertiesUtil.isEnabledUseBrowser() && !descriptionBrowser.isDisposed()) {
             descriptionBrowser.setText(demoDescription);

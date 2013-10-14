@@ -45,6 +45,7 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
         super.addPages();
         demoProjectPage = new ImportDemoProjectPage(null);
         demoProjectPage.setImportDemoProjectList(this.demoProjectList);
+        demoProjectPage.setPageComplete(false);
         super.addPage(demoProjectPage);
     }
 
@@ -54,6 +55,14 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
 
     public int getSelectedDemoProjectIndex() {
         return demoProjectPage.getSelectedDemoProjectIndex();
+    }
+
+    @Override
+    public boolean canFinish() {
+        if (!demoProjectPage.isPageComplete()) {
+            return false;
+        }
+        return true;
     }
 
 }
