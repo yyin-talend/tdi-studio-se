@@ -21,11 +21,13 @@ import com.marketo.www.mktows.ActivityTypeFilter;
 import com.marketo.www.mktows.Attribute;
 import com.marketo.www.mktows.CampaignRecord;
 import com.marketo.www.mktows.ForeignSysType;
+import com.marketo.www.mktows.LastUpdateAtSelector;
 import com.marketo.www.mktows.LeadActivityList;
 import com.marketo.www.mktows.LeadChangeRecord;
 import com.marketo.www.mktows.LeadKey;
 import com.marketo.www.mktows.LeadKeyRef;
 import com.marketo.www.mktows.LeadRecord;
+import com.marketo.www.mktows.LeadSelector;
 import com.marketo.www.mktows.ListKey;
 import com.marketo.www.mktows.ListKeyType;
 import com.marketo.www.mktows.ListOperationType;
@@ -88,7 +90,7 @@ public class Client {
     public Client(String endpoint, String secretKey, String clientAccessID) throws ServiceException, MalformedURLException {
         // 1. change the endpoint.
         MktMktowsApiService service = new MktMktowsApiServiceLocator();
-        ((MktMktowsApiServiceLocator)service).setMktowsApiSoapPortEndpointAddress(endpoint);
+        ((MktMktowsApiServiceLocator) service).setMktowsApiSoapPortEndpointAddress(endpoint);
         URL portAddress = new URL(endpoint);
         stub = service.getMktowsApiSoapPort(portAddress);
         // 2.assign secretKey and clientAccessID
@@ -164,12 +166,18 @@ public class Client {
     }
 
     public ResultGetLeadChanges getLeadChanges(int batchSize, String[] includeTypes, String[] excludeTypes,
-            StreamPosition startPosition) throws Exception {
+            StreamPosition startPosition, LeadSelector leadSelector) throws Exception {
         ParamsGetLeadChanges paramsGetLeadChanges = new ParamsGetLeadChanges();
 
         paramsGetLeadChanges.setActivityFilter(getActivityTypeFilter(includeTypes, excludeTypes));
         paramsGetLeadChanges.setBatchSize(batchSize > 100 ? 100 : batchSize);
         paramsGetLeadChanges.setStartPosition(startPosition);
+        if (leadSelector instanceof LastUpdateAtSelector) {
+            LastUpdateAtSelector lastLeadSelector = (LastUpdateAtSelector) leadSelector;
+            if (lastLeadSelector.getOldestUpdatedAt() != null) {
+                paramsGetLeadChanges.setLeadSelector(leadSelector);
+            }
+        }
 
         SuccessGetLeadChanges successChanges = stub.getLeadChanges(paramsGetLeadChanges);
         ResultGetLeadChanges result = successChanges.getResult();
@@ -223,14 +231,18 @@ public class Client {
     public LeadRecord buildLead(String id, String email, String foreignSysPersonId, String foreignSysType,
             Map<String, String> leadAttrList) {
         LeadRecord leadRecord = new LeadRecord();
-        if (email != null && !"".equals(email))
+        if (email != null && !"".equals(email)) {
             leadRecord.setEmail(email);
-        if (foreignSysPersonId != null && !"".equals(foreignSysPersonId))
+        }
+        if (foreignSysPersonId != null && !"".equals(foreignSysPersonId)) {
             leadRecord.setForeignSysPersonId(foreignSysPersonId);
-        if (foreignSysType != null && !"".equals(foreignSysType))
+        }
+        if (foreignSysType != null && !"".equals(foreignSysType)) {
             leadRecord.setForeignSysType(ForeignSysType.fromString(foreignSysType));
-        if (id != null && !"".equals(id))
+        }
+        if (id != null && !"".equals(id)) {
             leadRecord.setId(Integer.valueOf(id));
+        }
         leadRecord.setLeadAttributeList(buildAttr(leadAttrList));
         return leadRecord;
     }
@@ -247,8 +259,9 @@ public class Client {
     }
 
     private Attribute[] buildAttr(Map<String, String> attrSourceList) {
-        if (attrSourceList == null || attrSourceList.isEmpty())
+        if (attrSourceList == null || attrSourceList.isEmpty()) {
             return null;// null or ?
+        }
         List<Attribute> attrList = new ArrayList<Attribute>();
         Attribute attr = null;
         for (String key : attrSourceList.keySet()) {

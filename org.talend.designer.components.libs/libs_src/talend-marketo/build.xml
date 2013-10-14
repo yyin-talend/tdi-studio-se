@@ -13,16 +13,16 @@
 
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
-		<pathelement location="${component.plugin.home}/tWebServiceInput/axis.jar" />
-		<pathelement location="${component.plugin.home}/tWebServiceInput/commons-discovery-0.2.jar" />
-		<pathelement location="${component.plugin.home}/tWebServiceInput/jaxrpc.jar" />
-		<pathelement location="${component.plugin.home}/tWebServiceInput/saaj.jar" />
-		<pathelement location="${component.plugin.home}/tWebService/wsdl4j-1.6.2.jar" />
-		<pathelement location="${component.plugin.home}/tEDIFACTtoXML/commons-logging-1.1.jar" />
+		<pathelement location="../../../org.talend.libraries.apache.axis2/lib/axis.jar" />
+		<pathelement location="../../../org.talend.libraries.apache.common/lib/commons-discovery-0.2.jar" />
+		<pathelement location="lib/jaxrpc.jar" />
+		<pathelement location="lib/saaj.jar" />
+		<pathelement location="../../../org.talend.libraries.apache.axis2/lib/wsdl4j-1.6.2.jar" />
+		<pathelement location="../../../org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" />
 		<pathelement location="${component.plugin.home}/tWebServiceInput/mail.jar" />
 		<pathelement location="${component.plugin.home}/tWebServiceInput/activation.jar" />
-		<pathelement location="${component.plugin.home}/tEDIFACTtoXML/dom4j-1.6.1.jar" />
-		<pathelement location="${component.plugin.home}/tEDIFACTtoXML/jaxen-1.1.1.jar" />
+		<pathelement location="../../../org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" />
+		<pathelement location="../../../org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" />
 	</path>
 
 	<!-- #################################################### -->	
@@ -58,15 +58,20 @@
 		<!-- compile -->
 		<javac srcdir="${source.home}" destdir="${build.dir}/classes" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="compile.classpath" />
+			<src path="${source.home}"/>
+			<exclude name="org/talend/marketo/GenConfigOfComponent.java" />
 		</javac>
 
 		<!-- include source code -->
 		<copy todir="${build.dir}/classes">
 			<fileset dir="${source.home}">
 				<exclude name="build.xml" />
+				<exclude name="lib" />
+				<exclude name="org/talend/marketo/GenConfigOfComponent.java" />
 			</fileset>
 		</copy>
-
+		
+		<delete dir="${build.dir}/classes/lib" />
 		<!-- make jar -->
 		<tstamp>
 			<format property="date" pattern="yyyy-MM-dd HH:mm:ss" />

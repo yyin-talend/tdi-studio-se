@@ -18,6 +18,8 @@ public class ParamsGetMObjects  implements java.io.Serializable {
 
     private com.marketo.www.mktows.MObjAssociation[] mObjAssociationList;
 
+    private java.lang.Boolean includeDetails;
+
     private java.lang.String streamPosition;
 
     public ParamsGetMObjects() {
@@ -29,12 +31,14 @@ public class ParamsGetMObjects  implements java.io.Serializable {
            com.marketo.www.mktows.Attrib externalKey,
            com.marketo.www.mktows.MObjCriteria[] mObjCriteriaList,
            com.marketo.www.mktows.MObjAssociation[] mObjAssociationList,
+           java.lang.Boolean includeDetails,
            java.lang.String streamPosition) {
            this.type = type;
            this.id = id;
            this.externalKey = externalKey;
            this.mObjCriteriaList = mObjCriteriaList;
            this.mObjAssociationList = mObjAssociationList;
+           this.includeDetails = includeDetails;
            this.streamPosition = streamPosition;
     }
 
@@ -140,6 +144,26 @@ public class ParamsGetMObjects  implements java.io.Serializable {
 
 
     /**
+     * Gets the includeDetails value for this ParamsGetMObjects.
+     * 
+     * @return includeDetails
+     */
+    public java.lang.Boolean getIncludeDetails() {
+        return includeDetails;
+    }
+
+
+    /**
+     * Sets the includeDetails value for this ParamsGetMObjects.
+     * 
+     * @param includeDetails
+     */
+    public void setIncludeDetails(java.lang.Boolean includeDetails) {
+        this.includeDetails = includeDetails;
+    }
+
+
+    /**
      * Gets the streamPosition value for this ParamsGetMObjects.
      * 
      * @return streamPosition
@@ -185,6 +209,9 @@ public class ParamsGetMObjects  implements java.io.Serializable {
             ((this.mObjAssociationList==null && other.getMObjAssociationList()==null) || 
              (this.mObjAssociationList!=null &&
               java.util.Arrays.equals(this.mObjAssociationList, other.getMObjAssociationList()))) &&
+            ((this.includeDetails==null && other.getIncludeDetails()==null) || 
+             (this.includeDetails!=null &&
+              this.includeDetails.equals(other.getIncludeDetails()))) &&
             ((this.streamPosition==null && other.getStreamPosition()==null) || 
              (this.streamPosition!=null &&
               this.streamPosition.equals(other.getStreamPosition())));
@@ -229,6 +256,9 @@ public class ParamsGetMObjects  implements java.io.Serializable {
                     _hashCode += obj.hashCode();
                 }
             }
+        }
+        if (getIncludeDetails() != null) {
+            _hashCode += getIncludeDetails().hashCode();
         }
         if (getStreamPosition() != null) {
             _hashCode += getStreamPosition().hashCode();
@@ -278,6 +308,13 @@ public class ParamsGetMObjects  implements java.io.Serializable {
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         elemField.setItemQName(new javax.xml.namespace.QName("", "mObjAssociation"));
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("includeDetails");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "includeDetails"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("streamPosition");

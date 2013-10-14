@@ -14,16 +14,20 @@ public class ParamsGetLeadChanges  implements java.io.Serializable {
 
     private java.lang.Integer batchSize;
 
+    private com.marketo.www.mktows.LeadSelector leadSelector;
+
     public ParamsGetLeadChanges() {
     }
 
     public ParamsGetLeadChanges(
            com.marketo.www.mktows.StreamPosition startPosition,
            com.marketo.www.mktows.ActivityTypeFilter activityFilter,
-           java.lang.Integer batchSize) {
+           java.lang.Integer batchSize,
+           com.marketo.www.mktows.LeadSelector leadSelector) {
            this.startPosition = startPosition;
            this.activityFilter = activityFilter;
            this.batchSize = batchSize;
+           this.leadSelector = leadSelector;
     }
 
 
@@ -86,6 +90,26 @@ public class ParamsGetLeadChanges  implements java.io.Serializable {
         this.batchSize = batchSize;
     }
 
+
+    /**
+     * Gets the leadSelector value for this ParamsGetLeadChanges.
+     * 
+     * @return leadSelector
+     */
+    public com.marketo.www.mktows.LeadSelector getLeadSelector() {
+        return leadSelector;
+    }
+
+
+    /**
+     * Sets the leadSelector value for this ParamsGetLeadChanges.
+     * 
+     * @param leadSelector
+     */
+    public void setLeadSelector(com.marketo.www.mktows.LeadSelector leadSelector) {
+        this.leadSelector = leadSelector;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ParamsGetLeadChanges)) return false;
@@ -106,7 +130,10 @@ public class ParamsGetLeadChanges  implements java.io.Serializable {
               this.activityFilter.equals(other.getActivityFilter()))) &&
             ((this.batchSize==null && other.getBatchSize()==null) || 
              (this.batchSize!=null &&
-              this.batchSize.equals(other.getBatchSize())));
+              this.batchSize.equals(other.getBatchSize()))) &&
+            ((this.leadSelector==null && other.getLeadSelector()==null) || 
+             (this.leadSelector!=null &&
+              this.leadSelector.equals(other.getLeadSelector())));
         __equalsCalc = null;
         return _equals;
     }
@@ -126,6 +153,9 @@ public class ParamsGetLeadChanges  implements java.io.Serializable {
         }
         if (getBatchSize() != null) {
             _hashCode += getBatchSize().hashCode();
+        }
+        if (getLeadSelector() != null) {
+            _hashCode += getLeadSelector().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -156,6 +186,13 @@ public class ParamsGetLeadChanges  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setMinOccurs(0);
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("leadSelector");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "leadSelector"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.marketo.com/mktows/", "LeadSelector"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }
 

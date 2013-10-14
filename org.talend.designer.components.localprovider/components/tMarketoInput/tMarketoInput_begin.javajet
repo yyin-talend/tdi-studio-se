@@ -236,12 +236,54 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 	                    java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readActivity(activityRecords_<%=cid%>[i_<%=cid%>]);
 <%
 			}else if("getLeadChanges".equals(operation)){
+				String oldestcreatedat = ElementParameterParser.getValue(node, "__LEADS_OLDESTCREATEDAT__");
+				String latestcreatedat = ElementParameterParser.getValue(node, "__LEADS_LATESTCREATEDAT__");
+				String oldestupdatedat = ElementParameterParser.getValue(node, "__LEADS_OLDESTUPDATEDAT__");
+				String latestupdatedat = ElementParameterParser.getValue(node, "__LEADS_LATESTUPDATEDAT__");
 %>
 			com.marketo.www.mktows.StreamPosition streamPosition_<%=cid%> = new com.marketo.www.mktows.StreamPosition();
+			
+			<%if(!"".equals(oldestcreatedat) && !"\"\"".equals(oldestcreatedat) && !"\"yyyy-MM-dd HH:mm:ss Z\"".equals(oldestcreatedat)){%>
+				java.text.SimpleDateFormat oldestcreatedat_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+				if(<%=oldestcreatedat%> != null){
+		        	oldestcreatedat_<%=cid%>.parse(<%=oldestcreatedat%>);
+		            java.util.Calendar calendar_oldestcreatedat_<%=cid%> = oldestcreatedat_<%=cid%>.getCalendar();
+		            streamPosition_<%=cid%>.setOldestCreatedAt(calendar_oldestcreatedat_<%=cid%>);
+	            }
+            <%}%>
+            <%if(!"".equals(latestcreatedat) && !"\"\"".equals(latestcreatedat) && !"\"yyyy-MM-dd HH:mm:ss Z\"".equals(latestcreatedat)){%>
+	            java.text.SimpleDateFormat latestcreatedat_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+	            if(<%=latestcreatedat%> != null){
+		        	latestcreatedat_<%=cid%>.parse(<%=latestcreatedat%>);
+		            java.util.Calendar calendar_latestcreatedat_<%=cid%> = latestcreatedat_<%=cid%>.getCalendar();
+		            streamPosition_<%=cid%>.setLatestCreatedAt(calendar_latestcreatedat_<%=cid%>);
+		        }
+            <%}%>
+            
+            com.marketo.www.mktows.LastUpdateAtSelector leadSelector_<%=cid%> = new com.marketo.www.mktows.LastUpdateAtSelector();
+            
+            <%if(!"".equals(oldestupdatedat) && !"\"\"".equals(oldestupdatedat) && !"\"yyyy-MM-dd HH:mm:ss Z\"".equals(oldestupdatedat)){%>
+				java.text.SimpleDateFormat oldestupdatedat_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+				if(<%=oldestupdatedat%> != null){
+		        	oldestupdatedat_<%=cid%>.parse(<%=oldestupdatedat%>);
+		            java.util.Calendar calendar_oldestupdatedat_<%=cid%> = oldestupdatedat_<%=cid%>.getCalendar();
+		            leadSelector_<%=cid%>.setOldestUpdatedAt(calendar_oldestupdatedat_<%=cid%>);
+	            }
+            <%}%>
+            <%if(!"".equals(latestupdatedat) && !"\"\"".equals(latestupdatedat) && !"\"yyyy-MM-dd HH:mm:ss Z\"".equals(latestupdatedat)){%>
+	            java.text.SimpleDateFormat latestupdatedat_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+	            if(<%=latestupdatedat%> != null){
+		        	latestupdatedat_<%=cid%>.parse(<%=latestupdatedat%>);
+		            java.util.Calendar calendar_latestupdatedat_<%=cid%> = latestupdatedat_<%=cid%>.getCalendar();
+		            leadSelector_<%=cid%>.setLatestUpdatedAt(calendar_latestupdatedat_<%=cid%>);
+		        }
+            <%}%>
+            
+            
             while(true){
                 com.marketo.www.mktows.ResultGetLeadChanges changes_<%=cid%> = null;
                 try{
-                	changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>);
+                	changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>, leadSelector_<%=cid%>);
                 	globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
                 }catch(java.lang.Exception ex_<%=cid%>){
                 	if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){

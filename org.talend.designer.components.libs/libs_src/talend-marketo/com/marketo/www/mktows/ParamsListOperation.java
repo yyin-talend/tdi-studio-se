@@ -16,6 +16,8 @@ public class ParamsListOperation  implements java.io.Serializable {
 
     private java.lang.Boolean strict;
 
+    private java.lang.Boolean skipActivityLog;
+
     public ParamsListOperation() {
     }
 
@@ -23,11 +25,13 @@ public class ParamsListOperation  implements java.io.Serializable {
            com.marketo.www.mktows.ListOperationType listOperation,
            com.marketo.www.mktows.ListKey listKey,
            com.marketo.www.mktows.LeadKey[] listMemberList,
-           java.lang.Boolean strict) {
+           java.lang.Boolean strict,
+           java.lang.Boolean skipActivityLog) {
            this.listOperation = listOperation;
            this.listKey = listKey;
            this.listMemberList = listMemberList;
            this.strict = strict;
+           this.skipActivityLog = skipActivityLog;
     }
 
 
@@ -110,6 +114,26 @@ public class ParamsListOperation  implements java.io.Serializable {
         this.strict = strict;
     }
 
+
+    /**
+     * Gets the skipActivityLog value for this ParamsListOperation.
+     * 
+     * @return skipActivityLog
+     */
+    public java.lang.Boolean getSkipActivityLog() {
+        return skipActivityLog;
+    }
+
+
+    /**
+     * Sets the skipActivityLog value for this ParamsListOperation.
+     * 
+     * @param skipActivityLog
+     */
+    public void setSkipActivityLog(java.lang.Boolean skipActivityLog) {
+        this.skipActivityLog = skipActivityLog;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ParamsListOperation)) return false;
@@ -133,7 +157,10 @@ public class ParamsListOperation  implements java.io.Serializable {
               java.util.Arrays.equals(this.listMemberList, other.getListMemberList()))) &&
             ((this.strict==null && other.getStrict()==null) || 
              (this.strict!=null &&
-              this.strict.equals(other.getStrict())));
+              this.strict.equals(other.getStrict()))) &&
+            ((this.skipActivityLog==null && other.getSkipActivityLog()==null) || 
+             (this.skipActivityLog!=null &&
+              this.skipActivityLog.equals(other.getSkipActivityLog())));
         __equalsCalc = null;
         return _equals;
     }
@@ -164,6 +191,9 @@ public class ParamsListOperation  implements java.io.Serializable {
         }
         if (getStrict() != null) {
             _hashCode += getStrict().hashCode();
+        }
+        if (getSkipActivityLog() != null) {
+            _hashCode += getSkipActivityLog().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -197,6 +227,13 @@ public class ParamsListOperation  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("strict");
         elemField.setXmlName(new javax.xml.namespace.QName("", "strict"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("skipActivityLog");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "skipActivityLog"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setMinOccurs(0);
         elemField.setNillable(true);

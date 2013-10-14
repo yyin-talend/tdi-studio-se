@@ -8,6 +8,8 @@
 package com.marketo.www.mktows;
 
 public class ParamsGetMultipleLeads  implements java.io.Serializable {
+    private com.marketo.www.mktows.LeadSelector leadSelector;
+
     private java.util.Calendar lastUpdatedAt;
 
     private java.lang.String streamPosition;
@@ -20,14 +22,36 @@ public class ParamsGetMultipleLeads  implements java.io.Serializable {
     }
 
     public ParamsGetMultipleLeads(
+           com.marketo.www.mktows.LeadSelector leadSelector,
            java.util.Calendar lastUpdatedAt,
            java.lang.String streamPosition,
            java.lang.Integer batchSize,
            java.lang.String[] includeAttributes) {
+           this.leadSelector = leadSelector;
            this.lastUpdatedAt = lastUpdatedAt;
            this.streamPosition = streamPosition;
            this.batchSize = batchSize;
            this.includeAttributes = includeAttributes;
+    }
+
+
+    /**
+     * Gets the leadSelector value for this ParamsGetMultipleLeads.
+     * 
+     * @return leadSelector
+     */
+    public com.marketo.www.mktows.LeadSelector getLeadSelector() {
+        return leadSelector;
+    }
+
+
+    /**
+     * Sets the leadSelector value for this ParamsGetMultipleLeads.
+     * 
+     * @param leadSelector
+     */
+    public void setLeadSelector(com.marketo.www.mktows.LeadSelector leadSelector) {
+        this.leadSelector = leadSelector;
     }
 
 
@@ -122,6 +146,9 @@ public class ParamsGetMultipleLeads  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.leadSelector==null && other.getLeadSelector()==null) || 
+             (this.leadSelector!=null &&
+              this.leadSelector.equals(other.getLeadSelector()))) &&
             ((this.lastUpdatedAt==null && other.getLastUpdatedAt()==null) || 
              (this.lastUpdatedAt!=null &&
               this.lastUpdatedAt.equals(other.getLastUpdatedAt()))) &&
@@ -145,6 +172,9 @@ public class ParamsGetMultipleLeads  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getLeadSelector() != null) {
+            _hashCode += getLeadSelector().hashCode();
+        }
         if (getLastUpdatedAt() != null) {
             _hashCode += getLastUpdatedAt().hashCode();
         }
@@ -176,9 +206,17 @@ public class ParamsGetMultipleLeads  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.marketo.com/mktows/", "ParamsGetMultipleLeads"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("leadSelector");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "leadSelector"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.marketo.com/mktows/", "LeadSelector"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("lastUpdatedAt");
         elemField.setXmlName(new javax.xml.namespace.QName("", "lastUpdatedAt"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
+        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

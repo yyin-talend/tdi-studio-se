@@ -18,9 +18,11 @@ public class ListOperationType implements java.io.Serializable {
     }
 
     public static final java.lang.String _ADDTOLIST = "ADDTOLIST";
+    public static final java.lang.String _CLEARLIST = "CLEARLIST";
     public static final java.lang.String _ISMEMBEROFLIST = "ISMEMBEROFLIST";
     public static final java.lang.String _REMOVEFROMLIST = "REMOVEFROMLIST";
     public static final ListOperationType ADDTOLIST = new ListOperationType(_ADDTOLIST);
+    public static final ListOperationType CLEARLIST = new ListOperationType(_CLEARLIST);
     public static final ListOperationType ISMEMBEROFLIST = new ListOperationType(_ISMEMBEROFLIST);
     public static final ListOperationType REMOVEFROMLIST = new ListOperationType(_REMOVEFROMLIST);
     public java.lang.String getValue() { return _value_;}

@@ -20,6 +20,8 @@ public class MObject  implements java.io.Serializable {
 
     private com.marketo.www.mktows.Attrib[] attribList;
 
+    private com.marketo.www.mktows.TypeAttrib[] typeAttribList;
+
     private com.marketo.www.mktows.MObjAssociation[] associationList;
 
     public MObject() {
@@ -32,6 +34,7 @@ public class MObject  implements java.io.Serializable {
            java.util.Calendar createdAt,
            java.util.Calendar updatedAt,
            com.marketo.www.mktows.Attrib[] attribList,
+           com.marketo.www.mktows.TypeAttrib[] typeAttribList,
            com.marketo.www.mktows.MObjAssociation[] associationList) {
            this.type = type;
            this.id = id;
@@ -39,6 +42,7 @@ public class MObject  implements java.io.Serializable {
            this.createdAt = createdAt;
            this.updatedAt = updatedAt;
            this.attribList = attribList;
+           this.typeAttribList = typeAttribList;
            this.associationList = associationList;
     }
 
@@ -164,6 +168,26 @@ public class MObject  implements java.io.Serializable {
 
 
     /**
+     * Gets the typeAttribList value for this MObject.
+     * 
+     * @return typeAttribList
+     */
+    public com.marketo.www.mktows.TypeAttrib[] getTypeAttribList() {
+        return typeAttribList;
+    }
+
+
+    /**
+     * Sets the typeAttribList value for this MObject.
+     * 
+     * @param typeAttribList
+     */
+    public void setTypeAttribList(com.marketo.www.mktows.TypeAttrib[] typeAttribList) {
+        this.typeAttribList = typeAttribList;
+    }
+
+
+    /**
      * Gets the associationList value for this MObject.
      * 
      * @return associationList
@@ -212,6 +236,9 @@ public class MObject  implements java.io.Serializable {
             ((this.attribList==null && other.getAttribList()==null) || 
              (this.attribList!=null &&
               java.util.Arrays.equals(this.attribList, other.getAttribList()))) &&
+            ((this.typeAttribList==null && other.getTypeAttribList()==null) || 
+             (this.typeAttribList!=null &&
+              java.util.Arrays.equals(this.typeAttribList, other.getTypeAttribList()))) &&
             ((this.associationList==null && other.getAssociationList()==null) || 
              (this.associationList!=null &&
               java.util.Arrays.equals(this.associationList, other.getAssociationList())));
@@ -246,6 +273,17 @@ public class MObject  implements java.io.Serializable {
                  i<java.lang.reflect.Array.getLength(getAttribList());
                  i++) {
                 java.lang.Object obj = java.lang.reflect.Array.get(getAttribList(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
+        if (getTypeAttribList() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getTypeAttribList());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getTypeAttribList(), i);
                 if (obj != null &&
                     !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
@@ -314,6 +352,14 @@ public class MObject  implements java.io.Serializable {
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         elemField.setItemQName(new javax.xml.namespace.QName("", "attrib"));
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("typeAttribList");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "typeAttribList"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.marketo.com/mktows/", "TypeAttrib"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        elemField.setItemQName(new javax.xml.namespace.QName("", "typeAttrib"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("associationList");
