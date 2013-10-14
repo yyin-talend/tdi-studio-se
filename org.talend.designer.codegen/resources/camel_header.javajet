@@ -132,6 +132,9 @@
 						hasCXFComponentConsumer = true;
 					}
 					String useCorrelation = ElementParameterParser.getValue(n, "__ENABLE_CORRELATION__");
+					if("RAW".equals(formatType)){
+						useCorrelation = "false";
+					}
 					if("false".equals(useCorrelation)){
 						useCorrelation = useRegistry;
 					}
@@ -950,6 +953,9 @@ if (isProvider) {
 			String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 			String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
 			String useCorrelation = ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__");
+			if("RAW".equals(formatType)){
+				useCorrelation = "false";
+			}
 			String correlationValue = ElementParameterParser.getValue(node, "__CORRELATION_VALUE__");
 			if(correlationValue != null && "".equals(correlationValue.trim())){
 				correlationValue = null;
