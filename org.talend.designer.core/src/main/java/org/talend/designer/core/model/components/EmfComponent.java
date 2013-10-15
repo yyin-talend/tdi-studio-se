@@ -2046,7 +2046,9 @@ public class EmfComponent extends AbstractComponent {
                 talendColumn.setKey(xmlColumn.isKEY());
                 talendColumn.setPattern(xmlColumn.getPATTERN());
                 talendColumn.setComment(xmlColumn.getCOMMENT());
-                if (mappingType != null) {
+                if (xmlColumn.getDBTYPE() != null && !"".equals(xmlColumn.getDBTYPE())) { //$NON-NLS-1$
+                    talendColumn.setType(xmlColumn.getDBTYPE());
+                } else if (mappingType != null) {
                     String defaultSelectedDbType = MetadataTalendType.getMappingTypeRetriever(mappingType)
                             .getDefaultSelectedDbType(xmlColumn.getTYPE());
                     talendColumn.setType(defaultSelectedDbType);
