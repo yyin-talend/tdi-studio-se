@@ -54,6 +54,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.IProcessor;
@@ -809,6 +810,9 @@ public abstract class JobScriptsManager {
         if (!needDependencies) {
             return;
         }
+        // export current job's dependencies.
+        BuildExportManager.getInstance().exportDependencies(resource, processItem);
+
         Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
                 Arrays.asList(new Item[] { processItem }), false);
 
@@ -856,6 +860,8 @@ public abstract class JobScriptsManager {
                 }
                 resource.addResources(basePath, metadataNameFileUrls);
 
+                // children dependencies
+                BuildExportManager.getInstance().exportDependencies(resource, processItem);
             }
 
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
