@@ -33,7 +33,7 @@ COMPATIBILITY="ALL"
 
   <PARAMETERS>
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" >
-      <TABLE READONLY="true">
+      <TABLE READONLY="true" IF="STORE_JAVA_EXCEPTION_OBJECT == 'false'">
         <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
         <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
@@ -44,14 +44,31 @@ COMPATIBILITY="ALL"
         <COLUMN NAME="substatus" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="description" TYPE="id_String" LENGTH="255"/>
       </TABLE>
+      <TABLE READONLY="true" IF="(CATCH_JAVA_EXCEPTION == 'true') AND (STORE_JAVA_EXCEPTION_OBJECT == 'true')">
+        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
+        <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="language" TYPE="id_String" LENGTH="5"/>
+        <COLUMN NAME="origin" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="status" TYPE="id_String" LENGTH="10"/>
+        <COLUMN NAME="substatus" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="description" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="exception" TYPE="id_Object"/>
+      </TABLE>
     </PARAMETER>
 
-    <PARAMETER NAME="CATCH_JAVA_EXCEPTION" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_JAVA_EXCEPTION">
+
+    <PARAMETER NAME="CATCH_TASSERT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10" REPOSITORY_VALUE="CATCH_TDIE">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER NAME="CATCH_TASSERT" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_TDIE">
+    
+    <PARAMETER NAME="CATCH_JAVA_EXCEPTION" FIELD="CHECK" REQUIRED="true" NUM_ROW="20" REPOSITORY_VALUE="CATCH_JAVA_EXCEPTION">
       <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="STORE_JAVA_EXCEPTION_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="20" SHOW_IF="CATCH_JAVA_EXCEPTION == 'true'">
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
    </PARAMETERS>

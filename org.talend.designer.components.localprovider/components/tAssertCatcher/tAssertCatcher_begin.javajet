@@ -1,6 +1,7 @@
 <%@ jet 
 	imports="
 		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 		
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
@@ -29,6 +30,9 @@
     	<%=conn.getName() %>.status = acm.getStatus();
 		<%=conn.getName() %>.substatus = acm.getSubstatus();
 		<%=conn.getName() %>.description = acm.getDescription();
+		<%if("true".equals(ElementParameterParser.getValue(node, "__CATCH_JAVA_EXCEPTION__")) && "true".equals(ElementParameterParser.getValue(node, "__STORE_JAVA_EXCEPTION_OBJECT__"))){%>
+		<%=conn.getName() %>.exception = acm.getException();
+		<%}%>
 <%
 		}
 	}
