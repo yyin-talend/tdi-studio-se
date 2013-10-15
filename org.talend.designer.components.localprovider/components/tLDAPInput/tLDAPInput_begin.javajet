@@ -65,24 +65,6 @@ if(("false").equals(useExistingConn)){
 	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
 <%	
-	// Types binaires
-	if(useFieldOptions){
-		boolean isBinary = false;
-		for(IMetadataColumn column:columnList){
-			for(Map<String, String> line:fieldOptions){// search in the configuration table
-				String columnName = line.get("SCHEMA_COLUMN");				
-				if(column.getLabel().equals(columnName)){
-					isBinary = "true".equals(line.get("BINARY"));
-					break;
-				}
-			}
-			if(isBinary){
-%>
-				env_<%=cid%>.put("java.naming.ldap.attributes.binary","<%=column.getOriginalDbColumnName()%>");
-<%
-			}
-		}
-	}
 	if(baseDN == null || baseDN.length()<=2){
 %>
 	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
@@ -192,6 +174,32 @@ if(("false").equals(useExistingConn)){
 				}
 %>
 <%
+	String binaryColumns = "";
+	boolean hasDynamicBinary=false;
+	if(useFieldOptions){
+		for(int i = 0;i<fieldOptions.size();i++){// search in the configuration table
+			Map<String, String> line = fieldOptions.get(i);
+			String columnName = line.get("SCHEMA_COLUMN");
+			Boolean isBinary = "true".equals(line.get("BINARY"));
+			if(isBinary){
+				IMetadataColumn column = columnList.get(i);
+				if(!column.getTalendType().equals("id_Dynamic")){
+					if(binaryColumns.length()>0){
+						binaryColumns+=" ";
+					}
+					binaryColumns+=column.getOriginalDbColumnName();
+				}else{
+					hasDynamicBinary = true;
+				}
+			}
+		}
+	}
+	boolean hasBinaryColumn = binaryColumns.length()>0 || hasDynamicBinary;
+	if(hasBinaryColumn){
+%>
+		String binaryColumns_<%=cid%> = "<%=binaryColumns%>";
+<%
+	}
     if(isDynamic){
     	String columnsStr = "";
 		for(IMetadataColumn column:columnList){
@@ -217,6 +225,24 @@ if(("false").equals(useExistingConn)){
 						dm_<%=cid%>.setType("id_String");
 						if(!dcg_<%=cid%>.metadatas.contains(dm_<%=cid%>)){
 							dcg_<%=cid%>.metadatas.add(dm_<%=cid%>);
+<%
+							if(hasDynamicBinary){
+								if(binaryColumns.length()==0){
+%>
+									if(binaryColumns_<%=cid%>.length()>0){
+										binaryColumns_<%=cid%>+=" ";
+									}
+<%
+								}else{
+%>
+									binaryColumns_<%=cid%>+=" ";
+<%
+								}
+%>
+								binaryColumns_<%=cid%>+=columnName_<%=cid%>;
+<%
+							}
+%>
 						}
 					}
 				}
@@ -235,6 +261,17 @@ if(("false").equals(useExistingConn)){
     
 do {
 <%}%>
+<%
+	if(hasBinaryColumn){
+%>
+		if(binaryColumns_<%=cid%>.length()>0){
+			java.util.Hashtable orignal_env_<%=cid%>= ctx_<%=cid%>.getEnvironment();
+			orignal_env_<%=cid%>.put("java.naming.ldap.attributes.binary",binaryColumns_<%=cid%>);
+			ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(orignal_env_<%=cid%>, null);
+		}
+<%
+	}
+%>
 
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(<%if(("false").equals(useExistingConn)){%>baseDN_<%=cid%><%}else{%>""<%}%>, <%=filter%>, searchCtls_<%=cid%>);
     while (answer_<%=cid%> .hasMoreElements()) {//a
