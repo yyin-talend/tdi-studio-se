@@ -34,7 +34,7 @@ imports="
 	    httpConn_<%=cid %>.setInstanceFollowRedirects(false);
 	    httpConn_<%=cid %>.setRequestMethod("POST");
 	    httpConn_<%=cid %>.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-	    httpConn_<%=cid %>.setRequestProperty("Authorization", "Basic " + new String(org.apache.commons.codec.binary.Base64.encodeBase64(("restuser"+ ":"+ "restbpm").getBytes(utf8Charset)),utf8Charset));
+	    httpConn_<%=cid %>.setRequestProperty("Authorization", "Basic " + new String(org.apache.commons.codec.binary.Base64.encodeBase64((<%=authUserName%>+ ":"+ <%=authPasswd%>).getBytes(utf8Charset)),utf8Charset));
 <%
 	} else { // JAVA CLIENT
 	
