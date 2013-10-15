@@ -535,7 +535,7 @@ private class TalendException extends java.lang.Exception {
 								// 1) add the message to the stack
 								%>
 								if(!(exception instanceof TDieException)){
-									<%if("true".equals(ElementParameterParser.getValue(assertCatcher, "__STORE_JAVA_EXCEPTION_OBJECT__"))){%>
+									<%if("true".equals(ElementParameterParser.getValue(assertCatcher, "__GET_ORIGINAL_EXCEPTION__"))){%>
 										<%=assertCatcher.getUniqueName()%>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception);
 									<%}else{%>
 										<%=assertCatcher.getUniqueName()%>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
