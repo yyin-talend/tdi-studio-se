@@ -30,7 +30,7 @@ imports="
 	log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 
-<%@ include file="@{org.talend.designer.components.bigdata}/components/templates/Hive/GetConnection.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetConnection.javajet"%>
 
 <%
 if(!("true").equals(useExistingConn)) {
