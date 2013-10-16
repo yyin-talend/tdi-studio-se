@@ -111,7 +111,8 @@ public class NodesTree {
 
         for (INode node : nodes) {
             String componentName = node.getComponent().getName();
-            if ((node.isStart()) && (node.isActivate()) && node.isSubtreeStart() && (!componentName.equals("tPrejob"))//$NON-NLS-1$
+            if ((node.isStart()) && (node.isActivate()) && (node.isSubtreeStart() || node.isELTComponent())
+                    && (!componentName.equals("tPrejob"))//$NON-NLS-1$
                     && (!componentName.equals("tPostjob"))) { //$NON-NLS-1$
                 rootNodes.add(node);
             }
