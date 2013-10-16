@@ -118,6 +118,18 @@ java.sql.Connection conn_<%=cid%> = null;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;    
 		java.lang.Class.forName("<%=javaDbDriver %>");
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+<%
+    	if(!isCustom && "HDP_1_2".equals(hiveVersion)) {
+       		String mapMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_MAP_MEMORY_MB__");
+        	String reduceMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_REDUCE_MEMORY_MB__");
+%>
+			java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
+	        init_<%=cid%>.execute("SET mapred.job.map.memory.mb=" + <%=mapMemory%>);
+		    init_<%=cid%>.execute("SET mapred.job.reduce.memory.mb=" + <%=reduceMemory%>);
+		    init_<%=cid%>.close();
+<%
+		}
+%>
 		
 		<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
     		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
