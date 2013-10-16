@@ -176,10 +176,14 @@ public class JobletContainerPart extends NodeContainerPart {
             refreshSourceConnections();
         } else if (JobletContainer.UPDATE_JOBLET_TITLE_COLOR.equals(prop)) {
             if (getFigure() instanceof JobletContainerFigure) {
-                ((JobletContainerFigure) getFigure()).updateSubJobTitleColor();
+                ((JobletContainerFigure) getFigure()).updateJobletContainerColor();
                 refreshVisuals();
             }
         } else if (JobletContainer.UPDATE_JOBLET_DISPLAY.equals(prop)) {
+            if (getFigure() instanceof JobletContainerFigure) {
+                ((JobletContainerFigure) getFigure()).updateJobletContainerColor();
+                refreshVisuals();
+            }
             // List<NodeContainer> tmpList = new ArrayList<NodeContainer>(((JobletContainer)
             // getModel()).getNodeContainers());
             // ((SubjobContainer) getModel()).getNodeContainers().clear();

@@ -27,12 +27,16 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.utils.platform.PluginChecker;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
@@ -59,6 +63,10 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
 
         createEditorFieldEditors(parent);
         createSubjobFieldEditors(parent);
+        boolean loadMR = PluginChecker.isPluginLoaded("org.talend.designer.mapreduce");//$NON-NLS-1$
+        if (loadMR) {
+            createMRGroupFieldEditors(parent);
+        }
         createConnectionFieldEditors(parent);
     }
 
@@ -67,14 +75,27 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         subjobGroup.setText(Messages.getString("DesignerPreferencePage.SubjobColorGroup")); //$NON-NLS-1$
         subjobGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        addField(new ColorFieldEditor(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, Messages
-                .getString("DesignerPreferencePage.SubjobTitleColorLabel"), subjobGroup)); //$NON-NLS-1$
+        addField(new ColorFieldEditor(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME,
+                Messages.getString("DesignerPreferencePage.SubjobTitleColorLabel"), subjobGroup)); //$NON-NLS-1$
 
-        addField(new ColorFieldEditor(DesignerColorUtils.SUBJOB_COLOR_NAME, Messages
-                .getString("DesignerPreferencePage.SubjobColorLabel"), subjobGroup)); //$NON-NLS-1$
+        addField(new ColorFieldEditor(DesignerColorUtils.SUBJOB_COLOR_NAME,
+                Messages.getString("DesignerPreferencePage.SubjobColorLabel"), subjobGroup)); //$NON-NLS-1$
         GridLayout layout = new GridLayout(2, false);
         layout.marginLeft = 10;
         subjobGroup.setLayout(layout);
+    }
+
+    private void createMRGroupFieldEditors(Composite parent) {
+        Group mrGroup = new Group(parent, SWT.NULL);
+        mrGroup.setText(Messages.getString("DesignerPreferencePage.MRColorGroup")); //$NON-NLS-1$
+        mrGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        addField(new ColorFieldEditor(DesignerColorUtils.MRGROUP_COLOR_NAME,
+                Messages.getString("DesignerPreferencePage.MRGroupColorLabel"), mrGroup)); //$NON-NLS-1$
+
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginLeft = 10;
+        mrGroup.setLayout(layout);
     }
 
     private void createEditorFieldEditors(Composite parent) {
@@ -82,11 +103,11 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         jobBackgroundGroup.setText(Messages.getString("DesignerPreferencePage.JobDesignerEditorBackgroundColorLabel")); //$NON-NLS-1$
         jobBackgroundGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        addField(new ColorFieldEditor(DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, Messages
-                .getString("DesignerPreferencePage.DesignerEditorBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
+        addField(new ColorFieldEditor(DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME,
+                Messages.getString("DesignerPreferencePage.DesignerEditorBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
 
-        addField(new ColorFieldEditor(DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, Messages
-                .getString("DesignerPreferencePage.ReadonlyBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
+        addField(new ColorFieldEditor(DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME,
+                Messages.getString("DesignerPreferencePage.ReadonlyBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
         GridLayout layout = new GridLayout(2, false);
         layout.marginLeft = 10;
         jobBackgroundGroup.setLayout(layout);
@@ -119,8 +140,8 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
             if (i % 2 > 0) {
                 comp = right;
             }
-            addField(new ColorFieldEditor(DesignerColorUtils.getPreferenceConnectionName(values[i]), values[i]
-                    .getDefaultMenuName(), comp));
+            addField(new ColorFieldEditor(DesignerColorUtils.getPreferenceConnectionName(values[i]),
+                    values[i].getDefaultMenuName(), comp));
         }
 
     }
@@ -153,6 +174,21 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
                         AbstractTalendEditor talendEditor = pageEditor.getTalendEditor();
                         ProcessPart processPart = talendEditor.getProcessPart();
                         processPart.ajustReadOnly();
+                        changeMRGroupColor(processPart);
+                    }
+                }
+            }
+        }
+    }
+
+    private void changeMRGroupColor(ProcessPart processPart) {
+        for (Object o : processPart.getChildren()) {
+            if (o instanceof SubjobContainerPart) {
+                for (Object child : ((SubjobContainerPart) o).getChildren()) {
+                    if (child instanceof JobletContainerPart) {
+                        JobletContainer jCon = (JobletContainer) ((JobletContainerPart) child).getModel();
+                        jCon.setPropertyValue(JobletContainer.UPDATE_JOBLET_DISPLAY, DesignerColorUtils.getPreferenceMRGroupRGB(
+                                DesignerColorUtils.MRGROUP_COLOR_NAME, DesignerColorUtils.MR_COLOR));
                     }
                 }
             }

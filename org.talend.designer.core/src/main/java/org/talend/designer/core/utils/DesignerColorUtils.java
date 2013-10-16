@@ -30,9 +30,13 @@ public final class DesignerColorUtils {
 
     public static final RGB JOBLET_COLOR = new RGB(130, 240, 100);
 
+    public static final RGB MR_COLOR = new RGB(130, 240, 100);
+
     public static final String SUBJOB_TITLE_COLOR_NAME = "subjobTitleColor"; //$NON-NLS-1$
 
     public static final String SUBJOB_COLOR_NAME = "subjobColor"; //$NON-NLS-1$
+
+    public static final String MRGROUP_COLOR_NAME = "mrgroupColor"; //$NON-NLS-1$
 
     public static final String JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME = "jobDesignerBackgroundColor"; //$NON-NLS-1$
 
@@ -78,6 +82,8 @@ public final class DesignerColorUtils {
         store.setDefault(DesignerColorUtils.SUBJOB_COLOR_NAME, StringConverter.asString(DesignerColorUtils.SUBJOB_COLOR));
         store.setDefault(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME,
                 StringConverter.asString(DesignerColorUtils.SUBJOB_TITLE_COLOR));
+        // mr
+        store.setDefault(DesignerColorUtils.MRGROUP_COLOR_NAME, StringConverter.asString(DesignerColorUtils.MR_COLOR));
         // connection
         for (EConnectionType connType : EConnectionType.values()) {
             store.setDefault(getPreferenceConnectionName(connType), StringConverter.asString(connType.getRGB()));
@@ -95,6 +101,14 @@ public final class DesignerColorUtils {
     public static RGB getPreferenceSubjobRGB(String name, RGB defaultColor) {
         if (name == null || defaultColor == null || (!name.equals(SUBJOB_COLOR_NAME) && !name.equals(SUBJOB_TITLE_COLOR_NAME))) {
             return defaultColor;
+        }
+        String colorStr = CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(name);
+        return ColorUtils.parseStringToRGB(colorStr, defaultColor);
+    }
+
+    public static RGB getPreferenceMRGroupRGB(String name, RGB defaultColor) {
+        if (name == null || defaultColor == null || !name.equals(MRGROUP_COLOR_NAME)) {
+            return MR_COLOR;
         }
         String colorStr = CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(name);
         return ColorUtils.parseStringToRGB(colorStr, defaultColor);
