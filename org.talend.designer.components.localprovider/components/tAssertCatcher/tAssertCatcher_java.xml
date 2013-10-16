@@ -33,7 +33,7 @@ COMPATIBILITY="ALL"
 
   <PARAMETERS>
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" >
-      <TABLE READONLY="true" IF="GET_ORIGINAL_EXCEPTION == 'false'">
+      <TABLE READONLY="true" IF="(CATCH_JAVA_EXCEPTION == 'false') OR (GET_ORIGINAL_EXCEPTION == 'false')">
         <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
         <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
