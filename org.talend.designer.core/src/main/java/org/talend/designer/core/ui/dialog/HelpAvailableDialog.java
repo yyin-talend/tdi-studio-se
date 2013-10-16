@@ -32,7 +32,7 @@ import org.eclipse.ui.help.IWorkbenchHelpSystem;
  * @author GaoZone
  * @version 1.0
  */
-public class HelpAvailableDialog extends Dialog {
+public abstract class HelpAvailableDialog extends Dialog {
 
     private boolean helpAvailable = true;
 
@@ -50,7 +50,9 @@ public class HelpAvailableDialog extends Dialog {
         // Register help listener on the shell
         newShell.addHelpListener(new HelpListener() {
             public void helpRequested(HelpEvent event) {
-                helpPressed();
+                if (isHelpAvailable()) {
+                    helpPressed();
+                }
             }
         });
     }
