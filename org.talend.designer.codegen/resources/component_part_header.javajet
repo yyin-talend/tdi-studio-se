@@ -134,7 +134,18 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 	    }
 	}
 %>
+<%
+	if(node.isVirtualGenerateNode()){
+		String[] componentNameSplitor = node.getUniqueName().split("_");
+%>
+currentComponent="<%=componentNameSplitor[0] +"_"+componentNameSplitor[1]%>";
+<%
+	}else{
+%>
 currentComponent="<%=node.getUniqueName() %>";
+<%
+	}
+%>
 
 <%
 	connSet =  new HashSet<IConnection>();
