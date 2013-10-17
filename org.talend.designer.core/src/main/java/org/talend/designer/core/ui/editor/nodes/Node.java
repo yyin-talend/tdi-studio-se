@@ -1715,8 +1715,8 @@ public class Node extends Element implements IGraphicalNode {
         }
         // unique name can only be set when the process is loaded
         if (id.equals(EParameterName.UNIQUE_NAME.getName())) {
-            parameter.setValue(value);
             setUniqueName((String) value);
+            parameter.setValue(value);
         }
         if (id.equals(EParameterName.SHOW_HINT.getName())) {
             setShowHint((Boolean) value);
