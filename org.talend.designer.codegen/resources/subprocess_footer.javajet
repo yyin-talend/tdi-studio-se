@@ -120,6 +120,42 @@
 %>
 }//end the resume
 
+<%	
+	if (subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0 
+		&& subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter").size() >0 ) {
+		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher");
+		List<INode> metters = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter");
+		List<INode> nodes = (List<INode>)subTree.getNodes();
+		
+		boolean hasMetterProcess = false;
+		for(INode tmp : nodes)
+		{
+			for(INode metter : metters)
+			{
+				if(tmp.getUniqueName().equals(metter.getUniqueName()))
+				{
+					hasMetterProcess = true;
+					break;
+				}
+			}
+			if(hasMetterProcess)
+			{
+				break;
+			}
+		}
+		if(hasMetterProcess)
+		{
+			for (INode metterCatcher : metterCatchers) {
+				
+%>
+	<%=metterCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+<%      
+
+			}
+		}
+	}
+%>
+
 <%
 //this part for "Resume Management"
 {
@@ -167,43 +203,6 @@
 }
 %>
 
-<%	
-	if (subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0 
-		&& subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter").size() >0 ) {
-		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher");
-		List<INode> metters = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter");
-		List<INode> nodes = (List<INode>)subTree.getNodes();
-		
-		boolean hasMetterProcess = false;
-		for(INode tmp : nodes)
-		{
-			for(INode metter : metters)
-			{
-				if(tmp.getUniqueName().equals(metter.getUniqueName()))
-				{
-					hasMetterProcess = true;
-					break;
-				}
-			}
-			if(hasMetterProcess)
-			{
-				break;
-			}
-		}
-		if(hasMetterProcess)
-		{
-			for (INode metterCatcher : metterCatchers) {
-				
-%>
-	<%=metterCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-<%      
-
-			}
-		}
-	}
-%>
-
-	
 	} catch(java.lang.Exception e) {	
 
 		throw new TalendException(e, currentComponent, globalMap);
