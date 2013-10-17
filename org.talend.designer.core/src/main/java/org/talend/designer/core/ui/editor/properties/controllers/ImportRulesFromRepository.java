@@ -123,16 +123,17 @@ public class ImportRulesFromRepository implements SelectionListener {
             rulesTable = new TableViewer(composite, SWT.BORDER);
             Table table = rulesTable.getTable();
             TableColumn c1 = new TableColumn(table, SWT.NULL);
-            c1.setText(RULE_NAME);
+            c1.setText(Messages.getString("PaserRuleSelectionDialog.RULE_NAME")); //$NON-NLS-1$
             TableColumn c2 = new TableColumn(table, SWT.NULL);
-            c2.setText(RULE_TYPE);
+            c2.setText(Messages.getString("PaserRuleSelectionDialog.RULE_TYPE")); //$NON-NLS-1$
             TableColumn c3 = new TableColumn(table, SWT.NULL);
-            c3.setText(RULE_VALUE);
+            c3.setText(Messages.getString("PaserRuleSelectionDialog.RULE_VALUE")); //$NON-NLS-1$
             table.setLinesVisible(true);
             table.setHeaderVisible(true);
             TableLayout tableLayout = new TableLayout();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++) {
                 tableLayout.addColumnData(new ColumnWeightData(1, 50, true));
+            }
             table.setLayout(tableLayout);
 
             GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0);
@@ -161,7 +162,7 @@ public class ImportRulesFromRepository implements SelectionListener {
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (element instanceof IFolder) {
                 IFolder folder = (IFolder) element;
-                if (folder.getName().startsWith(".")) {
+                if (folder.getName().startsWith(".")) { //$NON-NLS-1$
                     return false;
                 }
             }
@@ -178,8 +179,9 @@ public class ImportRulesFromRepository implements SelectionListener {
 
     private class RuleSelectionValidator implements ISelectionStatusValidator {
 
+        @Override
         public IStatus validate(Object[] selection) {
-            Status stat = new Status(IStatus.OK, getClass().getName(), "");
+            Status stat = new Status(IStatus.OK, getClass().getName(), ""); //$NON-NLS-1$
             List<Map<String, String>> parsers = getRulesFromFiles(selection);
             for (Map<String, String> rule : parsers) {
                 if (containsRule(rule)) {
@@ -194,6 +196,7 @@ public class ImportRulesFromRepository implements SelectionListener {
 
     private class RulesTableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             Image warn = null;
             Map<String, String> rule = (HashMap<String, String>) element;
@@ -203,6 +206,7 @@ public class ImportRulesFromRepository implements SelectionListener {
             return warn;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             Map<String, String> rule = (HashMap<String, String>) element;
             String result = null;
@@ -233,15 +237,15 @@ public class ImportRulesFromRepository implements SelectionListener {
 
     private Object[] selectObjects;
 
-    private static final String PARSER_PATH = "TDQ_Libraries/Rules/Parser";
+    private static final String PARSER_PATH = "TDQ_Libraries/Rules/Parser"; //$NON-NLS-1$
 
-    private static final String RULE_NAME = "RULE_NAME";
+    private static final String RULE_NAME = "RULE_NAME"; //$NON-NLS-1$
 
-    private static final String RULE_TYPE = "RULE_TYPE";
+    private static final String RULE_TYPE = "RULE_TYPE"; //$NON-NLS-1$
 
-    private static final String RULE_VALUE = "RULE_VALUE";
+    private static final String RULE_VALUE = "RULE_VALUE"; //$NON-NLS-1$
 
-    private static final String RULE_TABLE = "RULE_TABLE";
+    private static final String RULE_TABLE = "RULE_TABLE"; //$NON-NLS-1$
 
     /**
      * DOC klliu ImportRulesFromRepository constructor comment.
@@ -299,7 +303,7 @@ public class ImportRulesFromRepository implements SelectionListener {
 
     public void mergeRules(List<Map<String, String>> params, List<Map<String, String>> rules) {
         for (Iterator<Map<String, String>> iterator = rules.iterator(); iterator.hasNext();) {
-            Map<String, String> rule = (Map<String, String>) iterator.next();
+            Map<String, String> rule = iterator.next();
             boolean replacedRule = false;
             for (Map<String, String> param : params) {
                 if (rule.get(RULE_NAME).equals(param.get(RULE_NAME))) {
@@ -316,8 +320,9 @@ public class ImportRulesFromRepository implements SelectionListener {
     private Object[] selectRules(IFolder rulesFolder) {
         CheckedTreeSelectionDialog rsd = getRulesDialog();
         rsd.setInput(rulesFolder);
-        if (selectObjects != null)
+        if (selectObjects != null) {
             rsd.setInitialSelections(selectObjects);
+        }
         rsd.open();
         selectObjects = rsd.getResult();
         return selectObjects;
@@ -329,9 +334,11 @@ public class ImportRulesFromRepository implements SelectionListener {
         controller.executeCommand(cmd);
     }
 
+    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
     }
 
+    @Override
     public void widgetSelected(SelectionEvent e) {
         this.params = (List<Map<String, String>>) node.getElementParameter(RULE_TABLE).getValue();
         List<Map<String, String>> params = new ArrayList<Map<String, String>>();
