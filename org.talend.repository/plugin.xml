@@ -2023,6 +2023,15 @@
               name="Fix Wrong DB Types"
               version="5.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.RemoveErrorTagMigrationTask"
+              description="remove error tag from the connection "
+              id="org.talend.repository.model.migration.RemoveErrorTagMigrationTask"
+              name="Remove Error Tag"
+              version="5.4.0">
+        </projecttask>
    </extension>
    
    <extension
