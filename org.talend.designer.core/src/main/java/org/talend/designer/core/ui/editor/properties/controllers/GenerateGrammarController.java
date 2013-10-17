@@ -70,8 +70,6 @@ import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
-import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -365,10 +363,11 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             ExceptionHandler.process(e);
         }
 
-        // add required jar packages used to compile java file
-        if (routineItem.eResource() != null) {
-            addRequiredLib(routineItem);
-        }
+        // TDQ-8142 DEL sizhaoliu do not add jar dependencies to routines
+        // //add required jar packages used to compile java file
+        // if (routineItem.eResource() != null) {
+        // addRequiredLib(routineItem);
+        // }
 
         return routineItem;
     }
@@ -434,35 +433,4 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         }
     }
 
-    /**
-     * add required libraries to class path
-     * 
-     * DOC ytao Comment method "addRequiredLib".
-     * 
-     * @param routineItem
-     */
-    private void addRequiredLib(RoutineItem routineItem) {
-        List<IMPORTType> listRequiredJar = new ArrayList<IMPORTType>();
-
-        IMPORTType type1 = ComponentFactory.eINSTANCE.createIMPORTType();
-        type1.setMODULE("antlr-3.3.jar"); //$NON-NLS-1$
-        type1.setREQUIRED(true);
-        type1.setNAME(routineItem.getProperty().getLabel());
-        listRequiredJar.add(type1);
-
-        IMPORTType type2 = ComponentFactory.eINSTANCE.createIMPORTType();
-        type2.setMODULE("org.talend.dataquality.parser.jar"); //$NON-NLS-1$
-        type2.setREQUIRED(true);
-        type2.setNAME(routineItem.getProperty().getLabel());
-        listRequiredJar.add(type2);
-
-        routineItem.getImports().addAll(listRequiredJar);
-
-        try {
-            CorePlugin.getDefault().getProxyRepositoryFactory().save(routineItem);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-    }
 }

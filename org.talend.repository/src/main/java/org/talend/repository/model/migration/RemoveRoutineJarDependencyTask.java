@@ -58,7 +58,7 @@ public class RemoveRoutineJarDependencyTask extends AbstractItemMigrationTask {
                 List<Object> toRemove = new ArrayList<Object>();
 
                 for (IMPORTType importElement : imports) {
-                    if (importElement.getMODULE().startsWith("org.talend")) { //$NON-NLS-1$
+                    if ("org.talend.dataquality.parser.jar".equals(importElement.getMODULE())) { //$NON-NLS-1$
                         toRemove.add(importElement);
                     }
                 }
