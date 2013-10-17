@@ -6,12 +6,15 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.migration.IMigrationTask.ExecutionResult;
 
 public class RemoveErrorTagMigrationTask extends AbstractItemMigrationTask {
@@ -37,16 +40,26 @@ public class RemoveErrorTagMigrationTask extends AbstractItemMigrationTask {
         ConnectionItem connectionItem = (ConnectionItem) item;
         DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
         if (connection != null) {
+            boolean flag = false;
             Iterator it = connectionItem.getProperty().getInformations().iterator();
             while (it.hasNext()) {
                 org.talend.core.model.properties.Information Information = (org.talend.core.model.properties.Information) it
                         .next();
-                if (Information.getLevel().equals(InformationLevel.ERROR_LITERAL)
-                        || Information.getLevel().equals(InformationLevel.WARN_LITERAL)) {
+                if (Information.getLevel().getName().equals(InformationLevel.ERROR_LITERAL.getName())
+                        || Information.getLevel().getName().equals(InformationLevel.WARN_LITERAL.getName())) {
                     it.remove();
+                    flag = true;
                 }
             }
-            return ExecutionResult.SUCCESS_NO_ALERT;
+            if (flag) {
+                try {
+                    ProxyRepositoryFactory.getInstance().save(item);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
+                }
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            }
         }
         return ExecutionResult.NOTHING_TO_DO;
     }
