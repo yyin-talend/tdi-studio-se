@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.migration.IMigrationTask.ExecutionResult;
 
 public class RemoveErrorTagMigrationTask extends AbstractItemMigrationTask {
@@ -47,5 +49,12 @@ public class RemoveErrorTagMigrationTask extends AbstractItemMigrationTask {
             return ExecutionResult.SUCCESS_NO_ALERT;
         }
         return ExecutionResult.NOTHING_TO_DO;
+    }
+
+    @Override
+    public List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+        toReturn.add(ERepositoryObjectType.METADATA_CONNECTIONS);
+        return toReturn;
     }
 }
