@@ -269,18 +269,6 @@ public class ImportItemUtil {
             // we do not import built in routines
             if (item.eClass().equals(PropertiesPackage.eINSTANCE.getRoutineItem())) {
                 RoutineItem routineItem = (RoutineItem) item;
-                if (item instanceof RoutineItem) {
-                    RoutineItem rItem = (RoutineItem) item;
-                    Set<String> set = routineExtModulesMap.get(rItem.getProperty().getId());
-                    if (set == null) {
-                        set = new HashSet<String>();
-                        routineExtModulesMap.put(rItem.getProperty().getId(), set);
-                    }
-                    for (IMPORTType type : (List<IMPORTType>) rItem.getImports()) {
-                        set.add(type.getMODULE());
-                    }
-                }
-
                 if (routineItem.isBuiltIn()) {
                     isSystem = true;
                 }
@@ -1013,6 +1001,19 @@ public class ImportItemUtil {
             }
             CorePlugin.getDefault().getMigrationToolService()
                     .executeMigrationTasksForImport(project, item, itemRecord.getMigrationTasksToApply(), monitor);
+
+            if (item instanceof RoutineItem) {
+                RoutineItem rItem = (RoutineItem) item;
+                Set<String> set = routineExtModulesMap.get(rItem.getProperty().getId());
+                if (set == null) {
+                    set = new HashSet<String>();
+                    routineExtModulesMap.put(rItem.getProperty().getId(), set);
+                }
+                for (IMPORTType type : (List<IMPORTType>) rItem.getImports()) {
+                    set.add(type.getMODULE());
+                }
+            }
+
             itemRecord.setExistingItemWithSameId(null);
             itemRecord.clear();
             itemRecord.setProperty(item.getProperty());
