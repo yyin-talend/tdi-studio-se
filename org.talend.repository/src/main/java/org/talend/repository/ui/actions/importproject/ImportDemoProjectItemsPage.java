@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -26,7 +27,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -56,6 +60,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
@@ -302,7 +307,21 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     public boolean performFinish() {
         List<DemoProjectBean> checkedElements = getCheckedElements();
         final List<ResourcesManager> finalCheckManagers = getResourceManagers(checkedElements);
-
+        List<ItemRecord> existRecords = populateExistItemRecords(finalCheckManagers);
+        boolean choice = false;
+        if (existRecords.size() != 0) {
+            MessageDialog dialog = new MessageDialog(getShell(), Messages.getString("ImportDemoProjectPage.overwrite"), null,
+                    Messages.getString("ImportDemoProjectPage.overwriteItems"), MessageDialog.QUESTION, new String[] {
+                            IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+            dialog.open();
+            int result = dialog.getReturnCode();
+            if (result == 0) {
+                choice = true;
+            } else {
+                return choice;
+            }
+        }
+        final boolean overwrite = choice;
         ProgressDialog progressDialog = new ProgressDialog(getShell()) {
 
             private IProgressMonitor monitorWrap;
@@ -313,9 +332,9 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
 
                 for (ResourcesManager resManager : finalCheckManagers) {
                     List<ItemRecord> projectRecords = ImportExportHandlersManager.getInstance().populateImportingItems(
-                            resManager, true, monitorWrap);
-                    ImportExportHandlersManager.getInstance().importItemRecords(monitorWrap, resManager, projectRecords, true,
-                            projectRecords.toArray(new ItemRecord[0]), null);
+                            resManager, false, monitorWrap);
+                    ImportExportHandlersManager.getInstance().importItemRecords(monitorWrap, resManager, projectRecords,
+                            overwrite, projectRecords.toArray(new ItemRecord[0]), null);
                 }
 
                 monitorWrap.done();
@@ -426,5 +445,40 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                 setPageComplete(true);
             }
         }
+    }
+
+    private List<ItemRecord> populateExistItemRecords(final List<ResourcesManager> manager) {
+        final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
+        List<ItemRecord> existRecords = new ArrayList<ItemRecord>();
+        IRunnableWithProgress op = new IRunnableWithProgress() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                for (ResourcesManager rm : manager) {
+                    items.addAll(ImportExportHandlersManager.getInstance().populateImportingItems(rm, false, monitor));
+                }
+            }
+
+        };
+        try {
+            new ProgressMonitorDialog(getShell()).run(true, true, op);
+        } catch (Exception e) {
+            // ignore me
+        }
+
+        for (ItemRecord itemRecord : items) {
+            if (itemRecord.getExistingItemWithSameId() != null
+                    && itemRecord.getExistingItemWithSameId() instanceof RepositoryViewObject) {
+                RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
+                if (itemRecord.getProperty() != null && reObject != null) {
+                    if (itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())) {
+                        existRecords.add(itemRecord);
+                    } else {
+                    }
+                }
+            }
+        }
+        return existRecords;
     }
 }
