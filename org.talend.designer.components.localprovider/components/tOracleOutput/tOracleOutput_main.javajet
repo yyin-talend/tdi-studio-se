@@ -107,6 +107,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 		isDynamic = metadata.isDynamicSchema(); 
 	}
 	
+	%>
+		String dataOperationPrefix_<%=cid%> = "";
+		String dataOperationSuffix_<%=cid%> = "";
+	<%
+	
 	if(isDynamic) {
 	%>
 		if(nb_line_<%=cid%>==0) {
@@ -442,12 +447,15 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
     		<%if (rejectConnName == null && isUseBatchByDBVersion && !useExistingConnection) { // modification one
     		%>
+			dataOperationPrefix_<%=cid%> = "Inserting";
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;    		 
 			
     		  <%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		  %>
-    		  batchSizeCounter_<%=cid%>++;
+				dataOperationSuffix_<%=cid%> = " to the <%=dataAction%> batch";
+				dataOperationPrefix_<%=cid%> = "Adding";
+				batchSizeCounter_<%=cid%>++;
     		  <%
     		  }%>    		
     		<%
@@ -455,6 +463,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
             try {
                 nb_line_<%=cid%>++;
+				dataOperationPrefix_<%=cid%> = "Inserting";
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
@@ -567,10 +576,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
     		<%if(rejectConnName == null && isUseBatchByDBVersion && !useExistingConnection) {
     		%>
+			dataOperationPrefix_<%=cid%> = "Updating";
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;
     		<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
+			dataOperationSuffix_<%=cid%> = " to the <%=dataAction%> batch";
+			dataOperationPrefix_<%=cid%> = "Adding";
     		batchSizeCounter_<%=cid%>++;
     		<%
     		}%>    		    		
@@ -579,6 +591,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
              try {
                 nb_line_<%=cid%>++;
+				dataOperationPrefix_<%=cid%> = "Updating";
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
@@ -723,6 +736,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
     			%>
                 try {
+					dataOperationPrefix_<%=cid%> = "Updating";
         			updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
                 } catch(java.lang.Exception e_<%=cid%>) {
                     whetherReject_<%=cid%> = true;
@@ -797,6 +811,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
     			%>
                 try {
+					dataOperationPrefix_<%=cid%> = "Inserting";
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
                 } catch(java.lang.Exception e_<%=cid%>) {
                     whetherReject_<%=cid%> = true;
@@ -911,6 +926,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
     
             try {
+				dataOperationPrefix_<%=cid%> = "Updating";
                 updateFlag_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
             } catch(java.lang.Exception e_<%=cid%>) {
@@ -991,6 +1007,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
         		%>
                 try {
+					dataOperationPrefix_<%=cid%> = "Inserting";
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
                    
                 } catch(java.lang.Exception e_<%=cid%>) {
@@ -1074,9 +1091,12 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
     		<%if (rejectConnName == null && isUseBatchByDBVersion && !useExistingConnection) {
     		%>
+			dataOperationPrefix_<%=cid%> = "Deleting";
     		pstmt_<%=cid %>.addBatch();
     		  <%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		  %>
+			  dataOperationSuffix_<%=cid%> = " to the <%=dataAction%> batch";
+			  dataOperationPrefix_<%=cid%> = "Adding";
     		  batchSizeCounter_<%=cid%>++;
     		  <%
     		  }%>    		
@@ -1084,6 +1104,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {
     		%>
             try {
+				dataOperationPrefix_<%=cid%> = "Deleting";
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.lang.Exception e_<%=cid%>) {
                 whetherReject_<%=cid%> = true;
@@ -1136,7 +1157,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	log4jSb_<%=cid%>.append("|");
                 <%}
             }%>
-			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+			log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + dataOperationSuffix_<%=cid%> + ".");
+			log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
 			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 		<%}
         if(outgoingConns != null && outgoingConns.size() > 0) {
@@ -1169,7 +1191,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>                                                
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
                 	try {
+						log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
 						pstmt_<%=cid %>.executeBatch();
+						log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
                 	}catch (java.sql.BatchUpdateException e_<%=cid%>){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
@@ -1220,7 +1244,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                <%if ((rejectConnName==null && isUseBatchByDBVersion && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
 	                %>
 		                try {
+								<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>
+									log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
+								<%}%>
 		                		pstmt_<%=cid %>.executeBatch();
+								<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>
+									log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
+								<%}%>
+								
 		                }catch (java.sql.BatchUpdateException e_<%=cid%>){
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>
@@ -1257,11 +1288,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                <%
 	                }%>
 					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Starting to commit.");
+						log.debug("<%=cid%> - Starting to commit " + commitCounter_<%=cid%>+ " records.");
 					<%}%>
 		        	conn_<%=cid%>.commit();
 					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Commit has succeeded.");
+						log.debug("<%=cid%> - Commit has succeeded.");
 					<%}%>                
                 	commitCounter_<%=cid%>=0;
                 }	

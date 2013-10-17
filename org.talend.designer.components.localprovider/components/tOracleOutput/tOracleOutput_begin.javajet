@@ -123,9 +123,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
         if(updateKeyCount_<%=cid%> < 1) {
 			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - For update ,Shcema must have a key");
+				log.fatal("<%=cid%> - For update ,the schema must have a key");
 			<%}%>	
-            throw new RuntimeException("For update, Schema must have a key");
+            throw new RuntimeException("For update, the schema must have a key");
         }
         <%
     }
@@ -141,9 +141,9 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
 			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - For delete ,Shcema must have a key");
+				log.fatal("<%=cid%> - For delete ,the schema must have a key");
 			<%}%>	
-            throw new RuntimeException("For delete, Schema must have a key");
+            throw new RuntimeException("For delete, the schema must have a key");
         }
         <%
     }
@@ -192,6 +192,13 @@ if(useExistingConnection) {
 		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES); 
 		conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 	}
+	
+	if(conn_<%=cid%> != null) {
+		if(conn_<%=cid%>.getMetaData() != null) {
+			log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+		}
+	}
+	
 <%
 } else {   
 %>

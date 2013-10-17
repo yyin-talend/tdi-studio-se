@@ -41,6 +41,9 @@ imports="
 	
 	String indexAccuracy = ElementParameterParser.getValue(node, "__SPATIAL_INDEX_ACCURACY__");
 	
+	String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
+    String batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+	
 	List<IMetadataColumn> rejectColumnList = null;
     IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
     if(metadataTable != null) {
@@ -79,11 +82,11 @@ imports="
 	        										+ "MDSYS.SDO_DIM_ELEMENT('y', " + extend.getMinY() + ", " + extend.getMaxY() + ", <%=indexAccuracy %>)), "
 	        										+ <%=targetSRID < 0 ? "\"NULL\"" : targetSRID %> +")";
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Excuting '" +  insertGeometryColumns_<%=cid %> + "'.");
+				log.info("<%=cid%> - Executing '" +  insertGeometryColumns_<%=cid %> + "'.");
 			<%}%>										
 	    	stmtCreateGeoColumns_<%=cid%>.execute(insertGeometryColumns_<%=cid %>);
 	    	<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Excute '" + insertGeometryColumns_<%=cid %> + "' has succeeded.");
+				log.info("<%=cid%> - Execute '" + insertGeometryColumns_<%=cid %> + "' has succeeded.");
 			<%}%>
     	}
         
@@ -104,11 +107,11 @@ imports="
 			String dropIndex_<%=cid %> = "DROP INDEX "+index_name;
 	        try {
 	        	<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Excuting '" + dropIndex_<%=cid %> + "'.");
+					log.info("<%=cid%> - Executing '" + dropIndex_<%=cid %> + "'.");
 				<%}%>
 				stmtCreateIndex_<%=cid%>.execute(dropIndex_<%=cid %>);
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Excute '" + dropIndex_<%=cid%> + "' has succeeded.");
+					log.info("<%=cid%> - Execute '" + dropIndex_<%=cid%> + "' has succeeded.");
 				<%}%>
 			}
 			catch (java.sql.SQLException e_<%=cid%>) {
@@ -122,11 +125,11 @@ imports="
 						+ "ON " + <%=tableName %> + "(" + geometryColumnName + ") "
 						+ "INDEXTYPE IS MDSYS.SPATIAL_INDEX";
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Excuting '" + createIndex_<%=cid %> + "'.");
+				log.info("<%=cid%> - Executing '" + createIndex_<%=cid %> + "'.");
 			<%}%>
 	        stmtCreateIndex_<%=cid%>.execute(createIndex_<%=cid %>);
         	<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Excute " + createIndex_<%=cid%> + "' has succeeded.");
+				log.info("<%=cid%> - Execute " + createIndex_<%=cid%> + "' has succeeded.");
 			<%}%>
 	        stmtCreateIndex_<%=cid%>.close();
 	    }
@@ -179,7 +182,13 @@ imports="
             %>                
                 try {
                 	if (pstmt_<%=cid %> != null) { 
-						pstmt_<%=cid %>.executeBatch();    
+						<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>
+							log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
+						<%}%>
+						pstmt_<%=cid %>.executeBatch();
+						<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>						
+							log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
+						<%}%>
             	    }          	    
                 }catch (java.sql.BatchUpdateException e_<%=cid%>){
                 	<%if(("true").equals(dieOnError)) {
@@ -242,11 +251,11 @@ imports="
 		{
 		    %>
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Starting to commit.");
+				log.debug("<%=cid%> - Starting to commit " + commitCounter_<%=cid%>+ " records.");
 			<%}%>
 		    conn_<%=cid%>.commit();
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Commit has succeeded.");
+				log.debug("<%=cid%> - Commit has succeeded.");
 			<%}%>
 		    <%
 		}
@@ -277,36 +286,36 @@ imports="
 		if(("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) {
     		if (("INSERT").equals(dataAction)) {
 	%>
-				log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
+				log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
 	<%
     		}else if (("UPDATE").equals(dataAction)) {
 	%>
-				log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
+				log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
 	<%
     		}else if (("DELETE").equals(dataAction)) {
 	%>
-				log.info("<%=cid%> has delete "+nb_line_deleted_<%=cid%> + " records.");
+				log.info("<%=cid%> - Has deleted "+nb_line_deleted_<%=cid%> + " records.");
 	<%
     		}
     	}else if("UPDATE_OR_INSERT".equals(dataAction)){
 	%>
-			log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
-			log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
     <%
     	}else if("INSERT_OR_UPDATE".equals(dataAction)){
     %>
-			log.info("<%=cid%> has insert "+nb_line_inserted_<%=cid%> + " records.");
-			log.info("<%=cid%> has update "+nb_line_update_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
     
     <%
     	}
     	if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 	%>
-			log.info("<%=cid%> has reject "+nb_line_rejected_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has rejected "+nb_line_rejected_<%=cid%> + " records.");
 	<%
 		}
 	%>
-		log.info("<%=cid%> - Has finished.");
+		log.info("<%=cid%> - Done.");
 	<%
 	}
 	%>
