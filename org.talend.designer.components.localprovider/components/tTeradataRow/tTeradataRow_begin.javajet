@@ -33,6 +33,14 @@ imports="
 		String conn = "conn_" + connection;
 		%>
 		java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+		<%if(isLog4jEnabled){%>
+			if(conn_<%=cid%> != null) {
+				if(conn_<%=cid%>.getMetaData() != null) {
+					log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+				}
+			}
+			log.info("<%=cid%> - Executing the query: '" + <%=dbquery%> + "'.");
+		<%}%>
 		<%
 	} else {
 	    %>

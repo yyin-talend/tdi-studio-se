@@ -79,7 +79,7 @@
     
 	resumeUtil.addLog("NODE", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));    
     <%if(isLog4jEnabled){%>
-    	log.info("<%=cid%> - Loaded context records count: " + nb_line_<%=cid %> + " .");
-		log.info("<%=cid%> - Has finished.");
+    	log.info("<%=cid%> - Loaded contexts count: " + nb_line_<%=cid %> + ".");
+		log.info("<%=cid%> - Done.");
     <%}%>
     

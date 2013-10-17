@@ -65,12 +65,13 @@ imports="
 					conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 					//globalMap.put("<%=conn%>", conn_<%=cid%>);
 		        }
-				
-				if(conn_<%=cid%> != null) {
-					if(conn_<%=cid%>.getMetaData() != null) {
-						log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+				<% if(isLog4jEnabled) { %>
+					if(conn_<%=cid%> != null) {
+						if(conn_<%=cid%>.getMetaData() != null) {
+							log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+						}
 					}
-				}
+				<% } %>
 <%
 				dbInputBeginUtil.afterUseExistConnection(node);
 		
@@ -82,6 +83,13 @@ imports="
 		    <%dbInputBeginUtil.createStatement(node);%>
 		    
 		    String dbquery_<%=cid%> = <%=dbInputBeginUtil.getQueryString(node)%>;
+<%
+			if(isLog4jEnabled && ("true").equals(useExistingConn)) {
+%>
+				log.info("<%=cid%> - Executing the query: '" + dbquery_<%=cid%> + "'.");
+<%
+			}
+%>
 		    
 		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
 		    
@@ -312,7 +320,7 @@ imports="
 		            }
 %>
 					<%if(isLog4jEnabled){%>
-						log.debug("<%=cid%> - Retrieving the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+						log.debug("<%=cid%> - Retrieving the record " + nb_line_<%=cid%> + ".");
 						log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
 						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%}%>

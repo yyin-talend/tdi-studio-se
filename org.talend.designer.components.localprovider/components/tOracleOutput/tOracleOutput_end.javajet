@@ -182,11 +182,11 @@ imports="
             %>                
                 try {
                 	if (pstmt_<%=cid %> != null) { 
-						<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>
+						<%if (isLog4jEnabled && ("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>
 							log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
 						<%}%>
 						pstmt_<%=cid %>.executeBatch();
-						<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>						
+						<%if (isLog4jEnabled && ("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {%>						
 							log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
 						<%}%>
             	    }          	    

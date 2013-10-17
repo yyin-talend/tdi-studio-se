@@ -159,14 +159,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
     }catch(java.lang.Exception e){    	
     	<%if(isLog4jEnabled){%>
-    		log.error("<%=cid%> - Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
+    		log.error("<%=cid%> - Setting a value for the key \"" + key_<%=cid %> + "\" has failed. Error message: " + e.getMessage());
     	<%}%>
-    	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
+    	System.err.println("Setting a value for the key \"" + key_<%=cid %> + "\" has failed. Error message: " + e.getMessage());
     }
     	nb_line_<%=cid %>++;
 		<%if(isLog4jEnabled){%>
-			log4jSb_<%=cid%>.append("Key is " + key_<%=cid %> + " | Value is " + value_<%=cid %>);
-			log.debug("<%=cid%> - Loading the context " + nb_line_<%=cid %> + " : " + log4jSb_<%=cid%>);
+			log4jSb_<%=cid%>.append("Key is \"" + key_<%=cid %> + "\" | Value is \"" + value_<%=cid %> + "\"");
+			log.debug("<%=cid%> - Loading the context " + nb_line_<%=cid %> + " : " + log4jSb_<%=cid%> + ".");
 			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 		<%}%>
     }

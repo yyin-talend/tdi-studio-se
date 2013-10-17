@@ -96,7 +96,7 @@ imports="
 <%
 				if(isLog4jEnabled){
 %>
-					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the user name '" + dbUser_<%=cid %> + "'.");
+					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid %> + "'.");
 <%
 				}
 				if(("ORACLE_WALLET").equals(connectionType)) {

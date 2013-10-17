@@ -87,7 +87,7 @@ imports="
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 %>
-				log.info("<%=cid%> - Wrote records count: " + nb_line_<%=cid %> + " .");
+				log.info("<%=cid%> - Written records count: " + nb_line_<%=cid %> + " .");
 <%		
 			}
 		}
