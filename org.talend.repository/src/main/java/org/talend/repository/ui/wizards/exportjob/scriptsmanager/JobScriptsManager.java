@@ -861,7 +861,7 @@ public abstract class JobScriptsManager {
                 resource.addResources(basePath, metadataNameFileUrls);
 
                 // children dependencies
-                BuildExportManager.getInstance().exportDependencies(resource, processItem);
+                BuildExportManager.getInstance().exportDependencies(resource, item);
             }
 
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
