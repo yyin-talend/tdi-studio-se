@@ -1330,7 +1330,7 @@ public class Node extends Element implements IGraphicalNode {
         return null;
     }
 
-    private void takeSchemaFrom(Node nodeTarget, String connector) {
+    public void takeSchemaFrom(Node nodeTarget, String connector) {
         IElementParameter paramTarget = nodeTarget.getSchemaParameterFromConnector(connector);
         IMetadataTable tableTarget = nodeTarget.getMetadataFromConnector(connector);
 
