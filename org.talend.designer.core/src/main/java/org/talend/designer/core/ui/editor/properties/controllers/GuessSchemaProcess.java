@@ -127,7 +127,7 @@ public class GuessSchemaProcess {
 
         // create the tLibraryLoad for the input node
 
-        if (node.getComponent().getModulesNeeded().size() > 0) {
+        if (node.getComponent().getModulesNeeded().size() > 0 && !node.getComponent().getName().equals("tRedshiftInput")) {//$NON-NLS-1$
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
                 if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
@@ -143,7 +143,7 @@ public class GuessSchemaProcess {
                 }
             }
         } else { // hywang add for 9594
-            if (node.getComponent().getName().equals("tJDBCInput")) {
+            if (node.getComponent().getName().equals("tJDBCInput") || node.getComponent().getName().equals("tRedshiftInput")) {
                 List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
                 String moduleNeedName = "";
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
@@ -154,10 +154,6 @@ public class GuessSchemaProcess {
                     moduleNeedName = drivers.get(0).toString();
                     libNode1.setPropertyValue("LIBRARY", "\"" + moduleNeedName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
-                // for (int i = 0; i < drivers.size(); i++) {
-                // moduleNeedName = drivers.get(i).toString();
-                //                    libNode1.setPropertyValue("LIBRARY", "\"" + moduleNeedName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                // }
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
