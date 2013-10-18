@@ -45,7 +45,7 @@ import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
  */
 public abstract class ExtendedNodeReviewDialog extends Dialog {
 
-    protected String selectedNodeId;
+    protected Object result;
 
     protected TreeViewer treeViewer;
 
@@ -178,8 +178,8 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
 
     protected abstract boolean isValidSelection(SelectionChangedEvent event);
 
-    public String getSelectedNodeId() {
-        return this.selectedNodeId;
+    public Object getResult() {
+        return this.result;
     }
 
     class ViewerTextFilter extends ViewerFilter {
