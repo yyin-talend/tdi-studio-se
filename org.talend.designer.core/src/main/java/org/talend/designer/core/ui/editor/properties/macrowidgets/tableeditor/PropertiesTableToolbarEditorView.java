@@ -399,7 +399,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 if (model != null
                         && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
                                 .getName().equals("HBASE_PARAMETERS"))) {
-                    if (getExtendedTableViewer().getTable().getSelectionIndex() > 0) {
+                    if (getExtendedTableViewer().getTable().getSelectionIndex() > -1) {
                         TableItem item = extendedTableViewer.getTable().getSelection()[0];
                         HashMap<String, String> itemMap = (HashMap<String, String>) item.getData();
                         List<HashMap<String, String>> parameterValue = (List<HashMap<String, String>>) model.getElemParameter()
