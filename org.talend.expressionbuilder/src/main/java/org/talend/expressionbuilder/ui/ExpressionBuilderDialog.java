@@ -19,12 +19,9 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -478,22 +475,19 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
 
-        IFolder configurationFolder = p.getFolder(ExpressionPersistance.CONFIGURATION_FOLDER_NAME);
-        if (!configurationFolder.exists()) {
-            try {
-                configurationFolder.create(true, true, null);
-            } catch (CoreException e) {
-                RuntimeExceptionHandler.process(e);
-            }
-        }
+        String projectPath = p.getLocation().toPortableString();
 
-        IFolder expressionFolder = configurationFolder.getFolder(ExpressionPersistance.EXPRESSION_FOLDER_NAME);
+        String configurationPath = projectPath + File.separator + ExpressionPersistance.CONFIGURATION_FOLDER_NAME;
+        configurationPath = getValidFolderPath(configurationPath, 1);
+        File configurationFolder = new File(configurationPath);
+        if (!configurationFolder.exists()) {
+            configurationFolder.mkdir();
+        }
+        String expressionPath = configurationPath + File.separator + ExpressionPersistance.EXPRESSION_FOLDER_NAME;
+        expressionPath = getValidFolderPath(expressionPath, 1);
+        File expressionFolder = new File(expressionPath);
         if (!expressionFolder.exists()) {
-            try {
-                expressionFolder.create(true, true, null);
-            } catch (CoreException e) {
-                RuntimeExceptionHandler.process(e);
-            }
+            expressionFolder.mkdir();
         }
 
         String jobName = "";
@@ -502,8 +496,18 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         } else {
             jobName = "tXMLMap";
         }
-        IPath path = expressionFolder.getLocation().append(jobName + XmlUtil.FILE_XML_SUFFIX);
-        return path.toOSString();
+        expressionPath = expressionPath + File.separator + jobName + XmlUtil.FILE_XML_SUFFIX;
+        return expressionPath;
+    }
+
+    public String getValidFolderPath(String path, int suffix) {
+        File file = new File(path);
+        if (file.exists() && file.isFile()) {
+            path = path + suffix;
+            return getValidFolderPath(path, suffix);
+        }
+        return path;
+
     }
 
     public String getExpressionForTable() {
