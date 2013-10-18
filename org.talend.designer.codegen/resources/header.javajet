@@ -380,6 +380,11 @@ private class TalendException extends java.lang.Exception {
 	private java.util.Map<String, Object> globalMap = null;
 	private java.lang.Exception e = null;
 	private String currentComponent = null;
+	private String virtualComponentName = null;
+	
+	public void setVirtualComponentName (String virtualComponentName){
+		this.virtualComponentName = virtualComponentName;
+	}
 
 	private TalendException(java.lang.Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
 		this.currentComponent= errorComponent;
@@ -398,6 +403,9 @@ private class TalendException extends java.lang.Exception {
 	@Override
 	public void printStackTrace() {
 		if (!(e instanceof TalendException || e instanceof TDieException)) {
+			if(virtualComponentName!=null && currentComponent.indexOf(virtualComponentName)==0){
+				globalMap.put(virtualComponentName+"_ERROR_MESSAGE",e.getMessage());
+			}
 			 globalMap.put(currentComponent+"_ERROR_MESSAGE",e.getMessage());
 			System.err.println("Exception in component " + currentComponent);
 		}
