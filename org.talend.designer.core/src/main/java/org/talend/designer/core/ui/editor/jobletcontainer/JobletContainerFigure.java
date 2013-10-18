@@ -116,11 +116,11 @@ public class JobletContainerFigure extends Figure {
         initJobletContainerColor();
 
         updateData();
-
+        initializejobletContainer(jobletContainer.getJobletContainerRectangle());
         if (jobletContainer.getNode().isMapReduceStart()) {
             refreshNodes(false);
         }
-        initializejobletContainer(jobletContainer.getJobletContainerRectangle());
+
     }
 
     public void doCollapse() {
