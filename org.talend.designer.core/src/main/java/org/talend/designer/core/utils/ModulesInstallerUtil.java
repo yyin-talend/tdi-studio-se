@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
@@ -38,9 +39,39 @@ public class ModulesInstallerUtil {
     public static void forceInstallModules(Shell shell, IComponent component, List<ModuleNeeded> modules) {
         String text = Messages.getString("ModulesInstaller_text1", component.getName());//$NON-NLS-1$
         String title = Messages.getString("ModulesInstaller_title1") + component.getName(); //$NON-NLS-1$
+        String name = component.getName();
+        if (name == null) {
+            return;
+        }
+        boolean opened = false;
         if (!modules.isEmpty()) {
-            ComponentExternalModulesDialog dialog = new ComponentExternalModulesDialog(shell, modules, text, title);
-            dialog.openDialog();
+            // added by dlin fix bug https://jira.talendforge.org/browse/TDI-27679
+            Shell[] shells = PlatformUI.getWorkbench().getDisplay().getShells();
+            for (Shell shell2 : shells) {
+                Object currentDialog = shell2.getData();
+                if (currentDialog instanceof ComponentExternalModulesDialog) {
+                    String componentName = ((ComponentExternalModulesDialog) currentDialog).getCoponentName();
+                    if (componentName == null) {
+                        return;
+                    }
+                    if (name.equalsIgnoreCase(componentName)) {
+                        // one downloading dialog for one kind of component is enough only need to resopen instead of
+                        // create a new one
+                        opened = true;
+                        // setMaximized is mandatory .or after you minmizing the dialog .only setSize cann't bring the
+                        // dialog foreground .
+                        shell2.setMaximized(true);
+                        shell2.setSize(1050, 400);
+                        break;
+                    }
+                }
+            }
+            if (!opened) {
+                ComponentExternalModulesDialog dialog = new ComponentExternalModulesDialog(shell, modules, text, title);
+                dialog.setCoponentName(name);
+                dialog.openDialog();
+            }
+
         }
     }
 
