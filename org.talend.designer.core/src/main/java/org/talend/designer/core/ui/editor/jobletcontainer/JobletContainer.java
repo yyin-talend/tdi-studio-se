@@ -772,6 +772,7 @@ public class JobletContainer extends NodeContainer {
         if (!this.node.isMapReduce()) {
             return;
         }
+        Rectangle oracleRec = totalRectangle.getCopy();
         boolean subjobCollapsed = this.node.getNodeContainer().getSubjobContainer().isCollapsed();
         int temWidth = 114;
         if (isMRGroupContainesReduce() && !subjobCollapsed) {
@@ -807,30 +808,43 @@ public class JobletContainer extends NodeContainer {
                     distance = w;
                 }
             }
-            if (this.getNodeContainers().size() == 1) {
-                if (this.getNode().isMrContainsReduce() && temWidth == 240 && (temWidth > this.getNodeContainerRectangle().width)) {
-                    int dis = temWidth - this.getNodeContainerRectangle().width;
-                    if (totalRectangle.x > dis / 2) {
-                        totalRectangle.x = totalRectangle.x - dis / 2;
-                        if (distance != null) {
-                            if (distance < this.getNodeContainerRectangle().width) {
-                                distance = this.getNodeContainerRectangle().width;
-                            }
-                            distance = distance + dis / 2;
+            // if (this.getNodeContainers().size() == 1) {
+            // if (this.getNode().isMrContainsReduce() && temWidth == 240 && (temWidth >
+            // this.getNodeContainerRectangle().width)) {
+            // int dis = temWidth - this.getNodeContainerRectangle().width;
+            // if (totalRectangle.x > dis / 2) {
+            // totalRectangle.x = totalRectangle.x - dis / 2;
+            // if (distance != null) {
+            // if (distance < this.getNodeContainerRectangle().width) {
+            // distance = this.getNodeContainerRectangle().width;
+            // }
+            // distance = distance + dis / 2;
+            // }
+            // }
+            // }
+            // } else
+            if (temWidth == 240 && (temWidth > this.getNodeContainerRectangle().width)) {
+                int dis = temWidth - oracleRec.width;
+                if (totalRectangle.x > dis / 2) {
+                    totalRectangle.x = totalRectangle.x - dis / 2;
+                    if (distance != null) {
+                        if (distance < this.getNodeContainerRectangle().width) {
+                            distance = this.getNodeContainerRectangle().width;
                         }
+                        distance = distance + dis / 2;
                     }
                 }
             }
 
-            if (distance == null) {
-                totalRectangle.width = temWidth;
-            } else if (distance >= temWidth) {
-                totalRectangle.width = temWidth;
-            } else if (distance < totalRectangle.width) {
-                return;
-            } else {
-                totalRectangle.width = distance;
-            }
+            // if (distance == null) {
+            totalRectangle.width = temWidth;
+            // } else if (distance >= temWidth) {
+            // totalRectangle.width = temWidth;
+            // } else if (distance < totalRectangle.width) {
+            // return;
+            // } else {
+            // totalRectangle.width = distance;
+            // }
         }
 
     }

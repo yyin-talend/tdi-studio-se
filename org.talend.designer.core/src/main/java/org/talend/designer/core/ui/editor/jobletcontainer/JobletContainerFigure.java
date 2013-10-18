@@ -117,10 +117,10 @@ public class JobletContainerFigure extends Figure {
 
         updateData();
 
-        initializejobletContainer(jobletContainer.getJobletContainerRectangle());
         if (jobletContainer.getNode().isMapReduceStart()) {
             refreshNodes(false);
         }
+        initializejobletContainer(jobletContainer.getJobletContainerRectangle());
     }
 
     public void doCollapse() {
@@ -339,14 +339,20 @@ public class JobletContainerFigure extends Figure {
             int proWidth = value.getBounds().width;
             int jcWidth = this.jobletContainer.getJobletContainerRectangle().width;
             if (isSubjobDisplay) {
-                if ((jcWidth / 2 - proWidth) > 0) {
-                    if (!this.jobletContainer.isMRGroupContainesReduce()) {
+                if (!this.jobletContainer.isMRGroupContainesReduce()) {
+                    if (jcWidth > proWidth) {
                         if (key.startsWith("map_")) {
-                            value.setLocation(new Point(location.x + jcWidth / 2 - value.getBounds().width / 2, location.y
-                                    + rectangle.height - count * progressHeight + mry));
+                            value.setLocation(new Point(location.x + jcWidth / 2 - proWidth / 2, location.y + rectangle.height
+                                    - count * progressHeight + mry));
                         }
-
                     } else {
+                        if (key.startsWith("map_")) {
+                            value.setLocation(new Point(location.x, location.y + rectangle.height - count * progressHeight + mry));
+                        }
+                    }
+
+                } else {
+                    if (jcWidth / 2 > proWidth) {
                         if (key.startsWith("map_")) {
                             value.setLocation(new Point(location.x + jcWidth / 2 - proWidth, location.y + rectangle.height
                                     - count * progressHeight + mry));
@@ -355,17 +361,18 @@ public class JobletContainerFigure extends Figure {
                             value.setLocation(new Point(location.x + jcWidth / 2, location.y + rectangle.height - count
                                     * progressHeight + mry));
                         }
+                    } else {
+                        if (key.startsWith("map_")) {
+                            value.setLocation(new Point(location.x, location.y + rectangle.height - count * progressHeight + mry));
+                        }
+                        if (key.startsWith("reduce_")) {
+                            value.setLocation(new Point(location.x + 110, location.y + rectangle.height - count * progressHeight
+                                    + mry));
+                        }
                     }
 
-                } else {
-                    if (key.startsWith("map_")) {
-                        value.setLocation(new Point(location.x, location.y + rectangle.height - count * progressHeight + mry));
-                    }
-                    if (key.startsWith("reduce_")) {
-                        value.setLocation(new Point(location.x + 110, location.y + rectangle.height - count * progressHeight
-                                + mry));
-                    }
                 }
+
             }
         }
 
