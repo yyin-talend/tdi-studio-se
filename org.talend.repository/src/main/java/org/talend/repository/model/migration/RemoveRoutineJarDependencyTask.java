@@ -26,7 +26,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * ADD sizhaoliu 2013-10-17 for TDQ-8142
@@ -53,7 +52,6 @@ public class RemoveRoutineJarDependencyTask extends AbstractItemMigrationTask {
                 return ExecutionResult.NOTHING_TO_DO;
             }
             try {
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 EList<IMPORTType> imports = routineItem.getImports();
                 List<Object> toRemove = new ArrayList<Object>();
 
@@ -62,8 +60,10 @@ public class RemoveRoutineJarDependencyTask extends AbstractItemMigrationTask {
                         toRemove.add(importElement);
                     }
                 }
-                imports.removeAll(toRemove);
-                factory.save(routineItem);
+                if (toRemove.size() > 0) {
+                    imports.removeAll(toRemove);
+                    ProxyRepositoryFactory.getInstance().save(routineItem);
+                }
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (Exception e) {
                 ExceptionHandler.process(e);
