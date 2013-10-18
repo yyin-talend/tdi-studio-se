@@ -382,6 +382,13 @@
             name="Remove routine folder"
             version="5.1.2"/>
       <projecttask
+            beforeLogon="false"
+            breaks="5.3.1"
+            class="org.talend.repository.model.migration.RemoveRoutineJarDependencyTask"
+            id="org.talend.repository.model.migration.RemoveRoutineJarDependencyTask"
+            name="Remove routine dependency on talend jars"
+            version="5.4.0"/>
+      <projecttask
             beforeLogon="true"
             breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeXmiSerialization"
