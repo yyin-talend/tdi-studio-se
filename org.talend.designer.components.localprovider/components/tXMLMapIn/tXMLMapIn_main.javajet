@@ -40,6 +40,7 @@
 	
 	List<String> tableNames = new ArrayList<String>();
 	Map<String,String> tableNameToDocumentColumnName = new HashMap<String,String>();
+	Map<String,Boolean> tableNameToAllowEmptyElement = new HashMap<String,Boolean>();
 	
 	for(OutputXmlTree outputTable : outputTables) {
 		String outputTableName = outputTable.getName();
@@ -51,6 +52,7 @@
 		for(OutputTreeNode outputNode: outputTable.getNodes()) {
 			if(("id_Document").equals(outputNode.getType())){
 				tableNameToDocumentColumnName.put(outputTableName,outputNode.getName());
+				tableNameToAllowEmptyElement.put(outputTableName,outputTable.isEnableEmptyElement());
 				break;
 			}
 		}
@@ -62,12 +64,13 @@
 	if(row_out_<%=cid %>!=null && row_out_<%=cid %> instanceof <%=tableName%>Struct) {
 		<%=tableName%> = (<%=tableName%>Struct)row_out_<%=cid %>;
 <%
-	String docColumnName = tableNameToDocumentColumnName.get(tableName);
-	if(docColumnName!=null) {
+		String docColumnName = tableNameToDocumentColumnName.get(tableName);
+		if(docColumnName!=null) {
+			boolean allowEmptyElement = tableNameToAllowEmptyElement.get(tableName);
 %>
-		generateDocumentHelper_<%=tableName%>.generateOk(<%=tableName%>.<%=docColumnName%>);
+			routines.system.GenerateDocumentHelper.generateOk(<%=tableName%>.<%=docColumnName%>, <%=!allowEmptyElement%>);
 <%
-	}
+		}
 %>		
 	}
 <%
