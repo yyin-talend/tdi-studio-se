@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -27,7 +29,9 @@ import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -67,7 +71,7 @@ public class PropertyChangeCommand extends Command {
 
     private final String propName;
 
-    private Object newValue;
+    private final Object newValue;
 
     private Object oldValue;
 
@@ -610,6 +614,7 @@ public class PropertyChangeCommand extends Command {
                                 columnsToRemove.add(column);
                             }
                         }
+                        boolean isSameMeta = metadataTable.sameMetadataAs(newMetadataTable);
                         metadataTable.getListColumns().removeAll(columnsToRemove);
 
                         boolean onlyHaveCustomInDefault = true;
@@ -629,6 +634,19 @@ public class PropertyChangeCommand extends Command {
 
                         changeMetadataCommand = new ChangeMetadataCommand(node, null, null, newMetadataTable);
                         changeMetadataCommand.execute(true);
+                        IElementParameter component = elem.getElementParameter(EParameterName.COMPONENT_NAME.getName());
+                        if (component != null && component.getValue().equals("tSalesforceOutput")) {//$NON-NLS-1$  
+                            if (((Node) elem).getIncomingConnections().size() > 0) {
+                                IConnection connection = ((Node) elem).getIncomingConnections().get(0);
+                                Node source = (Node) connection.getSource();
+                                Node target = (Node) connection.getTarget();
+                                EConnectionType lineStyle = connection.getLineStyle();
+                                if (!isSameMeta
+                                        && MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot"))) {
+                                    source.takeSchemaFrom(target, lineStyle.getName());
+                                }
+                            }
+                        }
                     }
                 }
             }
