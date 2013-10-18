@@ -57,6 +57,7 @@ import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
+import org.talend.repository.model.RepositoryConstants;
 import org.xml.sax.SAXException;
 
 /**
@@ -479,7 +480,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
 
-        String projectPath = p.getLocation().toPortableString();
+        // put to the temp folder
+        String projectPath = p.getLocation().toPortableString() + File.separator + RepositoryConstants.TEMP_DIRECTORY;
 
         String configurationPath = projectPath + File.separator + ExpressionPersistance.CONFIGURATION_FOLDER_NAME;
         configurationPath = getValidFolderPath(configurationPath, 1);
