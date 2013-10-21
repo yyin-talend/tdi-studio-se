@@ -66,118 +66,160 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
     		if(!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) continue;
     		String outputConnName = conn.getName();    		
 %>
-	<%=outputConnName %> = null;	
+			<%=outputConnName %> = null;	
 <%		
 		}
-if(inRefCon != null){//exist lookup		    	
-    	for (IConnection conn : outConns) {
-    		if(!conn.isActivate()) continue;
-    		if(!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) continue;
-    		String outputConnName = conn.getName();
+		if(isLog4jEnabled){%>
+			StringBuffer log4jSbMain_<%=cid%> = new StringBuffer();
+			StringBuffer log4jSbReject_<%=cid%> = new StringBuffer();
+		<%}
+		if(inRefCon != null){//exist lookup	
+			int firstConn = 0;
+			for (IConnection conn : outConns) {
+				if(!conn.isActivate()) continue;
+				if(!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) continue;
+				String outputConnName = conn.getName();
 %>
 	
-	<%=outputConnName %> = new <%=outputConnName %>Struct();	
+				<%=outputConnName %> = new <%=outputConnName %>Struct();	
 <%
-		//first, iterate with minSize
-		for (int i = 0; i < minSize; i++) {//4
-			IMetadataColumn column = columns.get(i);
-			IMetadataColumn preColumn = preColumns.get(i);
-			boolean isLookup = false;
+				//first, iterate with minSize
+				for (int i = 0; i < minSize; i++) {//4
+					IMetadataColumn column = columns.get(i);
+					IMetadataColumn preColumn = preColumns.get(i);
+					boolean isLookup = false;
 
-			if(useLookup) {
-				//find the lookup column
-				for (int j = 0; j < lookupCols.size(); j++) {
-					Map<String, String> lineValue = lookupCols.get(j);
-					if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
-						isLookup = true;
-						break;
+					if(useLookup) {
+						//find the lookup column
+						for (int j = 0; j < lookupCols.size(); j++) {
+							Map<String, String> lineValue = lookupCols.get(j);
+							if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
+								isLookup = true;
+								break;
+							}
+						}
+					}
+            
+					if(!isLookup) {
+%>					
+						<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;
+<%
+						if(isLog4jEnabled && firstConn==0){%>
+							log4jSbMain_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
+							log4jSbReject_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
+							<%if(i < minSize-1){%>
+								log4jSbMain_<%=cid%>.append("|");
+								log4jSbReject_<%=cid%>.append("|");
+							<%}
+						}
+					}
+				} //4
+				firstConn++;
+			}
+%>
+
+			if(util_<%=cid %>.isJoined(<%=incomingName %>)){ 
+<%
+				if(useLookup) {
+					for (IConnection conn : connsFilter) {
+						if(!conn.isActivate()) continue;
+						String outputConnName = conn.getName();
+						//second, iterate with columnSize
+						for (int i = 0; i < columnSize; i++) {//4
+							IMetadataColumn column = columns.get(i);
+							
+							//find the lookup column
+							boolean isLookup = false;			
+							String lookupName = null;
+							for (int j = 0; j < lookupCols.size(); j++) {
+								 Map<String, String> lineValue = lookupCols.get(j);
+								 if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
+									isLookup = true;
+									lookupName = lineValue.get("LOOKUP_COLUMN");
+									break;
+								 }
+							}
+				
+							if(isLookup) {
+%>			
+								<%=outputConnName %>.<%=column.getLabel() %> = util_<%=cid %>.lookupValue.<%=lookupName %>;
+<%
+								if(isLog4jEnabled){%>
+									log4jSbMain_<%=cid%>.append("|" + <%=outputConnName %>.<%=column.getLabel() %>);
+								<%}
+							}
+						} //4
 					}
 				}
-			}
-            
-            if(!isLookup) {
-%>					
-	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
-<%
-			}
-		} //4
-	}
-%>
-
-	if(util_<%=cid %>.isJoined(<%=incomingName %>)){ 
-<%
-if(useLookup) {
-	for (IConnection conn : connsFilter) {
-		if(!conn.isActivate()) continue;
-		String outputConnName = conn.getName();
-		//second, iterate with columnSize
-		for (int i = 0; i < columnSize; i++) {//4
-			IMetadataColumn column = columns.get(i);
-			
-			//find the lookup column
-			boolean isLookup = false;			
-			String lookupName = null;
-			for (int j = 0; j < lookupCols.size(); j++) {
-                 Map<String, String> lineValue = lookupCols.get(j);
-                 if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
-					isLookup = true;
-					lookupName = lineValue.get("LOOKUP_COLUMN");
-					break;
-                 }
-            }
-            
-    if(isLookup) {
-%>			
-		<%=outputConnName %>.<%=column.getLabel() %> = util_<%=cid %>.lookupValue.<%=lookupName %>;		
-<%
-			}
-		} //4
-  }
-} 
-%>
-	   <%for (IConnection conn : connsReject) { if(!conn.isActivate()) continue;%> <%=conn.getName()%> = null; <%}%>
-	} 
-	
-<%if(useReject){%>	
-	else{
-	   <%for (IConnection conn : connsFilter) { if(!conn.isActivate()) continue;%> <%=conn.getName()%> = null; <%}%>
-	}
-<%}else{%>
-	   <%for (IConnection conn : connsReject) { if(!conn.isActivate()) continue;%> <%=conn.getName()%> = null; <%}%>		
-<%}%>
-
-<%} else {//exist lookup    	
-
-for (IConnection conn : connsFilter) {
-			if(!conn.isActivate()) continue;
-    		String outputConnName = conn.getName();
-%>
-	
-	<%=outputConnName %> = new <%=outputConnName %>Struct();	
-<%
-		if(isLog4jEnabled){%>
-			StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-		<%}
-		//first, iterate with minSize
-		for (int i = 0; i < minSize; i++) {//4
-			IMetadataColumn column = columns.get(i);
-			IMetadataColumn preColumn = preColumns.get(i);
-%>					
-	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
-<%
 				if(isLog4jEnabled){%>
-	                log4jSb_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
-					<%if(i < minSize-1){%>
-	                	log4jSb_<%=cid%>.append("|");
-					<%}
+					log.trace("<%=cid%> - Output record :" + log4jSbMain_<%=cid%>);
+					log4jSbMain_<%=cid%>.delete(0,log4jSbMain_<%=cid%>.length());
+				<%}				
+
+				for (IConnection conn : connsReject) { 
+					if(!conn.isActivate()) continue;
+%> 
+					<%=conn.getName()%> = null; 
+<%
 				}
-		} //4
-		if(isLog4jEnabled){%>
-			log.debug("<%=cid%> - Output records :" + log4jSb_<%=cid%>);
-			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-		<%}
-	}
-}
+%>
+			} 
+	
+<%
+			if(useReject){
+%>	
+				else{
+<%
+					for (IConnection conn : connsFilter) { 
+						if(!conn.isActivate()) continue;
+						if(isLog4jEnabled){%>
+							log.trace("<%=cid%> - Rejected record :" + log4jSbReject_<%=cid%>);
+							log4jSbReject_<%=cid%>.delete(0,log4jSbReject_<%=cid%>.length());
+						<%}
+%> 
+						<%=conn.getName()%> = null; 
+<%
+					}
+%>
+				}
+<%
+			}else{
+				for (IConnection conn : connsReject) { 
+					if(!conn.isActivate()) continue;
+%> 
+					<%=conn.getName()%> = null;
+<%
+				}
+			}
+		} else {//exist lookup    	
+
+			for (IConnection conn : connsFilter) {
+				if(!conn.isActivate()) continue;
+				String outputConnName = conn.getName();
+%>
+	
+				<%=outputConnName %> = new <%=outputConnName %>Struct();	
+<%
+				//first, iterate with minSize
+				for (int i = 0; i < minSize; i++) {//4
+					IMetadataColumn column = columns.get(i);
+					IMetadataColumn preColumn = preColumns.get(i);
+%>					
+					<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
+<%
+					if(isLog4jEnabled){%>
+						log4jSb2_<%=cid%>.append(<%=outputConnName %>.<%=column.getLabel() %>);
+						<%if(i < minSize-1){%>
+							log4jSb2_<%=cid%>.append("|");
+						<%}
+					}
+				} //4
+				if(isLog4jEnabled){%>
+					log.trace("<%=cid%> - Output records :" + log4jSb2_<%=cid%>);
+					log4jSb2_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+				<%}
+			}
+		}
 %>		
 ///////////////////////    			
 <%

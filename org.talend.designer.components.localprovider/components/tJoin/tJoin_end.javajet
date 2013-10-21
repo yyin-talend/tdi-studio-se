@@ -14,5 +14,5 @@ String cid = node.getUniqueName();
 %>
 
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Has finished.");
+	log.info("<%=cid%> - Done.");
 <%}%>

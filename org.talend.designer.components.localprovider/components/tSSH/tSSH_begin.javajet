@@ -86,7 +86,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 	/* Create a connection instance */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" +hostname_<%=cid%> + "'.");
+			log.info("<%=cid%> - Connection attempt to '" +hostname_<%=cid%> + "' on the port '<%=port%>' as '" + username_<%=cid%> + "'.");
 		<%}%>
 <%
         if(("").equals(port)){
@@ -115,6 +115,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         if (("PUBLICKEY").equals(authMethod)) {
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a public key.");
+		<%}%>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
 		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
 			  if (isAuthenticated_<%=cid%> == false){
@@ -127,6 +130,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
         if (("PASSWORD").equals(authMethod)) {
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a password.");
+		<%}%>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
 			if (isAuthenticated_<%=cid%> == false){
 				<%if(isLog4jEnabled){%>
@@ -139,6 +145,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using an interactive action.");
+		<%}%>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
             new ch.ethz.ssh2.InteractiveCallback() {
         

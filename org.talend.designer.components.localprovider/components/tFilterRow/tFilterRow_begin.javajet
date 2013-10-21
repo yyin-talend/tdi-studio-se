@@ -20,7 +20,7 @@ if (metadatas != null && metadatas.size() > 0) {
   if (metadata != null) {
   %>
 	<%if(isLog4jEnabled){%>
-    	log.info("<%=cid%> - Starting to work.");
+    	log.info("<%=cid%> - Start to work.");
 		StringBuffer log4jSb_<%=cid%> = new StringBuffer();
     <%}%>
     int nb_line_<%=cid%> = 0;

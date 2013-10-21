@@ -22,7 +22,7 @@ imports="
             List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
 				if(isLog4jEnabled){%>
 					log.info("<%=cid%> - Start to work.");
-		        	log.info("<%=cid%> - Setting env.");
+		        	log.info("<%=cid%> - Setting environment variables.");
     				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
 				<%}
         	    for (int i = 0; i < params.size(); i++) {
@@ -43,13 +43,13 @@ imports="
                     }
 %>
 					<%if(isLog4jEnabled){%>
-						log.debug("<%=cid%> - Set env : " + <%=line.get("NAME")%> + " value is '" + <%=line.get("VALUE")%> + "'.");
+						log.debug("<%=cid%> - Set environment variable: Key='" + <%=line.get("NAME")%> + "',Value='" + System.getProperty(<%= line.get("NAME") %>) + "'.");
 						log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 					<%}%>
 <%
                 }
 				if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Has finished!");
+					log.info("<%=cid%> - Done.");
 				<%}
         }
     }

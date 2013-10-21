@@ -14,6 +14,9 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 %>
 <%if(("exitloop").equals(ElementParameterParser.getValue(node, "__THEN__"))){%>
     if(true){
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid %> - An action has been triggered. Breaking the loop.");
+		<%}%>
         break;
     }
 <% } else { %>
@@ -29,5 +32,5 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 }
 
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid %> - Has finished.");
+	log.info("<%=cid %> - Done.");
 <%}%>

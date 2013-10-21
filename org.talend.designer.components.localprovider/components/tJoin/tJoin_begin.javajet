@@ -81,7 +81,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 				if(curCount!=0){%>
 				log4jSb_<%=cid%>.append(" && ");
 				<%}%>
-	        	log4jSb_<%=cid%>.append(mainRow.<%=inputKey %>);
+	        	log4jSb_<%=cid%>.append("<%=inputKey %> = " + mainRow.<%=inputKey %>);
 			<%}%>
 <%
            curCount ++ ;
@@ -96,13 +96,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             lookupValue = tHash_<%=cid %>.get(<%=lookupConName %>HashKey);            
             if(lookupValue != null){
 				<%if(isLog4jEnabled){%>
-					log.debug("<%=cid%> - Key for : " + log4jSb_<%=cid%> + " join with lookup row has successed.");
+					log.debug("<%=cid%> - The record with the key '" + log4jSb_<%=cid%> + "' joined a lookup record.");
 					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%}%>
             	return true;
             }else{
 				<%if(isLog4jEnabled){%>
-					log.debug("<%=cid%> - Key for : " + log4jSb_<%=cid%> + " join with lookup row has unsuccessed.");
+					log.debug("<%=cid%> - The record with the key '" + log4jSb_<%=cid%> + "' didn't join a lookup record.");
 					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%}%>
             }  
