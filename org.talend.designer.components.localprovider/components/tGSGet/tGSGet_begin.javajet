@@ -147,7 +147,6 @@ imports="
 		if(!useKeysList){
 %>
 				for (org.jets3t.service.model.GSObject objectSummary_<%=cid%> : objects_<%=cid%>) {
-					nb_line_<%=cid%>++;
 					String objkey_<%=cid%> = objectSummary_<%=cid%>.getKey();
 					java.io.File file_<%=cid%> = new java.io.File(<%=outputsDir%>+objkey_<%=cid%>);
 					org.jets3t.service.model.GSObject obj_<%=cid%> = service_<%=cid%>.getObject(currentBucketName_<%=cid%>, objkey_<%=cid%>);
@@ -177,6 +176,7 @@ imports="
 		}
 %>
 					if(obj_<%=cid%>!=null){
+						nb_line_<%=cid%>++;
 						boolean isDirectory_<%=cid%>=false;
 						String fileName_<%=cid%> =file_<%=cid%> .getAbsolutePath();
 						fileName_<%=cid%> =fileName_<%=cid%> .replace("\\", "/");

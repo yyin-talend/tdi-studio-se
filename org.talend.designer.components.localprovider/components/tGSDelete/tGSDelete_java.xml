@@ -131,7 +131,7 @@
 	    <PARAMETER 
 			NAME="BUCKETS"
 			FIELD="TABLE"
-			NUM_ROW="35"
+			NUM_ROW="40"
 			REQUIRED="true"
 			NB_LINES="5"
 			SHOW_IF="DEL_IN_LIST_BUCKETS == 'true'"

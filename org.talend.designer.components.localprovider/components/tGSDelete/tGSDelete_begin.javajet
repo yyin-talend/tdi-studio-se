@@ -20,6 +20,7 @@
 	boolean isSpecifyprojectID=("true").equals(ElementParameterParser.getValue(node,"__SPECIFY_PROJECT__"));
 	String projectID=ElementParameterParser.getValue(node,"__PROJECT_ID__");
 	String delimiter=ElementParameterParser.getValue(node,"__DELIMITER__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 %>
 	int nb_line_<%=cid%> = 0;
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = null;
@@ -63,34 +64,50 @@
 <%
 	} else if(buckets.size()>0){
 %>
-			java.util.List<String> buckets_<%=cid%> = new java.util.ArrayList<String>();
-			java.util.Map<String,String> object_prefixs_<%=cid%> = new java.util.HashMap<String,String>();
-			java.util.Map<String,String> object_delimiter_<%=cid%> = new java.util.HashMap<String,String>();
+			java.util.List<java.util.Map<String,String>> list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
 <%
-		for(Map<String, String> map: buckets){
+		for(int i=0;i<buckets.size();i++){
+			Map<String, String> map=buckets.get(i);
 			String bucket_name =map.get("BUCKET_NAME");
 			String object_prefix =map.get("OBJECT_PREFIX");
 			String object_delimiter =map.get("OBJECT_DELIMITER");
+%>
+			java.util.Map<String,String> map_<%=cid %>_<%=i %> = new java.util.HashMap<String,String>();
+			map_<%=cid %>_<%=i %>.put("BUCKET_NAME",<%=bucket_name%>);
+<%
 			if(object_prefix!=null && object_prefix.trim().length()>0){
 %>
-			object_prefixs_<%=cid%>.put(<%=bucket_name%>,<%=object_prefix%>);
+			map_<%=cid %>_<%=i %>.put("OBJECT_PREFIX",<%=object_prefix%>);
 <%
 			}
 			if(object_delimiter!=null && object_delimiter.trim().length()>0){
 %>
-			object_delimiter_<%=cid%>.put(<%=bucket_name%>,<%=object_delimiter%>);
+			map_<%=cid %>_<%=i %>.put("OBJECT_DELIMITER",<%=object_delimiter%>);
 <%
 			}
 %>
-			if(!buckets_<%=cid%>.contains(<%=bucket_name%>)){
-				buckets_<%=cid%>.add(<%=bucket_name%>);
-			}
+			list_<%=cid%>.add(map_<%=cid %>_<%=i %>);
 <%
 		}
 %>
-			for (String currentBucketName_<%=cid%> : buckets_<%=cid%>) {
-				org.jets3t.service.model.GSObject[] objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,
-				object_prefixs_<%=cid%>.get(currentBucketName_<%=cid%>),object_delimiter_<%=cid%>.get(currentBucketName_<%=cid%>));
+			for (java.util.Map<String, String> map_<%=cid %>: list_<%=cid%>) {
+				String currentBucketName_<%=cid%>=map_<%=cid %>.get("BUCKET_NAME");
+				org.jets3t.service.model.GSObject[] objects_<%=cid%> =new org.jets3t.service.model.GSObject[0];
+				try {
+					objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,map_<%=cid %>.get("OBJECT_PREFIX"),map_<%=cid %>.get("OBJECT_DELIMITER"));
+				}catch(java.lang.Exception e_<%=cid%>){
+<%
+		if (("true").equals(dieOnError)) {
+%>
+					throw(e_<%=cid%>);
+<%
+		} else {
+%>
+					System.err.println(e_<%=cid%>.getMessage());
+<%
+		}
+%>
+				}
 <%
 	}
 	if(!queryDelObjInListBuckets || buckets.size()>0){
