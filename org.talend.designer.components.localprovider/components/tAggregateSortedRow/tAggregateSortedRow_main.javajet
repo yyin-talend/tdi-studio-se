@@ -290,8 +290,7 @@ if(column_gr.length > 0){//while loop
 %>
 while(true){
 <%	for(int i = 0; i < column_gr.length; i++){
-		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_gr[i][0].getTalendType());
-		if(JavaTypesManager.isNumberType(javaType) && javaType != JavaTypesManager.BIGDECIMAL && !column_gr[i][0].isNullable()){
+		if(JavaTypesManager.isJavaPrimitiveType(column_gr[i][0].getTalendType(),column_gr[i][0].isNullable())){
 %>
 if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> != <%=connName %>.<%=column_gr[i][0].getLabel() %>){
 	sameGroup_<%=cid %> = false;
