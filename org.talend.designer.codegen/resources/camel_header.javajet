@@ -764,7 +764,7 @@ if(hasCXFSamlTokenConsumer){
 		// add policy
 		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
 		if(useAuthorization){
-			policyReference.setURI("org.talend.esb.job.saml.authz.client.policy");
+			policyReference.setURI("org.talend.esb.job.saml.authz.policy");
 		}else{
 			policyReference.setURI("org.talend.esb.job.saml.policy");
 		}
