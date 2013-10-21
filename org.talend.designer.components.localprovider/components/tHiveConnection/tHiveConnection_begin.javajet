@@ -107,6 +107,11 @@ imports="
 	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
 	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
 	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
+	String yarnClasspathSeparator = ElementParameterParser.getValue(node, "__CLASSPATH_SEPARATOR__");
+%>
+	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
+	System.setProperty("path.separator", <%=yarnClasspathSeparator%>);
+<%
 	boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
     if(!isCustom && "HDP_1_2".equals(hiveVersion)) {
         String mapMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_MAP_MEMORY_MB__");
@@ -146,3 +151,8 @@ imports="
 	globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
 
 	globalMap.put("db_<%=cid%>",<%=dbname%>);
+	String currentClientPathSeparator_<%=cid%> = (String)globalMap.get("current_client_path_separator");
+	if(currentClientPathSeparator_<%=cid%>!=null) {
+		System.setProperty("path.separator", currentClientPathSeparator_<%=cid%>);
+		globalMap.put("current_client_path_separator", null);
+	}

@@ -36,6 +36,11 @@ java.sql.Connection conn_<%=cid%> = null;
 		System.setProperty("java.io.tmpdir", <%=tempPath%>); 
 <% 
 	} 
+	String yarnClasspathSeparator = ElementParameterParser.getValue(node, "__CLASSPATH_SEPARATOR__");
+%>
+	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
+	System.setProperty("path.separator", <%=yarnClasspathSeparator%>);
+<%
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
