@@ -69,7 +69,15 @@ if(execStat){
 		            talendThreadPool.setErrorThread(this);
 		            talendThreadPool.stopAllWorkers();		            
 
-                    new TalendException(e, currentComponent, globalMap).printStackTrace();
+                    TalendException te = new TalendException(e, currentComponent, globalMap);
+<%
+				if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
+%>
+					te.setVirtualComponentName(currentVirtualComponent);
+<%
+				}
+%>
+					te.printStackTrace();
 
 			}
 			this.isRunning = false;
