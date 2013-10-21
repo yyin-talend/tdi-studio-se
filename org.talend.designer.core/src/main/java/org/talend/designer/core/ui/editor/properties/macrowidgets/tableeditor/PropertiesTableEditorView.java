@@ -494,12 +494,23 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     @Override
                     public boolean canModify(Object bean) {
                         if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES") || param.getName().equals("HBASE_PARAMETERS")) {
-                            Map<String, Object> valueMap = (Map<String, Object>) bean;
-                            if (valueMap.get("BUILDIN") != null && valueMap.get("BUILDIN").equals("TRUE")) {
-                                return true;
+                            boolean canModify = super.canModify(bean);
+                            if (canModify) {
+                                Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
+                                ((ElementParameter) currentParam).setCurrentRow(fullValues.indexOf(valueMap));
+                                if (currentParam.isReadOnly(element.getElementParameters())) {
+                                    return false;
+                                }
                             } else {
-                                return false;
+                                Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                if (valueMap.get("BUILDIN") != null && valueMap.get("BUILDIN").equals("TRUE")) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
                             }
+                            return canModify;
                         }
                         boolean canModify = super.canModify(bean);
                         if (canModify) {
