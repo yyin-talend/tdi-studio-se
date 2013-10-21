@@ -307,21 +307,17 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     public boolean performFinish() {
         List<DemoProjectBean> checkedElements = getCheckedElements();
         final List<ResourcesManager> finalCheckManagers = getResourceManagers(checkedElements);
-        List<ItemRecord> existRecords = populateExistItemRecords(finalCheckManagers);
-        boolean choice = false;
-        if (existRecords.size() != 0) {
+        if (populateExistItemRecords(finalCheckManagers)) {
             MessageDialog dialog = new MessageDialog(getShell(), Messages.getString("ImportDemoProjectPage.overwrite"), null,
                     Messages.getString("ImportDemoProjectPage.overwriteItems"), MessageDialog.QUESTION, new String[] {
                             IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
             dialog.open();
             int result = dialog.getReturnCode();
-            if (result == 0) {
-                choice = true;
-            } else {
-                return choice;
+            if (result != MessageDialog.OK) {
+                return false;
             }
         }
-        final boolean overwrite = choice;
+
         ProgressDialog progressDialog = new ProgressDialog(getShell()) {
 
             private IProgressMonitor monitorWrap;
@@ -329,12 +325,12 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
-
                 for (ResourcesManager resManager : finalCheckManagers) {
                     List<ItemRecord> projectRecords = ImportExportHandlersManager.getInstance().populateImportingItems(
-                            resManager, false, monitorWrap);
-                    ImportExportHandlersManager.getInstance().importItemRecords(monitorWrap, resManager, projectRecords,
-                            overwrite, projectRecords.toArray(new ItemRecord[0]), null);
+                            resManager, true, monitorWrap);
+                    // clearOverWriteErrorMessages(projectRecords, overwrite);
+                    ImportExportHandlersManager.getInstance().importItemRecords(monitorWrap, resManager, projectRecords, true,
+                            projectRecords.toArray(new ItemRecord[0]), null);
                 }
 
                 monitorWrap.done();
@@ -447,15 +443,14 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         }
     }
 
-    private List<ItemRecord> populateExistItemRecords(final List<ResourcesManager> manager) {
+    private boolean populateExistItemRecords(final List<ResourcesManager> manager) {
         final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
-        List<ItemRecord> existRecords = new ArrayList<ItemRecord>();
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 for (ResourcesManager rm : manager) {
-                    items.addAll(ImportExportHandlersManager.getInstance().populateImportingItems(rm, false, monitor));
+                    items.addAll(ImportExportHandlersManager.getInstance().populateImportingItems(rm, true, monitor));
                 }
             }
 
@@ -473,12 +468,27 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                 if (itemRecord.getProperty() != null && reObject != null) {
                     if (itemRecord.getProperty().getId().equals(reObject.getId())
                             && itemRecord.getProperty().getLabel().equals(reObject.getLabel())) {
-                        existRecords.add(itemRecord);
-                    } else {
+                        return true;
                     }
                 }
             }
         }
-        return existRecords;
+        return false;
+    }
+
+    private void clearOverWriteErrorMessages(List<ItemRecord> projectRecords, boolean overwrite) {
+        if (overwrite) {
+            String overWriteErrorMessage = Messages.getString("RepositoryUtil.nameUsed").trim();
+            List<ItemRecord> overWriteRecords = new ArrayList<ItemRecord>();
+            for (ItemRecord itemRecord : projectRecords) {
+                for (String errorMessage : itemRecord.getErrors())
+                    if (errorMessage.equals(overWriteErrorMessage)) {
+                        overWriteRecords.add(itemRecord);
+                    }
+            }
+            for (ItemRecord overRecord : overWriteRecords) {
+                overRecord.getErrors().clear();
+            }
+        }
     }
 }
