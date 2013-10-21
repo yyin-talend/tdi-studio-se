@@ -278,4 +278,15 @@ public class RunProcessService implements IRunProcessService {
         return delegateService.getLogTemplate(path);
     }
 
+    @Override
+    public boolean isJobRunning() {
+        final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+
+        if (activeContext == null) {
+            return false;
+        }
+
+        return activeContext.isRunning();
+    }
+
 }

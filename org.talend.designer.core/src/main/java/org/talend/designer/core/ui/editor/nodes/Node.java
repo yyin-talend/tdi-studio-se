@@ -72,6 +72,7 @@ import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
+import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -102,6 +103,7 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
@@ -114,6 +116,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -1749,6 +1752,20 @@ public class Node extends Element implements IGraphicalNode {
         if (!id.equals(EParameterName.LABEL.getName()) && !id.equals(EParameterName.UNIQUE_NAME.getName())
                 && !id.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
             needlibrary = true;
+            if (!this.process.isDuplicate() && !CommonsPlugin.isHeadless()) {
+                if (isMapReduce()) {
+                    if (needCleared()) {
+                        refreshNodeContainer();
+                    }
+                } else {
+                    IConnection[] conns = process.getAllConnections(null);
+                    for (int i = 0; i < conns.length; i++) {
+                        if (conns[i] instanceof IPerformance) {
+                            ((IPerformance) conns[i]).setPerformanceData(""); //$NON-NLS-1$
+                        }
+                    }
+                }
+            }
         }
 
         parameter.setValue(value);
@@ -4548,6 +4565,43 @@ public class Node extends Element implements IGraphicalNode {
 
     public void setMrContainsReduce(boolean mrContainsReduce) {
         this.mrContainsReduce = mrContainsReduce;
+    }
+
+    private boolean needCleared() {
+        boolean clear = false;
+        List<? extends INode> nodeList = this.process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            if ((node instanceof Node) && (((Node) node).isMapReduceStart())) {
+                Double perc = ((JobletContainer) ((Node) node).getNodeContainer()).getPercentMap()
+                        + ((JobletContainer) ((Node) node).getNodeContainer()).getPercentReduce();
+                if (perc > 0) {
+                    return true;
+                }
+            }
+        }
+        return clear;
+    }
+
+    public void refreshNodeContainer() {
+        boolean isRunning = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            if (runProcessService != null) {
+                isRunning = runProcessService.isJobRunning();
+            }
+        }
+        if (isRunning) {
+            return;
+        }
+        List<? extends INode> nodeList = this.process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            if ((node instanceof Node) && (((Node) node).isMapReduceStart())) {
+                ((JobletContainer) ((Node) node).getNodeContainer()).updateState(
+                        "UPDATE_STATUS", "CLEAR", new Double(0), new Double(0)); //$NON-NLS-1$
+            }
+        }
+
     }
 
 }

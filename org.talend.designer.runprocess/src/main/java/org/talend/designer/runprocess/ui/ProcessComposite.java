@@ -857,6 +857,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 clearTraceAction.run();
                 consoleText.setText("");
                 processContext.clearMessages();
+                refreshNodeContainer();
             }
         });
 

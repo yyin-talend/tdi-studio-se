@@ -18,7 +18,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerLayoutEditPolicy;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -116,7 +115,7 @@ public class JobletContainerPart extends NodeContainerPart {
      */
     @Override
     protected void createEditPolicies() {
-        installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
+        installEditPolicy(EditPolicy.LAYOUT_ROLE, new JobletContainerLayoutEditPolicy());
     }
 
     protected void refreshVisuals() {
@@ -184,17 +183,6 @@ public class JobletContainerPart extends NodeContainerPart {
                 ((JobletContainerFigure) getFigure()).updateJobletContainerColor();
                 refreshVisuals();
             }
-            // List<NodeContainer> tmpList = new ArrayList<NodeContainer>(((JobletContainer)
-            // getModel()).getNodeContainers());
-            // ((SubjobContainer) getModel()).getNodeContainers().clear();
-            // refreshChildren();
-            // List elems = ((Process) getParent().getModel()).getElements();
-            // elems.remove(getModel());
-            // EditPart parent = getParent();
-            // parent.refresh();
-            // ((JobletContainer) getModel()).getNodeContainers().addAll(tmpList);
-            // elems.add(getModel());
-            // parent.refresh();
             needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals("UPDATE_STATUS")) { //$NON-NLS-1$
             // ((JobletContainer) getModel()).updateJobletNodes(true);
@@ -210,29 +198,20 @@ public class JobletContainerPart extends NodeContainerPart {
             refreshVisuals();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             if (getFigure() instanceof JobletContainerFigure) {
+                if (((JobletContainer) getModel()).getNode().isMapReduce()) {
+                    JobletContainer jCon = (JobletContainer) getModel();
+                    if (jCon.getNode().isMapReduceStart()) {
+                        jCon.updateJobletNodes(true);
+                    } else if (jCon.getMrStartContainer() != null) {
+                        jCon.getMrStartContainer().updateJobletNodes(true);
+                    }
+
+                }
                 ((JobletContainerFigure) getFigure()).updateData();
                 refreshVisuals();
             }
         }
 
-        // if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {
-        // Node node = ((NodeContainer) getModel()).getNode();
-        // ((JobletContainerFigure) this.getFigure()).updateErrorFlag(node.isErrorFlag());
-        // ((JobletContainerFigure) this.getFigure()).setShowCompareMark(node.isCompareFlag() && !node.isErrorFlag());
-
-        // IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
-        // if (param != null) {
-        // boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-        // if (changeEvent.getNewValue() instanceof Integer) {
-        // Integer status = (Integer) changeEvent.getNewValue();
-        // if (status != null) {
-        // ((JobletContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
-        // }
-        // ((JobletContainerFigure) this.getFigure()).setInfoHint(node.getShowHintText());
-        // }
-        // refreshVisuals();
-        // }
-        // }
         if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             Node node = ((NodeContainer) getModel()).getNode();
             if (node.isActivate()) {

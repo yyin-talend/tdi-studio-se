@@ -22,6 +22,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.ui.runtime.image.ECoreImage;
@@ -221,21 +222,36 @@ public class JobletContainerFigure extends Figure {
                 mrFigures.clear();
             }
             if (!this.jobletContainer.getNode().isMapReduceStart()) {
-                rectFig.setVisible(false);
-                outlineFigure.setVisible(false);
+                if (rectFig.isVisible()) {
+                    rectFig.setVisible(false);
+                }
+                if (outlineFigure.isVisible()) {
+                    outlineFigure.setVisible(false);
+                }
                 return;
             }
-            this.jobletContainer.updateJobletNodes(true);
+            // if (this.jobletContainer.getNodeContainers().isEmpty()) {
+            // this.jobletContainer.updateJobletNodes(true);
+            // }
+
             if (rectFig != null) {
                 if (isSubjobDisplay) {
-                    rectFig.setBackgroundColor(ColorUtils.getCacheColor(mrGroupColor));
+                    Color color = ColorUtils.getCacheColor(mrGroupColor);
+                    if (rectFig.getBackgroundColor() == null || !rectFig.getBackgroundColor().equals(color)) {
+                        rectFig.setBackgroundColor(color);
+                    }
                 } else {
-                    rectFig.setBackgroundColor(ColorUtils.getCacheColor(white));
+                    Color color = ColorUtils.getCacheColor(white);
+                    if (rectFig.getBackgroundColor() == null || !rectFig.getBackgroundColor().equals(color)) {
+                        rectFig.setBackgroundColor(color);
+                    }
                 }
-                rectFig.setVisible(true);
+                if (!rectFig.isVisible()) {
+                    rectFig.setVisible(true);
+                }
             }
 
-            if (outlineFigure != null) {
+            if (outlineFigure != null && outlineFigure.isVisible()) {
                 outlineFigure.setVisible(false);
             }
 
@@ -248,7 +264,7 @@ public class JobletContainerFigure extends Figure {
                 if (key.startsWith("map_")) {
                     // if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
                     percent = jobletContainer.getPercentMap() * 10;
-                    if (isSubjobDisplay) {
+                    if (isSubjobDisplay && !value.isVisible()) {
                         value.setVisible(true);
                     }
 
@@ -258,7 +274,7 @@ public class JobletContainerFigure extends Figure {
                 if (key.startsWith("reduce_")) {
                     // if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
                     percent = jobletContainer.getPercentReduce() * 10;
-                    if (this.jobletContainer.isMRGroupContainesReduce() && isSubjobDisplay) {
+                    if (this.jobletContainer.isMRGroupContainesReduce() && isSubjobDisplay && !value.isVisible()) {
                         value.setVisible(true);
                     }
                     // for (NodeContainer nc : this.jobletContainer.getNodeContainers()) {
@@ -340,7 +356,12 @@ public class JobletContainerFigure extends Figure {
             int jcWidth = this.jobletContainer.getJobletContainerRectangle().width;
             if (isSubjobDisplay) {
                 if (!this.jobletContainer.isMRGroupContainesReduce()) {
-                    if (jcWidth > proWidth) {
+                    if (jcWidth > proWidth + 12) {
+                        if (key.startsWith("map_")) {
+                            value.setLocation(new Point(location.x + jcWidth / 2 - proWidth / 2 - 6, location.y
+                                    + rectangle.height - count * progressHeight + mry));
+                        }
+                    } else if (jcWidth > proWidth) {
                         if (key.startsWith("map_")) {
                             value.setLocation(new Point(location.x + jcWidth / 2 - proWidth / 2, location.y + rectangle.height
                                     - count * progressHeight + mry));
@@ -352,7 +373,16 @@ public class JobletContainerFigure extends Figure {
                     }
 
                 } else {
-                    if (jcWidth / 2 > proWidth) {
+                    if (jcWidth / 2 >= 120) {
+                        if (key.startsWith("map_")) {
+                            value.setLocation(new Point(location.x + jcWidth / 2 - 120, location.y + rectangle.height - count
+                                    * progressHeight + mry));
+                        }
+                        if (key.startsWith("reduce_")) {
+                            value.setLocation(new Point(location.x + jcWidth / 2, location.y + rectangle.height - count
+                                    * progressHeight + mry));
+                        }
+                    } else if (jcWidth / 2 > proWidth) {
                         if (key.startsWith("map_")) {
                             value.setLocation(new Point(location.x + jcWidth / 2 - proWidth, location.y + rectangle.height
                                     - count * progressHeight + mry));
@@ -663,7 +693,10 @@ public class JobletContainerFigure extends Figure {
                     progressDataFigure.setLocation(point);
                 }
             }
+        } else if (extentString == 0) {
+            progressBarFigure.getChildren().clear();
         }
+
     }
 
     class GreenRectangle extends RoundedRectangle {

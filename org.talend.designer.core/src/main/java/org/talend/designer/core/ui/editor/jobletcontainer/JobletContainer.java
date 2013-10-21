@@ -83,6 +83,8 @@ public class JobletContainer extends NodeContainer {
 
     private Double percentReduce = new Double(0);
 
+    private JobletContainer mrStartContainer;
+
     public JobletContainer(Node node) {
         super(node);
         this.node = node;
@@ -139,9 +141,14 @@ public class JobletContainer extends NodeContainer {
                     Integer count = this.getNode().getMrJobInGroupCount();
                     Image image = ImageProvider.getImage(ECoreImage.MRGREEBAR);
                     int progressHeight = image.getBounds().height + 1;
-                    if (count != null && count > 1) {
-                        curRect.setSize(curRect.width, curRect.height + progressHeight * (count - 1) + 10);
+                    if (count != null) {
+                        if (count == 1) {
+                            curRect.setSize(curRect.width, curRect.height + 6);
+                        } else if (count > 1) {
+                            curRect.setSize(curRect.width, curRect.height + progressHeight * (count - 1) + 10);
+                        }
                     }
+
                 }
 
                 if (totalRectangle == null) {
@@ -437,6 +444,9 @@ public class JobletContainer extends NodeContainer {
                 NodeContainer nodeContainer = inode.getNodeContainer();
                 // inode.setJobletnode(this.node);
                 // inode.setJoblet_unique_name(inode.getUniqueName());
+                if (nodeContainer instanceof JobletContainer) {
+                    ((JobletContainer) nodeContainer).setMrStartContainer(this);
+                }
                 this.nodeContainers.add(nodeContainer);
                 this.jobletElements.add(inode);
                 this.jobletElements.add(inode.getNodeLabel());
@@ -856,5 +866,13 @@ public class JobletContainer extends NodeContainer {
             }
         }
         return false;
+    }
+
+    public JobletContainer getMrStartContainer() {
+        return mrStartContainer;
+    }
+
+    public void setMrStartContainer(JobletContainer mrStartContainer) {
+        this.mrStartContainer = mrStartContainer;
     }
 }
