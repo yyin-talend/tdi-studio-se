@@ -412,4 +412,15 @@ public class DefaultRunProcessService implements IRunProcessService {
         return "";
     }
 
+    @Override
+    public boolean isJobRunning() {
+        final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+
+        if (activeContext == null) {
+            return false;
+        }
+
+        return activeContext.isRunning();
+    }
+
 }
