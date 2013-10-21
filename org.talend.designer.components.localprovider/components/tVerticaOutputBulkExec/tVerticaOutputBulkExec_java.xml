@@ -39,13 +39,15 @@
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:VERTICA"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
 	<PARAMETER
 		NAME="DB_VERSION"
 		FIELD="CLOSED_LIST"
 		NUM_ROW="10"
-		REPOSITORY_VALUE="DB_VERSION">
+		REPOSITORY_VALUE="DB_VERSION"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<ITEMS DEFAULT="VERTICA_3">
 			<ITEM NAME="VERTICA_3" VALUE="vertica_3.0_jdk_5.jar" />
 			<ITEM NAME="VERTICA_3.5" VALUE="vertica_3.5_jdk_5.jar" />
@@ -57,11 +59,28 @@
 	</PARAMETER>
 
     <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="20"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tVerticaConnection"
+      NUM_ROW="20"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />
+
+    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="20"
+      NUM_ROW="30"
       REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -69,9 +88,10 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="20"
+      NUM_ROW="30"
       REQUIRED="true"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"5433"</DEFAULT>
     </PARAMETER>
@@ -89,9 +109,10 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="40"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -99,17 +120,19 @@
     	<PARAMETER
 		NAME="SCHEMA_DB"
 		FIELD="TEXT"
-		NUM_ROW="30"
-		REPOSITORY_VALUE="SCHEMA" >
+		NUM_ROW="40"
+		REPOSITORY_VALUE="SCHEMA"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
 
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="50"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -117,9 +140,10 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="50"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -127,7 +151,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="50"
+      NUM_ROW="60"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -142,7 +166,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="50"
+      NUM_ROW="59"
     >
       <DEFAULT>"table name"</DEFAULT>
     </PARAMETER>
@@ -266,6 +290,8 @@
       <TEMPLATE_PARAM SOURCE="self.SCHEMA"   TARGET="tVOB.SCHEMA" />
 	  <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tVOB.NULL_STRING" />
 
+      <TEMPLATE_PARAM SOURCE="self.USE_EXISTING_CONNECTION"   TARGET="tVBE.USE_EXISTING_CONNECTION" />
+      <TEMPLATE_PARAM SOURCE="self.CONNECTION"   TARGET="tVBE.CONNECTION" />
       <TEMPLATE_PARAM SOURCE="self.DB_VERSION"   TARGET="tVBE.DB_VERSION" />
       <TEMPLATE_PARAM SOURCE="self.HOST"   TARGET="tVBE.HOST" />
       <TEMPLATE_PARAM SOURCE="self.PORT"   TARGET="tVBE.PORT" />
@@ -293,7 +319,7 @@
 		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.0_jdk_5.jar" REQUIRED="false" />
 		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.7_jdk_5.jar" REQUIRED="false" />
 		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
-		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="DB_VERSION=='VERTICA_6_0'" />
+		<IMPORT NAME="Driver-VERTICA_6.0" MODULE="vertica-jdk5-6.0.0-0.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.vertica/lib/vertica-jdk5-6.0.0-0.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DB_VERSION=='VERTICA_6_0')" />
     </IMPORTS>
   </CODEGENERATION>
 
