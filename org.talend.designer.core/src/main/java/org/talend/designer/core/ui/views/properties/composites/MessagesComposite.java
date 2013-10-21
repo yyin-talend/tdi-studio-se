@@ -17,9 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -45,19 +44,20 @@ public class MessagesComposite extends Composite {
 
     public MessagesComposite(Composite parent, int style) {
         super(parent, style);
-        setLayout(new FormLayout());
+        setLayout(new GridLayout(3, false));
 
         messageImage = new Label(this, SWT.NONE);
-        FormData imageData = new FormData();
-        imageData.left = new FormAttachment(0, H_SPACE_WIDTH);
-        imageData.top = new FormAttachment(0, V_SPACE_WIDTH);
-        messageImage.setLayoutData(imageData);
+        // FormData imageData = new FormData();
+        // imageData.left = new FormAttachment(0, H_SPACE_WIDTH);
+        // imageData.top = new FormAttachment(0, V_SPACE_WIDTH);
+        // messageImage.setLayoutData(imageData);
 
         messageLabel = new Label(this, SWT.NONE);
-        FormData labelData = new FormData();
-        labelData.left = new FormAttachment(messageImage, H_SPACE_WIDTH);
-        labelData.top = new FormAttachment(0, V_SPACE_WIDTH);
-        messageLabel.setLayoutData(labelData);
+        // FormData labelData = new FormData();
+        // labelData.left = new FormAttachment(messageImage, H_SPACE_WIDTH);
+        // labelData.top = new FormAttachment(0, V_SPACE_WIDTH);
+        // messageLabel.setLayoutData(labelData);
+        messageLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     }
 

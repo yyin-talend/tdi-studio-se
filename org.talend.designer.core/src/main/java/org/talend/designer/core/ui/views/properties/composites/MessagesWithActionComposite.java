@@ -15,8 +15,7 @@ package org.talend.designer.core.ui.views.properties.composites;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -30,6 +29,7 @@ public class MessagesWithActionComposite extends MessagesComposite {
     public MessagesWithActionComposite(Composite parent, int style) {
         super(parent, style);
         actionBtn = new Button(this, SWT.PUSH);
+        actionBtn.setLayoutData(new GridData());
         // default
         // updateActionButton(null, ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         // use text always
@@ -49,12 +49,19 @@ public class MessagesWithActionComposite extends MessagesComposite {
     public void setActionButtonVisible(boolean show) {
         if (actionBtn != null && !actionBtn.isDisposed()) {
             actionBtn.setVisible(show);
-            if (show) {
-                FormData btnData = new FormData();
-                btnData.right = new FormAttachment(100, -H_SPACE_WIDTH);
-                btnData.top = new FormAttachment(0, V_SPACE_WIDTH);
-                actionBtn.setLayoutData(btnData);
+            GridData layoutData = (GridData) actionBtn.getLayoutData();
+            if (layoutData == null) {
+                layoutData = new GridData();
             }
+            layoutData.exclude = !show;
+            actionBtn.setLayoutData(layoutData);
+            actionBtn.getParent().layout();
+            // if (show) {
+            // FormData btnData = new FormData();
+            // btnData.right = new FormAttachment(100, -H_SPACE_WIDTH);
+            // btnData.top = new FormAttachment(0, V_SPACE_WIDTH);
+            // actionBtn.setLayoutData(btnData);
+            // }
         }
     }
 
