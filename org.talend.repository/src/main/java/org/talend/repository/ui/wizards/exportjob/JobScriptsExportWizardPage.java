@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -1247,6 +1248,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return true;
     }
 
+    protected boolean ensureLog4jSettingIsValid() {
+        return Log4jPrefsSettingManager.getInstance().isPreEnableAndStudioNot();
+    }
+
     /**
      * Export the passed resource and recursively export all of its child resources (iff it's a container). Answer a
      * boolean indicating success.
@@ -1308,6 +1313,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         if (!ensureTargetIsValid()) {
             return false;
+        }
+
+        if (ensureLog4jSettingIsValid()) {
+            MessageDialog dialog = new MessageDialog(getShell(), "Question", null,
+                    Messages.getString("Log4jSettingPage.IlleagalBuild"), MessageDialog.QUESTION, new String[] {
+                            IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+            dialog.open();
+            int result = dialog.getReturnCode();
+            if (result != MessageDialog.OK) {
+                return false;
+            }
         }
 
         // for feature:11976, recover back the old default manager value with ContextParameters

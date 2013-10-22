@@ -55,4 +55,5 @@ public class Log4jPrefsConstants {
     public static final String ERROR = "Error";
 
     public static final String FATAL = "Fatal";
+
 }

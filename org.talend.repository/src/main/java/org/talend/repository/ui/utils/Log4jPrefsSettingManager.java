@@ -29,6 +29,7 @@ import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
+import org.talend.repository.i18n.Messages;
 
 public class Log4jPrefsSettingManager {
 
@@ -154,6 +155,19 @@ public class Log4jPrefsSettingManager {
         }
 
         return added;
+    }
+
+    public void checkLog4jState() {
+        if (isPreEnableAndStudioNot()) {
+            throw new IllegalStateException(Messages.getString("Log4jSettingPage.IlleagalExp")); //$NON-NLS-1$
+        }
+    }
+
+    public boolean isPreEnableAndStudioNot() {
+        if (!Log4jUtil.isEnable() && getValueOfPreNode(Log4jPrefsConstants.LOG4J_ENABLE_NODE).equals("true")) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isLog4jEnable() {
