@@ -55,7 +55,7 @@
     </PARAMETER>
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="25"
 		REPOSITORY_VALUE="DB_VERSION">
-		<ITEMS DEFAULT="ORACLE_11">
+		<ITEMS DEFAULT="ORACLE_11-6">
 			<ITEM NAME="ORACLE_11-6" VALUE="ORACLE_11-6" />
 			<ITEM NAME="ORACLE_11" VALUE="ORACLE_11" />
 		</ITEMS>
@@ -238,7 +238,7 @@
     <IMPORTS>
        <IMPORT NAME="TNS" MODULE="tns.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/tns.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-Ojdbc6" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')" />
-       <IMPORT NAME="Driver-Ojdbc5" MODULE="ojdbc5.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11')" />
+       <IMPORT NAME="Driver-Ojdbc5" MODULE="ojdbc6.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11')" />
     </IMPORTS>
    </CODEGENERATION>
 

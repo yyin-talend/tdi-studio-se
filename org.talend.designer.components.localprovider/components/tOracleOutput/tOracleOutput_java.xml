@@ -83,7 +83,7 @@
 
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="25"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
-		<ITEMS DEFAULT="ORACLE_11">
+		<ITEMS DEFAULT="ORACLE_11-6">
 				<ITEM NAME="ORACLE_11-6" VALUE="ORACLE_11-6" />
 				<ITEM NAME="ORACLE_11" VALUE="ORACLE_11" />
 				<ITEM NAME="ORACLE_10" VALUE="ORACLE_10" />
@@ -494,7 +494,7 @@
 		   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/xmlparserv2.jar" REQUIRED_IF="SCHEMA.DB_TYPE IN ['XMLTYPE']" />
        		<IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" UrlPath="platform:/plugin/org.talend.libraries.custom/lib/talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" />
            <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
-           <IMPORT NAME="ORACLE_11"  MODULE="ojdbc5.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
+           <IMPORT NAME="ORACLE_11"  MODULE="ojdbc6.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
            <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_10') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
            <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_9') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
            <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_8') AND (USE_EXISTING_CONNECTION == 'false') AND (SPECIFY_DATASOURCE_ALIAS == 'false')" />
