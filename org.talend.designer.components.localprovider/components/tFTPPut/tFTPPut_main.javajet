@@ -96,7 +96,7 @@ try{
 		    				msg_<%=cid%>.add("file: " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + ", size: "
 		                    	+ listings<%=cid %>[m<%=cid %>].length() + " bytes upload successfully");
 							<%if(isLog4jEnabled){%>
-								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+								log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 							<%}%>
 		    				globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 		    				if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
@@ -241,7 +241,7 @@ try{
 								 	
 						 	currentStatus_<%=cid %> = "File rename OK.";
 							<%if(isLog4jEnabled){%>
-								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+								log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 							<%}%>
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				
@@ -255,7 +255,7 @@ try{
 	                            
 	        					currentStatus_<%=cid %> = "File rename OK.";
 								<%if(isLog4jEnabled){%>
-									log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+									log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 								<%}%>
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            		}
@@ -268,7 +268,7 @@ try{
 	                        
 	        				currentStatus_<%=cid %> = "File rename OK.";
 							<%if(isLog4jEnabled){%>
-								log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+								log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 							<%}%>
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            				 
@@ -286,7 +286,7 @@ try{
 	                                        
 	        						currentStatus_<%=cid %> = "File rename OK.";
 									<%if(isLog4jEnabled){%>
-										log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+										log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 									<%}%>
 	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 	        					}
@@ -299,7 +299,7 @@ try{
 	                                        
 	        					currentStatus_<%=cid %> = "File rename OK.";
 								<%if(isLog4jEnabled){%>
-									log.debug("<%=cid%> - Put file '" + listings<%=cid %>[m<%=cid %>].getName() + "' has successed.");
+									log.debug("<%=cid%> - Uploaded file '" + listings<%=cid %>[m<%=cid %>].getName() + "' successfully.");
 								<%}%>
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            		}

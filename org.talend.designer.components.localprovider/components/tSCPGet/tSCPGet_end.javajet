@@ -27,6 +27,6 @@ imports="
 			globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
 			
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Got file counts :" + nb_file_<%=cid%>  + ".");
-	log.info("<%=cid%> - Has finished.");
+	log.info("<%=cid%> - Downloaded files count: " + nb_file_<%=cid%>  + ".");
+	log.info("<%=cid%> - Done.");
 <%}%>

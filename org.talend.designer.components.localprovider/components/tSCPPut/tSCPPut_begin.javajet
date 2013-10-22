@@ -32,6 +32,11 @@ imports="
 	%>
 	
 	ch.ethz.ssh2.Connection conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
+	<%if(isLog4jEnabled){%>
+		if(conn_<%=cid %>!=null) {
+			log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + conn_<%=cid %>.getHostname() + ". Connection port: " + conn_<%=cid %>.getPort() + "."); 
+		}
+	<%}%>
 	
 <%}else{%>
 			
@@ -59,7 +64,7 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "'.");
+			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' as '" + <%=user%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>
@@ -68,6 +73,10 @@ imports="
 <%        
         if (("PUBLICKEY").equals(authMethod)) {
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a public key");
+			log.debug("<%=cid%> - Private key: '" + <%=privatekey%> + "'." );
+		<%}%>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
             boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
               if (isAuthenticated_<%=cid%> == false){
@@ -75,11 +84,17 @@ imports="
 					log.fatal("<%=cid%> - Authentication failed.");
 				<%}%>
                  throw new RuntimeException("Authentication failed.");
-			  }	
+			  }
+			  <%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+			  <%}%>
 <%
         }
         if (("PASSWORD").equals(authMethod)) {
 %>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication using a password");
+			<%}%>
         	boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
         	if (isAuthenticated_<%=cid%> == false){
 				<%if(isLog4jEnabled){%>
@@ -87,10 +102,16 @@ imports="
 				<%}%>
             	throw new RuntimeException("Authentication failed.");
         	}
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+			<%}%>
 <%
         }
         if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using an interactive action");
+		<%}%>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
             new ch.ethz.ssh2.InteractiveCallback() {
         
@@ -114,6 +135,9 @@ imports="
 				<%}%>
             	throw new RuntimeException("Authentication failed.");
         	}
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+			<%}%>
 <%
         }
 	}//if(isExistConnection)

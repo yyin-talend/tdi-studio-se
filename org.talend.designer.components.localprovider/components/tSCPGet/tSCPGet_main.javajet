@@ -90,7 +90,7 @@ if(("append").equals(replaceOption)){%>
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
 					<%if(isLog4jEnabled){%>
-						log.debug("<%=cid%> - Getting file " + nb_file_<%=cid%> +  " : " + sourceFile_<%=cid %> + " successfully.");
+						log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
 					<%}%>
 				}
 			}

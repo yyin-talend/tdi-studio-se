@@ -90,15 +90,19 @@ if (sftp) {
     final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + <%=host%> + "'.");
-	<%}%>
     <%if (("PUBLICKEY").equals(authMethod)) {%>
+	  <%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - SFTP authentication using a public key.");
+		log.debug("Private key: '" + <%=privateKey %> + "'.");
+	  <%}%>
       jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
     <%}%>
     com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
 
     <%if (("PASSWORD").equals(authMethod)) {%> 
+	  <%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - SFTP authentication using a password.");
+	  <%}%>
       session_<%=cid%>.setPassword(<%=pass%>); 
     <%}%>
     session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
@@ -110,6 +114,9 @@ if (sftp) {
   		}
   		session_<%=cid%>.setProxy(proxy_<%=cid%>);
   	}
+	<%}%>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" + <%=user%> + "'.");
 	<%}%>
     session_<%=cid%>.connect();
     com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
@@ -123,6 +130,11 @@ if (sftp) {
   } else {
   %>    
     com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+	<%if(isLog4jEnabled){%>
+		if(c_<%=cid%>!=null && c_<%=cid%>.getSession()!=null) {
+			log.info("<%=cid%> - Uses an existing connection as " + c_<%=cid%>.getSession().getUserName() + ". Connection hostname: " + c_<%=cid%>.getSession().getHost() + ". Connection port: " + c_<%=cid%>.getSession().getPort() + "."); 
+		}
+	<%}%>
     if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
   		c_<%=cid%>.cd(c_<%=cid%>.getHome());
   	}
@@ -133,13 +145,19 @@ if (sftp) {
 
   <% if (("true").equals(useExistingConn)) {%>
     ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+    <%if(isLog4jEnabled){%>
+		if(ftp_<%=cid %>!=null) {
+			log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
+		}
+	<%}%>
   <%} else {%>    
     ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + <%=host%> + "'.");
-	<%}%>
     ftp_<%=cid %>.setRemoteHost(<%=host %>);
     ftp_<%=cid %>.setRemotePort(<%=port %>);
+	
+	<%if(isLog4jEnabled){%>
+		log.debug("<%=cid%> - " + <%=(("ACTIVE").equals(connectMode))?"\"Using the active mode.\"":"\"Using the passive mode.\""%>);
+	<%}%>
 
     <%if (("ACTIVE").equals(connectMode)) {%>
       ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
@@ -147,6 +165,10 @@ if (sftp) {
       ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
     <%}%>
     ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Authentication using a password.");
+		log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" +<%=username %>+ "'.");
+	<%}%>
     ftp_<%=cid %>.connect();  
     ftp_<%=cid %>.login(<%=username %>, <%=password %>);
 	<%if(isLog4jEnabled){%>
