@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,6 +124,7 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.utils.EsbConfigUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -1348,14 +1348,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
 
         if (samEnabled || slEnabled) {
-            String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
-            File esbConfigsSourceFolder = new File(URI.create(eclipseHome + "esb")); //$NON-NLS-1$
+            File esbConfigsSourceFolder = EsbConfigUtils.getEclipseEsbFolder();
             if (!esbConfigsSourceFolder.exists()) {
                 RunProcessPlugin
-                        .getDefault()
-                        .getLog()
-                        .log(new Status(IStatus.WARNING, RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
-                                "ESB configuration folder does not exists - " + esbConfigsSourceFolder.toURI())); //$NON-NLS-1$
+                    .getDefault()
+                    .getLog()
+                    .log(new Status(IStatus.WARNING, RunProcessPlugin.getDefault().getBundle().getSymbolicName(),
+                            "ESB configuration folder does not exists - " + esbConfigsSourceFolder.toURI())); //$NON-NLS-1$
                 return;
             }
 
@@ -1395,7 +1394,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         return isZip;
     }
 
-    private void copyEsbConfigFile(File esbConfigsSourceFolder, IFolder esbConfigsTargetFolder, String configFile) {
+    private static void copyEsbConfigFile(File esbConfigsSourceFolder, IFolder esbConfigsTargetFolder, String configFile) {
         File esbConfig = new File(esbConfigsSourceFolder, configFile);
         if (esbConfig.exists()) {
             try {

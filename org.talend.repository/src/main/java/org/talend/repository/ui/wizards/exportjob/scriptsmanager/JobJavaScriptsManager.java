@@ -111,6 +111,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
+import org.talend.repository.utils.EmfModelUtils;
+import org.talend.repository.utils.EsbConfigUtils;
 import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
@@ -314,27 +316,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 String componentName = nodeType.getComponentName();
                 if (("tESBConsumer".equals(componentName) || "tESBProviderRequest".equals(componentName) //$NON-NLS-1$ //$NON-NLS-2$
                         || "tRESTClient".equals(componentName) || "tRESTRequest".equals(componentName))) { //$NON-NLS-1$ //$NON-NLS-2$
-                    for (Object elementParameter : nodeType.getElementParameter()) { // loop every parameter of node
-                        if (elementParameter instanceof ElementParameterType) {
-                            ElementParameterType elementParameterType = (ElementParameterType) elementParameter;
-                            String componentParameterName = elementParameterType.getName();
-                            if (!samEnabled && "SERVICE_ACTIVITY_MONITOR".equals(componentParameterName)) { //$NON-NLS-1$
-                                String value = elementParameterType.getValue();
-                                if (Boolean.valueOf(value)) {
-                                    samEnabled = true;
-                                }
-                            }
-                            if (!slEnabled && "SERVICE_LOCATOR".equals(componentParameterName)) { //$NON-NLS-1$
-                                String value = elementParameterType.getValue();
-                                if (Boolean.valueOf(value)) {
-                                    slEnabled = true;
-                                }
-                            }
-                            if (samEnabled && slEnabled) {
-                                break;
-                            }
-                        }
-                    }
+                    slEnabled |= EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", nodeType); //$NON-NLS-1$
+                    samEnabled |= EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", nodeType); //$NON-NLS-1$
                     if (samEnabled && slEnabled) {
                         break;
                     }
@@ -343,15 +326,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
 
         if (samEnabled || slEnabled) {
-            String eclipseHome = (String) System.getProperties().get("eclipse.home.location"); //$NON-NLS-1$
-
             List<URL> esbResources = new ArrayList<URL>();
             try {
+                File eclipseEsbFolder = EsbConfigUtils.getEclipseEsbFolder();
                 if (samEnabled) {
-                    esbResources.add(new URL(eclipseHome + "esb/agent.properties")); //$NON-NLS-1$
+                    esbResources.add(new File(eclipseEsbFolder, "agent.properties").toURI().toURL()); //$NON-NLS-1$
                 }
                 if (slEnabled) {
-                    esbResources.add(new URL(eclipseHome + "esb/locator.properties")); //$NON-NLS-1$
+                    esbResources.add(new File(eclipseEsbFolder, "locator.properties").toURI().toURL()); //$NON-NLS-1$
                 }
             } catch (MalformedURLException e) {
                 RepositoryPlugin
