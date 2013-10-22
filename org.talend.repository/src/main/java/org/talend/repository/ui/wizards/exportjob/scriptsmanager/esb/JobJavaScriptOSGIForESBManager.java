@@ -65,6 +65,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -194,6 +195,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (isRoute()) {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
+                
+                /*
+                 *  export current item's dependencies.
+                 *  this used for TDM components specially
+                 *  and need more discussion about then
+                 */
+                BuildExportManager.getInstance().exportDependencies(osgiResource, processItem);
             }
 
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
