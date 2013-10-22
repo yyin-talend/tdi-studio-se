@@ -88,6 +88,9 @@ public class Log4jPrefsSettingManager {
     public String getValueOfPreNode(String nodeName) {
         Preferences nodePre = null;
         nodePre = getLog4jPreferences(nodeName, false);
+        if (nodePre == null) {
+            return "false";
+        }
         return nodePre.get(nodeName, null);
     }
 
