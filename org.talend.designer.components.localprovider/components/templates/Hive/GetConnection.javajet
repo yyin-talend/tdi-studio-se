@@ -27,6 +27,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
 		String db = "db_" + connection;
+		String dbUser = "dbUser_" + connection;
 		%>
 		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 		
@@ -36,6 +37,15 @@ java.sql.Connection conn_<%=cid%> = null;
         	goToDatabase_<%=cid%>.execute("use " + dbname_<%=cid%>);
         	goToDatabase_<%=cid%>.close();
     	}
+    	
+    	String dbUser_<%=cid%> = (String)globalMap.get("<%=dbUser%>");
+    	globalMap.put("HADOOP_USER_NAME_<%=cid%>", System.getProperty("HADOOP_USER_NAME"));
+		if(dbUser_<%=cid %>!=null && !"".equals(dbUser_<%=cid %>.trim())) {
+			System.setProperty("HADOOP_USER_NAME",dbUser_<%=cid %>);
+			//make relative file path work for hive
+			globalMap.put("current_client_user_name", System.getProperty("user.name"));
+			System.setProperty("user.name",dbUser_<%=cid %>);
+		}
 		<%
 	} else {
 		String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
@@ -130,7 +140,11 @@ java.sql.Connection conn_<%=cid%> = null;
 			System.setProperty("<%=fsDefalutName%>", <%=namenode%>);
 <%
 		}		
-		
+%>
+		String dbUser_<%=cid %> = <%=dbuser%>;
+		String dbPwd_<%=cid %> = <%=dbpwd%>;
+		globalMap.put("HADOOP_USER_NAME_<%=cid%>", System.getProperty("HADOOP_USER_NAME"));
+<%
 		if("EMBEDDED".equals(connectionMode)) {
 %>
 			System.setProperty("hive.metastore.local", "false");
@@ -138,6 +152,16 @@ java.sql.Connection conn_<%=cid%> = null;
 			System.setProperty("hive.metastore.execute.setugi", "true");
 			String url_<%=cid%> = "jdbc:<%=hiveServer%>://";
 <%
+			if(isCustom || (!isCustom && ("HDP_1_2,HDP_1_3,HDP_2_0,Cloudera_CDH4,Cloudera_CDH4_YARN,PIVOTAL_HD_1_0_1".contains(hiveVersion)))) {
+%>
+				if(dbUser_<%=cid %>!=null && !"".equals(dbUser_<%=cid %>.trim())) {
+					System.setProperty("HADOOP_USER_NAME",dbUser_<%=cid %>);
+					//make relative file path work for hive
+					globalMap.put("current_client_user_name", System.getProperty("user.name"));
+					System.setProperty("user.name",dbUser_<%=cid %>);
+				}
+<%
+			}
 		} else {
 			if(securedStandaloneHive2) {
 %>
@@ -150,8 +174,6 @@ java.sql.Connection conn_<%=cid%> = null;
 			}
 		}
 %>
-		String dbUser_<%=cid %> = <%=dbuser%>;
-		String dbPwd_<%=cid %> = <%=dbpwd%>;    
 		java.lang.Class.forName("<%=javaDbDriver %>");
 		<%
 	   		log4jCodeGenerateUtil.debugConnectionParams(node,javaDbDriver);	

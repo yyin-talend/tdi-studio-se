@@ -61,9 +61,9 @@ imports="
                 conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
             } else {
 			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
-				<%this.setURL(node);%>
-		        String dbUser_<%=cid %> = <%=dbuser%>;
+			   	String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
+				<%this.setURL(node);%>
 				<%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
 				<%log4jCodeGenerateUtil.debugConnectionParams(node,this.getDirverClassName(node));%>
 				<%if(isLog4jEnabled){%>

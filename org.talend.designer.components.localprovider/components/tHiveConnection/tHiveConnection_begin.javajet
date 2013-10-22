@@ -117,7 +117,9 @@ imports="
 				System.setProperty("<%=fsDefalutName%>", <%=namenode%>);
 <%
 			}
-			
+%>
+			globalMap.put("HADOOP_USER_NAME_<%=cid%>", System.getProperty("HADOOP_USER_NAME"));
+<%
 			if("EMBEDDED".equals(connectionMode)) {
 %>
 				System.setProperty("hive.metastore.local", "false");
@@ -125,6 +127,19 @@ imports="
 				System.setProperty("hive.metastore.execute.setugi", "true");
 				String url_<%=cid%> = "jdbc:<%=hiveServer%>://";
 <%
+				if(isCustom || (!isCustom && ("HDP_1_2,HDP_1_3,HDP_2_0,Cloudera_CDH4,Cloudera_CDH4_YARN,PIVOTAL_HD_1_0_1".contains(hiveVersion)))) {
+					String dbuser = ElementParameterParser.getValue(node, "__USER__");
+%>
+					String dbUser_<%=cid %> = <%=dbuser%>;
+					if(dbUser_<%=cid %>!=null && !"".equals(dbUser_<%=cid %>.trim())) {
+						System.setProperty("HADOOP_USER_NAME",dbUser_<%=cid %>);
+						//make relative file path work for hive
+						globalMap.put("current_client_user_name", System.getProperty("user.name"));
+						System.setProperty("user.name",dbUser_<%=cid %>);
+						globalMap.put("dbUser_<%=cid%>",dbUser_<%=cid %>);
+					}
+<%
+				}
 			} else {
 				if(securedStandaloneHive2) {
 %>
@@ -237,4 +252,18 @@ imports="
 	if(currentClientPathSeparator_<%=cid%>!=null) {
 		System.setProperty("path.separator", currentClientPathSeparator_<%=cid%>);
 		globalMap.put("current_client_path_separator", null);
+	}
+	
+	String currentClientUsername_<%=cid%> = (String)globalMap.get("current_client_user_name");
+	if(currentClientUsername_<%=cid%>!=null) {
+		System.setProperty("user.name", currentClientUsername_<%=cid%>);
+		globalMap.put("current_client_user_name", null);
+	}
+	
+	String originalHadoopUsername_<%=cid%> = (String)globalMap.get("HADOOP_USER_NAME_<%=cid%>");
+	if(originalHadoopUsername_<%=cid%>!=null) {
+		System.setProperty("HADOOP_USER_NAME", originalHadoopUsername_<%=cid%>);
+		globalMap.put("HADOOP_USER_NAME_<%=cid%>", null);
+	} else {
+		System.clearProperty("HADOOP_USER_NAME");
 	}
