@@ -509,9 +509,10 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 						token[2]);
 			}
 			stsClient.setProperties(stsProps);
-
-            if (!(token[3]/*Role*/.equals(""))) {
-                stsClient.setClaimsCallbackHandler(new ClaimValueCallbackHandler());
+            if (token[3]/*Role*/ != null && !("".equals(token[3]))) {
+                ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
+                roleCallbackHandler.setClaimValue(token[3]);
+                stsClient.setClaimsCallbackHandler(roleCallbackHandler);
             }
 
 			Map<String, Object> clientProps = new HashMap<String, Object>();
@@ -869,14 +870,14 @@ if (isProvider) {
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
 			
-			String useRegistry = "false";
-			String useSecurity = "false";
+			boolean useRegistry = false;
+			boolean useSecurity = false;
 			if(!"RAW".equals(formatType) && !"CXF_MESSAGE".equals(formatType)){
 				if(isStudioEEVersion){
-					useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
+					useRegistry = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__"));
 				}
-				if("false".equals(useRegistry)){
-					useSecurity = ElementParameterParser.getValue(node, "__ENABLE_SECURITY__");
+				if(!useRegistry){
+					useSecurity = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"));
 				}
 			}
 			
@@ -888,11 +889,11 @@ if (isProvider) {
 			String roleName = "\"\"";
 			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__");
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
-			String isUseAuthorization = "false";
+			boolean isUseAuthorization = false;
 			String securityToken = "(String[])null";
 			boolean isUsePropagateSamlUP = false;
 			boolean isUsePropagateSamlAP = false;
-			if("true".equals(useRegistry)){
+			if(useRegistry){
 				securityToken = "\"Registry\"";
 					String usePropagate = ElementParameterParser.getValue(node, "__USE_PROPAGATE_CREDENTIAL__");
 					if("true".equals(usePropagate)){
@@ -904,7 +905,7 @@ if (isProvider) {
 						}
 					    isUsePropagateSamlAP = !isUsePropagateSamlUP;
 					}
-			}else if("true".equals(useSecurity)){
+			}else if(useSecurity){
 				if("USER".equals(securityType)){
 					securityToken = "\"UsernameToken\"";
 				}else if("SAML".equals(securityType)){
@@ -917,13 +918,7 @@ if (isProvider) {
 						username = "null";
 					}
 					if(isStudioEEVersion){
-						isUseAuthorization =  ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__");
-					}
-					if("true".equals(isUseAuthorization) && !isProvider){
-						roleName = ElementParameterParser.getValue(node, "__ROLE_NAME__");
-					}
-					if(null == roleName || "".equals(roleName)){
-						roleName = "\"\"";
+						isUseAuthorization = "true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"));
 					}
 				}else if("BASIC".equals(securityType)){
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_BASIC";
@@ -931,12 +926,17 @@ if (isProvider) {
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST";
 				}
 			}
-			
+			if(!isProvider && (useRegistry || isUseAuthorization)) {
+				roleName = ElementParameterParser.getValue(node, "__ROLE_NAME__");
+				if(null == roleName || "".equals(roleName)){
+					roleName = "\"\"";
+				}
+			}
 %>
 				// CXF endpoint for <%=cid%>
 				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=isUsePropagateSamlAP%>, <%=securityToken%>
 <%
-				if(("true".equals(useSecurity)||"true".equals(useRegistry)) && !isProvider){
+				if((useSecurity || useRegistry) && !isProvider){
 %>				
 							,<%=username%>,<%=password%>, <%=roleName%>, <%=alias%>
 <%
@@ -961,11 +961,11 @@ if (isProvider) {
 				correlationValue = null;
 			}
 			
-			if ("true".equals(useCorrelation) && "false".equals(useRegistry)) {
+			if ("true".equals(useCorrelation) && !useRegistry) {
 %>
 				<%=endpointVar%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
 <%			}
-			if ("true".equals(useSL) && (isProvider || "false".equals(useRegistry))) {
+			if ("true".equals(useSL) && (isProvider || !useRegistry)) {
 				List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
 %>
 				// Add Service Locator Service to <%=endpointVar%>
@@ -1002,7 +1002,7 @@ if (isProvider) {
 			//http://jira.talendforge.org/browse/TESB-3850
             // !"true".equals(useRegistry) - https://jira.talendforge.org/browse/TESB-10725
             			
-			if ("true".equals(useSAM) && !"RAW".equals(formatType)  && !"true".equals(useRegistry)) {
+			if ("true".equals(useSAM) && !"RAW".equals(formatType)  && !useRegistry) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {
