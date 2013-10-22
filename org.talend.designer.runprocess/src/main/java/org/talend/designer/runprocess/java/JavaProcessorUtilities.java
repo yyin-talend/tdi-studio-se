@@ -59,6 +59,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
@@ -479,6 +480,19 @@ public class JavaProcessorUtilities {
             }
 
             if (!jarsNeedRetrieve.isEmpty()) {
+                // get original context value
+                for (String jarNeedRetrieve : jarsNeedRetrieve) {
+                    if (ContextParameterUtils.isContainContextParam(jarNeedRetrieve) && process instanceof IProcess2) {
+                        jarsNeedRetrieve.remove(jarNeedRetrieve);
+                        IContext lastRunContext = ((IProcess2) process).getLastRunContext();
+                        if (lastRunContext != null) {
+                            String contextValue = ContextParameterUtils.parseScriptContextCode(jarNeedRetrieve, lastRunContext);
+                            if (contextValue != null) {
+                                jarsNeedRetrieve.add(new File(contextValue).getName());
+                            }
+                        }
+                    }
+                }
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
                 if (process instanceof IProcess2) {
