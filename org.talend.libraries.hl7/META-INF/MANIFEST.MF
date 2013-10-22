@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hl7
-Bundle-SymbolicName: org.talend.libraries.hl7
+Bundle-SymbolicName: org.talend.libraries.hl7;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/hapi-base-1.0.1.jar,
@@ -73,5 +73,6 @@ Export-Package: ca.uhn.hl7v2,
  ca.uhn.hl7v3.sourcegen,
  ca.uhn.log
 Require-Bundle: org.talend.libraries.apache,
- org.apache.commons.logging
+ org.apache.commons.logging,
+ org.talend.core.runtime
 Bundle-ActivationPolicy: lazy
