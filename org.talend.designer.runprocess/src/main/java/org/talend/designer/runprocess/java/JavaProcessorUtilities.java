@@ -481,18 +481,22 @@ public class JavaProcessorUtilities {
 
             if (!jarsNeedRetrieve.isEmpty()) {
                 // get original context value
-                for (String jarNeedRetrieve : jarsNeedRetrieve) {
+                Set<String> originalConexts = new HashSet<String>();
+                Iterator<String> iterator = jarsNeedRetrieve.iterator();
+                while (iterator.hasNext()) {
+                    String jarNeedRetrieve = iterator.next();
                     if (ContextParameterUtils.isContainContextParam(jarNeedRetrieve) && process instanceof IProcess2) {
-                        jarsNeedRetrieve.remove(jarNeedRetrieve);
+                        iterator.remove(); // remove the context one.
                         IContext lastRunContext = ((IProcess2) process).getLastRunContext();
                         if (lastRunContext != null) {
                             String contextValue = ContextParameterUtils.parseScriptContextCode(jarNeedRetrieve, lastRunContext);
                             if (contextValue != null) {
-                                jarsNeedRetrieve.add(new File(contextValue).getName());
+                                originalConexts.add(new File(contextValue).getName());
                             }
                         }
                     }
                 }
+                jarsNeedRetrieve.addAll(originalConexts);
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
                 if (process instanceof IProcess2) {
