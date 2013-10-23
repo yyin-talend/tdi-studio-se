@@ -60,6 +60,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
@@ -492,6 +493,15 @@ public class JavaProcessorUtilities {
                             String contextValue = ContextParameterUtils.parseScriptContextCode(jarNeedRetrieve, lastRunContext);
                             if (contextValue != null) {
                                 originalConexts.add(new File(contextValue).getName());
+                            }
+                        } else {
+                            IContextManager contextManager = process.getContextManager();
+                            if (contextManager != null) {
+                                String contextValue = ContextParameterUtils.parseScriptContextCode(jarNeedRetrieve,
+                                        contextManager.getDefaultContext());
+                                if (contextValue != null) {
+                                    originalConexts.add(new File(contextValue).getName());
+                                }
                             }
                         }
                     }
