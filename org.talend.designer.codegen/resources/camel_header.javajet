@@ -476,6 +476,9 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 %>
 
 	if(!isProvider){
+			if(usePropagateSamlAP && (token[4] == null)){
+				usePropagateSamlAP = false ;
+			}
 			org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
 					bus);
 			stsClient.setServiceQName(new javax.xml.namespace.QName(
@@ -887,7 +890,7 @@ if (isProvider) {
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String roleName = "\"\"";
-			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__");
+			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__").trim();
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
 			boolean isUseAuthorization = false;
 			String securityToken = "(String[])null";
