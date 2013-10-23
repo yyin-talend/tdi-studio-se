@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.views.contexts;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 
 /**
@@ -61,13 +60,13 @@ public class Contexts {
                     && (perId.equalsIgnoreCase(PERSPECTIVE_DI_ID) || perId
                             .equalsIgnoreCase(IBrandingConfiguration.PERSPECTIVE_CAMEL_ID))) {
                 IViewPart view = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
-                if (view == null) {
-                    try {
-                        view = page.showView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
+                // if (view == null) {
+                // try {
+                //                        view = page.showView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+                // } catch (Exception e) {
+                // ExceptionHandler.process(e);
+                // }
+                // }
                 if (view instanceof ContextsView) {
                     return (ContextsView) view;
                 }
