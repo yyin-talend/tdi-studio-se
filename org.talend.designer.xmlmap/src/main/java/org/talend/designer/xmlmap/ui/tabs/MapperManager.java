@@ -525,7 +525,9 @@ public class MapperManager extends AbstractMapperManager {
                                     XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
                                 }
                             }
-
+                            problemsAnalyser.checkProblems(selectedInputTree);
+                            mapperUI.updateStatusBar();
+                            inputTreeSchemaBeanListModified();
                         } else if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
                             List<Integer> listIndexOrignal = event.indicesOrigin;
@@ -781,7 +783,9 @@ public class MapperManager extends AbstractMapperManager {
                                 }
                             }
                             selectedOutputTree.getNodes().removeAll(treeNodeToRemove);
-
+                            problemsAnalyser.checkProblems(selectedOutputTree);
+                            mapperUI.updateStatusBar();
+                            outputTreeSchemaBeanListModified();
                         } else if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
                             List<Integer> listIndexOrignal = event.indicesOrigin;
