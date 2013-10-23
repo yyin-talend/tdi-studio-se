@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
@@ -36,11 +37,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<IMetadataColumn> columns = inMetadata.getListColumns();
     	Map<String, String> typesMap = new HashMap<String, String>();
     	Map<String, String> patternsMap = new HashMap<String, String>();
+    	Map<String, Boolean> numberTypeMap = new HashMap<String, Boolean>();
     	for(IMetadataColumn column : columns){
     		String type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
     		typesMap.put(column.getLabel(), type);
     		String pattern = ((column.getPattern() == null) || (column.getPattern().trim().length() == 0)) ? "" : column.getPattern();
     		patternsMap.put(column.getLabel(), pattern);
+    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    		numberTypeMap.put(column.getLabel(), (JavaTypesManager.isNumberType(javaType) && javaType != JavaTypesManager.BIGDECIMAL && !column.isNullable()));
     	}
 		String rowCount = ElementParameterParser.getValue(node,"__ROW_COUNT__");//?? i think we need it
 		
@@ -110,7 +114,7 @@ while(true){
 <%	for(int i = 0; i < groupColumns.size(); i++){
 		String columnName = groupColumns.get(i);
 		String type = typesMap.get(columnName);
-		if(("byte[]").equals(type) || ("Object").equals(type) || ("String").equals(type) || ("java.util.Date").equals(type)){
+		if(("byte[]").equals(type) || ("Object").equals(type) || ("String").equals(type) || ("java.util.Date").equals(type) || !numberTypeMap.get(columnName)){
 %>if(group_<%=columnName %>_<%=cid %> == null){
 	if(<%=connName %>.<%=columnName %> != null){
 		sameGroup_<%=cid %> = false;
