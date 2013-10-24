@@ -15,12 +15,31 @@ public class MapHashFile {
 	//singleton
 	private static final MapHashFile mhf = new MapHashFile();
 
+    public static TalendMultiThreadLockMap resourceLockMap = new TalendMultiThreadLockMap();
+
+    public static class TalendMultiThreadLockMap {
+
+        private Map<Object, Object> tMultiTheadLockMap = new HashMap<Object, Object>();
+
+        public Object get(Object key) {
+            if (tMultiTheadLockMap.get(key) == null) {
+                synchronized (TalendMultiThreadLockMap.this) {
+                    if (tMultiTheadLockMap.get(key) == null) {
+                        tMultiTheadLockMap.put(key, new Object());
+                    }
+                }
+            }
+            return tMultiTheadLockMap.get(key);
+        }
+    }
+	
 	private MapHashFile() {
 	}
 
 	public static MapHashFile getMapHashFile() {
 		return mhf;
 	}
+	
 	//get the linked AdvancedMemoryHashFile
 	public AdvancedMemoryHashFile getAdvancedMemoryHashFile(String key) {
 		AdvancedMemoryHashFile amhf = resourceMap.get(key);

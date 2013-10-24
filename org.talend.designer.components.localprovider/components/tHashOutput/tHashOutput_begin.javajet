@@ -171,22 +171,27 @@ if(!isLinked){//111
 		String connectionName = incommingDataConn.getName();
 %>    
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName %>Struct> tHashFile_<%=cid %> = null;
+		String hashKey_<%=cid%> = "tHashFile_<%=jobName%>_" + pid + "_<%=cid%>";
 <%
-		if(isAppend) {
+		if (isAppend) {
 %>
-			if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>"))==null){
-				tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
-	        }
+			synchronized(org.talend.designer.components.hashfile.common.MapHashFile.resourceLockMap.get(hashKey_<%=cid%>)){
+			    if(mf_<%=cid%>.getResourceMap().get(hashKey_<%=cid%>) == null){
+	      		    mf_<%=cid%>.getResourceMap().put(hashKey_<%=cid%>, new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode%>));
+	      		    tHashFile_<%=cid%> = mf_<%=cid%>.getResourceMap().get(hashKey_<%=cid%>);
+			    }else{
+			    	tHashFile_<%=cid%> = mf_<%=cid%>.getResourceMap().get(hashKey_<%=cid%>);
+			    }
+			}
 <%
 		} else {
 %>
-			tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);
+			synchronized(org.talend.designer.components.hashfile.common.MapHashFile.resourceLockMap.get(hashKey_<%=cid%>)){
+				mf_<%=cid%>.getResourceMap().put(hashKey_<%=cid%>, new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode%>));
+				tHashFile_<%=cid%> = mf_<%=cid%>.getResourceMap().get(hashKey_<%=cid%>);
+			}
 <%
 		}
-%>			
-        //use this ResourceMap instead of globalMap,so that globalMap will not be too large
-        mf_<%=cid %>.getResourceMap().put("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>", tHashFile_<%=cid %>);
-<%	
 	}//222
 }else{//111
 	//////////////////////////////////////////////////////////////
