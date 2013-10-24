@@ -206,7 +206,8 @@ if(("false").equals(useExistingConn)){
 			columnsStr += column.getOriginalDbColumnName() + ",";
 		}
 %>
-		String columnsInSchema_<%=cid%> = "<%=columnsStr%>";
+		String[] columnsInSchema_<%=cid%> = "<%=columnsStr%>".split(",");
+		java.util.Arrays.sort(columnsInSchema_<%=cid%>);
     	javax.naming.directory.Attributes attrsDyn_<%=cid%> = null;
     	javax.naming.NamingEnumeration answerDyn_<%=cid%> = ctx_<%=cid%>.search(<%if(("false").equals(useExistingConn)){%>baseDN_<%=cid%><%}else{%>""<%}%>, <%=filter%>, searchCtls_<%=cid%>);
     	while (answerDyn_<%=cid%> .hasMoreElements()) {
@@ -218,7 +219,7 @@ if(("false").equals(useExistingConn)){
 				int splitorIndex_<%=cid%> = element_<%=cid%>.indexOf(":");
 				if(splitorIndex_<%=cid%>>0){
 					String columnName_<%=cid%> = element_<%=cid%>.substring(0,splitorIndex_<%=cid%>);
-					if(columnsInSchema_<%=cid%>.indexOf(columnName_<%=cid%>+",")==-1 || "<%=metadata.getDynamicColumn().getOriginalDbColumnName()%>".equals(columnName_<%=cid%>)){
+					if(java.util.Arrays.binarySearch(columnsInSchema_<%=cid%>,columnName_<%=cid%>) < 0 || "<%=metadata.getDynamicColumn().getOriginalDbColumnName()%>".equals(columnName_<%=cid%>)){
 						DynamicMetadata dm_<%=cid%> = new DynamicMetadata();
 						dm_<%=cid%>.setName(columnName_<%=cid%>);
 						dm_<%=cid%>.setDbName(columnName_<%=cid%>);
