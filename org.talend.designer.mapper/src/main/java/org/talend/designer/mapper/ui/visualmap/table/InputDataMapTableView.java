@@ -1077,7 +1077,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setTitle(""); //$NON-NLS-1$
         column.setDefaultDisplayedValue(""); //$NON-NLS-1$
         column.setToolTipHeader(Messages.getString("InputDataMapTableView.addNewGlobalMapVar.tooltip")); //$NON-NLS-1$
-        // column.setWeight(10);
+        column.setWeight(10);
         column.setWidth(25);
         column.setMoveable(false);
         column.setResizable(true);
