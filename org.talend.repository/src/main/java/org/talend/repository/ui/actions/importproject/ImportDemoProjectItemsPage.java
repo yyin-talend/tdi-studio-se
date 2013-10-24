@@ -334,9 +334,17 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                 }
 
                 monitorWrap.done();
-                MessageDialog.openInformation(getShell(),
-                        Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
-                        Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+                if (monitor.isCanceled()) {
+                    MessageDialog.openInformation(getShell(),
+                            Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProjectCancel"),
+                            Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedIncompletely"));
+                    return;
+                } else {
+                    MessageDialog.openInformation(getShell(),
+                            Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
+                            Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+
+                }
             }
         };
 
