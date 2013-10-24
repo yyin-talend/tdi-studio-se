@@ -70,10 +70,11 @@ public class HL7OutputManager extends HL7Manager {
                 if (columnName.contains(":")) {
                     columnName = columnName.substring(0, columnName.indexOf(":"));
                 }
-                if (!columnList.contains(columnName)) {
+                if (!columnList.contains(columnName) && !"".equals(columnName)) {
                     columnList.add(columnName);
                 }
             }
+            HL7TreeNode rootNode = null;
             for (String rowName : columnList) {
                 IMetadataTable metadataTable = null;
                 String metadataTableName = rowName;
@@ -110,7 +111,6 @@ public class HL7OutputManager extends HL7Manager {
                 if (i == 0)// the first schema as current
                     currentSchema = metadataTableName;// metadataTable.getLabel();
 
-                HL7TreeNode rootNode = null;
                 HL7TreeNode current = null;
                 HL7TreeNode temp = null;
                 HL7TreeNode mainNode = null;
@@ -150,6 +150,10 @@ public class HL7OutputManager extends HL7Manager {
                         temp = addElement(current, currentPath, newPath, defaultValue);
                         if (rootNode == null) {
                             rootNode = temp;
+                        } else if (rowName.equals(columnName) && rowName.equals(temp.getLabel())) {
+                            if (!rootNode.getChildren().contains(temp)) {
+                                rootNode.addChild(temp);
+                            }
                         }
                         if (rootMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                             temp.setMain(true);
@@ -159,14 +163,31 @@ public class HL7OutputManager extends HL7Manager {
                         current = temp;
                         currentPath = newPath;
                     }
+                    temp.setRepetable(repeatable);
                     if (haveOrder) {
                         temp.setOrder(nodeOrder);
                     }
-                    temp.setRepetable(repeatable);
-                    temp.setRow(rowName);
+                    if (columnName != null && columnName.length() > 0) {
+                        // temp.setColumn(columnName);
+                        // temp.setRow(rowName);
+                    }
+
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                         columnName = columnName.replace(schemaId, ""); // $!=Nnull-1$
-                        if (metadataTable != null) {
+                        // group node can not get the metadata table
+                        if (metadataTable == null) {
+                            IMetadataTable metadataTableTemp = null;
+                            for (IConnection connection : incomingConnections) {
+                                metadataTableTemp = connection.getMetadataTable();
+                                if (columnName.startsWith(metadataTableTemp.getLabel())) {
+                                    break;
+                                }
+                            }
+                            if (metadataTableTemp != null) {
+                                temp.setColumn(metadataTableTemp.getColumn(columnName));
+                                temp.setTable(metadataTableTemp);
+                            }
+                        } else {
                             temp.setColumn(metadataTable.getColumn(columnName));
                             temp.setTable(metadataTable);
                         }
@@ -182,10 +203,13 @@ public class HL7OutputManager extends HL7Manager {
                 if (haveOrder) {
                     orderNode(rootNode);
                 }
-                treeData.add(rootNode);
-                rootNode.setRow(rowName);
-                contents.put(metadataTableName, treeData);
+
                 i++;
+            }
+            if (rootNode != null && treeData != null) {
+                treeData.add(rootNode);
+                // rootNode.setRow(rowName);
+                contents.put(rootNode.getColumnLabel(), treeData);
             }
             initCurrentSchema();
 
