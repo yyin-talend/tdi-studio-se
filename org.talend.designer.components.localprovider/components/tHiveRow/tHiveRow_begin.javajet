@@ -44,9 +44,17 @@ java.sql.Connection conn_<%=cid%> = null;
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		String conn = "conn_" + connection;;
+		String conn = "conn_" + connection;
+		String db = "db_" + connection;
 		%>
 		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+		
+		String dbname_<%=cid%> = (String)globalMap.get("<%=db%>");
+    	if(dbname_<%=cid%>!=null && !"".equals(dbname_<%=cid%>.trim()) && !"default".equals(dbname_<%=cid%>.trim())) {
+        	java.sql.Statement goToDatabase_<%=cid%> = conn_<%=cid%>.createStatement();
+        	goToDatabase_<%=cid%>.execute("use " + dbname_<%=cid%>);
+        	goToDatabase_<%=cid%>.close();
+    	}
 		<%
 	} else {
 		String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
@@ -135,7 +143,13 @@ java.sql.Connection conn_<%=cid%> = null;
 <%
 		}
 %>
-		
+    	String dbname_<%=cid%> = <%=dbname%>;
+    	if(dbname_<%=cid%>!=null && !"".equals(dbname_<%=cid%>.trim()) && !"default".equals(dbname_<%=cid%>.trim())) {
+        	java.sql.Statement goToDatabase_<%=cid%> = conn_<%=cid%>.createStatement();
+        	goToDatabase_<%=cid%>.execute("use " + dbname_<%=cid%>);
+        	goToDatabase_<%=cid%>.close();
+    	}
+    	
 		<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
     		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
     		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
