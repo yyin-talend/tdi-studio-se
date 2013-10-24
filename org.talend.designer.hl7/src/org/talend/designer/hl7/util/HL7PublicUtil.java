@@ -144,9 +144,6 @@ public class HL7PublicUtil {
         HL7TreeNode node = new Element();
         String nodeLabel = getLabel(treeNode, true);
         node.setLabel(nodeLabel);
-        // if (node instanceof Element) {
-        // ((Element) node).setRow(nodeLabel);
-        // }
         node.setMain(true);
         List children = getFirstLevelChild(treeNode);
         if (children != null) {
@@ -183,6 +180,7 @@ public class HL7PublicUtil {
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
                         ((Element) childEle).setRow(label);
+                        ((Element) childEle).setColumnName(getLabel(element, true));
                     }
 
                     node.addChild(childEle);
@@ -197,12 +195,6 @@ public class HL7PublicUtil {
                     childEle.setMain(false);
                     node.addChild(childEle);
                 }
-                // if (children[i] instanceof ATreeNode) {
-                // ATreeNode child = (ATreeNode) children[i];
-                // HL7TreeNode HL7Child = cloneATreeNode(child);
-                // // HL7Child.setRow(schemaName);
-                // node.addChild(HL7Child);
-                // }
             }
         }
         return node;
@@ -341,16 +333,9 @@ public class HL7PublicUtil {
                             }
                         }
                         if (childReps[j] instanceof Group) {
+                            values.add(childReps[j]);
                             allSegmentFromGroup.clear();
                             getAllSegmentsFromGroup((Group) childReps[j]);
-                            if (allSegmentFromGroup.size() > 0) {
-                                values.addAll(Arrays.asList(allSegmentFromGroup.toArray(new SegmentModel[0])));
-                                for (SegmentModel sm : Arrays.asList(allSegmentFromGroup.toArray(new SegmentModel[0]))) {
-                                    if (getChildren(sm).size() > 0) {
-                                        values.add(getChildren(sm));
-                                    }
-                                }
-                            }
                         }
                         if (childReps[j] instanceof Segment) {
                             SegmentModel sModel = new SegmentModel((Segment) childReps[j], messParent, i, j);
@@ -463,11 +448,9 @@ public class HL7PublicUtil {
                             values.add(childReps[j]);
                         }
                         if (childReps[j] instanceof Group) {
+                            values.add(childReps[j]);
                             allSegmentFromGroup.clear();
                             getAllSegmentsFromGroup((Group) childReps[j]);
-                            if (allSegmentFromGroup.size() > 0) {
-                                values.addAll(Arrays.asList(allSegmentFromGroup.toArray(new SegmentModel[0])));
-                            }
                         }
                         if (childReps[j] instanceof Segment) {
                             SegmentModel sModel = new SegmentModel((Segment) childReps[j], messParent, i, j);
