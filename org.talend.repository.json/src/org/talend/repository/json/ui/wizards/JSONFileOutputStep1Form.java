@@ -316,6 +316,10 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 if (file.exists()) {
                     List<ATreeNode> treeNodes = new ArrayList<ATreeNode>();
                     valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
+                    checkFieldsValue();
+                    if (!valid) {
+                        return;
+                    }
                     if (treeNodes.size() > 0) {
                         treeNode = treeNodes.get(0);
                     }
