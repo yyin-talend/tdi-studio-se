@@ -28,6 +28,9 @@ imports="
 			return "";
 		}
 	    
+	   	public void afterUseNewConnection(INode node) {
+	    }
+	    
 	    public void setURL(INode node) {
 	    }
 
@@ -52,6 +55,7 @@ imports="
 		        String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
 		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		        <%this.afterUseNewConnection(node);%>
 		    }
 <%
 		}
