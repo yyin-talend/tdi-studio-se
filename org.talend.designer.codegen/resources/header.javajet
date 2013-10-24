@@ -403,7 +403,7 @@ private class TalendException extends java.lang.Exception {
 	@Override
 	public void printStackTrace() {
 		if (!(e instanceof TalendException || e instanceof TDieException)) {
-			if(virtualComponentName!=null && currentComponent.indexOf(virtualComponentName)==0){
+			if(virtualComponentName!=null && currentComponent.indexOf(virtualComponentName+"_")==0){
 				globalMap.put(virtualComponentName+"_ERROR_MESSAGE",e.getMessage());
 			}
 			 globalMap.put(currentComponent+"_ERROR_MESSAGE",e.getMessage());
