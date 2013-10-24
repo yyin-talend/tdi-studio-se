@@ -62,12 +62,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				break;
 			}
 		}		
-		if("modify".equals(changetype) && !("none".equals(modify_operation))) {
+		if(i > 1 && "modify".equals(changetype) && !("none".equals(modify_operation))) {
 		%>
 			if(needSeparator_<%=cid %>){
 				sb_<%=cid %>.append("-\n");
+				needSeparator_<%=cid %> = false;
 			} 
-			needSeparator_<%=cid %> = false;
 		<%
 		}
 		%>
