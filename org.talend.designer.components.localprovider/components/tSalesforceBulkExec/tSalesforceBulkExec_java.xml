@@ -101,8 +101,8 @@
             NAME="API_VERSION" 
             FIELD="TEXT" 
             NUM_ROW="20"
-            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"  
-            SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false')"  
+            SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
             GROUP="LOGIN">
 			<DEFAULT>"25.0"</DEFAULT>
 		</PARAMETER>
