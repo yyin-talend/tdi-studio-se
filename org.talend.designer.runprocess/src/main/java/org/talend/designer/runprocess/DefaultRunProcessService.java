@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -421,6 +422,20 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
 
         return activeContext.isRunning();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#buildJavaProject()
+     */
+    @Override
+    public void buildJavaProject() {
+        try {
+            getJavaProject().getProject().build(IncrementalProjectBuilder.AUTO_BUILD, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
 }

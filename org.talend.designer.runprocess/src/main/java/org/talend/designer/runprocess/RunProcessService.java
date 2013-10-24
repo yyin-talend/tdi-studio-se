@@ -289,4 +289,14 @@ public class RunProcessService implements IRunProcessService {
         return activeContext.isRunning();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#buildJavaProject()
+     */
+    @Override
+    public void buildJavaProject() {
+        delegateService.buildJavaProject();
+    }
+
 }
