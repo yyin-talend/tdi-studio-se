@@ -1007,6 +1007,11 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	
 <%
 	}else{//isParallelize
+	if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
+%>
+		String currentVirtualComponent = null;
+<%
+	}
 %>
 
 	String iterateId = "";

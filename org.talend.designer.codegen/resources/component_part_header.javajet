@@ -8,6 +8,7 @@
 		org.talend.core.model.process.EConnectionType 
         org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.utils.NodeUtil
 		org.talend.core.model.process.IConnectionCategory
   		java.util.List
  		 java.util.Set
@@ -132,6 +133,13 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 				}
 			}			
 	    }
+	}
+%>
+<%
+	if(node.isVirtualGenerateNode()){
+%>
+currentVirtualComponent = "<%=NodeUtil.getVirtualUniqueName(node)%>";
+<%
 	}
 %>
 currentComponent="<%=node.getUniqueName() %>";

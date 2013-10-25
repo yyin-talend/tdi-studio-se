@@ -10,6 +10,7 @@
 		org.talend.core.model.process.ElementParameterParser
 		java.util.List
 		java.util.Iterator
+		org.talend.core.model.utils.NodeUtil
 	" 
 	class="SubProcessFooter" 
 %>
@@ -205,7 +206,16 @@
 	
 	} catch(java.lang.Exception e) {	
 
-		throw new TalendException(e, currentComponent, globalMap);
+		TalendException te = new TalendException(e, currentComponent, globalMap);
+		<%
+			if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
+		%>
+				te.setVirtualComponentName(currentVirtualComponent);
+		<%
+			}
+		%>
+		
+		throw te;
 	
 	} catch(java.lang.Error error) {
 	

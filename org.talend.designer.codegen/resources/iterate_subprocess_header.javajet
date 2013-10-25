@@ -183,6 +183,13 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			
 			this.isRunning = true;
 			String currentComponent = "";
+<%
+			if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
+%>
+			String currentVirtualComponent = null;
+<%
+			}
+%>
 			try {			
 <%
 	        	if(stat){
