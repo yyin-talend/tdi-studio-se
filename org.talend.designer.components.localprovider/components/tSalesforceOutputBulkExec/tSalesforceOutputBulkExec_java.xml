@@ -67,6 +67,7 @@
             FIELD="CLOSED_LIST" 
             NUM_ROW="6" 
             REQUIRED="true"
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
             GROUP="LOGIN">
             <ITEMS DEFAULT="BASIC">
                 <ITEM NAME="BASIC" VALUE="BASIC" />

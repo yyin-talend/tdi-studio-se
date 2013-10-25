@@ -55,7 +55,7 @@ imports="
 	
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
-	if(useOAuth){
+	if(!useExistingConn && useOAuth){
 		String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
 		String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
 		%>
