@@ -887,7 +887,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String filter = schemaParam.getFilter();
             if (elem instanceof Node) {
                 Node sapNode = (Node) elem;
-                if (sapNode.getComponent().getName().startsWith("tSAP")) { //$NON-NLS-1$
+                if (sapNode.getComponent().getName().startsWith("tSAP") && !sapNode.getComponent().getName().startsWith("tSAPHana")) { //$NON-NLS-1$ //$NON-NLS-2$
                     type = ERepositoryObjectType.METADATA_SAP_FUNCTION;
                 } else if (sapNode.getComponent().getName().startsWith("tESB")) { //$NON-NLS-1$
                     filter = ERepositoryObjectType.SERVICESOPERATION.getType();
@@ -990,7 +990,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     connection = MetadataToolHelper.getConnectionFromRepository(value);
 
                     // For SAP see bug 5423
-                    if (((Node) elem).getUniqueName().startsWith("tSAP")) { //$NON-NLS-1$
+                    if (((Node) elem).getUniqueName().startsWith("tSAP") && !((Node) elem).getUniqueName().startsWith("tSAPHana")) { //$NON-NLS-1$
                         Node sapNode = (Node) elem;
                         String functionId = node.getParent().getId();
                         repositoryMetadata = getMetadataFromRepository(id, functionId, name);
