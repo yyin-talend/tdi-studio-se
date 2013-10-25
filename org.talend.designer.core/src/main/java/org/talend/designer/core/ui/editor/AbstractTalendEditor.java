@@ -187,6 +187,7 @@ import org.talend.designer.core.ui.editor.process.CreateComponentOnLinkHelper;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -954,6 +955,41 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 setAction(actionID, action);
             }
         }
+        int minx = getMinX();
+        int miny = getMinY();
+        if (viewer.getControl() instanceof FigureCanvas) {
+            if (minx < 0) {
+                ((FigureCanvas) viewer.getControl()).getViewport().getHorizontalRangeModel().setMinimum(minx);
+                ((FigureCanvas) viewer.getControl()).scrollToX(minx);
+            }
+            if (miny < 0) {
+                ((FigureCanvas) viewer.getControl()).getViewport().getVerticalRangeModel().setMinimum(miny);
+                ((FigureCanvas) viewer.getControl()).scrollToY(miny);
+            }
+
+        }
+    }
+
+    private int getMinX() {
+        int x = 0;
+        for (ISubjobContainer node : this.getProcess().getSubjobContainers()) {
+            int ncX = ((SubjobContainer) node).getSubjobContainerRectangle().x;
+            if (x > ncX) {
+                x = ncX;
+            }
+        }
+        return x;
+    }
+
+    private int getMinY() {
+        int y = 0;
+        for (ISubjobContainer node : this.getProcess().getSubjobContainers()) {
+            int ncY = ((SubjobContainer) node).getSubjobContainerRectangle().y;
+            if (y > ncY) {
+                y = ncY;
+            }
+        }
+        return y;
     }
 
     /**
