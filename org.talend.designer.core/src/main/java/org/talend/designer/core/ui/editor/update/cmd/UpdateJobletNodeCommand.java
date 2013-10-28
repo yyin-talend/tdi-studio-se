@@ -105,7 +105,8 @@ public class UpdateJobletNodeCommand extends Command {
                     List<Node> jobletNodes = (List<Node>) result.getUpdateObject();
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         for (Node node : jobletNodes) {
-                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),ComponentCategory.CATEGORY_4_DI.getName());
+                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),
+                                    ComponentCategory.CATEGORY_4_DI.getName());
                             if (newComponent == null) {
                                 continue;
                             }
@@ -176,7 +177,8 @@ public class UpdateJobletNodeCommand extends Command {
         Node currentNode = getOriginalNodeFromProcess(node);
 
         String componentName = currentNode.getComponent().getName();
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName, ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return;
         }
@@ -191,7 +193,7 @@ public class UpdateJobletNodeCommand extends Command {
         }
         Map<String, Object> parameters = createParameters(node, newComponent);
         if (!parameters.isEmpty()) {
-            node.reloadComponent(newComponent, parameters);
+            node.reloadComponent(newComponent, parameters, true);
         }
     }
 
@@ -257,7 +259,8 @@ public class UpdateJobletNodeCommand extends Command {
                     continue;
                 }
 
-                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(), ComponentCategory.CATEGORY_4_DI.getName());
+                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),
+                        ComponentCategory.CATEGORY_4_DI.getName());
                 if (newComponent == null) {
                     continue;
                 }
@@ -282,7 +285,8 @@ public class UpdateJobletNodeCommand extends Command {
         INode sourceNode = (INode) evt.getSource();
 
         String componentName = sourceNode.getComponent().getName();
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName, ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName,
+                ComponentCategory.CATEGORY_4_DI.getName());
         if (newComponent == null) {
             return;
         }
