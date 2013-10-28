@@ -3,10 +3,6 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.IConnectionCategory
 	"
 %>
 
@@ -14,4 +10,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 %>
+	String fileName_<%=cid%> = <%=filename %>;
