@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
@@ -67,7 +70,7 @@ public class MigrationTaskForIssue1144 extends AbstractJobMigrationTask {
     }
 
     private String getOldValues() {
-        return "System.getProperty(\"user.dir\").concat(\"/workspace/" //$NON-NLS-1$
-                + getDemoProjectName() + "/documentations/talend_files_0.1.item\")"; //$NON-NLS-1$
+        return "(\"" + ResourcesPlugin.getWorkspace().getRoot().getLocation() //$NON-NLS-1$
+                + "/" + getDemoProjectName() + "/documentations/talend_files_0.1.item\")"; //$NON-NLS-1$
     }
 }
