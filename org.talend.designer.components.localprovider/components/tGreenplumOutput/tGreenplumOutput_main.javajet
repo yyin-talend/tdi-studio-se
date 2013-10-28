@@ -641,7 +641,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(commitEvery_<%=cid%><=commitCounter_<%=cid%>) {
                 
 					<%if(isLog4jEnabled){%>
-						log.info("<%=cid%> - Starting to commit.");
+						log.info("<%=cid%> - Starting to commit " + commitCounter_<%=cid%> + " records.");
 					<%}%>
 		        	conn_<%=cid%>.commit();
 					<%if(isLog4jEnabled){%>

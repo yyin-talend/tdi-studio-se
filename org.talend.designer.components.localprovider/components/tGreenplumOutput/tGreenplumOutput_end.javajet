@@ -69,7 +69,7 @@ imports="
 		{
 			%>
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Starting to commit.");
+				log.info("<%=cid%> - Starting to commit " + commitCounter_<%=cid%> + " records.");
 			<%}%>
 				conn_<%=cid%>.commit();
 			<%if(isLog4jEnabled){%>
@@ -100,7 +100,41 @@ imports="
     globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_deleted_<%=cid%>);
 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - There are " + nb_line_<%=cid%> + " counts be effected. Inesrted count: " + nb_line_inserted_<%=cid%> + ", Updated count: " + nb_line_update_<%=cid%> + ", Deleted count: " + nb_line_deleted_<%=cid%> + ", Rejected count: " + nb_line_rejected_<%=cid%> );
-		log.info("<%=cid%> - Has finished.");
-	<%}%>
+	<%
+	if(isLog4jEnabled){
+		if(("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) {
+    		if (("INSERT").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
+	<%
+    		}else if (("UPDATE").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
+	<%
+    		}else if (("DELETE").equals(dataAction)) {
+	%>
+				log.info("<%=cid%> - Has deleted "+nb_line_deleted_<%=cid%> + " records.");
+	<%
+    		}
+    	}else if("UPDATE_OR_INSERT".equals(dataAction)){
+	%>
+			log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
+    <%
+    	}else if("INSERT_OR_UPDATE".equals(dataAction)){
+    %>
+			log.info("<%=cid%> - Has inserted "+nb_line_inserted_<%=cid%> + " records.");
+			log.info("<%=cid%> - Has updated "+nb_line_update_<%=cid%> + " records.");
+    
+    <%
+    	}
+    	if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+	%>
+			log.info("<%=cid%> - Has rejected "+nb_line_rejected_<%=cid%> + " records.");
+	<%
+		}
+	%>
+		log.info("<%=cid%> - Done.");
+	<%
+	}
+	%>

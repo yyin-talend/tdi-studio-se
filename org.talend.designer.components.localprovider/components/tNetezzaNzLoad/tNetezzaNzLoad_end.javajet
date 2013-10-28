@@ -75,7 +75,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		outputStream_<%=cid%>.flush();
 		outputStream_<%=cid%>.close();
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Loading data into database.");
+					log.info("<%=cid%> - Start to load data into database.");
 				<%}%>
 	<%
 		if (useNamedPiped) { // wait for nzload thread to finish
@@ -90,7 +90,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			<%
 		}
 				if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Loaded data finished.");
+					log.info("<%=cid%> - Load data has finished.");
 				<%}
 	}
 %>
@@ -130,6 +130,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 				%>
 				// end "show log output"
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Has finished.");
+					log.info("<%=cid%> - Done.");
 				<%}%>
 				

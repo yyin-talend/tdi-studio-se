@@ -119,7 +119,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
         int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
         if(deleteKeyCount_<%=cid%> < 1) {
 			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - For delete ,Shcema must have a key");
+				log.fatal("<%=cid%> - For delete ,Schema must have a key");
 			<%}%>	
             throw new RuntimeException("For delete, Schema must have a key");
         }
@@ -147,6 +147,13 @@ if(("true").equals(useExistingConn)) {
 	String conn = "conn_" + connection;
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	<%if(isLog4jEnabled){%>	
+		if(conn_<%=cid%> != null) {
+			if(conn_<%=cid%>.getMetaData() != null) {
+				log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
+			}
+		}
+	<%}%>
 	<%
 } else {
 	%>	
@@ -294,7 +301,7 @@ if(columnList != null && columnList.size()>0) {
 	} else if (("UPDATE").equals(dataAction)) {
 	    %>	
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-	    <%		
+	    <%
 	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
 	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>");	

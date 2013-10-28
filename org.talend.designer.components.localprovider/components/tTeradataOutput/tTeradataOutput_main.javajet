@@ -1075,7 +1075,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     						}
     						if(rejectConnName==null){
 							%>
+								<%if(isLog4jEnabled) {%>
+									log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
+								<%}%>
 		                		    pstmt_<%=cid %>.executeBatch();
+								<%if (isLog4jEnabled) {%>						
+									log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
+								<%}%>
 		            	    	<%
 		            	    		if (("INSERT").equals(dataAction)) {
 		            	    	%>
@@ -1100,7 +1106,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 							%>	
 								                
 						<%if(isLog4jEnabled){%>
-							log.info("<%=cid%> - Starting to commit.");
+							log.info("<%=cid%> - Starting to commit " + commitCounter_<%=cid%> + " records.");
 						<%}%>
 			        	conn_<%=cid%>.commit();
 						<%if(isLog4jEnabled){%>
