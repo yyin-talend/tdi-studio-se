@@ -190,7 +190,7 @@ public class UpdateJobletNodeCommand extends Command {
         }
         Map<String, Object> parameters = createParameters(node, newComponent);
         if (!parameters.isEmpty()) {
-            node.reloadComponent(newComponent, parameters);
+            node.reloadComponent(newComponent, parameters, true);
         }
     }
 

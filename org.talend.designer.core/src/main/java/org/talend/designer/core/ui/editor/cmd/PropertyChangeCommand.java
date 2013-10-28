@@ -767,7 +767,7 @@ public class PropertyChangeCommand extends Command {
         }
         Map<String, Object> parameters = createParameters(node);
         if (!parameters.isEmpty()) {
-            node.reloadComponent(newComponent, parameters);
+            node.reloadComponent(newComponent, parameters, false);
         }
     }
 

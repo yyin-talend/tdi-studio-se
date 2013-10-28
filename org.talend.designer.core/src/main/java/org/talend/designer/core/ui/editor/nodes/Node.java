@@ -247,6 +247,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private static final String TPOSTJOB_STR = "tPostjob"; //$NON-NLS-1$
 
+    private boolean isUpdate;
+
     /**
      * Getter for index.
      * 
@@ -3627,6 +3629,9 @@ public class Node extends Element implements IGraphicalNode {
      */
     public void setConnectionName(String name) {
         this.connectionName = name.replaceAll("\"", "").replaceAll(" ", ""); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        if (this.isUpdate) {
+            return;
+        }
         firePropertyChange(EParameterName.CONNECTION_FORMAT.getName(), null, this.connectionName);
     }
 
@@ -3649,7 +3654,8 @@ public class Node extends Element implements IGraphicalNode {
      * java.util.Map)
      */
     @Override
-    public void reloadComponent(IComponent component, Map<String, Object> parameters) {
+    public void reloadComponent(IComponent component, Map<String, Object> parameters, boolean isUpdate) {
+        this.isUpdate = isUpdate;
         reloadingComponent = true;
         currentStatus = 0;
         Object obj = parameters.get(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS);
@@ -3754,6 +3760,7 @@ public class Node extends Element implements IGraphicalNode {
         // }
         // }
         reloadingComponent = false;
+        this.isUpdate = false;
     }
 
     private Map<String, Object> storeValue(Object obj) {
