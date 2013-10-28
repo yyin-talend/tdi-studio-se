@@ -22,10 +22,12 @@ import java.util.Map;
 
 import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.SafeRunner;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.runtime.repository.demo.IDemoProjectValidator;
 import org.talend.core.utils.RegistryReader;
 
 /**
@@ -57,6 +59,10 @@ public final class DemoProjectsProvider extends RegistryReader {
 
         String iconUrl;
 
+        IConfigurationElement curConfigElement;
+
+        IDemoProjectValidator validator;
+
         /*
          * 
          */
@@ -68,72 +74,81 @@ public final class DemoProjectsProvider extends RegistryReader {
 
     private Map<String, DemoProvider> allDemoProviders;
 
-    private DemoProjectBean[] demoProjects;
-
     private DemoProjectsProvider() {
         super(CoreRuntimePlugin.PLUGIN_ID, "demoProjects_provider"); //$NON-NLS-1$
     }
 
     public DemoProjectBean[] getDemoProjects() {
         init();
-        return demoProjects;
+
+        Map<String, DemoProvider> finalDemoProviders = new HashMap<String, DemoProvider>(allDemoProviders);
+
+        // for override.
+        List<String> overrideIds = new ArrayList<String>();
+        // for invalid
+        List<String> invalidIds = new ArrayList<String>();
+        Iterator<String> iterator = finalDemoProviders.keySet().iterator();
+        while (iterator.hasNext()) {
+            String id = iterator.next();
+            DemoProvider demoProvider = finalDemoProviders.get(id);
+            String overrideId = demoProvider.overrideId;
+            // existed
+            if (overrideId != null && finalDemoProviders.containsKey(overrideId)) {
+                overrideIds.add(overrideId);
+            }
+            // not valid
+            IDemoProjectValidator validator = demoProvider.validator;
+            if (validator != null && !validator.validate(demoProvider.curConfigElement)) {
+                invalidIds.add(id);
+            }
+        }
+        // remove the override
+        for (String overrideId : overrideIds) {
+            finalDemoProviders.remove(overrideId);
+        }
+        // remove the invalid
+        for (String invalidId : invalidIds) {
+            finalDemoProviders.remove(invalidId);
+        }
+
+        List<DemoProvider> finalDemoProvidersList = new ArrayList<DemoProvider>(finalDemoProviders.values());
+        // sort by order.
+        Collections.sort(finalDemoProvidersList, new Comparator<DemoProvider>() {
+
+            @Override
+            public int compare(DemoProvider dp1, DemoProvider dp2) {
+                return dp1.order - dp2.order;
+            }
+        });
+
+        // create demo bean
+        List<DemoProjectBean> finalDemoProjects = new ArrayList<DemoProjectBean>();
+        for (DemoProvider demoProvider : finalDemoProvidersList) {
+            DemoProjectBean demoBean = new DemoProjectBean();
+            demoBean.setProjectName(demoProvider.name);
+            demoBean.setPluginId(demoProvider.pluginId);
+            demoBean.setDescriptionFilePath(demoProvider.descHtml);
+            demoBean.setDemoProjectFilePath(demoProvider.projectUrl);
+            demoBean.setIconUrl(demoProvider.iconUrl);
+            demoBean.setDemoDesc(demoProvider.description);
+            if (demoBean.getDemoProjectFilePath().endsWith(FileExtensions.ZIP_FILE_SUFFIX)
+                    || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_FILE_SUFFIX)
+                    || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_GZ_FILE_SUFFIX)) {
+                demoBean.setDemoProjectFileType(EDemoProjectFileType.ARCHIVE);
+            } else {
+                demoBean.setDemoProjectFileType(EDemoProjectFileType.FOLDER);
+            }
+            finalDemoProjects.add(demoBean);
+        }
+
+        return finalDemoProjects.toArray(new DemoProjectBean[0]);
     }
 
     void init() {
-        if (demoProjects == null) {
+        if (allDemoProviders == null) {
             synchronized (DemoProjectsProvider.class) {
                 allDemoProviders = new HashMap<String, DemoProvider>();
                 readRegistry();
-
-                // process override.
-                Map<String, DemoProvider> finalDemoProviders = new HashMap<String, DemoProvider>(allDemoProviders);
-
-                List<String> overrideIds = new ArrayList<String>();
-                Iterator<String> iterator = finalDemoProviders.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String id = iterator.next();
-                    String overrideId = finalDemoProviders.get(id).overrideId;
-                    // existed
-                    if (overrideId != null && finalDemoProviders.containsKey(overrideId)) {
-                        overrideIds.add(overrideId);
-                    }
-                }
-                // remove the override
-                for (String overrideId : overrideIds) {
-                    finalDemoProviders.remove(overrideId);
-                }
-
-                List<DemoProvider> finalDemoProvidersList = new ArrayList<DemoProvider>(finalDemoProviders.values());
-                // sort by order.
-                Collections.sort(finalDemoProvidersList, new Comparator<DemoProvider>() {
-
-                    @Override
-                    public int compare(DemoProvider dp1, DemoProvider dp2) {
-                        return dp1.order - dp2.order;
-                    }
-                });
-
-                // create demo bean
-                List<DemoProjectBean> finalDemoProjects = new ArrayList<DemoProjectBean>();
-                for (DemoProvider demoProvider : finalDemoProvidersList) {
-                    DemoProjectBean demoBean = new DemoProjectBean();
-                    demoBean.setProjectName(demoProvider.name);
-                    demoBean.setPluginId(demoProvider.pluginId);
-                    demoBean.setDescriptionFilePath(demoProvider.descHtml);
-                    demoBean.setDemoProjectFilePath(demoProvider.projectUrl);
-                    demoBean.setIconUrl(demoProvider.iconUrl);
-                    demoBean.setDemoDesc(demoProvider.description);
-                    if (demoBean.getDemoProjectFilePath().endsWith(FileExtensions.ZIP_FILE_SUFFIX)
-                            || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_FILE_SUFFIX)
-                            || demoBean.getDemoProjectFilePath().endsWith(FileExtensions.TAR_GZ_FILE_SUFFIX)) {
-                        demoBean.setDemoProjectFileType(EDemoProjectFileType.ARCHIVE);
-                    } else {
-                        demoBean.setDemoProjectFileType(EDemoProjectFileType.FOLDER);
-                    }
-                    finalDemoProjects.add(demoBean);
-                }
-
-                demoProjects = finalDemoProjects.toArray(new DemoProjectBean[0]);
             }
         }
     }
@@ -171,6 +186,7 @@ public final class DemoProjectsProvider extends RegistryReader {
                     } catch (NumberFormatException e) {
                         //
                     }
+
                     DemoProvider demoProvider = new DemoProvider();
                     demoProvider.id = id;
                     demoProvider.name = name;
@@ -181,7 +197,15 @@ public final class DemoProjectsProvider extends RegistryReader {
                     demoProvider.projectUrl = projectUrl;
                     demoProvider.iconUrl = iconUrl;
 
+                    demoProvider.curConfigElement = element;
                     demoProvider.pluginId = element.getContributor().getName();
+
+                    // validator
+                    try {
+                        demoProvider.validator = (IDemoProjectValidator) element.createExecutableExtension("validator"); //$NON-NLS-1$;
+                    } catch (CoreException e) {
+                        //
+                    }
                     allDemoProviders.put(id, demoProvider);
                 }
             });
