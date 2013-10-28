@@ -45,6 +45,7 @@ public class HiveLanguage extends AbstractDbLanguage {
         Collections.swap(joins, superJoin, currentJoin);
         joins.remove(JOIN.INNER_JOIN);
         joins.remove(JOIN.CROSS_JOIN);
+        joins.remove(JOIN.NO_JOIN);
         return joins.toArray(new IJoinType[0]);
     }
 
