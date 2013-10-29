@@ -3332,9 +3332,9 @@
 			</ITEMS>
 		</PARAMETER>
         
-        <PARAMETER NAME="AWAIT_TIME" FIELD="TEXT" NUM_ROW="15"
+        <PARAMETER NAME="AWAIT_TIME" FIELD="TEXT" NUM_ROW="16"
             REQUIRED="true">
-            <DEFAULT>10*1000</DEFAULT>
+            <DEFAULT>10000</DEFAULT>
         </PARAMETER>
 
 		<PARAMETER
