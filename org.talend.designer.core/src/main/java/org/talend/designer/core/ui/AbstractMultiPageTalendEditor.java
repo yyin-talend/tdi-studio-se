@@ -274,16 +274,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         public void partOpened(IWorkbenchPart part) {
             if (part == AbstractMultiPageTalendEditor.this) {
                 IProcess2 process = getProcess();
-                // for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                // if (node.isJoblet()) {
-                // IJobletProviderService service = (IJobletProviderService)
-                // GlobalServiceRegister.getDefault().getService(
-                // IJobletProviderService.class);
-                // if (service != null) {
-                // service.reloadJobletProcess(node);
-                // }
-                // }
-                // }
                 ((Process) process).setEditor(AbstractMultiPageTalendEditor.this);
             }
         }
