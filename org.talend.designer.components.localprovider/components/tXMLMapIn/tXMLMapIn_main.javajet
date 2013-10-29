@@ -68,7 +68,7 @@
 		if(docColumnName!=null) {
 			boolean allowEmptyElement = tableNameToAllowEmptyElement.get(tableName);
 %>
-			routines.system.GenerateDocumentHelper.generateOk(<%=tableName%>.<%=docColumnName%>, <%=!allowEmptyElement%>);
+			routines.system.NestXMLTool.generateOk(<%=tableName%>.<%=docColumnName%>, <%=!allowEmptyElement%>);
 <%
 		}
 %>		
