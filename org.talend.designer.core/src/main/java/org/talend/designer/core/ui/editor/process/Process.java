@@ -2036,7 +2036,13 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
         nc.setNeedLoadLib(false);
-        //
+        if (nc.isJoblet()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                service.reloadJobletProcess(nc);
+            }
+        }
         return nc;
     }
 
