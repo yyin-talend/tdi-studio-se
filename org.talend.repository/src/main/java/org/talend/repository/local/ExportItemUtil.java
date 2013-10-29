@@ -163,14 +163,17 @@ public class ExportItemUtil {
             File tmpDirectory = null;
             Map<File, IPath> toExport;
 
+            // TDI-27660:if not give the path of export file,get its default parent path.
+            File parentDesFile = checkAndGetDesParentFile(destination);
+
             if (destination.getName().endsWith(FileConstants.TAR_FILE_SUFFIX)) {
-                createFolder(destination.getParentFile());
+                createFolder(parentDesFile);
                 exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
             } else if (destination.getName().endsWith(FileConstants.TAR_GZ_FILE_SUFFIX)) {
-                createFolder(destination.getParentFile());
+                createFolder(parentDesFile);
                 exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), true);
             } else if (destination.getName().endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
-                createFolder(destination.getParentFile());
+                createFolder(parentDesFile);
                 exporter = new ZipFileExporterFullPath(destination.getAbsolutePath(), true);
             } else {
                 createFolder(destination);
@@ -849,6 +852,17 @@ public class ExportItemUtil {
         if (!folder.exists()) {
             throw new IOException(Messages.getString("ExportItemUtil.cannotCreateDir", folder)); //$NON-NLS-1$
         }
+    }
+
+    private File checkAndGetDesParentFile(File destinationFile) throws IOException {
+        IPath defaultDesPath = null;
+        if (destinationFile.getParentFile() == null) {
+            defaultDesPath = new Path(destinationFile.getAbsolutePath());
+        }
+        if (defaultDesPath != null) {
+            return new File(defaultDesPath.toPortableString()).getParentFile();
+        }
+        return destinationFile.getParentFile();
     }
 
     private void copyJarToDestination(String sourceFilePath, String destinationPath) {
