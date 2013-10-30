@@ -20,6 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
+boolean ignoreSourceNull="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IGNORE_SOURCE_NULL__"));
 String separator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 
 int schemaOptNum=100;
@@ -99,7 +100,19 @@ try{
 		if(inputCol.getLabel().equals(field)){
 %>
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
-	String[] newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
+	String[] newFields_<%=cid%> = new String[0];
+	if(field_<%=cid%>!=null){
+		newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
+	}
+<%
+	if(ignoreSourceNull){
+%>
+	else{
+		continue;
+	}
+<%
+	}
+%>
 	int length_<%=cid%> = newFields_<%=cid%>.length;
 <%
 			if(trim){

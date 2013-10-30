@@ -82,6 +82,9 @@ if(inConn!=null && outConn!=null){
     for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
         if(inputCol.getLabel().equals(field)){
 %>
+			if(<%=inConn.getName()%>.<%=field%>==null){
+				continue;
+			}
     		java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
 <%
             if(!"".equals(rejectConnName)) {

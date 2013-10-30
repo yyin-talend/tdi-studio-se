@@ -43,6 +43,14 @@
       NUM_ROW="10"
     >
     </PARAMETER>
+
+     <PARAMETER 
+    	NAME="IGNORE_SOURCE_NULL" 
+    	FIELD="CHECK" 
+    	NUM_ROW="10"
+    >
+		<DEFAULT>true</DEFAULT>
+	</PARAMETER>
     
  	<PARAMETER
       NAME="ADVANCED_OPTION"

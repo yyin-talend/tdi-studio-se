@@ -86,6 +86,9 @@ if(inConn!=null){
 			byteLength = inputCol.getLength();
 %>
 			byte [] byteData_<%=cid%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+			if(byteData_<%=cid%>==null){
+				continue;
+			}
 <%
 			break;
 		}
