@@ -41,13 +41,15 @@ protected void doStart() throws java.lang.Exception {
 		postProcessContext();
 
 		//add jmx notification
-		JmxNotificationEventNotifier notifier = new JmxNotificationEventNotifier();
-		notifier.setSource("MyCamel");
-		notifier.setIgnoreCamelContextEvents(true);
-		notifier.setIgnoreRouteEvents(true);
-		notifier.setIgnoreServiceEvents(true);
-
-		getCamelContexts().get(0).getManagementStrategy().addEventNotifier(notifier);
+		CamelContext camelContext = getCamelContexts().get(0);
+		// add notifier
+		java.util.Set<JmxNotificationEventNotifier> jmxEventNotifiers = camelContext
+				.getRegistry().findByType(
+						JmxNotificationEventNotifier.class);
+		if (jmxEventNotifiers != null && !jmxEventNotifiers.isEmpty()) {
+			camelContext.getManagementStrategy().addEventNotifier(
+					jmxEventNotifiers.iterator().next());
+		}
 
 <%
 StringBuilder librariesSb = new StringBuilder();
@@ -83,7 +85,7 @@ if(librariesSb.length()>0){
 	if(stats) { %>
 
 		// add statistics which shows on the connection
-		final routines.system.CamelStat runStat = new routines.system.CamelStat(getCamelContexts().get(0));
+		final routines.system.CamelStat runStat = new routines.system.CamelStat(camelContext);
 		<%
 		for (INode node : processNodes) {
 			if (node.isActivate()) {
@@ -99,7 +101,7 @@ if(librariesSb.length()>0){
 		runStat.initStatisticsInterceptor();
 <% } //if stats %>
 		//start camel context	
-		getCamelContexts().get(0).start();
+		camelContext.start();
 <% if(stats) { %>
 		runStat.openSocket(true);
 		runStat.setAllPID(pid, pid, pid, jobName);
