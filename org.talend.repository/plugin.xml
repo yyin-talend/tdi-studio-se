@@ -2057,6 +2057,15 @@
               name="Change tFileUnarchive ZIPFILE field value"
               version="5.4.0">
         </projecttask> 
+        <projecttask
+            beforeLogon="false"
+            breaks="5.3.1"
+            class="org.talend.repository.model.migration.AddDefaultExcuteModeForSqoop"
+            description="change default excute mode for sqoop components"
+            id="org.talend.repository.model.migration.AddDefaultExcuteModeForSqoop"
+            name="AddDefaultExcuteModeForSqoop"
+            version="5.3.2">
+        </projecttask>
    </extension>
    
    <extension
