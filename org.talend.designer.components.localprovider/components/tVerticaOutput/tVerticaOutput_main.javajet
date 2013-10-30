@@ -74,6 +74,8 @@ skeleton="../templates/db_output_bulk.skeleton"
         rejectColumnList = metadataTable.getListColumns();      
     }
     
+    boolean manualCommit = !("0").equals(commitEvery);
+    boolean addBatch = rejectConnName==null && (batchMode||(!useExistingConnection && manualCommit));
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     for(IConnection conn : outgoingConns) {
         if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -107,7 +109,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
 		}
 		if(!useExistingConnection) {
-	    	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
+	    	if(manualCommit) {
 %>
 				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
@@ -152,7 +154,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}            
 %>
 <%
-            if(rejectConnName == null ) {
+            if(addBatch) {
 %>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;
@@ -256,7 +258,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
             
             <%
-            if(rejectConnName == null  ) {
+            if(addBatch) {
     		%>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;
@@ -658,7 +660,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }            
             %>
             <%
-            if(rejectConnName == null ) {
+            if(addBatch) {
     		%>
     		pstmt_<%=cid %>.addBatch();
     		<%if ( batchMode && !("").equals(batchSize) && !("0").equals(batchSize)) {
@@ -893,7 +895,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	}
     	////////////commit every////////////
     	if(!useExistingConnection && (!("VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)) || !"COPY".equals(dataAction))) {
-    		if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+    		if(manualCommit) {
     		    %>
     		    commitCounter_<%=cid%>++;            
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
