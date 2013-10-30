@@ -21,6 +21,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
+boolean ignoreSourceNull="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IGNORE_SOURCE_NULL__"));
 String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
 boolean advanced = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_OPTION__"));
 List<Map<String, String>> formats =
@@ -90,6 +91,19 @@ if(inConn!=null){
 %>
 	//String field_<%=cid%> = <%=inConn.getName()%>.<%=field%><%=trim?".trim()":""%>;
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
+	if(field_<%=cid%>==null){
+<%
+	if(ignoreSourceNull){
+%>
+		continue;
+<%
+	}else{
+%>
+		field_<%=cid%>=""; 
+<%
+	}
+%>
+	}
 <%
 			break;
 		}

@@ -51,7 +51,9 @@ if (inConn!=null) {
 %>
             if(<%=inConn.getName()%>.<%=jsonField%>!=null){
                 jsonStr_<%=cid%> = <%=inConn.getName()%>.<%=jsonField%>.toString();
-            }
+            }else{
+				continue;
+			}
 <%
             break;
         }
