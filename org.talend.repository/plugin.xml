@@ -2051,10 +2051,10 @@
         <projecttask
             beforeLogon="false"
             breaks="5.3.1"
-            class="org.talend.repository.model.migration.AddDefaultExcuteModeForSqoop"
+            class="org.talend.repository.model.migration.ChangeJavaAPIAsDefault4SqoopMigrationTask"
             description="change default excute mode for sqoop components"
-            id="org.talend.repository.model.migration.AddDefaultExcuteModeForSqoop"
-            name="AddDefaultExcuteModeForSqoop"
+            id="org.talend.repository.model.migration.ChangeJavaAPIAsDefault4SqoopMigrationTask"
+            name="ChangeJavaAPIAsDefault4SqoopMigrationTask"
             version="5.3.2">
         </projecttask>
    </extension>
