@@ -17,6 +17,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.service.ISQLBuilderService;
@@ -56,9 +58,15 @@ public class SQLBuilderService implements ISQLBuilderService {
     public Dialog openSQLBuilderDialog(Shell parentShell, String processName, ConnectionParameters connParameters) {
         SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
         UIUtils.addSqlBuilderDialog(processName, sqlBuilder);
-
         sqlBuilder.setConnParameters(connParameters);
-
+        // display a error message if the db connection is failed.
+        if (connParameters != null) {
+            DatabaseConnection connection = createConnection(connParameters);
+            if (connection != null) {
+                IMetadataConnection metadataConnection = ConvertionHelper.convert(connection);
+                UIUtils.checkConnection(parentShell, metadataConnection);
+            }
+        }
         return sqlBuilder;
     }
 

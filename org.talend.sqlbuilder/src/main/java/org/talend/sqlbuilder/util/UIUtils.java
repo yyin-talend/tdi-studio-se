@@ -26,7 +26,10 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.sqlbuilder.util.TextUtil;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -43,6 +46,29 @@ public class UIUtils {
      * DOC dev UIUtils constructor comment.
      */
     public UIUtils() {
+    }
+
+    /**
+     * Display a error message if the db connection is failed DOC Comment method "checkConnection".
+     * 
+     * @param parentShell
+     * @param imetadataConnection
+     */
+    public static void checkConnection(final Shell parentShell, IMetadataConnection imetadataConnection) {
+        // display a error message if the db connection is failed.
+        final ManagerConnection managerConnection = new ManagerConnection();
+        managerConnection.check(imetadataConnection, true);
+        if (!managerConnection.getIsValide()) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    new ErrorDialogWidthDetailArea(parentShell, SqlBuilderPlugin.PLUGIN_ID, Messages
+                            .getString("UIUtils.DBConnectionFailure"), //$NON-NLS-1$
+                            managerConnection.getMessageException());
+                }
+            });
+        }
     }
 
     /**

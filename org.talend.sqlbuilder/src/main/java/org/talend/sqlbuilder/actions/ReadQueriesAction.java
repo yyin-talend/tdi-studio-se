@@ -38,6 +38,7 @@ import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -104,6 +105,7 @@ public class ReadQueriesAction extends AContextualAction {
         if (connection instanceof DatabaseConnection) {
             IMetadataConnection imetadataConnection = ConvertionHelper.convert(connection, true);
             connParameters.setSchema(imetadataConnection.getSchema() == null ? "" : imetadataConnection.getSchema());
+            UIUtils.checkConnection(parentShell, imetadataConnection);
         }
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);
