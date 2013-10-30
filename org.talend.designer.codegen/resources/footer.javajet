@@ -91,7 +91,7 @@
     public String fatherNode = null;
     public long startTime = 0;
     public boolean isChildJob = false;
-    public String log4jLevel = null;
+    public String log4jLevel = "";
 
     private boolean execStat = true;
 
@@ -191,7 +191,7 @@
         }
 
         <%if(isLog4jEnabled){%>
-	        if(log4jLevel!=null){
+	        if(!"".equals(log4jLevel)){
 				if("trace".equalsIgnoreCase(log4jLevel)){
 					log.setLevel(org.apache.log4j.Level.TRACE);
 				}else if("debug".equalsIgnoreCase(log4jLevel)){

@@ -185,7 +185,7 @@ if(useDynamicJob){
 	}
 		if(isLog4jEnabled){//For TDI-27659
 		%>
-			if(log4jLevel!=null){
+			if(!"".equals(log4jLevel)){
 				paraList_<%=cid %>.add("--log4jLevel="+log4jLevel);
 			}
 		<%}
