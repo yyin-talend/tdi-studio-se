@@ -2049,6 +2049,15 @@
               version="5.2.4">
         </projecttask>
         <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.MigrationTaskForIssue1144"
+              description="when you import demo project and change its name ,need to set the project name to new one for the beforeRunJobs since its zip file is hard code"
+              id="org.talend.repository.model.migration.MigrationTaskForIssue1144"
+              name="Change tFileUnarchive ZIPFILE field value"
+              version="5.4.0">
+        </projecttask> 
+        <projecttask
             beforeLogon="false"
             breaks="5.3.1"
             class="org.talend.repository.model.migration.ChangeJavaAPIAsDefault4SqoopMigrationTask"
