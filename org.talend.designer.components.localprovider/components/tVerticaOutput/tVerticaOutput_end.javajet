@@ -36,19 +36,19 @@ imports="
 		boolean batchMode = ("true").equals(ElementParameterParser.getValue(node, "__BATCH_MODE__"));
 		boolean executeBatch = rejectConnName==null && (batchMode||manualCommit);
 		if(executeBatch) {
-		if(batchMode) {
+			if(batchMode) {
 %>
 			if (pstmt_<%=cid %> !=null && batchSizeCounter_<%=cid%> > 0 ) { 
 <%
-		} else if (!useExistingConnection) { //use batch is not ticked
+			} else if (!useExistingConnection) { //use batch is not ticked
 %>
 			if (pstmt_<%=cid %> !=null && commitCounter_<%=cid%> > 0 ) {
 <%
-		}else {
+			}else {
 %>
 			if (pstmt_<%=cid %> !=null) {
 <%
-		} 
+			} 
 %> 
 	try {
 			pstmt_<%=cid %>.executeBatch();                	
@@ -66,15 +66,17 @@ imports="
 	    	<%
 	    	}%>            	    
     }catch (java.sql.BatchUpdateException e){
-    	<%if(("true").equals(dieOnError)) {
+    	<%
+    		if(("true").equals(dieOnError)) {
     	%>
     		throw(e);
     	<%
-    	}else {
+    		}else {
     	%>
     	System.out.println(e.getMessage());
     	<%
-    	}%>                	
+    		}
+    	%>                	
 	}                                  
 	}
 <%
@@ -200,7 +202,9 @@ imports="
 	if(!useExistingConnection) {
 	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 	        %>
-	        conn_<%=cid%>.commit();
+	        if (commitCounter_<%=cid%> > 0 ) {
+	        	conn_<%=cid%>.commit();
+	        }
 	        <%
 	    }
 	   %>
