@@ -44,6 +44,7 @@
 	<PARAMETER
       		NAME="SCHEMA"
 	      	FIELD="SCHEMA_TYPE"
+	      	READONLY="true" 
       		NUM_ROW="10"
       		REQUIRED="true"
 	

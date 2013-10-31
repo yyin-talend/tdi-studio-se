@@ -37,6 +37,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
+      READONLY="true" 
       REQUIRED="true"
       NUM_ROW="10"
     >
