@@ -489,6 +489,8 @@ public class SalesforceBulkAPI {
             }
         }
         batchInfoList.add(info);
+        //For TDI-27909
+        closeJob();
     }
 
     public String[] getQueryResultIDs() {
