@@ -256,8 +256,9 @@ public class SalesforceBulkAPI {
 
     private JobInfo createJob() throws AsyncApiException {
         JobInfo job = new JobInfo();
-        if (concurrencyMode != null)
+        if (concurrencyMode != null) {
             job.setConcurrencyMode(concurrencyMode);
+        }
         job.setObject(sObjectType);
         job.setOperation(operation);
         if (OperationEnum.upsert.equals(operation)) {
@@ -276,8 +277,8 @@ public class SalesforceBulkAPI {
             char c = '\"';
             int num = 0;
             char[] chars = value.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                if (c == chars[i]) {
+            for (char d : chars) {
+                if (c == d) {
                     num++;
                 }
             }
@@ -372,6 +373,12 @@ public class SalesforceBulkAPI {
         connection.updateJob(closeJob);
     }
 
+    private long awaitTime = 10000L;
+
+    public void setAwaitTime(long awaitTime) {
+        this.awaitTime = awaitTime;
+    }
+
     private void awaitCompletion() throws AsyncApiException {
         long sleepTime = 0L;
         Set<String> incomplete = new HashSet<String>();
@@ -384,7 +391,7 @@ public class SalesforceBulkAPI {
             } catch (InterruptedException e) {
             }
             // System.out.println("Awaiting results..." + incomplete.size());
-            sleepTime = 100L;
+            sleepTime = awaitTime;
             BatchInfo[] statusList = connection.getBatchInfoList(job.getId()).getBatchInfo();
             for (BatchInfo b : statusList) {
                 if (b.getState() == BatchStateEnum.Completed || b.getState() == BatchStateEnum.Failed) {
@@ -447,8 +454,9 @@ public class SalesforceBulkAPI {
         job = new JobInfo();
         job.setObject(moduleName);
         job.setOperation(OperationEnum.query);
-        if (concurrencyMode != null)
+        if (concurrencyMode != null) {
             job.setConcurrencyMode(concurrencyMode);
+        }
         job.setContentType(ContentType.CSV);
         job = connection.createJob(job);
 
@@ -473,6 +481,8 @@ public class SalesforceBulkAPI {
             }
         }
         batchInfoList.add(info);
+        //For TDI-27909
+        closeJob();
     }
 
     public String[] getQueryResultIDs() {
@@ -487,7 +497,7 @@ public class SalesforceBulkAPI {
         // batchInfoList was populated when batches were created and submitted
         List<Map<String, String>> resultInfoList = new ArrayList<Map<String, String>>();
         Map<String, String> resultInfo;
-        //fix for TDI-26533
+        // fix for TDI-26533
         baseFileReader = new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
                 connection.getQueryResultStream(job.getId(), batchInfoList.get(0).getId(), resultId), FILE_ENCODING)), ',');
 
@@ -497,7 +507,7 @@ public class SalesforceBulkAPI {
         baseFileHeaderSize = baseFileHeader.size();
         String[] row;
         while (baseFileReader.readNext()) {
-            if((row = baseFileReader.getValues())!=null){
+            if ((row = baseFileReader.getValues()) != null) {
                 resultInfo = new HashMap<String, String>();
                 // resultInfo.putAll(getBaseFileRow());
                 for (int i = 0; i < baseFileHeaderSize; i++) {
@@ -518,10 +528,10 @@ public class SalesforceBulkAPI {
         closeFileRead();
         return resultInfoList;
     }
-    
-    //for TDI-26832
-    public void closeFileRead() throws IOException{
-        if(baseFileReader!=null){
+
+    // for TDI-26832
+    public void closeFileRead() throws IOException {
+        if (baseFileReader != null) {
             baseFileReader.close();
         }
     }
