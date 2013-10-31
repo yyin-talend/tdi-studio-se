@@ -275,6 +275,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     @Override
     public void loadUserComponentsFromComponentsProviderExtension() {
+        getComponents();
         ComponentsProviderManager.getInstance().getProviders();
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
