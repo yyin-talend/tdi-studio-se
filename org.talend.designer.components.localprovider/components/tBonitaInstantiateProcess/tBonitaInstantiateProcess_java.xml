@@ -40,6 +40,7 @@
 	<PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
+      READONLY="true" 
       NUM_ROW="1"
     >
     	<TABLE READONLY="true">
