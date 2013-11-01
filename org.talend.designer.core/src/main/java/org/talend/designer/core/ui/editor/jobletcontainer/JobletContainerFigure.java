@@ -274,8 +274,12 @@ public class JobletContainerFigure extends Figure {
                 if (key.startsWith("reduce_")) {
                     // if (!"".equals(jobletContainer.getMrName()) && jobletContainer.getMrName() != null) {
                     percent = jobletContainer.getPercentReduce() * 10;
-                    if (this.jobletContainer.isMRGroupContainesReduce() && isSubjobDisplay && !value.isVisible()) {
-                        value.setVisible(true);
+                    if (this.jobletContainer.isMRGroupContainesReduce() && isSubjobDisplay) {
+                        if (!value.isVisible()) {
+                            value.setVisible(true);
+                        }
+                    } else if (value.isVisible()) {
+                        value.setVisible(false);
                     }
                     // for (NodeContainer nc : this.jobletContainer.getNodeContainers()) {
                     // if (nc.getNode().isMrContainsReduce()) {

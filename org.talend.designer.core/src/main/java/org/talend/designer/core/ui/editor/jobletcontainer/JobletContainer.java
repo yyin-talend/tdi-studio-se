@@ -293,7 +293,7 @@ public class JobletContainer extends NodeContainer {
             }
             super.setPropertyValue(id, value);
             transferLocation(false);
-            updateSubjobContainer();
+            updateJobletContainer();
 
             if (node.isJoblet()) {
                 refreshJobletConnections();
@@ -312,7 +312,7 @@ public class JobletContainer extends NodeContainer {
         // update the joblet NodeContainer in job when modify the joblet
         refreshJobletNodes(update, isCollapsed());
         transferLocation(update);
-        updateSubjobContainer();
+        updateJobletContainer();
         if (this.node.isJoblet()) {
             refreshJobletConnections();
         }
@@ -628,7 +628,7 @@ public class JobletContainer extends NodeContainer {
 
     }
 
-    public void updateSubjobContainer() {
+    public void updateJobletContainer() {
         fireStructureChange(UPDATE_JOBLET_CONTENT, this);
     }
 

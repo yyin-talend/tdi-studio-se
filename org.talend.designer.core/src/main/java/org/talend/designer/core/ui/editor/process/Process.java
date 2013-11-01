@@ -3473,6 +3473,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         sjc.getNodeContainers().remove(nodeContainer);
                         elem.add(nodeContainer);
                         updatedSubjobContainers.add(sjc);
+                    } else if (nodeContainer.getNode().isMapReduceStart()) {
+                        updatedSubjobContainers.add(sjc);
                     }
                 }
             }
