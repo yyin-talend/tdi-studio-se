@@ -288,6 +288,10 @@ imports="
    	 				    				}
                                  		 routines.system.DynamicUtils.readColumnsFromDatabase_Mssql(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>,list_<%=cid %>);
 <%
+									}else if("access_id".equalsIgnoreCase(dbms)){
+%>
+										routines.system.DynamicUtils.readColumnsFromDatabase_Access(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>);
+<%
 									}else{
 %>
                                 		 routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>);
