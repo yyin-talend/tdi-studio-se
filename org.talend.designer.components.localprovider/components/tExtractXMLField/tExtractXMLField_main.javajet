@@ -81,6 +81,11 @@ if(useXMLField){
 				}
 			}
 		}
+%>
+	if(xmlStr_<%=cid%>==null){
+		continue;
+	}
+<%
 	}
 }
 
@@ -144,9 +149,6 @@ if (outConn!=null) {
     boolean isStructError_<%=cid %>= true;
         
     try{
-    	if(xmlStr_<%=cid%>==null){
-			continue;
-		}
 	    doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
 	    nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 	    xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
