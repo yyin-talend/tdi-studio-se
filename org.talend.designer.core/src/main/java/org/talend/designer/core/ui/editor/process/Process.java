@@ -2311,9 +2311,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 } catch (Exception e) {
                     // nothing, since it should be added already in fact.
                 }
-            } else {
+            } else if (connec.getLineStyle() != EConnectionType.TABLE) {
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                     connec.setName(uniqueName);
                 }
                 // for other LineStyle also should aviod the uniqueName duplicate
