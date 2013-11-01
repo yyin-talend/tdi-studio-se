@@ -278,8 +278,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), process[i], selectedJobVersion);
 
-        addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies)
-                && isOptionChoosed(ExportChoice.needJobItem), process[i]);
+        // addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies)
+        // && isOptionChoosed(ExportChoice.needJobItem), process[i]);
         resources.addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(ExportChoice.needJobScript))); // always
         // need
         // job
