@@ -860,6 +860,9 @@ public class JobletContainer extends NodeContainer {
     }
 
     public boolean isMRGroupContainesReduce() {
+        if (this.getNodeContainers().isEmpty()) {
+            refreshJobletNodes(update, isCollapsed());
+        }
         for (NodeContainer nc : this.getNodeContainers()) {
             if (nc.getNode().isMrContainsReduce()) {
                 return true;
