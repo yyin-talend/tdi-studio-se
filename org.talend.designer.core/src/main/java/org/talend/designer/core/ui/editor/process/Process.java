@@ -2300,6 +2300,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
                         cType.getLabel(), cType.getMetaname(), monitorConnection);
             }
+            connectionsHashtable.put(cType, connec);
+            listParamType = cType.getElementParameter();
+            loadElementParameters(connec, listParamType);
             String uniqueName = connec.getUniqueName();
             // at this point we should have the uniquename set correctly in the connection.
             if (!connectionUniqueNames.contains(uniqueName) && checkValidConnectionName(uniqueName, false)) {
@@ -2309,11 +2312,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     // nothing, since it should be added already in fact.
                 }
             } else {
-                boolean labelSameAsUniqueName = connec.getName().equals(uniqueName);
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (labelSameAsUniqueName) {
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connec.setName(uniqueName);
                 }
+                // for other LineStyle also should aviod the uniqueName duplicate
+                connec.setUniqueName(uniqueName);
                 source.getProcess().addUniqueConnectionName(uniqueName);
             }
             connectionUniqueNames.add(uniqueName);
@@ -2321,9 +2325,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
             // }
-            connectionsHashtable.put(cType, connec);
-            listParamType = cType.getElementParameter();
-            loadElementParameters(connec, listParamType);
 
             Point offset = new Point(cType.getOffsetLabelX(), cType.getOffsetLabelY());
             INodeConnector nodeConnectorSource = connec.getSourceNodeConnector();
