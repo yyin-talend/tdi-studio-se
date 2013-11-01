@@ -133,6 +133,8 @@ public abstract class JobScriptsManager {
 
     private File tempExportFolder;
 
+    private List<Item> exportCaculatedItems = new ArrayList<Item>();
+
     public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
             int tracePort) {
         this.exportChoice = exportChoiceMap;
@@ -811,7 +813,10 @@ public abstract class JobScriptsManager {
             return;
         }
         // export current job's dependencies.
-        BuildExportManager.getInstance().exportDependencies(resource, processItem);
+        if (!exportCaculatedItems.contains(processItem)) {
+            BuildExportManager.getInstance().exportDependencies(resource, processItem);
+            exportCaculatedItems.add(processItem);
+        }
 
         Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
                 Arrays.asList(new Item[] { processItem }), false);
@@ -861,7 +866,10 @@ public abstract class JobScriptsManager {
                 resource.addResources(basePath, metadataNameFileUrls);
 
                 // children dependencies
-                BuildExportManager.getInstance().exportDependencies(resource, item);
+                if (!exportCaculatedItems.contains(item)) {
+                    BuildExportManager.getInstance().exportDependencies(resource, item);
+                    exportCaculatedItems.add(item);
+                }
             }
 
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
