@@ -2340,7 +2340,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             } else {
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connec.setName(uniqueName);
                 }
                 // for other LineStyle also should aviod the uniqueName duplicate
