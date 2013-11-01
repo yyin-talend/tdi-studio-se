@@ -63,6 +63,9 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
                 if (repositoryNode.getType().equals(ENodeType.SYSTEM_FOLDER)
                         || repositoryNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
                     canWork = true;
+                    if (repositoryNode.getObject() != null && repositoryNode.getObject().isDeleted()) {
+                        canWork = false;
+                    }
                 }
                 if (repositoryNode.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
                     canWork = false;

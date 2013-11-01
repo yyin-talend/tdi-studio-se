@@ -74,7 +74,7 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
     @Override
     public void deactivate() {
         super.deactivate();
-        nodeTransferDragSourceListener.setEditPart(this);
+        nodeTransferDragSourceListener.setEditPart(null);
         getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
     }
 
@@ -87,6 +87,7 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @Override
     protected List getModelChildren() {
         return Collections.EMPTY_LIST;
     }
@@ -104,6 +105,7 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
      */
+    @Override
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeEditPolicy());
     }
@@ -113,6 +115,7 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#refreshVisuals()
      */
+    @Override
     protected void refreshVisuals() {
         INodeReturn nr = ((INodeReturn) getModel());
         setWidgetText(nr.getDisplayName() + " - " + nr.getName() + " (" + nr.getAvailability() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

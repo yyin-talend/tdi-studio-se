@@ -69,6 +69,7 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#activate()
      */
+    @Override
     public void activate() {
         super.activate();
         ((Process) getModel()).addPropertyChangeListener(this);
@@ -81,9 +82,10 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         ((Process) getModel()).removePropertyChangeListener(this);
-        nodeTransferDragSourceListener.setEditPart(this);
+        nodeTransferDragSourceListener.setEditPart(null);
         getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
         super.deactivate();
     }
@@ -93,6 +95,7 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @Override
     protected List getModelChildren() {
         return ((Process) getModel()).getGraphicalNodes();
     }
@@ -102,6 +105,7 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent change) {
         refreshChildren();
 

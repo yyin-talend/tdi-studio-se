@@ -76,7 +76,7 @@ public class CreateContextAction extends AbstractConextAction {
                 if (nodeType != ERepositoryObjectType.CONTEXT) {
                     canWork = false;
                 }
-                if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+                if (node.getObject() != null && node.getObject().isDeleted()) {
                     canWork = false;
                 }
                 break;

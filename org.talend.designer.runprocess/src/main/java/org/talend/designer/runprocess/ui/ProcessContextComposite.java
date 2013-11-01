@@ -168,6 +168,12 @@ public class ProcessContextComposite extends Composite {
                     return;
                 }
             }
+            if (this.process != null) {
+                // remove old listeners
+                this.process.getContextManager().removeContextListener(contextListener);
+                contextComboViewer.removeSelectionChangedListener(contextComboListener);
+            }
+
             this.process = process;
             contextComboViewer.getControl().setEnabled(true);
 
@@ -195,6 +201,7 @@ public class ProcessContextComposite extends Composite {
             if (this.process != null) {
                 this.process.getContextManager().removeContextListener(contextListener);
                 this.process = null;
+                contextListener = null;
             }
             contextComboViewer.getControl().setEnabled(false);
             contextComboViewer.removeSelectionChangedListener(contextComboListener);

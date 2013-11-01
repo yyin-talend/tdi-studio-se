@@ -149,7 +149,7 @@ public class RowGeneratorUI {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            @SuppressWarnings("unchecked")//$NON-NLS-1$
+            @SuppressWarnings("unchecked")
             @Override
             public void widgetSelected(SelectionEvent e) {
                 updateFunParameter((Table) e.getSource());
@@ -159,10 +159,12 @@ public class RowGeneratorUI {
 
         dataTableView.getTable().addFocusListener(new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 dataTableView.getTableViewerCreator().refresh();
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 // TODO Auto-generated method stub
             }
@@ -219,9 +221,10 @@ public class RowGeneratorUI {
         // see bug 7471,record the modification of the column value.
         metadataTableEditor.addModifiedBeanListener(new IModifiedBeanListener<IMetadataColumn>() {
 
+            @Override
             public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
                 if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
-                    IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
+                    IMetadataColumn modifiedObject = event.bean;
                     if (modifiedObject != null) {
                         String originalLabel = changedNameColumns.get(modifiedObject);
                         if (originalLabel == null) {
@@ -249,8 +252,9 @@ public class RowGeneratorUI {
      */
     private void addKeyListener(final UIManager uiManager, final Display display) {
 
-        Listener listener = new Listener() {
+        final Listener listener = new Listener() {
 
+            @Override
             public void handleEvent(Event event) {
 
                 if (event.type == SWT.KeyUp || event.type == SWT.KeyDown) {
@@ -268,6 +272,15 @@ public class RowGeneratorUI {
         };
         display.addFilter(SWT.KeyUp, listener);
         display.addFilter(SWT.KeyDown, listener);
+        rowGenUIParent.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                display.removeFilter(SWT.KeyUp, listener);
+                display.removeFilter(SWT.KeyDown, listener);
+                release();
+            }
+        });
     }
 
     /**
@@ -277,14 +290,9 @@ public class RowGeneratorUI {
      * @param uiProperties
      */
     private void addParentListeners(final UIManager uiManager, final ExternalRowGeneratorUiProperties uiProperties) {
-        rowGenUIParent.addDisposeListener(new DisposeListener() {
-
-            public void widgetDisposed(DisposeEvent e) {
-                release();
-            }
-        });
         rowGenUIParent.addListener(SWT.Close, new Listener() {
 
+            @Override
             public void handleEvent(Event event) {
                 if (uiManager.getRowGenResponse() == SWT.NONE) {
                     uiManager.closeRowGenerator(SWT.CANCEL, false);
@@ -294,10 +302,12 @@ public class RowGeneratorUI {
         });
         rowGenUIParent.addFocusListener(new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 updateBackground(false, true);
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
             }
 
@@ -307,10 +317,12 @@ public class RowGeneratorUI {
         if (rowGenUIParent instanceof Shell) {
             ((Shell) rowGenUIParent).addControlListener(new ControlListener() {
 
+                @Override
                 public void controlMoved(ControlEvent e) {
 
                 }
 
+                @Override
                 public void controlResized(ControlEvent e) {
                     if (!((Shell) e.getSource()).getMaximized()) {
                         ExternalRowGeneratorUiProperties.setBoundsRowGen(((Shell) e.getSource()).getBounds());
