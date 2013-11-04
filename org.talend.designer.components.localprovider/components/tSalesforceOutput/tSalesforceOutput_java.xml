@@ -74,6 +74,7 @@
             NUM_ROW="7" 
             REQUIRED="true"
             SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            REPOSITORY_VALUE="LOGIN_TYPE" 
             GROUP="LOGIN">
             <ITEMS DEFAULT="BASIC">
                 <ITEM NAME="BASIC" VALUE="BASIC" />
@@ -98,6 +99,7 @@
             NUM_ROW="25"
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"  
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REPOSITORY_VALUE="API_VERSION"
             GROUP="LOGIN">
             <DEFAULT>"25.0"</DEFAULT>
         </PARAMETER>
@@ -129,6 +131,7 @@
             NUM_ROW="30" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REPOSITORY_VALUE="OAUTH_CLIENT_ID"
             GROUP="LOGIN">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -139,6 +142,7 @@
             NUM_ROW="30" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REPOSITORY_VALUE="OAUTH_CLIENT_SECRET"
             GROUP="LOGIN">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -149,6 +153,7 @@
             NUM_ROW="31" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REPOSITORY_VALUE="OAUTH_CALLBACK_HOST"
             GROUP="LOGIN">
             <DEFAULT>"localhost"</DEFAULT>
         </PARAMETER>
@@ -159,6 +164,7 @@
             NUM_ROW="31" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
+            REPOSITORY_VALUE="OAUTH_CALLBACK_PORT" 
             GROUP="LOGIN">
             <DEFAULT>8443</DEFAULT>
         </PARAMETER>

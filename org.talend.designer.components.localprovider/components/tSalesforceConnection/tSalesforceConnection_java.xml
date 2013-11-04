@@ -46,6 +46,7 @@
             FIELD="CLOSED_LIST" 
             NUM_ROW="10" 
             REQUIRED="true"
+            REPOSITORY_VALUE="LOGIN_TYPE" 
             GROUP="LOGIN">
             <ITEMS DEFAULT="BASIC">
                 <ITEM NAME="BASIC" VALUE="BASIC" />
@@ -70,6 +71,7 @@
             NUM_ROW="25" 
             REQUIRED_IF="(LOGIN_TYPE=='OAUTH') OR (BULK_CONNECTION=='true')" 
             SHOW_IF="(LOGIN_TYPE=='OAUTH') OR (BULK_CONNECTION=='true')"
+            REPOSITORY_VALUE="API_VERSION"
             GROUP="LOGIN">
             <DEFAULT>"25.0"</DEFAULT>
         </PARAMETER>
@@ -102,6 +104,7 @@
             NUM_ROW="30" 
             REQUIRED_IF="LOGIN_TYPE=='OAUTH'" 
             SHOW_IF="LOGIN_TYPE=='OAUTH'"
+            REPOSITORY_VALUE="OAUTH_CLIENT_ID" 
             GROUP="LOGIN">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -112,6 +115,7 @@
             NUM_ROW="30" 
             REQUIRED_IF="LOGIN_TYPE=='OAUTH'" 
             SHOW_IF="LOGIN_TYPE=='OAUTH'"
+            REPOSITORY_VALUE="OAUTH_CLIENT_SECRET"
             GROUP="LOGIN">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
@@ -122,6 +126,7 @@
             NUM_ROW="40" 
             REQUIRED_IF="LOGIN_TYPE=='OAUTH'" 
             SHOW_IF="LOGIN_TYPE=='OAUTH'"
+            REPOSITORY_VALUE="OAUTH_CALLBACK_HOST"
             GROUP="LOGIN">
             <DEFAULT>"localhost"</DEFAULT>
         </PARAMETER>
@@ -132,6 +137,7 @@
             NUM_ROW="40" 
             REQUIRED_IF="LOGIN_TYPE=='OAUTH'" 
             SHOW_IF="LOGIN_TYPE=='OAUTH'"
+            REPOSITORY_VALUE="OAUTH_CALLBACK_PORT" 
             GROUP="LOGIN">
             <DEFAULT>8443</DEFAULT>
         </PARAMETER>
