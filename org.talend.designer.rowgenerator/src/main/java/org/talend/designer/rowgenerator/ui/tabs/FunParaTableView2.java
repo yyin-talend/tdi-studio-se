@@ -130,7 +130,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
 
                 cellEditor.setExpressionType(bean.getType());
-
+                String valueTemp = bean.getValue();
+                if (valueTemp != null && !valueTemp.endsWith(" ")) {
+                    bean.setValue(valueTemp + " ");
+                }
                 return bean.getValue();
             }
 
@@ -139,7 +142,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 if (value == null) {
                     return;
                 }
-
+                String valueTemp = value.toString();
+                if (!valueTemp.endsWith(" ")) {
+                    value = value + " ";
+                }
                 bean.setValue(value.toString());
 
                 if (ext != null) {
