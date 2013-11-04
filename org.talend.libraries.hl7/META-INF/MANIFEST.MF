@@ -73,6 +73,5 @@ Export-Package: ca.uhn.hl7v2,
  ca.uhn.hl7v3.sourcegen,
  ca.uhn.log
 Require-Bundle: org.talend.libraries.apache,
- org.apache.commons.logging,
- org.talend.core.runtime
+ org.apache.commons.logging
 Bundle-ActivationPolicy: lazy
