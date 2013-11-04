@@ -149,9 +149,11 @@ public class FunctionManagerExt extends FunctionManager {
                 String[] split = str.split(" ,");
                 if (funs.get(k).getParameters().size() == split.length) {
                     currentFun = funs.get(k).clone(split);
+                    if (currentFun != null) {
+                        return currentFun;
+                    }
                 }
             }
-            return currentFun;
         }
 
         boolean isExsit = false;

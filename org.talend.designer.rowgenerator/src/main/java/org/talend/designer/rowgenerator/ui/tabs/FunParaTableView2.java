@@ -95,10 +95,12 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setTitle(Messages.getString("FunParaTableView2.Parameter")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
+            @Override
             public String get(Parameter bean) {
                 return bean.getName();
             }
 
+            @Override
             public void set(Parameter bean, Object value) {
             }
 
@@ -118,6 +120,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
+            @Override
             public String get(Parameter bean) {
                 StringBuffer id = new StringBuffer();
                 id.append(component.getLabel() + "=>"); //$NON-NLS-1$
@@ -130,16 +133,23 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
 
                 cellEditor.setExpressionType(bean.getType());
-
+                String valueTemp = bean.getValue();
+                if (valueTemp != null && !valueTemp.endsWith(" ")) {
+                    bean.setValue(valueTemp + " ");
+                }
                 return bean.getValue();
             }
 
+            @Override
             public void set(Parameter bean, Object value) {
 
                 if (value == null) {
                     return;
                 }
-
+                String valueTemp = value.toString();
+                if (!valueTemp.endsWith(" ")) {
+                    value = value + " ";
+                }
                 bean.setValue(value.toString());
 
                 if (ext != null) {
@@ -169,10 +179,12 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setTitle(Messages.getString("FunParaTableView2.Comment")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
+            @Override
             public String get(Parameter bean) {
                 return bean.getComment();
             }
 
+            @Override
             public void set(Parameter bean, Object value) {
             }
 
@@ -192,7 +204,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     private MetadataColumnExt ext;
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void update(MetadataColumnExt ext) {
         this.ext = ext;
         Function function = ext.getFunction();
@@ -256,6 +268,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 });
                 combo.addFocusListener(new FocusListener() {
 
+                    @Override
                     public void focusGained(FocusEvent e) {
 
                     }
@@ -265,6 +278,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                      * 
                      * @param e an event containing information about the focus change
                      */
+                    @Override
                     public void focusLost(FocusEvent e) {
                         combo.dispose();
                     }
