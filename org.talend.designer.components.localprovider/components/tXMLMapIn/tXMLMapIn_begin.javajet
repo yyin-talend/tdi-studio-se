@@ -11,4 +11,5 @@
 	
 	String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
 %>
-for(Object  row_out_<%=cid %> : allOutsForAggregate_<%=uniqueNameComponent %>) {//TD512
+java.util.List<Object> outs_<%=uniqueNameComponent %> = (java.util.List<Object>)globalMap.get("allOutsForAggregate_<%=uniqueNameComponent %>");
+for(Object  row_out_<%=cid %> : outs_<%=uniqueNameComponent %>) {//TD512
