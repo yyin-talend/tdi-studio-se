@@ -357,31 +357,28 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     public boolean finish() {
         String topFolder = getRootFolderName();
+        String destinationFilename = getDestinationValue();
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
-        List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
-        ArchiveFileExportOperationFullPath runnable = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
-        // output everything
-        runnable.setRegEx("*");//$NON-NLS-1$
-        File file = new File(runnable.getDestinationFilename());
-
+        File file = new File(destinationFilename);
         if (file.exists()) {
             Boolean open = MessageDialog.openConfirm(getShell(), Messages.getString("GenerateDocAsHTMLWizardPage.Warning"), //$NON-NLS-1$
                     Messages.getString("GenerateDocAsHTMLWizardPage.OverWrite")); //$NON-NLS-1$
             if (open) {
                 file.delete();
-                boolean ok = executeExportOperation(runnable);
-                saveLastDirectoryName(runnable);
-                manager.deleteTempFiles();
-                return ok;
             } else {
                 return false;
             }
         }
+        List<ExportFileResource> resourcesToExport = getExportResources();
+        setTopFolder(resourcesToExport, topFolder);
+        ArchiveFileExportOperationFullPath runnable = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                destinationFilename);
+        // output everything
+        runnable.setRegEx("*");//$NON-NLS-1$
+
         boolean ok = executeExportOperation(runnable);
         // add for bug TDI-21815
         saveLastDirectoryName(runnable);
