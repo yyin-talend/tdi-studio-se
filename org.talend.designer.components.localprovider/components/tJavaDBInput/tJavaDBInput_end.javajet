@@ -13,9 +13,13 @@ imports="
 	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
 	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");
 %>
+	}
+}finally{
+	stmt_<%=cid %>.close();
+	if(conn_<%=cid %>!=null){
+		conn_<%=cid %> .close();
+	}
 }
-stmt_<%=cid %>.close();
-conn_<%=cid %> .close();
 <%
 if(("EMBEDED").equals(frameworkType))
 {%>

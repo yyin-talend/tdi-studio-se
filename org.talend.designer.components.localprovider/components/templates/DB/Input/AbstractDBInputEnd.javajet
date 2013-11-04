@@ -12,11 +12,15 @@ imports="
 	String cid = node.getUniqueName();
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
-}
-stmt_<%=cid %>.close();
+	}
+}finally{
+	stmt_<%=cid %>.close();
 
 <%	
 	if(!useExistingConn){
+%>
+		if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+<%
 		String useCursor = ElementParameterParser.getValue(node, "__USE_CURSOR__");
     	if(("true").equals(useCursor)) {
 %>
@@ -24,10 +28,10 @@ stmt_<%=cid %>.close();
 <%
 		}
 %>
-		if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 			conn_<%=cid %> .close();
 		}
 <%
 	}
 %>
+}
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

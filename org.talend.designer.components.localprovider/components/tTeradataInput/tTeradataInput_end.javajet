@@ -14,8 +14,9 @@ imports="
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 
-}
-stmt_<%=cid %>.close();
+	}
+}finally{
+	stmt_<%=cid %>.close();
 
 <%	
 	if(!useExistingConn){
@@ -23,13 +24,16 @@ stmt_<%=cid %>.close();
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Closing the connection to the database.");
 <%}%>
-conn_<%=cid %> .close();
+	if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+		conn_<%=cid %> .close();
+	}
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Connection to the database closed.");
 <%}%>
 <%
 	}
 %>
+}
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
 
 <%if(isLog4jEnabled){%>

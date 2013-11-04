@@ -12,17 +12,20 @@ imports="
 	String cid = node.getUniqueName();
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 %>
-}
-stmt_<%=cid %>.close();
+	}
+}finally{
+	stmt_<%=cid %>.close();
 
 <%
 if(!("true").equals(useExistingConn))
 {
 	%>
-	conn_<%=cid %>.commit();
-	conn_<%=cid %> .close();
+	if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+		conn_<%=cid %>.commit();
+		conn_<%=cid %> .close();
+	}
 	<%
 }
 %>
-
+}
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

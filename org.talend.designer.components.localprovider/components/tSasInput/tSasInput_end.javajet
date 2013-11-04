@@ -10,7 +10,11 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
+	}
+}finally{
+	stmt_<%=cid %>.close();
+	if(conn_<%=cid %>!=null){
+		conn_<%=cid %> .close();
+	}
 }
-stmt_<%=cid %>.close();
-conn_<%=cid %> .close();
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

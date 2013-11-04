@@ -40,9 +40,14 @@ imports="
 	}
 
 if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-	conn_<%=cid%>.rollback();
 <%  if(close){%>
-    conn_<%=cid%>.close();
+	try{
+<% }%>
+		conn_<%=cid%>.rollback();
+<%  if(close){%>
+	}finally{
+    	conn_<%=cid%>.close();
+    }
 <% }%>
 }
 
