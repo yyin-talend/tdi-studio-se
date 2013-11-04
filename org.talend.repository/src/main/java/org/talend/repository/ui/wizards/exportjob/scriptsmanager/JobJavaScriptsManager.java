@@ -81,13 +81,16 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.service.IRulesProviderService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -725,15 +728,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         list.add(libResource);
 
         // Gets jobInfo.properties
-        if (!(process.length > 1)) {
-            for (ExportFileResource pro : process) {
-                ExportFileResource jobInfoResource = new ExportFileResource(null, PATH_SEPARATOR);
-                if (CommonsPlugin.isHeadless()) {
-                    jobInfoResource = new ExportFileResource();
+        // only addClasspathJar not check in preferences ,then export the jobInfo.properties
+        boolean addClasspathJar = false;
+        IDesignerCoreUIService designerCoreUIService = CoreUIPlugin.getDefault().getDesignerCoreUIService();
+        if (designerCoreUIService != null) {
+            addClasspathJar = designerCoreUIService.getPreferenceStore().getBoolean(IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+        }
+        if (!addClasspathJar) {
+            if (!(process.length > 1)) {
+                for (ExportFileResource pro : process) {
+                    ExportFileResource jobInfoResource = new ExportFileResource(null, PATH_SEPARATOR);
+                    if (CommonsPlugin.isHeadless()) {
+                        jobInfoResource = new ExportFileResource();
+                    }
+                    list.add(jobInfoResource);
+                    List<URL> jobInfoList = getJobInfoFile(pro, contextName);
+                    jobInfoResource.addResources(jobInfoList);
                 }
-                list.add(jobInfoResource);
-                List<URL> jobInfoList = getJobInfoFile(pro, contextName);
-                jobInfoResource.addResources(jobInfoList);
             }
         }
 
