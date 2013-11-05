@@ -982,7 +982,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (!ObjectUtils.equals(oldData, traceData)) {
             this.traceData = traceData;
             if (traceData != null) {
-                String traceValue = traceData.get(getName());
+                String traceValue = traceData.get(ConnectionUtil.getConnectionUnifiedName(this));
                 trace.setTrace(traceValue);
             } else {
                 trace.setTrace(null);
@@ -1749,6 +1749,9 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public boolean enableTraces() {
+        if (TracesConnectionUtils.isJobletInnerConnection(this)) {
+            return false; // disable for inner connection for joblet.
+        }
         IElementParameter element = this.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
         return element != null;
     }

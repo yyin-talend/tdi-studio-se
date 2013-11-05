@@ -23,6 +23,7 @@ import java.util.Set;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -35,6 +36,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.sqlbuilder.repository.utility.NotReallyNeedSchemaDBS;
@@ -373,4 +375,21 @@ public class TracesConnectionUtils {
 
         return connection;
     }
+
+    public static boolean isJobletInnerConnection(IConnection conn) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+            IJobletProviderService jobletServer = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (jobletServer != null && conn != null) {
+                INode jobletNode = conn.getSource().getJobletNode();
+                // connection's target and source are in same joblet node.
+                if (jobletNode != null && (jobletNode == conn.getTarget().getJobletNode())
+                        && jobletServer.isJobletComponent(jobletNode)) {
+                    return true; // joblet's inner connection
+                }
+            }
+        }
+        return false;
+    }
+
 }

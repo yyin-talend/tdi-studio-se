@@ -12,13 +12,16 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui.actions;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.jface.action.Action;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.runprocess.trace.TraceConnectionsManager;
 
 /**
  * Clean trace data on a process. <br/>
@@ -47,7 +50,11 @@ public class ClearTraceAction extends Action {
      */
     @Override
     public void run() {
-        //        
+        //
+        final TraceConnectionsManager traceConnectionsManager = new TraceConnectionsManager(process);
+        traceConnectionsManager.init();
+        Set<IConnection> doneConnections = new HashSet<IConnection>();
+
         IConnection connection = null;
         for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null && i.hasNext();) {
             INode psNode = i.next();
@@ -63,7 +70,30 @@ public class ClearTraceAction extends Action {
             }
 
             for (IConnection connec : psNode.getOutgoingConnections()) {
-                connec.setTraceData(null);
+                if (!doneConnections.contains(connec)) {
+                    connec.setTraceData(null);
+                    doneConnections.add(connec);
+                }
+                // get the related shadow connections
+                IConnection[] shadowconns = traceConnectionsManager.getShadowConnenctions(connec.getUniqueName());
+                if (shadowconns != null) {
+                    for (IConnection sc : shadowconns) {
+                        if (!doneConnections.contains(sc)) {
+                            sc.setTraceData(null);
+                            doneConnections.add(sc);
+                        }
+                    }
+                }
+            }
+            // currently, only for joblet when expanded.
+            IConnection[] nonShadowDataConnections = traceConnectionsManager.getNonShadowDataConnections(psNode);
+            if (nonShadowDataConnections != null) {
+                for (IConnection conn : nonShadowDataConnections) {
+                    if (!doneConnections.contains(conn)) {
+                        conn.setTraceData(null);
+                        doneConnections.add(conn);
+                    }
+                }
             }
         }
     }

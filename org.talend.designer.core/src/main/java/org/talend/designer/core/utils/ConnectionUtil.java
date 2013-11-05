@@ -1,8 +1,11 @@
 package org.talend.designer.core.utils;
 
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 public class ConnectionUtil {
@@ -29,21 +32,46 @@ public class ConnectionUtil {
         }
         return null;
     }
-    
+
     public static String generateUniqueConnectionName(EConnectionType connectType, IProcess process, INodeConnector connector) {
-        if(connector == null){
+        if (connector == null) {
             return generateUniqueConnectionName(connectType, process);
         }
         String linkName = connector.getLinkName();
-        if(linkName == null){
+        if (linkName == null) {
             return generateUniqueConnectionName(connectType, process);
         }
         linkName = linkName.toUpperCase();
         linkName = linkName.replaceAll("\\s", "_");
-        if(!process.checkValidConnectionName(linkName, false)){
+        if (!process.checkValidConnectionName(linkName, false)) {
             linkName = connector.getName();
         }
         return process.generateUniqueConnectionName(linkName.toLowerCase());
     }
 
+    /**
+     * 
+     * In order to unify the name for "UNIQUE" connection.
+     */
+    public static String getConnectionUnifiedName(IConnection conn) {
+
+        // if connecion is belong on joblet.
+        INode jobletNode = conn.getSource().getJobletNode();
+        if (jobletNode != null && (jobletNode instanceof Node)) {
+            boolean expanded = !((Node) jobletNode).getNodeContainer().isCollapsed();
+            // when joblet is expanded. and the connection only belong one joblet(inner connection of joblet).
+            if (expanded && jobletNode == conn.getTarget().getJobletNode()) {
+                // unify with the JobletProcessProvider.addJobletPrefix
+                return jobletNode.getUniqueName() + '_' + conn.getUniqueName();
+            }
+
+        }
+        return conn.getUniqueName();
+
+        /*
+         * Some places use the getName, like trace before.
+         */
+        // return conn.getName();
+
+    }
 }
