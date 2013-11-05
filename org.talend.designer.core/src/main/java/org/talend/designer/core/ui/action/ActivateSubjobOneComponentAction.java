@@ -67,10 +67,12 @@ public class ActivateSubjobOneComponentAction extends SelectionAction {
                 return false;
             }
             Node node = (Node) part.getModel();
-            if(ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getProcess().getComponentsType())){
+            if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getProcess().getComponentsType())) {
                 return false;
             }
-
+            if (node.getJobletNode() != null) {
+                return false;
+            }
             if (node.isReadOnly()) {
                 return false;
             }
@@ -101,8 +103,8 @@ public class ActivateSubjobOneComponentAction extends SelectionAction {
         if (editparts.size() == 1) {
             NodePart part = (NodePart) editparts.get(0);
 
-            ChangeActivateStatusSubjobCommand changeActivateStatusCommand = new ChangeActivateStatusSubjobCommand((Node) part
-                    .getModel(), true);
+            ChangeActivateStatusSubjobCommand changeActivateStatusCommand = new ChangeActivateStatusSubjobCommand(
+                    (Node) part.getModel(), true);
             execute(changeActivateStatusCommand);
         }
     }

@@ -72,7 +72,10 @@ public class ActivateSubjobAction extends SelectionAction {
             }
             Node node = (Node) part.getModel();
             boolean isCamelNode = ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getProcess().getComponentsType());
-            if(!node.isStart() && isCamelNode){
+            if (node.getJobletNode() != null) {
+                return false;
+            }
+            if (!node.isStart() && isCamelNode) {
                 return false;
             }
             if (node.isReadOnly()) {
@@ -84,15 +87,15 @@ public class ActivateSubjobAction extends SelectionAction {
 
             if (node.isStart()) {
                 if (node.isActivate()) {
-                    if(isCamelNode){
+                    if (isCamelNode) {
                         setText(Messages.getString("ActivateSubjobAction.DeactivateCompleteRoute"));
-                    }else{
+                    } else {
                         setText(TEXT_REM_ACTIVATE_COMPLETE);
                     }
                 } else {
-                    if(isCamelNode){
+                    if (isCamelNode) {
                         setText(Messages.getString("ActivateSubjobAction.ActivateCompleteRoute"));
-                    }else{
+                    } else {
                         setText(TEXT_SET_ACTIVATE_COMPLETE);
                     }
                 }
@@ -118,8 +121,8 @@ public class ActivateSubjobAction extends SelectionAction {
         if (editparts.size() == 1) {
             NodePart part = (NodePart) editparts.get(0);
 
-            ChangeActivateStatusSubjobCommand changeActivateStatusCommand = new ChangeActivateStatusSubjobCommand((Node) part
-                    .getModel(), false);
+            ChangeActivateStatusSubjobCommand changeActivateStatusCommand = new ChangeActivateStatusSubjobCommand(
+                    (Node) part.getModel(), false);
             execute(changeActivateStatusCommand);
         }
     }

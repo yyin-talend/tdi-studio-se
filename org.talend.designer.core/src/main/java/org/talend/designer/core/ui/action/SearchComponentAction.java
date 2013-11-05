@@ -54,9 +54,12 @@ public class SearchComponentAction extends SelectionAction {
         }
         Object o = parts.get(0);
         if (o instanceof NodePart) {
+            Node node = (Node) ((NodePart) o).getModel();
+            if (node.getJobletNode() != null) {
+                return false;
+            }
             return true;
         }
-
         return false;
     }
 

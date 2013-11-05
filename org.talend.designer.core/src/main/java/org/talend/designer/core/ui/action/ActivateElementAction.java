@@ -100,6 +100,18 @@ public class ActivateElementAction extends SelectionAction {
                 return false;
             }
 
+            for (Node node : nodeList) {
+                if (node.getJobletNode() != null) {
+                    return false;
+                }
+            }
+
+            for (Connection conn : connectionList) {
+                if (conn.getTarget().getJobletNode() != null && conn.getSource().getJobletNode() != null) {
+                    return false;
+                }
+            }
+
             if (nodeList.size() != 0) {
                 if (nodeList.get(0).isActivate()) {
                     if (nodeList.size() == 1) {
