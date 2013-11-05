@@ -1201,7 +1201,7 @@ public class RunProcessContext {
                         PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                                 processSocket.getOutputStream())), true);
 
-                        System.out.println(data);
+                        // System.out.println(data);
 
                         if (data == null) {
                             stopThread = true;
