@@ -301,6 +301,18 @@ public class RunProcessContext {
                     return true;
                 }
             }
+
+            if ((node instanceof Node) && ((Node) node).isJoblet()) {
+                for (INode jnode : node.getComponent().getProcess().getGraphicalNodes()) {
+                    List<? extends IConnection> joutgoingConnections = jnode.getOutgoingConnections();
+                    for (IConnection conn : joutgoingConnections) {
+                        if (conn.isActivate() && conn.isTraceConnection()) {
+                            return true;
+                        }
+                    }
+
+                }
+            }
         }
         return false;
 
