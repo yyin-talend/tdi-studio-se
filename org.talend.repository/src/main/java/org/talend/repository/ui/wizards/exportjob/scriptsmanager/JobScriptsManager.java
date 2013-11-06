@@ -64,7 +64,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.ResourceModelUtils;
 
@@ -88,7 +87,7 @@ public abstract class JobScriptsManager {
 
     protected static final String JOBINFO_FILE = "jobInfo.properties";//$NON-NLS-1$
 
-    public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
+    public static final String ALL_ENVIRONMENTS = "All"; //$NON-NLS-1$
 
     public static final String UNIX_ENVIRONMENT = "Unix"; //$NON-NLS-1$
 
