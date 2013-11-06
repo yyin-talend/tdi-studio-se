@@ -36,18 +36,20 @@ if(!isGenerateCode){
 if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.util.Properties properties_<%=cid%> = new java.util.Properties();
-	properties_<%=cid%>.load(new java.io.FileInputStream(file_<%=cid%>));
-	java.util.Enumeration enumeration_<%=cid%> = properties_<%=cid%>.propertyNames();
-	while (enumeration_<%=cid%>.hasMoreElements()) {
+	java.io.FileInputStream fis_<%=cid%>=new java.io.FileInputStream(file_<%=cid%>);
+   	try{
+		properties_<%=cid%>.load(fis_<%=cid%>);
+		java.util.Enumeration enumeration_<%=cid%> = properties_<%=cid%>.propertyNames();
+		while (enumeration_<%=cid%>.hasMoreElements()) {
 <%
 		if(outConnName!=null){
 %>
-		<%=outConnName %>.key = (String)enumeration_<%=cid%>.nextElement();
-		<%=outConnName %>.value = (String)properties_<%=cid%>.getProperty(<%=outConnName %>.key);
+			<%=outConnName %>.key = (String)enumeration_<%=cid%>.nextElement();
+			<%=outConnName %>.value = (String)properties_<%=cid%>.getProperty(<%=outConnName %>.key);
 <%
 		}else{
 %>
-		enumeration_<%=cid%>.nextElement();
+			enumeration_<%=cid%>.nextElement();
 <%
 		}
 }else if(("INI_FORMAT").equals(fileFormat)){
