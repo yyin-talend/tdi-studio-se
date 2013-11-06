@@ -122,6 +122,7 @@ public class JobInfoBuilder {
             OutputStream fos = new FileOutputStream(jobPropertyFile);
             setProperty(propertyFile);
             propertyFile.store(fos, "just for tac");
+            fos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
