@@ -322,7 +322,7 @@
 	/***********************************************************************/
 		try {
 		      java.text.SimpleDateFormat timestampFormatter = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
-              timestamp_<%=cid %> = timestampFormatter.format(new java.util.Date());
+              timestamp_<%=cid %> = timestampFormatter.format(new java.util.Date()) + "_" + pid;
 			  /*
 			  *Under solaris and windows value of "java.io.tmpdir" ends with 
 			  *system-dependent default name-separator character. But under linux
