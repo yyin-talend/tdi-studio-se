@@ -2311,13 +2311,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 } catch (Exception e) {
                     // nothing, since it should be added already in fact.
                 }
-            } else if (connec.getLineStyle() != EConnectionType.TABLE) {
-                uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-                    connec.setName(uniqueName);
+            } else {
+                if (connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(EConnectionType.ITERATE)
+                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
+                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
+                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
+                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                    // for trigger LineStyle should aviod the uniqueName duplicate
+                    connec.setUniqueName(uniqueName);
                 }
-                // for other LineStyle also should aviod the uniqueName duplicate
-                connec.setUniqueName(uniqueName);
                 source.getProcess().addUniqueConnectionName(uniqueName);
             }
             connectionUniqueNames.add(uniqueName);
