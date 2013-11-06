@@ -61,6 +61,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -290,6 +291,18 @@ public class RunProcessContext {
             for (IConnection conn : outgoingConnections) {
                 if (conn.isActivate() && conn.isTraceConnection()) {
                     return true;
+                }
+            }
+
+            if ((node instanceof Node) && ((Node) node).isJoblet()) {
+                for (INode jnode : node.getComponent().getProcess().getGraphicalNodes()) {
+                    List<? extends IConnection> joutgoingConnections = jnode.getOutgoingConnections();
+                    for (IConnection conn : joutgoingConnections) {
+                        if (conn.isActivate() && conn.isTraceConnection()) {
+                            return true;
+                        }
+                    }
+
                 }
             }
         }
