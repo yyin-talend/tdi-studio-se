@@ -24,7 +24,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class PaletteComponentFactory implements CreationFactory {
 
-    private IComponent component;
+    protected IComponent component;
 
     public PaletteComponentFactory(IComponent c) {
         component = c;

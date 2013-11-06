@@ -75,7 +75,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IExtendedNodeHandler;
+import org.talend.core.model.repository.IExtendedRepositoryNodeHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.constants.FileConstants;
@@ -479,7 +479,7 @@ public class ExportItemWizardPage extends WizardPage {
                     select = selectRepositoryNode(viewer, (RepositoryNode) element);
                 }
                 if (select) {
-                    for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                    for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                         boolean exportFilter = nodeHandler.exportFilter(viewer, parentElement, element);
                         if (!exportFilter) {
                             return exportFilter;
@@ -1033,7 +1033,7 @@ public class ExportItemWizardPage extends WizardPage {
                     checkedElements.add(obj);
                 }
             } else {
-                for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                     if (nodeHandler.isExportEnable(obj)) {
                         checkedElements.add(obj);
                         break;
@@ -1074,7 +1074,7 @@ public class ExportItemWizardPage extends WizardPage {
                     }
                 }
             } else {
-                for (IExtendedNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                     Property property = nodeHandler.getProperty(object);
                     if (property != null) {
                         items.put(property.getId(), property.getItem());

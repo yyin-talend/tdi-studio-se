@@ -145,7 +145,9 @@ import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ExtendedNodeManager;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.IExtendedNodeHandler;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -424,9 +426,17 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         return (CreationFactory) ((ToolEntry) model).getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
                     }
 
+                } else if (!(getTargetEditPart() instanceof NodeContainerPart)) {
+                    for (IExtendedNodeHandler hander : ExtendedNodeManager.getExtendedNodeHandler()) {
+                        factory = hander.getCreationFactory(element);
+                        if (factory != null) {
+                            return factory;
+                        }
+                    }
                 }
             }
         }
+
         return factory;
     }
 
@@ -559,6 +569,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     createValidationRule(obj, getTargetEditPart());
                     if (obj instanceof IRepositoryNode) {
                         propaHadoopCfgChanges((IRepositoryNode) obj);
+                    }
+                    for (IExtendedNodeHandler hander : ExtendedNodeManager.getExtendedNodeHandler()) {
+                        boolean updated = hander.updateComponent(obj, getTargetEditPart(), editor.getCommandStack());
+                        if (updated) {
+                            break;
+                        }
                     }
                 }
             }
@@ -2004,16 +2020,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 execCommandStack(createCmd);
                 // reconnect the node
                 Node originalTarget = (Node) targetConnection.getTarget();
-                
+
                 EConnectionType connectionType = EConnectionType.FLOW_MAIN;
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
-                            .getDefault().getService(ICamelDesignerCoreService.class);
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                            .getService(ICamelDesignerCoreService.class);
                     if (camelService.isRouteBuilderNode(node)) {
                         connectionType = camelService.getTargetConnectionType(node);
                     }
                 }
-                
+
                 INodeConnector targetConnector = node.getConnectorFromType(connectionType);
                 for (INodeConnector connector : node.getConnectorsFromType(connectionType)) {
                     if (connector.getMaxLinkOutput() != 0) {

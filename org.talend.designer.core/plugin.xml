@@ -7,6 +7,7 @@
  <extension-point id="brms_provider" name="Brms provider" schema="schema/brms_provider.exsd"/>
  <extension-point id="check_nodes" name="Check nodes" schema="schema/check_nodes.exsd"/>
  <extension-point id="process_convert" name="process_convert" schema="schema/process_convert.exsd"/>
+ <extension-point id="extended_node_handler" name="extended_node_handler" schema="schema/extended_node_handler.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
