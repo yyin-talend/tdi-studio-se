@@ -10,7 +10,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
-String filename = ElementParameterParser.getValue(node,"__FILENAME__");	
 if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.io.OutputStream fos_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%>);

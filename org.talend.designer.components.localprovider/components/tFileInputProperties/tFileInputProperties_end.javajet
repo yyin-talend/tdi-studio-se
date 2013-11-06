@@ -14,7 +14,6 @@
     String cid = node.getUniqueName();
     String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
     String retriveMode = ElementParameterParser.getValue(node,"__RETRIVE_MODE__");
-    String outConnName = null;
     List< ? extends IConnection> outConns = node.getOutgoingConnections();
     boolean isGenerateCode=false;
     for(IConnection conn : outConns){
@@ -22,7 +21,6 @@
 			isGenerateCode=true;
 		}
     	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    		outConnName = conn.getName();
     		isGenerateCode=true;
     	}
     }
@@ -32,9 +30,14 @@
 %>
 	tos_count_<%=cid %>++;
 <%
-	if(("PROPERTIES_FORMAT").equals(ElementParameterParser.getValue(node,"__FILE_FORMAT__"))){
+	if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 		}
+	}finally{
+		if(fis_<%=cid%>!=null){
+			fis_<%=cid%>.close();
+		}
+	}
 <%
 	}else{
 		if(("RETRIVE_ALL").equals(retriveMode) || ("RETRIVE_BY_SECTION").equals(retriveMode)){

@@ -15,10 +15,18 @@ String append = ElementParameterParser.getValue(node,"__APPEND__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
+java.io.File parent_<%=cid%> = file_<%=cid%>.getParentFile();
+if(!parent_<%=cid%>.exists()){
+	parent_<%=cid%>.mkdirs();
+}
 <%
 if(("false").equals(append)){
 %>
-	file_<%=cid%>.delete();
+else{
+	if(file_<%=cid%>.exists()){
+		file_<%=cid%>.delete();
+	}
+}
 <%
 }
 %>
