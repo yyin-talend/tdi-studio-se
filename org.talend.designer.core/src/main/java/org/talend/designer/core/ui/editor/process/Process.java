@@ -2312,6 +2312,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     // nothing, since it should be added already in fact.
                 }
             } else {
+                uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
                 if (connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(EConnectionType.ITERATE)
                         || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
                         || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
