@@ -1754,7 +1754,7 @@ public class EmfComponent extends AbstractComponent {
                              * when node created.
                              */
                             String nodeUniqueName = ((Process) node.getProcess()).generateUniqueNodeName(node);
-                            defaultValueString = defaultValueString.replaceAll("__CID__", nodeUniqueName);
+                            defaultValueString = defaultValueString.replace("__NODE_UNIQUE_NAME__", nodeUniqueName);
                         }
                         defaultValue.setDefaultValue(defaultValueString);
                         if (param.getFieldType() == EParameterFieldType.FILE
