@@ -123,7 +123,6 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
@@ -1746,17 +1745,7 @@ public class EmfComponent extends AbstractComponent {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
 
                     if (node.getProcess() != null) {
-                        String defaultValueString = ElementParameterParser.parse(node.getProcess(), defaultType.getValue());
-                        if (defaultValueString != null) {
-                            /*
-                             * for implements [TESB-10335], need get unique name of node , but node unique name in node
-                             * properties is not init yet, but we need to use it to replace default value expression
-                             * when node created.
-                             */
-                            String nodeUniqueName = ((Process) node.getProcess()).generateUniqueNodeName(node);
-                            defaultValueString = defaultValueString.replace("__NODE_UNIQUE_NAME__", nodeUniqueName);
-                        }
-                        defaultValue.setDefaultValue(defaultValueString);
+                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType.getValue()));
                         if (param.getFieldType() == EParameterFieldType.FILE
                                 || param.getFieldType() == EParameterFieldType.DIRECTORY) {
                             IPath path = Path.fromOSString(defaultValue.getDefaultValue().toString());

@@ -494,6 +494,16 @@ public class Node extends Element implements IGraphicalNode {
         }
 
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
+        /*
+         * for implements [TESB-10335], need to replace "__NODE_UNIQUE_NAME__" to node unique name in expression.
+         */
+        for (IElementParameter param : getElementParameters()) {
+            if (param.getValue() != null && param.getValue() instanceof String) {
+                String value = (String) param.getValue();
+                value = value.replace("__NODE_UNIQUE_NAME__", uniqueName2);
+                param.setValue(value);
+            }
+        }
 
         IElementParameter mappingParameter = MetadataToolHelper.getMappingParameter((List<IElementParameter>) this
                 .getElementParameters());
