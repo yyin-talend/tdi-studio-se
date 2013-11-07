@@ -924,10 +924,10 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
     		}
-    		nb_line_<%=cid%>++;
     		//////////////////////////////////////    		
     		<%
     		}%>
+    		nb_line_<%=cid%>++;
 
     	<%
     	}
