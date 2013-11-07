@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.talend.designer.components.libs" default="process" basedir=".">
 	
-	<property name="component.plugin.home" value="../../../org.talend.designer.components.localprovider/components" />
+	<property name="jar.plugin.home" value="../../../org.talend.libraries.custom/lib" />
 
 	<!-- #################################################### -->
 
 	<!-- modification 1: config -->
 	<property name="jar.name" value="talend_file_enhanced_20070724.jar" />
-	<property name="component.name" value="tFileInputDelimited" />
 	<property name="author.name" value="wyang" />
 	
 	<!-- modification 2: compile classpath -->
@@ -19,7 +18,7 @@
 
 	<!-- sourcecode and final jar path -->
 	<property name="source.home" value="." />
-	<property name="jar.home" value="${component.plugin.home}/${component.name}/${jar.name}" />
+	<property name="jar.home" value="${jar.plugin.home}/${jar.name}" />
 
 	<!-- temp dir for clasee files -->
 	<property name="build.dir" value="../../build" />

@@ -71,8 +71,10 @@ public class RowParser extends DelimitedDataReader {
         if (rowSeparator.equals("\n") || rowSeparator.equals("\r\n")) {
             // simpleMode = true;
             mode = 0;
-            scanner = new Scanner(inputStream);
-            scanner.useDelimiter(rowSeparator);
+            if(rowSeparator.equals("\r\n")){
+            	scanner = new Scanner(inputStream);
+            	scanner.useDelimiter(rowSeparator);
+            }
         } else {
             streamBuffer = new StreamBuffer();
 
@@ -125,7 +127,7 @@ public class RowParser extends DelimitedDataReader {
             }
 
             try {
-                if (initialized && mode == 0) {
+                if (initialized && scanner != null) {
                     scanner.close();
                 } else if(initialized) {
                 	inputStream.close();
@@ -151,10 +153,17 @@ public class RowParser extends DelimitedDataReader {
             if (skipEmptyRecord) {
                 do {
                 	rowRecord = null;
-                    if (!scanner.hasNext()) {
-                        return false;
-                    }
-                    rowRecord = scanner.next();
+                	if(scanner != null){
+	                    if (!scanner.hasNext()) {
+	                        return false;
+	                    }
+	                    rowRecord = scanner.next();
+                	}else{
+                		rowRecord = inputStream.readLine(); 
+                		if (rowRecord == null) {
+                			 return false;
+	                    }
+                	}
                     if (!rowRecord.equals("")) {
                         currentRecord++;
                         return true;
@@ -162,13 +171,23 @@ public class RowParser extends DelimitedDataReader {
                 } while (true);
             } else {
             	rowRecord = null;
-                if (!scanner.hasNext()) {
-                    return false;
-                } else {
-                	rowRecord = scanner.next();
-                    currentRecord++;
-                    return true;
-                }
+            	if (scanner != null) {
+					if (!scanner.hasNext()) {
+						return false;
+					} else {
+						rowRecord = scanner.next();
+						currentRecord++;
+						return true;
+					}
+				}else{
+					rowRecord = inputStream.readLine(); 
+					if (rowRecord == null) {
+						return false;
+					} else {
+						currentRecord++;
+						return true;
+					}
+				}
             }
         } else if (mode == 1) {
             hasReadRecord = false;
