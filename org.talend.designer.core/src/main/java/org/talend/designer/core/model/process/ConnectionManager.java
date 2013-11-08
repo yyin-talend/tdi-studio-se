@@ -28,6 +28,8 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.designer.core.ConnectionValidatorManager;
+import org.talend.designer.core.IConnectionValidator;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -398,6 +400,16 @@ public class ConnectionManager {
         // }
         // }
         // }
+        
+        //check extensionPoints
+        Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
+        for(IConnectionValidator validator: connectionValidators){
+            boolean canConnectToSource = validator.canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName);
+            if(!canConnectToSource){
+                return false;
+            }
+        }
+        
         return true;
     }
 
@@ -547,6 +559,15 @@ public class ConnectionManager {
         // }
         // }
 
+        //check extensionPoints
+        Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
+        for(IConnectionValidator validator: connectionValidators){
+            boolean canConnectToTarget = validator.canConnectToTarget(source, oldTarget, newTarget, lineStyle, connectorName, connectionName);
+            if(!canConnectToTarget){
+                return false;
+            }
+        }
+        
         return true;
     }
 
