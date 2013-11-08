@@ -1761,11 +1761,13 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+        boolean refreshMRSub = false;
         if (!id.equals(EParameterName.LABEL.getName()) && !id.equals(EParameterName.UNIQUE_NAME.getName())
                 && !id.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
             needlibrary = true;
             if (!this.process.isDuplicate() && !CommonsPlugin.isHeadless()) {
                 if (isMapReduce()) {
+                    refreshMRSub = true;
                     if (needCleared()) {
                         refreshNodeContainer();
                     }
@@ -1781,6 +1783,14 @@ public class Node extends Element implements IGraphicalNode {
         }
 
         parameter.setValue(value);
+
+        if (refreshMRSub) {
+            if (needRefreshSubjob(id)) {
+                ((IProcess2) this.getProcess()).updateSubjobContainers();
+                this.refreshNodeContainer();
+            }
+        }
+
         if (id.equals(EParameterName.INFORMATION.getName())) {
             firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
         }
@@ -4428,11 +4438,18 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public boolean isMapReduce() {
-        if (this.getProcess().getComponentsType() == null) {
-            return false;
-        }
-        if (this.getProcess().getComponentsType().equals("MR")) {
-            return true;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            return mrService.isMapReduceItem(process.getProperty().getItem());
+        } else {
+            if (this.getProcess().getComponentsType() == null) {
+                return false;
+            }
+            if (this.getProcess().getComponentsType().equals("MR")) {
+                return true;
+            }
+
         }
         return false;
     }
@@ -4597,6 +4614,18 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         return clear;
+    }
+
+    private boolean needRefreshSubjob(String id) {
+        if (!isMapReduce()) {
+            return false;
+        }
+        if (id.equals("MAP_ONLY")) {
+            return true;
+        } else if (id.equals(EParameterName.GROUPBYS.getName())) {
+            return true;
+        }
+        return false;
     }
 
     public void refreshNodeContainer() {
