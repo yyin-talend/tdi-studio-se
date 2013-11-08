@@ -150,7 +150,7 @@ int nb_line_<%=cid %> = 0;
 %>
 		public String filterNullElement(String srcData,String splitStr){
 			String result = "";
-			String[] tempArr = srcData.split(splitStr);
+			String[] tempArr = routines.system.StringUtils.splitNotRegex(srcData,splitStr);<%//For TDI-28021%>
 			for (int i = 0 ; i < tempArr.length; i++) {
 				if(tempArr[i] !=null && !"".equals(tempArr[i].trim())) {
 					if(!"".equals(result)) {
