@@ -1228,10 +1228,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         }
         int linesLimit = getConsoleRowLimit();
         int currentLines = consoleText.getLineCount();
-        if (linesLimit > 0) {
-            if (currentLines > linesLimit) {
-                return;
-            }
+        if (linesLimit > 0 && currentLines > linesLimit) {
+            return;
         }
 
         List<StyleRange> styles = new ArrayList<StyleRange>();
@@ -1246,16 +1244,16 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             if (message.getType() == MsgType.STD_OUT) {
                 String[] splitLines = message.getContent().split("\n"); //$NON-NLS-1$
                 for (String lineContent : splitLines) {
-                    if (currentLines > linesLimit) {
-                        break;
+                    if (linesLimit > 0 && currentLines > linesLimit) {
+                        return;
                     }
                     currentLines++;
                     IProcessMessage lineMsg = new ProcessMessage(getLog4jMsgType(MsgType.STD_OUT, lineContent), lineContent);
                     newStyle = newStyle | processMessage(consoleMsgText, lineMsg, startLength, styles);
                 }
             } else {
-                if (currentLines > linesLimit) {
-                    break;
+                if (linesLimit > 0 && currentLines > linesLimit) {
+                    return;
                 }
                 currentLines++;
                 // count as only one line for the error, to avoid the error to be cut from original
