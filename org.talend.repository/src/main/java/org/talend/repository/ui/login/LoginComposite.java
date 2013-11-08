@@ -2594,58 +2594,71 @@ public class LoginComposite extends Composite {
 
     private Job backgroundGUIUpdate;
 
+    private Font italicFont;
+
+    private Font originalFont;
+
+    private Project currentProjectSettings;
+
     private void setBranchesSetting(final Project project, boolean lastUsedBranch) {
         if (branchesViewer != null) {
+            currentProjectSettings = project;
             final List<String> projectBranches = new ArrayList<String>();
             projectBranches.add("trunk"); //$NON-NLS-1$
             branchesViewer.setInput(projectBranches);
             branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
-            final Font originalFont = branchesViewer.getCombo().getFont();
-            FontData fontData = originalFont.getFontData()[0];
-            final Font newFont = new Font(branchesViewer.getCombo().getDisplay(), new FontData(fontData.getName(),
-                    fontData.getHeight(), SWT.ITALIC));
-            branchesViewer.getCombo().setFont(newFont);
+            if (italicFont == null) {
+                originalFont = branchesViewer.getCombo().getFont();
+                FontData fontData = originalFont.getFontData()[0];
+                italicFont = new Font(branchesViewer.getCombo().getDisplay(), new FontData(fontData.getName(),
+                        fontData.getHeight(), SWT.ITALIC));
+            }
+            branchesViewer.getCombo().setFont(italicFont);
             branchesViewer.getCombo().setEnabled(false);
-            if (backgroundGUIUpdate == null || (backgroundGUIUpdate.getState() == Job.NONE)) {
+            if (backgroundGUIUpdate == null/* || (backgroundGUIUpdate.getState() == Job.NONE) */) {
                 backgroundGUIUpdate = new Job("List Branches") { //$NON-NLS-1$
 
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         projectBranches.clear();
-                        projectBranches.addAll(getProjectBranches(project));
+                        projectBranches.addAll(getProjectBranches(currentProjectSettings));
                         return org.eclipse.core.runtime.Status.OK_STATUS;
                     }
 
                 };
-            }
-            Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
+                Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
 
-                @Override
-                public void done(IJobChangeEvent event) {
-                    if (event.getJob().equals(backgroundGUIUpdate)) {
-                        if (branchesViewer != null && !branchesViewer.getCombo().isDisposed()) {
-                            branchesViewer.getCombo().getDisplay().syncExec(new Runnable() {
+                    @Override
+                    public void done(IJobChangeEvent event) {
+                        if (event.getJob().equals(backgroundGUIUpdate)) {
+                            if (branchesViewer != null && !branchesViewer.getCombo().isDisposed()) {
+                                branchesViewer.getCombo().getDisplay().syncExec(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    branchesViewer.setInput(projectBranches);
-                                    branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
-                                    branchesViewer.getCombo().setFont(originalFont);
-                                    branchesViewer.getCombo().setEnabled(true);
-                                }
-                            });
+                                    @Override
+                                    public void run() {
+                                        branchesViewer.setInput(projectBranches);
+                                        branchesViewer.setSelection(new StructuredSelection(new Object[] { "trunk" })); //$NON-NLS-1$
+                                        branchesViewer.getCombo().setFont(originalFont);
+                                        branchesViewer.getCombo().setEnabled(true);
+                                    }
+                                });
+                            }
                         }
                     }
-                }
-            });
-            backgroundGUIUpdate.schedule();
-            branchesViewer.getCombo().addDisposeListener(new DisposeListener() {
+                });
+                branchesViewer.getCombo().addDisposeListener(new DisposeListener() {
 
-                @Override
-                public void widgetDisposed(DisposeEvent e) {
-                    newFont.dispose();
-                }
-            });
+                    @Override
+                    public void widgetDisposed(DisposeEvent e) {
+                        italicFont.dispose();
+                        italicFont = null;
+                        currentProjectSettings = null;
+                        originalFont = null;
+                        backgroundGUIUpdate = null;
+                    }
+                });
+            }
+            backgroundGUIUpdate.schedule();
         }
     }
 
