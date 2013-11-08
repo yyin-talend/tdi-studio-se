@@ -193,7 +193,15 @@ public class JobletContainerPart extends NodeContainerPart {
                 } else {
                     ((JobletContainerFigure) getFigure()).refreshNodes(false);
                 }
+                if (((JobletContainer) getModel()).getNode().isMapReduce()) {
+                    JobletContainer jCon = (JobletContainer) getModel();
+                    if (jCon.getNode().isMapReduceStart()) {
+                        jCon.updateJobletNodes(true);
+                    } else if (jCon.getMrStartContainer() != null) {
+                        jCon.getMrStartContainer().updateJobletNodes(true);
+                    }
 
+                }
             }
             refreshVisuals();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added

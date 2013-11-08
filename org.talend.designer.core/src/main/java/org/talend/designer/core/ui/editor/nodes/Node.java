@@ -1786,7 +1786,7 @@ public class Node extends Element implements IGraphicalNode {
 
         if (refreshMRSub) {
             if (needRefreshSubjob(id)) {
-                ((IProcess2) this.getProcess()).updateSubjobContainers();
+                ((IProcess2) this.getProcess()).getGeneratingNodes();
                 this.refreshNodeContainer();
             }
         }
