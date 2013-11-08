@@ -319,7 +319,8 @@ public class SQLBuilderRepositoryNodeManager {
             norColumns.add(column);
         }
         MetadataColumnComparator metadataColumnComparator = new MetadataColumnComparator();
-        Collections.sort(norColumns, metadataColumnComparator);
+        //TUP-17181 fixed:for the normal tables,no need to sort for it since it cause the display result different with before
+        //Collections.sort(norColumns, metadataColumnComparator);
         Collections.sort(sysColumns, metadataColumnComparator);
         Collections.sort(divColumns, metadataColumnComparator);
         Collections.sort(grayColumns, metadataColumnComparator);
