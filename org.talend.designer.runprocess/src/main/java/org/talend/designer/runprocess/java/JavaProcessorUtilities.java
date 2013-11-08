@@ -431,9 +431,17 @@ public class JavaProcessorUtilities {
         if (listModulesReallyNeeded == null) {
             listModulesReallyNeeded = new HashSet<String>();
         }
+
         // only for wizards or additional jars only to make the java project compile without any error.
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.ROUTINES)) {
             optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
+        }
+
+        if (ERepositoryObjectType.getType("BEANS") != null) {
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType
+                    .getType("BEANS"))) {
+                optionalJarsOnlyForRoutines.add(moduleNeeded.getModuleName());
+            }
         }
 
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines(ERepositoryObjectType.PIG_UDF)) {
