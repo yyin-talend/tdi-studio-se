@@ -66,8 +66,6 @@ if(execStat){
 							this.errorCode = localErrorCode;
 						}
 					}					
-		            talendThreadPool.setErrorThread(this);
-		            talendThreadPool.stopAllWorkers();		            
 
                     TalendException te = new TalendException(e, currentComponent, globalMap);
 <%
@@ -77,7 +75,9 @@ if(execStat){
 <%
 				}
 %>
-					te.printStackTrace();
+					this.exception=te;
+		            talendThreadPool.setErrorThread(this);
+		            talendThreadPool.stopAllWorkers();
 
 			}
 			this.isRunning = false;

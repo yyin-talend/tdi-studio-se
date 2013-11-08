@@ -311,6 +311,9 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 		if (!status.equals("failure")) {
 			status = errorThread_<%=iterateTargetNodeName %>.status;
 		}
+		if(errorThread_<%=iterateTargetNodeName %>.exception!=null){
+			throw errorThread_<%=iterateTargetNodeName %>.exception;
+		}
 	}else{				
 		Integer threadErrorCode = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getErrorCode();
 		String threadStatus = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getStatus();
@@ -338,6 +341,9 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 		if (!localStatus.equals("failure")) {
 			((java.util.Map) threadLocal.get()).put("status", errorThread_<%=iterateTargetNodeName %>.status);
 		}
+		if(errorThread_<%=iterateTargetNodeName %>.exception!=null){
+			throw errorThread_<%=iterateTargetNodeName %>.exception;
+		}		
 	}else{
 		Integer threadErrorCode = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getErrorCode();
 		String threadStatus = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getStatus();
