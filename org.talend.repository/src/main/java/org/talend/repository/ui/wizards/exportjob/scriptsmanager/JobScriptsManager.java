@@ -825,6 +825,10 @@ public abstract class JobScriptsManager {
 
                 IPath itemFilePath;
                 String itemVersionString = (itemVersion == null) ? "" : "_" + itemVersion;
+
+                if (itemPath.startsWith(typeFolderPath.toString())) {
+                    itemPath = itemPath.substring(typeFolderPath.toString().length());
+                }
                 if (item.getFileExtension() == null || "".equals(item.getFileExtension())) { //$NON-NLS-1$
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
                             .append(itemName + itemVersionString + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
@@ -839,8 +843,19 @@ public abstract class JobScriptsManager {
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();
 
-                metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-                metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+                File itemFile = itemFilePath.toFile();
+                if (itemFile.exists()) {
+                    metadataNameFileUrls.add(FileLocator.toFileURL(itemFile.toURI().toURL()));
+                } else {
+                    ExceptionHandler.log(Messages.getString("JobScriptsManager.ResourceNotFoundForExport", itemFilePath));
+                }
+
+                File propertiesFile = propertiesFilePath.toFile();
+                if (propertiesFile.exists()) {
+                    metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFile.toURI().toURL()));
+                } else {
+                    ExceptionHandler.log(Messages.getString("JobScriptsManager.ResourceNotFoundForExport", propertiesFilePath));
+                }
 
                 String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                         + typeFolderPath.toString();
