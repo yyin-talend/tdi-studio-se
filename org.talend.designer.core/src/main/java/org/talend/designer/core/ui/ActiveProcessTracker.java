@@ -216,6 +216,8 @@ public class ActiveProcessTracker implements IPartListener {
                     for (IJobTrackerListener listener : jobTrackerListeners) {
                         listener.allJobClosed();
                     }
+                } else if (lastProcessOpened == process) {
+                    lastProcessOpened = currentProcess;
                 }
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ISQLBuilderService.class)) {
                     ISQLBuilderService sqlBuilderService = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(

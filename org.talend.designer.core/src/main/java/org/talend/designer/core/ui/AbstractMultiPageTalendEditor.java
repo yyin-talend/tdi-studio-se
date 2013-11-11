@@ -158,6 +158,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.outline.NodeTransferDragSourceListener;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
@@ -1632,6 +1633,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         processor = null;
         dirtyListener = null;
+        NodeTransferDragSourceListener.getInstance().setEditPart(null);
     }
 
     /*

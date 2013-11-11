@@ -421,6 +421,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         this.element = null;
         cleaned = true;
         selectedPrimary = true;
+        if (currentSelectedTab != null) {
+            currentSelectedTab.setData(null);
+            currentSelectedTab = null;
+        }
     }
 
     @Override

@@ -63,7 +63,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
     @Override
     public void deactivate() {
         ((Node) getModel()).removePropertyChangeListener(this);
-        nodeTransferDragSourceListener.setEditPart(this);
+        nodeTransferDragSourceListener.setEditPart(null);
         getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
         super.deactivate();
     }
@@ -83,6 +83,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent change) {
         if (Node.RETURNS_CHANGED.equals(change.getPropertyName())) {
             refreshChildren();
@@ -90,6 +91,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
         }
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 refreshVisuals();
             }
