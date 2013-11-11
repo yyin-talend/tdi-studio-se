@@ -327,7 +327,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                         }
                     } else {
-                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table, componentName);
+                        INodeConnector conn = ((Node) elem).getConnectorFromType(EConnectionType.FLOW_MAIN);
+                        IMetadataTable metaTable = table;
+                        if (conn != null && conn.getMaxLinkOutput() == 1) {
+                            metaTable = ((Node) elem).getMetadataFromConnector(conn.getName());
+                        }
+                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, metaTable,
+                                componentName);
                     }
 
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IJsonFileService.class)) {
