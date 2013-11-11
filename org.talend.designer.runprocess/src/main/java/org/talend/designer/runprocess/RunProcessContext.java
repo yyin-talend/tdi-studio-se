@@ -62,12 +62,14 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.ExportModelJavaProcessor;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.prefs.RunProcessTokenCollector;
+import org.talend.designer.runprocess.trace.TraceConnectionsManager;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
@@ -1152,6 +1154,9 @@ public class RunProcessContext {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     setBasicRun(false);
+                    final TraceConnectionsManager traceConnectionsManager = new TraceConnectionsManager(process);
+                    traceConnectionsManager.init();
+
                     boolean lastIsPrivious = false;
                     boolean lastRow = false;
                     final List<Map<String, String>> connectionData = new ArrayList<Map<String, String>>();
@@ -1214,13 +1219,17 @@ public class RunProcessContext {
                                                             connectionId = key;
                                                         }
                                                     }
-                                                    final IConnection connection = findConnection(connectionId);
+                                                    final IConnection connection = traceConnectionsManager
+                                                            .finConnectionByUniqueName(connectionId);
                                                     if (connection != null) {
+                                                        if (!connectionSize.contains(connection)) {
+                                                            connectionSize.add(connection);
+                                                        }
                                                         Display.getDefault().syncExec(new Runnable() {
 
                                                             @Override
                                                             public void run() {
-                                                                connection.setTraceData(nextRowTrace);
+                                                                setTraceData(traceConnectionsManager, connection, nextRowTrace);
                                                             }
                                                         });
                                                     }
@@ -1257,14 +1266,17 @@ public class RunProcessContext {
                                                     connectionId = key;
                                                 }
                                             }
-                                            final IConnection connection = findConnection(connectionId);
-
+                                            final IConnection connection = traceConnectionsManager
+                                                    .finConnectionByUniqueName(connectionId);
                                             if (connection != null) {
+                                                if (!connectionSize.contains(connection)) {
+                                                    connectionSize.add(connection);
+                                                }
                                                 Display.getDefault().syncExec(new Runnable() {
 
                                                     @Override
                                                     public void run() {
-                                                        connection.setTraceData(previousRowTrace);
+                                                        setTraceData(traceConnectionsManager, connection, previousRowTrace);
                                                     }
                                                 });
                                             }
@@ -1305,9 +1317,11 @@ public class RunProcessContext {
                                     id = idPart;
                                 }
                             }
-                            final IConnection connection = findConnection(id);
-
+                            final IConnection connection = traceConnectionsManager.finConnectionByUniqueName(id);
                             if (connection != null) {
+                                if (!connectionSize.contains(connection)) {
+                                    connectionSize.add(connection);
+                                }
                                 int sepIndex1 = data.indexOf("|");
                                 int sepIndex2 = sepIndex1 != -1 ? data.indexOf("|", sepIndex1 + 1) : -1;
                                 if (sepIndex2 != -1) {
@@ -1339,7 +1353,8 @@ public class RunProcessContext {
                                     @Override
                                     public void run() {
                                         if (data != null) {
-                                            connection.setTraceData(connAndTraces.get(connection));
+                                            Map<String, String> curTraceData = connAndTraces.get(connection);
+                                            setTraceData(traceConnectionsManager, connection, curTraceData);
                                             connAndTraces.clear();
                                         }
                                     }
@@ -1367,20 +1382,23 @@ public class RunProcessContext {
             }
         }
 
-        private IConnection findConnection(final String connectionId) {
-            IConnection connection = null;
-            for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null && i.hasNext();) {
-                INode psNode = i.next();
-                for (IConnection connec : psNode.getOutgoingConnections()) {
-                    if (connec.getName().equals(connectionId)) {
-                        connection = connec;
-                        if (!connectionSize.contains(connection)) {
-                            connectionSize.add(connection);
-                        }
+        private void setTraceData(TraceConnectionsManager traceConnectionsManager, IConnection conn,
+                Map<String, String> curTraceData) {
+            if (conn != null) {
+                Map<String, String> dataMap = new HashMap<String, String>(curTraceData);
+                conn.setTraceData(dataMap);
+                String uniqueName = ConnectionUtil.getConnectionUnifiedName(conn);
+                IConnection[] shadowConnections = traceConnectionsManager.getShadowConnenctions(uniqueName);
+                if (shadowConnections != null) {
+                    String data = dataMap.get(uniqueName);
+                    for (IConnection shadowConn : shadowConnections) {
+                        // FIXME, because the connection name is front of data, and not used, so no need change the data
+                        // for shadow connection.
+                        dataMap.put(ConnectionUtil.getConnectionUnifiedName(shadowConn), data);
+                        shadowConn.setTraceData(dataMap);
                     }
                 }
             }
-            return connection;
         }
     }
 
