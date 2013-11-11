@@ -63,8 +63,8 @@ public class JobletContainerPart extends NodeContainerPart {
     public void activate() {
         super.activate();
         ((JobletContainer) getModel()).addPropertyChangeListener(this);
-        Node node = ((JobletContainer) getModel()).getNode();
-        node.addPropertyChangeListener(this);
+        // Node node = ((JobletContainer) getModel()).getNode();
+        // node.addPropertyChangeListener(this);
     }
 
     public void deactivate() {
@@ -311,5 +311,4 @@ public class JobletContainerPart extends NodeContainerPart {
 
         return super.getAdapter(key);
     }
-
 }
