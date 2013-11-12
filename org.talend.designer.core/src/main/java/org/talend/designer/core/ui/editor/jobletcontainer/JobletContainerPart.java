@@ -60,6 +60,7 @@ public class JobletContainerPart extends NodeContainerPart {
         return false;
     }
 
+    @Override
     public void activate() {
         super.activate();
         ((JobletContainer) getModel()).addPropertyChangeListener(this);
@@ -67,6 +68,7 @@ public class JobletContainerPart extends NodeContainerPart {
         // node.addPropertyChangeListener(this);
     }
 
+    @Override
     public void deactivate() {
         super.deactivate();
         ((JobletContainer) getModel()).removePropertyChangeListener(this);
@@ -77,6 +79,7 @@ public class JobletContainerPart extends NodeContainerPart {
         super.setSelected(SELECTED_NONE);
     }
 
+    @Override
     public NodePart getNodePart() {
         Object o = this.getChildren().get(0);
         if (o instanceof NodePart) {
@@ -118,6 +121,7 @@ public class JobletContainerPart extends NodeContainerPart {
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new JobletContainerLayoutEditPolicy());
     }
 
+    @Override
     protected void refreshVisuals() {
         Boolean isDisplayJoblet = ((JobletContainer) this.getModel()).isDisplayed();
         if (getParent() == null) {// || !isDisplayJoblet
@@ -149,6 +153,7 @@ public class JobletContainerPart extends NodeContainerPart {
 
     }
 
+    @Override
     protected List getModelChildren() {
         return ((JobletContainer) this.getModel()).getElements();
     }
@@ -158,6 +163,7 @@ public class JobletContainerPart extends NodeContainerPart {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
         String prop = changeEvent.getPropertyName();
         boolean needUpdateSubjob = false;

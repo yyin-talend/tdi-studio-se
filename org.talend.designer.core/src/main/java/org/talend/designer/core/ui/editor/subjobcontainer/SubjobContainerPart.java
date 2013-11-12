@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.subjobcontainer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -51,6 +53,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
@@ -170,6 +173,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
         if (SubjobContainer.UPDATE_SUBJOB_CONTENT.equals(prop)) {
@@ -211,7 +215,39 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      */
     @Override
     protected List getModelChildren() {
-        return ((SubjobContainer) getModel()).getNodeContainers();
+        List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>(((SubjobContainer) getModel()).getNodeContainers());
+        Collections.sort(nodeContainers, new Comparator<NodeContainer>() {
+
+            @Override
+            public int compare(NodeContainer nc1, NodeContainer nc2) {
+                if (nc1.getNode().isJoblet() || nc2.getNode().isJoblet()) {
+                    return 0;
+                }
+                if (!(nc1 instanceof JobletContainer) && !(nc2 instanceof JobletContainer)) {
+                    return 0;
+                } else if (nc1 instanceof JobletContainer && !(nc2 instanceof JobletContainer)) {
+                    return -1;
+                } else if (!(nc1 instanceof JobletContainer) && nc2 instanceof JobletContainer) {
+                    return 1;
+                } else if (nc1 instanceof JobletContainer && nc2 instanceof JobletContainer) {
+                    if (((JobletContainer) nc1).getMrStartContainer() == nc1
+                            && ((JobletContainer) nc2).getMrStartContainer() == nc2) {
+                        return 0;
+                    } else if (((JobletContainer) nc1).getMrStartContainer() != nc1
+                            && ((JobletContainer) nc2).getMrStartContainer() == nc2) {
+                        return 1;
+                    } else if (((JobletContainer) nc1).getMrStartContainer() == nc1
+                            && ((JobletContainer) nc2).getMrStartContainer() != nc2) {
+                        return -1;
+                    } else if (((JobletContainer) nc1).getMrStartContainer() != nc1
+                            && ((JobletContainer) nc2).getMrStartContainer() != nc2) {
+                        return 0;
+                    }
+                }
+                return 0;
+            }
+        });
+        return nodeContainers;
     }
 
     /*
@@ -271,6 +307,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return new ChopboxAnchor(getFigure());
     }
@@ -280,6 +317,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return new ChopboxAnchor(getFigure());
     }
@@ -289,6 +327,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return new ChopboxAnchor(getFigure());
     }
@@ -298,6 +337,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return new ChopboxAnchor(getFigure());
     }

@@ -75,6 +75,8 @@ public class JobletContainerFigure extends Figure {
 
     private boolean isSubjobDisplay = true;
 
+    private int ALPHA_VALUE = 100;
+
     /**
      * DOC hwang JobletContainerFigure constructor comment.
      * 
@@ -85,10 +87,9 @@ public class JobletContainerFigure extends Figure {
         this.jobletContainer = jobletContainer;
         isSubjobDisplay = this.jobletContainer.getSubjobContainer().isDisplayed();
         outlineFigure = new RoundedRectangle();
-        // rectFig = new RoundedRectangle();
         rectFig = new GreenRectangle();
+        rectFig.setAlpha(ALPHA_VALUE);
         titleFigure = new SimpleHtmlFigure();
-        titleFigure.setOpaque(true);
         collapseFigure = new JobletCollapseFigure();
 
         collapseFigure.addActionListener(new ActionListener() {
@@ -98,17 +99,18 @@ public class JobletContainerFigure extends Figure {
                 doCollapse();
             }
         });
-        errorFigure = new ImageFigure();
-        errorFigure.setImage(ImageProvider.getImage(EImage.ERROR_SMALL));
-        errorFigure.setVisible(false);
-        errorFigure.setSize(errorFigure.getPreferredSize());
-        this.add(errorFigure);
 
         warningFigure = new ImageFigure();
         warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
         warningFigure.setVisible(false);
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
+
+        errorFigure = new ImageFigure();
+        errorFigure.setImage(ImageProvider.getImage(EImage.ERROR_SMALL));
+        errorFigure.setVisible(false);
+        errorFigure.setSize(errorFigure.getPreferredSize());
+        this.add(errorFigure);
 
         initMRFigures();
 
@@ -156,12 +158,22 @@ public class JobletContainerFigure extends Figure {
      */
     @Override
     public void paint(Graphics graphics) {
-        graphics.setAlpha(100);
+        graphics.setAlpha(255);
         if (errorFigure.isVisible()) {
             errorFigure.setLocation(jobletContainer.getErrorLocation());
         }
         if (warningFigure.isVisible()) {
             warningFigure.setLocation(jobletContainer.getWarningLocation());
+        }
+        Iterator it = getChildren().iterator();
+        if (!jobletContainer.getNode().isJoblet()) {
+            while (it.hasNext()) {
+                Figure fig = (Figure) it.next();
+                if (mrFigures.isEmpty() && (fig instanceof GreenRectangle || fig instanceof RoundedRectangle)) {
+                    it.remove();
+                    continue;
+                }
+            }
         }
         super.paint(graphics);
         refreshNodes(false);
@@ -615,8 +627,9 @@ public class JobletContainerFigure extends Figure {
                 mapGreen.setLayoutManager(new ToolbarLayout(true));
                 mapGreen.setLocation(new Point(progressMap.getLocation().x + mapTitle.getPreferredSize().width, progressMap
                         .getLocation().y));
-                mapGreen.setVisible(true);
                 mapGreen.setOpaque(true);
+                mapGreen.setAlpha(255);
+                mapGreen.setVisible(true);
                 progressMap.add(mapTitle, 0);
                 progressMap.add(mapGreen, 1);
 
@@ -647,8 +660,9 @@ public class JobletContainerFigure extends Figure {
                 reduceGreen.setLayoutManager(new ToolbarLayout(true));
                 reduceGreen.setLocation(new Point(progressReduce.getLocation().x + reduceTitle.getPreferredSize().width,
                         progressReduce.getLocation().y));
-                reduceGreen.setVisible(true);
                 reduceGreen.setOpaque(true);
+                reduceGreen.setAlpha(255);
+                reduceGreen.setVisible(true);
                 progressReduce.add(reduceTitle, 0);
                 progressReduce.add(reduceGreen, 1);
 
@@ -722,16 +736,10 @@ public class JobletContainerFigure extends Figure {
 
     @Override
     public void add(IFigure figure, Object constraint, int index) {
-        super.add(figure, constraint, index);
-        GreenRectangle grc = null;
-        for (Object o : this.getChildren()) {
-            if (o instanceof GreenRectangle) {
-                grc = (GreenRectangle) o;
-            }
-        }
-        if (grc != null) {
-            getChildren().remove(grc);
-            getChildren().add(0, grc);
+        if (figure instanceof GreenRectangle) {
+            super.add(figure, constraint, 0);
+        } else {
+            super.add(figure, constraint, index);
         }
     }
 

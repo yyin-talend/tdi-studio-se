@@ -395,8 +395,7 @@ public class JobletContainer extends NodeContainer {
                 // }
                 // }
                 // }
-                for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
-                    IConnection con = iter.next();
+                for (IConnection con : conns) {
                     String sourceName = con.getSource().getUniqueName();
                     String targetName = con.getTarget().getUniqueName();
                     Node sourceNode = null;
@@ -530,8 +529,8 @@ public class JobletContainer extends NodeContainer {
                 ((Connection) conn).reconnect(conn.getSource(), this.node, conn.getLineStyle());
                 IConnection[] jobletConns = this.node.getComponent().getProcess().getAllConnections(null);
                 if (jobletConns != null) {
-                    for (int i = 0; i < jobletConns.length; i++) {
-                        this.node.getProcess().removeUniqueConnectionName(jobletConns[i].getUniqueName());
+                    for (IConnection jobletConn : jobletConns) {
+                        this.node.getProcess().removeUniqueConnectionName(jobletConn.getUniqueName());
                     }
                 }
 
@@ -713,7 +712,7 @@ public class JobletContainer extends NodeContainer {
                                 return false;
                             } else {
                                 if (elechild.getValue() instanceof String) {
-                                    if (connList.contains((String) elechild.getValue())) {
+                                    if (connList.contains(elechild.getValue())) {
                                         return false;
                                     } else {
                                         connList.add((String) elechild.getValue());
