@@ -452,6 +452,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 // } else {
                 // valid = treePopulator.populateTree(text, treeNode);
                 // }
+                valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
                 checkFieldsValue();
                 isModifing = true;
             }
