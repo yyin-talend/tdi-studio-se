@@ -452,6 +452,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 // } else {
                 // valid = treePopulator.populateTree(text, treeNode);
                 // }
+                valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
                 checkFieldsValue();
                 isModifing = true;
             }
@@ -563,7 +564,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             msgError.append("Should select one model\n");
         }
         if (creation && editable && jsonFilePath.getText() == "") {
-            msgError.append("JSON filepath must be specified\n");
+            msgError.append("JSON File must be specified\n");
         }
         if (!valid && creation) {
             String JSONXsdText = jsonFilePath.getText();
