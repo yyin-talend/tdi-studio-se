@@ -167,6 +167,9 @@ public class RunProcessContext {
 
     private List<PerformanceMonitor> perMonitorList = new ArrayList<PerformanceMonitor>();
 
+    /** trace mananger */
+    private TraceConnectionsManager traceConnectionsManager;
+
     /**
      * Constrcuts a new RunProcessContext.
      * 
@@ -483,6 +486,13 @@ public class RunProcessContext {
                         try {
                             testPort();
                             // findNewStatsPort();
+                            if (monitorPerf || monitorTrace) {
+                                if (traceConnectionsManager != null) {
+                                    traceConnectionsManager.clear();
+                                }
+                                traceConnectionsManager = new TraceConnectionsManager(process);
+                                traceConnectionsManager.init();
+                            }
                             final IContext context = getSelectedContext();
                             if (monitorPerf) {
                                 clearThreads();
@@ -1015,34 +1025,9 @@ public class RunProcessContext {
                             String connectionId = perfData.getConnectionId();
                             // handle connectionId as row1.1 and row1
                             connectionId = connectionId.split("\\.")[0]; //$NON-NLS-1$
-                            final IConnection conn = findConnection(connectionId);
-                            if (conn != null && conn instanceof IPerformance) {
-                                final IPerformance performance = (IPerformance) conn;
-                                if (!performanceDataSet.contains(performance)) {
-                                    performance.resetStatus();
-                                }
-                                performanceDataSet.add(performance);
+                            final IConnection conn = traceConnectionsManager.finConnectionByUniqueName(connectionId);
 
-                                Display.getDefault().asyncExec(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        if (data != null) {
-                                            if (perfData.isClearCommand()) {
-                                                performance.clearPerformanceDataOnUI();
-                                            } else {
-                                                performance.setPerformanceData(data);
-                                            }
-                                            // clear status when run to the last data.
-                                            if (data.equals(lastData)) {
-                                                for (IPerformance performance : performanceDataSet) {
-                                                    performance.resetStatus();
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
+                            processPerformances(data, perfData, conn);
                         }
                     }
                 } catch (Exception e) {
@@ -1054,6 +1039,47 @@ public class RunProcessContext {
                         // Do nothing
                     }
                 }
+            }
+        }
+
+        private void processPerformances(final String data, final PerformanceData perfData, final IConnection conn) {
+            processPerformanceForConnection(data, perfData, conn);
+            String uniqueName = ConnectionUtil.getConnectionUnifiedName(conn);
+            IConnection[] shadowConnections = traceConnectionsManager.getShadowConnenctions(uniqueName);
+            if (shadowConnections != null) {
+                for (IConnection shadowConn : shadowConnections) {
+                    processPerformanceForConnection(data, perfData, shadowConn);
+                }
+            }
+        }
+
+        private void processPerformanceForConnection(final String data, final PerformanceData perfData, final IConnection conn) {
+            if (conn != null && conn instanceof IPerformance) {
+                final IPerformance performance = (IPerformance) conn;
+                if (!performanceDataSet.contains(performance)) {
+                    performance.resetStatus();
+                }
+                performanceDataSet.add(performance);
+
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (data != null) {
+                            if (perfData.isClearCommand()) {
+                                performance.clearPerformanceDataOnUI();
+                            } else {
+                                performance.setPerformanceData(data);
+                            }
+                            // clear status when run to the last data.
+                            if (data.equals(lastData)) {
+                                for (IPerformance p : performanceDataSet) {
+                                    p.resetStatus();
+                                }
+                            }
+                        }
+                    }
+                });
             }
         }
 
@@ -1075,16 +1101,6 @@ public class RunProcessContext {
             return node;
         }
 
-        private IConnection findConnection(final String connectionId) {
-            IConnection conn = null;
-            IConnection[] conns = process.getAllConnections(null);
-            for (IConnection conn2 : conns) {
-                if (connectionId.equals(conn2.getUniqueName())) {
-                    conn = conn2;
-                }
-            }
-            return conn;
-        }
     }
 
     /**
@@ -1154,8 +1170,6 @@ public class RunProcessContext {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     setBasicRun(false);
-                    final TraceConnectionsManager traceConnectionsManager = new TraceConnectionsManager(process);
-                    traceConnectionsManager.init();
 
                     boolean lastIsPrivious = false;
                     boolean lastRow = false;
@@ -1229,7 +1243,7 @@ public class RunProcessContext {
 
                                                             @Override
                                                             public void run() {
-                                                                setTraceData(traceConnectionsManager, connection, nextRowTrace);
+                                                                setTraceData(connection, nextRowTrace);
                                                             }
                                                         });
                                                     }
@@ -1276,7 +1290,7 @@ public class RunProcessContext {
 
                                                     @Override
                                                     public void run() {
-                                                        setTraceData(traceConnectionsManager, connection, previousRowTrace);
+                                                        setTraceData(connection, previousRowTrace);
                                                     }
                                                 });
                                             }
@@ -1354,7 +1368,7 @@ public class RunProcessContext {
                                     public void run() {
                                         if (data != null) {
                                             Map<String, String> curTraceData = connAndTraces.get(connection);
-                                            setTraceData(traceConnectionsManager, connection, curTraceData);
+                                            setTraceData(connection, curTraceData);
                                             connAndTraces.clear();
                                         }
                                     }
@@ -1382,8 +1396,7 @@ public class RunProcessContext {
             }
         }
 
-        private void setTraceData(TraceConnectionsManager traceConnectionsManager, IConnection conn,
-                Map<String, String> curTraceData) {
+        private void setTraceData(IConnection conn, Map<String, String> curTraceData) {
             if (conn != null) {
                 Map<String, String> dataMap = new HashMap<String, String>(curTraceData);
                 conn.setTraceData(dataMap);
