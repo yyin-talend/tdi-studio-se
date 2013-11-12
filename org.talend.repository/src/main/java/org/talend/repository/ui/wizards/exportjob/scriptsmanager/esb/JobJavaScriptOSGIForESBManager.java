@@ -541,6 +541,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         
         // use Authorization
         if (isStudioEEVersion()){ 
+            if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent))
             endpointInfo.put("useAuthorization", //$NON-NLS-1$
                     EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent)); //$NON-NLS-1$
         }else{
