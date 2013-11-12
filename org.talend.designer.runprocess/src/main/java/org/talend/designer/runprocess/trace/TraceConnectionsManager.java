@@ -60,7 +60,23 @@ public class TraceConnectionsManager {
 
     }
 
-    public void init() {
+    public synchronized void clear() {
+        this.process = null;
+        if (this.connsMap != null) {
+            this.connsMap.clear();
+            this.connsMap = null;
+        }
+        if (this.shadowConnsMap != null) {
+            this.shadowConnsMap.clear();
+            this.shadowConnsMap = null;
+        }
+        if (this.jobletNonShadowConnsMap != null) {
+            this.jobletNonShadowConnsMap.clear();
+            this.jobletNonShadowConnsMap = null;
+        }
+    }
+
+    public synchronized void init() {
         connsMap = new HashMap<String, IConnection>();
         shadowConnsMap = new HashMap<String, IConnection[]>();
         jobletNonShadowConnsMap = new HashMap<String, IConnection[]>();
