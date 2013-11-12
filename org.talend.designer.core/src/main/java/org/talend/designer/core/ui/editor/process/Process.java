@@ -2168,7 +2168,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         List<String> connectionsProblems = new ArrayList<String>();
 
         Hashtable<ConnectionType, Connection> connectionsHashtable = new Hashtable<ConnectionType, Connection>();
-
+        List<String> connectionUniqueNames = new ArrayList<String>();
         for (int i = 0; i < connecList.size(); i++) {
             cType = (ConnectionType) connecList.get(i);
             source = nodesHashtable.get(cType.getSource());
@@ -2230,6 +2230,28 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             connectionsHashtable.put(cType, connec);
             listParamType = cType.getElementParameter();
             loadElementParameters(connec, listParamType);
+
+            String uniqueName = connec.getUniqueName();
+            // at this point we should have the uniquename set correctly in the connection.
+            if (!connectionUniqueNames.contains(uniqueName) && checkValidConnectionName(uniqueName, false)) {
+                try {
+                    source.getProcess().addUniqueConnectionName(uniqueName);
+                } catch (Exception e) {
+                    // nothing, since it should be added already in fact.
+                }
+            } else {
+                uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
+                if (connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(EConnectionType.ITERATE)
+                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
+                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
+                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
+                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                    // for other LineStyle also should aviod the uniqueName duplicate
+                    connec.setUniqueName(uniqueName);
+                }
+                source.getProcess().addUniqueConnectionName(uniqueName);
+            }
+            connectionUniqueNames.add(uniqueName);
 
             Point offset = new Point(cType.getOffsetLabelX(), cType.getOffsetLabelY());
             INodeConnector nodeConnectorSource = connec.getSourceNodeConnector();
