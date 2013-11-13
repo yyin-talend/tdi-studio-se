@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.hive;
 
+import org.talend.designer.dbmap.DbMapComponent;
+import org.talend.designer.dbmap.external.data.ExternalDbMapData;
+import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 
 /**
@@ -29,4 +32,20 @@ public class HiveGenerationManager extends DbGenerationManager {
         super(new HiveLanguage());
     }
 
+    @Override
+    public String buildSqlSelect(DbMapComponent component, String outputTableName) {
+        String query = super.buildSqlSelect(component, outputTableName);
+        // tELTHiveMap no need DBName/SchemaName in the SELECT stattement of the HIVE QL generated
+        ExternalDbMapData data = (ExternalDbMapData) component.getExternalData();
+        for (ExternalDbMapTable input : data.getInputTables()) {
+            String inputTableName = input.getTableName();
+            if (inputTableName != null && inputTableName.contains(".")) {
+                String[] inputTableNames = inputTableName.split("\\.");
+                if (inputTableNames.length > 1) {
+                    query = query.replaceAll(inputTableName + "\\.", inputTableNames[1] + ".");
+                }
+            }
+        }
+        return query;
+    }
 }

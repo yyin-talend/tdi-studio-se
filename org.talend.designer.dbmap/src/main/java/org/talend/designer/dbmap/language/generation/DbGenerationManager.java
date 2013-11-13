@@ -43,7 +43,6 @@ import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.AbstractDbLanguage;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.language.IJoinType;
-import org.talend.designer.dbmap.language.hive.HiveGenerationManager;
 import org.talend.designer.dbmap.language.operator.IDbOperator;
 import org.talend.designer.dbmap.language.operator.IDbOperatorManager;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
@@ -334,19 +333,6 @@ public abstract class DbGenerationManager {
 
             for (int i = 0; i < lstSizeInputTables; i++) {
                 ExternalDbMapTable inputTable = inputTables.get(i);
-                // tELTHiveMap no need DBName/SchemaName in the SELECT stattement of the HIVE QL generated
-                if (this instanceof HiveGenerationManager) {
-                    String tableName = inputTables.get(i).getTableName();
-                    if (tableName != null && tableName.contains(".")) {
-                        String[] tableNames = tableName.split("\\.");
-                        if (tableNames.length > 1) {
-                            String sbReplace = sb.toString().replaceAll(tableName, tableNames[1]);
-                            if (sbReplace != null) {
-                                sb = new StringBuilder(sbReplace);
-                            }
-                        }
-                    }
-                }
                 IJoinType joinType = null;
                 if (i == 0) {
                     joinType = AbstractDbLanguage.JOIN.NO_JOIN;
