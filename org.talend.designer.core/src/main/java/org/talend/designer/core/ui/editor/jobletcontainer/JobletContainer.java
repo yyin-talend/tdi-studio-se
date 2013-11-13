@@ -453,13 +453,6 @@ public class JobletContainer extends NodeContainer {
             IConnection conn = inIterator.next();
             if (isCollapsed()) {
                 ((Connection) conn).reconnect(conn.getSource(), this.node, conn.getLineStyle());
-                IConnection[] jobletConns = this.node.getComponent().getProcess().getAllConnections(null);
-                if (jobletConns != null) {
-                    for (IConnection jobletConn : jobletConns) {
-                        this.node.getProcess().removeUniqueConnectionName(jobletConn.getUniqueName());
-                    }
-                }
-
             } else {
                 for (NodeContainer nodeContainer : this.nodeContainers) {
                     Node connNode = nodeContainer.getNode();

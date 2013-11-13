@@ -1055,9 +1055,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && getSourceNodeConnector().isMultiSchema())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-                if (target.getProcess().checkValidConnectionName(uniqueName)) {
+                if (target.getJobletNode() == null && target.getProcess().checkValidConnectionName(uniqueName)) {
                     target.getProcess().addUniqueConnectionName(uniqueName);
-                } else if (source.getProcess().checkValidConnectionName(uniqueName)) {
+                } else if (source.getJobletNode() == null && source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }
             }
@@ -1098,7 +1098,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (isConnected) {
 
             INodeConnector sourceNodeConnector = getSourceNodeConnector();
-            if (sourceNodeConnector != null && !sourceNodeConnector.isMultiSchema()) {
+            if (source.getJobletNode() == null && sourceNodeConnector != null && !sourceNodeConnector.isMultiSchema()) {
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
                         || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
