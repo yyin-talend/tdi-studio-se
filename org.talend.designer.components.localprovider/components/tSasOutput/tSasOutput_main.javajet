@@ -129,6 +129,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
                     } else {
@@ -198,6 +199,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
                     } else {
@@ -284,6 +286,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
                         } else {
@@ -337,6 +340,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
                         } else {
@@ -412,6 +416,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
                     } else {
@@ -470,6 +475,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
                         } else {
@@ -525,6 +531,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
                     } else {

@@ -569,6 +569,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -777,6 +778,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -915,6 +917,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                                 <%
                             }
                             %>
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
@@ -991,6 +994,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                                 <%
                             }
                             %>
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
@@ -1106,6 +1110,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -1189,6 +1194,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                             }
                             %>
                             rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
@@ -1288,6 +1294,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -1397,6 +1404,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 }
                 %>
                 	rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                	<%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                     <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {

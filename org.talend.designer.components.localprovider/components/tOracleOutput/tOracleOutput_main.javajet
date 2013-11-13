@@ -498,6 +498,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                         <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -632,6 +633,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                         <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -779,6 +781,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             }
                             %>
                             rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                             <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
@@ -856,6 +859,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             }
                             %>
                             rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                             <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
@@ -974,6 +978,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         }
                         %>
                         rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                        <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                         <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -1057,6 +1062,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             }
                             %>
                             rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+                            <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
                             <%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
