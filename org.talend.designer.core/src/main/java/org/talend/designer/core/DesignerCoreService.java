@@ -30,6 +30,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -45,6 +46,7 @@ import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -89,6 +91,7 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -427,6 +430,39 @@ public class DesignerCoreService implements IDesignerCoreService {
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        }
+    }
+
+    @Override
+    public void refreshComponentView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(ComponentSettingsView.ID);
+        if (view == null) {
+            return; // don't do anything. before it made the view appear for nothing even in other product like DQ.
+        }
+        if (view != null && view instanceof ComponentSettingsView) {
+            ComponentSettingsView settingView = (ComponentSettingsView) view;
+            Element element = settingView.getElement();
+            if (element != null) {
+                settingView.cleanDisplay();
+                settingView.setElement(element);
+            }
+        }
+
+        List<ComponentSettingsView> otherViews = JobTemplateViewsAndProcessUtil.getInstance().getAllViews();
+
+        if (otherViews == null || otherViews.isEmpty()) {
+            return;
+        }
+
+        for (ComponentSettingsView v : otherViews) {
+            if (v.getParent() != null && !v.getParent().isDisposed()) {
+                Element elem = v.getElement();
+                if (elem != null) {
+                    v.cleanDisplay();
+                    v.setElement(elem);
+                }
+            }
         }
     }
 
