@@ -38,6 +38,8 @@ class Job {
      */
     private boolean isJoblet = true;
 
+    private boolean isMR = true;
+
     private boolean readOnlyProcess = false;
 
     /**
@@ -86,6 +88,14 @@ class Job {
 
     public void setJoblet(boolean isJoblet) {
         this.isJoblet = isJoblet;
+    }
+
+    public boolean isMR() {
+        return this.isMR;
+    }
+
+    public void setMR(boolean isMR) {
+        this.isMR = isMR;
     }
 
     /**

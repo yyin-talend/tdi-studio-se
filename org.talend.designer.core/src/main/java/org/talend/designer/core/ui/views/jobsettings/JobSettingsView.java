@@ -82,6 +82,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     public static final String VIEW_NAME_JOBLET = "Joblet"; //$NON-NLS-1$
 
+    public static final String VIEW_NAME_MR = "Map Reduce"; //$NON-NLS-1$
+
     public static final String MODEL = "Model"; //$NON-NLS-1$
 
     private HorizontalTabFactory tabFactory = null;

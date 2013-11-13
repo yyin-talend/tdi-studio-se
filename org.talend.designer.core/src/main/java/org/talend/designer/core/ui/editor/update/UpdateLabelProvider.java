@@ -45,9 +45,17 @@ public class UpdateLabelProvider implements ITableLabelProvider {
             ECoreImage warnOverlay = ECoreImage.WARN_OVERLAY;
             EPosition position = EPosition.BOTTOM_RIGHT;
             if (element instanceof Job) {
-                IImage image;
+                IImage image = null;
                 Job job = (Job) element;
-                if (job.isJoblet()) {
+                if (job.isMR()) {
+                    for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+                        String alias = type.getAlias();
+                        if (alias != null && alias.equals("HC")) {
+                            image = CoreImageProvider.getIcon(type);
+                        }
+                    }
+
+                } else if (job.isJoblet()) {
                     image = ECoreImage.JOBLET_ICON;
                 } else {
                     image = ECoreImage.PROCESS_ICON;
@@ -84,6 +92,14 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     case RELOAD:
                         image = getImageFromNode(category.getNode());
                         break;
+                    case JOB_PROPERTY_MAPREDUCE:
+                        for (ERepositoryObjectType etype : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+                            String alias = etype.getAlias();
+                            if (alias != null && alias.equals("HC")) {
+                                image = CoreImageProvider.getImage(etype);
+                            }
+                        }
+                        break;
                     default:
                         // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
                     }
@@ -107,6 +123,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 case NODE_VALIDATION_RULE:
                 case JOB_PROPERTY_EXTRA:
                 case JOB_PROPERTY_STATS_LOGS:
+                case JOB_PROPERTY_MAPREDUCE:
                     ERepositoryObjectType type = RepositoryUpdateManager.getTypeFromSource(item.getRemark());
                     if (type != null) {
                         image = CoreImageProvider.getIcon(type);
@@ -142,6 +159,9 @@ public class UpdateLabelProvider implements ITableLabelProvider {
             } else if (isCategory) {
                 return ((Category) element).getName();
             } else if (element instanceof Item) {
+                if (((Item) element).getResultObject().isMR()) {
+                    return "Hadoop Configuration";//$NON-NLS-1$
+                }
                 return ((Item) element).getProperty();
             }
             break;

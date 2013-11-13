@@ -18,11 +18,13 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -81,8 +83,14 @@ public class UpdateContentProvider implements ITreeContentProvider {
                             job.setReadOnlyProcess(result.isReadOnlyProcess());
                             IProcess2 process = (IProcess2) job2;
                             org.talend.core.model.properties.Item processItem = process.getProperty().getItem();
-                            if (processItem instanceof ProcessItem) {
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                                IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault()
+                                        .getService(IMRProcessService.class);
+                                boolean isMR = mrProcessService.isMapReduceItem(processItem);
+                                job.setMR(isMR);
+                            } else if (processItem instanceof ProcessItem) {
                                 job.setJoblet(false);
+                                job.setMR(false);
                             } else if (processItem instanceof JobletProcessItem) {
                                 job.setJoblet(true);
                             }
@@ -90,6 +98,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
 
                     } else {
                         job.setJoblet(result.isJoblet());
+                        job.setMR(result.isMR());
                     }
                     jobs.add(job);
                 }

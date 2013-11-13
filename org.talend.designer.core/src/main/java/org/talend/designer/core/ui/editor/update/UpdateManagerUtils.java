@@ -467,7 +467,7 @@ public final class UpdateManagerUtils {
                 break;
             case NODE_PROPERTY:
             case NODE_QUERY:
-            case NODE_SCHEMA:
+            case NODE_SCHEMA:// what about MR
                 componentSettings = true;
                 break;
             case RELOAD:

@@ -30,6 +30,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.service.IEBCDICProviderService;
+import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -241,15 +242,25 @@ public class UpdateCheckResult extends UpdateResult {
         case JOB_PROPERTY_EXTRA:
         case JOB_PROPERTY_STATS_LOGS:
         case JOB_PROPERTY_HEADERFOOTER:
+        case JOB_PROPERTY_MAPREDUCE:
             boolean isJoblet = false;
+            boolean isMR = false;
             if (getUpdateObject() != null) {
                 if (getUpdateObject() instanceof org.talend.designer.core.ui.editor.process.Process) {
                     if (AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) getUpdateObject())) {
                         isJoblet = true;
+                    } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                        IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                                IMRProcessService.class);
+                        org.talend.core.model.properties.Item item = ((org.talend.designer.core.ui.editor.process.Process) getUpdateObject())
+                                .getProperty().getItem();
+                        isMR = mrProcessService.isMapReduceItem(item);
                     }
                 }
             }
-            if (isJoblet) {
+            if (isMR) {
+                category = JobSettingsView.VIEW_NAME_MR;// mr
+            } else if (isJoblet) {
                 category = JobSettingsView.VIEW_NAME_JOBLET; // joblet
             } else {
                 category = JobSettingsView.getViewNameLable();
@@ -300,6 +311,10 @@ public class UpdateCheckResult extends UpdateResult {
                 org.talend.core.model.properties.Item item = property.getItem();
                 if (item instanceof JobletProcessItem) {
                     isJoblet = true;
+                } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                    IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                            IMRProcessService.class);
+                    isMR = mrProcessService.isMapReduceItem(item);
                 }
             }
             if (getJob() instanceof org.talend.core.model.properties.Item) {
@@ -307,6 +322,10 @@ public class UpdateCheckResult extends UpdateResult {
                         .getProperty());
                 if (getJob() instanceof JobletProcessItem) {
                     isJoblet = true;
+                } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                    IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                            IMRProcessService.class);
+                    isMR = mrProcessService.isMapReduceItem((org.talend.core.model.properties.Item) getJob());
                 }
             }
             String others = null;
