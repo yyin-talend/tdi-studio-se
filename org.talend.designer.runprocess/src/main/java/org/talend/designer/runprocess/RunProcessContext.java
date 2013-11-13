@@ -809,6 +809,7 @@ public class RunProcessContext {
             int exitValue = 0;
             while (!stopThread) {
                 boolean dataPiped = extractMessages(false);
+                processMessageManager.updateConsole();
                 boolean ended;
                 try {
 

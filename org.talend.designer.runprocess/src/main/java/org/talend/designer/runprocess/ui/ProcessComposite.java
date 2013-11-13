@@ -1119,43 +1119,42 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     }
 
-    private final Object lock = new Object();
-
-    private boolean consoleReady = true;
-
-    private boolean isConsoleReady() {
-        synchronized (lock) {
-            return consoleReady;
-        }
-    }
-
-    private void setConsoleReady(boolean consoleReady) {
-        synchronized (lock) {
-            this.consoleReady = consoleReady;
-        }
-    }
+    private ConcurrentLinkedQueue<IProcessMessage> newMessages = new ConcurrentLinkedQueue<IProcessMessage>();
 
     private ConcurrentLinkedQueue<IProcessMessage> messagesToDisplay = new ConcurrentLinkedQueue<IProcessMessage>();
 
-    protected void appendToConsole(final IProcessMessage message) {
-        messagesToDisplay.add(message);
-        if (isConsoleReady()) {
-            setConsoleReady(false);
+    protected void processNextMessage() {
+        // one list for display, one list for the waiting pool.
+        // don't try to display once the list to display is not finished to handle.
+        if (messagesToDisplay.isEmpty() && !newMessages.isEmpty()) {
+            IProcessMessage message = newMessages.poll();
+            if (message == null) {
+                return;
+            }
+            messagesToDisplay.add(message);
             getDisplay().asyncExec(new Runnable() {
 
                 @Override
                 public void run() {
                     List<IProcessMessage> messages = new ArrayList<IProcessMessage>();
-                    IProcessMessage msg = messagesToDisplay.poll();
+                    // only do a peek here, to get the first message, but without remove it (to make sure nothing else
+                    // call the appendConsole)
+                    IProcessMessage msg = messagesToDisplay.peek();
                     if (msg != null) {
                         messages.add(msg);
                         doAppendToConsole(messages);
                         scrollToEnd();
                     }
-                    setConsoleReady(true);
+
+                    // do a poll here to remove the first element that we just displayed.
+                    messagesToDisplay.poll();
                 }
             });
         }
+    }
+
+    protected void appendToConsole(final IProcessMessage message) {
+        newMessages.add(message);
     }
 
     /**
@@ -1645,7 +1644,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             return;
         }
         String propName = evt.getPropertyName();
-        if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
+        if (ProcessMessageManager.UPDATE_CONSOLE.equals(propName)) {
+            processNextMessage();
+        } else if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
                 || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
             IProcessMessage psMess = (IProcessMessage) evt.getNewValue();
 
@@ -1659,6 +1660,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             }
             appendToConsole(psMess);
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
+            newMessages.clear();
+            messagesToDisplay.clear();
             getDisplay().asyncExec(new Runnable() {
 
                 @Override
@@ -1683,10 +1686,12 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     boolean running = ((Boolean) evt.getNewValue()).booleanValue();
                     setRunnable(!running);
                     killBtn.setEnabled(running);
+                    while (!newMessages.isEmpty()) {
+                        messagesToDisplay.add(newMessages.poll());
+                    }
                     doAppendToConsole(messagesToDisplay);
                     scrollToEnd();
                     messagesToDisplay.clear();
-                    setConsoleReady(true);
                 }
             });
         }

@@ -37,6 +37,8 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
 
+    public static final String UPDATE_CONSOLE = "UPDATE_CONSOLE"; //$NON-NLS-1$
+
     public static final int LIMIT_MESSAGES = 500;
 
     public static int lineLimit;
@@ -60,6 +62,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
         pcsDelegate = new PropertyChangeSupport(this);
     }
 
+    @Override
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
         if (l == null) {
             throw new IllegalArgumentException();
@@ -68,18 +71,25 @@ public class ProcessMessageManager implements IProcessMessageManager {
         pcsDelegate.addPropertyChangeListener(l);
     }
 
+    @Override
     public void firePropertyChange(String property, Object oldValue, Object newValue) {
         if (pcsDelegate.hasListeners(property)) {
             pcsDelegate.firePropertyChange(property, oldValue, newValue);
         }
     }
 
+    @Override
     public synchronized void removePropertyChangeListener(PropertyChangeListener l) {
         if (l != null) {
             pcsDelegate.removePropertyChangeListener(l);
         }
     }
 
+    public void updateConsole() {
+        firePropertyChange(UPDATE_CONSOLE, null, null);
+    }
+
+    @Override
     public void addMessage(IProcessMessage message) {
         synchronized (messages) {
             if (messages.isFull()) {
@@ -91,6 +101,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     }
 
+    @Override
     public void clearMessages() {
         synchronized (messages) {
             messages.clear();
@@ -99,10 +110,12 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     }
 
+    @Override
     public Collection<IProcessMessage> getMessages() {
-        return (Collection<IProcessMessage>) messages;
+        return messages;
     }
 
+    @Override
     public boolean isLastMessageEndWithCR() {
         int i = messages.size() - 1;
         if (i >= 0) {
@@ -113,6 +126,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
         }
     }
 
+    @Override
     public void addDebugResultToConsole(IProcessMessage debugResultMessage) {
         synchronized (messages) {
             if (messages.isFull()) {
