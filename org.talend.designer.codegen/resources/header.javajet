@@ -358,13 +358,32 @@ private class TalendException extends java.lang.Exception {
 		return this.currentComponent;
 	}
 
+    <%//For TDI-27789%>
+    public String getExceptionCauseMessage(java.lang.Exception e){
+        Throwable cause = e;
+        String message = null;
+        int i = 10;
+        while (null != cause && 0 < i--) {
+            message = cause.getMessage();
+            if (null == message) {
+                cause = cause.getCause();
+            } else {
+                break;          
+            }
+        }
+        if (null == message) {
+            message = e.getClass().getName();
+        }   
+        return message;
+    }
+
 	@Override
 	public void printStackTrace() {
 		if (!(e instanceof TalendException || e instanceof TDieException)) {
 			if(virtualComponentName!=null && currentComponent.indexOf(virtualComponentName+"_")==0){
-				globalMap.put(virtualComponentName+"_ERROR_MESSAGE",e.getMessage());
+				globalMap.put(virtualComponentName+"_ERROR_MESSAGE",getExceptionCauseMessage(e));
 			}
-			 globalMap.put(currentComponent+"_ERROR_MESSAGE",e.getMessage());
+			 globalMap.put(currentComponent+"_ERROR_MESSAGE",getExceptionCauseMessage(e));
 			System.err.println("Exception in component " + currentComponent);
 		}
 		if (!(e instanceof TDieException)) {
