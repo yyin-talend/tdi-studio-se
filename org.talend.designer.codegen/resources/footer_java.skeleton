@@ -35,9 +35,10 @@ public class CLASS
 //            toReturn +=  failure_singleThread;
 //        }
         
+        toReturn += "globalMap.put(\""+rootNode.getUniqueName()+ "_SUBPROCESS_STATE\", -1);\n";
+        
         toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
         
-        toReturn += "globalMap.put(\""+rootNode.getUniqueName()+ "_SUBPROCESS_STATE\", -1);\n";
       
        //List< ? extends IConnection> onSubJobErrorConns = rootNode.getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR);
        //if(onSubJobErrorConns!=null){
@@ -47,8 +48,8 @@ public class CLASS
        //}            
         if(isMultiThread){
             toReturn += "\n}catch (Error e_" + rootNode.getUniqueName() + ") {\n";
-            toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
             toReturn += "globalMap.put(\""+rootNode.getUniqueName()+ "_SUBPROCESS_STATE\", -1);\n";
+            toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
         }
        toReturn += "\n}"; 
        return toReturn;
