@@ -63,6 +63,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -2167,8 +2168,8 @@ public class LoginComposite extends Composite {
             } catch (WarningException e) {
                 String warnings = e.getMessage();
                 if (warnings != null && !warnings.equals(lastWarnings)) {
-                    lastWarnings = warnings;
-                    MessageDialog.openWarning(getShell(), "Warning", warnings); //$NON-NLS-1$
+                    final Shell shell = new Shell(getDisplay(), SWT.ON_TOP | SWT.TOP);
+                    MessageDialog.openWarning(shell, Messages.getString("LoginComposite.warningTitle"), warnings); //$NON-NLS-1$
                 }
             }
 
@@ -2193,8 +2194,8 @@ public class LoginComposite extends Composite {
             initialized = true;
         } catch (Exception e) {
             projects = new Project[0];
-
-            MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+            final Shell shell = new Shell(getDisplay(), SWT.ON_TOP | SWT.TOP);
+            MessageDialog.openError(shell, Messages.getString("LoginComposite.warningTitle"), //$NON-NLS-1$
                     Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
         }
 
