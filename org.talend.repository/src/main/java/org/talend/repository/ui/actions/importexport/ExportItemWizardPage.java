@@ -76,6 +76,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IExtendedRepositoryNodeHandler;
+import org.talend.core.model.repository.IRepositoryReviewFilter;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.constants.FileConstants;
@@ -485,8 +486,8 @@ public class ExportItemWizardPage extends WizardPage {
                     select = selectRepositoryNode(viewer, (RepositoryNode) element);
                 }
                 if (select) {
-                    for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                        boolean exportFilter = nodeHandler.exportFilter(viewer, parentElement, element);
+                    for (IRepositoryReviewFilter nodeHandler : RepositoryContentManager.getRepositoryReviewFilters()) {
+                        boolean exportFilter = nodeHandler.filter(viewer, parentElement, element, "repository_review");//$NON-NLS-1$
                         if (!exportFilter) {
                             return exportFilter;
                         }
