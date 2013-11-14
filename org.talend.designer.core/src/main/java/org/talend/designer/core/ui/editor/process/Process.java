@@ -138,6 +138,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
@@ -2304,6 +2306,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             listParamType = cType.getElementParameter();
             loadElementParameters(connec, listParamType);
             String uniqueName = connec.getUniqueName();
+            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+                if (!connec.getUniqueName().equals(connec.getName())) {
+                    // here force a rename without call the ChangeConnTextCommand
+                    // if goes here, it means simply there is a problem since the name is not the same as the unique
+                    // name.
+                    // we just force the name here since in all case the job was wrong first !
+                    connec.setName(connec.getUniqueName());
+                }
+            }
             // at this point we should have the uniquename set correctly in the connection.
             if (!connectionUniqueNames.contains(uniqueName) && checkValidConnectionName(uniqueName, false)) {
                 try {
@@ -2313,15 +2324,21 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             } else {
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(EConnectionType.ITERATE)
-                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
-                        || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
-                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
-                        || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
-                    // for trigger LineStyle should aviod the uniqueName duplicate
-                    connec.setUniqueName(uniqueName);
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+                    ChangeConnTextCommand cctc = new ChangeConnTextCommand(connec, uniqueName);
+                    cctc.execute();
+                } else {
+                    if (connec.getLineStyle().equals(EConnectionType.RUN_IF)
+                            || connec.getLineStyle().equals(EConnectionType.ITERATE)
+                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
+                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)
+                            || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
+                            || connec.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                        // for other LineStyle also should aviod the uniqueName duplicate
+                        connec.setUniqueName(uniqueName);
+                    }
+                    source.getProcess().addUniqueConnectionName(uniqueName);
                 }
-                source.getProcess().addUniqueConnectionName(uniqueName);
             }
             connectionUniqueNames.add(uniqueName);
 
