@@ -327,10 +327,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                         }
                     } else {
-                        INodeConnector conn = ((Node) elem).getConnectorFromType(EConnectionType.FLOW_MAIN);
                         IMetadataTable metaTable = table;
-                        if (conn != null && conn.getMaxLinkOutput() == 1) {
-                            metaTable = ((Node) elem).getMetadataFromConnector(conn.getName());
+                        if (elem instanceof Node) {
+                            INodeConnector conn = ((Node) elem).getConnectorFromType(EConnectionType.FLOW_MAIN);
+                            if (conn != null && conn.getMaxLinkOutput() == 1) {
+                                metaTable = ((Node) elem).getMetadataFromConnector(conn.getName());
+                            }
                         }
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, metaTable,
                                 componentName);
