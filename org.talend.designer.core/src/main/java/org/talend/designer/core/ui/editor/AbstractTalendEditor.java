@@ -1641,6 +1641,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // Setting,such as the target is TMap
                                 if (node.getOutgoingConnections().size() > 0) {
                                     if (node.getExternalNode() instanceof MapperExternalNode) {
+                                        // drag and drop of tmap component to link line (in Mapreduce job), appear
+                                        // duplicate input and output tables.
+                                        String componentsType = getProcess().getComponentsType();
+                                        if (componentsType != null
+                                                && componentsType.equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName())) {
+                                            node.setExternalData(null);
+                                        }
                                         CreateComponentOnLinkHelper.setupTMap(node);
                                     }
                                     if (originalTarget.getExternalNode() instanceof MapperExternalNode) {
