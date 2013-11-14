@@ -17,11 +17,18 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
     
-    <!-- throwableRenderer <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>-->  
-    
+    <!-- throwableRenderer <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>--> 
+     
+    <!-- logstash appender -->
+  	<!-- <appender name="LOGSTASH" class="org.apache.log4j.net.SocketAppender">
+  		<param name="RemoteHost" value="localhost"/>
+  		<param name="Port" value="8052"/>
+	</appender> -->
+	
     <!-- Root Logger -->  
 	<root>
 		<priority value ="info"/>
 		<appender-ref ref="CONSOLE"/>
+		<!-- <appender-ref ref="LOGSTASH"/> -->
 	</root>
 </log4j:configuration>
