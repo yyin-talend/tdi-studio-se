@@ -68,14 +68,14 @@ public class RowParser extends DelimitedDataReader {
 
         values = null;
 
-        if (rowSeparator.equals("\n") || rowSeparator.equals("\r\n")) {
+        if ("\n".equals(rowSeparator) || "\r\n".equals(rowSeparator)) {
             // simpleMode = true;
             mode = 0;
-            if(rowSeparator.equals("\r\n")){
+            if("\r\n".equals(rowSeparator)){
             	scanner = new Scanner(inputStream);
             	scanner.useDelimiter(rowSeparator);
             }
-        } else {
+        } else if(rowSeparator!=null) {
             streamBuffer = new StreamBuffer();
 
             rowBuffer = new ColumnBuffer();
