@@ -50,21 +50,26 @@ imports="
 		        String conn = "conn_" + connection;
 %>
 		        conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-		        if (null == conn_<%=cid%>) {
 <%
-                    INode connectionNode = null;
-                    for (INode processNode : node.getProcess().getGeneratingNodes()) {
-                        if(connection.equals(processNode.getUniqueName())) {
-                            connectionNode = processNode;
-                            break;
-                        }
+                INode connectionNode = null;
+                for (INode processNode : node.getProcess().getGeneratingNodes()) {
+                    if(connection.equals(processNode.getUniqueName())) {
+                        connectionNode = processNode;
+                        break;
                     }
-                    String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+                }
+		        boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+		        if(specify_alias){
+	                String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
 %>
-					java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-					conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
-					//globalMap.put("<%=conn%>", conn_<%=cid%>);
+		        	if (null == conn_<%=cid%>) {
+						java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+						conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+						//globalMap.put("<%=conn%>", conn_<%=cid%>);
+		        	}
+		        <%
 		        }
+		        %>
 				<% if(isLog4jEnabled) { %>
 					if(conn_<%=cid%> != null) {
 						if(conn_<%=cid%>.getMetaData() != null) {

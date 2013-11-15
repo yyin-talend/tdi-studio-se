@@ -19,40 +19,40 @@ imports="
 		private INode node = null;
 		
 		public void beforeComponentProcess(INode node){
-	    	super.beforeComponentProcess(node);
-	    	this.node = node;
-	    }
+			super.beforeComponentProcess(node);
+			this.node = node;
+		}
 	
 		public void setURL(INode node) {
 			
 			String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
 			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 			String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");
-    		String rac_url = ElementParameterParser.getValue(node, "__RAC_URL__");
+			String rac_url = ElementParameterParser.getValue(node, "__RAC_URL__");
 %>
-            	String url_<%=cid%> = null;
+			String url_<%=cid%> = null;
 <%
-				if("ORACLE_RAC".equals(connectionType)) {
+			if("ORACLE_RAC".equals(connectionType)) {
 %>
-        			url_<%=cid %> = <%=rac_url%>;        
+				url_<%=cid %> = <%=rac_url%>;
 <%
-    			} else if(("ORACLE_SID").equals(connectionType)) {
+			} else if(("ORACLE_SID").equals(connectionType)) {
 %>
-            		url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+				url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
 <%
-            	} else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
+			} else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
 %>
-            		url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+				url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
 <%
-            	} else if(("ORACLE_OCI").equals(connectionType)) {
-            	    %>
-            	    url_<%=cid %> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
+			} else if(("ORACLE_OCI").equals(connectionType)) {
+%>
+				url_<%=cid %> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
 <%
-            	}else if(("ORACLE_WALLET").equals(connectionType)) {
+			}else if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 	    			url_<%=cid%> = <%=jdbcURL%>;
 <%
-				}
+			}
 %>
 
 <%
@@ -71,20 +71,23 @@ imports="
 			cid = node.getUniqueName();
 			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
-	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
-	 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-	 		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-%>			
-			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-            if (null != dataSources_<%=cid%>) {
-<%
-                String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+			dbport = ElementParameterParser.getValue(node, "__PORT__");
+			dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+			dbuser = ElementParameterParser.getValue(node, "__USER__");
+			dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
+			boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
+			if(specify_alias){
+				String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
-                conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
-            } else {
+				java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+				if (null != dataSources_<%=cid%>) {
+					conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+				} else {
+<%
+			}
+%>
 				java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 				<%this.setURL(node);%>
 				String dbUser_<%=cid %> = <%=dbuser%>;
@@ -109,24 +112,27 @@ imports="
 <%
 				} else {
 %>
-				String atnParams_<%=cid%> = <%=dbproperties%>;
-				atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
-				java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
-				atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
-				atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
-				atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
-				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+					String atnParams_<%=cid%> = <%=dbproperties%>;
+					atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+					java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+					atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+					atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+					atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 				}
 				if(isLog4jEnabled){
 %>
-						log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
+					log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
 <%
 				}
+			if(specify_alias){
 %>
-			}
+				}
 <%
-			if(!"ORACLE_8".equals(dbVersion)){%>
+			}
+			if(!"ORACLE_8".equals(dbVersion)){
+%>
 				java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
 				java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
 				String sessionTimezone_<%=cid%> = java.util.TimeZone.getDefault().getID();
