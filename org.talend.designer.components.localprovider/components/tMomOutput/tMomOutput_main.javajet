@@ -25,7 +25,8 @@ class="MomInput"
 	
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	
-        boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+	boolean isSetJMSDestination = false;
+    boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	boolean setJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__SET_JMS_HEADER__"));
 	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
 	
@@ -136,10 +137,21 @@ class="MomInput"
 					/*---------------------------------------------3.set message headers------------------------------------------------------*/
 					
 					if (setJmsHeader) {
+						java.util.List<String> jsmHeaderClient=java.util.Arrays.asList(new String[]{"JMSCorrelationID","JMSReplyTo","JMSType","JMSTimestamp","JMSDestination","JMSMessageID","JMSRedelivered"});
 						for(Map<String,String> header:jmsHeaders) {
+							String jsmHeaderParam=header.get("JMS_HEADER_NAME");
+							if("JMSDestination".equals(jsmHeaderParam)){
+								isSetJMSDestination = true;
 %>
-							message_<%=cid%>.set<%=header.get("JMS_HEADER_NAME")%>(<%=header.get("JMS_HEADER_VALUE")%>);
+							javax.jms.Destination desJMS_<%=cid %>=<%=header.get("JMS_HEADER_VALUE")%>;
+<%
+								continue;
+							}
+							if(jsmHeaderClient.contains(jsmHeaderParam)){
+%>
+							message_<%=cid%>.set<%=jsmHeaderParam%>(<%=header.get("JMS_HEADER_VALUE")%>);
 <%				
+							}
 						}
 					}
 					
@@ -156,7 +168,7 @@ class="MomInput"
 					/*---------------------------------------------5.send message to server------------------------------------------------------*/
 %>
 
-						producer_<%=cid %>.send(message_<%=cid %>);
+						producer_<%=cid %>.send(<%if(isSetJMSDestination){%>desJMS_<%=cid %> ,<%}%>message_<%=cid %>);
 <%
 				} else {//server judgement   /***WebSphere MQ*****/
 %>
