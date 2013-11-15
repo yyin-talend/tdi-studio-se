@@ -9,6 +9,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.process.BlockCode
     java.util.List
     java.util.ArrayList
 "
@@ -91,9 +92,8 @@ if(outConns!=null){
 //get field column
 if(outConn!=null && inConn!=null){
 %>
-try{
 
-	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
+<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
 <%
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
 	for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
@@ -101,19 +101,26 @@ try{
 %>
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
 	String[] newFields_<%=cid%> = new String[0];
-	if(field_<%=cid%>!=null){
-		newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
-	}
 <%
 	if(ignoreSourceNull){
 %>
-	else{
-		continue;
-	}
+	if(field_<%=cid%>!=null){// C_01
+		try{
+			newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
+<%
+		List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+		blockCodes.add(new BlockCode("C_01"));
+		((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+	}else{
+%>
+	try{
+		if(field_<%=cid%>!=null){// C_01
+			newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
+		}
 <%
 	}
 %>
-	int length_<%=cid%> = newFields_<%=cid%>.length;
+		int length_<%=cid%> = newFields_<%=cid%>.length;
 <%
 			if(trim){
 %>

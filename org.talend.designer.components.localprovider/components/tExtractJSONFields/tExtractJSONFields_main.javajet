@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.BlockCode
     java.util.Map
     java.util.List
     org.talend.core.model.metadata.types.JavaTypesManager
@@ -49,13 +50,13 @@ if (inConn!=null) {
         if(inputCol.getLabel().equals(jsonField))
         {
 %>
-            if(<%=inConn.getName()%>.<%=jsonField%>!=null){
+            if(<%=inConn.getName()%>.<%=jsonField%>!=null){// C_01
                 jsonStr_<%=cid%> = <%=inConn.getName()%>.<%=jsonField%>.toString();
-            }else{
-				continue;
-			}
 <%
-            break;
+			List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+			blockCodes.add(new BlockCode("C_01"));
+			((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+			break;
         }
     }
 }
