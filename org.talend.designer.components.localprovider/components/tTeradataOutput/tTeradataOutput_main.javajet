@@ -1018,7 +1018,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 								for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
 									countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
 								}
-		            	    	<%
+
 								<%if (("INSERT").equals(dataAction)) {
 								%>
 									insertedCount_<%=cid%> += countSum_<%=cid%>;
