@@ -9,6 +9,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.process.BlockCode
     java.util.List
     java.util.ArrayList
 "
@@ -82,9 +83,12 @@ if(inConn!=null && outConn!=null){
     for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
         if(inputCol.getLabel().equals(field)){
 %>
-			if(<%=inConn.getName()%>.<%=field%>==null){
-				continue;
-			}
+			if(<%=inConn.getName()%>.<%=field%>!=null){// C_01
+<%
+			List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+			blockCodes.add(new BlockCode("C_01"));
+			((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+%>
     		java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
 <%
             if(!"".equals(rejectConnName)) {

@@ -9,6 +9,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+   	org.talend.core.model.process.BlockCode
     java.util.List
     java.util.ArrayList
     java.util.Map
@@ -91,20 +92,21 @@ if(inConn!=null){
 %>
 	//String field_<%=cid%> = <%=inConn.getName()%>.<%=field%><%=trim?".trim()":""%>;
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
+<%
+			if(!ignoreSourceNull){
+%>
 	if(field_<%=cid%>==null){
-<%
-	if(ignoreSourceNull){
-%>
-		continue;
-<%
-	}else{
-%>
-		field_<%=cid%>=""; 
-<%
-	}
-%>
+		field_<%=cid%>="";
 	}
 <%
+			}else{
+%>
+	if(field_<%=cid%>!=null){// C_01
+<%
+				List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+				blockCodes.add(new BlockCode("C_01"));
+				((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+			}
 			break;
 		}
 	}
