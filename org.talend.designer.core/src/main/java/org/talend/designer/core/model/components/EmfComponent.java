@@ -85,7 +85,6 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -97,7 +96,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.service.IComponentsLocalProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
@@ -1115,15 +1113,8 @@ public class EmfComponent extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-        boolean isCamel = false;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            if (node.getProcess() != null && node.getProcess() instanceof IProcess2) {
-                isCamel = service.isInstanceofCamel(((IProcess2) node.getProcess()).getProperty().getItem());
-            }
-        }
-        if (!isCamel) {
+
+        if (ComponentCategory.CATEGORY_4_DI.getName().equals(this.getPaletteType())) {
             boolean isStatCatcherComponent = false;
             if (this.name != null && this.name.equals(TSTATCATCHER_NAME)) {
                 isStatCatcherComponent = true;
@@ -1145,6 +1136,7 @@ public class EmfComponent extends AbstractComponent {
                 listParam.add(param);
             }
         }
+
         param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
@@ -1739,7 +1731,6 @@ public class EmfComponent extends AbstractComponent {
                     && !param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                     && !param.getFieldType().equals(EParameterFieldType.TREE_TABLE)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
-
 
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
