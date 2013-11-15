@@ -2057,6 +2057,14 @@
             name="ChangeJavaAPIAsDefault4SqoopMigrationTask"
             version="5.3.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.AddDBConnectionVersionMigrationTask"
+              id="org.talend.repository.model.migration.AddDBConnectionVersionMigrationTask"
+              name="AddDBConnectionVersionMigrationTask"
+              version="5.4.1">
+        </projecttask>
    </extension>
    
    <extension
