@@ -126,6 +126,7 @@ try {
 	                }
                 }
                 %>
+                <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                 <%=rejectConnName%>.errorMessage = e.getMessage();
                 <%
             } else {
