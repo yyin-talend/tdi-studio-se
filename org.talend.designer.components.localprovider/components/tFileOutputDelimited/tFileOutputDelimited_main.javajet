@@ -104,9 +104,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             IMetadataColumn column = columns.get(i);
                             if(sizeColumns> schemaOptNum){
                             	if(i%schemaOptNum==0){
-%>
+								%>
                             		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>, <%=conn.getName() %>);
-<%
+								<%
                             	}
                             }else{//AA
                             if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -239,6 +239,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}
     		        %>
     		        nb_line_<%=cid %>++;
+    		        resourceMap.put("nb_line_<%=cid%>", nb_line_<%=cid%>);
     		        <%
     		        // add a prerequisite useStream to support output stream feature:8873
     		        if(!useStream && split){ 
@@ -335,6 +336,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + ".");
 						log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + sb_<%=cid %>);
 					<%}%>
+					
     		        <% 
     		        	if (isParallelize) {
     				%>
@@ -588,6 +590,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}
 %>
 				nb_line_<%=cid %>++;
+				resourceMap.put("nb_line_<%=cid%>", nb_line_<%=cid%>);
 <%
             			if(!useStream && split){
             			    %>
@@ -710,6 +713,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							log.debug("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
 							log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 						<%}%>
+						
 <% 
 						if ( isParallelize) {
 %>
