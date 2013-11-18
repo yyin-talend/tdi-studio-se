@@ -2306,7 +2306,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             listParamType = cType.getElementParameter();
             loadElementParameters(connec, listParamType);
             String uniqueName = connec.getUniqueName();
-            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 if (!connec.getUniqueName().equals(connec.getName())) {
                     // here force a rename without call the ChangeConnTextCommand
                     // if goes here, it means simply there is a problem since the name is not the same as the unique
@@ -2324,7 +2324,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             } else {
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
-                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     ChangeConnTextCommand cctc = new ChangeConnTextCommand(connec, uniqueName);
                     cctc.execute();
                 } else {
