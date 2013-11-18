@@ -214,7 +214,7 @@ public class ExportItemWizardPage extends WizardPage {
         if (exportItemsTreeViewer.getInput() instanceof ProjectRepositoryNode) {
             RepositoryNode rootRepositoryNode = ((ProjectRepositoryNode) exportItemsTreeViewer.getInput()).getRootRepositoryNode(
                     ERepositoryObjectType.REFERENCED_PROJECTS, false);
-            exportReferencedItem(rootRepositoryNode);
+            expandReferencedItem(rootRepositoryNode);
         }
 
         TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandToLevel"); //$NON-NLS-1$
@@ -231,7 +231,7 @@ public class ExportItemWizardPage extends WizardPage {
      * 
      * @param refProNode
      */
-    private void exportReferencedItem(RepositoryNode refProNode) {
+    private void expandReferencedItem(RepositoryNode refProNode) {
         if (refProNode == null) {
             return;
         }
@@ -240,7 +240,7 @@ public class ExportItemWizardPage extends WizardPage {
                 getItemsTreeViewer().expandToLevel(projectNode, 3);
                 RepositoryNode rootRepositoryNode = ((ProjectRepositoryNode) projectNode).getRootRepositoryNode(
                         ERepositoryObjectType.REFERENCED_PROJECTS, false);
-                exportReferencedItem(rootRepositoryNode);
+                expandReferencedItem(rootRepositoryNode);
             }
         }
     }
