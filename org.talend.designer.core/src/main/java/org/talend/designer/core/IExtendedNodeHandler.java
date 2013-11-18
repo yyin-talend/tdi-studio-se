@@ -21,7 +21,7 @@ import org.eclipse.gef.requests.CreationFactory;
  */
 public interface IExtendedNodeHandler {
 
-    public CreationFactory getCreationFactory(Object template);
+    public CreationFactory getCreationFactory(Object template, String editorID);
 
     public boolean updateComponent(Object dragModel, EditPart targetEditPart, CommandStack cs);
 }

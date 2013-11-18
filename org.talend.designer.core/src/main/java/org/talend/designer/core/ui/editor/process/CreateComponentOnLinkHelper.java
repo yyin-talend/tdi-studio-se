@@ -47,13 +47,16 @@ public class CreateComponentOnLinkHelper {
         }
         IConnection inputConnection = node.getIncomingConnections().get(0);
         IConnection outputConnection = node.getOutgoingConnections().get(0);
-        outputConnection.getMetadataTable().setListColumns(inputConnection.getMetadataTable().clone(false).getListColumns());
-        ((Process) node.getProcess()).checkProcess();
+        if (outputConnection.getMetadataTable() != null && inputConnection.getMetadataTable() != null) {
+            outputConnection.getMetadataTable().setListColumns(inputConnection.getMetadataTable().clone(false).getListColumns());
+            ((Process) node.getProcess()).checkProcess();
+        }
         if ("tMap".equals(node.getComponent().getName())) {
             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
                     IDesignerMapperService.class);
             service.createAutoMappedNode(node, inputConnection, outputConnection);
         }
+
     }
 
     public static void updateTMap(INode node, IConnection oldConnection, IConnection newConnection) {
@@ -193,15 +196,15 @@ public class CreateComponentOnLinkHelper {
 
     public static boolean canCreateNodeOnLink(org.talend.designer.core.ui.editor.connections.Connection connection, Node node) {
         if (connection != null && node != null) {
-            
+
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                        ICamelDesignerCoreService.class);
-                if(camelService.isRouteBuilderNode(node)){
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                if (camelService.isRouteBuilderNode(node)) {
                     return camelService.canCreateNodeOnLink(connection, node);
                 }
             }
-            
+
             INode source = connection.getSource();
             INodeConnector sourceConnector = connection.getSourceNodeConnector();
 

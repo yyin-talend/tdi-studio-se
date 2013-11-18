@@ -426,9 +426,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         return (CreationFactory) ((ToolEntry) model).getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
                     }
 
-                } else if (!(getTargetEditPart() instanceof NodeContainerPart)) {
+                } else if (!(getTargetEditPart() instanceof NodeContainerPart) && editor.getParent() != null) {
                     for (IExtendedNodeHandler hander : ExtendedNodeManager.getExtendedNodeHandler()) {
-                        factory = hander.getCreationFactory(element);
+                        factory = hander.getCreationFactory(element, editor.getParent().getEditorId());
                         if (factory != null) {
                             return factory;
                         }
