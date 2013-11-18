@@ -95,7 +95,7 @@ imports="
 				org.jets3t.service.model.GSObject[] objects_<%=cid%> =new org.jets3t.service.model.GSObject[0];
 				try {
 					objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,map_<%=cid %>.get("OBJECT_PREFIX"),map_<%=cid %>.get("OBJECT_DELIMITER"));
-				}catch(java.lang.Exception e_<%=cid%>){
+				}catch(org.jets3t.service.ServiceException e_<%=cid%>){
 <%
 		if (("true").equals(dieOnError)) {
 %>
@@ -103,7 +103,14 @@ imports="
 <%
 		} else {
 %>
+					System.err.println("Exception in component <%=cid%>:");
 					System.err.println(e_<%=cid%>.getMessage());
+					if(e_<%=cid%>.getErrorCode()!=null){
+						System.err.println(e_<%=cid%>.getErrorCode());
+					}
+					if(e_<%=cid%>.getErrorMessage()!=null){
+						System.err.println(e_<%=cid%>.getErrorMessage());
+					}
 <%
 		}
 %>

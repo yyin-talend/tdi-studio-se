@@ -37,7 +37,7 @@
 		service_<%=cid%>.getAccountOwner();
 		service_<%=cid%>.deleteBucket(<%=bucketName%>);
 
-	}catch(java.lang.Exception e_<%=cid%>) {
+	}catch(org.jets3t.service.ServiceException e_<%=cid%>) {
 <%
 		if (("true").equals(dieOnError)) {
 %>
@@ -45,7 +45,14 @@
 <%
 		} else {
 %>
+		System.err.println("Exception in component <%=cid%>:");
 		System.err.println(e_<%=cid%>.getMessage());
+		if(e_<%=cid%>.getErrorCode()!=null){
+			System.err.println(e_<%=cid%>.getErrorCode());
+		}
+		if(e_<%=cid%>.getErrorMessage()!=null){
+			System.err.println(e_<%=cid%>.getErrorMessage());
+		}
 <%
 		}
 		if(!("true").equals(useExistingConn)) {

@@ -84,7 +84,20 @@
 <%
 		} else {
 %>
-		System.err.println(e_<%=cid%>.getMessage());
+		if(e_<%=cid%> instanceof org.jets3t.service.ServiceException){
+			org.jets3t.service.ServiceException servError_<%=cid%> = (org.jets3t.service.ServiceException)e_<%=cid%>;
+			System.err.println("Exception in component <%=cid%>:");
+			System.err.println(servError_<%=cid%>.getMessage());
+			if(servError_<%=cid%>.getErrorCode()!=null){
+				System.err.println(servError_<%=cid%>.getErrorCode());
+			}
+			if(servError_<%=cid%>.getErrorMessage()!=null){
+				System.err.println(servError_<%=cid%>.getErrorMessage());
+			}
+
+		}else{
+			System.err.println(e_<%=cid%>.getMessage());
+		}
 <%
 		}
 		if(!("true").equals(useExistingConn)) {
