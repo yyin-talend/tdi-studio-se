@@ -93,7 +93,8 @@ public class TraceConnectionsManager {
                     while (connIterator.hasNext()) {
                         IConnection conn = connIterator.next();
                         String connectionUnifiedName = ConnectionUtil.getConnectionUnifiedName(conn);
-                        if (isDataConnection(conn) && !connsMap.containsKey(connectionUnifiedName)) {
+                        // because the route if not data, so only check all connection with unique name
+                        if (/* isDataConnection(conn) && */isUniqueNameConnection(conn) && !connsMap.containsKey(connectionUnifiedName)) {
                             connsMap.put(connectionUnifiedName, conn);
 
                             IConnection[] shadowConnections = getShadowConnections(conn);
@@ -139,6 +140,10 @@ public class TraceConnectionsManager {
     private boolean isDataConnection(IConnection conn) {
         // only process the connections with data, like FLOW_MAIN, FLOW_MERGE, FLOW_REF(Lookup)
         return conn != null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW);
+    }
+
+    private boolean isUniqueNameConnection(IConnection conn) {
+        return conn != null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME);
     }
 
     /**
