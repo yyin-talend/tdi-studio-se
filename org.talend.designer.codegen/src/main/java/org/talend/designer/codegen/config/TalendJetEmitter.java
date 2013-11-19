@@ -170,6 +170,8 @@ public class TalendJetEmitter extends JETEmitter {
 
         IProject project;
 
+        JetBean helperJetBean;
+
         public TalendEclipseHelper(IProgressMonitor progressMonitor, TalendJetEmitter jetEmitter, boolean rebuild)
                 throws JETException {
             progressMonitor.beginTask("", 10); //$NON-NLS-1$
@@ -348,8 +350,13 @@ public class TalendJetEmitter extends JETEmitter {
                     boolean errors = false;
                     if (!output.isEmpty()) {
                         errors = true;
+                        if (this.helperJetBean != null) {
+                            this.helperJetBean.setGenerationError(output);
+                        }
                         log.error(output);
                         setClassAvailable(false);
+                    } else if (this.helperJetBean != null) {
+                        this.helperJetBean.setGenerationError(null);
                     }
 
                     if (!errors) {
@@ -397,6 +404,14 @@ public class TalendJetEmitter extends JETEmitter {
 
                 progressMonitor.done();
             }
+        }
+
+        public JetBean getHelperJetBean() {
+            return helperJetBean;
+        }
+
+        public void setHelperJetBean(JetBean helperJetBean) {
+            this.helperJetBean = helperJetBean;
         }
     }
 
@@ -655,7 +670,17 @@ public class TalendJetEmitter extends JETEmitter {
      */
     @Override
     public String generate(Monitor progressMonitor, Object[] arguments, String lineDelimiter) throws JETException {
+        List list = new ArrayList();
+        for (Object o : arguments) {
+            if (o instanceof JetBean) {
+                list.add(((JetBean) o).getArgument());
+                talendEclipseHelper.setHelperJetBean((JetBean) o);
+            } else {
+                list.add(o);
+            }
+        }
+
         getMethod(); // force to load the method before generate in case it was not set before.
-        return super.generate(progressMonitor, arguments, lineDelimiter);
+        return super.generate(progressMonitor, list.toArray(), lineDelimiter);
     }
 }

@@ -51,7 +51,7 @@ public class JetProxy {
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
         String result = ""; //$NON-NLS-1$
         if (emitter != null) {
-            result = emitter.generate(sub, new Object[] { jetBean.getArgument() });
+            result = emitter.generate(sub, new Object[] { jetBean });
             sub.worked(1);
         }
         return result;

@@ -896,6 +896,9 @@ public class CodeGenerator implements ICodeGenerator {
             jetBean.setTemplateRelativeUri(templateURI);
             JetProxy proxy = new JetProxy(jetBean);
             content.append(proxy.generate());
+            if (jetBean.getGenerationError() != null) {
+                throw new CodeGeneratorException(jetBean.getGenerationError());
+            }
             if (typeGen == ETypeGen.ETL) {
                 content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part, incomingName, subProcess));
             }

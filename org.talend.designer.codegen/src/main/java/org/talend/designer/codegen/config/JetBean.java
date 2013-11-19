@@ -48,6 +48,8 @@ public class JetBean {
 
     private String family = "common"; //$NON-NLS-1$
 
+    private String generationError;
+
     private static Map<String, String> pluginIdToBundle = new HashMap<String, String>();
 
     private long crc = 0;
@@ -392,6 +394,14 @@ public class JetBean {
 
     public String getFullTemplatePath() {
         return Platform.getPlugin(getJetPluginRepository()).getDescriptor().getInstallURL().toString() + getTemplateRelativeUri();
+    }
+
+    public String getGenerationError() {
+        return generationError;
+    }
+
+    public void setGenerationError(String generationError) {
+        this.generationError = generationError;
     }
 
 }
