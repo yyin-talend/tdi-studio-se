@@ -2065,6 +2065,15 @@
               name="AddDBConnectionVersionMigrationTask"
               version="5.4.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.RemoveUseHadoopPropertiesFortMRConfiguration"
+              description="If &quot;USE_HADOOP_PROPERTIES&quot; is unchecked, clear the table &quot;HADOOP_ADVANCED_PROPERTIES&quot;"
+              id="org.talend.repository.model.migration.RemoveUseHadoopPropertiesFortMRConfiguration"
+              name="RemoveUseHadoopPropertiesFortMRConfiguration"
+              version="5.4.1">
+        </projecttask>
    </extension>
    
    <extension
