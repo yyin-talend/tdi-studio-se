@@ -59,11 +59,6 @@
 				<entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
 				<entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
 ]]#
-#if ($route.hasCXFSamlProviderAuthz || $route.hasCXFRegistryProvider)
-#[[
-				<entry key="tesb.pdp.address" value="$saml{tesb.pdp.address}" />
-]]#
-#end
 			</map>
 		</property>
 #end
