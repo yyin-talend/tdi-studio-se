@@ -47,6 +47,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ExpandEvent;
+import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -254,9 +256,9 @@ public class MultiSchemasUI {
 
         ExpandBar bar = new ExpandBar(composite, SWT.V_SCROLL);
 
-        Composite fileGroup = new Composite(bar, SWT.NONE);
+        final Composite fileGroup = new Composite(bar, SWT.NONE);
         createFileGroup(fileGroup);
-        ExpandItem settingItem = new ExpandItem(bar, SWT.NONE, 0);
+        final ExpandItem settingItem = new ExpandItem(bar, SWT.NONE, 0);
         settingItem.setText(ExternalMultiSchemasUIProperties.SETTINGS_LABEL);
         settingItem.setHeight(fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
         settingItem.setControl(fileGroup);
@@ -264,11 +266,33 @@ public class MultiSchemasUI {
 
         allContentForm = new SashForm(bar, SWT.NONE);
         createViewers(allContentForm);
-        ExpandItem previewItem = new ExpandItem(bar, SWT.NONE, 1);
+        final ExpandItem previewItem = new ExpandItem(bar, SWT.NONE, 1);
         previewItem.setText(ExternalMultiSchemasUIProperties.PREVIEW_LABEL);
         previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
         previewItem.setControl(allContentForm);
         previewItem.setExpanded(true);
+
+        bar.addExpandListener(new ExpandListener() {
+
+            public void itemExpanded(ExpandEvent e) {
+                if (e.item != null && e.item instanceof ExpandItem) {
+                    settingItem.setHeight(fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                    previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                }
+            }
+
+            public void itemCollapsed(ExpandEvent e) {
+                if (e.item != null && e.item instanceof ExpandItem) {
+                    if (((ExpandItem) e.item).getText().equals(ExternalMultiSchemasUIProperties.PREVIEW_LABEL)) {
+                        // settingItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y
+                        // + fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                    } else if (((ExpandItem) e.item).getText().equals(ExternalMultiSchemasUIProperties.SETTINGS_LABEL)) {
+                        previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y
+                                + fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                    }
+                }
+            }
+        });
 
         initFieldValues();
         // listener

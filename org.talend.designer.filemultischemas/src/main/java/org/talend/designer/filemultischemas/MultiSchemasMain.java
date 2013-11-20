@@ -52,6 +52,8 @@ public class MultiSchemasMain {
         Rectangle boundsMapper = ExternalMultiSchemasUIProperties.getBoundsMapper();
         if (ExternalMultiSchemasUIProperties.isShellMaximized()) {
             dialog.setMaximized(ExternalMultiSchemasUIProperties.isShellMaximized());
+            dialog.setSize(boundsMapper);
+            parentShell.setBounds(boundsMapper);
         } else {
             boundsMapper = ExternalMultiSchemasUIProperties.getBoundsMapper();
             if (boundsMapper.x < 0) {

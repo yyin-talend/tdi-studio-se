@@ -85,6 +85,7 @@ public class MultiSchemaDialog extends Dialog implements MultiSchemaEventListene
         }
         if (maximized) {
             newShell.setMaximized(true);
+            newShell.setBounds(size);
         } else {
             newShell.setBounds(size);
         }
