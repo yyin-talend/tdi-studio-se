@@ -56,7 +56,7 @@ imports="
 		String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 		String bonitaHome = ElementParameterParser.getValue(node, "__BONITA_HOME__");
 	
-		if("BONITA_561".equals(dbVersion)){
+		if("BONITA_561".equals(dbVersion) || "BONITA_5101".equals(dbVersion)){
 %>
 		System.setProperty("BONITA_HOME", <%=bonitaHome%>);
 <%
