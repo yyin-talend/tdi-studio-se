@@ -100,7 +100,7 @@
       NUM_ROW="20"
       REQUIRED="true"
       GROUP="CONFIGURATION"
-      SHOW_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_523' || DB_VERSION=='BONITA_531')"
+      SHOW_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_523' OR DB_VERSION=='BONITA_531')"
     >
     	<DEFAULT>"runtime/conf/bonita-environment.xml"</DEFAULT>
     </PARAMETER>
@@ -213,7 +213,7 @@
 			<!-- Bonita 5.2.3 -->
 			<IMPORT NAME="bonita_client_523" MODULE="bonita-client-5.2.3.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-client-5.2.3.jar" REQUIRED="false" />
 			<IMPORT NAME="bonita_server_523" MODULE="bonita-server-5.2.3.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-server-5.2.3.jar" REQUIRED="false" />
-			<IMPORT NAME="atlr_276" MODULE="antlr-2.7.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/antlr-2.7.6.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="atlr_276" MODULE="antlr-2.7.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/antlr-2.7.6.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 			<IMPORT NAME="asm_153" MODULE="asm-1.5.3.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-1.5.3.jar" REQUIRED="false" />
 			<IMPORT NAME="asm_31" MODULE="asm-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-3.1.jar" REQUIRED="false" />
 			<IMPORT NAME="asm_attrs_153" MODULE="asm-attrs-1.5.3.jar" UrlPath="platform:/plugin/org.talend.libraries.asm/lib/asm-attrs-1.5.3.jar" REQUIRED="false" />
@@ -228,7 +228,7 @@
 			<IMPORT NAME="h2_12132" MODULE="h2-1.2.132.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.h2/lib/h2-1.2.132.jar" REQUIRED="false" />
 			<IMPORT NAME="hibernate_326_ga" MODULE="hibernate-3.2.6.ga.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-3.2.6.ga.jar" REQUIRED="false" />
 			<IMPORT NAME="jline_0994" MODULE="jline-0.9.94.jar" REQUIRED="false" />
-			<IMPORT NAME="jta_11" MODULE="jta-1.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="jta_11" MODULE="jta-1.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 			<IMPORT NAME="novabpmidentity_10" MODULE="novaBpmIdentity-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.novabpm/lib/novaBpmIdentity-1.0.jar" REQUIRED="false" />
 			<IMPORT NAME="novabpmperf_10" MODULE="novaBpmPerf-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.novabpm/lib/novaBpmPerf-1.0.jar" REQUIRED="false" />
 
@@ -240,22 +240,22 @@
 			<IMPORT NAME="bonita_client_53" MODULE="bonita-client-5.3.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-client-5.3.jar" REQUIRED="false" />
 			<IMPORT NAME="bonita_server_53" MODULE="bonita-server-5.3.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-server-5.3.jar" REQUIRED="false" />
 			<IMPORT NAME="hibernate_core_356" MODULE="hibernate-core-3.5.6-Final.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-core-3.5.6-Final.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
-			<IMPORT NAME="commons_collections_31" MODULE="commons-collections-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="commons_collections_31" MODULE="commons-collections-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 			<IMPORT NAME="ehcache_core_220" MODULE="ehcache-core-2.2.0.jar" UrlPath="platform:/plugin/org.talend.libraries.ehcache/lib/ehcache-core-2.2.0.jar" REQUIRED="false" />
-			<IMPORT NAME="hibernate_commons_annotations_320_Final" MODULE="hibernate-commons-annotations-3.2.0.Final.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-commons-annotations-3.2.0.Final.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="hibernate_commons_annotations_320_Final" MODULE="hibernate-commons-annotations-3.2.0.Final.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-commons-annotations-3.2.0.Final.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 			<IMPORT NAME="hibernate_search_321_Final" MODULE="hibernate-search-3.2.1.Final.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-search-3.2.1.Final.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
 			<IMPORT NAME="javassist_380_GA" MODULE="javassist-3.8.0.GA.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
 			<IMPORT NAME="lucene_core_293" MODULE="lucene-core-2.9.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.lucene/lib/lucene-core-2.9.3.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
 			<IMPORT NAME="slf4j_api_161" MODULE="slf4j-api-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-api-1.6.1.jar" REQUIRED="false" />
-			<IMPORT NAME="commons_logging_111" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="commons_logging_111" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 
 			<!-- Bonita 5.6.1 -->
 			<IMPORT NAME="bonita_server_561" MODULE="bonita-server-5.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.bonita/lib/bonita-server-5.6.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
 			<IMPORT NAME="chemistry_opencmis_client_api_020_incubating" MODULE="chemistry-opencmis-client-api-0.2.0-incubating.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.chemistry/lib/chemistry-opencmis-client-api-0.2.0-incubating.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
 			<IMPORT NAME="chemistry_opencmis_commons_api_020_incubating" MODULE="chemistry-opencmis-commons-api-0.2.0-incubating.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.chemistry/lib/chemistry-opencmis-commons-api-0.2.0-incubating.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561')" />
-			<IMPORT NAME="h2_12139" MODULE="h2-1.2.139.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.h2/lib/h2-1.2.139.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
-			<IMPORT NAME="slf4j_api_161" MODULE="slf4j-api-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-api-1.6.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
-			<IMPORT NAME="slf4j_jdk14_161" MODULE="slf4j-jdk14-1.6.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' || DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="h2_12139" MODULE="h2-1.2.139.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.h2/lib/h2-1.2.139.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="slf4j_api_161" MODULE="slf4j-api-1.6.1.jar" UrlPath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-api-1.6.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
+			<IMPORT NAME="slf4j_jdk14_161" MODULE="slf4j-jdk14-1.6.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_561' OR DB_VERSION=='BONITA_5101')" />
 			<!-- Bonita 5.10.1 -->
 			<IMPORT NAME="bonita_server_510" MODULE="bonita-server-5.10.1.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_5101')" />
 			<IMPORT NAME="hibernate_search_330_Final" MODULE="hibernate-search-3.3.0.Final.jar" UrlPath="platform:/plugin/org.talend.libraries.hibernate/lib/hibernate-search-3.3.0.Final.jar" REQUIRED_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (DB_VERSION=='BONITA_5101')" />
