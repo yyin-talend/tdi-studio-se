@@ -27,7 +27,7 @@
 #end
 
 #if ($route.useSAM)
-    <reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
 	<bean id="route" class="${route.className}">
@@ -58,9 +58,9 @@
 				<entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
 				<entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
 				<entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
-]]#
 			</map>
 		</property>
+]]#
 #end
 #if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
 #[[
