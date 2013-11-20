@@ -400,6 +400,25 @@ public class JobletUtil {
         if (!source.isActivate() || !target.isActivate()) {
             cloneConn.setActivate(false);
         }
+
+        List<? extends IElementParameter> elementParas = conn.getElementParameters();
+
+        for (IElementParameter elementPara : elementParas) {
+            if (elementPara.getName() != null && !elementPara.getName().equals("UNIQUE_NAME")) {
+                IElementParameter cloneElement = cloneConn.getElementParameter(elementPara.getName());
+                Object paValue = elementPara.getValue();
+                if (paValue instanceof List) {
+                    List list = new ArrayList();
+                    list.addAll((List) paValue);
+                    cloneElement.setValue(list);
+                } else {
+                    cloneElement.setContextMode(elementPara.isContextMode());
+                    cloneElement.setValue(elementPara.getValue());
+                }
+
+            }
+        }
+
         return cloneConn;
     }
 
