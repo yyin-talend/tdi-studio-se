@@ -55,7 +55,7 @@
 			if(cMailNodes.size() > 0){
 %>
 				private org.apache.camel.component.mail.MailEndpoint getMailEndpoint(
-						String uri, String username, String password, String subject, 
+						String uri, String username, String password, String subject,
 						String from, String to, String cc, String bcc) {
 					org.apache.camel.component.mail.MailEndpoint endpoint = (org.apache.camel.component.mail.MailEndpoint) endpoint(uri);
 					org.apache.camel.component.mail.MailConfiguration configuration = endpoint.getConfiguration();
@@ -78,7 +78,7 @@
 				}
 <%
 			}
-			
+
 			List<? extends INode> cFtpNodes = process.getNodesOfType("cFtp");
 			if(cFtpNodes.size() > 0){
 %>
@@ -97,7 +97,7 @@
 			}
 <%
 			}
-			
+
 			boolean hasCXFComponent = false;
 			boolean hasCXFSamlTokenProvider = false;
 			boolean hasCXFSamlTokenConsumer = false;
@@ -166,7 +166,7 @@
 								if(!hasCXFSAMLPropagateConsumer){
 									String samlSecurityType = ElementParameterParser.getValue(n, "__SAML_SECURITY_TYPES__");
 									if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
-									   hasCXFSAMLPropagateConsumer = true;
+										hasCXFSAMLPropagateConsumer = true;
 									}
 								}
 							}
@@ -186,13 +186,13 @@
 					}
 				}
 			}
-			
-			
+
+
 		if(hasCXFSAMLPropagateConsumer){
 %>
 			class CXFConsumerBinding extends org.apache.camel.component.cxf.DefaultCxfBinding {
 				private org.apache.camel.component.cxf.CxfEndpoint endpoint;
-				
+
 				public CXFConsumerBinding(org.apache.camel.component.cxf.CxfEndpoint endpoint){
 					this.endpoint = endpoint;
 					setHeaderFilterStrategy(consumerSoapHeaderFilter);
@@ -206,7 +206,7 @@
 					if(samlToken == null){
 						return;
 					}
-					
+
 					Map<String, Object> properties = endpoint.getProperties();
 					if(properties == null){
 						return;
@@ -222,8 +222,8 @@
 <%		}
 		if(hasCXFRegistryProvider || hasCXFSamlTokenProvider){
 %>
-				class CXFProviderBinding extends org.apache.camel.component.cxf.DefaultCxfBinding{	
-					
+				class CXFProviderBinding extends org.apache.camel.component.cxf.DefaultCxfBinding{
+
 					@Override
 					protected void propagateHeadersFromCxfToCamel( org.apache.cxf.message.Message cxfMessage,
 							org.apache.camel.Message camelMessage, org.apache.camel.Exchange camelExchange) {
@@ -242,10 +242,10 @@
 <%
 			}
 
-			
+
 			if(hasCXFComponent){
 %>
-			
+
 			private org.apache.camel.component.cxf.CxfEndpoint getCxfEndpoint(String uri, boolean isProvider, boolean useAuthorization, boolean usePropagateSamlAP, String... token){
 				org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint = (org.apache.camel.component.cxf.CxfEndpoint)endpoint(uri);
 
@@ -256,10 +256,10 @@
 <%
 					}
 					if(hasCXFUsernameTokenProvider){
-%>			        
-				        if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
-				        	addUsernameToken(cxfEndpoint,bus, true);
-				        } 
+%>
+						if(isProvider&&token!=null&&"UsernameToken".equals(token[0])){
+							addUsernameToken(cxfEndpoint,bus, true);
+						}
 <%
 					}
 					if(hasCXFHTTPAuthProvider){
@@ -274,15 +274,15 @@
 					if(hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer){
 
 %>
-			        if(token!=null&&"SAMLToken".equals(token[0])){
-			        	addSAMLToken(cxfEndpoint, bus, isProvider, useAuthorization, usePropagateSamlAP, token);
-			        }
+					if(token!=null&&"SAMLToken".equals(token[0])){
+						addSAMLToken(cxfEndpoint, bus, isProvider, useAuthorization, usePropagateSamlAP, token);
+					}
 <%					}
 					if(hasCXFRegistryProvider || hasCXFRegistryConsumer){
 %>
-			        if(token!=null&&"Registry".equals(token[0])){
-			        	addRegistry(cxfEndpoint, bus, isProvider, usePropagateSamlAP, token);
-			        }
+					if(token!=null&&"Registry".equals(token[0])){
+						addRegistry(cxfEndpoint, bus, isProvider, usePropagateSamlAP, token);
+					}
 <%}%>
 				}
 <%
@@ -290,8 +290,8 @@
 				if(hasCXFUsernameTokenConsumer){
 %>
 				if(!isProvider&&token!=null&&token.length>=3&&"UsernameToken".equals(token[0])){
-		        	addUsernameToken(cxfEndpoint, null, false, token[1], token[2]);
-		        }
+					addUsernameToken(cxfEndpoint, null, false, token[1], token[2]);
+				}
 <%
 				}
 				if(hasCXFHTTPAuthConsumer){
@@ -304,7 +304,7 @@
 <%
 				}
 %>
-				
+
 				return cxfEndpoint;
 			}
 <%
@@ -320,7 +320,7 @@
 						authorizationPolicy.setUserName(userInfo[1]);
 						authorizationPolicy.setPassword(userInfo[2]);
 						authorizationPolicy.setAuthorizationType(userInfo[0]);
-						myProperties.put(org.apache.cxf.configuration.security.AuthorizationPolicy.class.getName(), authorizationPolicy); 
+						myProperties.put(org.apache.cxf.configuration.security.AuthorizationPolicy.class.getName(), authorizationPolicy);
 						cxfEndpoint.setProperties(myProperties);
 					}
 <%
@@ -339,45 +339,45 @@
 <%
 			}
 			if(hasCXFUsernameTokenConsumer || hasCXFUsernameTokenProvider){
-%>			
-			private void addUsernameToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint, 
+%>
+			private void addUsernameToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 					org.apache.cxf.Bus bus, boolean isProvider, final String... userInfo){
 <%if(hasCXFUsernameTokenProvider){%>
 				if(isProvider){
-			        Map<String, Object> props = new HashMap<String, Object>();
+					Map<String, Object> props = new HashMap<String, Object>();
 					props.put(org.apache.ws.security.handler.WSHandlerConstants.ACTION, org.apache.ws.security.handler.WSHandlerConstants.USERNAME_TOKEN);
-					
+
 					org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor wss4jInInterceptor = new org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor();
 					wss4jInInterceptor.setProperties(props);
 					cxfEndpoint.getInInterceptors().add(wss4jInInterceptor);
-					
+
 					org.apache.ws.security.validate.JAASUsernameTokenValidator validator = new org.apache.ws.security.validate.JAASUsernameTokenValidator();
 					validator.setContextName("karaf");
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("ws-security.ut.validator", validator);
 					cxfEndpoint.setProperties(map);
-					
+
 					org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
 					policyReference.setURI("org.talend.esb.job.token.policy");
 					org.apache.neethi.Policy policy = new org.apache.neethi.Policy();
 					policy.addPolicyComponent(policyReference);
-					
+
 					org.apache.cxf.ws.policy.WSPolicyFeature wsPolicyFeature = new org.apache.cxf.ws.policy.WSPolicyFeature();
 					wsPolicyFeature.getPolicies().add(policy);
 					bus.getFeatures().add(wsPolicyFeature);
 				}
 <%
 }
-if(hasCXFUsernameTokenConsumer){				
+if(hasCXFUsernameTokenConsumer){
 %>
 				if(!isProvider){
 					javax.security.auth.callback.CallbackHandler c = new javax.security.auth.callback.CallbackHandler() {
-						
+
 						public void handle(javax.security.auth.callback.Callback[] arg0) throws java.io.IOException,
 						javax.security.auth.callback.UnsupportedCallbackException {
 							org.apache.ws.security.WSPasswordCallback callback = (org.apache.ws.security.WSPasswordCallback) arg0[0];
 							callback.setPassword(userInfo[1]);
-							
+
 						}
 					};
 
@@ -386,10 +386,10 @@ if(hasCXFUsernameTokenConsumer){
 					props.put(org.apache.ws.security.handler.WSHandlerConstants.USER, userInfo[0]);
 					props.put(org.apache.ws.security.handler.WSHandlerConstants.PASSWORD_TYPE, org.apache.ws.security.WSConstants.PW_TEXT);
 					props.put(org.apache.ws.security.handler.WSHandlerConstants.PW_CALLBACK_REF, c);
-					
+
 					org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor wss4jOutInterceptor = new org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor();
 					wss4jOutInterceptor.setProperties(props);
-					
+
 					cxfEndpoint.getOutInterceptors().add(wss4jOutInterceptor);
 				}
 <%}%>
@@ -403,40 +403,40 @@ if(hasCXFSamlTokenConsumer || hasCXFRegistryConsumer){
 private Map<String, String> clientProperties;
 
 private Map<String, String> stsProperties;
-	
+
 public void setClientProperties(Map<String, String> clientProperties) {
-        this.clientProperties = clientProperties;
+		this.clientProperties = clientProperties;
 }
 
 public void setStsProperties(Map<String, String> stsProperties) {
-        this.stsProperties = stsProperties;
+		this.stsProperties = stsProperties;
 }
 
 
 class WSPasswordCallbackHandler implements javax.security.auth.callback.CallbackHandler {
 
-    private final String user;
-    private final String pass;
+	private final String user;
+	private final String pass;
 
-    public WSPasswordCallbackHandler(String username, String password) {
-        user = username;
-        pass = password;
-    }
+	public WSPasswordCallbackHandler(String username, String password) {
+		user = username;
+		pass = password;
+	}
 
-    public void handle(javax.security.auth.callback.Callback[] callbacks) throws java.io.IOException,
-    javax.security.auth.callback.UnsupportedCallbackException {
-        for (javax.security.auth.callback.Callback callback : callbacks) {
-            if (callback instanceof org.apache.ws.security.WSPasswordCallback) {
-            	org.apache.ws.security.WSPasswordCallback pc = (org.apache.ws.security.WSPasswordCallback) callback;
-                if (user.equals(pc.getIdentifier())) {
-                    pc.setPassword(pass);
-                    break;
-                }
-            }
-        }
-    }
+	public void handle(javax.security.auth.callback.Callback[] callbacks) throws java.io.IOException,
+	javax.security.auth.callback.UnsupportedCallbackException {
+		for (javax.security.auth.callback.Callback callback : callbacks) {
+			if (callback instanceof org.apache.ws.security.WSPasswordCallback) {
+				org.apache.ws.security.WSPasswordCallback pc = (org.apache.ws.security.WSPasswordCallback) callback;
+				if (user.equals(pc.getIdentifier())) {
+					pc.setPassword(pass);
+					break;
+				}
+			}
+		}
+	}
 
-} 
+}
 
 <%
 }
@@ -512,17 +512,17 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 						token[2]);
 			}
 			stsClient.setProperties(stsProps);
-            if (token[3]/*Role*/ != null && !("".equals(token[3]))) {
-                ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
-                roleCallbackHandler.setClaimValue(token[3]);
-                stsClient.setClaimsCallbackHandler(roleCallbackHandler);
-            }
+			if (token[3]/*Role*/ != null && !("".equals(token[3]))) {
+				ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
+				roleCallbackHandler.setClaimValue(token[3]);
+				stsClient.setClaimsCallbackHandler(roleCallbackHandler);
+			}
 
 			Map<String, Object> clientProps = new HashMap<String, Object>();
 			clientProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
-                    token[1]);
-            clientProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
-            		token[2]);
+					token[1]);
+			clientProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
+					token[2]);
 
 			clientProps.put(
 					org.apache.cxf.ws.security.SecurityConstants.STS_CLIENT,
@@ -562,7 +562,6 @@ if(hasCXFRegistryProvider){
 		String userName = (String) securityProps.get("ws-security.signature.username");
 		String password = (String) securityProps.get("ws-security.signature.password");
 		String properties = (String) securityProps.get("ws-security.signature.properties");
-		String pdpAddress = (String) securityProps.get("tesb.pdp.address");
 
 		org.apache.ws.security.validate.JAASUsernameTokenValidator jaasUTValidator=
 		new org.apache.ws.security.validate.JAASUsernameTokenValidator();
@@ -575,13 +574,12 @@ if(hasCXFRegistryProvider){
 		endpointProps.put("ws-security.signature.properties", properties);
 		endpointProps.put("ws-security.callback-handler", callbackHandler);
 		endpointProps.put("ws-security.ut.validator", jaasUTValidator);
-		endpointProps.put("tesb.pdp.address", pdpAddress);
 		endpointProps.put("use.service.registry", "true");
 		cxfEndpoint.setProperties(endpointProps);
-		
- 
-	}	
-<%}%>	
+
+
+	}
+<%}%>
 }
 <%
 }
@@ -608,84 +606,84 @@ public void setPolicies(Map<String, String> policies){
 }
 
 private org.apache.neethi.Policy loadPolicy(String location, org.apache.cxf.Bus bus) {
-    java.io.InputStream is = null;
-    try {
-        is = new java.io.FileInputStream(location);
-        return bus.getExtension(org.apache.cxf.ws.policy.PolicyBuilder.class).getPolicy(is);
-    } catch (Exception e) {
-        throw new RuntimeException("Cannot load policy", e);
-    } finally {
-        if (null != is) {
-            try {
-                is.close();
-            } catch (java.io.IOException e) {
-                // just ignore
-            }
-        }
-    }
+	java.io.InputStream is = null;
+	try {
+		is = new java.io.FileInputStream(location);
+		return bus.getExtension(org.apache.cxf.ws.policy.PolicyBuilder.class).getPolicy(is);
+	} catch (Exception e) {
+		throw new RuntimeException("Cannot load policy", e);
+	} finally {
+		if (null != is) {
+			try {
+				is.close();
+			} catch (java.io.IOException e) {
+				// just ignore
+			}
+		}
+	}
 }
 public void registerPolicies(org.apache.cxf.Bus bus) {
 	if(policies != null){
-        org.apache.neethi.PolicyRegistry policyRegistry =
-                bus.getExtension(org.apache.cxf.ws.policy.PolicyEngine.class).getRegistry();
-        policyRegistry.register("org.talend.esb.job.token.policy",
-        		loadPolicy(policies.get("policy.username"), bus));
-        policyRegistry.register("org.talend.esb.job.saml.policy",
-        		loadPolicy(policies.get("policy.saml"), bus));
-        
-        policyRegistry.register("org.talend.esb.job.saml.authz.policy",
-        		loadPolicy(policies.get("policy.saml.authz"), bus));
+		org.apache.neethi.PolicyRegistry policyRegistry =
+				bus.getExtension(org.apache.cxf.ws.policy.PolicyEngine.class).getRegistry();
+		policyRegistry.register("org.talend.esb.job.token.policy",
+				loadPolicy(policies.get("policy.username"), bus));
+		policyRegistry.register("org.talend.esb.job.saml.policy",
+				loadPolicy(policies.get("policy.saml"), bus));
+
+		policyRegistry.register("org.talend.esb.job.saml.authz.policy",
+				loadPolicy(policies.get("policy.saml.authz"), bus));
 	}
 }
 
 <%if(hasCXFSamlTokenAuthorizationConsumer || hasCXFRegistryConsumer){%>
 class ClaimValueCallbackHandler implements javax.security.auth.callback.CallbackHandler {
 
-    private String claimValue;
+	private String claimValue;
 
-    public void handle(javax.security.auth.callback.Callback[] callbacks)
-        throws java.io.IOException, javax.security.auth.callback.UnsupportedCallbackException {
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof org.apache.cxf.ws.security.trust.claims.ClaimsCallback) {
-            	org.apache.cxf.ws.security.trust.claims.ClaimsCallback callback = (org.apache.cxf.ws.security.trust.claims.ClaimsCallback) callbacks[i];
-                callback.setClaims(createClaims());
-                
-            } else {
-                throw new javax.security.auth.callback.UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
-            }
-        }
-    }
+	public void handle(javax.security.auth.callback.Callback[] callbacks)
+		throws java.io.IOException, javax.security.auth.callback.UnsupportedCallbackException {
+		for (int i = 0; i < callbacks.length; i++) {
+			if (callbacks[i] instanceof org.apache.cxf.ws.security.trust.claims.ClaimsCallback) {
+				org.apache.cxf.ws.security.trust.claims.ClaimsCallback callback = (org.apache.cxf.ws.security.trust.claims.ClaimsCallback) callbacks[i];
+				callback.setClaims(createClaims());
 
-    /**
-     * Create a Claims Element for a "role"
-     */
-    private org.w3c.dom.Element createClaims() {
-    	org.w3c.dom.Document doc = org.apache.cxf.helpers.DOMUtils.createDocument();
-    	org.w3c.dom.Element claimsElement =
-            doc.createElementNS("http://docs.oasis-open.org/ws-sx/ws-trust/200512", "Claims");
-        claimsElement.setAttributeNS(null, "Dialect", "http://schemas.xmlsoap.org/ws/2005/05/identity");
+			} else {
+				throw new javax.security.auth.callback.UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
+			}
+		}
+	}
 
-        org.w3c.dom.Element claimValueElement =
-            doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "ClaimValue");
-        claimValueElement.setAttributeNS(null, "Uri", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role");
-        org.w3c.dom.Element value = doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "Value");
-        value.setTextContent(claimValue);
-        claimValueElement.appendChild(value);
+	/**
+	 * Create a Claims Element for a "role"
+	 */
+	private org.w3c.dom.Element createClaims() {
+		org.w3c.dom.Document doc = org.apache.cxf.helpers.DOMUtils.createDocument();
+		org.w3c.dom.Element claimsElement =
+			doc.createElementNS("http://docs.oasis-open.org/ws-sx/ws-trust/200512", "Claims");
+		claimsElement.setAttributeNS(null, "Dialect", "http://schemas.xmlsoap.org/ws/2005/05/identity");
 
-        claimsElement.appendChild(claimValueElement);
+		org.w3c.dom.Element claimValueElement =
+			doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "ClaimValue");
+		claimValueElement.setAttributeNS(null, "Uri", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role");
+		org.w3c.dom.Element value = doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "Value");
+		value.setTextContent(claimValue);
+		claimValueElement.appendChild(value);
 
-        return claimsElement;
-    }
+		claimsElement.appendChild(claimValueElement);
 
-    public String getClaimValue() {
-        return claimValue;
-    }
+		return claimsElement;
+	}
 
-    public void setClaimValue(String claimValue) {
-        this.claimValue = claimValue;
-    }
+	public String getClaimValue() {
+		return claimValue;
+	}
 
-}	
+	public void setClaimValue(String claimValue) {
+		this.claimValue = claimValue;
+	}
+
+}
 <%}
 if(hasCXFSamlTokenConsumer || hasCXFSamlTokenProvider){
 %>
@@ -731,11 +729,11 @@ if(hasCXFSamlTokenConsumer){
 		}
 		stsClient.setProperties(stsProps);
 <%if(hasCXFSamlTokenAuthorizationConsumer){%>
-        if (token[3] != null && !("".equals(token[3]))) {
-            ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
-            roleCallbackHandler.setClaimValue(token[3]);
-            stsClient.setClaimsCallbackHandler(roleCallbackHandler);
-        }
+		if (token[3] != null && !("".equals(token[3]))) {
+			ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
+			roleCallbackHandler.setClaimValue(token[3]);
+			stsClient.setClaimsCallbackHandler(roleCallbackHandler);
+		}
 <%}%>
 		Map<String, Object> clientProps = new HashMap<String, Object>();
 		clientProps.put(
@@ -813,16 +811,9 @@ if (isProvider) {
 				userName, password, "setPassword");
 		Map<String, Object> endpointProps = new HashMap<String, Object>();
 		endpointProps.put("ws-security.signature.username", userName);
-		endpointProps.put("ws-security.signature.properties",
-				properties);
-		endpointProps.put("ws-security.callback-handler",
-				callbackHandler);
-		endpointProps.put("use.service.registry",
-				"false");
-		if(useAuthorization){
-			endpointProps.put("tesb.pdp.address",  (String)securityProps
-					.get("tesb.pdp.address"));
-		}
+		endpointProps.put("ws-security.signature.properties", properties);
+		endpointProps.put("ws-security.callback-handler", callbackHandler);
+		endpointProps.put("use.service.registry", "false");
 		cxfEndpoint.setProperties(endpointProps);
 		// add policy
 		org.apache.neethi.PolicyReference policyReference = new org.apache.neethi.PolicyReference();
@@ -839,7 +830,7 @@ if (isProvider) {
 		cxfEndpoint.getFeatures().add(wsPolicyFeature);
 		// register policy on bus
 		registerPolicies(bus);
-}	
+}
 <%
 }//end if(hasCXFSamlTokenProvider){
 %>
@@ -849,7 +840,7 @@ if (isProvider) {
 //||hasCXFRegistryProvider || hasCXFRegistryConsumer){
 %>
 			/**
-			* please initial uri map 
+			* please initial uri map
 			*/
 			public void configure() throws java.lang.Exception {
 <%
@@ -861,18 +852,18 @@ if (isProvider) {
 			String nodeComponentName = node.getComponent().getName();
 	if("cCXF".equals(nodeComponentName)){
 			IElementParameter param = node.getElementParameter("LABEL");
-		   	String cid = node.getUniqueName();
-		//  http://jira.talendforge.org/browse/TESB-5241
+			String cid = node.getUniqueName();
+			// http://jira.talendforge.org/browse/TESB-5241
 			/*
-		   	 * change to use label + unique to make it unique but readable
-		   	 */
+			 * change to use label + unique to make it unique but readable
+			 */
 			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
-				cid = (String)param.getValue()+"_"+cid;	
+				cid = (String)param.getValue()+"_"+cid;
 			}
 			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
-			
+
 			boolean useRegistry = false;
 			boolean useSecurity = false;
 			if(!"RAW".equals(formatType) && !"CXF_MESSAGE".equals(formatType)){
@@ -883,9 +874,9 @@ if (isProvider) {
 					useSecurity = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"));
 				}
 			}
-			
+
 			String role = ElementParameterParser.getValue(node, "__ROLE_NAME__");
-			
+
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
@@ -900,13 +891,13 @@ if (isProvider) {
 				securityToken = "\"Registry\"";
 					String usePropagate = ElementParameterParser.getValue(node, "__USE_PROPAGATE_CREDENTIAL__");
 					if("true".equals(usePropagate)){
-					    if(alias == null || alias.matches("\"?\\s*\"?")) {
-					    	//no alias.
-					    	isUsePropagateSamlUP = true;
-					    }else {
-					    	isUsePropagateSamlUP = false;
+						if(alias == null || alias.matches("\"?\\s*\"?")) {
+							//no alias.
+							isUsePropagateSamlUP = true;
+						}else {
+							isUsePropagateSamlUP = false;
 						}
-					    isUsePropagateSamlAP = !isUsePropagateSamlUP;
+						isUsePropagateSamlAP = !isUsePropagateSamlUP;
 					}
 			}else if(useSecurity){
 				if("USER".equals(securityType)){
@@ -940,13 +931,13 @@ if (isProvider) {
 				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=isUsePropagateSamlAP%>, <%=securityToken%>
 <%
 				if((useSecurity || useRegistry) && !isProvider){
-%>				
+%>
 							,<%=username%>,<%=password%>, <%=roleName%>, <%=alias%>
 <%
 				}
 %>
 						);
-<%			
+<%
 
 			if((isUsePropagateSamlUP || isUsePropagateSamlAP) && !isProvider){
 %>
@@ -963,7 +954,7 @@ if (isProvider) {
 			if(correlationValue != null && "".equals(correlationValue.trim())){
 				correlationValue = null;
 			}
-			
+
 			if ("true".equals(useCorrelation) && !useRegistry) {
 %>
 				<%=endpointVar%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
@@ -1003,9 +994,9 @@ if (isProvider) {
 <%
 			}
 			//http://jira.talendforge.org/browse/TESB-3850
-            // !"true".equals(useRegistry) - https://jira.talendforge.org/browse/TESB-10725
-            			
-			if ("true".equals(useSAM) && !"RAW".equals(formatType)  && !useRegistry) {
+			// !"true".equals(useRegistry) - https://jira.talendforge.org/browse/TESB-10725
+
+			if ("true".equals(useSAM) && !"RAW".equals(formatType) && !useRegistry) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {
@@ -1018,10 +1009,10 @@ if (isProvider) {
 			String cid = node.getUniqueName();
 			IElementParameter labelParam = node.getElementParameter("LABEL");
 			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
-				cid = (String)labelParam.getValue()+"_"+cid;	
+				cid = (String)labelParam.getValue()+"_"+cid;
 			}
 			String uriRef = "uriMap.get(\"" + cid + "\")";
-			
+
 			String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 			if("".trim().equals(userName)){
 				userName = null;
@@ -1036,18 +1027,18 @@ if (isProvider) {
 				directory = null;
 			}
 %>
-			org.apache.camel.component.file.remote.RemoteFileEndpoint<?> <%=ftpEndpointVar%> =  getFtpEndpoint(<%=uriRef%>, <%=ftpServer%>, <%=userName%>, <%=password%>, <%=directory%>);
-<%	
-	
+			org.apache.camel.component.file.remote.RemoteFileEndpoint<?> <%=ftpEndpointVar%> = getFtpEndpoint(<%=uriRef%>, <%=ftpServer%>, <%=userName%>, <%=password%>, <%=directory%>);
+<%
+
 	}else if("cMail".equals(nodeComponentName)){
 			String mailEndpointVar = "mail_" + node.getUniqueName();
 			String cid = node.getUniqueName();
 			IElementParameter labelParam = node.getElementParameter("LABEL");
 			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
-				cid = (String)labelParam.getValue()+"_"+cid;	
+				cid = (String)labelParam.getValue()+"_"+cid;
 			}
 			String uriRef = "uriMap.get(\"" + cid + "\")";
-			
+
 			String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String subject = ElementParameterParser.getValue(node, "__SUBJECT__");
@@ -1055,9 +1046,9 @@ if (isProvider) {
 			String to = ElementParameterParser.getValue(node, "__TO__");
 			String cc = ElementParameterParser.getValue(node, "__CC__");
 			String bcc = ElementParameterParser.getValue(node, "__BCC__");
-		
+
 %>
-			org.apache.camel.component.mail.MailEndpoint <%=mailEndpointVar%> =  getMailEndpoint(<%=uriRef%>, <%=userName%>, <%=password%>, <%=subject%>, <%=from%>, <%=to%>, <%=cc%>, <%=bcc%>);
+			org.apache.camel.component.mail.MailEndpoint <%=mailEndpointVar%> = getMailEndpoint(<%=uriRef%>, <%=userName%>, <%=password%>, <%=subject%>, <%=from%>, <%=to%>, <%=cc%>, <%=bcc%>);
 <%	}else if("cAggregate".equals(nodeComponentName)){
 				boolean usePersistence = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENCE__"));
 				String repository = ElementParameterParser.getValue(node, "__REPOSITORY__");
@@ -1105,13 +1096,13 @@ if (isProvider) {
 						}
 					}
 				}
-				
+
 				String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
 				String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
 				List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
 				if("xpath".equals(language)&&"true".equals(useNamespaces)){
 					String cid = node.getUniqueName();
-				
+
 %>
 				Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
 				{
@@ -1156,7 +1147,7 @@ if (isProvider) {
 %>
 		}
 <%
-		
+
 	}else if("cMessageFilter".equals(nodeComponentName)){
 		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
 		if(!"xpath".equals(language)){
@@ -1254,65 +1245,65 @@ if (isProvider) {
 		}
 <%
 	}else if("cTalendJob".equals(nodeComponentName)){
-    List< ? extends IConnection> conns = node.getIncomingConnections();
-  	String cid = node.getUniqueName();
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	String cid = node.getUniqueName();
 	List<Map<String, String>> contextParams = null;
-    if(conns.size()>0) {
-        String useJar = ElementParameterParser.getValue(node, "__FROM_EXTERNAL_JAR__");
-        // when propagateHeader parameter will be removed the https://github.com/Talend/tesb-rt-se/blob/master/camel-talendjob/src/main/java/org/talend/camel/TalendProducer.java
-        // have to be changed - remove populateTalendContextParamsWithCamelHeaders(exchange, args); 
-        String propagateHeader = ElementParameterParser.getValue(node, "__PROPAGATE_HEADER__");
-        if("true".equals(useJar)){
-            String typeName = ElementParameterParser.getValue(node, "__JOB__");
-            String context = ElementParameterParser.getValue(node, "__CONTEXT__");
-            contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__EXTERNAL_JAR_CONTEXTPARAMS__");
+	if(conns.size()>0) {
+		String useJar = ElementParameterParser.getValue(node, "__FROM_EXTERNAL_JAR__");
+		// when propagateHeader parameter will be removed the https://github.com/Talend/tesb-rt-se/blob/master/camel-talendjob/src/main/java/org/talend/camel/TalendProducer.java
+		// have to be changed - remove populateTalendContextParamsWithCamelHeaders(exchange, args);
+		String propagateHeader = ElementParameterParser.getValue(node, "__PROPAGATE_HEADER__");
+		if("true".equals(useJar)){
+			String typeName = ElementParameterParser.getValue(node, "__JOB__");
+			String context = ElementParameterParser.getValue(node, "__CONTEXT__");
+			contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__EXTERNAL_JAR_CONTEXTPARAMS__");
 %>
 		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+ <%=typeName%>+ "?context=" + <%=context%>+"&propagateHeader=<%=propagateHeader%>");
 <%
-        }else{
-           String typeName = "";
-           contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
-           String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
-           String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
-           if(id != null){
-        	   String useSelectedContext = ElementParameterParser.getValue(node, "__USE_SELECTED_CONTEXT__");
-        	   String useRouteContext = ElementParameterParser.getValue(node, "__USE_ROUTE_CONTEXT__");
-        	   String useJobContext = ElementParameterParser.getValue(node, "__USE_JOB_CONTEXT__");
-        	   if("true".equals(useRouteContext)){
-        		   context = ElementParameterParser.getProcessSelectedContext(process.getId()); // route context
-        		   boolean found = ElementParameterParser.checkIfContextExisted(id, context); // check the same context exist or not in job
-            	   if(!found){
-            		   context = ElementParameterParser.getProcessSelectedContext(id); // if not found, then use default job context
-            	   }
-            	   
-        	   }else if("true".equals(useJobContext)){
-        		   context = ElementParameterParser.getProcessSelectedContext(id);
-        	   }
-        	   
-	           String jobName = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("SELECTED_JOB_NAME"));
-//	           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
-	           String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
-	           String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-	           typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
-	        }
+		}else{
+			String typeName = "";
+			contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
+			String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
+			String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
+			if(id != null){
+				String useSelectedContext = ElementParameterParser.getValue(node, "__USE_SELECTED_CONTEXT__");
+				String useRouteContext = ElementParameterParser.getValue(node, "__USE_ROUTE_CONTEXT__");
+				String useJobContext = ElementParameterParser.getValue(node, "__USE_JOB_CONTEXT__");
+				if("true".equals(useRouteContext)){
+					context = ElementParameterParser.getProcessSelectedContext(process.getId()); // route context
+					boolean found = ElementParameterParser.checkIfContextExisted(id, context); // check the same context exist or not in job
+					if(!found){
+						context = ElementParameterParser.getProcessSelectedContext(id); // if not found, then use default job context
+					}
+
+				}else if("true".equals(useJobContext)){
+					context = ElementParameterParser.getProcessSelectedContext(id);
+				}
+
+				String jobName = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("SELECTED_JOB_NAME"));
+//				String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
+				String jobVersion = ElementParameterParser.getStringElementParameterValue(node.getElementParameter("PROCESS_TYPE_VERSION"));
+				String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+				typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
+			}
 %>
 			org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+<%=typeName%>.class.getName()+"?context="+"<%=context%>&propagateHeader=<%=propagateHeader%>");
 <%
-        }
-        int contextParamsSize = contextParams.size();
-        if(contextParamsSize > 0){
+		}
+		int contextParamsSize = contextParams.size();
+		if(contextParamsSize > 0){
 %>
 {
-        Map <String, String> propertiesMap = new HashMap<String, String>();  
+		Map <String, String> propertiesMap = new HashMap<String, String>();
 <%
 		for (int i=0; i<contextParamsSize; i++) {
 				Map<String, String> contextParam = contextParams.get(i);
 				String paramName;
 				String paramValue;
-		        if("true".equals(useJar)){
+				if("true".equals(useJar)){
 					paramName = contextParam.get("EXTERNAL_JAR_PARAM_NAME_COLUMN");
 					paramValue = contextParam.get("EXTERNAL_JAR_PARAM_VALUE_COLUMN");
-					
+
 				} else {
 					paramName = "\"" + contextParam.get("PARAM_NAME_COLUMN") + "\"";
 					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
@@ -1322,10 +1313,10 @@ if (isProvider) {
 <%
 		}
 %>
-        endpoint_<%=cid%>.getCamelContext().setProperties(propertiesMap);
+		endpoint_<%=cid%>.getCamelContext().setProperties(propertiesMap);
 }
 <%
-    }
+	}
 	}
 	}
 }
