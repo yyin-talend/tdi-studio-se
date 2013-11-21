@@ -1941,6 +1941,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         updateAllMappingTypes();
         nc.setNeedLoadLib(false);
         //
+        if (nc.isJoblet() && GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                service.reloadJobletProcess(nc);
+            }
+        }
         return nc;
     }
 
