@@ -15,10 +15,19 @@ imports="
 %>
 	try{
         if(destFile_<%=cid %>!=null && destFile_<%=cid %>.length()!=0){
-            scp_<%=cid%>.put(new byte[]{}, destFile_<%=cid %> , <%=remotedir %>, "0644");
+   			java.io.OutputStream out_<%=cid%> = null;
+			try {
+				out_<%=cid%> = scp_<%=cid%>.put(destFile_<%=cid%>, 0, <%=remotedir %>, "0644");
+				out_<%=cid %>.write(new byte[]{});
+			} finally {
+            	if(out_<%=cid %> != null){
+        			out_<%=cid %>.close();
+            	}
+			}
+			
             nb_file_<%=cid%> ++;
             globalMap.put("<%=cid %>_STATUS", "File truncate OK.");
         }
-    }catch(java.lang.Exception e){
-    		globalMap.put("<%=cid %>_STATUS", "File truncate fail.");
+    }catch(java.lang.Exception e_<%=cid%>){
+		globalMap.put("<%=cid %>_STATUS", "File truncate fail.");
     }
