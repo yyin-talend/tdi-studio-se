@@ -11,10 +11,13 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -111,8 +114,7 @@ public class TalendEditorComponentCreationUtil {
             removeComponentCreationAssist(talendEditor);
         }
     }
-    
-    
+
     /**
      * read all components belongs to some category (DI, CAMEL etc.) then store it into a map which can be reused
      * 
@@ -120,7 +122,8 @@ public class TalendEditorComponentCreationUtil {
      * @param entries
      */
     /*
-     * TODO this can be improved after refactoring org.talend.core.model.components.IComponentsHandler implementation in each editor
+     * TODO this can be improved after refactoring org.talend.core.model.components.IComponentsHandler implementation in
+     * each editor
      */
     private static void readComponentsInCategory(String categoryName, Map<String, IComponent> entries) {
         IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
@@ -131,6 +134,10 @@ public class TalendEditorComponentCreationUtil {
                 entries.put(component.getName(), component);
             }
         }
+        DummyComponent noteComponent = new DummyComponent("Note");
+        noteComponent.setIcon16(ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
+        noteComponent.setOriginalFamilyName("Misc");
+        entries.put("Note", noteComponent);
     }
 
     private static Map<String, Map<String, IComponent>> entries = new HashMap<String, Map<String, IComponent>>();

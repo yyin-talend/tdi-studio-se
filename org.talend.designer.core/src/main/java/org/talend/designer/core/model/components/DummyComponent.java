@@ -43,14 +43,22 @@ public class DummyComponent extends AbstractComponent {
 
     private String componentName;
 
+    private ImageDescriptor icon16;
+
+    private String originalFamilyName;
+
     public DummyComponent(NodeType nodeType) {
         icon32 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
+        icon16 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
         this.componentName = nodeType.getComponentName();
+        this.originalFamilyName = "";
     }
 
     public DummyComponent(String componentName) {
         icon32 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
+        icon16 = ImageProvider.getImageDesc(EImage.COMPONENT_MISSING);
         this.componentName = componentName;
+        this.originalFamilyName = "";
     }
 
     /*
@@ -193,7 +201,7 @@ public class DummyComponent extends AbstractComponent {
     @Override
     public ImageDescriptor getIcon16() {
         // TODO Auto-generated method stub
-        return null;
+        return icon16;
     }
 
     /*
@@ -264,7 +272,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getOriginalFamilyName() {
-        return ""; //$NON-NLS-1$ 
+        return originalFamilyName; //$NON-NLS-1$ 
     }
 
     /*
@@ -468,7 +476,7 @@ public class DummyComponent extends AbstractComponent {
      */
     public void setIcon16(ImageDescriptor icon16) {
         // TODO Auto-generated method stub
-
+        this.icon16 = icon16;
     }
 
     /*
@@ -488,7 +496,7 @@ public class DummyComponent extends AbstractComponent {
      */
     public void setIcon32(ImageDescriptor icon32) {
         // TODO Auto-generated method stub
-
+        this.icon32 = icon32;
     }
 
     /*
@@ -550,6 +558,10 @@ public class DummyComponent extends AbstractComponent {
     public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         // TODO Auto-generated method stub
 
+    }
+
+    public void setOriginalFamilyName(String originalFamilyName) {
+        this.originalFamilyName = originalFamilyName;
     }
 
 }
