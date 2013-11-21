@@ -9,6 +9,14 @@
 ]]#
 #end
 
+#if ($endpoint.useAuthorization)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep"
+		placeholder-prefix="$pep{" update-strategy="reload"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+]]#
+#end
+
 #if ($job.useSAM || $endpoint.useSAM)
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
@@ -136,7 +144,7 @@
 #if ($endpoint.useAuthorization)
 #[[
 	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
-		<property name="pdpAddress" value="$service{tesb.pdp.address}"/>
+		<property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
 	</bean>
 ]]#
 #end
