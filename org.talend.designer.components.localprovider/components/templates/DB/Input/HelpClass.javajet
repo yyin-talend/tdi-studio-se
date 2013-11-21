@@ -42,6 +42,8 @@ imports="
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+	 		boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
+ 		if(specify_alias){
 %>
             java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
             if (null != dataSources_<%=cid%>) {
@@ -50,14 +52,21 @@ imports="
 %>
                 conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
             } else {
+<%
+		}
+%>
 			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 				<%this.setURL(node);%>
 		        String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
 		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 		        <%this.afterUseNewConnection(node);%>
+<%
+			if(specify_alias){
+%>
 		    }
 <%
+			}
 		}
 		
 		public String getQueryString(INode node) {

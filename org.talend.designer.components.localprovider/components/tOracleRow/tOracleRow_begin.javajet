@@ -37,30 +37,36 @@ if(("true").equals(useExistingConn)) {
 	String conn = "conn_" + connection;
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-	if (null == conn_<%=cid%>) {
 <%	
-		INode connectionNode = null; 
-		for (INode processNode : node.getProcess().getGeneratingNodes()) { 
-			if(connection.equals(processNode.getUniqueName())) { 
-				connectionNode = processNode; 
-				break; 
-			} 
+	INode connectionNode = null; 
+	for (INode processNode : node.getProcess().getGeneratingNodes()) { 
+		if(connection.equals(processNode.getUniqueName())) { 
+			connectionNode = processNode; 
+			break; 
 		} 
+	} 
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(specify_alias){
 		String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__"); 
 %> 
-		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES); 
-		conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		if (null == conn_<%=cid%>) {
+			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES); 
+			conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		}
+<%
 	}
-<%
-} else {   
-%>
-	java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-	if (null != dataSources_<%=cid%>) {
-<%
+} else {
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(specify_alias){
 		String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
-		conn_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
-	} else {
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+		if (null != dataSources_<%=cid%>) {
+			conn_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+		} else {
+<%
+	}
+%>
 		<%if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){%>
 			java.lang.Class.forName("oracle.jdbc.OracleDriver");	
 		<%}else {%>
@@ -106,9 +112,11 @@ if(("true").equals(useExistingConn)) {
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 		}
+	if(specify_alias){
 %>
 	}
 <%
+	}
 }
 %>
 
