@@ -203,6 +203,7 @@ public class JobletContainerPart extends NodeContainerPart {
                     JobletContainer jCon = (JobletContainer) getModel();
                     if (jCon.getNode().isMapReduceStart()) {
                         jCon.updateJobletNodes(true);
+                        ((JobletContainerFigure) getFigure()).updateData();
                     } else if (jCon.getMrStartContainer() != null) {
                         jCon.getMrStartContainer().updateJobletNodes(true);
                     }
