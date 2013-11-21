@@ -563,7 +563,7 @@
       <IMPORT NAME="JBOSS MDR" MODULE="jboss-mdr.jar" REQUIRED="true" />
       <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
       <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
-      <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" REQUIRED="false" /> 
+      <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'JBOSS')" /> 
       <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'WEBSPHERE')" />
       <IMPORT NAME="Java Message Service" MODULE="jms.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'WEBSPHERE')" />
     </IMPORTS>
