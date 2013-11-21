@@ -26,8 +26,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
@@ -54,17 +52,32 @@ public class JobErrorsChecker {
     public static boolean hasErrors(Shell shell) {
 
         try {
+            Item item = null;
+            IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                    .getProxyRepositoryFactory();
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
             Set<String> jobIds = new HashSet<String>();
             for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
+                // TDI-28198:get right process item no matter the job open or close
+                List<IRepositoryViewObject> allVersions = proxyRepositoryFactory.getAllVersion(jobInfo.getJobId());
+                for (IRepositoryViewObject repositoryObject2 : allVersions) {
+                    Property property2 = repositoryObject2.getProperty();
+                    if (jobInfo.getJobVersion().equals(property2.getVersion())) {
+                        item = property2.getItem();
+                        break;
+                    }
+                }
+                if (item == null) {
+                    continue;
+                }
                 // get source file
-                IFile sourceFile = synchronizer.getProcessFile(jobInfo);
+                IFile sourceFile = synchronizer.getFile(item);
 
-                jobIds.add(jobInfo.getJobId());
+                jobIds.add(item.getProperty().getId());
 
                 // Property property = process.getProperty();
-                Problems.addRoutineFile(sourceFile, ProblemType.JOB, jobInfo.getJobName(), jobInfo.getJobVersion(), true);
+                Problems.addJobRoutineFile(sourceFile, ProblemType.JOB, item, true);
             }
             Problems.refreshProblemTreeView();
 
@@ -91,7 +104,7 @@ public class JobErrorsChecker {
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
             Set<String> jobIds = new HashSet<String>();
 
-            List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
+            List<RepositoryNode> nodes = selection.toList();
             if (nodes.size() > 1) {
                 // in case it's a multiple export, only check the status of the latest job to export
                 for (RepositoryNode node : nodes) {
@@ -170,7 +183,7 @@ public class JobErrorsChecker {
             List<JobErrorEntry> input = builder.createTreeInput(errors, jobIds);
             try {
                 if (input.size() > 0) {
-                    String label = ((JobErrorEntry) input.get(0)).getLabel();
+                    String label = input.get(0).getLabel();
                     if (isJob) {
                         throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
                                 Messages.getString("JobErrorsChecker_compile_error_content", label));
