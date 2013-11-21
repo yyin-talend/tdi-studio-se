@@ -10,16 +10,19 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.model.migration;
+package org.talend.repository.model.migration.mr;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -32,6 +35,17 @@ public class RemoveUseHadoopPropertiesFortMRConfiguration extends
 		AbstractJobMigrationTask {
 
 	@Override
+	public List<ERepositoryObjectType> getTypes() {
+		List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+		ERepositoryObjectType type = ERepositoryObjectType
+				.getType("PROCESS_MR"); //$NON-NLS-1$
+		if (type != null) {
+			toReturn.add(type);
+		}
+		return toReturn;
+	}
+
+	@Override
 	public ExecutionResult execute(Item item) {
 		ProcessType processType = getProcessType(item);
 		if (processType != null) {
@@ -42,18 +56,19 @@ public class RemoveUseHadoopPropertiesFortMRConfiguration extends
 				for (int i = 0; i < elementParameters.size(); i++) {
 					ElementParameterType param = (ElementParameterType) elementParameters
 							.get(i);
-					if ("USE_HADOOP_PROPERTIES".equals(param.getName()) && "true".equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$ //$NON-NLS-2$
-
-						for (int j = 0; i < elementParameters.size(); i++) {
-							ElementParameterType hadoopProps = (ElementParameterType) elementParameters
-									.get(j);
-							if ("HADOOP_ADVANCED_PROPERTIES"
-									.equalsIgnoreCase(hadoopProps.getName())) {
-								hadoopProps.getElementValue().clear();
-								modified = true;
+					if ("USE_HADOOP_PROPERTIES".equals(param.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
+						if ("false".equalsIgnoreCase(param.getValue())) {
+							for (int j = 0; j < elementParameters.size(); j++) {
+								ElementParameterType hadoopProps = (ElementParameterType) elementParameters
+										.get(j);
+								if ("HADOOP_ADVANCED_PROPERTIES"
+										.equalsIgnoreCase(hadoopProps.getName())) {
+									hadoopProps.getElementValue().clear();
+								}
 							}
 						}
 						elementParameters.remove(param);
+						modified = true;
 						break;
 					}
 				}
