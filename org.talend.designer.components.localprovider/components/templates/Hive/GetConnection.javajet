@@ -206,6 +206,16 @@ java.sql.Connection conn_<%=cid%> = null;
 	    	init_<%=cid%>.execute("SET mapred.job.reduce.memory.mb=" + <%=reduceMemory%>);
 <%
 		}
+		
+		if(securedEmbedded) {
+			String namenodePrincipal = ElementParameterParser.getValue(node, "__NAMENODE_PRINCIPAL__");
+			String jobtrackerPrincipal = ElementParameterParser.getValue(node, "__JOBTRACKER_PRINCIPAL__");
+%>
+				init_<%=cid%>.execute("SET dfs.namenode.kerberos.principal=" + <%=namenodePrincipal%>);
+				init_<%=cid%>.execute("SET mapreduce.jobtracker.kerberos.principal=" + <%=jobtrackerPrincipal%>);
+<%
+		}
+		
     	boolean setResourceManager = "true".equals(ElementParameterParser.getValue(node, "__SET_RESOURCE_MANAGER__"));
 		
     	if((isCustom && useYarn) || (!isCustom && ("PIVOTAL_HD_1_0_1".equals(hiveVersion) || "HDP_2_0".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion)))) {
