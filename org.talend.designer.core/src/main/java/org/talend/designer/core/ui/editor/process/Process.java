@@ -139,7 +139,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
@@ -2018,6 +2017,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         updateAllMappingTypes();
         nc.setNeedLoadLib(false);
         //
+        if (nc.isJoblet() && GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                service.reloadJobletProcess(nc);
+            }
+        }
         return nc;
     }
 
