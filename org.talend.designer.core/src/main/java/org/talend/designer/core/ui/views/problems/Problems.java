@@ -201,6 +201,12 @@ public class Problems {
         // addErrorMark();
     }
 
+    public static void add(ProblemStatus status, IMarker marker, Item item, String markerErrorMessage, Integer lineN,
+            String uniName, Integer charStart, Integer charEnd, ProblemType type) {
+        Problem problem = new TalendProblem(status, item, marker, markerErrorMessage, lineN, uniName, charStart, charEnd, type);
+        add(problem);
+    }
+
     public static void addAll(List<Problem> problems) {
         for (Problem current : problems) {
             add(current);
@@ -581,6 +587,74 @@ public class Problems {
                             uniName = "uniName";//$NON-NLS-1$
                         }
                         add(status, marker, label, message, lineNr, uniName, start, end, type, version);
+                    }
+                }
+
+            }
+            if (fromJob.length > 0 && fromJob[0]) {
+                addErrorMark();
+            }
+
+        } catch (org.eclipse.core.runtime.CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return informations;
+    }
+
+    public static List<Information> addJobRoutineFile(IFile file, ProblemType type, Item Item, boolean... fromJob) {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        String uniName = null;
+
+        List<Information> informations = new ArrayList<Information>();
+        try {
+            IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+
+            Problems.clearAllComliationError(Item.getProperty().getLabel());
+            for (IMarker marker : markers) {
+                Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
+                String message = (String) marker.getAttribute(IMarker.MESSAGE);
+                Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
+                Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
+                Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
+
+                if (lineNr != null && message != null && severity != null && start != null && end != null) {
+                    Information information = PropertiesFactory.eINSTANCE.createInformation();
+                    information.setText(message);
+                    informations.add(information);
+
+                    ProblemStatus status = null;
+                    switch (severity) {
+                    case IMarker.SEVERITY_ERROR:
+                        status = ProblemStatus.ERROR;
+                        information.setLevel(InformationLevel.ERROR_LITERAL);
+                        IPath location = file.getLocation();
+                        if (location != null) {
+                            String path = location.toString();
+                            uniName = setErrorMark(path, lineNr);
+                        }
+                        break;
+                    case IMarker.SEVERITY_WARNING:
+                        status = ProblemStatus.WARNING;
+                        information.setLevel(InformationLevel.WARN_LITERAL);
+                        break;
+                    case IMarker.SEVERITY_INFO:
+                        status = ProblemStatus.INFO;
+                        information.setLevel(InformationLevel.INFO_LITERAL);
+                        break;
+                    default:
+                        break;
+                    }
+                    if (status != null) {
+                        if (status != ProblemStatus.ERROR) {
+                            continue;
+                        }
+                        if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
+                            uniName = "uniName";//$NON-NLS-1$
+                        }
+                        add(status, marker, Item, message, lineNr, uniName, start, end, type);
                     }
                 }
 

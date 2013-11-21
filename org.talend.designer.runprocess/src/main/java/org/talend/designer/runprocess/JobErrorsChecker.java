@@ -52,17 +52,32 @@ public class JobErrorsChecker {
     public static boolean hasErrors(Shell shell) {
 
         try {
+            Item item = null;
+            IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                    .getProxyRepositoryFactory();
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
             Set<String> jobIds = new HashSet<String>();
             for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
+                // TDI-28198:get right process item no matter the job open or close
+                List<IRepositoryViewObject> allVersions = proxyRepositoryFactory.getAllVersion(jobInfo.getJobId());
+                for (IRepositoryViewObject repositoryObject2 : allVersions) {
+                    Property property2 = repositoryObject2.getProperty();
+                    if (jobInfo.getJobVersion().equals(property2.getVersion())) {
+                        item = property2.getItem();
+                        break;
+                    }
+                }
+                if (item == null) {
+                    continue;
+                }
                 // get source file
-                IFile sourceFile = synchronizer.getProcessFile(jobInfo);
+                IFile sourceFile = synchronizer.getFile(item);
 
-                jobIds.add(jobInfo.getJobId());
+                jobIds.add(item.getProperty().getId());
 
                 // Property property = process.getProperty();
-                Problems.addRoutineFile(sourceFile, ProblemType.JOB, jobInfo.getJobName(), jobInfo.getJobVersion(), true);
+                Problems.addJobRoutineFile(sourceFile, ProblemType.JOB, item, true);
             }
             Problems.refreshProblemTreeView();
 
