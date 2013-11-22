@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -54,7 +55,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -205,44 +205,10 @@ public class ExportItemWizardPage extends WizardPage {
 
         createSelectionButton(itemComposite);
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-        // exportItemsTreeViewer.refresh();
-        exportItemsTreeViewer.getTree().setRedraw(false);
-
-        // expand to level of metadata connection force loading nodes
-        exportItemsTreeViewer.expandToLevel(3);
-        // expand reference project to level
-        if (exportItemsTreeViewer.getInput() instanceof ProjectRepositoryNode) {
-            RepositoryNode rootRepositoryNode = ((ProjectRepositoryNode) exportItemsTreeViewer.getInput()).getRootRepositoryNode(
-                    ERepositoryObjectType.REFERENCED_PROJECTS, false);
-            expandReferencedItem(rootRepositoryNode);
-        }
-
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandToLevel"); //$NON-NLS-1$
-        exportItemsTreeViewer.getTree().setRedraw(true);
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to redraw"); //$NON-NLS-1$
 
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
         checkSelectedElements(exportItemsTreeViewer);
-    }
-
-    /**
-     * expand project to leval to make dependency selection works for ref metadata "exportReferencedItem".
-     * 
-     * @param refProNode
-     */
-    private void expandReferencedItem(RepositoryNode refProNode) {
-        if (refProNode == null) {
-            return;
-        }
-        for (IRepositoryNode projectNode : refProNode.getChildren()) {
-            if (projectNode instanceof ProjectRepositoryNode) {
-                getItemsTreeViewer().expandToLevel(projectNode, 3);
-                RepositoryNode rootRepositoryNode = ((ProjectRepositoryNode) projectNode).getRootRepositoryNode(
-                        ERepositoryObjectType.REFERENCED_PROJECTS, false);
-                expandReferencedItem(rootRepositoryNode);
-            }
-        }
     }
 
     protected void checkSelectedElements(CheckboxTreeViewer exportItemsTreeViewer) {
@@ -315,32 +281,43 @@ public class ExportItemWizardPage extends WizardPage {
         return true;
     }
 
-    private void checkElement(Object obj, Set nodes) {
+    private void checkElement(Object obj, Set<Object> nodes) {
         if (obj == null) {
             return;
         }
         if (obj instanceof RepositoryNode) {
-            RepositoryNode node = (RepositoryNode) obj;
-            ERepositoryObjectType objectType = node.getObjectType();
-            Property property = null;
-            if (objectType != null) {
-                if (objectType == ERepositoryObjectType.METADATA_CON_TABLE
-                        || objectType == ERepositoryObjectType.METADATA_CON_VIEW
-                        || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
-                        || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
-                    if (node.getObject() != null) {
-                        property = node.getObject().getProperty();
-                    }
-                }
-
-            }
-            if (property != null) {
-                RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
+            Object repositoryNode = null;
+            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                repositoryNode = nodeHandler.getRepositoryNode(((RepositoryNode) obj).getObject());
                 if (repositoryNode != null) {
-                    nodes.add(repositoryNode);
+                    break;
                 }
+            }
+            if (repositoryNode != null) {
+                nodes.add(repositoryNode);
             } else {
-                nodes.add(node);
+                RepositoryNode node = (RepositoryNode) obj;
+                ERepositoryObjectType objectType = node.getObjectType();
+                Property property = null;
+                if (objectType != null) {
+                    if (objectType == ERepositoryObjectType.METADATA_CON_TABLE
+                            || objectType == ERepositoryObjectType.METADATA_CON_VIEW
+                            || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                            || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
+                        if (node.getObject() != null) {
+                            property = node.getObject().getProperty();
+                        }
+                    }
+
+                }
+                if (property != null) {
+                    repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
+                    if (repositoryNode != null) {
+                        nodes.add(repositoryNode);
+                    }
+                } else {
+                    nodes.add(node);
+                }
             }
         } else {
             nodes.add(obj);
@@ -351,28 +328,45 @@ public class ExportItemWizardPage extends WizardPage {
         if (type == ERepositoryObjectType.SVN_ROOT) {
             viewer.setExpandedState(nodeObject, true);
         }
-        Object parent = getParentNode(nodeObject);
+        Object parent = null;
+        Object repositoryNode = null;
+        if (nodeObject instanceof RepositoryNode) {
+            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                repositoryNode = nodeHandler.getRepositoryNode(((RepositoryNode) nodeObject).getObject());
+                if (repositoryNode != null) {
+                    // here we start another recursive loop
+                    // this one will try to expand RepositoryNode
+                    // while the current one will try to expand IResource (or other) node.
+                    expandParent(viewer, ((RepositoryNode) nodeObject).getParent(), type);
+                    break;
+                }
+            }
+        }
+        if (repositoryNode == null) {
+            repositoryNode = nodeObject;
+        }
+        parent = getParentNode(repositoryNode);
+
         if (parent != null) {
             expandParent(viewer, parent, type);
-            if (ERepositoryObjectType.METADATA_CONNECTIONS != null && ERepositoryObjectType.METADATA_CONNECTIONS.equals(type)) {
-                viewer.expandToLevel(nodeObject, TreeViewer.ALL_LEVELS);
-            } else {
-                viewer.setExpandedState(nodeObject, true);
-            }
-
+        }
+        if (repositoryNode instanceof ProjectRepositoryNode
+                || ((repositoryNode instanceof RepositoryNode) && ((RepositoryNode) repositoryNode).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
+            viewer.expandToLevel(repositoryNode, 3);
+        } else if (!(repositoryNode instanceof IFile)) {
+            viewer.expandToLevel(repositoryNode, 1);
         }
     }
 
     private Object getParentNode(Object nodeObject) {
+        for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+            Object parent = nodeHandler.getParent(nodeObject);
+            if (parent != null) {
+                return parent;
+            }
+        }
         if (nodeObject instanceof RepositoryNode) {
             return ((RepositoryNode) nodeObject).getParent();
-        } else {
-            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                Object parent = nodeHandler.getParent(nodeObject);
-                if (parent != null) {
-                    return parent;
-                }
-            }
         }
         return null;
     }
@@ -746,7 +740,6 @@ public class ExportItemWizardPage extends WizardPage {
                     expandRoot(objectType);
                     expandParent(exportItemsTreeViewer, obj, objectType);
                     checkElement(obj, toselect);
-
                 }
                 exportItemsTreeViewer.setCheckedElements(toselect.toArray());
             }
@@ -780,64 +773,28 @@ public class ExportItemWizardPage extends WizardPage {
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("Dependencies", 100);//$NON-NLS-1$
-                monitor.setCanceled(false);
+
                 //
                 final List<IRepositoryViewObject> repositoryObjects = new ArrayList<IRepositoryViewObject>();
 
                 ProcessUtils.clearFakeProcesses();
+                for (Item item : selectedItems) {
+                    RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects, false, true);
+                }
 
-                // dependencies All
-                Display.getDefault().syncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (Item item : selectedItems) {
-                            RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects);
-                        }
-
-                    }
-                });
                 monitor.worked(60);
-                Display.getDefault().syncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                            Object repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, false);
-                            if (repositoryNode == null) {
-                                for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager
-                                        .getExtendedNodeHandler()) {
-                                    repositoryNode = nodeHandler.getRepositoryNode(repositoryObject);
-                                    if (repositoryNode != null) {
-                                        break;
-                                    }
-                                }
-                            }
-                            if (repositoryNode != null) {
-                                checkedDependency.add(repositoryNode);
-                            } else {
-                                implicitDependences.add(repositoryObject);
-                            }
-
-                        }
+                for (IRepositoryViewObject repositoryObject : repositoryObjects) {
+                    Object repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, monitor);
+                    if (repositoryNode != null) {
+                        checkedDependency.add(repositoryNode);
+                    } else {
+                        implicitDependences.add(repositoryObject);
                     }
-                });
+
+                }
                 monitor.worked(90);
-                // selection
-                // Display.getDefault().syncExec(new Runnable() {
-                //
-                // @Override
-                // public void run() {
-                // CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                // Set nodes = new HashSet();
-                // nodes.addAll(checkedNode);
-                // nodes.addAll(checkedNodesWithDependency);
-                // exportItemsTreeViewer.setCheckedElements(nodes.toArray());
-                //
-                // }
-                // });
                 ProcessUtils.clearFakeProcesses();
                 monitor.done();
             }
@@ -845,7 +802,7 @@ public class ExportItemWizardPage extends WizardPage {
         };
         final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
         try {
-            dialog.run(true, false, runnable);
+            dialog.run(true, true, runnable);
         } catch (InvocationTargetException e) {
             //
         } catch (InterruptedException e) {
