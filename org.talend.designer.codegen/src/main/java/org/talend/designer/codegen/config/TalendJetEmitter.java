@@ -460,7 +460,7 @@ public class TalendJetEmitter extends JETEmitter {
             cmdList.add(classpathStr);
         }
         //cmdList.add("-time"); //$NON-NLS-1$
-        cmdList.add("-g:none"); //$NON-NLS-1$
+        cmdList.add("-g"); //$NON-NLS-1$
         cmdList.add("-warn:none"); //$NON-NLS-1$
         cmdList.add("-1.5"); //$NON-NLS-1$
         cmdList.add("-d"); //$NON-NLS-1$
