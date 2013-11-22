@@ -19,15 +19,15 @@ imports="
 		String process_name = ElementParameterParser.getValue(node, "__PROCESS_NAME__");
 		String process_version = ElementParameterParser.getValue(node, "__PROCESS_VERSION__");
 		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
-%>
-	String processInstanceUUID_<%=cid%> = null;
-	StringBuilder parameters_<%=cid%> = new StringBuilder("options=user:");
-	parameters_<%=cid%>.append(<%=userName%>);
-	String url_<%=cid %> = <%=url%> + "API/runtimeAPI/instantiateProcessWithVariables/" + <%=process_name%> +"--" +<%=process_version%>;
-	java.net.HttpURLConnection httpConn_<%=cid %> = null;
+		%>
+		String processInstanceUUID_<%=cid%> = null;
+		StringBuilder parameters_<%=cid%> = new StringBuilder("options=user:");
+		parameters_<%=cid%>.append(<%=userName%>);
+		String url_<%=cid %> = <%=url%> + "API/runtimeAPI/instantiateProcessWithVariables/" + <%=process_name%> +"--" +<%=process_version%>;
+		java.net.HttpURLConnection httpConn_<%=cid %> = null;
 	
-	try {
 		httpConn_<%=cid %> = (java.net.HttpURLConnection) new java.net.URL(url_<%=cid%>).openConnection();
+		resourceMap.put("httpConn_<%=cid%>", httpConn_<%=cid%>); 
 		httpConn_<%=cid %>.setUseCaches (false);
 	    httpConn_<%=cid %>.setDoInput(true);
 	    httpConn_<%=cid %>.setDoOutput(true);
@@ -35,7 +35,7 @@ imports="
 	    httpConn_<%=cid %>.setRequestMethod("POST");
 	    httpConn_<%=cid %>.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	    httpConn_<%=cid %>.setRequestProperty("Authorization", "Basic " + new String(org.apache.commons.codec.binary.Base64.encodeBase64((<%=authUserName%>+ ":"+ <%=authPasswd%>).getBytes(utf8Charset)),utf8Charset));
-<%
+	<%
 	} else { // JAVA CLIENT
 	
 		String processID = ElementParameterParser.getValue(node, "__PROCESS_ID__");
@@ -57,15 +57,15 @@ imports="
 		String bonitaHome = ElementParameterParser.getValue(node, "__BONITA_HOME__");
 	
 		if("BONITA_561".equals(dbVersion) || "BONITA_5101".equals(dbVersion)){
-%>
-		System.setProperty("BONITA_HOME", <%=bonitaHome%>);
-<%
+		%>
+			System.setProperty("BONITA_HOME", <%=bonitaHome%>);
+		<%
 		}else if("BONITA_531".equals(dbVersion)||"BONITA_523".equals(dbVersion)){
-%>
-		System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%> );
-<%
+		%>
+			System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%> );
+		<%
 		}
-%>
+		%>
 		System.setProperty("java.security.auth.login.config", <%=jassFile%> );
 		System.setProperty("java.util.logging.config.file", new java.io.File(<%=loggingFile%>).toURI().toURL().toString());
 		
@@ -77,19 +77,18 @@ imports="
 		String processInstanceUUID_<%=cid%> = null;
 		java.util.Map<String, Object> parameters_<%=cid%>=new java.util.HashMap<String, Object>();
 		
-		try {
-				
-			loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
-			loginContext_<%=cid%>.login();
-<%
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		resourceMap.put("loginContext_<%=cid%>", loginContext_<%=cid%>); 
+		loginContext_<%=cid%>.login();
+		<%
 		if("true".equals(use_process_id)) {
-%>
+		%>
 			processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=processID%>);
-<%
+		<%
 		} else {
-%>
+		%>
 			processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=process_name%>, <%=process_version%>);
-<%
+		<%
 		}
-}
-%>
+	}
+	%>

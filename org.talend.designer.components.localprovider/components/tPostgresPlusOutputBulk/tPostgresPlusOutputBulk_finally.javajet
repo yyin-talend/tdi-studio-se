@@ -9,6 +9,9 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-	csvWriter_<%=cid%>.close();
-	resourceMap.put("finish_<%=cid%>", true);
-	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+
+	if(resourceMap.get("finish_<%=cid%>") == null){
+		if(resourceMap.get("out<%=cid %>") != null){
+			((java.io.BufferedWriter)resourceMap.get("out<%=cid %>")).close();
+		}
+	}

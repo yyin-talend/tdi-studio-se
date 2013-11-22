@@ -58,16 +58,18 @@ class="MomInput"
 			}	
 		}
 	}
-%>
+	%>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 
-<%	if (isUseSharedConnection) { %>
-            javax.jms.Connection connection_<%=cid %> = null;
+	<%	
+	if (isUseSharedConnection) { 
+	%>
+        javax.jms.Connection connection_<%=cid %> = null;
 	    javax.jms.Session session_<%=cid %> = null;
-            try {
+        try {
 	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
-                connection_<%=cid %>.start();
-		session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+            connection_<%=cid %>.start();
+			session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
 		} catch (NullPointerException npe) {
 		    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
 		}
@@ -77,44 +79,49 @@ class="MomInput"
 		if(producer_<%=cid %> == null) {
 		
 			javax.jms.Destination des_<%=cid %>;
-<%
-		if (("Queue").equals(msgType)) {
-%>
-			des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
-<%
-		} else {
-%>
-	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
-<%
-		}
-%>
+			<%
+			if (("Queue").equals(msgType)) {
+			%>
+				des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
+			<%
+			} else {
+			%>
+	    		des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
+			<%
+			}
+			%>
  
 		 	producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
 		
-<%
-		if ("N_PERSISTENT".equals(deliverMode)) {
-%>
-			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-<%
-		} else if ("PERSISTENT".equals(deliverMode)) {
-%>
-			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
-<%
-		}
-%>
+			<%
+			if ("N_PERSISTENT".equals(deliverMode)) {
+			%>
+				producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+			<%
+			} else if ("PERSISTENT".equals(deliverMode)) {
+			%>
+				producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+			<%
+			}
+			%>
 		}
 
-		<%if(!isCommitRollback && transacted){%>
-        	try {   // For rollback
+		<%
+		if(!isCommitRollback && transacted){
+		%>
+        	resourceMap.put("session_<%=cid%>", session_<%=cid%>);
+        	resourceMap.put("producer_<%=cid%>", producer_<%=cid%>);
+			resourceMap.put("connection_<%=cid%>", connection_<%=cid%>);
 		<%
 		}
 		%>
 		    
-<%	} else if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
+	<%	
+	} else if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
 	
 	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
 		if(("JBoss").equals(serverType)){ 
-%>
+		%>
 			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
 			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
 			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
@@ -123,22 +130,22 @@ class="MomInput"
 			javax.jms.ConnectionFactory factory_<%=cid%>
 				= (javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
 				
-<%
+		<%
 		}else if(("ActiveMQ").equals(serverType)) {
-%>
+		%>	
 			String url_<%=cid %> ="";
 
       		<%if(failover){%>
-			url_<%=cid %> = "failover:(";
-			<%
+				url_<%=cid %> = "failover:(";
+				<%
 				int i=0;
 				for(Map<String, String> serversMap : servers) {
 					strHost = serversMap.get("SERVERS_HOST");
 					strPort = serversMap.get("SERVERS_PORT");
-
+	
 					if(i>0) {
 					%>
-					url_<%=cid %> = url_<%=cid %> +",";
+						url_<%=cid %> = url_<%=cid %> +",";
 					<%
 					}
 					%>
@@ -161,60 +168,68 @@ class="MomInput"
 			
 			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
 				new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
-<%
+		<%
 		}
 		
 		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
-%>	
+		%>	
 				
-<%  	if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
+		<%
+		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-<%		} else { %>
+		<%
+		} else { 
+		%>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
-<%		} %>
+		<%
+		} 
+		%>
 			
 		connection_<%=cid %>.start();
 	
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 		
 		javax.jms.Destination des_<%=cid %>;
-<%
+		<%
 		if (("Queue").equals(msgType)) {
-%>
+		%>
 			des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
-<%
+		<%
 		} else {
-%>
+		%>
 	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
-<%
-		}
-%>
-		javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
-		
-<%
-		if ("N_PERSISTENT".equals(deliverMode)) {
-%>
-			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-<%
-		} else if ("PERSISTENT".equals(deliverMode)) {
-%>
-			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
-<%
-		}
-%>
-		<%if(!isCommitRollback && transacted){%>
-        	try {   // For rollback
 		<%
 		}
 		%>
-<%
+		javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+		
+		<%
+		if ("N_PERSISTENT".equals(deliverMode)) {
+		%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+		<%
+		} else if ("PERSISTENT".equals(deliverMode)) {
+		%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+		<%
+		}
+		%>
+		<%if(!isCommitRollback && transacted){%>
+			resourceMap.put("session_<%=cid%>", session_<%=cid%>);
+			resourceMap.put("producer_<%=cid%>", producer_<%=cid%>);
+			resourceMap.put("connection_<%=cid%>", connection_<%=cid%>);
+
+		<%
+		}
+		%>
+	<%
 	}else{ //server judgement   /***WebSphere MQ*****/
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 		String qm=ElementParameterParser.getValue(node, "__QM__");
 		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
 		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
 		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
-%>
+		%>
 	    props_<%=cid%>.put("hostname", <%=host%>);
 	    props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
 	    props_<%=cid%>.put("channel", <%=channel%>);
@@ -238,52 +253,52 @@ class="MomInput"
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
 	    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
-<%	    
+		<%	    
 	    if (transacted) {
-%>	
-		opM_<%=cid%>.options=opM_<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
-<%
+		%>	
+			opM_<%=cid%>.options=opM_<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+		<%
 	    }
 	}
 	if(isUseSharedConnection ||("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
 		if(setJmsHeader && jmsHeaders !=null && jmsHeaders.size()>0){
-%>
-		if(producer_<%=cid %>!=null){
-<%
-			for(Map<String,String> header:jmsHeaders) {
-				java.util.List<String> senderHeaderParams = java.util.Arrays.asList(new String[]{"JMSExpiration","JMSPriority","JMSTimestamp","JMSDeliveryMode"});
-				String senderHeaderParam = header.get("JMS_HEADER_NAME");
-				if(!senderHeaderParams.contains(senderHeaderParam)){
-					continue;
+		%>
+			if(producer_<%=cid %>!=null){
+				<%
+				for(Map<String,String> header:jmsHeaders) {
+					java.util.List<String> senderHeaderParams = java.util.Arrays.asList(new String[]{"JMSExpiration","JMSPriority","JMSTimestamp","JMSDeliveryMode"});
+					String senderHeaderParam = header.get("JMS_HEADER_NAME");
+					if(!senderHeaderParams.contains(senderHeaderParam)){
+						continue;
+					}
+					if("JMSExpiration".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setTimeToLive(<%=header.get("JMS_HEADER_VALUE")%>);
+					<%
+					}
+					if("JMSPriority".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setPriority(<%=header.get("JMS_HEADER_VALUE")%>);	
+					<%
+					}
+					if("JMSTimestamp".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setDisableMessageTimestamp(false);
+					<%
+					}
+					if("JMSDeliveryMode".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setDeliveryMode(<%=header.get("JMS_HEADER_VALUE")%>);
+					<%
+					}
 				}
-				if("JMSExpiration".equals(senderHeaderParam)){
-%>
-			producer_<%=cid %>.setTimeToLive(<%=header.get("JMS_HEADER_VALUE")%>);
-<%
-				}
-				if("JMSPriority".equals(senderHeaderParam)){
-%>
-			producer_<%=cid %>.setPriority(<%=header.get("JMS_HEADER_VALUE")%>);	
-<%
-				}
-				if("JMSTimestamp".equals(senderHeaderParam)){
-%>
-			producer_<%=cid %>.setDisableMessageTimestamp(false);
-<%
-				}
-				if("JMSDeliveryMode".equals(senderHeaderParam)){
-%>
-			producer_<%=cid %>.setDeliveryMode(<%=header.get("JMS_HEADER_VALUE")%>);
-<%
-				}
+				%>
 			}
-%>
-		}
 			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 			globalMap.put("session_<%=cid %>",session_<%=cid %>);
 			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
-<%
+		<%
 		}
 	}
-%>
+	%>
 	

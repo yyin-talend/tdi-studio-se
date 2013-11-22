@@ -65,7 +65,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				
 		java.io.BufferedWriter csvWriter_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>));
-        try{
+        resourceMap.put("csvWriter_<%=cid%>", csvWriter_<%=cid%>); 
 <%
 		if(checkDiskSpace){
 %>

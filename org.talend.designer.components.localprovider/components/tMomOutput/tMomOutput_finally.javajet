@@ -28,42 +28,23 @@ if (isUseSharedConnection) {
 	}
 }
 
-if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseSharedConnection){
-	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-	if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType) && !isCommitRollback) ){
-		// if no commmit or rollback component exists and set transacted - commit session
-		if(transacted){
-		%>
-			session_<%=cid%>.commit();
-		<%	
-		}
-        if (!isUseSharedConnection) {
-		%> // if no commmit or rollback component exists - close session
- 			System.out.println("Closing connection");
-			producer_<%=cid %>.close();
-            session_<%=cid %>.close();
-            connection_<%=cid %>.close();
-		<%	
-		}
-	}
-	if((("ActiveMQ").equals(serverType) || isUseSharedConnection) && !isCommitRollback && transacted){
-	%>
-		resourceMap.put("finish_<%=cid%>", true); 
-	<%
-	}
-}else{//server judgement   /***WebSphere MQ*****/
-	if (transacted) {
-	%>
-		globalMap.put("remoteQ_<%=cid%>",remoteQ_<%=cid%>);
-		globalMap.put("qMgr_<%=cid%>",qMgr_<%=cid%>);
-	<%
-	} else {
-	%>
-		System.out.println("Closing connection");
-		remoteQ_<%=cid%>.close();
-		qMgr_<%=cid%>.disconnect();
+if((("ActiveMQ").equals(serverType) || isUseSharedConnection) && !isCommitRollback && transacted){
+%>
 
-	<%
+	if(resourceMap.get("finish_<%=cid%>") == null){
+		if(resourceMap.get("session_<%=cid%>") != null){
+			((javax.jms.Session)resourceMap.get("session_<%=cid%>")).rollback();
+	    	<%if(!isUseSharedConnection){%>
+	    		if(resourceMap.get("producer_<%=cid%>") != null){
+		    		((javax.jms.MessageProducer)resourceMap.get("producer_<%=cid%>")).close();
+				}
+   	    	 	((javax.jms.Session)resourceMap.get("session_<%=cid%>")).close();
+   	    	 	if(resourceMap.get("connection_<%=cid%>") != null){
+	    	    	((javax.jms.Connection)resourceMap.get("connection_<%=cid%>")).close();
+	    	    }
+			<%}%>
+		}
 	}
+<%
 }
 %>

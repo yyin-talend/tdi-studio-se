@@ -116,8 +116,8 @@ if(useExistingConn){
 		com.sap.mw.jco.JCO.setMiddlewareProperty("jco.middleware.allow_start_of_programs", "ftp;sapftp;sapftpa;sapkprotp;http;saphttp;saphttpa");
 		client_<%=cid %>.setSapGui(2);
 		<%}%>
-		resourceMap.put("conn_<%=cid%>", client_<%=cid%>);
 	<%}%> 	
+	resourceMap.put("conn_<%=cid%>", client_<%=cid%>);
       
     com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
 
@@ -173,8 +173,8 @@ if(useExistingConn){
 	    dest_<%=cid%> = com.sap.conn.jco.JCoDestinationManager.getDestination("SAP_SERVER_<%=cid%>");
 	    // Begins the stateful call sequence for calls to the specified destination.
 		com.sap.conn.jco.JCoContext.begin(dest_<%=cid%>);
-		resourceMap.put("conn_<%=cid%>", dest_<%=cid%>);
 	<%}%> 
+	resourceMap.put("conn_<%=cid%>", dest_<%=cid%>);
 	com.sap.conn.jco.JCoRepository repository_<%=cid %> = dest_<%=cid%>.getRepository();
 	
 	com.sap.conn.jco.JCoFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate(<%=functionName %>);
