@@ -65,6 +65,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         if(incomingConnName != null && 
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
             %>
+            normalizeRecord_<%=cid%> = new String[1];
+            if("".equals(<%=incomingConnName %>.<%=normalizeColumn%>)){
+                normalizeRecord_<%=cid%>[0] = "";
+            }
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
                  <% if(useCSV){%>
                         com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
@@ -79,8 +83,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         reader_<%=cid%>.setQuoteChar('<%=textEnclosure %>');
                         if (reader_<%=cid%>.readNext()) {
                             normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
-                        } else {
-                            normalizeRecord_<%=cid%> = new String[1];
                         }
                     <% 
                     } else { 
@@ -96,8 +98,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                     		}
                     }
                     %>               
-            } else {
-                normalizeRecord_<%=cid%> = new String[1];
             }
             <%
             if(!outIterate.isEmpty()||outgoingConnName != null){
@@ -116,6 +116,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             	}else{
             %>
              int lastNoEmptyIndex_<%=cid%>=normalizeRecord_<%=cid%>.length;
+             	<%if(isDiscardTrailingEmptyStr){%>
+             		if(lastNoEmptyIndex_<%=cid%> == 1 && "".equals(normalizeRecord_<%=cid%>[0])){
+             			lastNoEmptyIndex_<%=cid%> = 0;
+             		}
+             	<%}%>
             <%
        			}
             %>
