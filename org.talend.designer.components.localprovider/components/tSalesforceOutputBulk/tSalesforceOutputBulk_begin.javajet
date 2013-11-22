@@ -35,7 +35,8 @@ file_<%=cid %>.getParentFile().mkdirs();
 com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), "UTF-8")));
 
-<%		if(!isAppend){
+try{
+<%
 			List< ? extends IConnection> conns = node.getIncomingConnections();
 	        	if(conns!=null){
 	        		if (conns.size()>0){
@@ -44,7 +45,8 @@ com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new j
 	            			List<IMetadataColumn> columns = metadata.getListColumns();
 	                		int sizeColumns = columns.size();
 	            			%>  	
-	                    	String[] header_<%=cid%>=new String[<%=sizeColumns%>];
+							if(file_<%=cid%>.length()==0){
+	                    		String[] header_<%=cid%>=new String[<%=sizeColumns%>];
 	                    	<%
 	                    
 	            			for (int i = 0; i < sizeColumns; i++) {
@@ -78,13 +80,13 @@ com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new j
 <%
 								}
 							}
+%>
+								csvWriter_<%=cid%>.writeNext(header_<%=cid%>);	
+							}	
+<%
 						}
 					}
 				}
-%>
-	csvWriter_<%=cid%>.writeNext(header_<%=cid%>);
-<%
-		}
 	}
 }
 %>
