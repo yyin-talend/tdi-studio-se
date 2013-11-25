@@ -36,7 +36,7 @@ public class MDMTransaction {
 
 		int statuscode = method.getStatusCode();
 		if (statuscode >= 400) {
-		    throw new MDMTransactionException("http response code : " + statuscode);
+		    throw new MDMTransactionException("Commit failed. The commit operation has returned the code " + statuscode + ".");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class MDMTransaction {
 
 		int statuscode = method.getStatusCode();
 		if (statuscode >= 400) {
-		    throw new MDMTransactionException("http response code : " + statuscode);
+		    throw new MDMTransactionException("Rollback failed. The rollback operation has returned the code " + statuscode + ".");
 		}
 	}
 	
