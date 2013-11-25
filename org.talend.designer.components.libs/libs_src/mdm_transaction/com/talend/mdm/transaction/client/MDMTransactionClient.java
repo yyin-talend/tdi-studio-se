@@ -62,13 +62,10 @@ public class MDMTransactionClient {
 
 	public static void main(String[] args) throws IOException {
 		MDMTransaction mt = MDMTransactionClient.newTransaction("http://localhost:8080/datamanager/services/transactions", "administrator", "administrator");
-		boolean commitresult = mt.commit();
+		mt.commit();
 		
 		MDMTransaction mt1 = MDMTransactionClient.newTransaction("http://localhost:8080/datamanager/services/transactions", "administrator", "administrator");
-		boolean rollbackcommit = mt1.rollback();
-		
-		System.out.println(commitresult);
-		System.out.println(rollbackcommit);
+		mt1.rollback();
 		
 		String url = "http://localhost:8080/talend/TalendPort";
 		String mdmurl = MDMTransactionClient.getMDMTransactionURL(url);

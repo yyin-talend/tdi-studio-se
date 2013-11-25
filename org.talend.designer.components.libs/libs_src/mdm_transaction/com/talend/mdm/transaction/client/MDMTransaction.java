@@ -17,7 +17,7 @@ public class MDMTransaction {
 	private String username;
 	private String password;
 	
-	public boolean commit() throws IOException {
+	public void commit() throws IOException {
 		HttpClient client = new HttpClient();
 		client.getState().setCredentials(AuthScope.ANY,
 				new UsernamePasswordCredentials(username, password));
@@ -36,12 +36,11 @@ public class MDMTransaction {
 
 		int statuscode = method.getStatusCode();
 		if (statuscode >= 400) {
-			return false;
+		    throw new MDMTransactionException("http response code : " + statuscode);
 		}
-		return true;
 	}
 
-	public boolean rollback() throws IOException {
+	public void rollback() throws IOException {
 		HttpClient client = new HttpClient();
 		client.getState().setCredentials(AuthScope.ANY,
 				new UsernamePasswordCredentials(username, password));
@@ -60,9 +59,8 @@ public class MDMTransaction {
 
 		int statuscode = method.getStatusCode();
 		if (statuscode >= 400) {
-			return false;
+		    throw new MDMTransactionException("http response code : " + statuscode);
 		}
-		return true;
 	}
 	
 	public void setUrl(String url) {
