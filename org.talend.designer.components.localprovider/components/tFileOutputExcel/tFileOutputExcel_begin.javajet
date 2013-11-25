@@ -66,6 +66,48 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     	List<IMetadataColumn> columns = metadata.getListColumns();
 		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+		/* Build the Log4J message for the different parameters */
+	
+		if(isLog4jEnabled) {
+%>
+			String log4jFileInputExcelParamters_<%=cid%> = "";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FILENAME = " + <%=ElementParameterParser.getValue(node, "__FILENAME__")%> + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "USESTREAM = " + <%=ElementParameterParser.getValue(node, "__USESTREAM__")%> + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "VERSION_2007 = " + <%=ElementParameterParser.getValue(node, "__VERSION_2007__")%> + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "SHEETNAME = " + <%=ElementParameterParser.getValue(node, "__SHEETNAME__")%> + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "INCLUDEHEADER = " + <%=ElementParameterParser.getValue(node, "__INCLUDEHEADER__")%> + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "APPEND_FILE = " + <%=ElementParameterParser.getValue(node, "__APPEND_FILE__")%> + " | ";
+			<% if("true".equals(ElementParameterParser.getValue(node, "__APPEND_FILE__"))) {%>
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "APPEND_SHEET = " + <%=ElementParameterParser.getValue(node, "__APPEND_SHEET__")%> + " | ";
+			<% } %>
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FIRST_CELL_Y_ABSOLUTE = " + <%=ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__")%> + " | ";
+			<% if("true".equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"))) {%>
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FIRST_CELL_X = " + <%=ElementParameterParser.getValue(node, "__FIRST_CELL_X__")%> + " | ";
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FIRST_CELL_Y = " + <%=ElementParameterParser.getValue(node, "__FIRST_CELL_Y__")%> + " | ";
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "KEEP_CELL_FORMATING = " + <%=ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__")%> + " | ";
+			<% } %>
+			
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FONT = " + "<%=ElementParameterParser.getValue(node, "__FONT__")%>" + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "IS_ALL_AUTO_SIZE = " + <%=ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__")%> + " | ";
+			<% if("true".equals(ElementParameterParser.getValue(node, "__VERSION_2007__"))) {%>
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FLUSHONROW = " + <%=ElementParameterParser.getValue(node, "__FLUSHONROW__")%> + " | ";
+				<% if("true".equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"))) {%>
+					log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "FLUSHONROW_NUM = " + <%=ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__")%> + " | ";
+				<% } %>
+			<% } %>
+			<% if("true".equals(ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__"))) {%>
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "THOUSANDS_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__")%> + " | ";
+				log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "DECIMAL_SEPARATOR = " + <%=ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__")%> + " | ";
+			<% } %>
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "ENCODING_TYPE = " + "<%=ElementParameterParser.getValue(node, "__ENCODING_TYPE__")%>" + " | ";
+			log4jFileInputExcelParamters_<%=cid%> = log4jFileInputExcelParamters_<%=cid%> + "DELETE_EMPTYFILE = " + <%=ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__")%> + " | ";
+			
+			log4jFileInputExcelParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jFileInputExcelParamters_<%=cid%>;
+			log.debug(log4jFileInputExcelParamters_<%=cid%>);
+<%
+		}
+		
+		/* -------------------------- */
 		log4jFileUtil.componentStartInfo(node);
     	if(!version07){//version judgement
 %>

@@ -32,6 +32,8 @@
 	boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
 
     List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 	String uniqueNameComponent = componentName.replaceAll("_TMAP_IN", "");
 	uniqueNameComponent = uniqueNameComponent.replaceAll("_TMAP_OUT", "");
@@ -47,8 +49,6 @@
 		}
 	}
 	
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-
 
 		// Bug partially fixed, see bug:785	
 		// Bug partially fixed, see bug:3966	
@@ -142,7 +142,25 @@
 	        }
 		}
 %>
-// ###############################        
-<%if(isLog4jEnabled){%>
-	log.info("<%=componentName%> - Has finished.");
-<%}%> 
+// ###############################      
+<%
+	List<ExternalMapperTable> outputTables = data.getOutputTables();
+	for(ExternalMapperTable outputTable : outputTables){
+		String outputTableName = outputTable.getName();  
+	
+		if(isLog4jEnabled){
+			if(!isVirtualOut) {
+%>
+				log.debug("<%=uniqueNameComponent%> - Written records count in the table '<%=outputTableName%>': " + count_<%=outputTableName%>_<%=uniqueNameComponent%> + ".");
+<%
+			}
+		}
+	}
+	if(isLog4jEnabled){
+		if(!isVirtualOut) {
+%>
+			log.info("<%=uniqueNameComponent%> - Done.");
+<%
+		}
+	}
+%>

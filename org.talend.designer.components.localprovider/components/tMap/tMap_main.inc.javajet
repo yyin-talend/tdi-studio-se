@@ -1585,9 +1585,20 @@ if(!isVirtualOut) { // T_TM_M_320
 						sb.append(cr).append(outputTable.getIsJoinTableOf() + "_tmp= new "+outputTable.getIsJoinTableOf() +"Struct();");
 						sb.append(cr);
 					}
+											
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
+						if(isLog4jEnabled){
+							sb.append(cr + "count_" + outputTableName + "_" + componentNameForKeyProblem + "++;" + cr);
+						}
+						int currentRow = 0;
 	                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
+							if(isLog4jEnabled){
+								if(currentRow != 0) {
+									sb.append(cr + "log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ".append(\"|\");" + cr);
+								}
+							}
+							currentRow++;
 	                        String outputColumnName = outputTableEntry.getName();
 	                        IMetadataColumn metadataColumnFromConn = null;
 	                        if(connectionExists) {
@@ -1637,24 +1648,18 @@ if(!isVirtualOut) { // T_TM_M_320
 	                            }
 	                        }
     	                    String expression = assignationVar + " = " + outputExpression + ";";
-							if(isLog4jEnabled){
-								if(curCount!=0){
-%>
-									log4jSb_<%=componentName%>.append("|");
-<%
-								}
-%>
-								log4jSb_<%=componentName%>.append(<%=outputExpression%>);
-<%
-								curCount++;
-							}
 	
 	                        sb.append(cr).append(expression);
+							if(isLog4jEnabled){
+								sb.append(cr + "log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ".append(" + outputExpression + ");" + cr);
+							}
 	
 	                        if (checkingSyntax) {
 	                            sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
 	                        }
 	                    } // for entries
+						
+						
 	
 	                    if (connectionExists) {
 	                    	if(hasJoinedTable(outputTableName, data)){
@@ -1667,6 +1672,12 @@ if(!isVirtualOut) { // T_TM_M_320
 	                    	} else {
 	                        	sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
 	                        }
+							
+							if(isLog4jEnabled){
+									sb.append(cr + "log.debug(\"" + componentNameForKeyProblem + " - Outputting the record \" + count_" + outputTableName + "_" + componentNameForKeyProblem + " + \" of the output table '" + outputTableName + "'.\");" + cr);
+									sb.append(cr + "log.trace(\"" + componentNameForKeyProblem + " - Content of the record \" + count_" + outputTableName + "_" + componentNameForKeyProblem + " + \" of the output table '" + outputTableName + "': \" + log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ");" + cr);
+									sb.append(cr + "log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ".delete(0, log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ".length());" + cr);
+							}
 	                        
 	                        if (trace) { // only for traces to be able to use preview mode in tMap.
        	                    	if(hasJoinedTable(outputTableName, data)){ 
@@ -1736,11 +1747,6 @@ if(!isVirtualOut) { // T_TM_M_320
 
 %>
 <%= sb.toString()%>
-<%if(isLog4jEnabled){%>
-	log.debug("<%=componentName%> - Outputting records : " + log4jSb_<%=componentName%>);
-	log4jSb_<%=componentName%>.delete(0,log4jSb_<%=componentName%>.length());
-<%}%>
-
 
 <%
 } // T_TM_M_320
@@ -1749,7 +1755,7 @@ if(!isVirtualOut) { // T_TM_M_320
 		} catch (java.lang.Exception e) {
 			//if anohter java.lang.Exception when processing an java.lang.Exception
     		<%if(isLog4jEnabled){%>
-    			log.error("<%=componentName%> - " + e.getMessage());
+    			log.error("<%=componentNameForKeyProblem%> - " + e.getMessage());
     		<%}%>
 			try{//EE
         <%
@@ -1926,7 +1932,7 @@ if(!isVirtualOut) { // T_TM_M_320
             %>
          } catch (java.lang.Exception ee) {//EE
         		<%if(isLog4jEnabled){%>
-        			log.error("<%=componentName%> - " + ee.getMessage());
+        			log.error("<%=componentNameForKeyProblem%> - " + ee.getMessage());
         		<%}%>
 				ee.printStackTrace();
             <%

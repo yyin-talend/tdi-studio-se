@@ -72,7 +72,7 @@ imports="
 				<%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
 				<%log4jCodeGenerateUtil.debugConnectionParams(node,this.getDirverClassName(node));%>
 				<%if(isLog4jEnabled){%>
-					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "with the username '"+ dbUser_<%=cid%> +"'.");
+					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '"+ dbUser_<%=cid%> +"'.");
 				<%}%>
 <%
 			if(needUserAndPassword) {

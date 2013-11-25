@@ -37,7 +37,7 @@ imports="
 			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 %>
-				log.info("<%=cid%> - Has finished.");
+				log.info("<%=cid%> - Done.");
 <%
 			}
 		}
@@ -50,9 +50,19 @@ imports="
 <%
 			}
 		}
-		
+
 		//for all tFileinput* components 
 		public void retrievedDataNumberInfo() {
+			if (isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
+<%
+			}
+		}
+		
+		//for all tFileinput* components 
+		public void retrievedDataNumberInfo(INode node) {
+			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 %>
 				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
@@ -65,24 +75,26 @@ imports="
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 %>
-				log.debug("<%=cid%> - Retrieving the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+				log.debug("<%=cid%> - Retrieving the record " + (nb_line_<%=cid%>+1) + ".");
+				log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%>+1) + ": " + log4jSb_<%=cid%>);
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 <%		
 			}
 		}
 		
-		//for all tFileinput* components		
+		//for all tFileOutput* components		
 		public void debugWriteData(INode node) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 %>
-				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " " + log4jSb_<%=cid%>);
+				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " to the file.");
+				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 <%		
 			}
 		}
 		
-		//for all tFileoutput* components
+		//for all tFileOutput* components
 		public void writeDataFinishInfo(INode node) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
