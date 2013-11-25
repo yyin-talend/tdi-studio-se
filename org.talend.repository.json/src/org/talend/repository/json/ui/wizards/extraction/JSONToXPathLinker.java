@@ -833,7 +833,12 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
         }
 
         if (selectedControlIsTable) {
-            (getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
+            TreeItem[] treeItems = (TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]);
+            if (treeItems.length > 0) {
+                if (!treeItems[0].isDisposed()) {
+                    (getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
+                }
+            }
         } else {
             Set<Table> set = itemsToSelect.keySet();
             if (set.size() > 0) {
