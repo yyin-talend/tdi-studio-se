@@ -2068,6 +2068,14 @@
         <projecttask
               beforeLogon="false"
               breaks="5.4.0"
+              class="org.talend.repository.model.migration.AddLoginTypeForSalesforceMigrationTask"
+              id="org.talend.repository.model.migration.AddLoginTypeForSalesforceMigrationTask"
+              name="AddLoginTypeForSalesforceMigrationTask"
+              version="5.4.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
               class="org.talend.repository.model.migration.mr.RemoveUseHadoopPropertiesFortMRConfiguration"
               description="If &quot;USE_HADOOP_PROPERTIES&quot; is unchecked, clear the table &quot;HADOOP_ADVANCED_PROPERTIES&quot;"
               id="org.talend.repository.model.migration.mr.RemoveUseHadoopPropertiesFortMRConfiguration"
