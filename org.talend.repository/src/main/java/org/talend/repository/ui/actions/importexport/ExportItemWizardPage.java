@@ -288,36 +288,33 @@ public class ExportItemWizardPage extends WizardPage {
         if (obj instanceof RepositoryNode) {
             Object repositoryNode = null;
             for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                repositoryNode = nodeHandler.getRepositoryNode(((RepositoryNode) obj).getObject());
-                if (repositoryNode != null) {
-                    break;
+                List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(((RepositoryNode) obj).getObject());
+                if (!nodesAndDependencies.isEmpty()) {
+                    nodes.addAll(nodesAndDependencies);
+                    return;
                 }
             }
-            if (repositoryNode != null) {
-                nodes.add(repositoryNode);
-            } else {
-                RepositoryNode node = (RepositoryNode) obj;
-                ERepositoryObjectType objectType = node.getObjectType();
-                Property property = null;
-                if (objectType != null) {
-                    if (objectType == ERepositoryObjectType.METADATA_CON_TABLE
-                            || objectType == ERepositoryObjectType.METADATA_CON_VIEW
-                            || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
-                            || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
-                        if (node.getObject() != null) {
-                            property = node.getObject().getProperty();
-                        }
+            RepositoryNode node = (RepositoryNode) obj;
+            ERepositoryObjectType objectType = node.getObjectType();
+            Property property = null;
+            if (objectType != null) {
+                if (objectType == ERepositoryObjectType.METADATA_CON_TABLE
+                        || objectType == ERepositoryObjectType.METADATA_CON_VIEW
+                        || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                        || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
+                    if (node.getObject() != null) {
+                        property = node.getObject().getProperty();
                     }
+                }
 
+            }
+            if (property != null) {
+                repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
+                if (repositoryNode != null) {
+                    nodes.add(repositoryNode);
                 }
-                if (property != null) {
-                    repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
-                    if (repositoryNode != null) {
-                        nodes.add(repositoryNode);
-                    }
-                } else {
-                    nodes.add(node);
-                }
+            } else {
+                nodes.add(node);
             }
         } else {
             nodes.add(obj);
