@@ -238,7 +238,7 @@
 		NAME="USE_NB_LINE_NOTE" 
 		FIELD="LABEL" 
 		NUM_ROW="56">
-		<DEFAULT>* Just the Query is Insert/Update/Delete SQL.</DEFAULT>
+		<DEFAULT>* Only used if the query is an insert, an update or a delete.</DEFAULT>
 	</PARAMETER>
 	
 	<PARAMETER
