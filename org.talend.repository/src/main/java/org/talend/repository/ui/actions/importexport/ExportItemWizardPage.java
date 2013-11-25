@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -54,7 +55,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -125,11 +125,9 @@ class ExportItemWizardPage extends WizardPage {
 
     private Button exportDependencies;
 
-    Collection<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+    Set initcheckedNodes = new HashSet();
 
-    Set<RepositoryNode> checkedNodes = new HashSet<RepositoryNode>();
-
-    Set<RepositoryNode> allNode = new HashSet<RepositoryNode>();
+    Set checkedDependency = new HashSet();
 
     protected ExportItemWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName);
@@ -199,59 +197,39 @@ class ExportItemWizardPage extends WizardPage {
 
         createSelectionButton(itemComposite);
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-        // exportItemsTreeViewer.refresh();
-        exportItemsTreeViewer.getTree().setRedraw(false);
-        // force loading all nodes
-        exportItemsTreeViewer.expandAll();
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandAll"); //$NON-NLS-1$
-        exportItemsTreeViewer.collapseAll();
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to collapseAll"); //$NON-NLS-1$
-        // expand to level of metadata connection
-        exportItemsTreeViewer.expandToLevel(3);
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandToLevel"); //$NON-NLS-1$
-        exportItemsTreeViewer.getTree().setRedraw(true);
-        TimeMeasure.step(this.getClass().getSimpleName(), "finished to redraw"); //$NON-NLS-1$
 
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
         if (selection != null && !selection.isEmpty()) {
-            // for bug 10969
-            Set<RepositoryNode> newSelection = new HashSet<RepositoryNode>();
-            for (RepositoryNode currentNode : (List<RepositoryNode>) selection.toList()) {
-                // List<IRepositoryViewObject> objects = null;
-                // if (currentNode.getContentType() != null && currentNode.getObject() != null
-                // && currentNode.getObjectType() != ERepositoryObjectType.FOLDER) {
-                // try {
-                // objects = exportItemsTreeViewer.getAll(currentNode.getObjectType());
-                // } catch (IllegalArgumentException e) {
-                // // do nothing
-                // objects = new ArrayList<IRepositoryViewObject>();
-                // }
-                //
-                // for (IRepositoryViewObject nodeToSelect : objects) {
-                // if (currentNode.getObject().getId().equals(nodeToSelect.getId())) {
-                // newSelection.add((RepositoryNode) nodeToSelect.getRepositoryNode());
-                // }
-                // }
-                // } else {
-                newSelection.add(currentNode);
-                // }
-            }
-
-            repositoryNodes.addAll(newSelection);
-            repositoryNodes.addAll(checkedNodes);
-
-            Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
-
-            for (RepositoryNode node : repositoryNodes) {
-                expandRoot(node);
-                expandParent(exportItemsTreeViewer, node);
-                checkElement(node, nodes);
+            initcheckedNodes.addAll(selection.toList());
+            Set nodes = new HashSet();
+            for (Object obj : selection.toList()) {
+                ERepositoryObjectType objectType = getObjectType(obj);
+                expandRoot(objectType);
+                expandParent(exportItemsTreeViewer, obj, objectType);
+                checkElement(obj, nodes);
             }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
             exportItemsTreeViewer.setCheckedElements(nodes.toArray());
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to check nodes"); //$NON-NLS-1$
         }
+    }
+
+    private ERepositoryObjectType getObjectType(Object nodeObject) {
+        ERepositoryObjectType objectType = null;
+        if (nodeObject instanceof RepositoryNode) {
+            RepositoryNode node = (RepositoryNode) nodeObject;
+            objectType = node.getObjectType();
+            // for user folders in metadata , routines , documentation
+            if (ERepositoryObjectType.FOLDER.equals(objectType)) {
+                RepositoryNode rootNode = getParentNodeNotFolder(node);
+                objectType = rootNode.getContentType();
+            }
+            if (objectType == null) {
+                objectType = node.getContentType();
+            }
+        }
+        return objectType;
     }
 
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode node) {
@@ -281,82 +259,74 @@ class ExportItemWizardPage extends WizardPage {
         return true;
     }
 
-    private void refreshExportDependNodes() {
-        checkedNodes.clear();
-        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-        Object[] checkedObj = exportItemsTreeViewer.getCheckedElements();
-        for (Object element : checkedObj) {
-            if (element instanceof RepositoryNode) {
-                RepositoryNode checkedNode = (RepositoryNode) element;
-                if (checkedNode != null && !RepositoryNode.NO_ID.equals(checkedNode.getId())) {
-                    if (ENodeType.REPOSITORY_ELEMENT.equals(checkedNode.getType())) {
-                        checkedNodes.add(checkedNode);
-                    }
-                }
-            }
-        }
-        allNode.clear();
-        allNode.addAll(repositoryNodes);
-        allNode.addAll(checkedNodes);
-    }
-
-    private void checkElement(RepositoryNode node, Set<RepositoryNode> nodes) {
-        if (node == null) {
+    private void checkElement(Object obj, Set<Object> nodes) {
+        if (obj == null) {
             return;
         }
-        ERepositoryObjectType objectType = node.getObjectType();
-        Property property = null;
-        if (objectType != null) {
-            if (objectType == ERepositoryObjectType.METADATA_CON_TABLE || objectType == ERepositoryObjectType.METADATA_CON_VIEW
-                    || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
-                    || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
-                if (node.getObject() != null) {
-                    property = node.getObject().getProperty();
-                }
-            }
-
-        }
-        if (property != null) {
-            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
+        if (obj instanceof RepositoryNode) {
+            Object repositoryNode = null;
             if (repositoryNode != null) {
                 nodes.add(repositoryNode);
+            } else {
+                RepositoryNode node = (RepositoryNode) obj;
+                ERepositoryObjectType objectType = node.getObjectType();
+                Property property = null;
+                if (objectType != null) {
+                    if (objectType == ERepositoryObjectType.METADATA_CON_TABLE
+                            || objectType == ERepositoryObjectType.METADATA_CON_VIEW
+                            || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                            || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
+                        if (node.getObject() != null) {
+                            property = node.getObject().getProperty();
+                        }
+                    }
+
+                }
+                if (property != null) {
+                    repositoryNode = RepositoryNodeUtilities.getRepositoryNode(property.getId(), false);
+                    if (repositoryNode != null) {
+                        nodes.add(repositoryNode);
+                    }
+                } else {
+                    nodes.add(node);
+                }
             }
         } else {
-            nodes.add(node);
+            nodes.add(obj);
         }
-
     }
 
-    private void expandParent(TreeViewer viewer, RepositoryNode node) {
-        if (node.getContentType() == ERepositoryObjectType.SVN_ROOT) {
-            viewer.setExpandedState(node, true);
+    private void expandParent(TreeViewer viewer, Object nodeObject, ERepositoryObjectType type) {
+        if (type == ERepositoryObjectType.SVN_ROOT) {
+            viewer.setExpandedState(nodeObject, true);
         }
-        RepositoryNode parent = node.getParent();
+        Object parent = null;
+        Object repositoryNode = null;
+        if (repositoryNode == null) {
+            repositoryNode = nodeObject;
+        }
+        parent = getParentNode(repositoryNode);
         if (parent != null) {
-            expandParent(viewer, parent);
-            if (ERepositoryObjectType.METADATA_CONNECTIONS != null
-                    && ERepositoryObjectType.METADATA_CONNECTIONS.equals(node.getObjectType())) {
-                viewer.expandToLevel(node, TreeViewer.ALL_LEVELS);
-            } else {
-                viewer.setExpandedState(node, true);
-            }
-
+            expandParent(viewer, parent, type);
         }
+        if (repositoryNode instanceof ProjectRepositoryNode
+                || ((repositoryNode instanceof RepositoryNode) && ((RepositoryNode) repositoryNode).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
+            viewer.expandToLevel(repositoryNode, 3);
+        } else if (!(repositoryNode instanceof IFile)) {
+            viewer.expandToLevel(repositoryNode, 1);
+        }
+    }
+
+    private Object getParentNode(Object nodeObject) {
+        if (nodeObject instanceof RepositoryNode) {
+            return ((RepositoryNode) nodeObject).getParent();
+        }
+        return null;
     }
 
     // expand root node for node in metadata , routines , documentation
-    private void expandRoot(RepositoryNode node) {
-        ERepositoryObjectType objectType = node.getObjectType();
-
-        // for user folders in metadata , routines , documentation
-        if (ERepositoryObjectType.FOLDER.equals(objectType)) {
-            RepositoryNode rootNode = getParentNodeNotFolder(node);
-            objectType = rootNode.getContentType();
-        }
-        if (objectType == null) {
-            objectType = node.getContentType();
-        }
-
+    private void expandRoot(ERepositoryObjectType type) {
+        ERepositoryObjectType objectType = type;
         if (objectType != null) {
             if (objectType == ERepositoryObjectType.METADATA_CON_TABLE || objectType == ERepositoryObjectType.METADATA_CON_VIEW
                     || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
@@ -411,12 +381,12 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     private void addTreeCheckedSelection() {
-        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+        final CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
         exportItemsTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
-                refreshExportDependNodes();
+                // refreshExportDependNodes();
             }
 
         });
@@ -690,29 +660,45 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                refreshExportDependNodes();
+                checkedDependency.clear();
                 CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                exportItemsTreeViewer.expandAll();
-                exportItemsTreeViewer.collapseAll();
-                exportItemsTreeViewer.expandToLevel(3);
-                exportDependenciesSelected();
-                allNode.clear();
+                // exportItemsTreeViewer.expandAll();
+                // exportItemsTreeViewer.collapseAll();
+                Set allNode = new HashSet();
+                // exportItemsTreeViewer.expandToLevel(3);
                 if (exportDependencies.getSelection()) {
-                    allNode.addAll(checkedNodes);
+                    refreshExportDependNodes();
+                    exportDependenciesSelected();
+                    allNode.addAll(checkedDependency);
                 } else {
-                    repositoryNodes.clear();
-                    repositoryNodes.addAll(selection.toList());
-                    allNode.addAll(repositoryNodes);
+                    allNode.addAll(initcheckedNodes);
                 }
-                Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
-                for (RepositoryNode node : allNode) {
-                    expandRoot(node);
-                    expandParent(exportItemsTreeViewer, node);
-                    checkElement(node, nodes);
+                Set toselect = new HashSet();
+                for (Object obj : allNode) {
+                    ERepositoryObjectType objectType = getObjectType(obj);
+                    expandRoot(objectType);
+                    expandParent(exportItemsTreeViewer, obj, objectType);
+                    checkElement(obj, toselect);
                 }
-                exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+                exportItemsTreeViewer.setCheckedElements(toselect.toArray());
             }
         });
+    }
+
+    private void refreshExportDependNodes() {
+
+        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+        Object[] checkedObj = exportItemsTreeViewer.getCheckedElements();
+        for (Object element : checkedObj) {
+            if (element instanceof RepositoryNode) {
+                RepositoryNode checkedNode = (RepositoryNode) element;
+                if (checkedNode != null && !RepositoryNode.NO_ID.equals(checkedNode.getId())) {
+                    if (ENodeType.REPOSITORY_ELEMENT.equals(checkedNode.getType())) {
+                        checkedDependency.add(checkedNode);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -726,66 +712,24 @@ class ExportItemWizardPage extends WizardPage {
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("Dependencies", 100);//$NON-NLS-1$
-                monitor.setCanceled(false);
                 //
                 final List<IRepositoryViewObject> repositoryObjects = new ArrayList<IRepositoryViewObject>();
 
                 ProcessUtils.clearFakeProcesses();
+                for (Item item : selectedItems) {
+                    RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects, false, true);
+                }
 
-                // dependencies All
-                Display.getDefault().syncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (Item item : selectedItems) {
-                            RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects);
-                        }
-
-                    }
-                });
                 monitor.worked(60);
-                Display.getDefault().syncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (exportDependencies.getSelection()) {
-                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                                RepositoryNode repositoryNode = RepositoryNodeUtilities
-                                        .getRepositoryNode(repositoryObject, false);
-                                if (repositoryNode != null && !repositoryNodes.contains(repositoryNode)) {
-                                    repositoryNodes.add(repositoryNode);
-                                    checkedNodes.add(repositoryNode);
-                                }
-
-                            }
-                        } else {
-                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                                RepositoryNode repositoryNode = RepositoryNodeUtilities
-                                        .getRepositoryNode(repositoryObject, false);
-                                if (repositoryNode != null && repositoryNodes.contains(repositoryNode)) {
-                                    repositoryNodes.remove(repositoryNode);
-                                    checkedNodes.remove(repositoryNode);
-                                }
-                            }
-                        }
+                for (IRepositoryViewObject repositoryObject : repositoryObjects) {
+                    Object repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, monitor);
+                    if (repositoryNode != null) {
+                        checkedDependency.add(repositoryNode);
                     }
-                });
+                }
                 monitor.worked(90);
-                // selection
-                Display.getDefault().syncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                        Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
-                        nodes.addAll(repositoryNodes);
-                        nodes.addAll(checkedNodes);
-                        exportItemsTreeViewer.setCheckedElements(nodes.toArray());
-
-                    }
-                });
                 ProcessUtils.clearFakeProcesses();
                 monitor.done();
             }
@@ -793,7 +737,7 @@ class ExportItemWizardPage extends WizardPage {
         };
         final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
         try {
-            dialog.run(true, false, runnable);
+            dialog.run(true, true, runnable);
         } catch (InvocationTargetException e) {
             //
         } catch (InterruptedException e) {
@@ -993,6 +937,9 @@ class ExportItemWizardPage extends WizardPage {
                 if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
                     checkedElements.add(obj);
                 }
+            } else {
+                // for transform items
+                checkedElements.add(obj);
             }
         }
 
