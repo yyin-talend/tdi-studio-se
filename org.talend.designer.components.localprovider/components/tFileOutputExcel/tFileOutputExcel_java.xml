@@ -52,6 +52,7 @@
       FIELD="FILE"
       NUM_ROW="20"
       REQUIRED="true"
+      REPOSITORY_VALUE="FILE_PATH"
       NOT_SHOW_IF="USESTREAM=='true'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xls"</DEFAULT>
