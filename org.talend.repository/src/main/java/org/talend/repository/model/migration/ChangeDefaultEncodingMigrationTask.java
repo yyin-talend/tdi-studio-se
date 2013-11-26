@@ -110,6 +110,8 @@ public class ChangeDefaultEncodingMigrationTask extends
 								changeEncodingValue(value, encoding);
 							}
 						}
+					}else{
+						changeEncodingValue(value, encoding);
 					}
 				} else if ("tOracleOutputBulkExec".equals(componeName)) {
 					ElementParameterType enableEditOracleEncoding = ComponentUtilities.getNodeProperty(node, "ENABLE_EDIT_ORACLE_ENCODING"); //$NON-NLS-1$
@@ -126,6 +128,10 @@ public class ChangeDefaultEncodingMigrationTask extends
 								changeEncodingValue(value, oracleEnconding);
 							}
 						}
+					}else{
+						ComponentUtilities.addNodeProperty(node,"ORACLE_ENCODING", "OPEN_LIST"); //$NON-NLS-1$ //$NON-NLS-2$
+						enableEditOracleEncoding = ComponentUtilities.getNodeProperty(node, "ORACLE_ENCODING");
+						changeEncodingValue(value, enableEditOracleEncoding);
 					}
 				}
 			}
