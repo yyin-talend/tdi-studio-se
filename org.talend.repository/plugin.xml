@@ -2082,6 +2082,15 @@
               name="RemoveUseHadoopPropertiesFortMRConfiguration"
               version="5.4.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.0"
+              class="org.talend.repository.model.migration.ChangeDefaultEncodingMigrationTask"
+              description="As custom encoding not work,change tSybaseBulkExec,tOracleBulkExec default encoding"
+              id="org.talend.repository.model.migration.ChangeDefaultEncodingMigrationTask"
+              name="ChangeDefaultEncodingMigrationTask"
+              version="5.4.1">
+        </projecttask>
    </extension>
    
    <extension
