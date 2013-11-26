@@ -1784,13 +1784,6 @@ public class Node extends Element implements IGraphicalNode {
 
         parameter.setValue(value);
 
-        if (refreshMRSub) {
-            if (needRefreshSubjob(id)) {
-                ((IProcess2) this.getProcess()).getGeneratingNodes();
-                this.refreshNodeContainer();
-            }
-        }
-
         if (id.equals(EParameterName.INFORMATION.getName())) {
             firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
         }
@@ -4614,18 +4607,6 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         return clear;
-    }
-
-    private boolean needRefreshSubjob(String id) {
-        if (!isMapReduce()) {
-            return false;
-        }
-        if (id.equals("MAP_ONLY")) {
-            return true;
-        } else if (id.equals(EParameterName.GROUPBYS.getName())) {
-            return true;
-        }
-        return false;
     }
 
     public void refreshNodeContainer() {

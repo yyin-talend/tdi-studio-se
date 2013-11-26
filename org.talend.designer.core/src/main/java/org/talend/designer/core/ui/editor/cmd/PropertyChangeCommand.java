@@ -434,6 +434,7 @@ public class PropertyChangeCommand extends Command {
         if (needUpdateMonitorConnection()) {
             ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
         }
+        refreshMR(propName);
     }
 
     private boolean needUpdateMonitorConnection() {
@@ -706,7 +707,7 @@ public class PropertyChangeCommand extends Command {
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
-
+        refreshMR(propName);
     }
 
     @Override
@@ -762,6 +763,7 @@ public class PropertyChangeCommand extends Command {
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
+        refreshMR(propName);
     }
 
     private void refreshTraceConnections() {
@@ -823,6 +825,22 @@ public class PropertyChangeCommand extends Command {
         if (!parameters.isEmpty()) {
             node.reloadComponent(newComponent, parameters, false);
         }
+    }
+
+    private void refreshMR(String propName) {
+        if (!(elem instanceof Node)) {
+            return;
+        }
+        Node node = (Node) elem;
+        if (!node.isMapReduce()) {
+            return;
+        }
+        if (!propName.equals("MAP_ONLY") && !propName.equals(EParameterName.GROUPBYS.getName())) {
+            return;
+        }
+
+        ((IProcess2) node.getProcess()).getGeneratingNodes();
+        node.refreshNodeContainer();
     }
 
 }

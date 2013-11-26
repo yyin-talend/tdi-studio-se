@@ -31,6 +31,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -186,7 +187,9 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      */
     @Override
     public boolean remove(B bean) {
-        return super.remove(bean);
+        boolean result = super.remove(bean);
+        refreshMR();
+        return result;
     }
 
     /*
@@ -230,7 +233,9 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             }
             node.getMetadataList().removeAll(metadatasToRemove);
         }
-        return super.removeAll(c);
+        boolean result = super.removeAll(c);
+        refreshMR();
+        return result;
     }
 
     public boolean isAggregateRow() {
@@ -310,4 +315,47 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         }
 
     };
+
+    @Override
+    public void addAll(final Integer index, List<B> beans, boolean fireBefore, boolean fireAfter) {
+        super.addAll(index, beans, fireBefore, fireAfter);
+        refreshMR();
+    }
+
+    @Override
+    public void addAll(List<Integer> indicesWhereAdd, List<B> beans) {
+        super.addAll(indicesWhereAdd, beans);
+        refreshMR();
+    }
+
+    @Override
+    public B remove(int index) {
+        B b = super.remove(index);
+        refreshMR();
+        return b;
+    }
+
+    @Override
+    public List<B> remove(int[] indexArray) {
+        List<B> list = super.remove(indexArray);
+        return list;
+    }
+
+    private void refreshMR() {
+        if (element instanceof Node) {
+            Node node = (Node) element;
+            if (!node.isMapReduce()) {
+                return;
+            }
+            if (this.elemParameter == null) {
+                return;
+            }
+            if (!this.elemParameter.getName().equals("MAP_ONLY")
+                    && !this.elemParameter.getName().equals(EParameterName.GROUPBYS.getName())) {
+                return;
+            }
+            ((IProcess2) node.getProcess()).getGeneratingNodes();
+            node.refreshNodeContainer();
+        }
+    }
 }
