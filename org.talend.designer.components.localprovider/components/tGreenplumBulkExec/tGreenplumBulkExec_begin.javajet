@@ -44,7 +44,7 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 <%
 if(("UPDATE").equals(dataAction)) {
 %>
-    String tmpTableName_<%=cid%> = "tmp_<%=cid %>_" + pid;
+    String tmpTableName_<%=cid%> = "tmp_<%=cid %>_" + pid + Thread.currentThread().getId();
 <%
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
