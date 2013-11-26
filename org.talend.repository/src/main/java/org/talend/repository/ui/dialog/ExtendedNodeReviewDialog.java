@@ -145,8 +145,6 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
             }
         });
 
-        treeViewer.expandAll();
-
         return container;
     }
 
