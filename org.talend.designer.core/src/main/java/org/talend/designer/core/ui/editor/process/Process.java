@@ -1288,7 +1288,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             if (element instanceof SubjobContainer) {
                 saveSubjob(fileFact, processType, (SubjobContainer) element);
                 for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
-                    if (container instanceof JobletContainer) {
+                    if (container.getNode().isJoblet()) {
                         if (checkJoblet) {
                             JobletContainer jobletCon = (JobletContainer) container;
                             boolean needUpdate = false;
