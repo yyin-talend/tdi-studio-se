@@ -3,16 +3,14 @@
 
 #if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.service"
-		placeholder-prefix="$service{" update-strategy="reload"
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$service{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
 ]]#
 #end
 
 #if ($endpoint.useAuthorization)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep"
-		placeholder-prefix="$pep{" update-strategy="reload"
+	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
 ]]#
 #end
