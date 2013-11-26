@@ -10,6 +10,7 @@
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.IConnection
 	java.util.HashMap
+	java.util.Map
 	org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.ElementParameterParser
 	" 

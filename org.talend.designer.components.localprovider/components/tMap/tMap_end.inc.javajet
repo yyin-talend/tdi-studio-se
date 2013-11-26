@@ -144,9 +144,19 @@
 %>
 // ###############################      
 <%
+	List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+	Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+	for (IConnection connection : outputConnections) {
+		nameToOutputConnection.put(connection.getName(), connection);
+	}
+
 	List<ExternalMapperTable> outputTables = data.getOutputTables();
 	for(ExternalMapperTable outputTable : outputTables){
-		String outputTableName = outputTable.getName();  
+		String outputTableName = outputTable.getName();
+		List<ExternalMapperTableEntry> tableEntries = outputTable.getMetadataTableEntries();
+		if (tableEntries == null || nameToOutputConnection.get(outputTable.getName()) == null) {
+			continue;
+		}
 	
 		if(isLog4jEnabled){
 			if(!isVirtualOut) {

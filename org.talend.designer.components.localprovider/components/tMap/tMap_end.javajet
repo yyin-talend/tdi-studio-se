@@ -9,13 +9,13 @@
 	org.talend.designer.mapper.MapperComponent
 	org.talend.core.model.process.INode
 	java.util.HashMap
+	java.util.Map
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.ElementParameterParser
 	"
 	skeleton="tMap_commons.skeleton"
 %>
-
 
 <%@ include file="tMap_end.inc.javajet" %>
 
