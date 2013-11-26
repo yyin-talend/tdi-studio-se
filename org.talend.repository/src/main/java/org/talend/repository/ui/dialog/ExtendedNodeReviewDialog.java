@@ -55,6 +55,8 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
 
     protected List<ERepositoryObjectType> typesToShow = new ArrayList<ERepositoryObjectType>();
 
+    protected RepoCommonViewerProvider provider;
+
     /**
      * DOC wchen RepCommonReviewDialog constructor comment.
      * 
@@ -67,6 +69,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
             typesToShow.add(typeToShow);
         }
         typesToShow.addAll(getParentTypes(typesToShow));
+        provider = new RepoCommonViewerProvider();
     }
 
     protected ExtendedNodeReviewDialog(Shell parentShell, ERepositoryObjectType rootType, List<ERepositoryObjectType> typesToShow) {
@@ -117,7 +120,6 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
 
         createFilterField(container);
 
-        RepoCommonViewerProvider provider = new RepoCommonViewerProvider();
         treeViewer = provider.createViewer(container);
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
