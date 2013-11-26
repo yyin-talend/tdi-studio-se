@@ -449,6 +449,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //start
 //
 					}%>
+					nb_line_<%=cid%>++;
 					<%log4jFileUtil.debugRetriveData(node);%>
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 
@@ -932,6 +933,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					}
 %>
+					nb_line_<%=cid%>++;
 					<%log4jFileUtil.debugRetriveData(node);%>	
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 

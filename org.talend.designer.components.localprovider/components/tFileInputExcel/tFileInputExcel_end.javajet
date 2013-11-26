@@ -18,7 +18,6 @@
 	boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
-				nb_line_<%=cid%>++;
 			}
 			<%if(version07 && eventMode) {%>
 			try {

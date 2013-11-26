@@ -17,5 +17,5 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 %>
 } // G_AggR_600
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Has finished.");
+	log.info("<%=cid%> - Done.");
 <%}%>

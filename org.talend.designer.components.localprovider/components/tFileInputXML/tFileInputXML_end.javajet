@@ -18,7 +18,7 @@ boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true")
 
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.debugRetriveData(node);
+
 if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 %>
 }

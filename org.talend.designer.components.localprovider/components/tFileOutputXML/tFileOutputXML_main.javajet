@@ -498,6 +498,10 @@ out_<%=cid%>.newLine();
 %>
 					nb_line_<%=cid %>++;
 					writer_<%=cid%>.write(<%=conn.getName()%>.<%=colDoc%>.getDocument());
+					<%if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append(<%=conn.getName()%>.<%=colDoc%>.getDocument().asXML());
+					<%}%>
+					<%log4jFileUtil.debugWriteData(node);%>
 <%
 			}
 		}
