@@ -1873,12 +1873,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
         List<IComponent> neededComponents = RepositoryComponentManager.filterNeededComponents(item, store.seletetedNode, type);
 
-        // for esb
         for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
             List<IComponent> comList = handler.filterNeededComponents(item, store.seletetedNode, type);
             if (comList != null) {
                 for (IComponent handlerComp : comList) {
-                    if (!neededComponents.contains(handlerComp)) {
+                    if (!neededComponents.contains(handlerComp) && !handlerComp.isTechnical()) {
                         neededComponents.add(handlerComp);
                     }
                 }
@@ -1895,7 +1894,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             for (IComponent component : components) {
                 componentProductname = component.getRepositoryType();
                 if (componentProductname != null && componentProductname.contains(hbaseName)
-                        && !neededComponents.contains(component)) {
+                        && !neededComponents.contains(component) && !component.isTechnical()) {
                     neededComponents.add(component);
                 }
             }
