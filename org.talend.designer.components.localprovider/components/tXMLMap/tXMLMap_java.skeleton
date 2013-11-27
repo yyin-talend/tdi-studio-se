@@ -209,7 +209,7 @@ public class CLASS {
 		boolean isOptional = false; // use to judge if the loop node is mandotary in the source file.
 		TreeNode loopNode;
 		String finalLoopNodeXPath;
-		Map<String,String> outNodesXPath;
+		Map<String,String> outNodesXPath = new HashMap<String,String>();
 		Map<String,String> lookupInputNodesXPath;
 		
 		Map<String,String> xpathToPattern = new HashMap<String,String>();
