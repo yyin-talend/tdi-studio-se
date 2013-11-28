@@ -280,7 +280,12 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		if (saveCookie) {
 		%>
 			org.apache.commons.httpclient.Cookie[] cookies_<%=cid%> = client_<%=cid %>.getState().getCookies();
-			java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(new java.io.File(<%=cookieDir%>));
+			java.io.File cookieFile_<%=cid%> = new java.io.File(<%=cookieDir%>);
+			java.io.File cookieDir_<%=cid%>= cookieFile_<%=cid%>.getParentFile(); 
+			if(!cookieDir_<%=cid%>.exists()){
+				cookieDir_<%=cid%>.mkdirs();
+			}
+			java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(cookieFile_<%=cid%>);
 			java.io.ObjectOutputStream os_<%=cid%> = new java.io.ObjectOutputStream(fos_<%=cid%>);
 
 			for (org.apache.commons.httpclient.Cookie c : cookies_<%=cid%>) {
