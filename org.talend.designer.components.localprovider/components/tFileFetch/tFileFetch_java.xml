@@ -201,7 +201,7 @@ COMPATIBILITY="ALL"
 
   <PARAMETER
      NAME="COOKIE_DIR"
-     FIELD="DIRECTORY"
+     FIELD="FILE"
      NUM_ROW="71"
      REQUIRED="true"     
      SHOW_IF="(SAVE_COOKIE == 'true') OR (READ_COOKIE == 'true')"
