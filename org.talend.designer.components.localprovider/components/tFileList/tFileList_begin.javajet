@@ -194,22 +194,7 @@
     public void addFiles(String cid,boolean useGlob,boolean caseSensitive,boolean ifexclude){
     %>
     	String fileName_<%=cid%> = file.getName();
-		for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
-			String filemask_compile_<%=cid%> = filemask_<%=cid%>;
-			<%if (useGlob){%>
-		    	filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
-		    <%
-		    }
-		    if (caseSensitive){
-		    %>
-		      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
-		    <%
-		    }else{
-		    %>
-		      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
-           <%
-            }
-           %>
+		for (final java.util.regex.Pattern fileNamePattern_<%=cid%> : patternList_<%=cid %>) {
           	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
               <%if (ifexclude){%>
 			 		boolean isExclude_<%=cid%> = false;
@@ -219,11 +204,15 @@
 			        		break;
 			        	}
 			        }
-			        if(!isExclude_<%=cid%>) {
+			        if(!isExclude_<%=cid%> && !filePath_<%=cid%>.contains(file.getAbsolutePath())) {
 			          list_<%=cid%>.add(file);
+			          filePath_<%=cid%>.add(file.getAbsolutePath());
 			        }
               <%}else{%>
-                  list_<%=cid%>.add(file);
+					if(!filePath_<%=cid%>.contains(file.getAbsolutePath())) {
+			          list_<%=cid%>.add(file);
+			          filePath_<%=cid%>.add(file.getAbsolutePath());
+			        }
               <%}%>
 			}
 		}
@@ -234,6 +223,7 @@
     
   String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
   final java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
+  final java.util.List<java.util.regex.Pattern> patternList_<%=cid %> = new java.util.ArrayList<java.util.regex.Pattern>();
   <%
   if (files.size() == 0){
     if (useGlob){
@@ -252,6 +242,24 @@
     %> 
     maskList_<%=cid %>.add(<%= line.get("FILEMASK") %>);
   <%}%>  
+  for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+	String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+	<%if (useGlob){%>
+		filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+	<%
+	}
+	if (caseSensitive){
+	%>
+		java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+    <%
+    }else{
+    %>
+		java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+	<%
+ 	}
+	%>
+	patternList_<%=cid %>.add(fileNamePattern_<%=cid%>);
+  }
   int NB_FILE<%=cid%> = 0;
 
   final boolean case_sensitive_<%=cid%> = <%=caseSensitive %>;
@@ -279,6 +287,7 @@
 	  }
     <%}%>
     final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>();
+    final java.util.List<String> filePath_<%=cid%> = new java.util.ArrayList<String>();
 	java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
     
     <%
