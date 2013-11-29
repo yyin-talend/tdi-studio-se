@@ -117,21 +117,6 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 <%   
 }
 String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
-encoding= encoding.toUpperCase();
- if(("\"UTF-8\"").equals(encoding)){
-      encoding = "UTF8";
- }else if(("\"ISO-8859-15\"").equals(encoding)){
-	encoding = "WE8ISO8859P15";
- }else if(("\"GBK\"").equals(encoding)){
-	encoding = "ZHS16GBK";
- }else if(("\"GB2312\"").equals(encoding)){
- 	encoding = "ZHS16CGB231280";//ZHS16MACCGB231280 ?
- }else if(("\"BIG5\"").equals(encoding)){
-    encoding = "ZHT16BIG5";
- } else {
-   //will be enhanced later, now default with utf-16
-	encoding = "AL16UTF16";
- }
 
 String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");		
 %>
@@ -174,7 +159,7 @@ if(server != null && !"\"\"".equals(server.trim()) && !("").equals(server.trim()
 <%}else{%>
 	command_<%=cid %>.append(" -S " + host_<%=cid %>);
 <%}%>
-String encoding_<%=cid%> = "<%=encoding%>";
+String encoding_<%=cid%> = <%=encoding%>;
 if(encoding_<%=cid%> != null && encoding_<%=cid%>.trim().length() > 0) {
     command_<%=cid %>.append(" -J " + encoding_<%=cid%>);
 }

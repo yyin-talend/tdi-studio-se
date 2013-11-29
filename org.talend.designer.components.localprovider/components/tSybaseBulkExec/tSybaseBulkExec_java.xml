@@ -276,8 +276,15 @@
       <DEFAULT>"1"</DEFAULT>
     </PARAMETER>   
     
-    <PARAMETER NAME="ENCODING"  FIELD="ENCODING_TYPE"  NUM_ROW="10" REQUIRED="true" >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    <PARAMETER NAME="ENCODING" FIELD="OPENED_LIST" NUM_ROW="10" REQUIRED="true" >
+      <ITEMS DEFAULT="&quot;UTF8&quot;">
+            <ITEM NAME="UTF8" VALUE="&quot;UTF8&quot;" />
+            <ITEM NAME="WE8ISO8859P15" VALUE="&quot;WE8ISO8859P15&quot;" />
+            <ITEM NAME="ZHS16GBK" VALUE="&quot;ZHS16GBK&quot;" />
+            <ITEM NAME="ZHS16CGB231280" VALUE="&quot;ZHS16CGB231280&quot;" />
+            <ITEM NAME="ZHT16BIG5" VALUE="&quot;ZHT16BIG5&quot;" />
+            <ITEM NAME="AL16UTF16" VALUE="&quot;AL16UTF16&quot;" />
+        </ITEMS>
     </PARAMETER>
 
 
