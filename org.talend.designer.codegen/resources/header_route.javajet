@@ -573,6 +573,9 @@ for (INode node : graphicalNodes) {
 		
 		if(!conns.isEmpty()){
 			sb.append("+\"&headerFilterStrategy=#CXF_PAYLOAD_HEADER_FILTER\"");
+			sb.append("+\"&properties.id=\"+\"");
+			sb.append(node.getUniqueName());
+			sb.append("\"");
 		}else if("true".equals(useServiceRegistry) || ("true".equals(useSecurity) && "SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__")))) {
 			sb.append("+\"&cxfBinding=#DEFAULT_CXF_BINDING\"");
 		}
