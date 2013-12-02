@@ -555,11 +555,15 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 			cxfEndpoint.setProperties(clientProps);
 			<%//for fix [TESB-12172], set default address to null to avoid override after wsdl from registry initialized. 
 			%>
+			final org.apache.camel.component.cxf.CxfEndpointConfigurer cxfEndpointConfigurer = cxfEndpoint.getCxfEndpointConfigurer();
 			cxfEndpoint.setCxfEndpointConfigurer(new org.apache.camel.component.cxf.CxfEndpointConfigurer() {
-				public void configure(org.apache.cxf.frontend.AbstractWSDLBasedEndpointFactory factory) {
-					factory.setAddress(null);
-				}
-			});
+						public void configure(org.apache.cxf.frontend.AbstractWSDLBasedEndpointFactory factory) {
+							if(cxfEndpointConfigurer != null){
+								cxfEndpointConfigurer.configure(factory);
+							}
+							factory.setAddress(null);
+						}
+					});
 			<%//for fix [TESB-12172], add locator feature when necessary. 
 			%>
 			org.apache.cxf.endpoint.ClientLifeCycleManager cLifeCycleManager = bus.getExtension(org.apache.cxf.endpoint.ClientLifeCycleManager.class);
