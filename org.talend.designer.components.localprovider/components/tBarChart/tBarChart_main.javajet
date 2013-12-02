@@ -27,6 +27,7 @@ if (inConns != null && !inConns.isEmpty()) {
   if (columnsName.contains("value") && columnsName.contains("series") && columnsName.contains("category")) {
   %>
     dataset_<%=cid%>.setValue(<%=sInConnName%>.value, <%=sInConnName%>.series, <%=sInConnName%>.category);
+    nb_line_<%=cid%> ++;
   <%}
 }
 %>

@@ -23,7 +23,9 @@ if (inConns != null && !inConns.isEmpty()) {
   for (IMetadataColumn column : columns) {
     columnsName.add(column.getLabel());
   }
-  
+ %>
+ 	int nb_line_<%=cid%> = 0;
+ <%
   if (columnsName.contains("value") && columnsName.contains("series") && columnsName.contains("category")) {
   %>
     org.jfree.data.category.DefaultCategoryDataset dataset_<%=cid%> = new org.jfree.data.category.DefaultCategoryDataset();
