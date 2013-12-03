@@ -49,6 +49,9 @@ public class CLASS {
             return talendType;
         }
         public String getDbType() {
+            if(dbType==null){
+                return "";
+            }
             return dbType;
         }
         public boolean isNullable() {
