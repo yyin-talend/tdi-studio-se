@@ -277,22 +277,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
 				
 				  jxl.Cell cell_<%=cid%> = row_<%= cid %>[i + start_column_<%= cid %>];
-				  
-				  if (<%=bReadRealValue%> && jxl.CellType.NUMBER == cell_<%=cid%>.getType()){				   
-				  	temp_row_<%= cid %>[i] = String.valueOf(((jxl.NumberCell)cell_<%=cid%>).getValue());
-					String content = cell_<%=cid%>.getContents();
-					if(content!=null && content.indexOf(separatorChar_<%=cid %>)==-1 && (temp_row_<%= cid %>[i].indexOf("E")==-1)) {
-						temp_row_<%=cid%>[i] = content;
-					} else {
-    					String literal = temp_row_<%=cid%>[i];
-    					if(literal!=null) {
-    						literal = df_<%=cid %>.format(((jxl.NumberCell)cell_<%=cid%>).getValue());
-    					}
-    					temp_row_<%=cid%>[i] = literal;
+<%
+					if(bReadRealValue){
+%>
+						if (jxl.CellType.NUMBER == cell_<%=cid%>.getType()){
+							double doubleCell_<%=cid%> = ((jxl.NumberCell)cell_<%=cid%>).getValue();
+							temp_row_<%=cid%>[i] = String.valueOf(doubleCell_<%=cid%>);
+							if(temp_row_<%=cid%>[i]!=null) {
+								temp_row_<%=cid%>[i] = df_<%=cid %>.format(doubleCell_<%=cid%>);
+							}
+						} else{
+							temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
+						}
+<%
+					}else{
+%>
+						temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
+<%
 					}
-				  } else{
-				    temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
-				  }
+%>
 					
 				}else{
 					temp_row_<%= cid %>[i]="";
