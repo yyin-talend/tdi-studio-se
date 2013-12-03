@@ -1,0 +1,88 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IDataConnection
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
+			boolean memoryStorage = true;
+			if(validTarget != null) {
+				IHashConfiguration hashConfiguration = null;				
+				boolean bSortOnDisk = "true".equals(ElementParameterParser.getValue(node, "__SORT_ON_DISK__")); 
+				
+			    if (validTarget instanceof IHashableInputConnections){
+					IHashableInputConnections target = (IHashableInputConnections) validTarget;
+					hashConfiguration = target.getHashConfiguration(connection.getName());
+				} 
+				memoryStorage = !(hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk);
+			}
+            
+			boolean includeParallelComps = false;
+			List<? extends INode> listPartitions= node.getProcess().getNodesOfType("tPartitioner");
+			if (listPartitions!=null && listPartitions.size() > 0 ) {
+				includeParallelComps = true;
+			}
+%>
+tHash_Lookup_<%=connectionName%>.endPut();
+<%
+			if (includeParallelComps && memoryStorage) {
+%>
+java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>> mapsList_<%=cid%> = 
+	(java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>>)globalMap.get("THREAD_MAPS_"+jobName);
+	if (mapsList_<%=cid%> != null) {
+	
+
+			for (java.util.concurrent.ConcurrentHashMap<String,Object> map : mapsList_<%=cid%>) {
+					org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+			   							<<%=connectionName%>Struct> tmp = (org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+			   							<<%=connectionName%>Struct>)tHash_Lookup_<%=connectionName%>;
+				if (globalMap != map) {
+				
+					
+					//map.put("MAP_POPULATED_<%=connectionName%>",Boolean.TRUE);			   							
+					
+					map.put("tHash_Lookup_<%=connectionName%>",new org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+			   							<<%=connectionName%>Struct>(tmp));			   							
+			   		while (map.get("tHash_Lookup_<%=connectionName%>") == null) {
+			   			Thread.sleep(1);
+			   		}
+			   	
+				} 
+			}
+
+	}
+
+} 
+} catch (java.lang.Exception ex) {
+	globalMap.put("THREADS_HAVE_ERROR",ex);
+	throw ex;
+} catch (Error er) {
+	globalMap.put("THREADS_HAVE_ERROR",er);
+	throw er;
+}
+
+}//end synchronized
+
+
+<%
+			
+			}
+		}
+	}
+%>

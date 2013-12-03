@@ -1,0 +1,67 @@
+<%@ jet 
+%>
+
+<%
+	String accessKey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
+	String secretKey = ElementParameterParser.getValue(node, "__SECRET_KEY__");
+	boolean configClient = "true".equals(ElementParameterParser.getValue(node, "__CONFIG_CLIENT__"));
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	List<Map<String,String>> clientConfiguration = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CLIENT_CONFIGURATION__");
+if(("true").equals(useExistingConn)) {
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;;
+	%>
+	com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = (com.amazonaws.services.s3.AmazonS3Client)globalMap.get("<%=conn%>");
+<%
+}else{
+%>
+	com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,<%=secretKey%>);
+<%
+	if(configClient && clientConfiguration.size()>0){
+%>
+		com.amazonaws.ClientConfiguration cc_<%=cid%> = new com.amazonaws.ClientConfiguration();
+<%
+		boolean setBuffer = false;
+		for(Map<String,String> map :clientConfiguration){
+			String client_parameter = map.get("CLIENT_PARAMETER");
+			String value = map.get("VALUE");
+			if(!setBuffer && ("SocketSendBufferSizeHints".equals(client_parameter) || "SocketReceiveBufferSizeHints".equals(client_parameter))){
+				setBuffer=true;
+%>
+			int scketSendBufferSizeHints_<%=cid%> = 0;
+			int socketReceiveBufferSizeHints_<%=cid%> = 0;
+<%
+			}
+			if("SocketSendBufferSizeHints".equals(client_parameter)){
+%>
+				scketSendBufferSizeHints_<%=cid%> = <%=value%>;
+<%
+			}else if("SocketReceiveBufferSizeHints".equals(client_parameter)){
+%>
+				socketReceiveBufferSizeHints_<%=cid%> = <%=value%>;
+<%
+			}else if("Protocol".equals(client_parameter)){
+%>
+				cc_<%=cid%>.setProtocol(com.amazonaws.Protocol.<%=value.toUpperCase().replaceAll("\"","")%>);
+<%
+			}else{
+%>
+				cc_<%=cid%>.set<%=client_parameter%>(<%=value%>);
+<%
+			}
+		}
+		if(setBuffer){
+%>
+			cc_<%=cid%>.setSocketBufferSizeHints(scketSendBufferSizeHints_<%=cid%>,socketReceiveBufferSizeHints_<%=cid%>);
+<%
+		}
+%>
+		com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
+<%
+	}else{
+%>
+		com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
+<%
+	}
+}
+%>

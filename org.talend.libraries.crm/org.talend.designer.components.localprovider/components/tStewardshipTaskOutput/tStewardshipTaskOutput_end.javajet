@@ -1,0 +1,55 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+		java.util.Map		
+		org.talend.core.model.process.ElementParameterParser
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+    String recordType = ElementParameterParser.getValue(node, "__RECORD_TYPE__");
+	List<Map<String, String>> recordColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RECORD_COLUMN__");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+%>
+				if(targetRecordExisted_<%=cid%>){
+					record_<%=cid%> = task_<%=cid%>.addTargetRecord();
+<%
+					if(recordColumns.size()>0){
+						for(Map<String, String> recordColumn:recordColumns){
+%>
+    						record_<%=cid%>.addSrcColumn(recordColumn_<%=recordColumn.get("CONTENT")%>_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Value_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Type_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Key_<%=cid%>);
+<%
+						}
+					}
+%>
+				}
+	if(tasks_<%=cid%>.getTaskCount()>=1){
+		String content = tasks_<%=cid%>.getTasksAndClear();
+		//System.out.println(content);
+		boolean loadResult_<%=cid%> = taskLoadClient_<%=cid%>.doLoad(content);
+		if(!loadResult_<%=cid%>){
+			System.err.println("An error occured while uploading tasks.");
+		}
+	}
+<%
+			}	
+		}
+	}	
+}
+%>
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
