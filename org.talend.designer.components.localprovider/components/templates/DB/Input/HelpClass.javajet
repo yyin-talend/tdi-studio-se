@@ -177,9 +177,6 @@ imports="
 	    }
 	    //---------end according schema type to generate ResultSet
 	    
-		public void afterGenertorType(String firstConnName, IMetadataColumn column, int currentColNo) {
-	    }
-	    
 		public void afterComponentProcess(INode node){
 	    }
 	}//end DefaultDBInputUtil class
