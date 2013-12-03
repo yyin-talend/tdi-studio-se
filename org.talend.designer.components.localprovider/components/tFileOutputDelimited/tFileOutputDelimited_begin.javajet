@@ -1086,9 +1086,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	}
 }	
 %>
-resourceMap.put("isFileGenerated_<%=cid%>", isFileGenerated_<%=cid%>);
 resourceMap.put("nb_line_<%=cid%>", nb_line_<%=cid%>);
 <%if(!useStream && ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"))){%>
+	resourceMap.put("isFileGenerated_<%=cid%>", isFileGenerated_<%=cid%>);
 	<%if(compress && !isAppend && !split){%>
 		resourceMap.put("file_<%=cid%>", file_<%=cid%>);
 	<%}else{%>
