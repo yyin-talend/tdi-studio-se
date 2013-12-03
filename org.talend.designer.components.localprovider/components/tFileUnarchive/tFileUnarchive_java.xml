@@ -70,7 +70,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="COMMONS-COMPRESS-1.4.1" MODULE="commons-compress-1.4.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-compress-1.4.1.jar" REQUIRED="true" />
+       <IMPORT NAME="COMMONS-COMPRESS-1.6" MODULE="commons-compress-1.6.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-compress-1.6.jar" REQUIRED="true" />
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/ant.jar" REQUIRED="true" />
        <IMPORT NAME="Check-Archive" MODULE="checkArchive.jar" REQUIRED="true" />
      </IMPORTS>
