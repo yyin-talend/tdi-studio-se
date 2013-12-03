@@ -289,7 +289,6 @@ imports="
 <%
 		                        }
 %>
-								<%dbInputBeginUtil.afterGenertorType( firstConnName, column,  currentColNo);%>
 		                    }
 <%  
 		                    currentColNo++;
