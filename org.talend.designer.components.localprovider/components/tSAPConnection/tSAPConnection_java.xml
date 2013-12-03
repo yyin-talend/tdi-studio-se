@@ -101,8 +101,8 @@
     </ADVANCED_PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="false" BundleID=""/>
-       <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED="false" BundleID=""/>
+       <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED_IF="DB_VERSION == 'sapjco.jar'" BundleID="" />
+       <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED_IF="DB_VERSION == 'sapjco3.jar'" BundleID="" />
        <IMPORT NAME="talend-sap" MODULE="talend-sap.jar" REQUIRED="true" />       
      </IMPORTS>
   </CODEGENERATION>
