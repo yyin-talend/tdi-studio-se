@@ -127,7 +127,7 @@ command_<%=cid %>.append(<%=bcpUtility%> + " ");
 if(("UPDATE").equals(dataAction)) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-    tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+    tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
     <%
 }
 %>
@@ -244,3 +244,4 @@ error_<%=cid%>.start();
 ps_<%=cid %>.waitFor();
 normal_<%=cid%>.interrupt();
 error_<%=cid%>.interrupt();
+

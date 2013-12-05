@@ -109,7 +109,7 @@ if(("UPDATE").equals(dataAction)) {
         if(keyCount_<%=cid%> == 0) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
-        tableName_<%=cid%> = "tmp_<%=cid%>";
+        tableName_<%=cid%> = "tmp_<%=cid%>" + pid + Thread.currentThread().getId();
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + tableName_<%=cid%>);
@@ -122,7 +122,7 @@ if(("UPDATE").equals(dataAction)) {
         <%if(ros){%> + " DIRECT"<%}%>);
         stmtTmpBulk_<%=cid%>.close();
         tableName_<%=cid%> = <%=table%>;
-        String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+        String tmpTableName_<%=cid%> = "tmp_<%=cid%>" + pid + Thread.currentThread().getId();
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
