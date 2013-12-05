@@ -186,7 +186,7 @@ if(("EXPORT").equals(action)) {
                 throw new RuntimeException("For bulk update, Schema must have a key at least."); 
             }
             String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
             java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreateTmp_<%=cid%>.close();
@@ -194,11 +194,11 @@ if(("EXPORT").equals(action)) {
             stmtTmpBulk_<%=cid%>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( CODEPAGE='" + <%=codePage%> + "',DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
             stmtTmpBulk_<%=cid%>.close();
             tableName_<%=cid%> = tmpTableName_<%=cid%>;
-            tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+            tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
             java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
             stmtUpdateBulk_<%=cid%>.close();
-            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" +pid;
+            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" +pid + Thread.currentThread().getId();
             java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtTmpDrop_<%=cid%>.close();

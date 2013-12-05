@@ -138,7 +138,7 @@ if(("UPDATE").equals(dataAction)) {
         if(keyCount_<%=cid%> == 0) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }        
-        tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+        tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
         java.sql.Statement stmtTmpCreate_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtTmpCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         
@@ -171,7 +171,7 @@ if(("UPDATE").equals(dataAction)) {
 %>          
         );
         tableName_<%=cid%> = <%=table%>;
-        String tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+        String tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
