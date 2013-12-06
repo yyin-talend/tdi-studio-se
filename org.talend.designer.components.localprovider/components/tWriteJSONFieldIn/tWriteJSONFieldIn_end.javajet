@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if (conns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			%>
 					}
-					if (globalMap.containsKey("<%=cid%>_FINISH") ) {
+					if (globalMap.containsKey(readFinishMarkWithPipeId_<%=cid%>)) {
 						if (queue_<%=cid%>.isEmpty()) {
 							break;
 						}
@@ -52,7 +52,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			<%
     			}
 				%>
-				globalMap.remove("<%=cid%>_FINISH");
+				globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
+				globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
 			<%
 			}
 		}

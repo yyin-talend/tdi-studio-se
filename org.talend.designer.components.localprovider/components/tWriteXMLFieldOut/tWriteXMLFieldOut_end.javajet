@@ -300,7 +300,7 @@ if(nb_line_<%=cid %> > 0){
 %>
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-globalMap.put("<%=virtualTargetCid%>_FINISH", "true");
+globalMap.put("<%=virtualTargetCid%>_FINISH" + (listGroupby_<%=cid%>==null?"":listGroupby_<%=cid%>.hashCode()), "true");
 	<%
 	IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
 	if(nextMergeConn == null || nextMergeConn.getInputId()==1){
