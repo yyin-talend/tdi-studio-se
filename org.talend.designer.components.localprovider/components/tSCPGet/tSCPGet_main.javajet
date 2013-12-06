@@ -29,8 +29,6 @@ imports="
 		};
 		
 java.io.File dir_<%=cid %> = null;
-java.io.File file_<%=cid %> = null;
-java.io.FileOutputStream out_<%=cid %> = null;
 try{
 <%
 if(("append").equals(replaceOption)){%>
@@ -41,13 +39,43 @@ if(("append").equals(replaceOption)){%>
 			int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
 			if(index_<%=cid %> >0){
 				dir_<%=cid %> = new java.io.File(<%=localdir %>);
-				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);	
-				file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
+				java.io.File file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
 				if(!file_<%=cid %>.exists()){
 				  file_<%=cid %>.getParentFile().mkdirs();
 				}
-				out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, true);
-				scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
+				java.io.FileOutputStream out_<%=cid %> = null;
+				
+				//copy action
+				java.io.InputStream is_<%=cid%> = null;
+				byte[] buffer_<%=cid%> = new byte[8192];
+				int receive_<%=cid%> = -1;
+				try {
+					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, true);
+					is_<%=cid%> = scp_<%=cid %>.get(sourceFile_<%=cid %>);
+					
+    				while((receive_<%=cid%> = is_<%=cid%>.read(buffer_<%=cid%>))!=-1) {
+    					out_<%=cid %>.write(buffer_<%=cid%>, 0, receive_<%=cid%>);
+    				}
+				} catch(java.lang.Exception e_<%=cid%>) {
+                	if(out_<%=cid %> != null){
+                		out_<%=cid %>.close();
+                	}
+					//only delete empty file when exception happen?this is old action,we keep it.
+            		if(file_<%=cid%>.length() == 0){
+            			file_<%=cid%>.delete();
+            		}
+            		throw e_<%=cid%>;
+				} finally {
+                	if(out_<%=cid %> != null){
+                		out_<%=cid %>.close();
+                	}
+                	
+                	if(is_<%=cid%> != null) {
+                		is_<%=cid%>.close();
+                	}
+				}
+				
 				nb_file_<%=cid%> ++ ;
 			}
 		}
@@ -81,12 +109,42 @@ if(("append").equals(replaceOption)){%>
 			    if(index_<%=cid %> >0){
 					dir_<%=cid %> = new java.io.File(<%=localdir %>);
 					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
-					file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+					java.io.File file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 				  		file_<%=cid %>.getParentFile().mkdirs();
 					}
-					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, false);
-					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
+					java.io.FileOutputStream out_<%=cid %> = null;
+					
+    				//copy action
+    				java.io.InputStream is_<%=cid%> = null;
+    				byte[] buffer_<%=cid%> = new byte[8192];
+    				int receive_<%=cid%> = -1;
+    				try {
+    					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, false);
+    					is_<%=cid%> = scp_<%=cid %>.get(sourceFile_<%=cid %>);
+    					
+        				while((receive_<%=cid%> = is_<%=cid%>.read(buffer_<%=cid%>))!=-1) {
+        					out_<%=cid %>.write(buffer_<%=cid%>, 0, receive_<%=cid%>);
+        				}
+    				} catch(java.lang.Exception e_<%=cid%>) {
+                    	if(out_<%=cid %> != null){
+                    		out_<%=cid %>.close();
+                    	}
+    					//only delete empty file when exception happen?this is old action,we keep it.
+                		if(file_<%=cid%>.length() == 0){
+                			file_<%=cid%>.delete();
+                		}
+                		throw e_<%=cid%>;
+    				} finally {
+                    	if(out_<%=cid %> != null){
+                    		out_<%=cid %>.close();
+                    	}
+                    	
+                    	if(is_<%=cid%> != null) {
+                    		is_<%=cid%>.close();
+                    	}
+    				}
+    				
 					nb_file_<%=cid%> ++ ;
 				}
 			}
@@ -102,17 +160,7 @@ if(("append").equals(replaceOption)){%>
 }
 %>
 
-}catch(java.lang.Exception e){
-		if(out_<%=cid %> != null){
-			out_<%=cid %>.close();
-		}
-		if(file_<%=cid%>.length() == 0){
-			file_<%=cid%>.delete();
-		}
+}catch(java.lang.Exception e_<%=cid%>){
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
-		throw e;
-}finally{
-	if(out_<%=cid %> != null){
-		out_<%=cid %>.close();
-	}
+		throw e_<%=cid%>;
 }
