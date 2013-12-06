@@ -31,6 +31,7 @@ String fileOrDir = ElementParameterParser.getValue(node, "__FILE_OR_DIRECTORY__"
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String conn= "conn_" + connection;
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+boolean moveToCurrentDir = ("true").equals(ElementParameterParser.getValue(node, "__MOVE_TO_THE_CURRENT_DIRECTORY__"));
 boolean sftp = false;
 
 if (("true").equals(useExistingConn)) {
@@ -125,6 +126,9 @@ if (sftp) {
 
   <%if (("true").equals(useExistingConn)) {%>
     ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+  <%if(!moveToCurrentDir){%>
+  String rootDir_<%=cid %> = ftp_<%=cid %>.pwd();
+  <%}%>
   <%} else {%>    
     ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
     ftp_<%=cid %>.setRemoteHost(<%=host %>);
