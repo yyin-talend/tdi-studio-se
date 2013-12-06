@@ -28,7 +28,7 @@ imports="
 	boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 %>
 	}
-	if (globalMap.containsKey("<%=virtualcid%>_FINISH") ) {
+	if (globalMap.containsKey(readFinishMarkWithPipeId_<%=cid%>)) {
 		if (queue_<%=cid%>.isEmpty()) {
 			break;
 		}
@@ -53,7 +53,8 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 <%
 }
 %>
-globalMap.remove("<%=virtualcid%>_FINISH");
+globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
+globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
 <%
 if(!usePartialUpdate){
 	if(isMassInsert){

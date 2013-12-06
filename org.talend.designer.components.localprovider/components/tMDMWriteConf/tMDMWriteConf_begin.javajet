@@ -153,7 +153,7 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 			} catch (TalendException te) {
 				this.lastException = te.getException();
 				this.currentComponent = te.getCurrentComponent();
-				globalMap.put("<%=virtualcid%>_FINISH", "true");
+				globalMap.put("<%=virtualcid%>_FINISH" + (this.queue==null?"":this.queue.hashCode()), "true");
 			}
 		}
 	}
@@ -176,5 +176,6 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 <%
 }
 %>
+	String readFinishMarkWithPipeId_<%=cid%> = "<%=virtualcid%>_FINISH"+(queue_<%=cid%>==null?"":queue_<%=cid%>.hashCode());
 	while(true) {
 		if (!queue_<%=cid%>.isEmpty()) {
