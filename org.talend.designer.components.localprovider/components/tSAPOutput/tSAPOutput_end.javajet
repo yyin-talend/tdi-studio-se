@@ -65,9 +65,6 @@
 		return "";
 	}
 %>
-	<%if(!useExistingConn){%>
-	}finally{
-	<%}%>
 	<%if(close){%>
 		<%if("sapjco.jar".equals(version)){%>
 			com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
@@ -75,6 +72,4 @@
 			com.sap.conn.jco.JCoContext.end(dest_<%=cid%>);
 		<%}%>
 	<%}%>
-	<%if(!useExistingConn){%>
-	}
-	<%}%>
+	resourceMap.put("finish_<%=cid%>", true);

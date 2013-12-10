@@ -34,8 +34,7 @@ file_<%=cid %>.getParentFile().mkdirs();
 
 com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), "UTF-8")));
-
-try{
+resourceMap.put("csvWriter_<%=cid%>", csvWriter_<%=cid%>); 
 <%
 			List< ? extends IConnection> conns = node.getIncomingConnections();
 	        	if(conns!=null){
