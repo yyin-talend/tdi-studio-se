@@ -1043,6 +1043,9 @@ public class RunProcessContext {
         }
 
         private void processPerformances(final String data, final PerformanceData perfData, final IConnection conn) {
+            if (conn == null) {
+                return;
+            }
             processPerformanceForConnection(data, perfData, conn);
             String uniqueName = ConnectionUtil.getConnectionUnifiedName(conn);
             IConnection[] shadowConnections = traceConnectionsManager.getShadowConnenctions(uniqueName);
