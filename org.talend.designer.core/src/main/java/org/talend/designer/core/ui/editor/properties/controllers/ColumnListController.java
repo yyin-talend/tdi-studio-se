@@ -740,9 +740,20 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         if (element instanceof INode) {
             table = ((INode) element).getMetadataFromConnector(context);
             if (table == null) {
-                if (((INode) element).getMetadataList().size() > 0) {
-                    table = ((INode) element).getMetadataList().get(0);
+                List<IMetadataTable> tableList = ((INode) element).getMetadataList();
+                if (tableList.size() == 1) {
+                    table = tableList.get(0);
+                } else {
+                    for (IMetadataTable itable : tableList) {
+                        if (!itable.getAttachedConnector().equals("REJECT")) {
+                            table = itable;
+                            break;
+                        }
+                    }
                 }
+                // if (tableList.size() > 0) {
+                // table = tableList.get(0);
+                // }
             }
         } else if (element instanceof IConnection) {
             table = ((IConnection) element).getMetadataTable();
