@@ -18,17 +18,17 @@ public class MsmqUtil {
     private String msgContent;
 
     boolean bTried = false;
-
+    
     String ipAddr = "";
 
     final String LOCALIP = "127.0.0.1";
 
-    public MsmqUtil() {
+    public MsmqUtil() throws Exception {
         try {
             java.net.InetAddress thisIp = java.net.InetAddress.getLocalHost();
             ipAddr = thisIp.getHostAddress();
         } catch (Exception ex1) {
-            ex1.printStackTrace();
+            throw ex1;
         }
     }
 
@@ -52,7 +52,7 @@ public class MsmqUtil {
     }
 
     // message remain in queue
-    public void peek() {
+    public void peek() throws MessageQueueException, UnsupportedEncodingException {
         try {
             checkOpen();
             System.out.println("peek");
@@ -60,35 +60,35 @@ public class MsmqUtil {
             System.out.println(" ==> message: " + msg.getBodyAsString());
             System.out.println("     label:   " + msg.getLabel());
         } catch (MessageQueueException ex1) {
-            System.out.println("Peek failure: " + ex1);
+        	throw new MessageQueueException("Peek failure: " + ex1,ex1.hresult);
         } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw e;
 		}
     }
 
     // close an open queue
-    public void close() {
+    public void close() throws MessageQueueException {
         try {
             checkOpen();
             msmqHandle.close();
             msmqHandle = null;
         } catch (MessageQueueException ex1) {
-            System.out.println("close failure: " + ex1);
+        	throw new MessageQueueException("close failure: " + ex1,ex1.hresult);
         }
     }
 
     // delete the queue
-    private void delete() {
+    private void delete() throws MessageQueueException {
         try {
             String fullname = getQueueFullName(".", queueName);
             ionic.Msmq.Queue.delete(fullname);
         } catch (MessageQueueException ex1) {
-            System.out.println("Queue deletion failure: " + ex1);
+            throw new MessageQueueException("Queue deletion failure: " + ex1,ex1.hresult);
         }
     }
 
     // open the queue, if it not exists, and creating is required, try to create a queue with the name.
-    public void open() {
+    public void open() throws MessageQueueException {
         try {
             if (msmqHandle != null) {
                 msmqHandle.close();
@@ -98,16 +98,18 @@ public class MsmqUtil {
             msmqHandle = new Queue(fullname);
             // msmqHandle= new Queue(fullname, 0x02); // 0x02 == SEND only
         } catch (MessageQueueException ex1) {
-            System.out.println("Queue open failure: " + ex1);
 
             if (bTried) {
+            	System.out.println("Queue open failure: " + ex1);
                 bTried = false;
                 create();
+            }else{
+            	 throw new MessageQueueException("Queue open failure: " + ex1,ex1.hresult);
             }
         }
     }
 
-    public void send() {
+    public void send() throws MessageQueueException, UnsupportedEncodingException {
         try {
             checkOpen();
             // the transaction flag must agree with the transactional flavor of the queue.
@@ -117,13 +119,13 @@ public class MsmqUtil {
             Message msg = new Message(msgContent, mLabel, correlationID);
             msmqHandle.send(msg);
         } catch (MessageQueueException ex1) {
-            System.out.println("Send failure: " + ex1);
+        	throw new MessageQueueException("Send failure: " + ex1,ex1.hresult);
         } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw e;
 		}
     }
 
-    public String receive() {
+    public String receive() throws MessageQueueException, UnsupportedEncodingException {
         try {
             checkOpen();
             // System.out.println("receive");
@@ -132,11 +134,10 @@ public class MsmqUtil {
             // System.out.println("     label:   " + msg.getLabel());
             return msg.getBodyAsString();
         } catch (MessageQueueException ex1) {
-            System.out.println("Receive failure: " + ex1);
+        	throw new MessageQueueException("Receive failure: " + ex1,ex1.hresult);
         } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+        	throw e;
 		}
-        return null;
     }
 
     private String getQueueFullName(String hostname, String queueShortName) {
@@ -151,7 +152,7 @@ public class MsmqUtil {
         return "DIRECT=" + a1 + ":" + h1 + "\\private$\\" + queueShortName;
     }
 
-    private void create() {
+    private void create() throws MessageQueueException {
         try {
             if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || LOCALIP
                     .equals(host))) {
@@ -162,7 +163,7 @@ public class MsmqUtil {
             boolean transactional = false; // should the queue be transactional
             msmqHandle = Queue.create(fullname, qLabel, transactional);
         } catch (MessageQueueException ex1) {
-            System.out.println("Queue creation failure: " + ex1);
+        	throw new MessageQueueException("Queue creation failure: " + ex1,ex1.hresult);
         }
     }
 
