@@ -141,6 +141,9 @@ if(("true").equals(useExistingConn)){
 		}
 <%
 	}
+%>
+	resourceMap.put("conn_<%=cid%>", connection_<%=cid %>);
+<%
 }
 // Commit every
 if(!("true").equals(useExistingConn)) {

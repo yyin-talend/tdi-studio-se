@@ -158,6 +158,7 @@ if(useExistingConn){
 	}
 %>
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%
 }
 if(!useExistingConn) {

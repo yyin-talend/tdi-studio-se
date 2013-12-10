@@ -126,7 +126,8 @@ if(("true").equals(useExistingConn)) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     java.lang.Class.forName("<%=javaDbDriver %>");
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);    
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+    resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);    
     <%
 }
 if(!("true").equals(useExistingConn)) {

@@ -115,6 +115,7 @@ if(("true").equals(useExistingConn)) {
     java.lang.Class.forName("<%=javaDbDriver %>");
     String url_<%=cid %> = "jdbc:sqlite:"+ "/" + <%=dbname%>;
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%
 }
 if(!("true").equals(useExistingConn)) {

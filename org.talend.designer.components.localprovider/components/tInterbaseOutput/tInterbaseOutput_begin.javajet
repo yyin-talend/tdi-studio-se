@@ -123,6 +123,7 @@ if(("true").equals(useExistingConn)) {
     String userName_<%=cid%> = <%=username%>;
     String password_<%=cid%> = <%=password%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
+    resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%
 }
 if(!("true").equals(useExistingConn)) {

@@ -162,6 +162,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			log.info("<%=cid%> - Closing the connection to the database.");
 		<%}%>
 		conn_<%=cid%> .close();
+		resourceMap.put("finish_<%=cid%>", true);
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Connection to the database closed.");
 		<%}%>

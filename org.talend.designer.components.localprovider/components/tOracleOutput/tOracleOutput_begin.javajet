@@ -302,8 +302,9 @@ if(useExistingConnection) {
 	}
 <%
 	}
-}
-if(!useExistingConnection) {
+%>
+	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
+<%
     if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
         %>
         conn_<%=cid%>.setAutoCommit(false);

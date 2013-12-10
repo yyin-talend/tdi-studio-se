@@ -67,7 +67,6 @@ imports="
     }   
     %>
     conn_<%=cid%> .close();
-
     <%
     if(("EMBEDED").equals(frameworkType))
     {%>
@@ -98,6 +97,7 @@ imports="
     	}
     }
     %>
+	resourceMap.put("finish_<%=cid%>", true);
 
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;

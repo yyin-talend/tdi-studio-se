@@ -297,7 +297,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="90"
+      NUM_ROW="95"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -308,7 +308,7 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="100"
+      NUM_ROW="99"
       NB_LINES="3"
     >
       <ITEMS>

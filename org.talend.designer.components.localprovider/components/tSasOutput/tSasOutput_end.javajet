@@ -69,6 +69,7 @@ if(useExistingConn.equals("false")){
 	}
 	%>
 	connection_<%=cid%>.close();
+	resourceMap.put("finish_<%=cid%>", true);
 	<%
 }
 %>

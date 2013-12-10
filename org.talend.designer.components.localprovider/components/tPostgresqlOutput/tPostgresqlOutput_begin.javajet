@@ -170,6 +170,7 @@ if(("true").equals(useExistingConn)) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
     <%if(savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery))){%>
     	java.sql.Savepoint  sp_<%=cid %> = null;
 	<%}
