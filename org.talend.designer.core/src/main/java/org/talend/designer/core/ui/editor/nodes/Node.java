@@ -4421,6 +4421,9 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public boolean isMapReduceStart() {
+        if (!this.isActivate()) {
+            return false;
+        }
         if (this.getMrGroupId() == null) {
             return false;
         }
