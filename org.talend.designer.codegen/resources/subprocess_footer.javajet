@@ -53,6 +53,15 @@
 			            pool.setErrorThread(this, new TalendException(e, currentComponent, globalMap));
 			            //pool.setErrorThread(this,e);
 			            pool.stopAllThreads();
+					}finally{
+						try{
+							<%=finallyPart%>
+						}catch(java.lang.Exception e){	
+							//ignore
+						}catch(java.lang.Error error){
+							//ignore
+						}
+						resourceMap = null;
 					}
 					this.isRunning = false;
 					
