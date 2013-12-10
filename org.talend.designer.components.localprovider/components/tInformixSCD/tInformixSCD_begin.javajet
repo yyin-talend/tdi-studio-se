@@ -63,6 +63,7 @@ skeleton="../templates/slowly_change_dimension.skeleton"
     <%=genDimensionAttributeClass(scdConfiger, cid)%>
     int nb_line_update_<%=cid%> = 0;
     int nb_line_inserted_<%=cid%> = 0;
+    int nb_line_rejected_<%=cid%> = 0;
 <%
     if(useExistingConnection) {
         String connection = ElementParameterParser.getValue(node, "__CONNECTION__");

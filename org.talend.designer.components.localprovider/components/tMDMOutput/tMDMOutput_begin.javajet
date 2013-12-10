@@ -33,6 +33,7 @@ imports="
 	
 %>       
 int nb_line_<%=cid %> = 0;
+int nb_line_rejected_<%=cid%> = 0;
 <%if(!usePartialUpdate){%>
 	<%if(addTaskID){%>
 		class Util_<%=cid%>{

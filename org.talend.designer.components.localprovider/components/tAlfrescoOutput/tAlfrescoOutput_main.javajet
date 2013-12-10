@@ -202,6 +202,7 @@ imports="
                     <%
                 }
                 %>
+                nb_line_rejected_<%=cid%>++;
                 <%=rejectConnName%>.errorMessage = mainEx_<%=cid%>.getMessage();
                 <%=rejectConnName%>.errorCode = "XML";
                 <%

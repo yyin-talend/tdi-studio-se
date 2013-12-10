@@ -315,6 +315,7 @@ imports="
 <%
                 }
 %>
+				nb_line_rejected_<%=cid%>++;
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
             } else {

@@ -97,7 +97,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       }
       
       int nbLine_<%=cid%> = 0;
-        
+	  int nb_line_rejected_<%=cid%> = 0;
             
         <%
         

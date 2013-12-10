@@ -148,7 +148,7 @@ if(("EMBEDED").equals(frameworkType)) {
     		/*
     		 * can not obtain a connection to network server.
     		 */ 	 
-    		System.exit(1);	
+    		throw new java.lang.Exception("Can not obtain a connection to network server");
     	}
     	//derby network server started.
 	<%
@@ -160,6 +160,7 @@ int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
 int nb_line_deleted_<%=cid%> = 0;
+int nb_line_rejected_<%=cid%> = 0;
 
 int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;

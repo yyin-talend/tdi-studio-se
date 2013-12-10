@@ -146,6 +146,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        nb_line_rejected_<%=cid%>++;
                         <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
@@ -221,6 +222,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        nb_line_rejected_<%=cid%>++;
                         <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
@@ -315,6 +317,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            nb_line_rejected_<%=cid%>++;
                             <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
@@ -374,6 +377,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            nb_line_rejected_<%=cid%>++;
                             <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
@@ -455,6 +459,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        nb_line_rejected_<%=cid%>++;
                         <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%
@@ -515,6 +520,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            nb_line_rejected_<%=cid%>++;
                             <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                             <%=rejectConnName%>.errorMessage = e.getMessage();
                             <%
@@ -576,6 +582,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        nb_line_rejected_<%=cid%>++;
                         <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
                         <%=rejectConnName%>.errorMessage = e.getMessage();
                         <%

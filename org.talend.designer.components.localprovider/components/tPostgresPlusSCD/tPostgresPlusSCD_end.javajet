@@ -60,6 +60,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     %>
     globalMap.put("<%=cid %>_NB_LINE_UPDATED", nb_line_update_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_inserted_<%=cid%>);
+    globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
     <%
 }
 %>

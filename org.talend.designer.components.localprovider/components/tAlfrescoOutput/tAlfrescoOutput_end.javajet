@@ -90,7 +90,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       
       // setting global var NB_LINE for further components
       globalMap.put("<%=cid %>_NB_LINE", nbLine_<%=cid%>);
-      
+      globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
       
       // handling result logs
       System.out.println(importCmd_<%=cid%>.toString() + " " + importCmd_<%=cid%>.getResultMessage() + " " + importCmd_<%=cid%>.getResultError());
