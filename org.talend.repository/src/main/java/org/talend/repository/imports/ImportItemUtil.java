@@ -1536,6 +1536,10 @@ public class ImportItemUtil {
             final Item item = itemRecord.getItem();
             boolean byteArray = (item instanceof FileItem);
             IPath itemPath = getItemPath(itemRecord.getPath(), item);
+            File tempFile = itemPath.toFile();
+            if (!tempFile.exists()) {
+                return;
+            }
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord, itemPath, byteArray);
 
