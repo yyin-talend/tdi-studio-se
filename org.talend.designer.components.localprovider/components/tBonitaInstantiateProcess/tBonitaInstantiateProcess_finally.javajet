@@ -13,19 +13,20 @@ imports="
 
 	String clientMode = ElementParameterParser.getValue(node, "__CLIENT_MODE__");
 %>
+if(resourceMap.get("finish_<%=cid%>") == null){
 <%
 	if ("HTTP_CLIENT".equals(clientMode)) {
 %>
-	if (httpConn_<%=cid %> != null) {
-		httpConn_<%=cid %>.disconnect();
+	if (resourceMap.get("httpConn_<%=cid %>") != null) {
+		((java.net.HttpURLConnection)resourceMap.get("httpConn_<%=cid %>")).disconnect();
 	}
 <%
 	} else {
 %>
-	if (loginContext_<%=cid%> != null) {
-		loginContext_<%=cid%>.logout();
+	if (resourceMap.get("loginContext_<%=cid%>") != null) {
+		((javax.security.auth.login.LoginContext)resourceMap.get("loginContext_<%=cid%>")).logout();
 	}
 <%
 	}
 %>
-resourceMap.put("finish_<%=cid%>", true); 
+}

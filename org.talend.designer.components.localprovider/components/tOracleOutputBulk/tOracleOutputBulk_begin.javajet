@@ -84,7 +84,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>		
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(fileName_<%=cid%>, <%= isAppend%>),<%= encoding%>),<%=bufferSize%>);
-        try{
+       	resourceMap.put("out<%=cid%>", out<%=cid%>); 
 <%
     }
 }
