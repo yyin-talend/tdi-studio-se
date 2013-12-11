@@ -60,7 +60,6 @@ public class StandaloneConnectionContextUtils {
         if (dbConn == null) {
             return null;
         }
-        ContextType contextType = null;
         DatabaseConnection cloneConn = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         // get values
         String server = getOriginalValue(contextProperties, dbConn.getServerName());
@@ -88,7 +87,7 @@ public class StandaloneConnectionContextUtils {
         cloneConn.setFileFieldName(filePath);
 
         // if use context
-        if (contextType != null) {
+        if (dbConn.isContextMode()) {
             String encryptedPassword = null;
             try {
                 encryptedPassword = PasswordEncryptUtil.encryptPassword(password);
@@ -148,7 +147,7 @@ public class StandaloneConnectionContextUtils {
 
         // Added 20130311 TDQ-7000, when it is context mode and not general
         // jdbc, reset the url.
-        if (contextType != null
+        if (dbConn.isContextMode()
                 && !EDatabaseTypeName.GENERAL_JDBC.equals(EDatabaseTypeName.getTypeFromDbType(dbConn.getDatabaseType()))) {
             String newURL = DatabaseConnStrUtil.getURLString(cloneConn.getDatabaseType(), dbConn.getDbVersionString(), server,
                     username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource, dbRootPath, additionParam);
