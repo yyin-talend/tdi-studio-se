@@ -111,7 +111,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static IStatus status = null;
 
     private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor();
-    
+
     public static final String JET_PROJECT = ".JETEmitters"; //$NON-NLS-1$
 
     /***/
@@ -143,9 +143,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                     monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
                 } else {
                     monitorWrap = new NullProgressMonitor();
-                }                
+                }
                 ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
-                
+
                 initializeJetEmittersProject(monitorWrap);
 
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
@@ -253,41 +253,41 @@ public final class CodeGeneratorEmittersPoolFactory {
             CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
             return Status.OK_STATUS;
         }
-        
-        private void initializeJetEmittersProject(final IProgressMonitor progressMonitor) throws CoreException {
-				final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-	            IProject project = workspace.getRoot().getProject(JET_PROJECT);
-	            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
-	                    new Object[] { project.getName() }));
-	            File file = new File(workspace.getRoot().getLocation().append(JET_PROJECT).toPortableString());
-	            if (file.exists() && !project.isAccessible()) {
-	                // .metadata missing, so need to reimport project to add it in the metadata.
-	                progressMonitor.subTask("Reinitilializing project " + project.getName()); //$NON-NLS-1$
-	                project.create(new SubProgressMonitor(progressMonitor, 1));
-	                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-	                        new Object[] { project.getName() }));
-	            } else if (!project.isAccessible()) {
-	                // project was deleted manually on the disk. The delete here will remove infos from metadata
-	                // then we'll be able to create a new clean project.
-	                project.delete(true, progressMonitor);
-	            }
-	            if (!project.exists()) {
-	                progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
-	                project.create(new SubProgressMonitor(progressMonitor, 1));
-	                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-	                        new Object[] { project.getName() }));
-	            }
-	            if (!project.isOpen()) {
-	                project.open(new SubProgressMonitor(progressMonitor, 5));
-	                project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
-	            }
-	            IProjectDescription description = project.getDescription();
-	            // only in case it's one old workspace and got no nature defined.
-	            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
-	                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-	                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
-	            }
+        private void initializeJetEmittersProject(final IProgressMonitor progressMonitor) throws CoreException {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+            IProject project = workspace.getRoot().getProject(JET_PROJECT);
+            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
+                    new Object[] { project.getName() }));
+            File file = new File(workspace.getRoot().getLocation().append(JET_PROJECT).toPortableString());
+            if (file.exists() && !project.isAccessible()) {
+                // .metadata missing, so need to reimport project to add it in the metadata.
+                progressMonitor.subTask("Reinitilializing project " + project.getName()); //$NON-NLS-1$
+                project.create(new SubProgressMonitor(progressMonitor, 1));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                        new Object[] { project.getName() }));
+            } else if (!project.isAccessible()) {
+                // project was deleted manually on the disk. The delete here will remove infos from metadata
+                // then we'll be able to create a new clean project.
+                project.delete(true, progressMonitor);
+            }
+            if (!project.exists()) {
+                progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
+                project.create(new SubProgressMonitor(progressMonitor, 1));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                        new Object[] { project.getName() }));
+            }
+            if (!project.isOpen()) {
+                project.open(new SubProgressMonitor(progressMonitor, 5));
+                project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+            }
+            IProjectDescription description = project.getDescription();
+            // only in case it's one old workspace and got no nature defined.
+            if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
+                description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+                project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+            }
         }
 
     };
@@ -411,6 +411,9 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             if (component.getAvailableCodeParts().contains(ECodePart.END)) {
                 initComponent(codeLanguage, jetBeans, ECodePart.END, component);
+            }
+            if (component.getAvailableCodeParts().contains(ECodePart.FINALLY)) {
+                initComponent(codeLanguage, jetBeans, ECodePart.FINALLY, component);
             }
         }
 

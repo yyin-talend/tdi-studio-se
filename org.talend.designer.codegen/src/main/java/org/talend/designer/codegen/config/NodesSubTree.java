@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -51,6 +51,8 @@ public class NodesSubTree {
 
     HashMap<INode, Integer> visitedNodesEndCode;
 
+    HashMap<INode, Integer> visitedNodesFinallyCode;
+
     private static final boolean DEBUG = false;
 
     boolean isMergeSubTree = false;
@@ -88,6 +90,7 @@ public class NodesSubTree {
         this.visitedNodesMainCode = new HashMap<INode, Integer>();
         this.visitedNodesBeginCode = new HashMap<INode, Integer>();
         this.visitedNodesEndCode = new HashMap<INode, Integer>();
+        this.visitedNodesFinallyCode = new HashMap<INode, Integer>();
         this.isMergeSubTree = node.isThereLinkWithMerge();
         allMainSubTreeConnections = new ArrayList<IConnection>();
 
@@ -105,7 +108,7 @@ public class NodesSubTree {
         }
 
     }
-    
+
     public NodesSubTree(INode node, List<? extends INode> nodes, ETypeGen typeGen) {
         this.rootNode = node;
         this.name = node.getUniqueName();
@@ -115,7 +118,6 @@ public class NodesSubTree {
 
         buildCamelSubTree(node, false);
     }
-    
 
     /**
      * unite all the relative merge nodes to this subTree
@@ -204,6 +206,7 @@ public class NodesSubTree {
         visitedNodesMainCode.put(node, 0);
         visitedNodesBeginCode.put(node, 0);
         visitedNodesEndCode.put(node, 0);
+        visitedNodesFinallyCode.put(node, 0);
         nodes.add(node);
     }
 
@@ -237,6 +240,13 @@ public class NodesSubTree {
             } else {
                 return false;
             }
+        case FINALLY:
+            Integer countFinally = visitedNodesFinallyCode.get(node);
+            if (countFinally == null) {
+                return null;
+            } else {
+                return false;
+            }
         default:
             return result;
         }
@@ -259,6 +269,8 @@ public class NodesSubTree {
         case END:
             visitedNodesEndCode.put(node, visitedNodesEndCode.get(node) + 1);
             break;
+        case FINALLY:
+            visitedNodesFinallyCode.put(node, visitedNodesFinallyCode.get(node) + 1);
         default:
             // do nothing
         }

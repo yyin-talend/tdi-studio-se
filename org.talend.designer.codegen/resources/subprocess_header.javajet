@@ -1017,7 +1017,8 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	String iterateId = "";
 	int iterateLoop = 0;
 	String currentComponent = "";
-				
+	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
+					
 	try {
 	
 			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
