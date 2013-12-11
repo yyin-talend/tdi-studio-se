@@ -17,7 +17,7 @@ boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE
 if (outConns != null && outConns.size() > 0){
   %>
 	  }
-	}catch(java.lang.Exception e_<%=cid%>){
+	}catch(ionic.Msmq.MessageQueueException e_<%=cid%>){
 <%
 	if(dieOnError){
 %>
@@ -33,12 +33,24 @@ if (outConns != null && outConns.size() > 0){
 <%
 	}
 %>
+	}catch(java.io.UnsupportedEncodingException ex_<%=cid%>){
+<%
+	if(dieOnError){
+%>
+		throw ex_<%=cid%>;
+<%
+	}else{
+%>
+		System.out.println("Unsupported encoding: " + ex_<%=cid%>.getMessage());
+<%
+	}
+%>
     }finally{
 		try{
 	    	if (msgu_<%=cid%>.isOpen()){
 	    		msgu_<%=cid%>.close();
 	  		}
-    	}catch(java.lang.Exception e_<%=cid%>){
+    	 }catch(ionic.Msmq.MessageQueueException e_<%=cid%>){
 <%
 	if(dieOnError){
 %>

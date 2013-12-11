@@ -29,18 +29,8 @@ if (inConns != null && inConns.size() > 0){
 		    if (msgu_<%=cid%>!=null && msgu_<%=cid%>.isOpen()){
 		    	msgu_<%=cid%>.close();
 		  	}
-	    }catch(java.lang.Exception e_<%=cid%>){
-<%
-	if(dieOnError){
-%>
-			throw e_<%=cid%>;
-<%
-	}else{
-%>
+	    }catch(ionic.Msmq.MessageQueueException e_<%=cid%>){
 			System.out.println("Close failure: " + e_<%=cid%>.getMessage());
-<%
-	}
-%>
 		}
     }
   <%
