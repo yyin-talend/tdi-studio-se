@@ -27,6 +27,7 @@ if (inConns != null && inConns.size() > 0){
 	    if (msgu_<%=cid%>.isOpen()){
 	    	msgu_<%=cid%>.close();
 	  	}
+	  	resourceMap.put("finish_<%=cid%>", true);
     }catch(java.lang.Exception e_<%=cid%>){
 <%
 	if(dieOnError){
@@ -35,7 +36,7 @@ if (inConns != null && inConns.size() > 0){
 <%
 	}else{
 %>
-		System.out.println(e_<%=cid%>.getMessage());
+		System.out.println("Close failure: " + e_<%=cid%>.getMessage());
 <%
 	}
 %>

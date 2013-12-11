@@ -25,7 +25,11 @@ if (outConns != null && outConns.size() > 0){
 <%
 	}else{
 %>
-		System.out.println(e_<%=cid%>.getMessage());
+		if (msgu_<%=cid%>.isOpen()){
+			System.out.println("Receive failure: " + e_<%=cid%>.getMessage());
+		}else{
+			System.out.println("Queue open failure: " + e_<%=cid%>.getMessage());
+		}
 <%
 	}
 %>
@@ -42,7 +46,7 @@ if (outConns != null && outConns.size() > 0){
 <%
 	}else{
 %>
-			System.out.println(e_<%=cid%>.getMessage());
+			System.out.println("Close failure: " + e_<%=cid%>.getMessage());
 <%
 	}
 %>

@@ -24,12 +24,8 @@ public class MsmqUtil {
     final String LOCALIP = "127.0.0.1";
 
     public MsmqUtil() throws Exception {
-        try {
-            java.net.InetAddress thisIp = java.net.InetAddress.getLocalHost();
-            ipAddr = thisIp.getHostAddress();
-        } catch (Exception ex1) {
-            throw ex1;
-        }
+        java.net.InetAddress thisIp = java.net.InetAddress.getLocalHost();
+        ipAddr = thisIp.getHostAddress();
     }
 
     public static void main(String[] args) throws java.lang.Exception {
@@ -53,38 +49,24 @@ public class MsmqUtil {
 
     // message remain in queue
     public void peek() throws MessageQueueException, UnsupportedEncodingException {
-        try {
-            checkOpen();
-            System.out.println("peek");
-            Message msg = msmqHandle.peek(2000); // timeout= 2000 ms
-            System.out.println(" ==> message: " + msg.getBodyAsString());
-            System.out.println("     label:   " + msg.getLabel());
-        } catch (MessageQueueException ex1) {
-        	throw new MessageQueueException("Peek failure: " + ex1,ex1.hresult);
-        } catch (UnsupportedEncodingException e) {
-			throw e;
-		}
+        checkOpen();
+        System.out.println("peek");
+        Message msg = msmqHandle.peek(2000); // timeout= 2000 ms
+        System.out.println(" ==> message: " + msg.getBodyAsString());
+        System.out.println("     label:   " + msg.getLabel());
     }
 
     // close an open queue
     public void close() throws MessageQueueException {
-        try {
-            checkOpen();
-            msmqHandle.close();
-            msmqHandle = null;
-        } catch (MessageQueueException ex1) {
-        	throw new MessageQueueException("close failure: " + ex1,ex1.hresult);
-        }
+        checkOpen();
+        msmqHandle.close();
+        msmqHandle = null;
     }
 
     // delete the queue
     private void delete() throws MessageQueueException {
-        try {
-            String fullname = getQueueFullName(".", queueName);
-            ionic.Msmq.Queue.delete(fullname);
-        } catch (MessageQueueException ex1) {
-            throw new MessageQueueException("Queue deletion failure: " + ex1,ex1.hresult);
-        }
+        String fullname = getQueueFullName(".", queueName);
+        ionic.Msmq.Queue.delete(fullname);
     }
 
     // open the queue, if it not exists, and creating is required, try to create a queue with the name.
@@ -104,40 +86,28 @@ public class MsmqUtil {
                 bTried = false;
                 create();
             }else{
-            	 throw new MessageQueueException("Queue open failure: " + ex1,ex1.hresult);
+            	 throw ex1;
             }
         }
     }
 
     public void send() throws MessageQueueException, UnsupportedEncodingException {
-        try {
-            checkOpen();
-            // the transaction flag must agree with the transactional flavor of the queue.
-            int transactionFlag = 0; // 0 = NO TRANSACTION, 1= MTS, 2= XA, 3= SINGLE_MESSAGE
-            String mLabel = "inserted by " + this.getClass().getName() + ".java";
-            String correlationID = "L:none";
-            Message msg = new Message(msgContent, mLabel, correlationID);
-            msmqHandle.send(msg);
-        } catch (MessageQueueException ex1) {
-        	throw new MessageQueueException("Send failure: " + ex1,ex1.hresult);
-        } catch (UnsupportedEncodingException e) {
-			throw e;
-		}
+	    checkOpen();
+	    // the transaction flag must agree with the transactional flavor of the queue.
+	    int transactionFlag = 0; // 0 = NO TRANSACTION, 1= MTS, 2= XA, 3= SINGLE_MESSAGE
+	    String mLabel = "inserted by " + this.getClass().getName() + ".java";
+	    String correlationID = "L:none";
+	    Message msg = new Message(msgContent, mLabel, correlationID);
+	    msmqHandle.send(msg);
     }
 
     public String receive() throws MessageQueueException, UnsupportedEncodingException {
-        try {
-            checkOpen();
-            // System.out.println("receive");
-            Message msg = msmqHandle.receive(2000); // timeout= 2000 ms
-            // System.out.println(" ==> message: " + msg.getMessage());
-            // System.out.println("     label:   " + msg.getLabel());
-            return msg.getBodyAsString();
-        } catch (MessageQueueException ex1) {
-        	throw new MessageQueueException("Receive failure: " + ex1,ex1.hresult);
-        } catch (UnsupportedEncodingException e) {
-        	throw e;
-		}
+        checkOpen();
+        // System.out.println("receive");
+        Message msg = msmqHandle.receive(2000); // timeout= 2000 ms
+        // System.out.println(" ==> message: " + msg.getMessage());
+        // System.out.println("     label:   " + msg.getLabel());
+        return msg.getBodyAsString();
     }
 
     private String getQueueFullName(String hostname, String queueShortName) {
@@ -153,18 +123,14 @@ public class MsmqUtil {
     }
 
     private void create() throws MessageQueueException {
-        try {
-            if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || LOCALIP
-                    .equals(host))) {
-                throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
-            }
-            String fullname = ".\\private$\\" + queueName;
-            String qLabel = "Created by " + this.getClass().getName() + ".java";
-            boolean transactional = false; // should the queue be transactional
-            msmqHandle = Queue.create(fullname, qLabel, transactional);
-        } catch (MessageQueueException ex1) {
-        	throw new MessageQueueException("Queue creation failure: " + ex1,ex1.hresult);
+        if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || LOCALIP
+                .equals(host))) {
+            throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
         }
+        String fullname = ".\\private$\\" + queueName;
+        String qLabel = "Created by " + this.getClass().getName() + ".java";
+        boolean transactional = false; // should the queue be transactional
+        msmqHandle = Queue.create(fullname, qLabel, transactional);
     }
 
     private void checkOpen() throws MessageQueueException {

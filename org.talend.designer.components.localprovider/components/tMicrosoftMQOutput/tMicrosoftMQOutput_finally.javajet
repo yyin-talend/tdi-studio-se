@@ -1,12 +1,12 @@
 <%@ jet 
   imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
     java.util.List 
   " 
 %>
@@ -18,20 +18,18 @@ List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionTy
 boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
     
 if (inConns != null && inConns.size() > 0){
-  String connNameIn = inConns.get(0).getName();
   IMetadataTable inTable = inConns.get(0).getMetadataTable();
   List<IMetadataColumn> columns = inTable.getListColumns();
-  String message = ElementParameterParser.getValue(node, "__MESSAGE__");
-
+      
   if (columns != null && columns.size() > 0){
   %>
-    if (<%=connNameIn%>.<%=columns.get(0).getLabel()%> != null){
-		try{
-			if (msgu_<%=cid%>.isOpen()){
-	        	msgu_<%=cid%>.setMsg(<%=connNameIn%>.<%=message%>);
-	        	msgu_<%=cid%>.send();
-	      	}
-    	}catch(java.lang.Exception e_<%=cid%>){
+  	if(resourceMap.get("finish_<%=cid%>") == null){ 
+	  	try{
+	  		org.talend.msmq.MsmqUtil msgu_<%=cid%>=(org.talend.msmq.MsmqUtil)resourceMap.get("msgu_<%=cid%>");
+		    if (msgu_<%=cid%>!=null && msgu_<%=cid%>.isOpen()){
+		    	msgu_<%=cid%>.close();
+		  	}
+	    }catch(java.lang.Exception e_<%=cid%>){
 <%
 	if(dieOnError){
 %>
@@ -39,11 +37,11 @@ if (inConns != null && inConns.size() > 0){
 <%
 	}else{
 %>
-			System.out.println("Send failure: " + e_<%=cid%>.getMessage());
+			System.out.println("Close failure: " + e_<%=cid%>.getMessage());
 <%
 	}
 %>
-    	}
+		}
     }
   <%
   }

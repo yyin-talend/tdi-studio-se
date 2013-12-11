@@ -31,6 +31,7 @@ if (inConns != null && inConns.size() > 0){
     msgu_<%=cid%>.createIfNotExists(true);
     try{
     	msgu_<%=cid%>.open();
+    	resourceMap.put("msgu_<%=cid%>", msgu_<%=cid%>);
     }catch(java.lang.Exception e_<%=cid%>){
 <%
 	if(dieOnError){
@@ -39,7 +40,7 @@ if (inConns != null && inConns.size() > 0){
 <%
 	}else{
 %>
-		System.out.println(e_<%=cid%>.getMessage());
+		System.out.println("Queue open failure: " +e_<%=cid%>.getMessage());
 <%
 	}
 %>
