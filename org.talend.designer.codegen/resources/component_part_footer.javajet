@@ -48,8 +48,9 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
 if(execStat){
- runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
- 	+iterateId,2, 0); 
+	if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+ 		runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0); 
+ 	}
 }
 <%
   }
