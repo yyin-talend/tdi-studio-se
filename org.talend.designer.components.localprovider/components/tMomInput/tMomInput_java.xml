@@ -499,6 +499,7 @@
 	    <ITEM NAME="Format" VALUE="Format"/>
 	    <ITEM NAME="Flags" VALUE="Flags"/>
 	    <ITEM NAME="NameValueCCSID" VALUE="NameValueCodedCharSetId"/>
+        <ITEM NAME="CodedCharSetId" VALUE="CodedCharSetId" />
 	  </ITEMS>
 	</ITEM>
 	<ITEM NAME="REFERENCE_COLUMN" FIELD="COLUMN_LIST"/>
