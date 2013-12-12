@@ -50,6 +50,26 @@ imports="
 		}	
 <%}else if(VERSION_SAP3.equals(version)){%>
 	com.sap.conn.jco.JCoDestination dest_<%=cid%> = (com.sap.conn.jco.JCoDestination)globalMap.get("<%=conn%>");
+<%	
+	INode connectionNode = null; 
+	for (INode processNode : node.getProcess().getGeneratingNodes()) { 
+		if(connection.equals(processNode.getUniqueName())) { 
+			connectionNode = processNode; 
+			break; 
+		} 
+	} 
+	boolean specify_alias = "true".equals(ElementParameterParser.getValue(connectionNode, "__SPECIFY_DATASOURCE_ALIAS__"));
+	if(specify_alias){
+		String alias = ElementParameterParser.getValue(connectionNode, "__SAP_DATASOURCE_ALIAS__");
+		if(null != alias && !("".equals(alias))){
+%>
+			if(dest_<%=cid%> == null){
+				dest_<%=cid%> = com.sap.conn.jco.JCoDestinationManager.getDestination(<%=alias%>);
+			}
+<%
+		}
+	}
+%>
 	if(dest_<%=cid%> != null)
 	{
 		com.sap.conn.jco.JCoRepository repository_<%=cid %> = dest_<%=cid%>.getRepository();
