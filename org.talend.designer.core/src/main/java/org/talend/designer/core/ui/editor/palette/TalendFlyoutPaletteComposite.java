@@ -169,7 +169,9 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
         ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
         manager.add(showStandardAction);
         manager.add(showFavoriteAction);
-        showStandardAction.doSetEnable();
+        if (ShowFavoriteAction.state) {
+            showStandardAction.doSetEnable();
+        }
         manager.add(mgr);
 
         addDisposeListener(new DisposeListener() {
