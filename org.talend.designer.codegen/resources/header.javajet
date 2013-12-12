@@ -551,7 +551,31 @@ private class TalendException extends java.lang.Exception {
 		if (node.isActivate()) {
 			%>
 			public void <%=node.getUniqueName() %>_error(java.lang.Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
+				<%
+				//If node is virtual component input part,invoke virtual component output part when virtual link is ROWS_END,FLOW,COMPONENT_OK,ITERATE(virtual link could not be ON_SUBJOB_OK)
+				if(node.isVirtualGenerateNode() && node.getVirtualLinkTo()!=null){
+					List< ? extends IConnection> conns = node.getOutgoingConnections(node.getVirtualLinkTo());
+					boolean invokeVirtualLinkError=false;
+					//If virtual component virtual link is EConnectionType.ON_SUBJOB_OK,node.getOutgoingConnections().size() is 0
+					for(IConnection conn:conns){
+						INode virtualLinkNode = conn.getTarget();
+						if(virtualLinkNode.isVirtualGenerateNode()){
+						%>
+							<%=virtualLinkNode.getUniqueName()%>_error(exception, errorComponent, globalMap);
+						<%
+							invokeVirtualLinkError=true;
+							break;
+						}
+					}
+					if(invokeVirtualLinkError){
+					%>
+						}
+					<%
+						continue;
+					}
+				}
+				%>
+				end_Hash.put(errorComponent, System.currentTimeMillis());
 				<%
 				boolean ifBeforRunError = NodeUtil.checkComponentErrorConnectionAfterNode(node);
 				if(!ifBeforRunError) {
@@ -579,7 +603,7 @@ private class TalendException extends java.lang.Exception {
 					if (statCatcher.compareTo("true")==0) {
 						for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 							%>
-							<%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
+							<%=statCatcherNode.getUniqueName() %>.addMessage("failure",errorComponent, end_Hash.get(errorComponent)-start_Hash.get(errorComponent));
 							<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 							<%
 						}
