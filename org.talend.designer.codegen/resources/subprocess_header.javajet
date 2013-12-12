@@ -1003,6 +1003,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 				
 				this.isRunning = true;
 				String currentComponent = "";
+				java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 				try{
 	
 <%
