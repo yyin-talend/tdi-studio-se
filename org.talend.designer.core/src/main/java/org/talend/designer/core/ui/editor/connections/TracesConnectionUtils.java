@@ -288,7 +288,7 @@ public class TracesConnectionUtils {
         List<String> names = dbs.getNeedSchemaDBNames();
         boolean ifNeedSchemaDB = names.contains(productName);
         if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) {
-            parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
+            parameters.setConnectionComment(Messages.getString("TracesConnectionUtils.connectionComment")); //$NON-NLS-1$
             return null;
         }
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
