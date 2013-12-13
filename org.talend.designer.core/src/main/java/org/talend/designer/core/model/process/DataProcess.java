@@ -272,7 +272,23 @@ public class DataProcess implements IGeneratingProcess {
         }
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
-        dataNode.setMetadataList(graphicalNode.getMetadataList());
+        // ==to fix the bug:TDI-28390, the metadataList should have flow metadata at 0 index==
+        List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>(graphicalNode.getMetadataList());
+        // no need for externalnode, ELTNode
+        // exist both flow and reject connectors, then we need to reorder it
+        if (!dataNode.isExternalNode() && !dataNode.isELTComponent() && metadataList.size() > 1) {
+
+            if ("REJECT".equalsIgnoreCase(metadataList.get(0).getAttachedConnector())) {
+                IMetadataTable reject = metadataList.get(0);
+
+                for (int i = 1; i < metadataList.size(); i++) {
+                    metadataList.set(i - 1, metadataList.get(i));
+                }
+                metadataList.set(metadataList.size() - 1, reject);
+            }
+        }
+        // ==========bug:TDI-28390 end=====================
+        dataNode.setMetadataList(metadataList);
         dataNode.setComponent(graphicalNode.getComponent());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
