@@ -19,7 +19,7 @@
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
+final INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String cid_original = cid;
 cid = cid_original.replace("tAdvancedFileOutputXML","tAFOX");
@@ -125,7 +125,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		}//***************************the part of the output stream end************************************************
 		%>
 		java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
-		java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
+		final java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
 
 		<%
 		// *** generation mode init ***
@@ -204,11 +204,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			}
 
-			NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
+			final NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 			// sort group root element for judgement of group
 			java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 			org.dom4j.Element root4Group_<%=cid%> = null;
 			org.dom4j.Document doc_<%=cid %>=null;
+			
+			final java.util.Map<String,org.dom4j.Branch> nameToElement_<%=cid%> = new java.util.HashMap<String,org.dom4j.Branch>();
 
 			<%if (!useStream && isMerge) {//append mode and the code of file path%>
 				if (needRoot_<%=cid %> == false) {
@@ -267,7 +269,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			}
 			%>
-			int[] orders_<%=cid %> = new int[<%=groupSize + 1%>];
+			final int[] orders_<%=cid %> = new int[<%=groupSize + 1%>];
 		<%
 		} else if (("Null").equals(mode)) {
 		%>
@@ -473,6 +475,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							generateToolByDom4j.bAddEmptyAttr = bAddEmptyAttr;
 							generateToolByDom4j.bAddUnmappedAttr = bAddUnmappedAttr;
 							generateToolByDom4j.cid = cid;
+							generateToolByDom4j.touchXMLNode.cid = cid;
+							generateToolByDom4j.bigMethodHelper.cid = cid;
 							generateToolByDom4j.tool = tool;
 							if( groupTable.size()>0){
 								if((!useStream && isMerge)){
@@ -489,11 +493,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					return <%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>;
 				}
 				
-				public org.dom4j.Element generateCodeDom4j_UnFindInsertNode<%=i%>(NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,int[] orders_<%=cid %>,boolean bl_<%=cid %>){
+				public org.dom4j.Element generateCodeDom4j_UnFindInsertNode<%=i%>(final NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,final java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,final int[] orders_<%=cid %>,final boolean bl_<%=cid %>) throws java.lang.Exception {
 <% 
 					generateToolByDom4j.generateCode(groupList.get(i),"group"+i+"_","subTreeRootParent");
 %>
-					return group<%=i%>__<%=cid%>;
+					return <%generateToolByDom4j.touchXMLNode.getXMLElement("group"+i+"_");%>;
 				}
 <%
 								
@@ -502,11 +506,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 									for(int i=0;i<groupList.size();i++){
 										XMLNode groupRootNode = groupList.get(i);
 %>
-				public org.dom4j.Element generateCodeDom4j_group<%=i%>(NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,int[] orders_<%=cid %>){
+				public org.dom4j.Element generateCodeDom4j_group<%=i%>(final NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,final java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,final int[] orders_<%=cid %>) throws java.lang.Exception {
 <%
 				generateToolByDom4j.generateCode(groupList.get(i),"group"+i+"_","subTreeRootParent");
 %>
-					return group<%=i%>__<%=cid%>;
+					return <%generateToolByDom4j.touchXMLNode.getXMLElement("group"+i+"_");%>;
 				}
 <%
 									}
@@ -514,11 +518,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							}
 							if(loopTable!=null && loopTable.size()>0){
 %>
-				public org.dom4j.Element generateCodeDom4j_Loop(NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,int[] orders_<%=cid %><%if(!useStream && isMerge && groupTable.size()>0){%>,boolean bl_<%=cid %><%}%>){
+				public org.dom4j.Element generateCodeDom4j_Loop(final NestXMLTool_<%=cid%> nestXMLTool_<%=cid%>,final java.util.Map<String,String> valueMap_<%=cid%>,org.dom4j.Element subTreeRootParent_<%=cid%>,final int[] orders_<%=cid %><%if(!useStream && isMerge && groupTable.size()>0){%>,final boolean bl_<%=cid %><%}%>) throws java.lang.Exception {
 <%
 					generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 %>
-					return loop_<%=cid%>;
+					return <%generateToolByDom4j.touchXMLNode.getXMLElement("loop");%>;
 				}
 <%
 							}

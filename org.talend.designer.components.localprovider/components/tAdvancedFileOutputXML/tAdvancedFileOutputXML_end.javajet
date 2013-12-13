@@ -159,6 +159,12 @@ String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
+	if("Dom4j".equals(mode)){
+%>
+		nameToElement_<%=cid%>.clear();
+<%
+	}
+	
 	String split = ElementParameterParser.getValue(node, "__SPLIT__");
 	if(!useStream && ("true").equals(split)){
 %>
