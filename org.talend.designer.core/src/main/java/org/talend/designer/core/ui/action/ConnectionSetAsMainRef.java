@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnectionStatusCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
@@ -110,6 +111,7 @@ public class ConnectionSetAsMainRef extends SelectionAction {
         return false;
     }
 
+    @Override
     public void run() {
         if (connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
                 || connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR)
@@ -120,9 +122,7 @@ public class ConnectionSetAsMainRef extends SelectionAction {
                             Messages.getString("ConnectionSetAsMainRef.ERROR"), Messages.getString("ConnectionSetAsMainRef.ConnectionModifyError")); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
-        if (connection.getTarget().getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
-                || connection.getTarget().getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR)
-                        .size() != 0) {
+        if (checkConnectionStatus(connection.getTarget())) {
             MessageDialog
                     .openError(
                             new Shell(),
@@ -131,5 +131,17 @@ public class ConnectionSetAsMainRef extends SelectionAction {
         }
         ChangeConnectionStatusCommand cmd = new ChangeConnectionStatusCommand(connection);
         execute(cmd);
+    }
+
+    public boolean checkConnectionStatus(INode node) {
+        if (node != null) {
+            if (!node.isDesignSubjobStartNode()) {
+                return checkConnectionStatus(NodeUtil.getMainIncomingConnections(node));
+            } else {
+                return node.getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
+                        || node.getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0;
+            }
+        }
+        return false;
     }
 }
