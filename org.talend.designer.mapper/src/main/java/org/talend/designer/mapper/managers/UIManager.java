@@ -1902,11 +1902,22 @@ public class UIManager extends AbstractUIManager {
             int indexCurrentTable = tablesView.indexOf(currentSelectedOutputTableView);
             if (moveUp) {
                 if (indexCurrentTable > 0) {
+                    // TDI-28187:join table should always under its host table
+                    OutputDataMapTableView previousOutTable = (OutputDataMapTableView) tablesView.get(indexCurrentTable - 1);
+                    String joinTableName = currentSelectedOutputTableView.getOutputTable().getIsJoinTableOf();
+                    if (joinTableName != null && joinTableName.equals(previousOutTable.getOutputTable().getName())) {
+                        return false;
+                    }
                     return true;
                 }
                 return false;
             } else {
                 if (indexCurrentTable < tablesView.size() - 1) {
+                    OutputDataMapTableView nextOutTable = (OutputDataMapTableView) tablesView.get(indexCurrentTable + 1);
+                    String joinTableName = nextOutTable.getOutputTable().getIsJoinTableOf();
+                    if (joinTableName != null && joinTableName.equals(currentSelectedOutputTableView.getOutputTable().getName())) {
+                        return false;
+                    }
                     return true;
                 }
                 return false;
