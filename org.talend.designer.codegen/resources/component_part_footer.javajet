@@ -16,6 +16,7 @@
   org.talend.core.model.metadata.types.JavaType
   java.util.Map
   java.util.List
+  java.util.ArrayList
   java.util.Set
   java.util.HashSet
  "
@@ -44,17 +45,37 @@ iterateConnSet.addAll(node.getOutgoingConnections(EConnectionType.ITERATE));
 
 List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 
-if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
-  for(IConnection con:connSet){
-%>
-if(execStat){
-	if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
- 		runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0); 
- 	}
+if((codePart.equals(ECodePart.END))&&(stat)){
+	boolean iterateInVFComp = (node.getVirtualLinkTo() != null && node.getVirtualLinkTo() == EConnectionType.ITERATE);
+	if(iterateInVFComp){
+		List<String> needToEndConnNames = new ArrayList<String>();
+		INode nextNode = node.getOutgoingConnections(EConnectionType.ITERATE).get(0).getTarget();
+		NodeUtil.fillConnectionsForStat(needToEndConnNames, nextNode);
+		%>
+		if(execStat){
+			<%
+			for(String connName : needToEndConnNames){
+			%>
+				runStat.updateStatOnConnection("<%=connName%>"+iterateId,2, 0); 
+			<%	
+			}
+			%>
+		}
+	<%
+	}
+	if(connSet.size()>0){
+	  	for(IConnection con:connSet){
+		%>
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0); 
+			 	}
+			}
+		<%
+	  	}
+	}
 }
-<%
-  }
-}%>
+%>
  
 <%
 
