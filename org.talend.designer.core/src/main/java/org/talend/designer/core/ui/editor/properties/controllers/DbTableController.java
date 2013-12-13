@@ -317,6 +317,20 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             if (isStatus) {
                 openSQLBuilderWithParamer(button);
+            } else {
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
+                        String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
+                        ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
+                                composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
+                        if (dialog.getCodeOfButton() == Window.OK) {
+                            openParamemerDialog(btn, part.getProcess().getContextManager());
+                        }
+                    }
+                });
             }
         } else {
             Display.getDefault().asyncExec(new Runnable() {
@@ -532,7 +546,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
                         isStatus = checkConnection(iMetadataConnection);
                     }
                 }
-                final String dbType = iMetadataConnection.getDbType();
+                String type = null;
+                if (iMetadataConnection != null) {
+                    type = iMetadataConnection.getDbType();
+                }
+                final String dbType = type;
                 if (!monitor.isCanceled()) {
 
                     try {
