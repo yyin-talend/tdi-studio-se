@@ -78,12 +78,19 @@
     <PARAMETER NAME="ENCRYPT_FILES" FIELD="CHECK" REQUIRED="false" NUM_ROW="9">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="ENCRYPT_METHOD" FIELD="CLOSED_LIST" REQUIRED="false" NUM_ROW="10" SHOW_IF="ENCRYPT_FILES == 'true'">
+      <ITEMS DEFAULT="DEFAULT">
+          <ITEM NAME="DEFAULT" VALUE="DEFAULT" />
+          <ITEM NAME="AES256" VALUE="AES256"/>
+      </ITEMS>
+    </PARAMETER>
 
-     <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="false" NUM_ROW="10" SHOW_IF="ENCRYPT_FILES == 'true'">
+     <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="false" NUM_ROW="11" SHOW_IF="ENCRYPT_FILES == 'true'">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="ZIP64_MODE" FIELD="CLOSED_LIST" NUM_ROW="11">
+    <PARAMETER NAME="ZIP64_MODE" FIELD="CLOSED_LIST" NUM_ROW="12" NOT_SHOW_IF="(ENCRYPT_FILES == 'true') AND (ENCRYPT_METHOD == 'AES256')">
       <ITEMS DEFAULT="ASNEEDED">
 	      <ITEM NAME="ASNEEDED" VALUE="ASNEEDED" />
 	      <ITEM NAME="ALWAYS" VALUE="ALWAYS"/>
@@ -97,6 +104,8 @@
      <IMPORTS>
        <IMPORT NAME="COMMONS-COMPRESS-1.4.1" MODULE="commons-compress-1.4.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-compress-1.4.1.jar" REQUIRED="true" />
        <IMPORT NAME="Encrypt-Zip" MODULE="checkArchive.jar" REQUIRED="true" />
+       <IMPORT NAME="zip4j_1.3.1.jar" MODULE="zip4j_1.3.1.jar" REQUIRED="true" />
+       <IMPORT NAME="talendzip.jar" MODULE="talendzip.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

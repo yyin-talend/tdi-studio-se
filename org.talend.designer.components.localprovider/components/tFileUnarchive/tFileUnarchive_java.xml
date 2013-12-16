@@ -54,8 +54,15 @@
      <PARAMETER NAME="CHECKPASSWORD" FIELD="CHECK" REQUIRED="true" NUM_ROW="6">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="DECRYPT_METHOD" FIELD="CLOSED_LIST" REQUIRED="false" NUM_ROW="7" SHOW_IF="CHECKPASSWORD == 'true'">
+      <ITEMS DEFAULT="DEFAULT">
+          <ITEM NAME="DEFAULT" VALUE="DEFAULT" />
+          <ITEM NAME="AES256" VALUE="AES256"/>
+      </ITEMS>
+    </PARAMETER>
 
-    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="false" NUM_ROW="7" SHOW_IF="CHECKPASSWORD == 'true'">
+    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="false" NUM_ROW="8" SHOW_IF="CHECKPASSWORD == 'true'">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
@@ -73,6 +80,8 @@
        <IMPORT NAME="COMMONS-COMPRESS-1.4.1" MODULE="commons-compress-1.4.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-compress-1.4.1.jar" REQUIRED="true" />
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/ant.jar" REQUIRED="true" />
        <IMPORT NAME="Check-Archive" MODULE="checkArchive.jar" REQUIRED="true" />
+       <IMPORT NAME="zip4j_1.3.1.jar" MODULE="zip4j_1.3.1.jar" REQUIRED="true" />
+       <IMPORT NAME="talendzip.jar" MODULE="talendzip.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
