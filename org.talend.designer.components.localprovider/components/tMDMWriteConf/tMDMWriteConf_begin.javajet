@@ -178,5 +178,5 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 }
 %>
 	String readFinishMarkWithPipeId_<%=cid%> = "<%=virtualcid%>_FINISH"+(queue_<%=cid%>==null?"":queue_<%=cid%>.hashCode());
-	while(true) {
+	while(!globalMap.containsKey(readFinishMarkWithPipeId_<%=cid%>) || !queue_<%=cid%>.isEmpty()) { 
 		if (!queue_<%=cid%>.isEmpty()) {
