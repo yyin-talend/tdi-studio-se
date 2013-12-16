@@ -106,6 +106,7 @@ public class palodata {
                     for (int i = 0; i < iDimensionElementLength; i++) {
                         strArrCoord[i] = (String) lstDimensionElementArray.get(iCoordElem++);
                     }
+                    iCoordElem = 0;
 
                     if (palohelpers.StringToInt(csv.get(0)) == 1) {
                         if (palohelpers.StringToInt(csv.get(1)) > 0) {
