@@ -890,11 +890,15 @@ public class ImportItemUtil {
 
         }
         String label = itemRecord.getLabel();
-        for (Resource resource : itemRecord.getResourceSet().getResources()) {
+        EList<Resource> resources = itemRecord.getResourceSet().getResources();
+        Iterator<Resource> iterator = resources.iterator();
+        while (iterator.hasNext()) {
+            Resource res = iterator.next();
             // Due to the system of lazy loading for db repository of ByteArray,
             // it can't be unloaded just after create the item.
-            if (!(resource instanceof ByteArrayResource)) {
-                resource.unload();
+            if (res != null && !(res instanceof ByteArrayResource)) {
+                res.unload();
+                iterator.remove();
             }
         }
         TimeMeasure.step("importItemRecords", "Import item: " + label);
