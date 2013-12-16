@@ -57,15 +57,21 @@ public class Util {
 
 		f.getParentFile().mkdirs();
 		f.createNewFile();
-		java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
 
-		byte[] buffer = new byte[1024];
+		java.io.FileOutputStream fos = null;
+		try {
+			fos = new java.io.FileOutputStream(f);
 
-		for (int len = is.read(buffer, 0, 1024); len != -1; len = is.read(
-				buffer, 0, 1024)) {
-			fos.write(buffer, 0, len);
+			byte[] buffer = new byte[1024];
+			for (int len = is.read(buffer, 0, 1024); len != -1; len = is.read(
+					buffer, 0, 1024)) {
+				fos.write(buffer, 0, len);
+			}
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
 		}
-		fos.close();
 		unzippedFiles.add(new UnzippedFile(f.getName(), f.getAbsolutePath()));
 	}
 
@@ -94,14 +100,21 @@ public class Util {
 				parent.mkdirs();
 			}
 			f.createNewFile();
-			java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(
-					new java.io.FileOutputStream(f));
-			byte[] buff = new byte[1024];
-			int data = -1;
-			while ((data = is.read(buff)) != -1) {
-				bos.write(buff, 0, data);
+
+			java.io.BufferedOutputStream bos = null;
+			try {
+				bos = new java.io.BufferedOutputStream(
+						new java.io.FileOutputStream(f));
+				byte[] buff = new byte[1024];
+				int data = -1;
+				while ((data = is.read(buff)) != -1) {
+					bos.write(buff, 0, data);
+				}
+			} finally {
+				if (bos != null) {
+					bos.close();
+				}
 			}
-			bos.close();
 		}
 		unzippedFiles.add(new UnzippedFile(f.getName(), f.getAbsolutePath()));
 	}

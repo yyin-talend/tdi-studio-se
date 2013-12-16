@@ -43,7 +43,7 @@ public class Unzip {
 	public void setUseAesDecryption(boolean useAesDecryption) {
 		this.useAesDecryption = useAesDecryption;
 	}
-	
+
 	private boolean needPassword = false;
 	private boolean useAesDecryption = false;
 
@@ -66,8 +66,8 @@ public class Unzip {
 				+ ", please wait...");
 		System.out.println();
 
-		if(needPassword) {
-			if(useAesDecryption) {
+		if (needPassword) {
+			if (useAesDecryption) {
 				doUnzipWithAes();
 			} else {
 				doUnzipWithDecryption();
@@ -75,7 +75,7 @@ public class Unzip {
 		} else {
 			doUnzipWithoutDecryption();
 		}
-		
+
 		System.out.println();
 		System.out.println("Process finished");
 	}
@@ -92,14 +92,14 @@ public class Unzip {
 		}
 
 		ZipFile zipFile = new ZipFile(sourceZip);
-		
+
 		if (checkArchive) {
 			if (!zipFile.isValidZipFile()) {
 				throw new RuntimeException("The file " + sourceZip
 						+ " is corrupted, process terminated...");
 			}
 		}
-		
+
 		if (zipFile.isEncrypted()) {
 			zipFile.setPassword(password);
 		}
@@ -145,26 +145,32 @@ public class Unzip {
 			}
 		}
 
-		java.io.InputStream is = new java.io.FileInputStream(sourceZip);
-		is = new javax.crypto.CipherInputStream(is,
-				org.talend.archive.IntegrityUtil.createCipher(
-						javax.crypto.Cipher.DECRYPT_MODE, password));
+		java.io.InputStream is = null;
+		try {
+			is = new java.io.FileInputStream(sourceZip);
+			is = new javax.crypto.CipherInputStream(is,
+					org.talend.archive.IntegrityUtil.createCipher(
+							javax.crypto.Cipher.DECRYPT_MODE, password));
 
-		org.apache.commons.compress.archivers.zip.ZipArchiveInputStream input = new org.apache.commons.compress.archivers.zip.ZipArchiveInputStream(
-				new java.io.BufferedInputStream(is));
-		org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry;
+			org.apache.commons.compress.archivers.zip.ZipArchiveInputStream input = new org.apache.commons.compress.archivers.zip.ZipArchiveInputStream(
+					new java.io.BufferedInputStream(is));
+			org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry;
 
-		while ((entry = input.getNextZipEntry()) != null) {
-			if (verbose) {
-				System.out.println("Source file  : " + entry.getName());
+			while ((entry = input.getNextZipEntry()) != null) {
+				if (verbose) {
+					System.out.println("Source file  : " + entry.getName());
+				}
+				boolean isDirectory = entry.isDirectory();
+				String filename = entry.getName();
+
+				util.output(targetDir, filename, isDirectory, input);
+				applyLastModifiedTime(entry, filename);
 			}
-			boolean isDirectory = entry.isDirectory();
-			String filename = entry.getName();
-
-			util.output(targetDir, filename, isDirectory, input);
-			applyLastModifiedTime(entry, filename);
+		} finally {
+			if (is != null) {
+				is.close();
+			}
 		}
-		is.close();
 	}
 
 	// apache common compress impl
@@ -180,30 +186,36 @@ public class Unzip {
 
 		Thread.sleep(1000);
 
-		org.apache.commons.compress.archivers.zip.ZipFile zip = new org.apache.commons.compress.archivers.zip.ZipFile(
-				sourceZip);
-		java.util.Enumeration enuFiles = zip.getEntries();
-		java.io.InputStream is = null;
+		org.apache.commons.compress.archivers.zip.ZipFile zip = null;
+		try {
+			zip = new org.apache.commons.compress.archivers.zip.ZipFile(
+					sourceZip);
+			java.util.Enumeration enuFiles = zip.getEntries();
+			java.io.InputStream is = null;
 
-		while (enuFiles.hasMoreElements()) {
-			org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry = (org.apache.commons.compress.archivers.zip.ZipArchiveEntry) enuFiles
-					.nextElement();
-			if (verbose) {
-				System.out.println("Source file  : " + entry.getName());
+			while (enuFiles.hasMoreElements()) {
+				org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry = (org.apache.commons.compress.archivers.zip.ZipArchiveEntry) enuFiles
+						.nextElement();
+				if (verbose) {
+					System.out.println("Source file  : " + entry.getName());
+				}
+				boolean isDirectory = entry.isDirectory();
+				if (!isDirectory) {
+					// get the input stream
+					is = zip.getInputStream(entry);
+				}
+				String filename = entry.getName();
+
+				util.output(targetDir, filename, isDirectory, is);
+
+				applyLastModifiedTime(entry, filename);
+
 			}
-			boolean isDirectory = entry.isDirectory();
-			if (!isDirectory) {
-				// get the input stream
-				is = zip.getInputStream(entry);
+		} finally {
+			if (zip != null) {
+				zip.close();
 			}
-			String filename = entry.getName();
-
-			util.output(targetDir, filename, isDirectory, is);
-
-			applyLastModifiedTime(entry, filename);
-
 		}
-		zip.close();
 	}
 
 	private void applyLastModifiedTime(

@@ -80,7 +80,7 @@ public class Zip {
 	public void doZip() throws Exception {
 		File target = new java.io.File(targetZip);
 		if (target.exists()) {
-			if(!overwriteExistTargetZip) {
+			if (!overwriteExistTargetZip) {
 				throw (new java.lang.Exception("File already exist!"));
 			} else {
 				target.delete();
@@ -128,14 +128,23 @@ public class Zip {
 			throws Exception {
 		int beginIndex = source.getPath().length() + 1;
 
-		org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream out = null;
-		java.io.OutputStream output_stream = new java.io.FileOutputStream(
-				targetZip);
-		if (isEncrypted && !"".equals(password)) {
-			output_stream = new javax.crypto.CipherOutputStream(output_stream,
-					org.talend.archive.IntegrityUtil.createCipher(
-							javax.crypto.Cipher.ENCRYPT_MODE, password));
+		java.io.OutputStream output_stream = null;
+		try {
+			output_stream = new java.io.FileOutputStream(targetZip);
+			if (isEncrypted && !"".equals(password)) {
+				output_stream = new javax.crypto.CipherOutputStream(
+						output_stream,
+						org.talend.archive.IntegrityUtil.createCipher(
+								javax.crypto.Cipher.ENCRYPT_MODE, password));
+			}
+		} catch (Exception e) {
+			if (output_stream != null) {
+				output_stream.close();
+			}
+			throw e;
 		}
+
+		org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream out = null;
 		out = new org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream(
 				new java.io.BufferedOutputStream(output_stream));
 		out.setLevel(compressLevel);
@@ -147,26 +156,35 @@ public class Zip {
 			out.setUseZip64(org.apache.commons.compress.archivers.zip.Zip64Mode.Never);
 		}
 
-		for (int i = 0; i < list.size(); i++) {
-			java.io.BufferedInputStream in = new java.io.BufferedInputStream(
-					new java.io.FileInputStream(list.get(i)));
-			org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry = new org.apache.commons.compress.archivers.zip.ZipArchiveEntry(
-					list.get(i).getPath().substring(beginIndex));
-			entry.setTime(list.get(i).lastModified());
-			out.putArchiveEntry(entry);
+		try {
+			for (int i = 0; i < list.size(); i++) {
+				org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry = new org.apache.commons.compress.archivers.zip.ZipArchiveEntry(
+						list.get(i).getPath().substring(beginIndex));
+				entry.setTime(list.get(i).lastModified());
+				out.putArchiveEntry(entry);
 
-			int readLen;
-			byte[] buf = new byte[1024];
-			while ((readLen = in.read(buf, 0, 1024)) != -1) {
-				out.write(buf, 0, readLen);
+				java.io.BufferedInputStream in = null;
+				try {
+					in = new java.io.BufferedInputStream(
+							new java.io.FileInputStream(list.get(i)));
+					int readLen;
+					byte[] buf = new byte[1024];
+					while ((readLen = in.read(buf, 0, 1024)) != -1) {
+						out.write(buf, 0, readLen);
+					}
+				} finally {
+					if (in != null) {
+						in.close();
+					}
+				}
+
+				out.closeArchiveEntry();
+				out.flush();
 			}
-			out.closeArchiveEntry();
-			out.flush();
-			in.close();
-		}
-
-		if (out != null) {
-			out.close();
+		} finally {
+			if (out != null) {
+				out.close();
+			}
 		}
 	}
 
@@ -175,7 +193,7 @@ public class Zip {
 			throws Exception {
 
 		ZipFile zipFile = new ZipFile(targetZip);
-		if("UTF-8".equalsIgnoreCase(encoding)) {
+		if ("UTF-8".equalsIgnoreCase(encoding)) {
 			encoding = "UTF8";
 		}
 		zipFile.setFileNameCharset(encoding);
