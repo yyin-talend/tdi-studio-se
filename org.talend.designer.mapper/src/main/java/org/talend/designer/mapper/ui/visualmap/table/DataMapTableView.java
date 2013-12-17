@@ -1938,6 +1938,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                 mapperManager.getUiManager().parseNewExpression(text.getText(),
                         (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
+                checkChangementsAfterEntryModifiedOrAdded(false);
             }
 
             public void cancelEditor() {
@@ -2033,7 +2034,6 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 // System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
-                checkChangementsAfterEntryModifiedOrAdded(false);
             }
 
         });
