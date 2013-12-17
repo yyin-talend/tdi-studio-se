@@ -487,6 +487,16 @@ public class NodesPasteCommand extends Command {
 
                                     newValues.add(newMap);
                                 }
+                                // fix for TDI-7988 paste tFixedFlowInput inline table
+                                Object[] copiedListItem = param.getListItemsValue();
+                                if (copiedListItem != null) {
+                                    Object[] pasetedListItem = elementParameter.getListItemsValue();
+                                    if (pasetedListItem == null || pasetedListItem.length != copiedListItem.length) {
+                                        elementParameter.setListItemsValue(copiedListItem);
+                                        elementParameter.setListItemsDisplayCodeName(param.getListItemsDisplayCodeName());
+                                        elementParameter.setListItemsDisplayName(param.getListItemsDisplayName());
+                                    }
+                                }
                                 elementParameter.setValue(newValues);
                             } else {
                                 if (param.getParentParameter() != null) {
