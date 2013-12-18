@@ -122,8 +122,6 @@ import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
-import com.sun.corba.se.spi.orb.StringPair;
-
 /**
  * 
  * Component manager that read each information in a xml file with Emf. <br/>
