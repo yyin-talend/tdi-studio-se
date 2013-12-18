@@ -79,6 +79,7 @@ import org.talend.core.model.repository.IExtendedRepositoryNodeHandler;
 import org.talend.core.model.repository.IRepositoryReviewFilter;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.ProjectManager;
@@ -287,13 +288,6 @@ public class ExportItemWizardPage extends WizardPage {
         }
         if (obj instanceof RepositoryNode) {
             Object repositoryNode = null;
-            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(((RepositoryNode) obj).getObject());
-                if (!nodesAndDependencies.isEmpty()) {
-                    nodes.addAll(nodesAndDependencies);
-                    return;
-                }
-            }
             RepositoryNode node = (RepositoryNode) obj;
             ERepositoryObjectType objectType = node.getObjectType();
             Property property = null;
@@ -780,17 +774,33 @@ public class ExportItemWizardPage extends WizardPage {
                 for (Item item : selectedItems) {
                     RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects, false, true);
                 }
-
                 monitor.worked(60);
                 for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                    Object repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, monitor);
+                    RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, monitor);
                     if (repositoryNode != null) {
                         checkedDependency.add(repositoryNode);
                     } else {
                         implicitDependences.add(repositoryObject);
                     }
-
+                    for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                        List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(repositoryObject);
+                        if (!nodesAndDependencies.isEmpty()) {
+                            checkedDependency.addAll(nodesAndDependencies);
+                        }
+                    }
                 }
+
+                // check process again incase Relation is not saved for mapper
+                for (Item item : selectedItems) {
+                    for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
+                        List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(new RepositoryObject(item
+                                .getProperty()));
+                        if (!nodesAndDependencies.isEmpty()) {
+                            checkedDependency.addAll(nodesAndDependencies);
+                        }
+                    }
+                }
+
                 monitor.worked(90);
                 ProcessUtils.clearFakeProcesses();
                 monitor.done();
