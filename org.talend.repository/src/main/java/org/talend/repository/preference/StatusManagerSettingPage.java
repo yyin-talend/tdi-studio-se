@@ -85,6 +85,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryPreferenceStore;
@@ -302,6 +303,11 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
     private void processItems(List<RepositoryObject> objects, IRepositoryNode node) {
         if (node == null) {
             return;
+        }
+        // if the root node of type is not init, force init.
+        IProjectRepositoryNode root = node.getRoot();
+        if (root instanceof ProjectRepositoryNode) {
+            ((ProjectRepositoryNode) root).initNode(node);
         }
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
             if (node.getObject() != null) {

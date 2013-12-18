@@ -295,6 +295,7 @@ public class LoginComposite extends Composite {
 
     private static Logger log = Logger.getLogger(LoginComposite.class);
 
+    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
     /**
      * Constructs a new LoginComposite.
      * 
@@ -501,6 +502,7 @@ public class LoginComposite extends Composite {
         String productName = brandingService.getProductName();
         Label welcomeLabel = toolkit.createLabel(repositoryComposite,
                 Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
+        welcomeLabel.setFont(font);
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         GC gc = new GC(welcomeLabel);
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
@@ -560,11 +562,12 @@ public class LoginComposite extends Composite {
         userEmailComposite = toolkit.createComposite(parent);
         userEmailComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         // userEmailComposite.setBackground(GREY_COLOR);
-        userEmailComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        userEmailComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         userEmailComposite.setLayout(new FormLayout());
 
         Label detailLabel = toolkit.createLabel(userEmailComposite,
                 Messages.getString("LoginComposite.detailMessage", productName), SWT.WRAP); //$NON-NLS-1$
+        detailLabel.setFont(font);
         detailLabel.setBackground(userEmailComposite.getBackground());
         FormData detailLabelFormData = new FormData();
         detailLabelFormData.top = new FormAttachment(0, 0);
