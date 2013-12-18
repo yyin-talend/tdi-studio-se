@@ -5,6 +5,7 @@
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+    org.talend.core.model.process.IConnectionCategory
   "
 %>
 <%
@@ -15,9 +16,22 @@ String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILU
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 boolean bUseExistingConn = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 boolean sftp = false;
-List<? extends IConnection> outConns = node.getOutgoingConnections();
+String outputConnName = null;
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 
-if (outConns == null || outConns.size() <= 0) {
+if (conns != null) {
+  if (conns.size() > 0) {
+    for (int i = 0; i < conns.size(); i++) {
+      IConnection connTemp = conns.get(i);
+      if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        outputConnName = connTemp.getName();
+        break;
+      }
+    }
+  }
+}
+
+if (outputConnName == null) {
   return "";
 }
 
