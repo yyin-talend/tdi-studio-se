@@ -13,6 +13,7 @@ String cid = node.getUniqueName();
 String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+boolean moveToCurrentDir = ("true").equals(ElementParameterParser.getValue(node, "__MOVE_TO_THE_CURRENT_DIRECTORY__"));
 boolean sftp = false;
 boolean ftps = false;
 
@@ -95,6 +96,12 @@ nb_file_<%=cid%> = getter_<%=cid %>.count;
 		<%}%>
     <%
     }
+  }else{
+	    if(!moveToCurrentDir){
+%>
+	  		ftp_<%=cid %>.chdir(rootDir_<%=cid %>);
+<%	
+		}
   }
 } else {
 

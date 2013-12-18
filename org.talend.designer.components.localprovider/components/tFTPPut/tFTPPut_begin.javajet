@@ -30,6 +30,7 @@ String proxyPassword = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__
 String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+boolean moveToCurrentDir = ("true").equals(ElementParameterParser.getValue(node, "__MOVE_TO_THE_CURRENT_DIRECTORY__"));
 boolean sftp = false;
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
@@ -167,6 +168,9 @@ int nb_file_<%=cid%> = 0;
     String conn= "conn_" + connection;
     %>
     ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	  <%if(!moveToCurrentDir){%>
+		  String rootDir_<%=cid %> = ftp_<%=cid %>.pwd();
+	  <%}%>
 	<%if(isLog4jEnabled){%>
 		if(ftp_<%=cid %>!=null) {
 			log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
