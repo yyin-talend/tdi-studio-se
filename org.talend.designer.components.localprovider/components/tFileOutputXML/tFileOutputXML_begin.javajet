@@ -32,6 +32,7 @@ imports="
 			int headers = rootTags.size() + 1;
 			boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
 			String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+			boolean trim = "true".equals(ElementParameterParser.getValue(node, "__TRIM__"));
 			
 			//**
 			List<Map<String, String>> columnMapping = 
@@ -209,6 +210,7 @@ imports="
 	org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 	format_<%=cid%>.setEncoding(<%=encoding%>);
 	format_<%=cid%>.setNewLineAfterDeclaration(false);
+	format_<%=cid%>.setTrimText(<%=trim%>);
 	org.dom4j.io.XMLWriter writer_<%=cid%> = new org.dom4j.io.XMLWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(file_<%=cid %>), <%=encoding%>), format_<%=cid%>);
 <%
 			}
