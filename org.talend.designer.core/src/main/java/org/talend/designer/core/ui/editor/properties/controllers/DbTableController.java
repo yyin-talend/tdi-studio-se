@@ -317,6 +317,20 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             if (isStatus) {
                 openSQLBuilderWithParamer(button);
+            } else {
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
+                        String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
+                        ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
+                                composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
+                        if (dialog.getCodeOfButton() == Window.OK) {
+                            openParamemerDialog(btn, part.getProcess().getContextManager());
+                        }
+                    }
+                });
             }
         } else {
             Display.getDefault().asyncExec(new Runnable() {
