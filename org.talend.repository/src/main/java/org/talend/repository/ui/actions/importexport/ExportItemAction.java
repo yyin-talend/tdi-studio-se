@@ -56,6 +56,7 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
      * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         toolbarAction = false;
         boolean visible = false;
@@ -129,7 +130,7 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
         if (repositoryView != null && repositoryView.getViewer() instanceof TreeViewer) {
             ((TreeViewer) repositoryView.getViewer()).getTree().setFocus();
         }
-        ExportItemWizard wizard = new ExportItemWizard();
+        ExportItemWizard wizard = new ExportItemWizard((repositoryView != null ? repositoryView.getViewSite().getId() : null));
         IWorkbench workbench = getWorkbench();
         wizard.setWindowTitle(EXPORT_ITEM);
         if (!toolbarAction) {
@@ -146,17 +147,21 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
         dialog.open();
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
     }
 
+    @Override
     public void run(IAction action) {
         toolbarAction = true;
         run();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 }
