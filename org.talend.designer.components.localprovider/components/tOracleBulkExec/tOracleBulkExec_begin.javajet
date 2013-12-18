@@ -202,7 +202,7 @@ if("ORACLE_RAC".equals("<%=connectionType%>")||dbschema_<%=cid%> == null || dbsc
 if(("UPDATE").equals(data_action)) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-    tableName_<%=cid%> = "t_<%=cid.replaceFirst("tOracleOutputBulkExec","OOBE").replaceFirst("tOracleBulkExec","OBE").replaceFirst("_tOBE","")%>" + "_" + pid;  
+    tableName_<%=cid%> = "t_<%=cid.replaceFirst("tOracleOutputBulkExec","OOBE").replaceFirst("tOracleBulkExec","OBE").replaceFirst("_tOBE","")%>" + "_" + pid + Thread.currentThread().getId();  
     <%
 }
 %>
@@ -380,7 +380,7 @@ if(("true").equals(use_existing_ctl_file)) {
     //encoding end    
 	String dataFile = ElementParameterParser.getValue(node, "__DATA__");
     %>
-    String dataf_<%=cid %> = <%=dataFile %>;
+    String dataf_<%=cid %> = <%=dataFile %> + Thread.currentThread().getId();
     
     String ctlf_<%=cid %> = dataf_<%=cid %> + ".ctl";
     
@@ -389,6 +389,8 @@ if(("true").equals(use_existing_ctl_file)) {
     String dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
     
     String logf_<%=cid %> = dataf_<%=cid %> + ".log";
+    
+    dataf_<%=cid %> = <%=dataFile %>;
     
     java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
     
