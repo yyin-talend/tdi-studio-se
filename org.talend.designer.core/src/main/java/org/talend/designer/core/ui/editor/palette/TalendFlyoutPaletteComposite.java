@@ -58,13 +58,13 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
 
             Class<?>[] classes = FlyoutPaletteComposite.class.getDeclaredClasses();
             if (classes != null) {
-                for (int i = 0; i < classes.length; i++) {
-                    if (classes[i].getSimpleName().equals("PaletteComposite")) { //$NON-NLS-1$
-                        paletteCompositeClass = classes[i];
-                    } else if (classes[i].getSimpleName().equals("ChangeDockAction")) { //$NON-NLS-1$
-                        changeDockActionClass = classes[i];
-                    } else if (classes[i].getSimpleName().equals("ResizeAction")) { //$NON-NLS-1$
-                        resizeActionClass = classes[i];
+                for (Class<?> classe : classes) {
+                    if (classe.getSimpleName().equals("PaletteComposite")) { //$NON-NLS-1$
+                        paletteCompositeClass = classe;
+                    } else if (classe.getSimpleName().equals("ChangeDockAction")) { //$NON-NLS-1$
+                        changeDockActionClass = classe;
+                    } else if (classe.getSimpleName().equals("ResizeAction")) { //$NON-NLS-1$
+                        resizeActionClass = classe;
                     }
                 }
             }
@@ -156,10 +156,11 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
         manager.add(mgr);
         mgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager menuMgr) {
                 IContributionItem[] items = menuMgr.getItems();
-                for (int i = 0; i < items.length; i++) {
-                    ((ActionContributionItem) items[i]).update();
+                for (IContributionItem item : items) {
+                    ((ActionContributionItem) item).update();
                 }
             }
         });
@@ -169,11 +170,14 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
         ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
         manager.add(showStandardAction);
         manager.add(showFavoriteAction);
-        showStandardAction.doSetEnable();
+        if (ShowFavoriteAction.state) {
+            showStandardAction.doSetEnable();
+        }
         manager.add(mgr);
 
         addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 manager.dispose();
 
