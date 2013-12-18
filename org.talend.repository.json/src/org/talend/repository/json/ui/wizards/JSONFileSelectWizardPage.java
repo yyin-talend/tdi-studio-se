@@ -133,14 +133,14 @@ public class JSONFileSelectWizardPage extends JSONFileWizardPage {
             JSONFileInputStep1 = new JSONFileWizardPage(creation, 1, connectionItem, isRepositoryObjectEditable, existingNames);
             JSONFileInputStep1.setTitle("File - Step" + " 3 " + "of" + " 5");
             JSONFileInputStep1
-                    .setDescription("Add a Metadata File on repository\\nDefine the path of the file and the format settings");
+                    .setDescription("Add a Metadata File on repository\nDefine the path of the file and the format settings");
             wizardPages.add(JSONFileInputStep1);
             JSONFileInputStep1.setPageComplete(!creation);
             JSONFileInputStep1.setWizard(getWizard());
 
             JSONFileInputStep2 = new JSONFileWizardPage(creation, 2, connectionItem, isRepositoryObjectEditable, existingNames);
             JSONFileInputStep2.setTitle("File - Step" + " 4 " + "of" + " 5");
-            JSONFileInputStep2.setDescription("Add a Metadata File on repository\\nDefine the setting of the parse job");
+            JSONFileInputStep2.setDescription("Add a Metadata File on repository\nDefine the setting of the parse job");
             wizardPages.add(JSONFileInputStep2);
             JSONFileInputStep2.setPageComplete(!creation);
             JSONFileInputStep2.setWizard(getWizard());
@@ -150,7 +150,7 @@ public class JSONFileSelectWizardPage extends JSONFileWizardPage {
                 JSONFileInputStep3.setTitle("File - Step" + " 5 " + "of"
 
                 + " 5");
-                JSONFileInputStep3.setDescription("Add a Schema on repository\\nDefine the Schema");
+                JSONFileInputStep3.setDescription("Add a Schema on repository\nDefine the Schema");
                 wizardPages.add(JSONFileInputStep3);
                 JSONFileInputStep3.setPageComplete(!creation);
                 JSONFileInputStep3.setWizard(getWizard());
