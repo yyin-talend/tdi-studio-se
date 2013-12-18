@@ -326,7 +326,6 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
                     updateConnection(text);
                 }
-
             }
 
             @Override
@@ -335,10 +334,17 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             }
         });
 
-        jsonFilePath.addModifyListener(new ModifyListener() {
+        jsonFilePath.addFocusListener(new FocusListener() {
 
             @Override
-            public void modifyText(ModifyEvent event) {
+            public void focusGained(FocusEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // TODO Auto-generated method stub
                 String text = jsonFilePath.getText();
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
@@ -376,8 +382,8 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                             outStream.close();
                         } catch (FileNotFoundException e1) {
                             ExceptionHandler.process(e1);
-                        } catch (IOException e) {
-                            ExceptionHandler.process(e);
+                        } catch (IOException e2) {
+                            ExceptionHandler.process(e2);
                         }
                     }
 
@@ -413,13 +419,13 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
                     fileContentText.setText(new String(fileContent));
 
-                } catch (Exception e) {
+                } catch (Exception e1) {
                     String msgError = "File" + " \"" + jsonFilePath.getText().replace("\\\\", "\\") + "\"\n";
-                    if (e instanceof FileNotFoundException) {
+                    if (e1 instanceof FileNotFoundException) {
                         msgError = msgError + "is not found";
-                    } else if (e instanceof EOFException) {
+                    } else if (e1 instanceof EOFException) {
                         msgError = msgError + "have an incorrect character EOF";
-                    } else if (e instanceof IOException) {
+                    } else if (e1 instanceof IOException) {
                         msgError = msgError + "is locked by another soft";
                     } else {
                         msgError = msgError + "doesn't exist";
@@ -452,10 +458,23 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 // } else {
                 // valid = treePopulator.populateTree(text, treeNode);
                 // }
+                if (file.exists()) {
+                    List<ATreeNode> treeNodes = new ArrayList<ATreeNode>();
+                    valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
+                    checkFieldsValue();
+                    if (!valid) {
+                        return;
+                    }
+                    if (treeNodes.size() > 0) {
+                        treeNode = treeNodes.get(0);
+                    }
+                    updateConnection(text);
+                }
                 valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
                 checkFieldsValue();
                 isModifing = true;
             }
+
         });
 
         encodingCombo.addModifyListener(new ModifyListener() {
