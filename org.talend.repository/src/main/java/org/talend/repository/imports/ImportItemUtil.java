@@ -1543,6 +1543,10 @@ public class ImportItemUtil {
             final Item item = itemRecord.getItem();
             boolean byteArray = (item instanceof FileItem);
             IPath itemPath = getItemPath(itemRecord.getPath(), item);
+            Set<IPath> paths = manager.getPaths();
+            if (!paths.contains(itemPath)) {
+                return;
+            }
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord, itemPath, byteArray);
 
