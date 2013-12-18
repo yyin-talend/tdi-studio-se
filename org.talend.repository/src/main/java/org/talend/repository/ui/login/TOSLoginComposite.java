@@ -155,6 +155,8 @@ public class TOSLoginComposite extends Composite {
 
     IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
+    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
+
     /**
      * DOC Administrator TOSLoginComposite constructor comment.
      * 
@@ -269,7 +271,7 @@ public class TOSLoginComposite extends Composite {
 
     private void createTosRepositoryArea(Composite parent) {
         repositoryComposite = toolkit.createComposite(parent);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        GridData gd = new GridData(GridData.FILL_BOTH);
         gd.heightHint = 40;
         repositoryComposite.setLayoutData(gd);
         repositoryComposite.setLayout(new FormLayout());
@@ -279,11 +281,13 @@ public class TOSLoginComposite extends Composite {
         Label welcomeLabel = toolkit.createLabel(repositoryComposite,
                 Messages.getString("TOSLoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
+        welcomeLabel.setFont(font);
         FormData welcomeLabelFormData = new FormData();
         welcomeLabelFormData.top = new FormAttachment(0, 7);
         welcomeLabelFormData.left = new FormAttachment(0, 10);
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
             welcomeLabelFormData.right = new FormAttachment(0, 380);
+            welcomeLabelFormData.right = new FormAttachment(0, 420);
         } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
             welcomeLabelFormData.right = new FormAttachment(0, 420);
         } else {
@@ -320,6 +324,7 @@ public class TOSLoginComposite extends Composite {
         FormData data;
 
         Label projectLabel = toolkit.createLabel(tosActionComposite, Messages.getString("TOSLoginComposite.projectLabel"));
+        projectLabel.setFont(font);
         GC gc = new GC(projectLabel);
         Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.projectLabel"));
         gc.dispose();
@@ -358,6 +363,7 @@ public class TOSLoginComposite extends Composite {
         // data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
         // }
         openButton.setText(Messages.getString("TOSLoginComposite.openButton"));
+        openButton.setFont(font);
         openButton.setLayoutData(data);
         openButton.setImage(OPEN_IMAGE);
 
@@ -414,6 +420,7 @@ public class TOSLoginComposite extends Composite {
         data.right = new FormAttachment(openButton, 0, SWT.RIGHT);
 
         deleteButton.setText(Messages.getString("TOSLoginComposite.deleteButton"));
+        deleteButton.setFont(font);
         deleteButton.setLayoutData(data);
 
         createButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
@@ -423,6 +430,7 @@ public class TOSLoginComposite extends Composite {
         data.right = new FormAttachment(projectListViewerContainer, 65, SWT.LEFT);
 
         createButton.setText(Messages.getString("TOSLoginComposite.createButton"));
+        createButton.setFont(font);
         createButton.setLayoutData(data);
 
         importButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
@@ -431,6 +439,7 @@ public class TOSLoginComposite extends Composite {
         data.left = new FormAttachment(createButton, 10, SWT.RIGHT);
 
         importButton.setText(Messages.getString("TOSLoginComposite.importButton"));
+        importButton.setFont(font);
         importButton.setLayoutData(data);
 
         demoProjectButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
@@ -440,6 +449,7 @@ public class TOSLoginComposite extends Composite {
         data.right = new FormAttachment(100, -10);
 
         demoProjectButton.setText(Messages.getString("TOSLoginComposite.demoProjectButton"));
+        demoProjectButton.setFont(font);
         demoProjectButton.setLayoutData(data);
 
         enableOpenAndDelete(false);
@@ -454,6 +464,7 @@ public class TOSLoginComposite extends Composite {
         FormData data;
 
         Label workSpaceLabel = toolkit.createLabel(tosWorkspaceComposite, Messages.getString("TOSLoginComposite.workspaceLabel"));
+        workSpaceLabel.setFont(font);
         GC gc = new GC(workSpaceLabel);
         Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.workspaceLabel"));
         gc.dispose();
@@ -477,9 +488,11 @@ public class TOSLoginComposite extends Composite {
             data.bottom = new FormAttachment(workSpaceLabel, 5, SWT.BOTTOM);
         }
         changeButton.setText(Messages.getString("TOSLoginComposite.changeButton"));
+        changeButton.setFont(font);
         changeButton.setLayoutData(data);
 
         workspaceText = toolkit.createText(tosWorkspaceComposite, null, SWT.READ_ONLY | SWT.BORDER);
+        workspaceText.setFont(font);
         workspaceText.setBackground(GREY_COLOR);
         workspaceText.setText(loginComposite.getConnection().getWorkSpace());
         oldPath = loginComposite.getConnection().getWorkSpace();
@@ -794,10 +807,10 @@ public class TOSLoginComposite extends Composite {
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
                 onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName)); //$NON-NLS-1$
-                int size = loginComposite.calStatusLabelFont(11, statusLabel.getText());
+                // int size = loginComposite.calStatusLabelFont(11, statusLabel.getText());
                 statusLabel.setBackground(YELLOW_GREEN_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, LoginComposite.FONT_ARIAL, size, SWT.BOLD);// Arial courier
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             } else {
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);

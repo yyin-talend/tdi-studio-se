@@ -295,6 +295,8 @@ public class LoginComposite extends Composite {
 
     private static Logger log = Logger.getLogger(LoginComposite.class);
 
+    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -501,6 +503,7 @@ public class LoginComposite extends Composite {
         String productName = brandingService.getProductName();
         Label welcomeLabel = toolkit.createLabel(repositoryComposite,
                 Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
+        welcomeLabel.setFont(font);
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         GC gc = new GC(welcomeLabel);
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
@@ -539,6 +542,7 @@ public class LoginComposite extends Composite {
 
         repositoryHyperlink = toolkit.createHyperlink(repositoryComposite,
                 Messages.getString("LoginComposite.sharedRepositoryMessage"), SWT.NONE); //$NON-NLS-1$
+        repositoryHyperlink.setFont(font);
         repositoryHyperlink.setBackground(repositoryComposite.getBackground());
         formData2 = new FormData();
         formData2.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
@@ -560,11 +564,13 @@ public class LoginComposite extends Composite {
         userEmailComposite = toolkit.createComposite(parent);
         userEmailComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         // userEmailComposite.setBackground(GREY_COLOR);
-        userEmailComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        userEmailComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         userEmailComposite.setLayout(new FormLayout());
 
+        // Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
         Label detailLabel = toolkit.createLabel(userEmailComposite,
                 Messages.getString("LoginComposite.detailMessage", productName), SWT.WRAP); //$NON-NLS-1$
+        detailLabel.setFont(font);
         detailLabel.setBackground(userEmailComposite.getBackground());
         FormData detailLabelFormData = new FormData();
         detailLabelFormData.top = new FormAttachment(0, 0);
@@ -720,6 +726,7 @@ public class LoginComposite extends Composite {
         manageProjectsButtonTemp = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
         manageProjectsButtonTemp.setBackground(tosActionComposite.getBackground());
         manageProjectsButtonTemp.setText(Messages.getString("LoginComposite.NewImport")); //$NON-NLS-1$
+        manageProjectsButtonTemp.setFont(font);
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
@@ -727,6 +734,7 @@ public class LoginComposite extends Composite {
         manageProjectsButtonTemp.setLayoutData(data);
 
         manageProjectLabel1 = toolkit.createLabel(tosActionComposite, Messages.getString("LoginComposite.selectADemoProject")); //$NON-NLS-1$
+        manageProjectLabel1.setFont(font);
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
         GC gc = new GC(manageProjectLabel1);
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject")); //$NON-NLS-1$
@@ -908,11 +916,12 @@ public class LoginComposite extends Composite {
 
         Label createProjectLabel = toolkit
                 .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp")); //$NON-NLS-1$
+        createProjectLabel.setFont(font);
 
-        //
         createProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         createProjectBtn.setBackground(tosProjectComposite.getBackground());
         createProjectBtn.setText(Messages.getString("LoginComposite.NewCreate")); //$NON-NLS-1$
+        createProjectBtn.setFont(font);
         FormData data = new FormData();
         data.top = new FormAttachment(createProjectLabel, -HORIZONTAL_SPACE, SWT.CENTER);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
@@ -939,6 +948,7 @@ public class LoginComposite extends Composite {
         data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x - 50);
         projectText.setLayoutData(data);
         projectText.setText(DEFAULT_PROJECT_NAME);
+        projectText.setFont(font);
 
         // add for bug TDI-19614
         projectText.setBackground(GREY_COLOR);
@@ -962,6 +972,7 @@ public class LoginComposite extends Composite {
         });
 
         advanced = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
+        advanced.setFont(font);
         advanced.setText(Messages.getString("LoginComposite.buttons.advanced")); //$NON-NLS-1$
         advanced.setBackground(tosProjectComposite.getBackground());
         data = new FormData();
@@ -1045,6 +1056,7 @@ public class LoginComposite extends Composite {
         formData2.right = new FormAttachment(100, -5);
         statusLabel.setLayoutData(formData2);
         restartBut = toolkit.createButton(tosWelcomeComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
+        restartBut.setFont(font);
         restartBut.setVisible(false);
         FormData formData = new FormData();
         formData.top = new FormAttachment(colorComposite, 0);// 5, 315
@@ -1312,6 +1324,7 @@ public class LoginComposite extends Composite {
                 colorComposite.setBackground(RED_COLOR);
                 onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+                statusLabel.setFont(font);
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
@@ -1322,6 +1335,7 @@ public class LoginComposite extends Composite {
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
                 onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName)); //$NON-NLS-1$
+                statusLabel.setFont(font);
                 int size = calStatusLabelFont(11, statusLabel.getText());
                 statusLabel.setBackground(YELLOW_GREEN_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
@@ -1344,6 +1358,7 @@ public class LoginComposite extends Composite {
                 colorComposite.setBackground(RED_COLOR);
                 onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED")); //$NON-NLS-1$
+                statusLabel.setFont(font);
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
