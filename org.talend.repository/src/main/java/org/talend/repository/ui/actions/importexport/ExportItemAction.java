@@ -129,7 +129,7 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
         if (repositoryView != null && repositoryView.getViewer() instanceof TreeViewer) {
             ((TreeViewer) repositoryView.getViewer()).getTree().setFocus();
         }
-        ExportItemWizard wizard = new ExportItemWizard();
+        ExportItemWizard wizard = new ExportItemWizard((repositoryView != null ? repositoryView.getViewSite().getId() : null));
         IWorkbench workbench = getWorkbench();
         wizard.setWindowTitle(EXPORT_ITEM);
         if (!toolbarAction) {
