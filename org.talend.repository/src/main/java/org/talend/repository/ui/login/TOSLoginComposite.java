@@ -155,6 +155,8 @@ public class TOSLoginComposite extends Composite {
 
     IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
+    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
+
     /**
      * DOC Administrator TOSLoginComposite constructor comment.
      * 
@@ -278,6 +280,7 @@ public class TOSLoginComposite extends Composite {
         String productName = brandingService.getProductName();
         Label welcomeLabel = toolkit.createLabel(repositoryComposite,
                 Messages.getString("TOSLoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
+        welcomeLabel.setFont(font);
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         FormData welcomeLabelFormData = new FormData();
         welcomeLabelFormData.top = new FormAttachment(0, 7);
@@ -320,6 +323,7 @@ public class TOSLoginComposite extends Composite {
         FormData data;
 
         Label projectLabel = toolkit.createLabel(tosActionComposite, Messages.getString("TOSLoginComposite.projectLabel"));
+        projectLabel.setFont(font);
         GC gc = new GC(projectLabel);
         Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.projectLabel"));
         gc.dispose();
@@ -358,6 +362,7 @@ public class TOSLoginComposite extends Composite {
         // data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
         // }
         openButton.setText(Messages.getString("TOSLoginComposite.openButton"));
+        openButton.setFont(font);
         openButton.setLayoutData(data);
         openButton.setImage(OPEN_IMAGE);
 
@@ -367,21 +372,26 @@ public class TOSLoginComposite extends Composite {
         this.projectListViewer.setContentProvider(new TableViewerContentProvider());
         this.projectListViewer.setLabelProvider(new ILabelProvider() {
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
 
                 return false;
 
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public String getText(Object element) {
 
                 if (element != null) {
@@ -392,6 +402,7 @@ public class TOSLoginComposite extends Composite {
                 return null;
             }
 
+            @Override
             public Image getImage(Object element) {
 
                 return null;
@@ -414,15 +425,18 @@ public class TOSLoginComposite extends Composite {
         data.right = new FormAttachment(openButton, 0, SWT.RIGHT);
 
         deleteButton.setText(Messages.getString("TOSLoginComposite.deleteButton"));
+        deleteButton.setFont(font);
         deleteButton.setLayoutData(data);
 
         createButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
+
         data = new FormData();
         data.top = new FormAttachment(projectListViewerContainer, 10, SWT.BOTTOM);
         data.left = new FormAttachment(projectListViewerContainer, 0, SWT.LEFT);
         data.right = new FormAttachment(projectListViewerContainer, 65, SWT.LEFT);
 
         createButton.setText(Messages.getString("TOSLoginComposite.createButton"));
+        createButton.setFont(font);
         createButton.setLayoutData(data);
 
         importButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
@@ -431,6 +445,7 @@ public class TOSLoginComposite extends Composite {
         data.left = new FormAttachment(createButton, 10, SWT.RIGHT);
 
         importButton.setText(Messages.getString("TOSLoginComposite.importButton"));
+        importButton.setFont(font);
         importButton.setLayoutData(data);
 
         demoProjectButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
@@ -440,6 +455,7 @@ public class TOSLoginComposite extends Composite {
         data.right = new FormAttachment(100, -10);
 
         demoProjectButton.setText(Messages.getString("TOSLoginComposite.demoProjectButton"));
+        demoProjectButton.setFont(font);
         demoProjectButton.setLayoutData(data);
 
         enableOpenAndDelete(false);
@@ -523,7 +539,7 @@ public class TOSLoginComposite extends Composite {
                     int index = 0;
                     Collections.sort(allProjects);
                     for (int i = 0; i < allProjects.size(); i++) {
-                        String projectName = (String) allProjects.get(i);
+                        String projectName = allProjects.get(i);
                         if (project.getLabel().equals(projectName)) {
                             index = i;
                             break;
@@ -613,6 +629,7 @@ public class TOSLoginComposite extends Composite {
                 try {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                             try {
                                 ProxyRepositoryFactory.getInstance().initialize();
