@@ -380,7 +380,7 @@ if(("true").equals(use_existing_ctl_file)) {
     //encoding end    
 	String dataFile = ElementParameterParser.getValue(node, "__DATA__");
     %>
-    String dataf_<%=cid %> = <%=dataFile %>;
+    String dataf_<%=cid %> = <%=dataFile %> + Thread.currentThread().getId();
     
     String ctlf_<%=cid %> = dataf_<%=cid %> + ".ctl";
     
@@ -389,6 +389,8 @@ if(("true").equals(use_existing_ctl_file)) {
     String dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
     
     String logf_<%=cid %> = dataf_<%=cid %> + ".log";
+    
+    dataf_<%=cid %> = <%=dataFile %>; 
     
     java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
     
