@@ -1773,9 +1773,9 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 } else {
                     IConnection[] conns = process.getAllConnections(null);
-                    for (int i = 0; i < conns.length; i++) {
-                        if (conns[i] instanceof IPerformance) {
-                            ((IPerformance) conns[i]).setPerformanceData(""); //$NON-NLS-1$
+                    for (IConnection conn : conns) {
+                        if (conn instanceof IPerformance) {
+                            ((IPerformance) conn).setPerformanceData(""); //$NON-NLS-1$
                         }
                     }
                 }
@@ -4421,6 +4421,9 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public boolean isMapReduceStart() {
+        if (!this.isActivate()) {
+            return false;
+        }
         if (this.getMrGroupId() == null) {
             return false;
         }
