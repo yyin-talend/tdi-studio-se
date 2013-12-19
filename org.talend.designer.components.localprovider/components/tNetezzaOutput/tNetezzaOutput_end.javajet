@@ -149,14 +149,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - Starting to commit " + commitCounter_<%=cid%> + " records.");
 			<%}%>
+			if(commitCounter_<%=cid%> > 0){
 				conn_<%=cid%>.commit();
+			}
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - Commit has succeeded.");
 			<%}%>
     		<%
 		}
 	
-		commitEvery = "0";
     	%>	
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Closing the connection to the database.");
