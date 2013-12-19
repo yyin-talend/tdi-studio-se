@@ -63,6 +63,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
         %>  
         conn_<%=cid%> .close();
+		resourceMap.put("finish_<%=cid%>", true);
         <%
     }
     %>

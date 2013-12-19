@@ -123,6 +123,7 @@ if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
 if (!useExistingConnection) {
 	%>
 	conn_<%=cid%> .close();
+	resourceMap.put("finish_<%=cid%>", true);
 	<%
 }
 %>

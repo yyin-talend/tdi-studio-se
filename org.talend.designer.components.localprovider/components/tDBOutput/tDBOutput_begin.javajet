@@ -145,6 +145,7 @@ if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) 
 	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(dbProperties_<%=cid%>.getBytes()));
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 }
+resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(("true").equals(tableAction)) {

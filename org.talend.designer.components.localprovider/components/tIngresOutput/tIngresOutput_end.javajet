@@ -72,6 +72,7 @@ imports="
 	if(!("true").equals(useExistingConn)) {
 %>
     conn_<%=cid%> .close();
+    resourceMap.put("finish_<%=cid%>", true);
 <%
 	}
 %>

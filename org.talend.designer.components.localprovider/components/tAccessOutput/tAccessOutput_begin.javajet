@@ -148,6 +148,7 @@ String password_<%=cid %> = <%=password%>;
 <%
 	}
 %>
+resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
 <%
 	}
 %>

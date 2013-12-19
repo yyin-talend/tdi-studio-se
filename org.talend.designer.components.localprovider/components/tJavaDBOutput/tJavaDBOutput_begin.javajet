@@ -173,6 +173,7 @@ java.util.Properties properties_<%=cid%> = new java.util.Properties();
 properties_<%=cid%>.put("user",<%=dbuser%>);
 properties_<%=cid%>.put("password",<%=dbpwd%>);
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,properties_<%=cid%>);
+resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size() > 0) {    

@@ -436,6 +436,7 @@ if(("true").equals(identityInsert)){
         commitEvery = "0";
         %>  
         conn_<%=cid%> .close();
+        resourceMap.put("finish_<%=cid%>", true);
         <%
     }
     %>

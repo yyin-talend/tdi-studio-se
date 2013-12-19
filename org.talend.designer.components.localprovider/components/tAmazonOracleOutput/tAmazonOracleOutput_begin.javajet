@@ -229,6 +229,7 @@ if(useExistingConnection) {
 <%
 	}
 %>
+	resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
 	
 	<%
 }
