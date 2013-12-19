@@ -68,6 +68,7 @@ if (inputConnName != null){
 			}
 %>
 			<%=cid%>_sf.writeLine(<%=cid%>_spR); 
+			nb_line_<%=cid%>++;
 <%
 		}
 	}
