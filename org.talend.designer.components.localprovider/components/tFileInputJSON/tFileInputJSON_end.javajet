@@ -21,19 +21,4 @@ String cid = node.getUniqueName();
         }
 %>
 	}
-<%
-if(!readByXPath){
-%>
-	if(fr_<%=cid%> != null){
-		fr_<%=cid%>.close();
-	}
-	if(jsonpathis_<%=cid%> != null){
-		jsonpathis_<%=cid%>.close();
-	}
-	if(jsonis_<%=cid%> != null){
-		jsonis_<%=cid%>.close();
-	}
-<%
-}
-%>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

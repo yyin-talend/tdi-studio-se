@@ -168,13 +168,26 @@ java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getRes
 jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
 
 <%if(!isUseUrl){//read from a file%>
-java.io.BufferedReader fr_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>),<%=encoding %>));
+	java.io.BufferedReader fr_<%=cid%> = null;
 <%}else{ //read from internet%>
-java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
-java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
-java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream(),<%=encoding %>);
+	java.io.InputStreamReader fr_<%=cid %> = null;
 <%}%>
-java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
+java.lang.Object jsonText_<%=cid%> = null;
+	try{
+	<%if(!isUseUrl){//read from a file%>
+		fr_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>),<%=encoding %>));
+	<%}else{ //read from internet%>
+		java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
+		java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
+		fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream(),<%=encoding %>);
+	<%}%>
+		jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
+	} finally {
+		if(fr_<%=cid%> != null ) {
+			fr_<%=cid%>.close();
+		}
+    }
+
 jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
 
 java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
