@@ -158,7 +158,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     		<%
 		}
 	
-		commitEvery = "0";
     	%>	
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Closing the connection to the database.");
