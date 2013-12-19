@@ -50,4 +50,7 @@ if (inConns != null && !inConns.isEmpty()) {
     org.jfree.chart.ChartUtilities.saveChartAsPNG(new java.io.File(<%=filePath%>), chart_<%=cid%>, <%=imageWidth%>, <%=imageHeight%>);
   <%
   }
+%>
+	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
+<%
 }%> 
