@@ -707,8 +707,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%if (useBatchSize && (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
+					if(batchSizeCounter_<%=cid%> >0){
+						batchSizeCounter_<%=cid%> = 0;
                 		pstmt_<%=cid %>.executeBatch();
                 		pstmt_<%=cid %>.clearBatch();
+					}
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
