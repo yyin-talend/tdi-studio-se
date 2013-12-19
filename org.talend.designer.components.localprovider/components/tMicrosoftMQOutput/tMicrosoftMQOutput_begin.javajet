@@ -40,7 +40,7 @@ if (inConns != null && inConns.size() > 0){
 <%
 	}else{
 %>
-		System.out.println("Queue open failure: " +e_<%=cid%>.getMessage());
+		System.out.println("Queue creation failure: " +e_<%=cid%>.getMessage());
 <%
 	}
 %>
