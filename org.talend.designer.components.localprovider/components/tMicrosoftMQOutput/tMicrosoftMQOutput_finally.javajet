@@ -23,23 +23,15 @@ if (inConns != null && inConns.size() > 0){
       
   if (columns != null && columns.size() > 0){
   %>
-  	try{
-	    if (msgu_<%=cid%>.isOpen()){
-	    	msgu_<%=cid%>.close();
-	  	}
-	  	resourceMap.put("finish_<%=cid%>", true);
-    }catch(ionic.Msmq.MessageQueueException e_<%=cid%>){
-<%
-	if(dieOnError){
-%>
-		throw e_<%=cid%>;
-<%
-	}else{
-%>
-		System.out.println("Close failure: " + e_<%=cid%>.getMessage());
-<%
-	}
-%>
+  	if(resourceMap.get("finish_<%=cid%>") == null){ 
+	  	try{
+	  		org.talend.msmq.MsmqUtil msgu_<%=cid%>=(org.talend.msmq.MsmqUtil)resourceMap.get("msgu_<%=cid%>");
+		    if (msgu_<%=cid%>!=null && msgu_<%=cid%>.isOpen()){
+		    	msgu_<%=cid%>.close();
+		  	}
+	    }catch(ionic.Msmq.MessageQueueException e_<%=cid%>){
+			System.out.println("Close failure: " + e_<%=cid%>.getMessage());
+		}
     }
   <%
   }
