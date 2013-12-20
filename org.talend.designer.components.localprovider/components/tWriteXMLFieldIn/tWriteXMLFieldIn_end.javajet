@@ -28,11 +28,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			%>
 					}
-					if (globalMap.containsKey(readFinishMarkWithPipeId_<%=cid%>)) {
-						if (queue_<%=cid%>.isEmpty()) {
-							break;
-						}
-					}
 				}
 				<%
 				INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
@@ -55,6 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				%>
 				globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
 				globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
+				globalMap.remove("queue_<%=cid%>");
 			<%
 			}
 		}

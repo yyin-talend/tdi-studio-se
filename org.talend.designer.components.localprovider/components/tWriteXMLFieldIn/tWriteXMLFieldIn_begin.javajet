@@ -90,8 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				%>
 				String readFinishMarkWithPipeId_<%=cid%> = "<%=cid%>_FINISH"+(queue_<%=cid%>==null?"":queue_<%=cid%>.hashCode());
 				int nb_line_<%=cid%> = 0;
-				while(true) {
-						if (!queue_<%=cid%>.isEmpty()) {
+				while(!globalMap.containsKey(readFinishMarkWithPipeId_<%=cid%>) || !queue_<%=cid%>.isEmpty()) {
+					if (!queue_<%=cid%>.isEmpty()) {
 			<%
 			}
 		}
