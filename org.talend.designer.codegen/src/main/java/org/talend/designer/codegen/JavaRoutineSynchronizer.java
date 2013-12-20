@@ -79,6 +79,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     public void syncAllRoutines() throws SystemException {
         syncRoutineItems(getRoutines());
     }
+    
+    @Override
+    public void syncAllRoutinesForLogOn() throws SystemException {
+        syncRoutineItemsForLogOn(getRoutines());
+    }
 
     /*
      * (non-Javadoc)
@@ -94,6 +99,35 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         for (IRepositoryViewObject routine : routineObjects) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem, true);
+        }
+
+        try {
+            ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
+            List<URL> urls = jms.getTalendRoutinesFolder();
+
+            for (URL systemModuleURL : urls) {
+                if (systemModuleURL != null) {
+                    String fileName = systemModuleURL.getPath();
+                    if (fileName.startsWith("/")) { //$NON-NLS-1$
+                        fileName = fileName.substring(1);
+                    }
+                    File f = new File(systemModuleURL.getPath());
+                    if (f.isDirectory()) {
+                        syncModule(f.listFiles());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
+        }
+
+    }
+    
+    private void syncRoutineItemsForLogOn(List<IRepositoryViewObject> routineObjects) throws SystemException {
+        for (IRepositoryViewObject routine : routineObjects) {
+            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
+            syncRoutine(routineItem);
         }
 
         try {
