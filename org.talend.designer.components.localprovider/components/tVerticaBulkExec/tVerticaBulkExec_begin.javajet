@@ -109,7 +109,7 @@ if(("UPDATE").equals(dataAction)) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         tableName_<%=cid%> = "tmp_<%=cid%>" + pid + Thread.currentThread().getId();
-        if(dbschema_<%=cid%> != null || dbschema_<%=cid%>.trim().length() != 0) {
+        if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
 	    	tableName_<%=cid%> = dbschema_<%=cid%> + "." + tableName_<%=cid%>;
 		}
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
