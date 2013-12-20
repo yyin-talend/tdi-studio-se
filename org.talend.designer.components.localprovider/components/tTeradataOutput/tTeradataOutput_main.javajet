@@ -123,10 +123,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
 		}
@@ -139,10 +139,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -155,18 +155,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -181,18 +181,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -266,7 +266,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+				Column dynamicColumn = getColumn(getDynamicColumn());
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -357,7 +357,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+				Column dynamicColumn = getColumn(getDynamicColumn());
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -506,7 +506,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+					Column dynamicColumn = getColumn(getDynamicColumn());
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -606,7 +606,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+					Column dynamicColumn = getColumn(getDynamicColumn());
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -681,7 +681,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+				Column dynamicColumn = getColumn(getDynamicColumn());
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -789,7 +789,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
+					Column dynamicColumn = getColumn(getDynamicColumn());
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>

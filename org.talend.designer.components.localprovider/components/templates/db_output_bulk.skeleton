@@ -4045,7 +4045,7 @@ public class CLASS {
     
     private IMetadataColumn talendDynamicColumn = null;
     
-    public IMetadataColumn getDynamicColumn(List<IMetadataColumn> columnList) {
+    public IMetadataColumn getDynamicColumn() {
         return talendDynamicColumn;
     }
     
