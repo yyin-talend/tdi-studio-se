@@ -68,6 +68,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * 
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
+    @Override
     public void syncAllRoutines() throws SystemException {
         for (IRepositoryViewObject routine : getRoutines()) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
@@ -96,6 +97,41 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
+    public void syncAllRoutinesForLogOn() throws SystemException {
+        syncRoutineItemsForLogOn(getRoutines());
+    }
+
+    private void syncRoutineItemsForLogOn(List<IRepositoryViewObject> routineObjects) throws SystemException {
+        for (IRepositoryViewObject routine : routineObjects) {
+            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
+            syncRoutine(routineItem);
+        }
+
+        try {
+            ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
+            List<URL> urls = jms.getTalendRoutinesFolder();
+
+            for (URL systemModuleURL : urls) {
+                if (systemModuleURL != null) {
+                    String fileName = systemModuleURL.getPath();
+                    if (fileName.startsWith("/")) { //$NON-NLS-1$
+                        fileName = fileName.substring(1);
+                    }
+                    File f = new File(systemModuleURL.getPath());
+                    if (f.isDirectory()) {
+                        syncModule(f.listFiles());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    @Override
     public void syncAllBeans() throws SystemException {
         // for (IRepositoryViewObject routine : getBeans()) {
         // BeanItem beanItem = (BeanItem) routine.getProperty().getItem();
@@ -251,6 +287,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
     public IFile getProcessFile(JobInfo jobInfo) throws SystemException {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         try {
@@ -394,6 +431,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * 
      * @see org.talend.designer.codegen.ITalendSynchronizer#getFile(org.talend.core .model.properties.Item)
      */
+    @Override
     public IFile getFile(Item item) throws SystemException {
         if (item instanceof RoutineItem) {
             return getRoutineFile((RoutineItem) item);
@@ -437,6 +475,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     }
 
+    @Override
     public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -453,6 +492,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
     public void deleteBeanfile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -469,6 +509,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    @Override
     public IFile getRoutinesFile(Item item) throws SystemException {
         try {
             if (item instanceof RoutineItem) {
