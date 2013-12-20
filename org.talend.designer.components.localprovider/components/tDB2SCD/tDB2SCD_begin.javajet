@@ -64,6 +64,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         String conn = "conn_" + connection;
         %>
+        String schema_<%=cid%> = (String) globalMap.get("tableschema_<%=connection%>");
         java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
         <%
     } else {       
@@ -80,11 +81,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 %>
         java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
         java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+        String schema_<%=cid%> = <%=dbschema%>;
 	    <%
 	}
     %>    
 	String tableName_<%=cid%> = null;
-    String schema_<%=cid%> = <%=dbschema%>;
     if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
         tableName_<%=cid%> = <%=dbtable%>;
     } else {
