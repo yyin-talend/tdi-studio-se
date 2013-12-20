@@ -113,9 +113,7 @@
 	/** relevant Manager object                                           **/
 	/***********************************************************************/
 	Manager manager = null;
-	List<Column> stmtStructure = null;
 	if(columnList != null && columnList.size() > 0) {
-		stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);	
 	   manager = getManager(dbmsId, cid);  
 	}
  

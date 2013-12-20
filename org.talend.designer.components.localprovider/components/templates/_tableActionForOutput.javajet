@@ -38,7 +38,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
 				}
 			} else {
@@ -66,7 +66,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
 				}
 			} else {
@@ -237,7 +237,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
 				}
 			} else {
@@ -276,7 +276,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
 				}
 			} else {

@@ -306,10 +306,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%
 			}
 		}
@@ -342,10 +342,10 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(updateSetStmt.toString()))) {
 	%>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -358,18 +358,18 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -384,18 +384,18 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(insertColName.toString()))) {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%
 			}
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -422,10 +422,10 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 			IConnection conn = conns_dynamic.get(0);
 			if(insertColName!=null) {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%			} else {
 %>
-				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
+				String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>, "<%=dbmsId %>")+") VALUES ("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn(columnList)%>)+")";
 <%
 			}
 		}
@@ -510,7 +510,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -606,7 +606,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 		                    }
 		                }
 						if(isDynamic) {
-							Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+							Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 							if("Dynamic".equals(typeToGenerate)) {
 							%>
@@ -634,7 +634,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 		                    }   
 		                }
 				if(isDynamic) {
-				    	Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				    	Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -690,7 +690,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -846,7 +846,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -954,7 +954,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -1038,7 +1038,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 }
             }
 			if(isDynamic) {
-				Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
@@ -1154,7 +1154,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     }
                 }
 				if(isDynamic) {
-					Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
@@ -1366,7 +1366,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 }
             }
 			if(isDynamic) {
-					Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+					Column dynamicColumn = getColumn(getDynamicColumn(columnList));
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
