@@ -176,5 +176,5 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 <%
 }
 %>
-	while(true) {
+	while(!globalMap.containsKey("<%=cid%>_FINISH") || !queue_<%=cid%>.isEmpty()) {
 		if (!queue_<%=cid%>.isEmpty()) {

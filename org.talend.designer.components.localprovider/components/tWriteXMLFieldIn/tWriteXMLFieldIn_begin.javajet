@@ -89,7 +89,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 				%>
 				int nb_line_<%=cid%> = 0;
-				while(true) {
+				while(!globalMap.containsKey("<%=cid%>_FINISH") || !queue_<%=cid%>.isEmpty()) {
 						if (!queue_<%=cid%>.isEmpty()) {
 			<%
 			}
