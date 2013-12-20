@@ -174,7 +174,6 @@
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="51"
-      SHOW="false"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT"/>

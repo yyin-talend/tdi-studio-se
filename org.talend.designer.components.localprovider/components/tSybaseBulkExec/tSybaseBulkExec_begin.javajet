@@ -85,7 +85,7 @@ if(useExistingConnection) {
     String user_<%=cid%> = <%=user%>;
     String pass_<%=cid%> = <%=pwd%>;
     String host_<%=cid%> = <%=host%>;
-<%	if(!"NONE".equals(tableAction)){%>
+<%	if(!"NONE".equals(tableAction) || ("UPDATE").equals(dataAction)){%>
     	String port_<%=cid%> = <%=port%>;
 <%		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
@@ -128,6 +128,9 @@ if(("UPDATE").equals(dataAction)) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
     tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
+    if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+    	tableName_<%=cid%>=dbschema_<%=cid%> + "." + tableName_<%=cid%>;
+    }
     <%
 }
 %>
