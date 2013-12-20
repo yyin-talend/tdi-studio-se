@@ -283,11 +283,21 @@
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
+
+    <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="40"
+      SHOW_IF="DATA_ACTION == 'INSERT'"
+      GROUP="BATCH_CONFIG"
+      >
+        <DEFAULT>*Note: The batch option is supported with Vectorwise version 2.5 and further</DEFAULT>
+    </PARAMETER>
 	
     <PARAMETER
       NAME="USE_BATCH_SIZE"
       FIELD="CHECK"
-      NUM_ROW="40"
+      NUM_ROW="41"
       SHOW_IF="DATA_ACTION == 'INSERT'"
       GROUP="BATCH_CONFIG"
     >
@@ -297,21 +307,11 @@
     <PARAMETER
       NAME="BATCH_SIZE"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="41"
       SHOW_IF="(USE_BATCH_SIZE == 'true') AND (DATA_ACTION == 'INSERT')"
       GROUP="BATCH_CONFIG"
       >
         <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="NOTE"
-      FIELD="LABEL"
-      NUM_ROW="45"
-      SHOW_IF="DATA_ACTION == 'INSERT'"
-      GROUP="BATCH_CONFIG"
-      >
-        <DEFAULT>The batch option is supported with Vectorwise version 2.5 and further</DEFAULT>
     </PARAMETER>
 
   </ADVANCED_PARAMETERS>
