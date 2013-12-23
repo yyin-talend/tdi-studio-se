@@ -102,11 +102,13 @@ public class palodata {
                 csv.setQuoteChar('"');
                 int iCoordElem = 0;
                 while (csv.readNext()) {
+                    if(iCoordElem > lstDimensionElementArray.size()-1){
+                        break;
+                    }
                     String strArrCoord[] = new String[iDimensionElementLength];
                     for (int i = 0; i < iDimensionElementLength; i++) {
                         strArrCoord[i] = (String) lstDimensionElementArray.get(iCoordElem++);
                     }
-                    iCoordElem = 0;
 
                     if (palohelpers.StringToInt(csv.get(0)) == 1) {
                         if (palohelpers.StringToInt(csv.get(1)) > 0) {
