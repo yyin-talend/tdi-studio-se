@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.palette;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.PaletteEntry;
@@ -26,15 +28,19 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ComponentSearcher;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.PaletteComponentFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.actions.ShowFavoriteAction;
@@ -61,7 +67,11 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     @Override
     public void buildContextMenu(IMenuManager menu) {
         super.buildContextMenu(menu);
-        menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer()));
+        
+        if(!isComponentsTypePalette(ComponentCategory.CATEGORY_4_CAMEL)){ 
+            menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer())); 
+        } 
+
         PaletteEntry element = (PaletteEntry) ((EditPart) getPaletteViewer().getSelectedEditParts().get(0)).getModel();
         boolean note = element.getLabel().equals(Messages.getString("TalendEditorPaletteFactory.Note"));//$NON-NLS-1$
         if (note) {
@@ -76,6 +86,25 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         menu.appendToGroup(GEFActionConstants.GROUP_COPY, new HiddenFloderAction(getPaletteViewer()));
         menu.appendToGroup(GEFActionConstants.GROUP_COPY, new DisplayFloderAction(getPaletteViewer()));
     }
+    
+    protected boolean isComponentsTypePalette(ComponentCategory componentCategory){ 
+        if(componentCategory == null){ 
+            return false; 
+        } 
+        EditDomain editDomain = getPaletteViewer().getEditDomain(); 
+        if(editDomain == null || !(editDomain instanceof DefaultEditDomain)){ 
+            return false; 
+        } 
+        IEditorPart editorPart = ((DefaultEditDomain)editDomain).getEditorPart(); 
+        if(editorPart == null || !(editorPart instanceof AbstractTalendEditor)){ 
+            return false; 
+        } 
+        IProcess2 process = ((AbstractTalendEditor)editorPart).getProcess(); 
+        if(process == null){ 
+            return false; 
+        } 
+        return componentCategory.getName().equals(process.getComponentsType()); 
+    } 
 
     class SearchComponentAction extends Action {
 
