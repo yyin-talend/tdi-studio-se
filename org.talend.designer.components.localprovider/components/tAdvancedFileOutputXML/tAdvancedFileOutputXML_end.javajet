@@ -15,22 +15,155 @@ skeleton="tAdvancedFileOutputXML_java.skeleton"
 %>
 
 <%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+final INode node = (INode)codeGenArgument.getArgument();
+
+abstract class TouchXMLNode {
+	protected String cid = null;
+	
+	abstract void getXMLNode(String currEleName);
+	
+	abstract void getXMLElement(String currEleName);
+	
+	abstract void putCurrentComplexTypeElement(String currEleName);
+	
+	abstract void putCurrentSequenceElement(String currEleName);
+	
+	abstract void putCurrentElement(String currEleName,String parent);
+	
+	abstract void putRootElement();
+}
+
+//get mean reference
+//put mean declare,assign action
+class ReferenceTouchXMLNode extends TouchXMLNode {
+
+	void getXMLNode(String currEleName) {
+%>
+		<%=currEleName%>_<%=cid%>
+<%
+	}
+	
+	void getXMLElement(String currEleName) {
+		getXMLNode(currEleName);
+	}
+	
+	void putCurrentComplexTypeElement(String currEleName) {
+%>
+		org.dom4j.Element <%=currEleName%>_c_<%=cid%> = <%getXMLNode(currEleName);%>.addElement("xsd:complexType");
+<%
+	}
+	
+	void putCurrentSequenceElement(String currEleName) {
+%>
+		org.dom4j.Element <%=currEleName%>_s_<%=cid%> = <%getXMLNode(currEleName + "_c");%>.addElement("xsd:sequence");
+<%
+	}
+	
+	void putCurrentElement(String currEleName,String parent) {
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%getXMLNode(parent);%>.addElement("xsd:element");
+<%
+	}
+	
+	void putRootElement() {
+		//do nothing
+	}
+}
+
+class MappingTouchXMLNode extends TouchXMLNode {
+
+	void getXMLNode(String currEleName) {
+%>
+		nameToElement_<%=cid%>.get("<%=currEleName%>")
+<%
+	}
+	
+	void getXMLElement(String currEleName) {
+%>
+		((org.dom4j.Element)(nameToElement_<%=cid%>.get("<%=currEleName%>")))
+<%
+	}
+	
+	void putCurrentComplexTypeElement(String currEleName) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>_c",<%getXMLNode(currEleName);%>.addElement("xsd:complexType"));
+<%
+	}
+	
+	void putCurrentSequenceElement(String currEleName) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>_s",<%getXMLNode(currEleName + "_c");%>.addElement("xsd:sequence"));
+<%
+	}
+	
+	void putCurrentElement(String currEleName,String parent) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>",<%getXMLNode(parent);%>.addElement("xsd:element"));
+<%
+	}
+	
+	void putRootElement() {
+%>
+		nameToElement_<%=cid%>.put("root_xsd",root_xsd_<%=cid%>);
+<%
+	}
+}
+%>
+
+<%@ include file="./BigMethodHelper.javajet"%>
+
+<%
 // ------------------- *** Dom4j generation mode start *** ------------------- //
 class XSDToolByDom4j{
     String cid = null;
-    public void generateXSD(String parent, String currEleName, XMLNode root){
+    
+	//opt for big xml config tree
+	BigMethodHelper bigMethodHelper = null;
+	TouchXMLNode touchXMLNode = null;
+	
+	public XSDToolByDom4j() {
+		bigMethodHelper = new BigMethodHelper();
+		touchXMLNode = bigMethodHelper.getTouchXMLNode();
+	}
+	
+	public void generateXSD(String parent, String currEleName, XMLNode root){
+		if(!("ELEMENT").equals(root.type)){
+			return;
+		}
+		
+		bigMethodHelper.setGenerateId(currEleName);
+		//start the class
+		bigMethodHelper.generateClassNameWithRBlock();
+		
+		bigMethodHelper.resetIndex();
+		
+		generateMainCode(parent,currEleName,root);
+		
+		//end the last method
+		bigMethodHelper.generateLeftBlock();
+		
+		//end the class
+		bigMethodHelper.generateLeftBlock();
+		
+		bigMethodHelper.generateMethodCall();
+	}
+	
+    public void generateMainCode(String parent, String currEleName, XMLNode root){
     	if(("ELEMENT").equals(root.type)){
+    		bigMethodHelper.generateMethod();
+    		
     		createElement(parent,currEleName,root);
 			
 			if(root.elements!=null && root.elements.size()>0
 			  || root.attributes!=null && root.attributes.size()>0){
-%>
-		org.dom4j.Element <%=currEleName%>_c_<%=cid%> = <%=currEleName%>_<%=cid%>.addElement("xsd:complexType");
-		org.dom4j.Element <%=currEleName%>_s_<%=cid%> = <%=currEleName%>_c_<%=cid%>.addElement("xsd:sequence");
-<%
+			  
+				touchXMLNode.putCurrentComplexTypeElement(currEleName);
+				touchXMLNode.putCurrentSequenceElement(currEleName);
+				
         		int index = 0;
         		for(XMLNode child:root.elements){
-        			generateXSD(currEleName+"_s", currEleName+"_"+index++, child);
+        			generateMainCode(currEleName+"_s", currEleName+"_"+index++, child);
         		}
         		
         		for(XMLNode attri:root.attributes){
@@ -41,22 +174,22 @@ class XSDToolByDom4j{
     }
     
     private void createElement(String parent, String currEleName, XMLNode node){
+    	touchXMLNode.putCurrentElement(currEleName,parent);
 %>
-		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parent%>_<%=cid%>.addElement("xsd:element");
-		<%=currEleName%>_<%=cid%>.addAttribute("name","<%=node.name%>");
-		<%=currEleName%>_<%=cid%>.addAttribute("nillable","true");
+		<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("name","<%=node.name%>");
+		<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("nillable","true");
 <%
 		if(node.parent != null){
 %>
-		<%=currEleName%>_<%=cid%>.addAttribute("minOccurs","0");
-		<%=currEleName%>_<%=cid%>.addAttribute("maxOccurs","unbounded");
+		<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("minOccurs","0");
+		<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("maxOccurs","unbounded");
 <%
 		}
     }
     
     private void createAttribute(String parent, XMLNode node){
 %>
-		<%=parent%>_<%=cid%>.addElement("xsd:attribute").addAttribute("name","<%=node.name%>");
+		<%touchXMLNode.getXMLNode(parent);%>.addElement("xsd:attribute").addAttribute("name","<%=node.name%>");
 <%
     }
 }
@@ -132,8 +265,6 @@ class XSDToolByNull{
 // ------------------- *** Dom4j generation mode end *** ------------------- //
 
 // ------------------- *** Common code start *** ------------------- //
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
 List<Map<String, String>> rootTable = 
@@ -308,12 +439,16 @@ globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 <%
 	XSDToolByDom4j xsdTool = new XSDToolByDom4j();
 	xsdTool.cid = cid;
+	xsdTool.touchXMLNode.cid = cid;
+	xsdTool.bigMethodHelper.cid = cid;
+	xsdTool.touchXMLNode.putRootElement();
 	xsdTool.generateXSD("root_xsd","ele_xsd",root);
 %>
 	java.io.FileOutputStream stream_xsd_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%>+".xsd");
     org.dom4j.io.XMLWriter output_xsd_<%=cid%> = new org.dom4j.io.XMLWriter(stream_xsd_<%=cid%>, format_<%=cid%>);
     output_xsd_<%=cid%>.write(doc_xsd_<%=cid%> );
     output_xsd_<%=cid%>.close();
+    nameToElement_<%=cid%>.clear();
 <%
 		}else if(("Null").equals(mode)){
 %>
