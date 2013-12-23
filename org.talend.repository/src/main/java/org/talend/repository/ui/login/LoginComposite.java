@@ -1913,6 +1913,9 @@ public class LoginComposite extends Composite {
         // dialog.setMessage("Importing demo project ...");
         ImportDemoProjectAction.getInstance().setShell(getShell());
         ImportDemoProjectAction.getInstance().run();
+        // TUP-904:for all demo project,need unload the resource for the repository context,later will load the new one
+        unpopulateProjectList();
+        setRepositoryContextInContext();
         populateProjectList();
         String newProject = ImportDemoProjectAction.getInstance().getProjectName();
         if (newProject != null) {
