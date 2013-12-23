@@ -27,11 +27,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if (conns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			%>
 					}
-					if (globalMap.containsKey("<%=cid%>_FINISH") ) {
-						if (queue_<%=cid%>.isEmpty()) {
-							break;
-						}
-					}
 				}
 				<%
 				INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
@@ -53,6 +48,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			}
 				%>
 				globalMap.remove("<%=cid%>_FINISH");
+				globalMap.remove("queue_<%=cid%>"); 
 			<%
 			}
 		}
