@@ -91,10 +91,10 @@
 
 
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="50">
-			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx"</DEFAULT>
+			<DEFAULT>"http://www.webservicex.net/globalweather.asmx"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="ACTION" FIELD="TEXT" REQUIRED="true" NUM_ROW="60">
-			<DEFAULT>"http://litwinconsulting.com/webservices/GetWeather"</DEFAULT>
+			<DEFAULT>"http://www.webserviceX.NET/GetWeather"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="SOAP_VERSION" FIELD="CLOSED_LIST" NUM_ROW="70">
 			<ITEMS DEFAULT="SOAP_1.1">
