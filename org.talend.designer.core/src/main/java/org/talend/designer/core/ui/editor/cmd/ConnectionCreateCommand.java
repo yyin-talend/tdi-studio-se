@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -33,6 +34,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.dialog.mergeorder.ConnectionTableAndSchemaNameDialog;
@@ -40,6 +42,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.utils.ConnectionUtil;
 
 /**
  * Command that creates a new connection. <br/>
@@ -281,6 +284,15 @@ public class ConnectionCreateCommand extends Command {
             EConnectionType connecType;
             if (source.isELTComponent()) {
                 connecType = EConnectionType.TABLE;
+            }else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(source.getComponent().getType())) {
+                connecType = EConnectionType.ROUTE;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            ICamelDesignerCoreService.class);
+                    connecType = camelService.getTargetConnectionType(source);
+                }else{
+                    connecType = EConnectionType.ROUTE;
+                }
             } else {
                 connecType = EConnectionType.FLOW_MAIN;
             }
@@ -341,6 +353,8 @@ public class ConnectionCreateCommand extends Command {
                     } else {
                         connectionName = askForConnectionName(source.getLabel(), connectionName);
                     }
+                } else if(ComponentCategory.CATEGORY_4_CAMEL.getName().equals(source.getComponent().getType())){ 
+                    connectionName = ConnectionUtil.generateUniqueConnectionName(connecType, source.getProcess(), source.getConnectorFromType(connecType)); 
                 } else {
                     metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
                     String baseName = source.getConnectionName();

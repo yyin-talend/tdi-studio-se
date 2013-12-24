@@ -135,6 +135,7 @@ import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -152,6 +153,7 @@ import org.talend.core.model.process.node.MapperExternalNode;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -1834,6 +1836,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             final INodeConnector mainConnector;
             if (node.isELTComponent()) {
                 mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
+            } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(node.getComponent().getType())) {
+                INodeConnector tmp = null;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            ICamelDesignerCoreService.class);
+                    tmp = node.getConnectorFromType(camelService.getTargetConnectionType(node));
+                }else{
+                    tmp = node.getConnectorFromType(EConnectionType.ROUTE);
+                }
+                mainConnector = tmp;
             } else {
                 mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
