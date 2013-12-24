@@ -328,7 +328,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         }
                     } else {
                         IMetadataTable metaTable = table;
-                        if (elem instanceof Node) {
+                        if (metaTable == null && elem instanceof Node) {
                             INodeConnector conn = ((Node) elem).getConnectorFromType(EConnectionType.FLOW_MAIN);
                             if (conn != null && conn.getMaxLinkOutput() == 1) {
                                 metaTable = ((Node) elem).getMetadataFromConnector(conn.getName());
