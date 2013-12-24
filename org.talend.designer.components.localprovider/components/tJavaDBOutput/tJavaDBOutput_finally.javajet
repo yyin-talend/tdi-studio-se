@@ -18,28 +18,20 @@ imports="
 	%>
 	if(resourceMap.get("finish_<%=cid%>")==null){
 		if(resourceMap.get("conn_<%=cid%>")!=null){
-			((java.sql.Connection)resourceMap.get("conn_<%=cid%>")).close();
+			try
+	    	{
+				((java.sql.Connection)resourceMap.get("conn_<%=cid%>")).close();
 			<%
 			if(("EMBEDED").equals(frameworkType)){
 			%>
-				try
-		    	{
-		    		java.sql.DriverManager.getConnection("jdbc:derby:;shutdown=true");
-		    	}
-		    	catch(java.sql.SQLException se)
-		    	{
-		            //ignore
-		    	}
+	    		java.sql.DriverManager.getConnection("jdbc:derby:;shutdown=true");
 			<%
-			} else
-			{
-				if(("false").equals(connectionFlag))
-				{
-				%>
-					serverControl_<%=cid%>.shutdown();
-				<%
-				}
 			}
 			%>
+	    	}
+	    	catch(java.sql.SQLException se)
+	    	{
+	            //ignore
+	    	}
 		}
 	}
