@@ -232,6 +232,10 @@ public class GuessSchemaProcess {
                 systemProperty = systemProperty + "System.setProperty(\"derby.system.home\",\"" + derbyPath + "\");\r\n";//$NON-NLS-3$
             }
         }
+        // the Sqlite
+        if (EDatabaseTypeName.SQLITE.getXmlName().equals(info.getDbType())) {
+            createStatament = "conn.createStatement()";
+        }
         codeStart = systemProperty
                 + "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
