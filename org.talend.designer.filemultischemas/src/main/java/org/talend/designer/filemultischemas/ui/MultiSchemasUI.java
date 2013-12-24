@@ -268,7 +268,7 @@ public class MultiSchemasUI {
         createViewers(allContentForm);
         final ExpandItem previewItem = new ExpandItem(bar, SWT.NONE, 1);
         previewItem.setText(ExternalMultiSchemasUIProperties.PREVIEW_LABEL);
-        previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+        previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + 100);
         previewItem.setControl(allContentForm);
         previewItem.setExpanded(true);
 
