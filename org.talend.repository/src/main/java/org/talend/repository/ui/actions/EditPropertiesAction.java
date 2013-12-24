@@ -149,6 +149,8 @@ public class EditPropertiesAction extends AContextualAction {
             IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
             if (designerCoreService != null) {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
+                // TDI-24863:reset the job problem list if rename the job item
+                designerCoreService.resetJobProblemList(node.getObject(), originalName);
             }
             // refresh ...
             IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()

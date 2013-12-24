@@ -713,4 +713,15 @@ public class DesignerCoreService implements IDesignerCoreService {
         return Expression.evaluate(string, listParam);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#resetJobProblemView(org.talend.core.model.repository.
+     * IRepositoryViewObject, java.lang.String)
+     */
+    @Override
+    public void resetJobProblemList(IRepositoryViewObject obj, String originalName) {
+        JobLaunchShortcutManager.resetJobProblemList(obj, originalName);
+    }
+
 }
