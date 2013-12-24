@@ -268,7 +268,7 @@ if(rootpath_<%=cid %>.endsWith("/")){
 <%
 	//get all the children collections of the loop node.
 	for(IConnection conn : connections){
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 			String query = null;
 			for(Map<String, String> schemaMap : schemas){
 				if(schemaMap.get("SCHEMA").equals(conn.getName())){
@@ -322,7 +322,7 @@ for (org.dom4j.Element loop_<%=cid %>: nodeList_<%=cid %>) {
 	java.util.List<java.util.Map<String,org.dom4j.Element>> resultList_<%=cid %> = new java.util.ArrayList<java.util.Map<String,org.dom4j.Element>>();
 <%
 		for(IConnection conn : connections){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 %>
 	org.dom4j.XPath groupPath_<%=conn.getName() %> = loop_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(query_<%=conn.getName() %>,rootpath_<%=cid %>));
 	groupPath_<%=conn.getName() %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>);
@@ -371,7 +371,7 @@ XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 	StringBuilder builderQueries = new StringBuilder();
 	boolean isFirstArr = true;
 	for(IConnection conn : connections){
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 			String loopPath = null;
 			String strQuery = null;
 			for(Map<String, String> schemaMap : schemas){
@@ -434,7 +434,7 @@ looper_<%=cid%>.parse(<%=filename %>);
 		try{
 <%
 	for(IConnection conn : connections){
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 			boolean hasEmptyRow = false;
 			Map<String, String> mapping = null;
 			String tmpQuery = null;
@@ -633,7 +633,7 @@ looper_<%=cid%>.parse(<%=filename %>);
         System.err.println(e.getMessage());
 <%
     	for(IConnection conn : connections){
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 %>
 		<%=conn.getName() %> = null;
 <%
