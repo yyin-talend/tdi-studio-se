@@ -24,7 +24,11 @@ imports="
 	%>
 		if(resourceMap.get("finish_<%=cid%>")==null){
 			if(resourceMap.get("conn_<%=cid%>")!=null){
-				((java.sql.Connection)resourceMap.get("conn_<%=cid%>")).close();
+				try {
+					((java.sql.Connection)resourceMap.get("conn_<%=cid%>")).close();
+				} catch (java.sql.SQLException sqlEx_<%=cid %>) {
+					System.out.println("failed to close the connection in <%=cid %> :" + sqlEx_<%=cid %>.getMessage());
+				}
 			}
 		}
 	<%
