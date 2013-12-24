@@ -372,8 +372,12 @@ public class QueryGuessCommand extends Command {
             schema = getDefaultSchema(realTableName);
         }
 
-        if (conn != null && StringUtils.isEmpty(schema)
-                && EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))) {
+        if (conn != null
+        // && StringUtils.isEmpty(schema)
+                && (EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLE_CUSTOM.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
+                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))) {
             schema = getDefaultSchema(realTableName);
         }
         if (conn == null) {
