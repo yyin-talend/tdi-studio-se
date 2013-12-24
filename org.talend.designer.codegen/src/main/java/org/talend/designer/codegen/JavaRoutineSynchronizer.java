@@ -77,12 +77,12 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      */
     @Override
     public void syncAllRoutines() throws SystemException {
-        syncRoutineItems(getRoutines());
+        syncRoutineItems(getRoutines(),false);
     }
     
     @Override
     public void syncAllRoutinesForLogOn() throws SystemException {
-        syncRoutineItemsForLogOn(getRoutines());
+    	syncRoutineItems(getRoutines(),true);
     }
 
     /*
@@ -92,42 +92,18 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      */
     @Override
     public void syncAllPigudf() throws SystemException {
-        syncRoutineItems(getAllPigudf());
-    }
-
-    private void syncRoutineItems(List<IRepositoryViewObject> routineObjects) throws SystemException {
-        for (IRepositoryViewObject routine : routineObjects) {
-            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-            syncRoutine(routineItem, true);
-        }
-
-        try {
-            ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
-            List<URL> urls = jms.getTalendRoutinesFolder();
-
-            for (URL systemModuleURL : urls) {
-                if (systemModuleURL != null) {
-                    String fileName = systemModuleURL.getPath();
-                    if (fileName.startsWith("/")) { //$NON-NLS-1$
-                        fileName = fileName.substring(1);
-                    }
-                    File f = new File(systemModuleURL.getPath());
-                    if (f.isDirectory()) {
-                        syncModule(f.listFiles());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
-
+        syncRoutineItems(getAllPigudf(),false);
     }
     
-    private void syncRoutineItemsForLogOn(List<IRepositoryViewObject> routineObjects) throws SystemException {
+    @Override
+    public void syncAllPigudfForLogOn() throws SystemException {
+        syncRoutineItems(getAllPigudf(), true);
+    }
+
+    private void syncRoutineItems(List<IRepositoryViewObject> routineObjects, boolean forceUpdate) throws SystemException {
         for (IRepositoryViewObject routine : routineObjects) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-            syncRoutine(routineItem);
+            syncRoutine(routineItem, true,forceUpdate);
         }
 
         try {
