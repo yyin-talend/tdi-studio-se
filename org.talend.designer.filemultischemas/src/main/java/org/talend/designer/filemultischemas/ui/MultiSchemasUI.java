@@ -276,8 +276,16 @@ public class MultiSchemasUI {
 
             public void itemExpanded(ExpandEvent e) {
                 if (e.item != null && e.item instanceof ExpandItem) {
-                    settingItem.setHeight(fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-                    previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                    if (((ExpandItem) e.item).getText().equals(ExternalMultiSchemasUIProperties.PREVIEW_LABEL)) {
+                        if (settingItem.getExpanded()) {
+                            previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                        } else {
+                            previewItem.setHeight(allContentForm.computeSize(SWT.DEFAULT, SWT.DEFAULT).y
+                                    + fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                        }
+                    } else if (((ExpandItem) e.item).getText().equals(ExternalMultiSchemasUIProperties.SETTINGS_LABEL)) {
+                        settingItem.setHeight(fileGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+                    }
                 }
             }
 
