@@ -259,7 +259,7 @@
 	
 <%
     for (IConnection conn : conns) {
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 			String headerValue = null;
 			String patternValue = null;
 			boolean checkRowSize = false;
@@ -312,7 +312,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 	while (reader_<%=cid %>.readRecord()) {
 <%
 		for (IConnection conn : conns) {
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 %>
 		<%=conn.getName()%> = null;
 <%
@@ -326,7 +326,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 			header_<%=cid%> = row_<%=cid%>.substring(hdrStartIndex_<%=cid%>, hdrEndIndex_<%=cid%>)<%=trimAll? ".trim()":""%>;
 <%
     for (IConnection conn : conns) {//_____0
-    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//_____0_____1
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//_____0_____1
     		IMetadataTable tempMetadataTable = conn.getMetadataTable();
     		List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
 			if (!conn.getName().equals(rejectConnName)) {//_____0_____1_____1
