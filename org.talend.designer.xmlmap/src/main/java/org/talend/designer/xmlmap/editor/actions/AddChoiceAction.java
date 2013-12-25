@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.editor.actions;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -42,8 +43,11 @@ public class AddChoiceAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.AddChoiceAction";
 
-    public AddChoiceAction(IWorkbenchPart part) {
+    private GraphicalViewer graphicViewer;
+
+    public AddChoiceAction(IWorkbenchPart part, GraphicalViewer graphicViewer) {
         super(part);
+        this.graphicViewer = graphicViewer;
         setId(ID);
         setText("Add Choice");
     }
@@ -84,6 +88,11 @@ public class AddChoiceAction extends SelectionAction {
                 if (!XmlMapUtil.isExpressionEditable(output) && output.isAggregate()) {
                     output.setAggregate(false);
                 }
+            }
+
+            Object object = graphicViewer.getEditPartRegistry().get(treeNode);
+            if (object instanceof TreeNodeEditPart) {
+                graphicViewer.select((TreeNodeEditPart) object);
             }
 
         }
