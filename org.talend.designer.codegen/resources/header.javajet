@@ -610,7 +610,7 @@ private class TalendException extends java.lang.Exception {
 					}
 				}
 				boolean isExistOnCompErrorLink = false;
-				List< ? extends IConnection> conns = node.getOutgoingConnections();
+				List< ? extends IConnection> conns = NodeUtil.getVirtualNode(node).getOutgoingConnections();
 				for (IConnection conn : conns) {
 					if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)) {
 						isExistOnCompErrorLink = true;
@@ -649,7 +649,7 @@ private class TalendException extends java.lang.Exception {
 				}
 				boolean isSubjobHasOnSubJobError = false;
 				if (!isExistOnCompErrorLink) {
-					INode subJobStartNode =	node.getDesignSubjobStartNode();
+					INode subJobStartNode =	NodeUtil.getVirtualNode(node).getDesignSubjobStartNode();
 					if (subJobStartNode != null) {
 						List< ? extends IConnection> tempConns = subJobStartNode.getOutgoingConnections();
 						for (IConnection conn : tempConns) {
