@@ -70,6 +70,7 @@ List<Column> stmtStructure = null;
 Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
 }
 %>
 
@@ -78,7 +79,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int updateKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isUpdateKey()) {
+            if(column.isUpdateKey() && !column.isDynamic()) {
                 updateKeyCount++;
             }
         }
@@ -93,7 +94,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int deleteKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isDeleteKey()) {
+            if(column.isDeleteKey() && !column.isDynamic()) {
                 deleteKeyCount++;
             }
         }

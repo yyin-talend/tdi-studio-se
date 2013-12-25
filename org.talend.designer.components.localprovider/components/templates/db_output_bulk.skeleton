@@ -312,9 +312,7 @@ public class CLASS {
             return dropTableSQL.toString();
         }
         
-        protected int dynamicColumnLocation = -1;
-
-        public String getCreateTableSQL(List<Column> columnList) {//columnList that contain all columns except dynamic column
+        public String getCreateTableSQL(List<Column> columnList) {
             MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
             StringBuilder createSQL = new StringBuilder();
             createSQL.append("CREATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
@@ -322,20 +320,7 @@ public class CLASS {
             int count = 0;
             String ending = ",";
             
-            String dynamicEnding = ending;
-            if(dynamicColumnLocation == 0) {//dynamic is first
-                createSQL.append(" {TALEND_DYNAMIC_COLUMN} ");
-                if(columnList.size() > 0) {
-                    createSQL.append(ending);
-                }
-            }
-            
             for (Column column : columnList) {
-                
-                if(dynamicColumnLocation > 0 && count == dynamicColumnLocation) {//dynamic is in middle
-                    createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
-                }
-                
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
@@ -353,12 +338,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -461,17 +449,11 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
+
                         createSQL.append(ending);
                     }
                 }
                 count++;
-            }
-            
-            if(dynamicColumnLocation > 0 && dynamicColumnLocation == columnList.size()) {//dynamic is last and not first
-                createSQL.append(dynamicEnding).append(" {TALEND_DYNAMIC_COLUMN} ");
             }
             
             if (pkList.size() > 0) {
@@ -567,6 +549,9 @@ public class CLASS {
             }
             return stmtStructure;
         }
+        
+        private boolean dynamicColumnIsReplaced = false;
+        
         public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols) {
             List<Column> stmtStructure = new ArrayList<Column>();            
             for(IMetadataColumn column : columnList) {
@@ -622,32 +607,21 @@ public class CLASS {
                                 replacementCol.setUpdatable(replacedCol.isUpdatable());
                                 replacementCol.setInsertable(replacedCol.isInsertable());
                                 replacedCol.replace(replacementCol);
+                                
+                                if(replacedCol.isDynamic()) {
+                                    dynamicColumnIsReplaced = true;
+                                }
                             }                            
                         }
                     }
                 }
             }
             
-            removeDynamicColumnAndSetDynamicColumnLocation(stmtStructure);
-            
             return stmtStructure;
         }
         
-        private void removeDynamicColumnAndSetDynamicColumnLocation(List<Column> stmtStructure) {
-            dynamicColumnLocation = -1;
-            
-            //get the dynamic column location after add columns
-            for(int i=0;i<stmtStructure.size();i++) {
-                Column column = stmtStructure.get(i);
-                if(column.isDynamic()) {
-                    dynamicColumnLocation = i;
-                    break;
-                }
-            }
-            //remove the single dynamic column from the result
-            if(dynamicColumnLocation > -1) {
-                stmtStructure.remove(dynamicColumnLocation);
-            }
+        public boolean isDynamicColumnReplaced() {
+            return dynamicColumnIsReplaced;
         }
         
         public Map<String, StringBuilder> createProcessSQL(List<Column> stmtStructure) {
@@ -715,7 +689,7 @@ public class CLASS {
             }
             String suffix = null;
             String separate = null;
-            if(column.isInsertable()) {
+            if(column.isInsertable() && !column.isDynamic()) {
                 if(firstInsertColumn.toString().equals("true")) {
                     suffix = "";
                     firstInsertColumn = new StringBuilder("false");
@@ -727,7 +701,7 @@ public class CLASS {
                 insertValueStmt.append(suffix);
                 insertValueStmt.append(column.getSqlStmt());
             }
-            if(column.isUpdatable()) {
+            if(column.isUpdatable() && !column.isDynamic()) {
                 if(firstUpdateColumn.toString().equals("true")) {
                     suffix = "";
                     firstUpdateColumn = new StringBuilder("false");
@@ -737,7 +711,7 @@ public class CLASS {
                 updateSetStmt.append(suffix);
                 updateSetStmt.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()) + " " + column.getOperator() + " " + column.getSqlStmt());
             }
-            if(column.isDeleteKey()) {
+            if(column.isDeleteKey() && !column.isDynamic()) {
                 if(firstDeleteKeyColumn.toString().equals("true")) {
                     separate = "";
                     firstDeleteKeyColumn = new StringBuilder("false");
@@ -749,7 +723,7 @@ public class CLASS {
                 //feature:2880
                 whereStmtSupportNull(deleteWhereStmt, column);                 
             }
-            if(column.isUpdateKey()) {
+            if(column.isUpdateKey() && !column.isDynamic()) {
                 if(firstUpdateKeyColumn.toString().equals("true")) {
                     separate = "";
                     firstUpdateKeyColumn = new StringBuilder("false");
@@ -1487,20 +1461,7 @@ public class CLASS {
             int count = 0;
             String ending = ",";
             
-            String dynamicEnding = ending;
-            if(dynamicColumnLocation == 0) {//dynamic is first
-                createSQL.append(" {TALEND_DYNAMIC_COLUMN} ");
-                if(columnList.size() > 0) {
-                    createSQL.append(ending);
-                }
-            }
-            
             for (Column column : columnList) {
-            
-                if(dynamicColumnLocation > 0 && count == dynamicColumnLocation) {//dynamic is in middle
-                    createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
-                }
-                
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
@@ -1518,12 +1479,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -1613,17 +1577,11 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
-            }
-            
-            if(dynamicColumnLocation > 0 && dynamicColumnLocation == columnList.size()) {//dynamic is last and not first
-                createSQL.append(dynamicEnding).append(" {TALEND_DYNAMIC_COLUMN} ");
             }
             
             if (pkList.size() > 0) {
@@ -2058,20 +2016,7 @@ public class CLASS {
             int count = 0;
             String ending = ",";
             
-            String dynamicEnding = ending;
-            if(dynamicColumnLocation == 0) {//dynamic is first
-                createSQL.append(" {TALEND_DYNAMIC_COLUMN} ");
-                if(columnList.size() > 0) {
-                    createSQL.append(ending);
-                }
-            }
-            
             for (Column column : columnList) {
-
-                if(dynamicColumnLocation > 0 && count == dynamicColumnLocation) {//dynamic is in middle
-                    createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
-                }
-                
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
@@ -2089,12 +2034,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -2194,17 +2142,11 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
-            }
-            
-            if(dynamicColumnLocation > 0 && dynamicColumnLocation == columnList.size()) {//dynamic is last and not first
-                createSQL.append(dynamicEnding).append(" {TALEND_DYNAMIC_COLUMN} ");
             }
             
             if (pkList.size() > 0) {
@@ -3400,20 +3342,7 @@ public class CLASS {
             int count = 0;
             String ending = ",";
             
-            String dynamicEnding = ending;
-            if(dynamicColumnLocation == 0) {//dynamic is first
-                createSQL.append(" {TALEND_DYNAMIC_COLUMN} ");
-                if(columnList.size() > 0) {
-                    createSQL.append(ending);
-                }
-            }
-            
             for (Column column : columnList) {
-
-                if(dynamicColumnLocation > 0 && count == dynamicColumnLocation) {//dynamic is in middle
-                    createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
-                }
-                
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
@@ -3431,12 +3360,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -3526,17 +3458,11 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
-            }
-            
-            if(dynamicColumnLocation > 0 && dynamicColumnLocation == columnList.size()) {//dynamic is last and not first
-                createSQL.append(dynamicEnding).append(" {TALEND_DYNAMIC_COLUMN} ");
             }
             
             if (pkList.size() > 0) {
@@ -3786,20 +3712,7 @@ public class CLASS {
             int count = 0;
             String ending = ",";
             
-            String dynamicEnding = ending;
-            if(dynamicColumnLocation == 0) {//dynamic is first
-                createSQL.append(" {TALEND_DYNAMIC_COLUMN} ");
-                if(columnList.size() > 0) {
-                    createSQL.append(ending);
-                }
-            }
-            
             for (Column column : columnList) {
-            
-                if(dynamicColumnLocation > 0 && count == dynamicColumnLocation) {//dynamic is in middle
-                    createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
-                }
-                
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
@@ -3817,12 +3730,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -3885,17 +3801,11 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
-            }
-            
-            if(dynamicColumnLocation > 0 && dynamicColumnLocation == columnList.size()) {//dynamic is last and not first
-                createSQL.append(dynamicEnding).append(" {TALEND_DYNAMIC_COLUMN} ");
             }
             
             if (pkList.size() > 0) {

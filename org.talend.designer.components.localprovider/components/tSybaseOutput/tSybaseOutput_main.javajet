@@ -76,8 +76,6 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
     }
     
-    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
-	
 	Manager manager = null;
 	boolean isDynamic = false;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -85,11 +83,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 		IMetadataTable metadata = metadatas.get(0);
 		isDynamic = metadata.isDynamicSchema(); 
 	}
+	
+	List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+	isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
     
     ////////////////////////////////////////////////////////////
     List<Column> colStruct =  new ArrayList();
     for(Column colStmt:stmtStructure){
-        if(!colStmt.isReplaced()&&!colStmt.isAddCol()){
+        if(!colStmt.isReplaced()&&!colStmt.isAddCol()&&!colStmt.isDynamic()){
             colStruct.add(colStmt);
         }
     }

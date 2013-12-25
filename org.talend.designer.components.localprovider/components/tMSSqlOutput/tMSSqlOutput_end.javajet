@@ -57,10 +57,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
-	isDynamic = metadata.isDynamicSchema(); 
+		isDynamic = metadata.isDynamicSchema(); 
     }
     
     List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
     
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
@@ -317,7 +318,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		<%   
 		}
 		    for(Column column : stmtStructure) {
-		        if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+		        if(!column.isReplaced() && !column.isAddCol() && column.isInsertable() && !column.isDynamic()) {
 		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());                     
 		            siOperation.generateSetStmt(typeToGenerate, column, cid,incomingConnName,ignoreDateOutofRange,dbmsId);
 		            %>
