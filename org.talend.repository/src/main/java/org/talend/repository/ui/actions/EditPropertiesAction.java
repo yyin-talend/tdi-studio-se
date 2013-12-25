@@ -149,6 +149,8 @@ public class EditPropertiesAction extends AContextualAction {
             IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
             if (designerCoreService != null) {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
+                // TDI-24863:reset the job problem list if rename the job item
+                designerCoreService.resetJobProblemList(node.getObject(), originalName);
             }
             // refresh ...
             IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -190,8 +192,8 @@ public class EditPropertiesAction extends AContextualAction {
             return;
         }
 
-		if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES
-		|| node.getObjectType() == ERepositoryObjectType.valueOf("Beans"))) {
+        if (!(node.getObjectType() == ERepositoryObjectType.ROUTINES || node.getObjectType() == ERepositoryObjectType
+                .valueOf("Beans"))) {
             return;
         }
         if (originalName.equals(node.getObject().getProperty().getLabel())) {
@@ -224,7 +226,7 @@ public class EditPropertiesAction extends AContextualAction {
             }
 
             // qli modified to fix the bug 5400 and 6185.
-			// update for fix [TESB-6784]
+            // update for fix [TESB-6784]
             IPackageFragment routinesPkg = getPackageFragment(root, node);
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);

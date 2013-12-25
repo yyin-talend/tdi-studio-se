@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.debug;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -25,10 +26,13 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchShortcutExtension;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -189,6 +193,34 @@ public class JobLaunchShortcutManager {
                 clearUnusedLaunchs();
             } catch (CoreException e) {
                 // nothing to do
+            }
+        }
+    }
+
+    /**
+     * 
+     * ldong Comment method "resetJobProblemList".
+     */
+    public static void resetJobProblemList(IRepositoryViewObject obj, String oldLabel) {
+        if (obj == null) {
+            return;
+        }
+        Property property = obj.getProperty();
+        if (property == null || !(property.getItem() instanceof ProcessItem)) {
+            return;
+        }
+        String newLabel = property.getLabel();
+        if (!newLabel.equals(oldLabel)) {
+            for (Iterator<Problem> iter = Problems.getProblemList().getProblemList().iterator(); iter.hasNext();) {
+                Problem problem = iter.next();
+                if (problem instanceof TalendProblem) {
+                    TalendProblem routineProblem = (TalendProblem) problem;
+                    if (routineProblem.getJavaUnitName() != null && (routineProblem.getJavaUnitName().equals(oldLabel))) {
+                        // TDI-24683:if rename the jobItem,need clear the problem view to avoid use the old
+                        // problem list
+                        iter.remove();
+                    }
+                }
             }
         }
     }
