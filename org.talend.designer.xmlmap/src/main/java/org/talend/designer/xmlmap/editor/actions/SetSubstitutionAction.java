@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -60,8 +61,11 @@ public class SetSubstitutionAction extends SelectionAction {
 
     private static final String HIDE_MESSAGE = "HIDE_MESSAGE";
 
-    public SetSubstitutionAction(IWorkbenchPart part) {
+    private GraphicalViewer graphicViewer;
+
+    public SetSubstitutionAction(IWorkbenchPart part, GraphicalViewer graphicViewer) {
         super(part);
+        this.graphicViewer = graphicViewer;
         setId(ID);
         setText("Set as substitution");
     }
@@ -125,6 +129,11 @@ public class SetSubstitutionAction extends SelectionAction {
                 if (!XmlMapUtil.isExpressionEditable(output) && output.isAggregate()) {
                     output.setAggregate(false);
                 }
+            }
+
+            Object object = graphicViewer.getEditPartRegistry().get(treeNode);
+            if (object instanceof TreeNodeEditPart) {
+                graphicViewer.select((TreeNodeEditPart) object);
             }
 
         }
