@@ -27,6 +27,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.MouseWheelHelper;
+import org.eclipse.swt.widgets.Event;
 import org.talend.designer.gefabstractmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.gefabstractmap.figures.layout.ZoneContentLayout;
 import org.talend.designer.gefabstractmap.figures.manager.RootModelManager;
@@ -43,7 +45,7 @@ import org.talend.designer.gefabstractmap.resource.ImageProviderMapper;
  * created by Administrator on 2013-1-14 Detailled comment
  * 
  */
-public abstract class MapperRootEditPart extends BaseEditPart {
+public abstract class MapperRootEditPart extends BaseEditPart implements MouseWheelHelper {
 
     private IFigure leftFigure;
 
@@ -64,6 +66,8 @@ public abstract class MapperRootEditPart extends BaseEditPart {
     private SearchZoneToolBar searchToolBar;
 
     private RootModelManager rootModelManager;
+
+    private static final int SCROLL_OFFSET = 30;
 
     @Override
     protected IFigure createFigure() {
@@ -157,6 +161,31 @@ public abstract class MapperRootEditPart extends BaseEditPart {
         separatorRight.setParentFigure(mainFigure);
 
         return mainFigure;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.MouseWheelHelper#handleMouseWheelScrolled(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleMouseWheelScrolled(Event event) {
+        ScrollPane scroolPane = getScroolPane(event.x, event.y);
+        if (scroolPane != null) {
+            scroolPane.scrollVerticalTo(scroolPane.getViewport().getVerticalRangeModel().getValue()
+                    + (-event.count * SCROLL_OFFSET));
+        }
+    }
+
+    private ScrollPane getScroolPane(int x, int y) {
+        if (inputScroll.containsPoint(x, y)) {
+            return inputScroll;
+        } else if (varScroll.containsPoint(x, y)) {
+            return varScroll;
+        } else if (outputScroll.containsPoint(x, y)) {
+            return outputScroll;
+        }
+        return null;
     }
 
     protected abstract ZoneContentLayout createZoneContentLayout();

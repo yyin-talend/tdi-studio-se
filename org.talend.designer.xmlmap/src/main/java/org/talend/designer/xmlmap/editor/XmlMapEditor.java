@@ -114,12 +114,12 @@ public class XmlMapEditor extends MapperGraphicalEditor {
         getActionRegistry().registerAction(renameTreeNodeAction);
         getSelectionActions().add(renameTreeNodeAction.getId());
 
-        AddChoiceAction createChoice = new AddChoiceAction(this);
+        AddChoiceAction createChoice = new AddChoiceAction(this, getGraphicalViewer());
         createChoice.setMapperManager(getMapperManager());
         getActionRegistry().registerAction(createChoice);
         getSelectionActions().add(createChoice.getId());
 
-        SetSubstitutionAction setSubs = new SetSubstitutionAction(this);
+        SetSubstitutionAction setSubs = new SetSubstitutionAction(this, getGraphicalViewer());
         setSubs.setMapperManager(getMapperManager());
         getActionRegistry().registerAction(setSubs);
         getSelectionActions().add(setSubs.getId());
