@@ -575,6 +575,8 @@ public class CLASS {
                 }
             }
             
+            dynamicColumnIsReplaced = false;
+            
             if(addCols != null && addCols.size() > 0) {
                 for(IMetadataColumn column : columnList) {
                     for(Map<String, String> additionColumn : addCols) {
