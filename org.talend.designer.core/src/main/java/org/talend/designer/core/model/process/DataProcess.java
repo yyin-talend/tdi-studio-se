@@ -2652,6 +2652,8 @@ public class DataProcess implements IGeneratingProcess {
         hashNode.setVirtualGenerateNode(false);
         hashNode.getElementParameter("LINK_WITH").setValue(Boolean.TRUE);
         hashNode.getElementParameter("LIST").setValue(hashOutputUniqueName);
+        
+        hashNode.getElementParameter("RELEASE_CACHE").setValue(Boolean.TRUE);
 
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(mergeOutputConnection.isActivate());
