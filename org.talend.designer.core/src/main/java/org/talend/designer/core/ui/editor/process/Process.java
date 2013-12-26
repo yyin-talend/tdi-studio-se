@@ -2274,13 +2274,20 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
             // at this point we should have the uniquename set correctly in the connection.
-            if (!connectionUniqueNames.contains(uniqueName) && checkValidConnectionName(uniqueName, false)) {
+            boolean isValidName = checkValidConnectionName(uniqueName, false);
+            if (!connectionUniqueNames.contains(uniqueName) && isValidName) {
                 try {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 } catch (Exception e) {
                     // nothing, since it should be added already in fact.
                 }
             } else {
+                if (!isValidName) {
+                    // fix for TDI-28468 ,some connection uniquename are not valid from some old
+                    // version like uniquename = OnSubjobOk (OnSubjobOK(TRIGGER_OUTPUT_1))
+                    // if base name is not valid ,generate a new one based on the default link name
+                    uniqueName = connec.getLineStyle().getDefaultLinkName();
+                }
                 uniqueName = source.getProcess().generateUniqueConnectionName(uniqueName);
                 if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     ChangeConnTextCommand cctc = new ChangeConnTextCommand(connec, uniqueName);
