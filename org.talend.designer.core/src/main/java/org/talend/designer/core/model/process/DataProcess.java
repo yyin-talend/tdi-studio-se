@@ -85,7 +85,6 @@ import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.core.model.process.ElementParameterParser;
 
 /**
  * This class will create the list of nodes that will be used to generate the code.
@@ -2653,12 +2652,8 @@ public class DataProcess implements IGeneratingProcess {
         hashNode.setVirtualGenerateNode(false);
         hashNode.getElementParameter("LINK_WITH").setValue(Boolean.TRUE);
         hashNode.getElementParameter("LIST").setValue(hashOutputUniqueName);
-        //===========Bug TDI-28398==============
-        INode node = mergeDataNode.getDesignSubjobStartNode();
-        boolean releaseCache = "true".equals(ElementParameterParser.getValue(node, "__RELEASE_CACHE__"));
-        if(releaseCache){
-            hashNode.getElementParameter("RELEASE_CACHE").setValue(Boolean.TRUE);
-        }
+
+        hashNode.getElementParameter("RELEASE_CACHE").setValue(Boolean.TRUE);
 
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(mergeOutputConnection.isActivate());
