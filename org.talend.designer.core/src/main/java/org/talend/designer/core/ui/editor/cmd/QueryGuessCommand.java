@@ -367,46 +367,12 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if ((isJdbc && conn != null) || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
-                || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName()))) {
-            schema = getDefaultSchema(realTableName);
-        }
-        
-        
         if (conn != null
-                && (EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLE_CUSTOM.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
-                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))) {
-            schema = getDefaultSchema(realTableName);
-        }
-        if (conn == null) {
-            Connection repositoryConnection;
-            String connName = (String) node.getPropertyValue("CONNECTION");
-            for (INode node : process.getGraphicalNodes()) {
-                if (node.getElementName().equals(connName)) {
-                    final Object propertyValue = node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                    if (propertyValue != null) {
-                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                        Item item = null;
-                        try {
-                            IRepositoryViewObject repobj = factory.getLastVersion(propertyValue.toString());
-                            if (repobj != null) {
-                                Property property = repobj.getProperty();
-                                if (property != null) {
-                                    item = property.getItem();
-                                }
-                            }
-                        } catch (PersistenceException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        if (item != null && item instanceof ConnectionItem) {
-                            repositoryConnection = ((ConnectionItem) item).getConnection();
-                            conn = repositoryConnection;
-                        }
-                    }
-                }
-            }
+                && (isJdbc || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName()) || (StringUtils.isEmpty(schema) && (EDatabaseTypeName.ORACLE_CUSTOM
+                        .equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
+                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))))) {
             schema = getDefaultSchema(realTableName);
         }
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
