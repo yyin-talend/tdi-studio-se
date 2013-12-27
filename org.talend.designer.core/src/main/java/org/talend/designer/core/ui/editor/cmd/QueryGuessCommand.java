@@ -364,10 +364,15 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if ((isJdbc && conn != null) || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
-                || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName()))) {
+        if (conn != null
+                && (isJdbc || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName()) || (StringUtils.isEmpty(schema) && (EDatabaseTypeName.ORACLE_CUSTOM
+                        .equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
+                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))))) {
             schema = getDefaultSchema(realTableName);
         }
+
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
         // Added yyin TDQ-5616: if there are where clause, append it to the query
