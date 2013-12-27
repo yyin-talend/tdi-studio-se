@@ -42,6 +42,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -251,7 +252,40 @@ public class QueryTypeController extends AbstractRepositoryController {
         } // Ends
 
         Connection repositoryConnection = null;
-        if (elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+        boolean useExisting = false;
+        IElementParameter elementParameter = elem.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.name());
+        if (elem instanceof Node) {
+            IProcess process = ((Node) elem).getProcess();
+            if (elementParameter != null && Boolean.valueOf(String.valueOf(elementParameter.getValue()))) {
+                String connName = (String) elem.getPropertyValue("CONNECTION");
+                for (INode node : process.getGraphicalNodes()) {
+                    if (node.getElementName().equals(connName)) {
+                        useExisting = true;
+                        final Object propertyValue = node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                        if (propertyValue != null) {
+                            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                            Item item = null;
+                            try {
+                                IRepositoryViewObject repobj = factory.getLastVersion(propertyValue.toString());
+                                if (repobj != null) {
+                                    Property property = repobj.getProperty();
+                                    if (property != null) {
+                                        item = property.getItem();
+                                    }
+                                }
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
+                            if (item != null && item instanceof ConnectionItem) {
+                                repositoryConnection = ((ConnectionItem) item).getConnection();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if (!useExisting && elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             if (propertyValue != null) {
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();

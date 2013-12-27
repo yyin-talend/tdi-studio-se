@@ -39,18 +39,15 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
@@ -371,45 +368,6 @@ public class QueryGuessCommand extends Command {
                 || (StringUtils.isEmpty(schema) && dbType.equals(EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName()))) {
             schema = getDefaultSchema(realTableName);
         }
-
-        if (conn != null
-        // && StringUtils.isEmpty(schema)
-                && (EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLE_CUSTOM.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
-                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))) {
-            schema = getDefaultSchema(realTableName);
-        }
-        if (conn == null) {
-            Connection repositoryConnection;
-            String connName = (String) node.getPropertyValue("CONNECTION");
-            for (INode node : process.getGraphicalNodes()) {
-                if (node.getElementName().equals(connName)) {
-                    final Object propertyValue = node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                    if (propertyValue != null) {
-                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                        Item item = null;
-                        try {
-                            IRepositoryViewObject repobj = factory.getLastVersion(propertyValue.toString());
-                            if (repobj != null) {
-                                Property property = repobj.getProperty();
-                                if (property != null) {
-                                    item = property.getItem();
-                                }
-                            }
-                        } catch (PersistenceException e) {
-                            ExceptionHandler.process(e);
-                        }
-                        if (item != null && item instanceof ConnectionItem) {
-                            repositoryConnection = ((ConnectionItem) item).getConnection();
-                            conn = repositoryConnection;
-                        }
-                    }
-                }
-            }
-            schema = getDefaultSchema(realTableName);
-        }
-
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
         // Added yyin TDQ-5616: if there are where clause, append it to the query
