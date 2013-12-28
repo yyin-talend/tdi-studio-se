@@ -655,8 +655,11 @@ private class TalendException extends java.lang.Exception {
 				while(subjob_start_node.getDesignSubjobStartNode().isVirtualGenerateNode() && hasBeenChanged) {
 					hasBeenChanged = false;
 					if(subjob_start_node.getDesignSubjobStartNode().getVirtualLinkTo()==null){
-						subjob_start_node = subjob_start_node.getDesignSubjobStartNode().getIncomingConnections().get(0).getSource();
-						hasBeenChanged = true;
+						//if EConnectionType of virtual component(INPUT-->SUBJOB_OK-->OUTPUT) is SUBJOB_OK,the size of OUTPUT node IncomingConnections is zero.
+						if(subjob_start_node.getDesignSubjobStartNode().getIncomingConnections().size()>0){
+							subjob_start_node = subjob_start_node.getDesignSubjobStartNode().getIncomingConnections().get(0).getSource();
+							hasBeenChanged = true;
+						}
 					}
 				}
 				boolean isSubjobHasOnSubJobError = false;
