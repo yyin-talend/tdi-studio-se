@@ -56,7 +56,7 @@ imports="
         				/*
     					 * can not obtain a connection to network server.
     					 */ 	 
-        				System.exit(1);	
+        				throw new java.lang.Exception("Can not obtain a connection to network server");
         			}
         			//derby network server started.
 <%
