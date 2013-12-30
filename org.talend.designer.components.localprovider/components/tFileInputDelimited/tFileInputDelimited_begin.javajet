@@ -29,7 +29,10 @@
 	String vcid = "";
 	IProcess process = node.getProcess();
 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-	
+	Map<String,String> varsMap=new java.util.HashMap<String,String>();
+	if(isLog4jEnabled){
+		varsMap.put("log4jSb_"+cid,"StringBuffer");
+	}
 	/* Build the Log4J message for the different parameters */
 	
 	if(isLog4jEnabled) {
@@ -424,6 +427,7 @@
 				RowUtil rowUtil = new RowUtil(); 
 				if (conns!=null) {
 				    if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
+				    	rowUtil.genVarsParmsStr(varsMap);
 						if(hasDynamic){
 							rowUtil.prepareValueToConnWithD(node, metadata, "org.talend.fileprocess.FileInputDelimited", "fid_"+cid, firstConnName, "dynamic_"+cid, schemaOptNum);
 							%>
@@ -934,6 +938,7 @@
 				RowUtil rowUtil = new RowUtil(); 
 				if (conns!=null) {
 				    if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
+				    	rowUtil.genVarsParmsStr(varsMap);
 						if(hasDynamic){
 							rowUtil.prepareValueToConnWithD(node, metadata, "String[]", "row"+cid, firstConnName, "dynamic_"+cid, schemaOptNum);
 							%>
