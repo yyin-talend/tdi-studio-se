@@ -748,7 +748,7 @@ class JavaDBManager extends Manager {
         javaCode.append("}\r\n");
         javaCode.append("}\r\n");
         javaCode.append("if(!isServerUp_" + cid + ") {\r\n");
-        javaCode.append("System.exit(1);\r\n");
+        javaCode.append("throw new java.lang.Exception(\"Can not obtain a connection to network server\");\r\n");
         javaCode.append("}\r\n");
         return javaCode.toString();
     }
