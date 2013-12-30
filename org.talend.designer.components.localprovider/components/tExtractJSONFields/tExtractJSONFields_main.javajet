@@ -238,6 +238,7 @@ if(outConns!=null){
         for (int i=0;i<mapping.size();i++) {  //for S_0
             String query = mapping.get(i).get("QUERY");
             String nodeCheck = mapping.get(i).get("NODECHECK");
+            boolean isArrayCheck = "true".equals(mapping.get(i).get("ISARRAY"));
             if(schemaOptNum < mapping.size()){
                 if(query!=null && query.trim().length()>0){  // if S_0_0
                     if(extractColNo%schemaOptNum==0){
@@ -259,30 +260,57 @@ if(outConns!=null){
 %>
                 org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(<%=query%>);
                 xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
-                Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
-                if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
-                    node_<%=cid%> = temp_<%=cid%>;
-                    str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
-                }else{
-                    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-<%
-                    if(("true").equals(nodeCheck)){
-%>
-						if(node_<%=cid %>==null){
-	 						str_<%=cid %> = null;
+                <%
+                if(!isArrayCheck){
+                %>
+	                Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+	                if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+	                    node_<%=cid%> = temp_<%=cid%>;
+	                    str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
+	                }else{
+                    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+						<%
+	                    if(("true").equals(nodeCheck)){
+						%>
+							if(node_<%=cid %>==null){
+								str_<%=cid%> = null;
+							}else{
+								str_<%=cid %> = originalJSONString_<%=cid %>.getOriginalJSONString(node_<%=cid %>.asXML(),cjs_<%=cid %>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid %>);
+							}
+							isGetWholeJson_<%=cid%> = false;
+						<%
+	                    }else{
+						%>
+	                        str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+						<%
+	                    }
+						%>
+	                }
+				<%
+				}else{
+                	if(("true").equals(nodeCheck)){
+					%>
+						String xmlStrTemp<%=i%>_<%=cid%> = "";
+						for(Object tempNode_<%=cid%> : xTmp<%=i%>_<%=cid%>.selectNodes(temp_<%=cid%>)){
+							node_<%=cid%> = (org.dom4j.Node)tempNode_<%=cid%>;
+							xmlStrTemp<%=i%>_<%=cid%> += node_<%=cid%>.asXML();
+						}
+						if("".equals(xmlStrTemp<%=i%>_<%=cid%>)){
+							str_<%=cid%> = null;
 						}else{
-							str_<%=cid %> = originalJSONString_<%=cid %>.getOriginalJSONString(node_<%=cid %>.asXML(),cjs_<%=cid %>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid %>);
+							str_<%=cid%> = originalJSONString_<%=cid%>.getOriginalJSONString(xmlStrTemp<%=i%>_<%=cid%>,cjs_<%=cid%>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid%>, true);
 						}
 						isGetWholeJson_<%=cid%> = false;
-<%
-                    }else{
-%>
-                        str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
-<%
-                    }
-%>
+                	<%
+                	}else{
+					%>
+						java.util.List<String> xmlListTemp<%=i%>_<%=cid%> = new java.util.ArrayList<String>();
+						for(Object tempNode_<%=cid%> : xTmp<%=i%>_<%=cid%>.selectNodes(temp_<%=cid%>)){
+							xmlListTemp<%=i%>_<%=cid%>.add(((org.dom4j.Node)tempNode_<%=cid%>).getStringValue());
+						}
+					<%
+                	}
                 }
-<%
                 for(IMetadataColumn column:outConn.getMetadataTable().getListColumns()) { // for S_0_0_0
                     if (mapping.get(i).get("SCHEMA_COLUMN")!=null) { // if S_0_0_0_0
                         if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) { //if S_0_0_0_0_0
@@ -300,67 +328,87 @@ if(outConns!=null){
                             }
                             
                             if(("true").equals(nodeCheck)){
-%>
-                                    <%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
-<%
+							%>
+                                <%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+								<%
                                 continue;
                             }
-                            if(javaType == JavaTypesManager.STRING){
-								if(column.isNullable()){
-%>
-                                    if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
-                                        <%=firstConnName %>.<%=column.getLabel() %> = null;
-                                    }else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
-                                        <%=firstConnName %>.<%=column.getLabel() %> = "";
-                                    }else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
-                                        <%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
-                                    }else{
-<%
-								}else{ // column.isNullable()
-%>
-									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
-										<%=firstConnName %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
-										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
-									}else{
-<%
-								}
-                            }else{ // other type
-								if(column.isNullable()){
-%>  
-                                	if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
-                                    	<%=firstConnName %>.<%=column.getLabel() %> = null;
-                                	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
-                                    	<%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
-                                	}else{
-<%
-								}else{ // column.isNullable()
-%>
+                            if(!isArrayCheck){
+	                            if(javaType == JavaTypesManager.STRING){
+									if(column.isNullable()){
+									%>
+	                                    if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+	                                        <%=firstConnName %>.<%=column.getLabel() %> = null;
+	                                    }else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+	                                        <%=firstConnName %>.<%=column.getLabel() %> = "";
+	                                    }else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+	                                        <%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
+	                                    }else{
+									<%
+									}else{ // column.isNullable()
+									%>
+										if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %> ="";
+										}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+										}else{
+									<%
+									}
+	                            }else{ // other type
+									if(column.isNullable()){
+									%>  
+	                                	if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+	                                    	<%=firstConnName %>.<%=column.getLabel() %> = null;
+	                                	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+	                                    	<%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
+	                                	}else{
+									<%
+									}else{ // column.isNullable()
+									%>
 										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
 											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
 										}else{
-<%
-								}
-							}
-							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>
-								<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
-<%
-							} else {
-								if (javaType == JavaTypesManager.DATE) {
-%>
-									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
-<%
-								} else {
-%>
-									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
-<%
-								}
-							}
-%>
+									<%
 									}
-<%
-                            break;
+								}
+								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								%>
+									<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
+								<%
+								} else {
+									if (javaType == JavaTypesManager.DATE) {
+									%>
+										<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
+									<%
+									} else {
+									%>
+										<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
+									<%
+									}
+								}
+								%>
+										}
+							<%
+							}else{
+							%>
+								if(xmlListTemp<%=i%>_<%=cid%>.isEmpty()){
+									<%=firstConnName%>.<%=column.getLabel() %> = null;									
+								}else{
+									<%
+									if(javaType == JavaTypesManager.STRING){
+									%>
+										<%=firstConnName%>.<%=column.getLabel() %> = xmlListTemp<%=i%>_<%=cid%>.toString();
+									<%
+									}else if(javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT){
+									%>
+										<%=firstConnName%>.<%=column.getLabel() %> = xmlListTemp<%=i%>_<%=cid%>;
+									<%
+									}
+									%>
+								}
+							<%
+							}
+	                        break;
                         } // if S_0_0_0_0_1
                     } // if S_0_0_0_1
                 } // for S_0_0_1
