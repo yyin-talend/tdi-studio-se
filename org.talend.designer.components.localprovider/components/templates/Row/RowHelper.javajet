@@ -19,7 +19,8 @@ imports="
 		String V2CTargetConnName;
 		String V2CSourceValueClass;
 		String V2CSourceValueName;
-		
+		StringBuffer parmsStr;
+		StringBuffer varsStr;
 		public void prepareOptimizeParam(IMetadataTable metadata,int schemaOptNum){
 			this.schemaOptNum=schemaOptNum;
 			this.columnListSize = metadata.getListColumns().size();
@@ -35,14 +36,24 @@ imports="
 			this.useV2C = true;
 			prepareOptimizeParam(metadata, schemaOptNum);
 		}
-		
+		public void genVarsParmsStr(Map<String,String> varsMap){
+			parmsStr=new StringBuffer();
+			varsStr=new StringBuffer();
+			if(varsMap!=null && varsMap.size()>0){
+				java.util.Set<String> vars=varsMap.keySet();
+				for(String varName:vars){
+					parmsStr.append(","+varsMap.get(varName)+" "+varName);
+					varsStr.append(","+varName);
+				}
+			}
+		}
 		public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
 		}
 		
 		public void callValueToConn(String sourceValueName, String targetConnName){
 			if(isOptimizeCode){
 		%>
-			rowHelper_<%=cid%>.valueToConn(<%=sourceValueName%>, <%=targetConnName%>);
+			rowHelper_<%=cid%>.valueToConn(<%=sourceValueName%>, <%=targetConnName%> <%=(varsStr!=null?varsStr.toString():"")%>);
 		<%
 			}else{
 				codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName, 0, columnListSize);
@@ -73,7 +84,7 @@ imports="
 		public void callValueToConnWithD(String sourceValueName, String targetConnName, String dynamicName){
 			if(isOptimizeCode){
 		%>
-			rowHelper_<%=cid%>.valueToConnWithD(<%=sourceValueName%>, <%=targetConnName%>, <%=dynamicName%>);
+			rowHelper_<%=cid%>.valueToConnWithD(<%=sourceValueName%>, <%=targetConnName%>, <%=dynamicName%> <%=(varsStr!=null?varsStr.toString():"")%>);
 		<%
 			}else{
 				codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName, 0, columnListSize);
@@ -123,14 +134,14 @@ imports="
 					}
 					if(useV2C){
 					%>
-					public void valueToConn_<%=i%>(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws java.lang.Exception{
+					public void valueToConn_<%=i%>(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%> <%=(parmsStr!=null?parmsStr.toString():"")%>) throws java.lang.Exception{
 						<%codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName, start, end);%>
 					}
 					<%	
 					}
 					if(useV2CWithD){
 					%>
-					public void valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws java.lang.Exception{
+					public void valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%> <%=(parmsStr!=null?parmsStr.toString():"")%>) throws java.lang.Exception{
 						<%this.isBehindDynamic = codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName, start, end);%>
 					}
 					<%		
@@ -145,23 +156,23 @@ imports="
 				}
 				if(useV2C){//Call all split methods in one method
 				%>
-					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws java.lang.Exception{
+					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%> <%=(parmsStr!=null?parmsStr.toString():"")%>) throws java.lang.Exception{
 				<%	
 				}
 				if(useV2CWithD){
 				%>
-					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws java.lang.Exception{
+					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%> <%=(parmsStr!=null?parmsStr.toString():"")%>) throws java.lang.Exception{
 				<%
 				}
 				for(int i=0;i<methodNum;i++){
 					if(useV2C){
 					%>
-						valueToConn_<%=i%>(<%=V2CSourceValueName%>,<%=V2CTargetConnName%>);
+						valueToConn_<%=i%>(<%=V2CSourceValueName%>,<%=V2CTargetConnName%> <%=(varsStr!=null?varsStr.toString():"")%>);
 					<%
 					}
 					if(useV2CWithD){
 					%>
-						valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>,<%=V2CWithDDynamicName%>);
+						valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>,<%=V2CWithDDynamicName%> <%=(varsStr!=null?varsStr.toString():"")%>);
 					<%
 					}
 				}
