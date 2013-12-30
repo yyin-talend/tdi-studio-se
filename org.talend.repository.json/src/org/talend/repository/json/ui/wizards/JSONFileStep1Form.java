@@ -598,24 +598,40 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
      */
     @Override
     protected boolean checkFieldsValue() {
+        String jsonFilePathText = fileFieldJSON.getText();
         // The fields
-        if (fileFieldJSON.getText() == "Filepath must be specified") {
+        if (jsonFilePathText == "Filepath must be specified") {
             updateStatus(IStatus.ERROR, ""); //$NON-NLS-1$
             return false;
         }
         if (!valid) {
-            String JSONFilePath = fileFieldJSON.getText();
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                JSONFilePath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
-                        fileFieldJSON.getText()));
+                jsonFilePathText = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                        jsonFilePathText));
             }
             updateStatus(IStatus.ERROR, "File is not found or the json format is incorrect.");
 
             return false;
         }
+
+        // Valid File
+        if (jsonFilePathText != null && !jsonFilePathText.equals("")) {
+            File file = new File(jsonFilePathText);
+            if (!file.exists() || !isJSONFile(jsonFilePathText)) {
+                updateStatus(IStatus.ERROR, "JSON File Path is incorrect or incomplete, it must be changed.\n"); //$NON-NLS-1$
+                return false;
+            }
+        }
         updateStatus(IStatus.OK, null);
         return true;
+    }
+
+    private boolean isJSONFile(String value) {
+        if (value != null) {
+            return value.toLowerCase().endsWith(".json");
+        }
+        return false;
     }
 
     /*

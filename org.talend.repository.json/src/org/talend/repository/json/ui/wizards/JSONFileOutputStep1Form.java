@@ -326,6 +326,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
                     updateConnection(text);
                 }
+
             }
 
             @Override
@@ -334,17 +335,10 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             }
         });
 
-        jsonFilePath.addFocusListener(new FocusListener() {
+        jsonFilePath.addModifyListener(new ModifyListener() {
 
             @Override
-            public void focusGained(FocusEvent e) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                // TODO Auto-generated method stub
+            public void modifyText(ModifyEvent event) {
                 String text = jsonFilePath.getText();
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
@@ -382,8 +376,8 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                             outStream.close();
                         } catch (FileNotFoundException e1) {
                             ExceptionHandler.process(e1);
-                        } catch (IOException e2) {
-                            ExceptionHandler.process(e2);
+                        } catch (IOException e) {
+                            ExceptionHandler.process(e);
                         }
                     }
 
@@ -419,13 +413,13 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
                     fileContentText.setText(new String(fileContent));
 
-                } catch (Exception e1) {
+                } catch (Exception e) {
                     String msgError = "File" + " \"" + jsonFilePath.getText().replace("\\\\", "\\") + "\"\n";
-                    if (e1 instanceof FileNotFoundException) {
+                    if (e instanceof FileNotFoundException) {
                         msgError = msgError + "is not found";
-                    } else if (e1 instanceof EOFException) {
+                    } else if (e instanceof EOFException) {
                         msgError = msgError + "have an incorrect character EOF";
-                    } else if (e1 instanceof IOException) {
+                    } else if (e instanceof IOException) {
                         msgError = msgError + "is locked by another soft";
                     } else {
                         msgError = msgError + "doesn't exist";
@@ -459,22 +453,12 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 // valid = treePopulator.populateTree(text, treeNode);
                 // }
                 if (file.exists()) {
-                    List<ATreeNode> treeNodes = new ArrayList<ATreeNode>();
                     valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
-                    checkFieldsValue();
-                    if (!valid) {
-                        return;
-                    }
-                    if (treeNodes.size() > 0) {
-                        treeNode = treeNodes.get(0);
-                    }
                     updateConnection(text);
                 }
-                valid = treePopulator.populateTree(JSONUtil.changeJsonToXml(text), treeNode);
                 checkFieldsValue();
                 isModifing = true;
             }
-
         });
 
         encodingCombo.addModifyListener(new ModifyListener() {
@@ -577,32 +561,40 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
     @Override
     protected boolean checkFieldsValue() {
+        String jsonFilePathText = jsonFilePath.getText();
+        String outputFilePathText = outputFilePath.getText();
         boolean editable = jsonFilePath.getEditable();
         StringBuffer msgError = new StringBuffer();
         if (creation && !noFileButton.getSelection() && !useFileButton.getSelection()) {
             msgError.append("Should select one model\n");
         }
-        if (creation && editable && jsonFilePath.getText() == "") {
+        if (creation && editable && jsonFilePathText == "") {
             msgError.append("JSON filepath must be specified\n");
         }
         if (!valid && creation) {
-            String JSONXsdText = jsonFilePath.getText();
-            if (JSONXsdText != null && !"".equals(JSONXsdText)) {
+            if (jsonFilePathText != null && !"".equals(jsonFilePathText)) {
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper
                             .getContextTypeForContextMode(connectionItem.getConnection());
-                    JSONXsdText = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
-                            jsonFilePath.getText()));
+                    jsonFilePathText = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                            jsonFilePathText));
                 }
-                msgError.append(JSONXsdText + " is not found or the JSON format is incorrect.\n");
+                msgError.append(jsonFilePathText + " is not found or the JSON format is incorrect.\n");
             }
         }
-        String text = outputFilePath.getText();
         if (isContextMode()) {
             ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
-            text = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
+            outputFilePathText = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                    outputFilePathText));
         }
-        if (text != null && !text.equals("") && !isJSONFile(text)) {
+        // Valid File
+        if (jsonFilePathText != null && !jsonFilePathText.equals("")) {
+            File file = new File(jsonFilePathText);
+            if (!file.exists() || !isJSONFile(jsonFilePathText)) {
+                msgError.append("JSON File Path is incorrect or incomplete, it must be changed.\n");
+            }
+        }
+        if (outputFilePathText != null && !outputFilePathText.equals("") && !isJSONFile(outputFilePathText)) {
             msgError.append("Output file is not a JSON file\n");
         }
         if ("".equals(msgError.toString())) {
