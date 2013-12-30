@@ -669,6 +669,13 @@ private class TalendException extends java.lang.Exception {
 						}
 					}
 				}
+				// when use parallelize will add virtual components(tAsyncIn and tAsyncOut) but in graphical these is visable=false
+				if ("true".equals(ElementParameterParser.getValue(node, "__PARALLELIZE__"))) {
+					if(subjob_start_node.getDesignSubjobStartNode().getUniqueName().startsWith("tAsyncIn_")){
+						subjob_start_node = NodeUtil.getNodeByUniqueName(subjob_start_node.getProcess(),subjob_start_node.getDesignSubjobStartNode().getUniqueName().replace("tAsyncIn_","tAsyncOut_"));
+					}
+				}
+				//end
 				boolean isSubjobHasOnSubJobError = false;
 				if (!isExistOnCompErrorLink) {
 					INode subJobStartNode =	subjob_start_node.getDesignSubjobStartNode();
@@ -694,13 +701,6 @@ private class TalendException extends java.lang.Exception {
 				<%
 					}
 				}
-				// when use parallelize will add virtual components(tAsyncIn and tAsyncOut) but in graphical these is visable=false
-				if ("true".equals(ElementParameterParser.getValue(node, "__PARALLELIZE__"))) {
-					if(subjob_start_node.getDesignSubjobStartNode().getUniqueName().startsWith("tAsyncIn_")){
-						subjob_start_node = NodeUtil.getNodeByUniqueName(subjob_start_node.getProcess(),subjob_start_node.getDesignSubjobStartNode().getUniqueName().replace("tAsyncIn_","tAsyncOut_"));
-					}
-				}
-				//end
 
 				%>
 					<%=subjob_start_node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
