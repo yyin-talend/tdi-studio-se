@@ -13,6 +13,7 @@ imports="
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.utils.NodeUtil
 "
 skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
@@ -534,6 +535,15 @@ if (inConn != null) {
                 for(XMLNode group:groupList){
                 	groupbyNodeList.add(getGroupByNodeList(group));
                 }
+                IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+				if(nextMergeConn == null || nextMergeConn.getInputId()==1){
+%>
+	if(txf_<%=cid%>.getLastException()!=null) {
+		currentComponent = txf_<%=cid%>.getCurrentComponent();
+		throw txf_<%=cid%>.getLastException();
+	}
+<%
+				}
 %>
 	nb_line_<%=cid%>++;
 	valueMap_<%=cid%>.clear();
