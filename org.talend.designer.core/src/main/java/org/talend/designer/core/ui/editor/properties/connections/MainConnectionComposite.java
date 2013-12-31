@@ -14,11 +14,14 @@ package org.talend.designer.core.ui.editor.properties.connections;
 
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.EComponentCategory;
@@ -72,18 +75,6 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                 }
             }
             if (((Connection) elem).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                FormData data = new FormData();
-                data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
-                data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
-                data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
-                data.width = 300; // to correct bug of table growing indefinitly
-                /*
-                 * On windows it will adjust automatically the size depends the number of columns. Seems this system
-                 * doesn't work on linux
-                 */
-                int tableHeight = 160;
-                data.height = tableHeight; // fix bug 3893.
-
                 IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
                 if (outputMetaTable != null && this.section == EComponentCategory.BASIC) {
                     // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
@@ -99,6 +90,28 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                     metadataTableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
                     CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
                     Composite compositeEditorView = metadataTableEditorView.getMainComposite();
+                    Table table = metadataTableEditorView.getTable();
+
+                    FormData data = new FormData();
+                    data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
+                    data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
+                    data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
+                    data.width = 300; // to correct bug of table growing indefinitly
+                    /*
+                     * On windows it will adjust automatically the size depends the number of columns. Seems this system
+                     * doesn't work on linux
+                     */
+                    int tableHeight = 160;// fix bug 3893.
+                    int maxTableHeight = table.getHeaderHeight() + 22 * table.getItemHeight();
+                    int rows = outputMetaTable.getListColumns().size();
+                    int currentHeightEditor = table.getHeaderHeight() + rows * table.getItemHeight() + 50;
+                    if (currentHeightEditor > tableHeight) {
+                        tableHeight = currentHeightEditor;
+                    }
+                    if (currentHeightEditor > maxTableHeight) {
+                        tableHeight = maxTableHeight;
+                    }
+                    data.height = tableHeight; // fix bug 3893.
                     compositeEditorView.setLayoutData(data);
                     // compositeEditorView.getParent().layout();
 
