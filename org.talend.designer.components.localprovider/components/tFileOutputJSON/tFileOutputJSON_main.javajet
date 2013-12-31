@@ -21,34 +21,37 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 
 org.json.simple.JSONObject jsonRow<%=cid%> = new org.json.simple.JSONObject();
 <%
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	for (IConnection conn : conns) {
-			if ((metadatas!=null)&&(metadatas.size()>0)) {
-					IMetadataTable metadata = metadatas.get(0);
-					if (metadata!=null) {
-								List<IMetadataColumn> columns = metadata.getListColumns();
-								int sizeColumns = columns.size();
-								for (int i = 0; i < sizeColumns; i++) {
-							
-									IMetadataColumn column = columns.get(i);
-	
-									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-									if (javaType == JavaTypesManager.DATE && column.getPattern() != null && column.getPattern().trim().length() != 0) {
-										String pattern = column.getPattern();
-									%>
-									jsonRow<%=cid%>.put("<%=column.getLabel()%>",FormatterUtils.format_Date(<%=conn.getName()%>.<%=column.getLabel()%>,<%=pattern%>));
-									<%
-									}else{
-									%>
-									jsonRow<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName()%>.<%=column.getLabel()%>);
-								
-								<%
-									}
-								}
-							}
+List< ? extends IConnection> conns = node.getIncomingConnections();
+for (IConnection conn : conns) {
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+			int sizeColumns = columns.size();
+			for (int i = 0; i < sizeColumns; i++) {
+						
+				IMetadataColumn column = columns.get(i);
+
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				if (javaType == JavaTypesManager.DATE && column.getPattern() != null && column.getPattern().trim().length() != 0) {
+					String pattern = column.getPattern();
+					%>
+					jsonRow<%=cid%>.put("<%=column.getLabel()%>",FormatterUtils.format_Date(<%=conn.getName()%>.<%=column.getLabel()%>, <%=pattern%>));
+				<%
+				}else if(javaType == JavaTypesManager.CHARACTER){
+				%>
+					jsonRow<%=cid%>.put("<%=column.getLabel()%>", String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));
+				<%
+				}else{
+				%>
+					jsonRow<%=cid%>.put("<%=column.getLabel()%>", <%=conn.getName()%>.<%=column.getLabel()%>);
+				<%
+				}
+			}
 		}
-		}
-		%>
+	}
+}
+%>
 
 jsonSet<%=cid%>.add(jsonRow<%=cid%>);
 nb_line_<%=cid %>++;
