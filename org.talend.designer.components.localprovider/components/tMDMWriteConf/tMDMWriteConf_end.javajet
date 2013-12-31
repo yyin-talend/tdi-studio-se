@@ -45,12 +45,16 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 		currentComponent = txf_<%=cid%>.getCurrentComponent();
 		throw txf_<%=cid%>.getLastException();
 	}
+	globalMap.remove("queue_<%=virtualSourceCid%>");
+<%
+}else{
+%>
+	globalMap.remove("queue_<%=node.getUniqueName()%>"); 
 <%
 }
 %>
 globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
 globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
-globalMap.remove("queue_<%=cid%>"); 
 <%
 if(!usePartialUpdate){
 	if(isMassInsert){
@@ -84,5 +88,5 @@ if(!usePartialUpdate){
  		stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
  	<%}%>
  	
- 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);             
+ 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);  
             
