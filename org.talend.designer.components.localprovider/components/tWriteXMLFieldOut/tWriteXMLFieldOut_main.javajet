@@ -71,7 +71,7 @@ class XMLTool{
         if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
         	if(javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-    		FormatterUtils.format_Number(String.valueOf(<%=connName%>.<%=column.getLabel()%>.doubleValue()), <%= thousandsSeparator%>,<%=decimalSeparator %>)					
+    		FormatterUtils.format_Number(<%=connName%>.<%=column.getLabel()%>.toPlainString(), <%= thousandsSeparator%>,<%=decimalSeparator %>)					
 <%
     		} else {
 %>
@@ -94,7 +94,7 @@ class XMLTool{
            }
         }else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-			String.valueOf(<%=connName%>.<%=column.getLabel()%>.doubleValue())
+			<%=connName%>.<%=column.getLabel()%>.toPlainString()
 <%
         }else{
 %>
