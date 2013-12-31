@@ -818,6 +818,12 @@ class ImportItemWizardPage extends WizardPage {
                         for (String error : itemRecord.getErrors()) {
                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
                         }
+                    } else if (itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
+                            && !itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
+                        for (String error : itemRecord.getErrors()) {
+                            errors.add("'" + itemRecord.getItemName() + "' " + Messages.getString("ImportItemWizardPage.ErrorsMessage", reObject.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
                     } else {
                         // TDI-21399,TDI-21401
                         // if item is locked, cannot overwrite
