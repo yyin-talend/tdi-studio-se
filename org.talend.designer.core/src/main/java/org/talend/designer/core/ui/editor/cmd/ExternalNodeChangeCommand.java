@@ -267,18 +267,20 @@ public class ExternalNodeChangeCommand extends Command {
 
     @Override
     public void execute() {
+        boolean hasChanged = false;
         propagateInput();
         // bug 0020749
         if (!oldMetaDataList.isEmpty() && !newMetaDataList.isEmpty()
                 && !oldMetaDataList.get(0).sameMetadataAs(newMetaDataList.get(0))) {
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            hasChanged = true;
         }
         metadataOutputChanges.clear();
         List<IConnection> initTraceList = new ArrayList<IConnection>();
         for (IConnection connection : node.getOutgoingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
-                if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
+                if (hasChanged || !connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
                     IMetadataTable table = connection.getMetadataTable();
                     if (table == null || table.getListColumns().isEmpty()) {
                         initTraceList.add(connection);
@@ -298,6 +300,9 @@ public class ExternalNodeChangeCommand extends Command {
                         if (connection != null) {
                             IMetadataTable connTable = connection.getMetadataTable();
                             IMetadataTable dataTable = dataComponent.getTable();
+                            if (hasChanged && !newMetaDataList.isEmpty()) {
+                                dataTable = newMetaDataList.get(0);
+                            }
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
                                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                                         && param.getContext().equals(
