@@ -40,6 +40,10 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
 
     private Point lastCursorPosition;
 
+    private long lastDragTime;
+
+    private boolean scrollUp = false;
+
     public DefaultDropTargetListener(AbstractMapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
@@ -53,12 +57,14 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         return mapperManager.getUiManager();
     }
 
+    @Override
     public void dragEnter(DropTargetEvent event) {
-        updatePopupPosition(event);
+        // updatePopupPosition(event);
         setPopupVisible(true);
         event.detail = mapperManager.getUiManager().getCurrentDragDetail();
     }
 
+    @Override
     public void dragLeave(DropTargetEvent event) {
         dragFinished();
     }
@@ -76,6 +82,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         draggingInfosPopup.setVisible(visible);
     }
 
+    @Override
     public void dragOperationChanged(DropTargetEvent event) {
         updatePopupPosition(event);
         detectPressedKeys(event);
@@ -124,6 +131,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
 
     }
 
+    @Override
     public void dragOver(DropTargetEvent event) {
         // System.out.println(((DropTarget)event.widget).getControl());
         event.detail = DND.DROP_NONE;
@@ -133,20 +141,17 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
     }
 
     private void updatePopupPosition(DropTargetEvent event) {
-
         Point cursorPosition = new Point(event.x, event.y);
         if (!cursorPosition.equals(lastCursorPosition)) {
             AbstractUIManager uiManager = mapperManager.getUiManager();
             DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
             draggingInfosPopup.setCursorPosition(event.x, event.y);
         }
+        // System.out.println("updatePopupPosition:" + lastCursorPosition + "-->" + cursorPosition);
         lastCursorPosition = cursorPosition;
     }
 
     private void autoScroll(DropTargetEvent event) {
-        if (lastCursorPosition == null || lastCursorPosition.y == event.y) {
-            return;
-        }
         Composite currentComposite = null;
         Object source = event.getSource();
         if (source instanceof DropTarget) {
@@ -163,22 +168,51 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         if (parentScrolledComposite == null) {
             return;
         }
+
         ScrollBar vBar = parentScrolledComposite.getVerticalBar();
-        int increment = event.y - lastCursorPosition.y;
-        if (increment > 0) {
-            increment = increment + 3;
-        } else {
-            increment = increment - 3;
-        }
+
         Control content = parentScrolledComposite.getContent();
         if (content != null) {
             Point location = content.getLocation();
             int vSelection = vBar.getSelection();
+            int increment = 0;
+            int thumb = vBar.getThumb();
+            if (lastCursorPosition == null || lastCursorPosition.y == event.y) {
+                long currentTimeMillis = System.currentTimeMillis();
+                long time = currentTimeMillis - lastDragTime;
+
+                if (lastDragTime != 0 && time > 100) {
+                    Point pointToScrollComposite = parentScrolledComposite.toControl(event.x, event.y);
+
+                    // scroll up
+                    if (pointToScrollComposite.y < 40) {
+                        increment = -20;
+                    }
+                    // scroll down
+                    else if (thumb - pointToScrollComposite.y < 40) {
+                        increment = 20;
+                    } else {
+                        return;
+                    }
+
+                } else {
+                    return;
+                }
+            } else {
+                increment = event.y - lastCursorPosition.y;
+                if (increment > 0) {
+                    increment = increment + 3;
+                } else {
+                    increment = increment - 3;
+                }
+            }
+
             if (vSelection >= 0 && vSelection + increment > 0 && vSelection + increment < vBar.getMaximum()) {
                 vBar.setSelection(vSelection + increment);
             }
-            content.setLocation(location.x, -vSelection);
+            content.setLocation(location.x, -(vSelection + increment));
             mapperManager.getUiManager().refreshBackground(true, false);
+            lastDragTime = System.currentTimeMillis();
         }
 
         // Event e = new Event();
@@ -205,6 +239,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         return getParentScrolledComposite(composite.getParent());
     }
 
+    @Override
     public void drop(DropTargetEvent event) {
         dragFinished();
     }
@@ -218,6 +253,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         return getClass() != DefaultDropTargetListener.class;
     }
 
+    @Override
     public void dropAccept(DropTargetEvent event) {
 
     }
@@ -227,6 +263,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
      * 
      * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
      */
+    @Override
     public Transfer getTransfer() {
         return TableEntriesTransfer.getInstance();
     }
@@ -236,6 +273,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
      * 
      * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
      */
+    @Override
     public boolean isEnabled(DropTargetEvent event) {
         return true;
     }

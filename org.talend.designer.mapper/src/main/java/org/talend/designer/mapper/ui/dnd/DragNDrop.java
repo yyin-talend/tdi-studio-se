@@ -15,7 +15,6 @@ package org.talend.designer.mapper.ui.dnd;
 import java.util.ArrayList;
 
 import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -32,6 +31,7 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.dnd.DraggedData;
 import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
+import org.talend.designer.abstractmap.ui.listener.DefaultDropTargetListener;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
@@ -93,12 +93,14 @@ public class DragNDrop {
             createDragSource(dragSourceListener);
         }
         if (canBeTargetOfDragging) {
-            TransferDropTargetListener completeDropTargetListener = null;
+            DefaultDropTargetListener completeDropTargetListener = null;
             if (draggableControl instanceof Table) {
                 completeDropTargetListener = new CompleteDropTargetTableListener(mapperManager, (Table) draggableControl);
             } else if (draggableControl instanceof StyledText) {
                 completeDropTargetListener = new CompleteDropTargetStyledTextListener(mapperManager,
                         (StyledText) draggableControl);
+            } else {
+                completeDropTargetListener = new DefaultDropTargetListener(mapperManager);
             }
             createDropTarget(completeDropTargetListener);
         }
@@ -143,8 +145,7 @@ public class DragNDrop {
                         for (DataMapTableView dataMapTableView : list) {
                             Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();
                             TableItem[] tableItems = table.getSelection();
-                            for (int i = 0; i < tableItems.length; i++) {
-                                TableItem item = tableItems[i];
+                            for (TableItem item : tableItems) {
                                 ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
                                 if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
                                     draggedData.addEntry(dataMapTableEntry,
