@@ -301,13 +301,23 @@ if(nb_line_<%=cid %> > 0){
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 }finally{
+	<%
+	IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+	if(nextMergeConn == null || nextMergeConn.getInputId()==1){
+	%>
 	listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=virtualTargetCid%>");
+	<%
+		}else{
+	%>
+	listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=cid%>");
+	<%
+		}
+	%>
 	if (listGroupby_<%=cid%> != null) {
 		globalMap.put("<%=virtualTargetCid%>_FINISH", "true");
 	}
 }
 	<%
-	IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
 	if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 	%>
 		txf_<%=cid%>.join();

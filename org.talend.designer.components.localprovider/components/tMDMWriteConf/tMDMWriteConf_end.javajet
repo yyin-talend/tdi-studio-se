@@ -45,11 +45,15 @@ if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null
 		currentComponent = txf_<%=cid%>.getCurrentComponent();
 		throw txf_<%=cid%>.getLastException();
 	}
+	globalMap.remove("queue_<%=virtualSourceCid%>");
+<%
+}else{
+%>
+	globalMap.remove("queue_<%=node.getUniqueName()%>"); 
 <%
 }
 %>
 globalMap.remove("<%=virtualcid%>_FINISH");
-globalMap.remove("queue_<%=cid%>");
 <%
 if(!usePartialUpdate){
 	if(isMassInsert){
