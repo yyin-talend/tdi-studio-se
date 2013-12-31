@@ -5,6 +5,8 @@ imports="
     java.util.List
     org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.IConnection 
 "
 %>
 
@@ -19,8 +21,17 @@ String virtualTargetCid = node.getOutgoingConnections(EConnectionType.ON_COMPONE
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+	if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 %>
 java.util.Queue listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=virtualTargetCid%>");
+<%
+	}else{
+%>
+java.util.Queue listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=cid%>");
+<%
+	}
+%>
 if (listGroupby_<%=cid%> != null) {
 	globalMap.put("<%=virtualTargetCid%>_FINISH" + (listGroupby_<%=cid%>==null?"":listGroupby_<%=cid%>.hashCode()), "true");
 }
