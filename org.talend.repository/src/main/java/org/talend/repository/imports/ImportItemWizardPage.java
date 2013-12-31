@@ -813,7 +813,8 @@ class ImportItemWizardPage extends WizardPage {
                 RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
                 if (itemRecord.getProperty() != null && reObject != null) {
                     if (itemRecord.getProperty().getId().equals(reObject.getId())
-                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())) {
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
+                            && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
                         for (String error : itemRecord.getErrors()) {
                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
                         }
