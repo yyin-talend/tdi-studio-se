@@ -44,12 +44,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						currentComponent = txf_<%=cid%>.getCurrentComponent();
 						throw txf_<%=cid%>.getLastException();
 					}
+					globalMap.remove("queue_<%=virtualSourceCid%>");
+				<%
+    			}else{
+				%>
+					globalMap.remove("queue_<%=cid%>");
     			<%
     			}
 				%>
 				globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
 				globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
-				globalMap.remove("queue_<%=cid%>"); 
 			<%
 			}
 		}
