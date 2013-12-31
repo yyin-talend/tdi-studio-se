@@ -76,6 +76,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
+import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.event.MouseMoveScrollZoneHelper;
 import org.talend.designer.mapper.ui.font.FontProviderMapper;
 import org.talend.designer.mapper.ui.footer.FooterComposite;
@@ -686,7 +687,8 @@ public class MapperUI {
             }
 
         });
-
+        // add for auto scroll
+        new DragNDrop(mapperManager, sc1, true, true);
         inputTablesZoneView = new InputTablesZoneView(sc1, getBorder(), mapperManager);
         // this.dropTargetOperationListener.addControl(inputTablesZoneView);
         inputTablesZoneView.setBackgroundMode(SWT.INHERIT_DEFAULT);

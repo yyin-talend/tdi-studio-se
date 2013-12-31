@@ -32,6 +32,7 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.dnd.DraggedData;
 import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
+import org.talend.designer.abstractmap.ui.listener.DefaultDropTargetListener;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
@@ -99,6 +100,8 @@ public class DragNDrop {
             } else if (draggableControl instanceof StyledText) {
                 completeDropTargetListener = new CompleteDropTargetStyledTextListener(mapperManager,
                         (StyledText) draggableControl);
+            } else {
+                completeDropTargetListener = new DefaultDropTargetListener(mapperManager);
             }
             createDropTarget(completeDropTargetListener);
         }
