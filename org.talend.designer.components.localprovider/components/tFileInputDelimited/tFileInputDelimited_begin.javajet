@@ -701,9 +701,16 @@
 					<%
 					for(int colNo=start;colNo<end;colNo++) {
 						IMetadataColumn column1 =metadata.getListColumns().get(colNo);
+						if("id_Dynamic".equals(column1.getTalendType())) {
 					%>
-						<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+    						<%=dynamicName%>.clearColumnValues();
+    						<%=targetConnName %>.<%=column1.getLabel() %> = <%=dynamicName%>;
 					<%
+						} else {
+					%>
+							<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+					<%
+						}
 					}
 					%>
 				}else{
@@ -749,7 +756,11 @@
 						<%
 						}
 						%>
+						
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						if(columnIndexWithD_<%=cid%> < <%=sourceValueName%>.length){
+						<%}%>
+						
 							<%if((!isTrimAll && (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))){%>	
 							<%=sourceValueName%>[columnIndexWithD_<%=cid%>]=<%=sourceValueName%>[columnIndexWithD_<%=cid%>].trim();			
 							<%
@@ -807,18 +818,14 @@
 											<%=dynamicName%>.clearColumnValues();
 										}
 										int fieldCount = <%=sourceValueName%>.length;
-										boolean isEmptyDynamic_<%=cid%> = true;
 										for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
 											if ((<%=dynamic_index%>+i) < fieldCount) {
-												if(isEmptyDynamic_<%=cid%> && <%=sourceValueName%>[<%=dynamic_index%>+i].length() > 0) {
-													isEmptyDynamic_<%=cid%> = false;
-												}
 												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
 											} else {
 												<%=dynamicName%>.addColumnValue("");
 											}
 										}
-										<%=targetConnName %>.<%=column.getLabel() %> = isEmptyDynamic_<%=cid%> ? null : <%=dynamicName%>;
+										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
 									<%
 									}else {
 									%>
@@ -834,9 +841,13 @@
 							
 							}
 							%>	
+							
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						}else{
 							<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
 						}
+						<%}%>
+						
 						<%if(isLog4jEnabled){%>
 		                	log4jSb_<%=cid%>.append(<%=targetConnName %>.<%=column.getLabel() %>);
 			                if(columnIndexWithD_<%=cid%>< <%=end%>-1){
