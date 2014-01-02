@@ -420,6 +420,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                 RepositoryNode tableNode = createMetatable(node, repObj, metadataTable, isBuildIn);
                 if (TableHelper.isDeleted(metadataTable)) {
                     // ignore recycle node
+                } else if (metadataTable.getSourceName().equals(" ")) {
+                    // TDI-23826:ignore drop table in the query
                 } else {
                     node.getChildren().add(tableNode);
                 }
