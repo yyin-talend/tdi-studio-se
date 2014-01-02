@@ -40,6 +40,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	log4jCodeGenerateUtil.infoComponentStart(node);
 	log4jCodeGenerateUtil.initDbDebugRowBuffer();	
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 %>
 
 <%
@@ -165,7 +166,7 @@ else
 }	
 
 if(columnList != null && columnList.size() > 0) {
-    if(!("NONE").equals(tableAction)) {
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
