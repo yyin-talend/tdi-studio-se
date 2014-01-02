@@ -415,7 +415,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                 if (TableHelper.isDeleted(metadataTable)) {
                     // ignore recycle node
                 } else if (metadataTable.getSourceName().equals(" ")) {
-                    // ignore drop table in the query
+                    // TDI-23826:ignore drop table in the query
                 } else {
                     node.getChildren().add(tableNode);
                 }
