@@ -51,8 +51,12 @@
 			throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
 		}
 		org.apache.tools.tar.TarInputStream zip_<%=cid %> = null;
+		java.io.InputStream inputStream_<%=cid%> = null;
 		try {
-           	zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));        
+			inputStream_<%=cid%> = new java.io.FileInputStream(zipFileURL_<%=cid %>);
+			inputStream_<%=cid%> = new java.util.zip.GZIPInputStream(inputStream_<%=cid%>);
+           	zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(inputStream_<%=cid%>);
+           	
             org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
             java.io.InputStream is_<%=cid %> = null;
             while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
@@ -74,6 +78,8 @@
         } finally {
         	if(zip_<%=cid %> != null) {
 				zip_<%=cid %>.close();
+			} else if(inputStream_<%=cid%> != null) {
+				inputStream_<%=cid%>.close();
 			}
 		}
 	} else if (tmpFileURL_<%=cid %>.endsWith(".tar")){ 
@@ -82,8 +88,11 @@
 
 		}
 		org.apache.tools.tar.TarInputStream zip_<%=cid %> = null;
+		java.io.InputStream inputStream_<%=cid%> = null;
 		try {
-            zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>));        
+			inputStream_<%=cid%> = new java.io.FileInputStream(zipFileURL_<%=cid %>);
+           	zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(inputStream_<%=cid%>);
+           	
             org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
             java.io.InputStream is_<%=cid %> = null;
             while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
@@ -106,6 +115,8 @@
         } finally {
         	if(zip_<%=cid %>!=null) {
 				zip_<%=cid %>.close();
+			} else if(inputStream_<%=cid%> != null) {
+				inputStream_<%=cid%>.close();
 			}
 		}
   	}else if (tmpFileURL_<%=cid %>.endsWith(".gz")){ 
@@ -114,8 +125,11 @@
 
 		}
 		java.util.zip.GZIPInputStream zip_<%=cid %> = null;
+		java.io.InputStream inputStream_<%=cid%> = null;
 		try {
-            zip_<%=cid %> = new java.util.zip.GZIPInputStream(new java.io.FileInputStream(new java.io.File(zipFileURL_<%=cid %>)));
+			inputStream_<%=cid%> = new java.io.FileInputStream(new java.io.File(zipFileURL_<%=cid %>));
+           	zip_<%=cid %> = new java.util.zip.GZIPInputStream(inputStream_<%=cid%>);
+           	
             java.io.InputStream is_<%=cid %> = zip_<%=cid %>;
             String fullName_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>).getName();  
     		String filename_<%=cid %> =  fullName_<%=cid %>.substring(0, fullName_<%=cid %>.length()-3);  
@@ -123,6 +137,8 @@
 		} finally {
 			if(zip_<%=cid %> != null) {
 				zip_<%=cid %>.close();
+			} else if(inputStream_<%=cid%> != null) {
+				inputStream_<%=cid%>.close();
 			}
 		}
 	}else {
