@@ -52,6 +52,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 	
 	boolean extendedInsert = false;
 	
@@ -180,7 +181,7 @@ if(("true").equals(useExistingConn)) {
 
 <%
 if(columnList != null && columnList.size()>0) {    
-    if(!("NONE").equals(tableAction)) {
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>

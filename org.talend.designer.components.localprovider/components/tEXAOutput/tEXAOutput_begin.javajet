@@ -48,6 +48,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 	boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 %>
 
 <%
@@ -130,7 +131,7 @@ String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CON
         }
     }
 if(columnList != null && columnList.size() > 0) {    
-    if(!tableAction.equals("NONE")) {
+    if(!isParallelize && !tableAction.equals("NONE")) {
         Manager manager = getManager(dbmsId, cid);
         if(tableAction.equals("DROP_CREATE")) {
             %>
