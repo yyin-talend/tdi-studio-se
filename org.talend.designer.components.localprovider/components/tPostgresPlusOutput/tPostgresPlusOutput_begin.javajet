@@ -53,6 +53,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 %>
 
 <%
@@ -162,7 +163,7 @@ if(!("true").equals(useExistingConn)) {
 
 <%
 if(columnList != null && columnList.size()>0) {    
-    if(!("NONE").equals(tableAction)) {
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>

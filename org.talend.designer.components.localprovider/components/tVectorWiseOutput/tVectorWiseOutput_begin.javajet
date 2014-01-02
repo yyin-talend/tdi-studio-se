@@ -48,6 +48,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -131,7 +132,7 @@ if(useExistingConnection) {
 
 <%
 if(columnList != null && columnList.size() > 0) {    
-    if(!("NONE").equals(tableAction)) {
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>

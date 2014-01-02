@@ -53,6 +53,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbRootPath = ElementParameterParser.getValue(node, "__DBPATH__");	
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 %>
 
 <%
@@ -176,7 +177,7 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size() > 0) {    
-    if(!("NONE").equals(tableAction)) {
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
