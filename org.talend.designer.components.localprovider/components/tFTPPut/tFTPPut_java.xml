@@ -196,12 +196,11 @@ COMPATIBILITY="ALL"
     	<ITEMS DEFAULT="always">
      	<ITEM NAME="NEVER" VALUE="never"/>
         <ITEM NAME="ALWAYS" VALUE="always"/>
-        <ITEM NAME="APPEND" VALUE="append"/>
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="9" COLOR="255;0;0" SHOW_IF="(SFTPOVERWRITE == 'APPEND') OR (FTPSOVERWRITE == 'APPEND')">
-		<DEFAULT>Note: File can not be renamed while using "append" mode in SFTP or FTPS</DEFAULT>
+    <PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="9" COLOR="255;0;0" SHOW_IF="(SFTPOVERWRITE == 'APPEND')">
+		<DEFAULT>Note: File can not be renamed while using "append" mode in SFTP</DEFAULT>
 	</PARAMETER>
 
     <PARAMETER
