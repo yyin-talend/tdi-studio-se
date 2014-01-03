@@ -566,9 +566,16 @@
 					<%
 					for(int colNo=start;colNo<end;colNo++) {
 						IMetadataColumn column1 =metadata.getListColumns().get(colNo);
+						if("id_Dynamic".equals(column1.getTalendType())) {
 					%>
-						<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+    						<%=dynamicName%>.clearColumnValues();
+    						<%=targetConnName %>.<%=column1.getLabel() %> = <%=dynamicName%>;
 					<%
+						} else {
+					%>
+							<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+					<%
+						}
 					}
 					%>
 				}else{
@@ -601,7 +608,11 @@
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						%>
+						
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						if(<%=i %> < <%=sourceValueName%>.length){				
+						<%}%>
+						
 							<%if((!isTrimAll && (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))){%>	
 							<%=sourceValueName%>[<%=i %>]=<%=sourceValueName%>[<%=i %>].trim();			
 							<%
@@ -624,8 +635,10 @@
 								}
 							} else {
 							%>
+								<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 								if(<%=sourceValueName%>[<%=i %>].length() > 0) {
-									<%
+								<%}
+								
 									if(javaType == JavaTypesManager.DATE) {
 										if(checkNum || checkDate){
 										%>
@@ -648,9 +661,9 @@
                                     %>                          
                                         <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[<%=i %>],String.valueOf(fieldSeparator_<%=cid %>_ListType[0]));
                                     <%
-									}else if(column.getTalendType().equals("id_Dynamic")){
+									}else if("id_Dynamic".equals(column.getTalendType())){
 									%>
-										for (int i = 0; i < <%=dynamicName%>.getColumnCount(); i++) {
+										if(<%=dynamicName%>.getColumnCount() > 0) {
 											<%=dynamicName%>.clearColumnValues();
 										}
 										int fieldCount = <%=sourceValueName%>.length;	
@@ -667,16 +680,22 @@
 										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[<%=i %>]);
 									<%
 									}
-									%>					
+									
+							if(!"id_Dynamic".equals(column.getTalendType())) {%>				
 								}else{
 									<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault())%>;
 								}
-							<%					
+							<%}
+							
 							}
 							%>	
+							
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						}else{
 							<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
 						}
+						<%}%>
+						
 					<%
 					}
 					%>
