@@ -103,18 +103,24 @@ nb_file_<%=cid%> = getter_<%=cid %>.count;
 <%	
 		}
   }
-} else {
+} else { // *** ftps *** //
 
   if (!("true").equals(useExistingConn)){
   %>
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to the server closed.");
+		log.info("<%=cid%> - Closing the connection to the server.");
 	<%}%>
     ftp_<%=cid%>.disconnect(true);
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Connection to the server closed.");
 	<%}%>
   <%
+  }else{
+	    if(!moveToCurrentDir){
+%>
+	  		ftp_<%=cid %>.changeDirectory(rootDir_<%=cid %>);
+<%	
+		}
   }
 }
 %>

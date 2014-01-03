@@ -656,24 +656,25 @@ if (sftp) { // *** sftp *** //
   <%
   }
   %>
-  javax.net.ssl.SSLContext sslContext = null;
-  javax.net.ssl.TrustManager[] trustManager = null;
-  javax.net.ssl.SSLSocketFactory sslSocketFactory = null;
+  javax.net.ssl.SSLContext sslContext_<%=cid%> = null;
+  javax.net.ssl.TrustManager[] trustManager_<%=cid%> = null;
+  javax.net.ssl.SSLSocketFactory sslSocketFactory_<%=cid%> = null;
   it.sauronsoftware.ftp4j.FTPClient ftp_<%=cid %> =null;
   FTPSGetter_<%=cid%> getter_<%=cid%> = null;
   String remotedir_<%=cid%> = null;
+  String rootDir_<%=cid %> = null;
 
   try {
     <%  
     if ("false".equals(useExistingConn)){
     %>
-      sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+      sslContext_<%=cid%> = javax.net.ssl.SSLContext.getInstance("SSL");
       myTrust_<%=cid%> = new MyTrust_<%=cid%>();
-      trustManager = myTrust_<%=cid%>.getTrustManagers();
-      sslContext.init(null, trustManager, new java.security.SecureRandom());
-      sslSocketFactory = sslContext.getSocketFactory();
+      trustManager_<%=cid%> = myTrust_<%=cid%>.getTrustManagers();
+      sslContext_<%=cid%>.init(null, trustManager_<%=cid%>, new java.security.SecureRandom());
+      sslSocketFactory_<%=cid%> = sslContext_<%=cid%>.getSocketFactory();
       ftp_<%=cid %> = new it.sauronsoftware.ftp4j.FTPClient();
-      ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory);
+      ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory_<%=cid%>);
 <%
 	if("IMPLICIT".equals(securityMode)){
 %>
@@ -699,6 +700,9 @@ if (sftp) { // *** sftp *** //
       String conn= "conn_" + connection;
       %>
       ftp_<%=cid %> = (it.sauronsoftware.ftp4j.FTPClient)globalMap.get("<%=conn %>");
+	  <%if(!moveToCurrentDir){%>
+  		 rootDir_<%=cid %> = ftp_<%=cid %>.currentDirectory();
+  	  <%}%>
 	  <%if(isLog4jEnabled){%>
 		if(ftp_<%=cid %>!=null) {
 			log.info("<%=cid%> - Uses an existing connection as " + ftp_<%=cid %>.getUsername() + ". Connection hostname: " + ftp_<%=cid %>.getHost() + ". Connection port: " + ftp_<%=cid %>.getPort() + "."); 
