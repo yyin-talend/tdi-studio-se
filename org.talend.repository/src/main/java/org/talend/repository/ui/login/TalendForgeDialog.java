@@ -56,6 +56,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.io.SHA1Util;
 import org.talend.core.GlobalServiceRegister;
@@ -114,7 +115,7 @@ public class TalendForgeDialog extends TrayDialog {
 
     private boolean isProxyEnable = false;
 
-    private Label password2ValidateLabel;
+    // private Label password2ValidateLabel;
 
     private String notValidateStr = Messages.getString("TalendForgeDialog.notValid");
 
@@ -295,6 +296,59 @@ public class TalendForgeDialog extends TrayDialog {
         cc.setLayoutData(data);
     }
 
+    private void createHint(Composite parentComposite, final Text refredControl, String tooltip, final String validationRegx) {
+        final Label neededFiledHint = new Label(parentComposite, SWT.NONE);
+        FormData data = new FormData();
+        data.top = new FormAttachment(refredControl, 0, SWT.TOP);
+        data.left = new FormAttachment(refredControl, 5, SWT.RIGHT);
+        data.right = new FormAttachment(refredControl, 20, SWT.RIGHT);
+        data.bottom = new FormAttachment(refredControl, 0, SWT.BOTTOM);
+        neededFiledHint.setText("*");
+        neededFiledHint.setToolTipText(tooltip);
+        neededFiledHint.setLayoutData(data);
+        Color red = new Color(null, 255, 0, 0);
+        neededFiledHint.setForeground(red);
+        neededFiledHint.setBackground(parentComposite.getBackground());
+        red.dispose();
+
+        final Label okImage = new Label(parentComposite, SWT.NONE);
+        okImage.setImage(ImageProvider.getImage(ECoreImage.STATUS_OK));
+        okImage.setBackground(refredControl.getBackground());
+        data = new FormData();
+        data.top = new FormAttachment(refredControl, 0, SWT.TOP);
+        data.left = new FormAttachment(refredControl, 1, SWT.RIGHT);
+        data.right = new FormAttachment(refredControl, 20, SWT.RIGHT);
+        data.bottom = new FormAttachment(refredControl, 0, SWT.BOTTOM);
+        okImage.setLayoutData(data);
+        okImage.setVisible(false);
+
+        refredControl.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                if (refredControl.getText() == null || "".equals(refredControl.getText().trim())) {
+                    okImage.setVisible(false);
+                    neededFiledHint.setVisible(true);
+                } else {
+                    if (validationRegx != null) {
+                        Pattern p = Pattern.compile(validationRegx);
+                        if (p.matcher(refredControl.getText()).matches()) {
+                            okImage.setVisible(true);
+                            neededFiledHint.setVisible(false);
+                        } else {
+                            okImage.setVisible(false);
+                            neededFiledHint.setVisible(true);
+                        }
+                    } else {
+                        okImage.setVisible(true);
+                        neededFiledHint.setVisible(false);
+                    }
+                }
+
+            }
+        });
+    }
+
     private void createDownComposite(Composite parent) {
         FormData data = null;
 
@@ -360,20 +414,7 @@ public class TalendForgeDialog extends TrayDialog {
         userNameText.setLayoutData(data);
         userNameText.setFont(font);
         userNameText.forceFocus();
-
-        Label needLabelforUserName = new Label(createAccount, SWT.NONE);
-        data = new FormData();
-        data.top = new FormAttachment(userNameText, 0, SWT.TOP);
-        data.left = new FormAttachment(userNameText, 5, SWT.RIGHT);
-        data.right = new FormAttachment(userNameText, 10, SWT.RIGHT);
-        data.bottom = new FormAttachment(userNameText, 0, SWT.BOTTOM);
-        needLabelforUserName.setText("*");
-        needLabelforUserName.setFont(font);
-        needLabelforUserName.setLayoutData(data);
-        Color red = new Color(null, 255, 0, 0);
-        needLabelforUserName.setForeground(red);
-        needLabelforUserName.setBackground(createAccount.getBackground());
-        red.dispose();
+        createHint(createAccount, userNameText, Messages.getString("TalendForgeDialog.userNameLabel.tooltip"), null);
 
         Label emailLabel = new Label(createAccount, SWT.RIGHT);
         data = new FormData();
@@ -395,19 +436,8 @@ public class TalendForgeDialog extends TrayDialog {
         emailText.setLayoutData(data);
         emailText.setFont(font);
 
-        Label needLabel = new Label(createAccount, SWT.NONE);
-        data = new FormData();
-        data.top = new FormAttachment(emailLabel, 0, SWT.TOP);
-        data.left = new FormAttachment(emailText, 5, SWT.RIGHT);
-        data.right = new FormAttachment(emailText, 10, SWT.RIGHT);
-        data.bottom = new FormAttachment(emailLabel, 0, SWT.BOTTOM);
-        needLabel.setText("*");
-        needLabel.setFont(font);
-        needLabel.setLayoutData(data);
-        red = new Color(null, 255, 0, 0);
-        needLabel.setForeground(red);
-        needLabel.setBackground(createAccount.getBackground());
-        red.dispose();
+        createHint(createAccount, emailText, Messages.getString("TalendForgeDialog.emailLabel.tooltip"),
+                RepositoryConstants.MAIL_PATTERN);
 
         Label passwordLabel = new Label(createAccount, SWT.RIGHT);
         data = new FormData();
@@ -430,19 +460,29 @@ public class TalendForgeDialog extends TrayDialog {
         passwordText.setEchoChar('*');
         passwordText.setFont(font);
 
-        Label needLabelforPassword = new Label(createAccount, SWT.NONE);
+        final Label neededFiledHint = new Label(createAccount, SWT.NONE);
         data = new FormData();
         data.top = new FormAttachment(passwordText, 0, SWT.TOP);
         data.left = new FormAttachment(passwordText, 5, SWT.RIGHT);
-        data.right = new FormAttachment(passwordText, 10, SWT.RIGHT);
+        data.right = new FormAttachment(passwordText, 20, SWT.RIGHT);
         data.bottom = new FormAttachment(passwordText, 0, SWT.BOTTOM);
-        needLabelforPassword.setText("*");
-        needLabelforPassword.setFont(font);
-        needLabelforPassword.setLayoutData(data);
-        red = new Color(null, 255, 0, 0);
-        needLabelforPassword.setForeground(red);
-        needLabelforPassword.setBackground(createAccount.getBackground());
-        red.dispose();
+        neededFiledHint.setText("*");
+        neededFiledHint.setToolTipText(Messages.getString("TalendForgeDialog.passwordLabel.tooltip"));
+        neededFiledHint.setLayoutData(data);
+        Color red = new Color(null, 255, 0, 0);
+        neededFiledHint.setForeground(red);
+        neededFiledHint.setBackground(createAccount.getBackground());
+
+        final Label okImage = new Label(createAccount, SWT.NONE);
+        okImage.setImage(ImageProvider.getImage(ECoreImage.STATUS_OK));
+        okImage.setBackground(passwordText.getBackground());
+        data = new FormData();
+        data.top = new FormAttachment(passwordText, 0, SWT.TOP);
+        data.left = new FormAttachment(passwordText, 1, SWT.RIGHT);
+        data.right = new FormAttachment(passwordText, 20, SWT.RIGHT);
+        data.bottom = new FormAttachment(passwordText, 0, SWT.BOTTOM);
+        okImage.setLayoutData(data);
+        okImage.setVisible(false);
 
         Label passwordAgainLabel = new Label(createAccount, SWT.RIGHT);
         data = new FormData();
@@ -465,28 +505,75 @@ public class TalendForgeDialog extends TrayDialog {
         passwordAgainText.setEchoChar('*');
         passwordAgainText.setFont(font);
 
-        Label needLabelforPasswordAgain = new Label(createAccount, SWT.NONE);
+        final Label neededFiledHintAgian = new Label(createAccount, SWT.NONE);
         data = new FormData();
         data.top = new FormAttachment(passwordAgainText, 0, SWT.TOP);
         data.left = new FormAttachment(passwordAgainText, 5, SWT.RIGHT);
-        data.right = new FormAttachment(passwordAgainText, 10, SWT.RIGHT);
+        data.right = new FormAttachment(passwordAgainText, 20, SWT.RIGHT);
         data.bottom = new FormAttachment(passwordAgainText, 0, SWT.BOTTOM);
-        needLabelforPasswordAgain.setText("*");
-        needLabelforPasswordAgain.setFont(font);
-        needLabelforPasswordAgain.setLayoutData(data);
-        red = new Color(null, 255, 0, 0);
-        needLabelforPasswordAgain.setForeground(red);
-        needLabelforPasswordAgain.setBackground(createAccount.getBackground());
+        neededFiledHintAgian.setText("*");
+        neededFiledHintAgian.setToolTipText(Messages.getString("TalendForgeDialog.passwordAgainLabel.tooltip"));
+        neededFiledHintAgian.setLayoutData(data);
+        neededFiledHintAgian.setForeground(red);
+        neededFiledHintAgian.setBackground(createAccount.getBackground());
         red.dispose();
 
-        password2ValidateLabel = new Label(createAccount, SWT.NONE);
+        final Label okImageAgain = new Label(createAccount, SWT.NONE);
+        okImageAgain.setImage(ImageProvider.getImage(ECoreImage.STATUS_OK));
+        okImageAgain.setBackground(createAccount.getBackground());
         data = new FormData();
-        data.top = new FormAttachment(needLabelforPasswordAgain, 0, SWT.TOP);
-        data.left = new FormAttachment(needLabelforPasswordAgain, 10, SWT.RIGHT);
-        data.right = new FormAttachment(needLabelforPasswordAgain, 110, SWT.RIGHT);
-        data.bottom = new FormAttachment(needLabelforPasswordAgain, 0, SWT.BOTTOM);
-        password2ValidateLabel.setBackground(createAccount.getBackground());
-        password2ValidateLabel.setLayoutData(data);
+        data.top = new FormAttachment(passwordAgainText, 0, SWT.TOP);
+        data.left = new FormAttachment(passwordAgainText, 1, SWT.RIGHT);
+        data.right = new FormAttachment(passwordAgainText, 20, SWT.RIGHT);
+        data.bottom = new FormAttachment(passwordAgainText, 0, SWT.BOTTOM);
+        okImageAgain.setLayoutData(data);
+        okImageAgain.setVisible(false);
+
+        // validate password and password(again)
+        passwordText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                String password = passwordText.getText();
+                String passwordAgain = passwordAgainText.getText();
+                if (password == null || "".equals(password)) {
+                    neededFiledHint.setVisible(true);
+                    okImage.setVisible(false);
+                } else {
+                    if (password.equals(passwordAgain)) {
+                        neededFiledHint.setVisible(false);
+                        okImage.setVisible(true);
+                        neededFiledHintAgian.setVisible(false);
+                        okImageAgain.setVisible(true);
+                    } else {
+                        neededFiledHint.setVisible(false);
+                        okImage.setVisible(true);
+                        neededFiledHintAgian.setVisible(true);
+                        okImageAgain.setVisible(false);
+                    }
+                }
+            }
+        });
+        passwordAgainText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                String password = passwordText.getText();
+                String passwordAgain = passwordAgainText.getText();
+                if (password == null || "".equals(password)) {
+                    neededFiledHintAgian.setVisible(true);
+                    okImageAgain.setVisible(false);
+                } else {
+                    if (password.equals(passwordAgain)) {
+                        neededFiledHintAgian.setVisible(false);
+                        okImageAgain.setVisible(true);
+                    } else {
+                        neededFiledHintAgian.setVisible(true);
+                        okImageAgain.setVisible(false);
+                    }
+                }
+            }
+        });
 
         Label countryLabel = new Label(createAccount, SWT.RIGHT);
         countryLabel.setFont(font);
@@ -677,19 +764,7 @@ public class TalendForgeDialog extends TrayDialog {
         usernameTextForConnect.setLayoutData(data);
         usernameTextForConnect.setFont(font);
 
-        Label needLabel1 = new Label(connectAccount, SWT.NONE);
-        data = new FormData();
-        data.top = new FormAttachment(emailLabelInConnect, 0, SWT.TOP);
-        data.left = new FormAttachment(usernameTextForConnect, 5, SWT.RIGHT);
-        data.right = new FormAttachment(usernameTextForConnect, 10, SWT.RIGHT);
-        data.bottom = new FormAttachment(emailLabelInConnect, 0, SWT.BOTTOM);
-        needLabel1.setText("*");
-        needLabel1.setFont(font);
-        needLabel1.setLayoutData(data);
-        red = new Color(null, 255, 0, 0);
-        needLabel1.setForeground(red);
-        needLabel1.setBackground(connectAccount.getBackground());
-        red.dispose();
+        createHint(connectAccount, usernameTextForConnect, Messages.getString("TalendForgeDialog.userNameLabel.tooltip"), null);
 
         Label passwordLabelInConnect = new Label(connectAccount, SWT.RIGHT);
         data = new FormData();
@@ -712,19 +787,7 @@ public class TalendForgeDialog extends TrayDialog {
         passwordTextForconnect.setEchoChar('*');
         passwordTextForconnect.setFont(font);
 
-        Label needLabel2 = new Label(connectAccount, SWT.NONE);
-        data = new FormData();
-        data.top = new FormAttachment(passwordLabelInConnect, 0, SWT.TOP);
-        data.left = new FormAttachment(passwordTextForconnect, 5, SWT.RIGHT);
-        data.right = new FormAttachment(passwordTextForconnect, 10, SWT.RIGHT);
-        data.bottom = new FormAttachment(passwordLabelInConnect, 0, SWT.BOTTOM);
-        needLabel2.setText("*");
-        needLabel2.setFont(font);
-        needLabel2.setLayoutData(data);
-        red = new Color(null, 255, 0, 0);
-        needLabel2.setForeground(red);
-        needLabel2.setBackground(connectAccount.getBackground());
-        red.dispose();
+        createHint(connectAccount, passwordTextForconnect, Messages.getString("TalendForgeDialog.passwordLabel.tooltip"), null);
 
         improveButtonInConnect = new Button(connectAccount, SWT.CHECK);
         data = new FormData();
@@ -933,7 +996,7 @@ public class TalendForgeDialog extends TrayDialog {
                 String pseudonym = userNameText.getText();
                 if (password != null && !"".equals(password) && password2 != null && !"".equals(password2)
                         && password.equals(password2)) {
-                    password2ValidateLabel.setText("");
+                    // password2ValidateLabel.setText("");
                     if (pseudonym != null && !"".equals(pseudonym)) {
                         if (agreeButton.getSelection() && isEmailValid()) {
                             createAccountButton.setEnabled(true);
@@ -943,7 +1006,7 @@ public class TalendForgeDialog extends TrayDialog {
                     }
                 } else {
                     createAccountButton.setEnabled(false);
-                    password2ValidateLabel.setText(notValidateStr);
+                    // password2ValidateLabel.setText(notValidateStr);
                 }
             }
         });
@@ -958,7 +1021,7 @@ public class TalendForgeDialog extends TrayDialog {
 
                 if (password != null && !"".equals(password) && password2 != null && !"".equals(password2)
                         && password.equals(password2)) {
-                    password2ValidateLabel.setText("");
+                    // password2ValidateLabel.setText("");
                     if (pseudonym != null && !"".equals(pseudonym)) {
                         if (agreeButton.getSelection() && isEmailValid()) {
                             createAccountButton.setEnabled(true);
@@ -968,7 +1031,7 @@ public class TalendForgeDialog extends TrayDialog {
                     }
                 } else {
                     createAccountButton.setEnabled(false);
-                    password2ValidateLabel.setText(notValidateStr);
+                    // password2ValidateLabel.setText(notValidateStr);
                 }
             }
         });
