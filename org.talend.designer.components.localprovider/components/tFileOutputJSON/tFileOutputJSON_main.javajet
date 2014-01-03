@@ -31,8 +31,13 @@ for (IConnection conn : conns) {
 			for (int i = 0; i < sizeColumns; i++) {
 						
 				IMetadataColumn column = columns.get(i);
-
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, column.isNullable());
+			    if(!isPrimitive){
+			    %>
+			    	if(<%=conn.getName()%>.<%=column.getLabel()%> != null){
+			    <%
+			    }
 				if (javaType == JavaTypesManager.DATE && column.getPattern() != null && column.getPattern().trim().length() != 0) {
 					String pattern = column.getPattern();
 					%>
@@ -45,6 +50,13 @@ for (IConnection conn : conns) {
 				}else{
 				%>
 					jsonRow<%=cid%>.put("<%=column.getLabel()%>", <%=conn.getName()%>.<%=column.getLabel()%>);
+				<%
+				}
+				if(!isPrimitive){
+				%>
+					}else{
+						jsonRow<%=cid%>.put("<%=column.getLabel()%>", null);
+					}
 				<%
 				}
 			}
