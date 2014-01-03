@@ -759,6 +759,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
+                if (column.isCustom()) { // for TDI-28502
+                    continue;
+                }
                 // add for bug 12034
                 String label = column.getLabel();
                 //                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
@@ -792,6 +795,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             IMetadataTable table = connection.getMetadataTable();
             if (table != null) {
                 for (IMetadataColumn column : table.getListColumns()) {
+                    if (column.isCustom()) { // for TDI-28502
+                        continue;
+                    }
                     columnList.add(column.getLabel());
                 }
             }
