@@ -701,9 +701,16 @@
 					<%
 					for(int colNo=start;colNo<end;colNo++) {
 						IMetadataColumn column1 =metadata.getListColumns().get(colNo);
+						if("id_Dynamic".equals(column1.getTalendType())) {
 					%>
-						<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+    						<%=dynamicName%>.clearColumnValues();
+    						<%=targetConnName %>.<%=column1.getLabel() %> = <%=dynamicName%>;
 					<%
+						} else {
+					%>
+							<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+					<%
+						}
 					}
 					%>
 				}else{
@@ -749,7 +756,11 @@
 						<%
 						}
 						%>
+						
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						if(columnIndexWithD_<%=cid%> < <%=sourceValueName%>.length){
+						<%}%>
+						
 							<%if((!isTrimAll && (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))){%>	
 							<%=sourceValueName%>[columnIndexWithD_<%=cid%>]=<%=sourceValueName%>[columnIndexWithD_<%=cid%>].trim();			
 							<%
@@ -772,8 +783,10 @@
 								}
 							} else {
 							%>
-								if(<%=sourceValueName%>[columnIndexWithD_<%=cid%>].length() > 0) {
-									<%
+								<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
+									if(<%=sourceValueName%>[columnIndexWithD_<%=cid%>].length() > 0) {
+								<%}
+								
 									if(javaType == JavaTypesManager.DATE) {
 										if(checkNum || checkDate){
 										%>
@@ -796,20 +809,21 @@
                                     %>                          
                                         <%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_List(<%=sourceValueName%>[columnIndexWithD_<%=cid%>],String.valueOf(fieldSeparator_<%=cid %>_ListType[0]));
                                     <%
-									}else if(column.getTalendType().equals("id_Dynamic")){
+									}else if("id_Dynamic".equals(column.getTalendType())){
 										this.isBehindDynamic=true;
 										dynamic_index = i;
 									%>
 									    dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
-										for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
+										if(dynamic_column_count_<%=cid%> > 0) {
 											<%=dynamicName%>.clearColumnValues();
 										}
-										int fieldCount = <%=sourceValueName%>.length;	
+										int fieldCount = <%=sourceValueName%>.length;
 										for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
-											if ((<%=dynamic_index%>+i) < fieldCount)
+											if ((<%=dynamic_index%>+i) < fieldCount) {
 												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
-											else
+											} else {
 												<%=dynamicName%>.addColumnValue("");
+											}
 										}
 										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
 									<%
@@ -818,16 +832,22 @@
 										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[columnIndexWithD_<%=cid%>]);
 									<%
 									}
-									%>					
+									
+							if(!"id_Dynamic".equals(column.getTalendType())) {%>				
 								}else{
 									<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault())%>;
 								}
-							<%					
+							<%}
+							
 							}
 							%>	
+							
+						<%if(!"id_Dynamic".equals(column.getTalendType())) {%>
 						}else{
 							<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
 						}
+						<%}%>
+						
 						<%if(isLog4jEnabled){%>
 		                	log4jSb_<%=cid%>.append(<%=targetConnName %>.<%=column.getLabel() %>);
 			                if(columnIndexWithD_<%=cid%>< <%=end%>-1){
