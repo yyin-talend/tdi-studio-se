@@ -90,7 +90,7 @@ if(useMulSeprators==false && ("false").equals(ElementParameterParser.getValue(no
     		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
     		for(Map<String, String> schema : schemas){
 				if(tempMetadataTable.getLabel().equals(schema.get("SCHEMA"))){
-					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
+					schemaConnectionMap.put(schema.get("SCHEMA"), connTemp.getName());
 					break;
 				}
 			}
@@ -353,7 +353,7 @@ while (fid_<%=cid %>.nextRecord()) {
     		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
     		for(Map<String, String> schema : schemas){
 				if(tempMetadataTable.getLabel().equals(schema.get("SCHEMA"))){
-					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
+					schemaConnectionMap.put(schema.get("SCHEMA"), connTemp.getName());
 					break;
 				}
 			}
