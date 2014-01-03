@@ -751,7 +751,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
-            if (chkButton.isVisible()) {
+            // TDI-26294:should use getVisible here since the isVisible need the parent's isVisible()
+            if (chkButton.getVisible()) {
                 zipOption = String.valueOf(chkButton.getSelection());
             } else {
                 zipOption = "false"; //$NON-NLS-1$
@@ -1481,7 +1482,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     public String getExtractOption() {
-        if (chkButton != null) {
+        if (chkButton != null && !chkButton.isDisposed()) {
             return String.valueOf(chkButton.getSelection());
         } else {
             return null;
@@ -1490,7 +1491,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean isAddMavenScript() {
-        if (addBSButton != null) {
+        if (addBSButton != null && !addBSButton.isDisposed()) {
             return addBSButton.getSelection();
         }
 
