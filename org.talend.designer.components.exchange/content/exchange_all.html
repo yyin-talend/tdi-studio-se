@@ -86,19 +86,19 @@
 				var lastVersionAvailableValidate = document.getElementById("lastVersionAvailable").value;
 				var filename = document.getElementById("filename").value;
 				var isSkipPage = true;
-				if(labelValidate==0){  
+				if(labelValidate.replace(/\s/g,"")==""){  
         			alert("Extension Title is empty"); 
         			isSkipPage = false; 
     			}else if(labelValidate=="null"){  
         			alert("Extension Title can not be null");  
         			isSkipPage = false; 
-    			}else if(lastVersionAvailableValidate==0){  
+    			}else if(lastVersionAvailableValidate.replace(/\s/g,"")==""){  
         			alert("Initial Version is empty");  
         			isSkipPage = false; 
     			}else if(lastVersionAvailableValidate=="null"){  
         			alert("Initial Version can not be null");  
         			isSkipPage = false; 
-    			}else if(filename==0){
+    			}else if(filename.replace(/\s/g,"")==""){
     				alert("Please input a vaild File path");  
     				isSkipPage = false; 
     			}
