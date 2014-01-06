@@ -206,7 +206,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
             if (vSelection >= 0 && vSelection + increment > 0 && vSelection + increment < vBar.getMaximum()) {
                 vBar.setSelection(vSelection + increment);
             }
-            content.setLocation(location.x, -(vSelection + increment));
+            content.setLocation(location.x, -vSelection);
             mapperManager.getUiManager().refreshBackground(true, false);
             lastDragTime = System.currentTimeMillis();
         }
