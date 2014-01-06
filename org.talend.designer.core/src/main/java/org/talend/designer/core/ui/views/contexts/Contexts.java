@@ -49,6 +49,40 @@ public class Contexts {
     }
 
     /**
+     * DOC xqliu Comment method "forceRefreshContextsView".
+     */
+    public static void forceRefreshContextsView() {
+        ContextsView cxtView = forceGetView(ContextsView.ID);
+        if (cxtView != null) {
+            refreshView(cxtView);
+        }
+    }
+
+    /**
+     * DOC xqliu Comment method "forceGetView".
+     * 
+     * @param viewId
+     * @return
+     */
+    private static ContextsView forceGetView(String viewId) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            IViewPart view = page.findView(viewId);
+            if (view == null) {
+                try {
+                    view = page.showView(viewId);
+                } catch (Exception e) {
+                    org.talend.commons.exception.ExceptionHandler.process(e);
+                }
+            }
+            if (view instanceof ContextsView) {
+                return (ContextsView) view;
+            }
+        }
+        return null;
+    }
+
+    /**
      * qzhang Comment method "refreshView".
      */
     private static ContextsView getView() {
