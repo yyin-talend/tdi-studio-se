@@ -527,7 +527,7 @@ public class ExchangeWebService {
             tokenMessage.put("versionCompatibles", listVersionCompatibles);
             tokenMessage.put("filename", new Path(filename).lastSegment());
             tokenMessage.put("content", asHex(fileBytes));
-            tokenMessage.put("description", description.replace(" ", "%20"));
+            tokenMessage.put("description", description == null ? "" : description.replace(" ", "%20"));
             tokenMessage.put("agreement", agreement);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("newRevision", tokenMessage);
@@ -574,9 +574,9 @@ public class ExchangeWebService {
             tokenMessage.put("passwordHash", passwordHash);
             tokenMessage.put("idRevision", idRevision);
             tokenMessage.put("typeExtension", typeExtension);
-            tokenMessage.put("version", version);
+            tokenMessage.put("version", version == null ? "0.1" : version.replace(" ", "%20"));
             tokenMessage.put("listVersionCompatibles", listVersionCompatibles);
-            tokenMessage.put("description", description.replace(" ", "%20"));
+            tokenMessage.put("description", description == null ? "" : description.replace(" ", "%20"));
             tokenMessage.put("agreement", agreement);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("revision", tokenMessage);
