@@ -160,7 +160,8 @@ resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size() > 0) {
-    if(!("NONE").equals(tableAction)) {
+    boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
