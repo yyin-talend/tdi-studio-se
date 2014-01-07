@@ -88,6 +88,7 @@
      <IMPORTS>
        <IMPORT NAME="COMMONS-COMPRESS-1.6" MODULE="commons-compress-1.6.jar" REQUIRED="true" />
        <IMPORT NAME="Encrypt-Zip" MODULE="checkArchive.jar" REQUIRED="true" />
+       <IMPORT NAME="talendzip.jar" MODULE="talendzip.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION> 
   

@@ -73,6 +73,7 @@
        <IMPORT NAME="COMMONS-COMPRESS-1.6" MODULE="commons-compress-1.6.jar" REQUIRED="true" />
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" REQUIRED="true" />
        <IMPORT NAME="Check-Archive" MODULE="checkArchive.jar" REQUIRED="true" />
+       <IMPORT NAME="talendzip.jar" MODULE="talendzip.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION> 
   
