@@ -201,6 +201,10 @@ public class MapReduceJavaProcessor extends JavaProcessor {
         final String archiveFilePath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
                 .getString(ITalendCorePrefConstants.FILE_PATH_TEMP))
                 + "/mr_export_" + process.getName() + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+        File exportZipFile = new File(archiveFilePath);
+        if (!exportZipFile.getParentFile().exists()) {
+            exportZipFile.getParentFile().mkdirs();
+        }
         final ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(exportResources,
                 archiveFilePath);
         exporterOperation.setCreateLeadupStructure(true);
