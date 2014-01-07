@@ -120,7 +120,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
-
+try{
 <%
 				// *** generation mode init ***
 				if(("Dom4j").equals(mode)){
@@ -173,7 +173,6 @@ class NestXMLTool_<%=cid%>{
 	}
 }
 NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
-try{
 // sort group root element for judgement of group
 java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 org.dom4j.Element root4Group_<%=cid%> = null;
