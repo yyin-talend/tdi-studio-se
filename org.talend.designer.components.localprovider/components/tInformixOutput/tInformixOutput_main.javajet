@@ -197,7 +197,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}
 		}	
 	    %>
-	    String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
 	    <%			
