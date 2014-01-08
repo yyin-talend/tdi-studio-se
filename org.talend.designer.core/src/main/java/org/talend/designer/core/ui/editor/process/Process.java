@@ -1937,7 +1937,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (nType.isSetSizeX()) {
             nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
         }
-
+        loadElementParameters(nc, nType.getElementParameter());
         NodeContainer nodec = null;
         if (nc.isJoblet()) {
             nodec = new JobletContainer(nc);
