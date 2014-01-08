@@ -3372,6 +3372,7 @@ public class CLASS {
             } else if(actionType == UPDATE_TYPE) {
                 prefix = "pstmtUpdate_";
             }
+            String dbType = column.getColumn().getType();
             StringBuilder setStmt = new StringBuilder();
             if(typeToGenerate.equals("Character")) {
                 isObject = true;
@@ -3384,7 +3385,11 @@ public class CLASS {
             } else if(typeToGenerate.equals("byte[]")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BINARY);\r\n");                
+                if("BLOB".equals(dbType)) {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");                    
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BINARY);\r\n");                
+                }
             } else if(typeToGenerate.equals("Byte")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
@@ -3404,11 +3409,21 @@ public class CLASS {
             } else if(typeToGenerate.equals("String")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                
+                if(dbType != null && dbType.equals("CLOB")) {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");                    
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                
+                }
             } else if(typeToGenerate.equals("Object")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                
+                if("BLOB".equals(dbType)) {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");
+                } else if("CLOB".equals(dbType)){
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                    
+                }
             } else if(typeToGenerate.equals("Boolean")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
@@ -3444,6 +3459,10 @@ public class CLASS {
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.TIMESTAMP);\r\n");
                 setStmt.append("}\r\n");
+            } else if ((typeToGenerate.equals("String")) && (dbType != null && dbType.equals("CLOB"))) {
+                setStmt.append(prefix + cid + ".setAsciiStream(" + index + ", new java.io.ByteArrayInputStream(" + incomingConnName + "." + column.getName() + ".toString().getBytes()), (" + incomingConnName + "." + column.getName() + ".toString().getBytes()).length);\r\n");                
+            } else if ((typeToGenerate.equals("Bytes")) && (dbType != null && dbType.equals("BLOB"))) {
+                setStmt.append(prefix + cid + ".setBinaryStream(" + index + ", new java.io.ByteArrayInputStream((byte[])" + incomingConnName + "." + column.getName() + "), ((byte[])" + incomingConnName + "." + column.getName() + ").length);\r\n");    
 			} else if(typeToGenerate.equals("Geometry")) {
             	setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
                 // Load geometry
