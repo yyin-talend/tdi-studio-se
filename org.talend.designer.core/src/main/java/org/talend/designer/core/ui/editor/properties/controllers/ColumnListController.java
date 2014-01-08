@@ -446,6 +446,15 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST
                                 || tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
                                 || tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                            String filterColumns = tmpParam.getFilter();
+                            if (filterColumns != null) { // Hide all filter columns.
+                                // Column filter should be split by comma if it has more than one column name.
+                                String[] filterColumnsArray = filterColumns.split(","); //$NON-NLS-1$
+                                for (String column : filterColumnsArray) {
+                                    curColumnNameList = (String[]) ArrayUtils.removeElement(curColumnNameList, column);
+                                    curColumnValueList = (String[]) ArrayUtils.removeElement(curColumnValueList, column);
+                                }
+                            }
                             tmpParam.setListItemsDisplayCodeName(curColumnNameList);
                             tmpParam.setListItemsDisplayName(curColumnNameList);
                             tmpParam.setListItemsValue(curColumnValueList);
@@ -759,9 +768,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
-                if (column.isCustom()) { // for TDI-28502
-                    continue;
-                }
                 // add for bug 12034
                 String label = column.getLabel();
                 //                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
@@ -795,9 +801,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             IMetadataTable table = connection.getMetadataTable();
             if (table != null) {
                 for (IMetadataColumn column : table.getListColumns()) {
-                    if (column.isCustom()) { // for TDI-28502
-                        continue;
-                    }
                     columnList.add(column.getLabel());
                 }
             }
