@@ -1888,7 +1888,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (nType.isSetSizeX()) {
             nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
         }
-
+        loadElementParameters(nc, nType.getElementParameter());
         NodeContainer nodec = null;
         if (nc.isJoblet() || nc.isMapReduce()) {
             nodec = new JobletContainer(nc);
