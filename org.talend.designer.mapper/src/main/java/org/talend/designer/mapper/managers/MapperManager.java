@@ -1128,12 +1128,12 @@ public class MapperManager extends AbstractMapperManager {
 
             defaultSettingMap.put(MapperSettingsManager.DIE_ON_ERROR, true);
 
-            boolean parallel = false;
-            IElementParameter paraEle = getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
-            if (paraEle != null) {
-                parallel = (Boolean) paraEle.getValue();
-            }
-            defaultSettingMap.put(MapperSettingsManager.LOOKUP_IN_PARALLEL, parallel);
+            // boolean parallel = false;
+            // IElementParameter paraEle = getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
+            // if (paraEle != null) {
+            // parallel = (Boolean) paraEle.getValue();
+            // }
+            defaultSettingMap.put(MapperSettingsManager.LOOKUP_IN_PARALLEL, false);
             defaultSettingMap.put(MapperSettingsManager.TEMPORARY_DATA_DIRECTORY, "");
             defaultSettingMap.put(MapperSettingsManager.ROWS_BUFFER_SIZE, 2000000);
         }
