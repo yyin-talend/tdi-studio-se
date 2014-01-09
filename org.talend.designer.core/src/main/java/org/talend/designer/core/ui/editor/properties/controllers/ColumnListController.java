@@ -745,7 +745,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     table = tableList.get(0);
                 } else {
                     for (IMetadataTable itable : tableList) {
-                        if (!itable.getAttachedConnector().equals("REJECT")) {
+                        if (itable.getAttachedConnector() != null && !itable.getAttachedConnector().equals("REJECT")) {
                             table = itable;
                             break;
                         }
