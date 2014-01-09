@@ -81,6 +81,17 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         typesToShow.addAll(getParentTypes(typesToShow));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     */
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Repository Content");
+    }
+
     private List<ERepositoryObjectType> getParentTypes(List<ERepositoryObjectType> typesToShow) {
         List<ERepositoryObjectType> parentTypes = new ArrayList<ERepositoryObjectType>();
         for (ERepositoryObjectType type : typesToShow) {
@@ -106,6 +117,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
      * 
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "before createDialogArea..."); //$NON-NLS-1$
@@ -124,6 +136,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 getButton(IDialogConstants.OK_ID).setEnabled(isValidSelection(event));
             }
@@ -131,6 +144,7 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         });
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 if (getButton(IDialogConstants.OK_ID).isEnabled()) {
                     okPressed();
