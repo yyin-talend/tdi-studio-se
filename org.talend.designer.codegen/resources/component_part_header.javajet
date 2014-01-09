@@ -11,7 +11,8 @@
 		org.talend.core.model.utils.NodeUtil
 		org.talend.core.model.process.IConnectionCategory
   		java.util.List
- 		 java.util.Set
+  		java.util.ArrayList
+ 		java.util.Set
   		java.util.HashSet
 		java.util.Iterator
 	"
@@ -147,12 +148,13 @@
 	if ((codePart.equals(ECodePart.BEGIN))&&(stat)&&connSet.size()>0) {
 		for(IConnection con:connSet){
 		%>
-
 			if (execStat) {
-			    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=con.getUniqueName() %> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
-				concurrentHashMap_<%=con.getUniqueName() %>.putIfAbsent("<%=con.getUniqueName() %>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
-				java.util.concurrent.atomic.AtomicInteger stats_<%=con.getUniqueName() %> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=con.getUniqueName() %>.get("<%=con.getUniqueName() %>" + iterateLoop);
-				runStat.updateStatOnConnection("<%=con.getUniqueName() %>" + iterateId, stats_<%=con.getUniqueName() %>.incrementAndGet()<=1?0:1, 0);
+				if(resourceMap.get("inIterateVComp") == null){
+				    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=con.getUniqueName() %> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
+					concurrentHashMap_<%=con.getUniqueName() %>.putIfAbsent("<%=con.getUniqueName() %>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
+					java.util.concurrent.atomic.AtomicInteger stats_<%=con.getUniqueName() %> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=con.getUniqueName() %>.get("<%=con.getUniqueName() %>" + iterateLoop);
+					runStat.updateStatOnConnection("<%=con.getUniqueName() %>" + iterateId, stats_<%=con.getUniqueName() %>.incrementAndGet()<=1?0:1, 0);
+				}
 			} 
 
 		<%
@@ -184,6 +186,58 @@
 	}
 	%>
 
-	<%if(codePart.equals(ECodePart.BEGIN)){ %>
+	<%
+	if(codePart.equals(ECodePart.BEGIN)){ 
+	%>
 		int tos_count_<%=node.getUniqueName() %> = 0;
-	<%}%>
+	<%
+	}
+	if(stat){
+		boolean iterateInVFComp = (node.getVirtualLinkTo() != null && node.getVirtualLinkTo() == EConnectionType.ITERATE);
+		if(iterateInVFComp){
+			if(codePart.equals(ECodePart.BEGIN)){
+				List<String> needToStartConnNames = new ArrayList<String>();
+				INode nextNode = node.getOutgoingConnections(EConnectionType.ITERATE).get(0).getTarget();
+				NodeUtil.fillConnectionsForStat(needToStartConnNames, nextNode);
+				%>
+				if(execStat){
+					<%
+					for(String connName : needToStartConnNames){
+					%>
+						java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=connName%> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
+						concurrentHashMap_<%=connName%>.putIfAbsent("<%=connName%>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
+						java.util.concurrent.atomic.AtomicInteger stats_<%=connName%> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=connName%>.get("<%=connName%>" + iterateLoop);
+						runStat.updateStatOnConnection("<%=connName%>" + iterateId, stats_<%=connName%>.incrementAndGet()<=1?0:1, 0);
+					<%	
+					}
+					%>
+				}
+			<%
+			}else if(codePart.equals(ECodePart.MAIN)){ 
+			%>
+				resourceMap.put("inIterateVComp", true);
+			<%
+			}else if(codePart.equals(ECodePart.END)){
+			%>
+				resourceMap.remove("inIterateVComp");
+			<%
+			} 
+		}else{
+			IConnection preIterate = (node.getIncomingConnections(EConnectionType.ITERATE) != null && node.getIncomingConnections(EConnectionType.ITERATE).size() == 1) ? node.getIncomingConnections(EConnectionType.ITERATE).get(0) : null;
+			if(preIterate != null){
+				boolean iterateInVSComp = (preIterate.getSource().getVirtualLinkTo() != null && preIterate.getSource().getVirtualLinkTo() == EConnectionType.ITERATE);
+				if(iterateInVSComp){
+					if(codePart.equals(ECodePart.BEGIN)){ 
+					%>
+						resourceMap.remove("inIterateVComp");
+					<%
+					}else if(codePart.equals(ECodePart.END)){
+					%>
+						resourceMap.put("inIterateVComp", true);
+					<%
+					}
+				}
+			}	
+		}
+	}
+	%>
