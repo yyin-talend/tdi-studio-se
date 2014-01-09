@@ -63,7 +63,7 @@ public class ParallelExecutionUtils {
                         } else if (value instanceof Integer) {
                             Integer index = (Integer) value;
                             if (nodeElemForList.getListItemsDisplayName().length > index) {
-                                columnKeyValues.add((String) nodeElemForList.getListItemsDisplayName()[index]);
+                                columnKeyValues.add(nodeElemForList.getListItemsDisplayName()[index]);
                             }
                         }
                     }
@@ -155,7 +155,7 @@ public class ParallelExecutionUtils {
                     } else if (value instanceof Integer) {
                         Integer index = (Integer) value;
                         if (clumnNodeList.getListItemsDisplayName().length > index) {
-                            columnKeyValues.add((String) clumnNodeList.getListItemsDisplayName()[index]);
+                            columnKeyValues.add(clumnNodeList.getListItemsDisplayName()[index]);
                         }
                     }
                 }
@@ -503,5 +503,16 @@ public class ParallelExecutionUtils {
         target.getListColumns().addAll(columnsTAdd);
         target.sortCustomColumns();
         target.setLabel(source.getLabel());
+    }
+
+    public static boolean isExistParallelConn(IConnection[] cons) {
+        boolean hasParallel = false;
+        for (IConnection conn : cons) {
+            IElementParameter param = conn.getElementParameter(EParameterName.PARTITIONER.getName());
+            if (param != null && Boolean.TRUE.equals(param.getValue())) {
+                hasParallel = true;
+            }
+        }
+        return hasParallel;
     }
 }
