@@ -1027,8 +1027,17 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 <%
 	}
 %>
-
-	String iterateId = "";
+	<%
+	if(subTree.getRootNode().getComponent().getName().equals("tCollector")){
+	%>
+		String iterateId = "." + globalMap.get("<%=subTree.getRootNode().getDesignSubjobStartNode().getUniqueName()%>_THREAD_ID");
+	<%
+	}else{
+	%>
+		String iterateId = "";
+	<%
+	}
+	%>
 	int iterateLoop = 0;
 	String currentComponent = "";
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
