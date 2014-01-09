@@ -504,4 +504,15 @@ public class ParallelExecutionUtils {
         target.sortCustomColumns();
         target.setLabel(source.getLabel());
     }
+
+    public static boolean isExistParallelConn(IConnection[] cons) {
+        boolean hasParallel = false;
+        for (IConnection conn : cons) {
+            IElementParameter param = conn.getElementParameter(EParameterName.PARTITIONER.getName());
+            if (param != null && Boolean.TRUE.equals(param.getValue())) {
+                hasParallel = true;
+            }
+        }
+        return hasParallel;
+    }
 }
