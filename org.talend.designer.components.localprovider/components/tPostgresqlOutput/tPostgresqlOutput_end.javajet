@@ -41,7 +41,10 @@ imports="
         rejectConnName = rejectConn.getName();
     }
     
-    if(createGeometryColumns && useSpatialOptions){
+    boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
+    String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+	boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
+    if(createGeometryColumns && useSpatialOptions && !isParallelize && createTable){
 		%>
 		java.sql.Statement stmtCreateGeoColumns_<%=cid%> = conn_<%=cid%>.createStatement();
 		
@@ -59,7 +62,7 @@ imports="
         stmtCreateGeoColumns_<%=cid%>.close();
 		<%
 	}
-	if(createSpatialIndex && useSpatialOptions){
+	if(createSpatialIndex && useSpatialOptions && !isParallelize && createTable){
 		%>
     	java.sql.Statement stmtCreateIndex_<%=cid%> = conn_<%=cid%>.createStatement();
 		// Drop spatial index if exists

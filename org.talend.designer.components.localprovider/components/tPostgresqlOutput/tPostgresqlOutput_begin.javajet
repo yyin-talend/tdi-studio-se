@@ -261,7 +261,8 @@ if(columnList != null && columnList.size()>0) {
 }
 } //end isDynamic
 boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
-    if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize) {
+boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
+    if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize && createTable) {
     	%>
     	String geometryColumnName_<%=cid %> = null;
     	// Initialize SRID
