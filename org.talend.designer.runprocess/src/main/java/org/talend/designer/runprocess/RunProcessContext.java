@@ -63,6 +63,7 @@ import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.ConnectionUtil;
+import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -441,6 +442,10 @@ public class RunProcessContext {
         }
         // }
         return found;
+    }
+
+    public boolean checkParalization() {
+        return ParallelExecutionUtils.isExistParallelConn(this.getProcess().getAllConnections(null));
     }
 
     /**
