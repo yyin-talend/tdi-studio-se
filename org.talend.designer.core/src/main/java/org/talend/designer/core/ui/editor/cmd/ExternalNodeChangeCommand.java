@@ -267,20 +267,29 @@ public class ExternalNodeChangeCommand extends Command {
 
     @Override
     public void execute() {
-        boolean hasChanged = false;
         propagateInput();
         // bug 0020749
         if (!oldMetaDataList.isEmpty() && !newMetaDataList.isEmpty()
                 && !oldMetaDataList.get(0).sameMetadataAs(newMetaDataList.get(0))) {
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-            hasChanged = true;
         }
         metadataOutputChanges.clear();
         List<IConnection> initTraceList = new ArrayList<IConnection>();
         for (IConnection connection : node.getOutgoingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
-                if (hasChanged || !connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
+                boolean sameMetadataAs = connection.getMetadataTable().sameMetadataAs(dataComponent.getTable());
+                IMetadataTable tempTable = null;
+                if (sameMetadataAs) {
+                    for (IMetadataTable itable : newMetaDataList) {
+                        if (connection.getMetadataTable().getTableName().equals(itable.getTableName())) {
+                            sameMetadataAs = connection.getMetadataTable().sameMetadataAs(itable);
+                            tempTable = itable;
+                            break;
+                        }
+                    }
+                }
+                if (!sameMetadataAs) {
                     IMetadataTable table = connection.getMetadataTable();
                     if (table == null || table.getListColumns().isEmpty()) {
                         initTraceList.add(connection);
@@ -300,8 +309,8 @@ public class ExternalNodeChangeCommand extends Command {
                         if (connection != null) {
                             IMetadataTable connTable = connection.getMetadataTable();
                             IMetadataTable dataTable = dataComponent.getTable();
-                            if (hasChanged && !newMetaDataList.isEmpty()) {
-                                dataTable = newMetaDataList.get(0);
+                            if (tempTable != null) {
+                                dataTable = tempTable;
                             }
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
                                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
