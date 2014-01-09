@@ -2100,6 +2100,15 @@
               name="SetTrim4tFileOutputXML"
               version="5.2.4">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.ChangeDefaultValueFortCassandraOutputDefineCFStructure"
+              description="Change &quot;Define column family structure&quot; default value false if old job import into new product"
+              id="org.talend.repository.model.migration.ChangeDefaultValueFortCassandraOutputDefineCFStructure"
+              name="ChangeDefaultValueFortCassandraOutputDefineCFStructure"
+              version="5.4.2">
+        </projecttask>
    </extension>
    
    <extension
