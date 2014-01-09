@@ -81,6 +81,17 @@ public abstract class ExtendedNodeReviewDialog extends Dialog {
         typesToShow.addAll(getParentTypes(typesToShow));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     */
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Repository Content");
+    }
+
     private List<ERepositoryObjectType> getParentTypes(List<ERepositoryObjectType> typesToShow) {
         List<ERepositoryObjectType> parentTypes = new ArrayList<ERepositoryObjectType>();
         for (ERepositoryObjectType type : typesToShow) {
