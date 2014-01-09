@@ -88,17 +88,19 @@ Manager manager = null;
 
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    
 	for(Column column : stmtStructure) {
-		if(!column.isReplaced() && !column.isAddCol()) {
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			if ("java.util.Date".equals(typeToGenerate)) {
-				String dbType = column.getColumn().getType();
-				if ("DATE".equals(dbType)||"TIME".equals(dbType)) {
-					column.setSqlStmt("cast(cast(? as timestamp) as "+dbType+")");
-				}
-			} 
-		}
-	}
+		if(!column.isReplaced() && !column.isAddCol() && !column.isDynamic()) {
+	    	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+	    	if ("java.util.Date".equals(typeToGenerate)) {
+	    		String dbType = column.getColumn().getType();
+	    		if ("DATE".equals(dbType)||"TIME".equals(dbType)) {
+	    			column.setSqlStmt("cast(cast(? as timestamp) as "+dbType+")");
+	    		} 
+	    	}
+    	}
+    }
     
 }
 
@@ -119,7 +121,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int updateKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isUpdateKey()) {
+            if(column.isUpdateKey() && !column.isDynamic()) {
                 updateKeyCount++;
             }
         }
@@ -134,7 +136,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int deleteKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isDeleteKey()) {
+            if(column.isDeleteKey() && !column.isDynamic()) {
                 deleteKeyCount++;
             }
         }

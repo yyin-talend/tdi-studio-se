@@ -83,13 +83,15 @@ Manager manager = null;
 
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    
     if(convertToUppercase) {
         for(Column column : stmtStructure) {
             if(column.isReplaced()) {
                 for (Column replacedColumn : column.getReplacement()) {
                     replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
                 }
-            } else {
+            } else if(!column.isDynamic()){
                 column.setColumnName(column.getColumnName().toUpperCase());
             }
         }
@@ -98,7 +100,7 @@ if(columnList != null && columnList.size() > 0) {
 boolean xmlTypeExist = false;
 for(Column column : stmtStructure) {
 	//when use Additional column column.getColumn() == null
-	if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType())) {
+	if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
 		column.setSqlStmt("XMLType(?)");
 		xmlTypeExist = true;
 	}
@@ -110,7 +112,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int updateKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isUpdateKey()) {
+            if(column.isUpdateKey() && !column.isDynamic()) {
                 updateKeyCount++;
             }
         }
@@ -125,7 +127,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     int deleteKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
-            if(column.isDeleteKey()) {
+            if(column.isDeleteKey() && !column.isDynamic()) {
                 deleteKeyCount++;
             }
         }

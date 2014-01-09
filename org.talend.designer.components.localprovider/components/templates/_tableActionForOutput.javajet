@@ -27,15 +27,9 @@ if (!isParallelize) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
-					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
-					} else {
-%>				
-					stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
-<%
-					}
 				}
 			} else {
 %>
@@ -55,15 +49,9 @@ if (!isParallelize) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
-					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
-					} else {
-%>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
-<%
-					}
 				}
 			} else {
 %>
@@ -226,15 +214,9 @@ if (!isParallelize) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
-					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
-					} else {
-%>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
-<%
-					}
 				}
 			} else {
 %>
@@ -259,15 +241,9 @@ if (!isParallelize) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
-					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
 <%
-					} else {
-%>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
-<%
-					}
 				}
 			} else {
 %>

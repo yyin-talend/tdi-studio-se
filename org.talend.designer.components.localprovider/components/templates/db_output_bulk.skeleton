@@ -59,6 +59,9 @@ public class CLASS {
         boolean insertable = true;
         boolean updatable = true;
         List<Column> replacement = new ArrayList<Column>();
+        
+        boolean isDynamic = false;
+        
         public Column(String colName, String sqlStmt, boolean addCol) {
             this.column = null;
             this.name = colName;
@@ -225,6 +228,14 @@ public class CLASS {
         public void setUpdatable(boolean updatable) {
             this.updatable = updatable;
         }
+        
+        public boolean isDynamic() {
+            return isDynamic;
+        }
+        
+        public void setDynamic(boolean isDynamic) {
+            this.isDynamic = isDynamic;
+        }
     }
         
     public Column getColumn(IMetadataColumn column) {
@@ -294,6 +305,7 @@ public class CLASS {
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
+            
             for (Column column : columnList) {
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
@@ -304,7 +316,7 @@ public class CLASS {
                     }
                     int replacedCount = 0;
                     for (Column replacedColumn : replacedColumns) {
-                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
                         createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
@@ -312,12 +324,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -420,16 +435,15 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
+
                         createSQL.append(ending);
                     }
                 }
                 count++;
             }
+            
             if (pkList.size() > 0) {
-                createSQL.append("primary key(");
+                createSQL.append(",primary key(");
                 int i = 0;
                 for (String pk : pkList) {
                     createSQL.append(pk);
@@ -440,13 +454,6 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-            //createSQL.append(")");
-            
-            // add VectorWise option
-            //if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
-            //	createSQL.append("WITH STRUCTURE = VECTORWISE");
-            //}
-            
             return createSQL.toString();
         }
         protected String getAutoIncrement(int startValue, int step) {
@@ -514,47 +521,6 @@ public class CLASS {
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();
         }
 
-        public List<Column> createColumnList(List<IMetadataColumn> columnList, List<Map<String, String>> addCols) {
-            List<Column> stmtStructure = new ArrayList<Column>();
-            for(IMetadataColumn column : columnList) {
-                Column skeletonColumn = getColumn(column);
-                skeletonColumn.setOperator("=");
-                stmtStructure.add(skeletonColumn);
-            }
-            for(IMetadataColumn column : columnList) {
-                if(addCols != null && addCols.size() > 0) {
-                    for(Map<String, String> additionColumn : addCols) {
-                        if(additionColumn.get("REFCOL").equals(column.getLabel())) {
-                            int stmtIndex = 0;      
-                            for(Column stmtStr : stmtStructure){          
-                                if(stmtStr.getName().equals(additionColumn.get("REFCOL"))) {
-                                    break;
-                                }
-                                stmtIndex++;
-                            }           
-                            if(additionColumn.get("POS").equals("AFTER")) {
-                                Column insertAfter = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
-                                insertAfter.setDataType(additionColumn.get("DATATYPE"));
-                                insertAfter.setOperator("=");
-                                stmtStructure.add(stmtIndex+1, insertAfter);
-                            } else if(additionColumn.get("POS").equals("BEFORE")) {
-                                Column insertBefore = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
-                                insertBefore.setDataType(additionColumn.get("DATATYPE"));
-                                insertBefore.setOperator("=");
-                                stmtStructure.add(stmtIndex, insertBefore);
-                            } else if(additionColumn.get("POS").equals("REPLACE")) {
-                                Column replacementCol = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
-                                replacementCol.setDataType(additionColumn.get("DATATYPE"));
-                                replacementCol.setOperator("=");
-                                Column replacedCol = (Column) stmtStructure.get(stmtIndex);
-                                replacedCol.replace(replacementCol);
-                            }
-                        }                        
-                    }
-                }
-            }
-            return stmtStructure;
-        }
         public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols, boolean isSpecifyIdentityKey, String identityKey, int startValue, int step) {
             List<Column> stmtStructure = createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
             if(isSpecifyIdentityKey) {
@@ -569,6 +535,9 @@ public class CLASS {
             }
             return stmtStructure;
         }
+        
+        private boolean dynamicColumnIsReplaced = false;
+        
         public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols) {
             List<Column> stmtStructure = new ArrayList<Column>();            
             for(IMetadataColumn column : columnList) {
@@ -581,13 +550,19 @@ public class CLASS {
                         }
                     }
                 }
-				if(!("id_Dynamic".equals(column.getTalendType()))) {
-					Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
-					skeletonColumn.setOperator("=");
-					skeletonColumn.setDataType(column.getType());
-					stmtStructure.add(skeletonColumn);
-				}
+                
+				Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
+				skeletonColumn.setOperator("=");
+				skeletonColumn.setDataType(column.getType());
+				stmtStructure.add(skeletonColumn);
+				
+                if("id_Dynamic".equals(column.getTalendType())) {
+                    skeletonColumn.setDynamic(true);
+                }
             }
+            
+            dynamicColumnIsReplaced = false;
+            
             if(addCols != null && addCols.size() > 0) {
                 for(IMetadataColumn column : columnList) {
                     for(Map<String, String> additionColumn : addCols) {
@@ -620,13 +595,23 @@ public class CLASS {
                                 replacementCol.setUpdatable(replacedCol.isUpdatable());
                                 replacementCol.setInsertable(replacedCol.isInsertable());
                                 replacedCol.replace(replacementCol);
+                                
+                                if(replacedCol.isDynamic()) {
+                                    dynamicColumnIsReplaced = true;
+                                }
                             }                            
                         }
                     }
                 }
             }
+            
             return stmtStructure;
         }
+        
+        public boolean isDynamicColumnReplaced() {
+            return dynamicColumnIsReplaced;
+        }
+        
         public Map<String, StringBuilder> createProcessSQL(List<Column> stmtStructure) {
             Map<String, StringBuilder> actionSQLMap = new HashMap<String, StringBuilder>();
             if(stmtStructure==null || stmtStructure.size() < 1) {
@@ -692,7 +677,7 @@ public class CLASS {
             }
             String suffix = null;
             String separate = null;
-            if(column.isInsertable()) {
+            if(column.isInsertable() && !column.isDynamic()) {
                 if(firstInsertColumn.toString().equals("true")) {
                     suffix = "";
                     firstInsertColumn = new StringBuilder("false");
@@ -704,7 +689,7 @@ public class CLASS {
                 insertValueStmt.append(suffix);
                 insertValueStmt.append(column.getSqlStmt());
             }
-            if(column.isUpdatable()) {
+            if(column.isUpdatable() && !column.isDynamic()) {
                 if(firstUpdateColumn.toString().equals("true")) {
                     suffix = "";
                     firstUpdateColumn = new StringBuilder("false");
@@ -714,7 +699,7 @@ public class CLASS {
                 updateSetStmt.append(suffix);
                 updateSetStmt.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()) + " " + column.getOperator() + " " + column.getSqlStmt());
             }
-            if(column.isDeleteKey()) {
+            if(column.isDeleteKey() && !column.isDynamic()) {
                 if(firstDeleteKeyColumn.toString().equals("true")) {
                     separate = "";
                     firstDeleteKeyColumn = new StringBuilder("false");
@@ -726,7 +711,7 @@ public class CLASS {
                 //feature:2880
                 whereStmtSupportNull(deleteWhereStmt, column);                 
             }
-            if(column.isUpdateKey()) {
+            if(column.isUpdateKey() && !column.isDynamic()) {
                 if(firstUpdateKeyColumn.toString().equals("true")) {
                     separate = "";
                     firstUpdateKeyColumn = new StringBuilder("false");
@@ -1451,6 +1436,7 @@ public class CLASS {
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
+            
             for (Column column : columnList) {
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
@@ -1461,7 +1447,7 @@ public class CLASS {
                     }
                     int replacedCount = 0;
                     for (Column replacedColumn : replacedColumns) {
-                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
                         createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
@@ -1469,12 +1455,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -1564,16 +1553,15 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
             }
+            
             if (pkList.size() > 0) {
-                createSQL.append("primary key(");
+                createSQL.append(",primary key(");
                 int i = 0;
                 for (String pk : pkList) {
                     createSQL.append(pk);
@@ -1584,7 +1572,6 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-         	//createSQL.append(")");
             
             // add VectorWise option
             if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
@@ -2004,6 +1991,7 @@ public class CLASS {
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
+            
             for (Column column : columnList) {
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
@@ -2014,7 +2002,7 @@ public class CLASS {
                     }
                     int replacedCount = 0;
                     for (Column replacedColumn : replacedColumns) {
-                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
                         createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
@@ -2022,12 +2010,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -2127,16 +2118,15 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
             }
+            
             if (pkList.size() > 0) {
-                createSQL.append("primary key(");
+                createSQL.append(",primary key(");
                 int i = 0;
                 for (String pk : pkList) {
                     createSQL.append(pk);
@@ -2147,13 +2137,6 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-            //createSQL.append(")");
-            
-            // add VectorWise option
-            //if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
-            //  createSQL.append("WITH STRUCTURE = VECTORWISE");
-            //}
-            
             return createSQL.toString();
         }
     }
@@ -3378,6 +3361,7 @@ public class CLASS {
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
+            
             for (Column column : columnList) {
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
@@ -3388,7 +3372,7 @@ public class CLASS {
                     }
                     int replacedCount = 0;
                     for (Column replacedColumn : replacedColumns) {
-                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
                         createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
@@ -3396,12 +3380,15 @@ public class CLASS {
                         replacedCount++;
                     }
                 } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
                     if (column.isAddCol()) {
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
                         createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
                             pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
@@ -3491,16 +3478,15 @@ public class CLASS {
                             createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
                             createSQL.append(setNullable(column.getColumn().isNullable()));
                         }
-                        if (count == columnList.size() - 1 && pkList.size() == 0) {
-                            ending = "";
-                        }
+                        
                         createSQL.append(ending);
                     }
                 }
                 count++;
             }
+            
             if (pkList.size() > 0) {
-                createSQL.append("primary key(");
+                createSQL.append(",primary key(");
                 int i = 0;
                 for (String pk : pkList) {
                     createSQL.append(pk);
@@ -3511,7 +3497,6 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-            //createSQL.append(")");
             return createSQL.toString();
         }
     }
@@ -3789,26 +3774,27 @@ public class CLASS {
         if(metadatas != null && metadatas.size() > 0) {
             IMetadataTable metadata = metadatas.get(0);
             if(metadata != null) {
-                List<IMetadataColumn> columnList2 = metadata.getListColumns();
-                if( columnList2 == null || columnList2.size()<2 ||!metadata.isDynamicSchema() || "id_Dynamic".equals(columnList2.get(columnList2.size()-1).getTalendType())){
-                    return columnList2;
-                }else{
-                    columnList = new java.util.ArrayList<IMetadataColumn>();
-                    IMetadataColumn dyncolumn = null;
-                    for(IMetadataColumn column:columnList2){
-                        if(column.getTalendType().equals("id_Dynamic")){
-                            dyncolumn = column;
-                        }else{
-                            columnList.add(column);
+                columnList = metadata.getListColumns();
+                if(metadata.isDynamicSchema() && columnList!=null) {
+                    for(int i=columnList.size()-1; i>-1; i--) {
+                        IMetadataColumn column = columnList.get(i);
+                        if("id_Dynamic".equals(column.getTalendType())){
+                            talendDynamicColumn = column;
+                            break;
                         }
                     }
-                    columnList.add(dyncolumn);
                 }
             }
         }
         return columnList;
     }
-
+    
+    private IMetadataColumn talendDynamicColumn = null;
+    
+    public IMetadataColumn getDynamicColumn() {
+        return talendDynamicColumn;
+    }
+    
     public String generate(Object argument) {
 		return null;
         
