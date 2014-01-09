@@ -78,14 +78,16 @@ skeleton="../templates/db_output_bulk.skeleton"
         IConnection conn = conns.get(0);
         incomingConnName = conn.getName();
     }
-    List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
- 
+    
     boolean isDynamic = false;
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
-	isDynamic = metadata.isDynamicSchema(); 
+		isDynamic = metadata.isDynamicSchema(); 
     }
+    
+    List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
     
    	String dbVersion = "" ;
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -313,7 +315,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%   
 		}
 	            for(Column column : stmtStructure) {
-	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable() && !column.isDynamic()) {
 	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());                     
 	                    eiOperation.generateSetStmt(typeToGenerate, column, cid);
 	                    %>
@@ -322,7 +324,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                }
 	            }
 		    if(isDynamic) {
-				Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				Column dynamicColumn = getColumn(getDynamicColumn());
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
