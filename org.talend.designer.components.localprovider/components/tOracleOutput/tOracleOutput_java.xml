@@ -217,7 +217,7 @@
     </PARAMETER>
 
 	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="56"
-			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
+			NOT_SHOW_IF="(PARALLELIZE == 'true') OR (TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before data insert/update/delete</DEFAULT>
 	</PARAMETER>	

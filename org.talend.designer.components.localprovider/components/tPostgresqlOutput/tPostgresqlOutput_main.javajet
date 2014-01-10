@@ -242,6 +242,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} //end isDynamic
 	
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+	boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
 	
 	if (isParallelize) { // bug0014422
 		String tAsyncIn_cid = "";
@@ -283,7 +284,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }
 					if (typeToGenerate.equals("Geometry")) {
                         counter++;
-                        if((createGeometryColumns || createSpatialIndex) && useSpatialOptions) {
+                        if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize && createTable) {
                             %>
                             geometryColumnName_<%=cid %> = "<%=column.getColumn().getLabel() %>";
                             if (firstGeometry_<%=cid %>) {

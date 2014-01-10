@@ -184,7 +184,8 @@ if (batchMode) {
 
 <%
 if(columnList != null && columnList.size() > 0) {
-    if(!("NONE").equals(tableAction)) {
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         StringBuilder columnListStr = new StringBuilder();
         boolean firstColumn = true;
         for(Column column : stmtStructure) {
