@@ -118,11 +118,18 @@
 				continue;
 			}else {//3
 	      		if(stat){
-				%>
-					if(execStat){
-						runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 2, "exec" + NB_ITERATE_<%=iterateNodeName %>);
-					}				
-				<%
+	      			if(node.getDesignSubjobStartNode().getComponent().getName().equals("tCollector")){
+	      			%>
+		      			if(execStat){
+							runStat.updateStatOnIterate("<%=iterateConn.getUniqueName() %>", RunStat.END);
+						}  
+	      			<%
+					}else{%>
+						if(execStat){
+							runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 2, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+						}				
+					<%
+					}
 		  		}
 		  	}//3				
 		}//2

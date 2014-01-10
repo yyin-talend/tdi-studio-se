@@ -217,12 +217,20 @@ for (IConnection iterateConn : iterateConnSet) { //1
 				<%        		
 				}
 			}
-			%>        		
-			if(execStat){
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 1, "exec" + NB_ITERATE_<%=iterateNodeName %>);
-				//Thread.sleep(1000);
-			}				
-		<%
+			if(node.getDesignSubjobStartNode().getComponent().getName().equals("tCollector")){
+			%>
+				if(execStat){
+					runStat.updateStatOnIterate("<%=iterateConn.getUniqueName() %>", RunStat.RUNNING);
+				}        		
+			<%
+			}else{
+			%>
+				if(execStat){
+					runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 1, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+					//Thread.sleep(1000);
+				}				
+			<%
+			}
   		}
 	}//2
 }//1
