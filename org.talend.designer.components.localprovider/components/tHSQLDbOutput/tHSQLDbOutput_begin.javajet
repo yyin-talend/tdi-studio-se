@@ -159,7 +159,8 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size() > 0) {
-    if(!("NONE").equals(tableAction)) {
+    boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__")); 
+    if(!isParallelize && !("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
