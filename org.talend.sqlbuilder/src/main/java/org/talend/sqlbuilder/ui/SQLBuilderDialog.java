@@ -15,7 +15,6 @@ package org.talend.sqlbuilder.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +86,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.UIUtils;
+import org.talend.utils.sql.ConnectionUtils;
 
 /**
  * This Dialog is used for building sql.
@@ -489,12 +489,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                     }
                     // for hsqldb in-process
-                    if (connection != null) {
-                        final Statement createStatement = connection.createStatement();
-                        createStatement.execute("shutdown");
-                        createStatement.close();
-                        connection.close();
-                    }
+                    boolean isHSQL = driverClassName != null
+                            && driverClassName.equals(EDatabase4DriverClassName.HSQLDB.getDriverClass());
+                    ConnectionUtils.closeConnection(connection, isHSQL);
 
                 } catch (SQLException e) {
                     // exception of shutdown success. no need to catch.
