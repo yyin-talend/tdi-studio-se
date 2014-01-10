@@ -209,6 +209,7 @@ if(useExistingConnection) {
     }
 }
 %>
+String dbschema_<%=cid%> = dbname_<%=cid%>;
 if(dbname_<%=cid%> == null || dbname_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = <%=table%>;
 } else {
