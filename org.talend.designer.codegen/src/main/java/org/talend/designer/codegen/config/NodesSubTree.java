@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
@@ -65,6 +66,10 @@ public class NodesSubTree {
 
     INode mergeNode;
 
+    boolean isRefSubTree = false;// for mr only
+
+    List<INode> refNodes; // for mr only
+
     /* display size of method code in comment */
     boolean methodSizeNeeded = false;
 
@@ -110,13 +115,42 @@ public class NodesSubTree {
     }
 
     public NodesSubTree(INode node, List<? extends INode> nodes, ETypeGen typeGen) {
-        this.rootNode = node;
-        this.name = node.getUniqueName();
-        this.nodes = new ArrayList<INode>();
-        this.visitedNodesMainCode = new HashMap<INode, Integer>();
-        allMainSubTreeConnections = new ArrayList<IConnection>();
+        if (typeGen == ETypeGen.CAMEL) {
+            this.rootNode = node;
+            this.name = node.getUniqueName();
+            this.nodes = new ArrayList<INode>();
+            this.visitedNodesMainCode = new HashMap<INode, Integer>();
+            allMainSubTreeConnections = new ArrayList<IConnection>();
 
-        buildCamelSubTree(node, false);
+            buildCamelSubTree(node, false);
+        } else if (typeGen == ETypeGen.MR) {
+            this.rootNode = node;
+            this.name = node.getUniqueName();
+            this.nodes = new ArrayList<INode>();
+            afterSubProcesses = new ArrayList<String>();
+            beforeSubProcesses = new ArrayList<String>();
+
+            allMainSubTreeConnections = new ArrayList<IConnection>();
+
+            buildMRSubTree(node);
+
+            if (refNodes != null) {
+                for (INode refNode : refNodes) {
+                    this.nodes.add(refNode);
+                    for (IConnection connection : refNode.getOutgoingSortedConnections()) {
+                        if (connection.getTarget().isActivate()) {
+
+                            if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                                afterSubProcesses.add(connection.getTarget().getUniqueName());
+                            }
+                            if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                                beforeSubProcesses.add(connection.getTarget().getUniqueName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -158,6 +192,32 @@ public class NodesSubTree {
             }
         }
         visitedNodesMainCode.put(node, 0);
+        nodes.add(node);
+    }
+
+    private void buildMRSubTree(INode node) {
+        if (((AbstractNode) node).isThereLinkWithRef()) {
+            this.isRefSubTree = true;
+            this.refNodes = ((AbstractNode) node).getRefNodes();
+        }
+        for (IConnection connection : node.getOutgoingSortedConnections()) {
+            if (connection.getTarget().isActivate()) {
+
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
+                        allMainSubTreeConnections.add(connection);
+                    }
+                    buildMRSubTree(connection.getTarget());
+                }
+                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                    afterSubProcesses.add(connection.getTarget().getUniqueName());
+                }
+                if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                    beforeSubProcesses.add(connection.getTarget().getUniqueName());
+                }
+            }
+        }
+
         nodes.add(node);
     }
 
@@ -427,5 +487,41 @@ public class NodesSubTree {
 
     public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
         this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
+    }
+
+    /**
+     * Getter for isRefSubTree.
+     * 
+     * @return the isRefSubTree
+     */
+    public boolean isRefSubTree() {
+        return this.isRefSubTree;
+    }
+
+    /**
+     * Sets the isRefSubTree.
+     * 
+     * @param isRefSubTree the isRefSubTree to set
+     */
+    public void setRefSubTree(boolean isRefSubTree) {
+        this.isRefSubTree = isRefSubTree;
+    }
+
+    /**
+     * Getter for refNodes.
+     * 
+     * @return the refNodes
+     */
+    public List<INode> getRefNodes() {
+        return this.refNodes;
+    }
+
+    /**
+     * Sets the refNodes.
+     * 
+     * @param refNodes the refNodes to set
+     */
+    public void setRefNodes(List<INode> refNodes) {
+        this.refNodes = refNodes;
     }
 }
