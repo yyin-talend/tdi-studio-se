@@ -153,8 +153,10 @@ if(useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 	String dbn = "dbname_" + connection ; 
+	String username = "username_" + connection;
 	%>
 	 String dbname_<%=cid%> = (String)globalMap.get("<%=dbn%>");
+	 String dbUser_<%=cid%> = (String)globalMap.get("<%=username%>");
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	<%
 } else {
@@ -183,6 +185,7 @@ if(!useExistingConnection) {
     }
 }
 %>
+String dbschema_<%=cid%> = dbname_<%=cid%>;
 if(dbname_<%=cid%> == null || dbname_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = <%=table%>;
 } else {
