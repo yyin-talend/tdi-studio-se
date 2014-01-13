@@ -12,19 +12,27 @@
 // ============================================================================
 package org.talend.repository.ui.processor;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.ValidationRulesLabelProvider;
 
 /**
  * DOC ycbai class global comment. Detailled comment
  */
 public class ValidationRuleTypeProcessor extends SingleTypeProcessor {
+
+    // get all valid validation rule
+    // List<IRepositoryObject> objectlist = getRelatedValidationRuleObjs(elem);
+    private IElement elem;
 
     /**
      * DOC ycbai ValidationRuleTypeProcessor constructor comment.
@@ -33,6 +41,11 @@ public class ValidationRuleTypeProcessor extends SingleTypeProcessor {
      */
     public ValidationRuleTypeProcessor(String repositoryType) {
         super(repositoryType);
+    }
+
+    public ValidationRuleTypeProcessor(String repositoryType, IElement elem) {
+        super(repositoryType);
+        this.elem = elem;
     }
 
     @Override
@@ -76,4 +89,22 @@ public class ValidationRuleTypeProcessor extends SingleTypeProcessor {
 
     }
 
+    @Override
+    public boolean isSelectionValid(RepositoryNode node) {
+        ValidationRulesLabelProvider provider = (ValidationRulesLabelProvider) getLabelProvider(elem);
+        if (provider.getForeground(node) != ValidationRulesLabelProvider.MERGED_REFERENCED_ITEMS_COLOR) {
+            return super.isSelectionValid(node);
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.processor.MultiTypesProcessor#getLabelProvider()
+     */
+    @Override
+    public ILabelProvider getLabelProvider(IElement elem) {
+        return new ValidationRulesLabelProvider(RepositoryNodeUtilities.getRepositoryView(), elem);
+    }
 }

@@ -14,11 +14,13 @@ package org.talend.repository.ui.processor;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryTypeProcessor;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -132,6 +134,12 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
 
     @Override
     public String getDialogTitle() {
+        return null;
+    }
+
+    @Override
+    public ILabelProvider getLabelProvider(IElement elem) {
+        // TODO Auto-generated method stub
         return null;
     }
 

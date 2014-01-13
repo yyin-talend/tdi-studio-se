@@ -68,7 +68,7 @@ public class ValidationRuleTypeController extends AbstractRepositoryController {
             ERepositoryObjectType type = ERepositoryObjectType.METADATA_VALIDATION_RULES;
 
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(), type, param.getRepositoryValue(),
-                    new ViewerFilter[] { new ValidationRuleFilter() });
+                    new ViewerFilter[] { new ValidationRuleFilter() }, elem);
 
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();

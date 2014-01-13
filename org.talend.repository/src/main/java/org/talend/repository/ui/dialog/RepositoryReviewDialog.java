@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,6 +30,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -42,6 +44,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
@@ -109,6 +112,8 @@ public class RepositoryReviewDialog extends Dialog {
     private RepositoryTreeViewer repositoryTreeViewer;
 
     private IRepositoryView repView;
+
+    private IElement elem;
 
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
@@ -184,6 +189,15 @@ public class RepositoryReviewDialog extends Dialog {
             ViewerFilter[] additionalFilters) {
         this(parentShell, type, repositoryType);
         this.additionalFilters = additionalFilters;
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType,
+            ViewerFilter[] additionalFilters, IElement elem) {
+        this(parentShell, type, repositoryType);
+        this.additionalFilters = additionalFilters;
+        this.elem = elem;
+        this.repositoryType = repositoryType;
+        typeProcessor = createTypeProcessor();
     }
 
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, Boolean isHeaderButton, String repositoryType) {
@@ -287,7 +301,7 @@ public class RepositoryReviewDialog extends Dialog {
         }
 
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
-            return new ValidationRuleTypeProcessor(repositoryType);
+            return new ValidationRuleTypeProcessor(repositoryType, elem);
         }
 
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
@@ -355,6 +369,19 @@ public class RepositoryReviewDialog extends Dialog {
                 return new RepositoryTreeViewer(parent, style);
             }
 
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.repository.viewer.ui.provider.RepositoryViewerProvider#getLabelProvider()
+             */
+            @Override
+            protected ILabelProvider getLabelProvider() {
+                if (typeProcessor.getLabelProvider(elem) != null) {
+                    return typeProcessor.getLabelProvider(elem);
+                }
+                return super.getLabelProvider();
+            }
+
         };
 
         repositoryTreeViewer = (RepositoryTreeViewer) provider.createViewer(viewContainer);
@@ -377,7 +404,10 @@ public class RepositoryReviewDialog extends Dialog {
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "set input"); //$NON-NLS-1$
         repositoryTreeViewer.expandToLevel(2);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "expandAll"); //$NON-NLS-1$
-
+        final Label label = new Label(container, SWT.NONE);
+        label.setText(Messages.getString("RepositoryReviewDialog.label")); //$NON-NLS-1$
+        label.setForeground(new Color(null, 250, 0, 0));
+        label.setVisible(false);
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
         selectNode();
@@ -389,8 +419,17 @@ public class RepositoryReviewDialog extends Dialog {
             public void selectionChanged(SelectionChangedEvent event) {
                 boolean highlightOKButton = isSelectionValid(event);
                 getButton(IDialogConstants.OK_ID).setEnabled(highlightOKButton);
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                if (selection != null) {
+                    RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+                    if (!highlightOKButton && node.getType() == ENodeType.REPOSITORY_ELEMENT
+                            && node.getObjectType().equals(ERepositoryObjectType.METADATA_VALIDATION_RULES)) {
+                        label.setVisible(true);
+                    } else {
+                        label.setVisible(false);
+                    }
+                }
             }
-
         });
         repositoryTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -665,5 +704,4 @@ class DatabaseTypeFilter extends ViewerFilter {
         }
         return false;
     }
-
 }
