@@ -240,9 +240,12 @@ public class ExternalNodeChangeCommand extends Command {
                         IMetadataColumn metadataColumn = listColumns.get(i);
                         IMetadataColumn newMetadataColumn = newListColumns.get(i);
                         if (metadataColumn != null && newMetadataColumn != null) {
+                            String oldId = metadataColumn.getId();
                             String oldLabel = metadataColumn.getLabel();
                             String newLabel = newMetadataColumn.getLabel();
-                            if (oldLabel != null && !oldLabel.equals(newLabel)) {
+                            String newId = newMetadataColumn.getId();
+                            if (oldId != null && oldLabel != null && newId != null && oldId.equals(newId)
+                                    && !oldLabel.equals(newLabel)) {
                                 columnNameChangeds.add(new ColumnNameChanged(oldLabel, newLabel));
                             }
                         }
