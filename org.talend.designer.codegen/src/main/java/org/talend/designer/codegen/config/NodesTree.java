@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ETypeGen;
@@ -52,7 +53,11 @@ public class NodesTree {
         this.nodes = treeNodes;
         buildRootNodes(process);
         if (init) {
-            buildCamelSubTrees(true);
+            if (typeGen == ETypeGen.CAMEL) {
+                buildCamelSubTrees(true);
+            } else if (typeGen == ETypeGen.MR) {
+                buildMRSubTrees();
+            }
         }
     }
 
@@ -89,6 +94,21 @@ public class NodesTree {
                     subTrees.add(new NodesSubTree(node, nodes));
                 }
 
+            }
+        }
+    }
+
+    private void buildMRSubTrees() {
+        subTrees = new ArrayList<NodesSubTree>();
+        for (INode node : nodes) {
+            if (((node.isSubProcessStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
+                if (node.getOutgoingConnections(EConnectionType.FLOW_REF) != null
+                        && node.getOutgoingConnections(EConnectionType.FLOW_REF).size() == 1) {
+                    // ignore the node when it output connection is flow_ref, because it has been added in
+                    // AbstractNode.setRefNodes
+                    continue;
+                }
+                subTrees.add(new NodesSubTree(node, nodes, ETypeGen.MR));
             }
         }
     }
