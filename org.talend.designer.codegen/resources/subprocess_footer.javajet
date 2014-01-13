@@ -104,6 +104,29 @@
 		}
 	<%
 	}else{
+    	for(INode node : subTree.getNodes()){
+    		if(node!=null){
+    			if("tDepartitioner".equals(node.getComponent().getName())){
+    				String cid = node.getUniqueName();
+				    String connName = null;
+                    if (node.getIncomingConnections().size() == 1) {
+                        IConnection conn = node.getIncomingConnections().get(0);
+                        connName = conn.getName();
+                    }
+    				%>
+    				globalMap.put("COMPLETED_<%=cid%>",Boolean.TRUE);
+                    class DepartitionerPoison_<%=cid%> extends <%=connName%>Struct {
+                    }
+					resourceMap.put("finish_<%=cid%>", true); 
+
+					outputQueue_<%=cid%>.put(new DepartitionerPoison_<%=cid%>());
+                    <%if(isLog4jEnabled){%>
+                    	log.info("<%=cid%>[" + Thread.currentThread().getName() + "] - Done.");
+                    <%}%>
+    			<%
+    			}
+    		}
+    	}
 	%>
 				}//end the resume
 
