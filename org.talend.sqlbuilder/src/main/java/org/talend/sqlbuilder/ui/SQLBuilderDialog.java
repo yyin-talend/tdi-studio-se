@@ -15,7 +15,6 @@ package org.talend.sqlbuilder.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +86,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.UIUtils;
+import org.talend.utils.sql.ConnectionUtils;
 
 /**
  * This Dialog is used for building sql.
@@ -128,7 +128,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     /**
      * The progress monitor.
      */
-    private ProgressMonitor progressMonitor = new ProgressMonitor();
+    private final ProgressMonitor progressMonitor = new ProgressMonitor();
 
     /**
      * SessionTreeNode Manager.
@@ -150,6 +150,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
         protected boolean locked = false;
 
+        @Override
         public void beginTask(String name, int totalWork) {
             if (progressIndicator == null) {
                 return;
@@ -164,6 +165,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
         }
 
+        @Override
         public void done() {
             if (progressIndicator == null) {
                 return;
@@ -174,13 +176,16 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
         }
 
+        @Override
         public void setTaskName(String name) {
         }
 
+        @Override
         public boolean isCanceled() {
             return fIsCanceled;
         }
 
+        @Override
         public void setCanceled(boolean b) {
             fIsCanceled = b;
             if (locked) {
@@ -188,13 +193,16 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
         }
 
+        @Override
         public void subTask(String name) {
         }
 
+        @Override
         public void worked(int work) {
             internalWorked(work);
         }
 
+        @Override
         public void internalWorked(double work) {
             if (!progressIndicator.isDisposed()) {
                 progressIndicator.worked(work);
@@ -206,6 +214,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
          * 
          * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
          */
+        @Override
         public void clearBlocked() {
         }
 
@@ -214,6 +223,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
          * 
          * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
          */
+        @Override
         public void setBlocked(IStatus reason) {
             locked = true;
         }
@@ -251,6 +261,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
+    @Override
     public void configureShell(Shell shell) {
         super.configureShell(shell);
         // Set the title bar text
@@ -262,6 +273,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @param parent
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         container = (Composite) super.createDialogArea(parent);
         // container.setLayout(new GridLayout());
@@ -303,6 +315,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#openEditor(org.talend.repository.model.RepositoryNode,
      * java.util.List, org.talend.sqlbuilder.util.ConnectionParameters, boolean)
      */
+    @Override
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor) {
         this.nodeInEditor = node;
@@ -362,6 +375,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @param parent
      */
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         parent.setLayoutData(data);
@@ -394,6 +408,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         button.setData(new Integer(id));
         button.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 buttonPressed(((Integer) event.widget.getData()).intValue());
             }
@@ -415,6 +430,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     /**
      * Return the initial size of the dialog.
      */
+    @Override
     protected Point getInitialSize() {
         return new Point(800, 600);
     }
@@ -489,12 +505,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                     }
                     // for hsqldb in-process
-                    if (connection != null) {
-                        final Statement createStatement = connection.createStatement();
-                        createStatement.execute("shutdown");
-                        createStatement.close();
-                        connection.close();
-                    }
+                    boolean isHSQL = driverClassName != null
+                            && driverClassName.equals(EDatabase4DriverClassName.HSQLDB.getDriverClass());
+                    ConnectionUtils.closeConnection(connection, isHSQL);
 
                 } catch (SQLException e) {
                     // exception of shutdown success. no need to catch.
@@ -510,6 +523,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @return the progress monitor
      */
+    @Override
     public IProgressMonitor getProgressMonitor() {
         return progressMonitor;
     }
@@ -519,10 +533,12 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @param connParameters the connParameters to set
      */
+    @Override
     public void setConnParameters(ConnectionParameters connParameters) {
         this.connParameters = connParameters;
     }
 
+    @Override
     public ConnectionParameters getConnParameters() {
         return connParameters;
     }
@@ -543,6 +559,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
+    @Override
     public void okPressed() {
         // gain the contextmode from sqlbuilder,and set it in connParameters,add by hyWang
         MultiPageSqlBuilderEditor editor = null;
@@ -684,6 +701,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#refreshNode(org.talend.repository.model.RepositoryNode)
      */
+    @Override
     public void refreshNode(RepositoryNode node) {
         structureComposite.doRefresh(node);
     }
@@ -697,7 +715,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     public class RefreshDetailCompositeAction extends SelectionProviderAction {
 
-        private Shell shell;
+        private final Shell shell;
 
         SessionTreeNode sessionTreeNode;
 
@@ -720,6 +738,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
          * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection
          * )
          */
+        @Override
         public void selectionChanged(final IStructuredSelection selection) {
             if (!selection.isEmpty() && selectedContext == null) {
                 RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
@@ -742,12 +761,14 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
             IRunnableWithProgress progress = new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     try {
                         Display.getDefault().asyncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 INode node = null;
                                 String msg = null;
@@ -808,6 +829,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         this.isFromRepositoryView = isFromRepositoryView;
     }
 
+    @Override
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
         if (structureComposite != null) {
@@ -816,6 +838,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         manager.synchronizeAllSqlEditors(this);
     }
 
+    @Override
     public void notifySQLBuilder(IRepositoryViewObject o) {
         CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
         CorePlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(o));
@@ -828,6 +851,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#openEditor(org.talend.repository.model.RepositoryNode,
      * java.util.List, org.talend.sqlbuilder.util.ConnectionParameters, boolean, java.util.List)
      */
+    @Override
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor, List<IRepositoryNode> nodeSel) {
         this.nodeInEditor = node;
@@ -849,6 +873,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#getSelectedContext()
      */
+    @Override
     public String getSelectedContext() {
         return this.selectedContext;
     }
