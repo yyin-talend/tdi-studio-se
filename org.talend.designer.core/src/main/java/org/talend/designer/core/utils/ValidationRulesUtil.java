@@ -98,8 +98,7 @@ public class ValidationRulesUtil {
                             if (item != null && item instanceof ValidationRulesConnectionItem) {
                                 ValidationRulesConnectionItem validItem = (ValidationRulesConnectionItem) item;
                                 ValidationRulesConnection connection = (ValidationRulesConnection) validItem.getConnection();
-                                if (connection != null && schemaId.equals(connection.getBaseSchema())
-                                        && !rulesObjs.contains(member)) {
+                                if (connection != null && !rulesObjs.contains(member)) {
                                     rulesObjs.add(member);
                                 }
                             }
