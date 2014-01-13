@@ -21,6 +21,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -76,6 +80,33 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
  * 
  */
 public class ColumnListController extends AbstractElementPropertySectionController {
+
+    /**
+     * Use to separate column names like "col1, col2, col3" in the filter.
+     */
+    private static final String FILTER_SEPARATOR = ","; //$NON-NLS-1$
+
+    /**
+     * Indicate filter all.
+     */
+    private static final String FILTER_ALL = "*"; //$NON-NLS-1$
+
+    /**
+     * Indicate you want to use regular expression after.
+     */
+    private static final String FILTER_PREFIX_REGEXP = "REGEXP:"; //$NON-NLS-1$
+
+    /**
+     * Indicate you only want to filter none custom columns.
+     */
+    private static final String FILTER_PREFIX_NONE_CUSTOM = "NONE_CUSTOM_COLUMNS:"; //$NON-NLS-1$
+
+    /**
+     * Indicate you only want to filter custom columns.
+     */
+    private static final String FILTER_PREFIX_CUSTOM = "CUSTOM_COLUMNS:"; //$NON-NLS-1$
+
+    private static Logger log = Logger.getLogger(ColumnListController.class);
 
     private boolean updateColumnListFlag;
 
@@ -322,9 +353,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     // only set synWidthWithMhaoetadataColumn =true, when use the metadataDialog to set the metadata.
     // see issue 0001676
     public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
+        Map<String, Boolean> customColMap = new HashMap<String, Boolean>();
         List<String> columnList = null;
-        List<String> prevColumnList = getPrevColumnList(node);
-        Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
+        List<String> prevColumnList = getPrevColumnList(node, customColMap);
+        Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node, customColMap);
 
         String[] columnNameList = null;
         String[] prevColumnNameList = prevColumnList.toArray(new String[0]);
@@ -351,12 +383,12 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         boolean isEdifactComponent = node.getComponent().getName().equals("tExtractEDIField");
         updateColumnsOnElement(node, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
                 curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
-                refColumnListValues, isSCDComponent, isEdifactComponent);
+                refColumnListValues, isSCDComponent, isEdifactComponent, customColMap);
 
         for (IConnection connection : node.getOutgoingConnections()) {
             updateColumnsOnElement(connection, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
                     curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
-                    refColumnListValues, isSCDComponent, isEdifactComponent);
+                    refColumnListValues, isSCDComponent, isEdifactComponent, customColMap);
         }
         synLengthTipFlag = null;
     }
@@ -364,7 +396,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     private static void updateColumnsOnElement(IElement element, List<ColumnNameChanged> columnsChanged,
             boolean synWidthWithMetadataColumn, String[] prevColumnNameList, String[] curColumnNameList,
             String[] curColumnValueList, List<String> refColumnListNamesTmpWithSourceName, List<String> refColumnListValuesTmp,
-            String[] refColumnListNames, String[] refColumnListValues, boolean isSCDComponent, boolean isEdifactComponent) {
+            String[] refColumnListNames, String[] refColumnListValues, boolean isSCDComponent, boolean isEdifactComponent,
+            Map<String, Boolean> customColMap) {
         List<String> columnList;
         String[] columnNameList;
         String edifactId = null;
@@ -378,7 +411,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         for (int i = 0; i < element.getElementParameters().size(); i++) {
             IElementParameter param = element.getElementParameters().get(i);
-            columnList = getColumnList(element, param.getContext());
+            columnList = getColumnList(element, param.getContext(), null);
             columnNameList = columnList.toArray(new String[0]);
             if (param.getFieldType() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {
                 curColumnNameList = columnNameList;
@@ -423,7 +456,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 for (Object element2 : itemsValue) {
                     if (element2 instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) element2;
-                        columnList = getColumnList(element, tmpParam.getContext());
+                        columnList = getColumnList(element, tmpParam.getContext(), customColMap);
                         String[] tableColumnNameList = columnList.toArray(new String[0]);
                         if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST) {
                             curColumnNameList = tableColumnNameList;
@@ -446,15 +479,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST
                                 || tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
                                 || tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
-                            String filterColumns = tmpParam.getFilter();
-                            if (filterColumns != null) { // Hide all filter columns.
-                                // Column filter should be split by comma if it has more than one column name.
-                                String[] filterColumnsArray = filterColumns.split(","); //$NON-NLS-1$
-                                for (String column : filterColumnsArray) {
-                                    curColumnNameList = (String[]) ArrayUtils.removeElement(curColumnNameList, column);
-                                    curColumnValueList = (String[]) ArrayUtils.removeElement(curColumnValueList, column);
-                                }
-                            }
+                            List<String[]> filterColumns = filterColumns(tmpParam, curColumnNameList, curColumnValueList,
+                                    customColMap);
+                            curColumnNameList = filterColumns.get(0);
+                            curColumnValueList = filterColumns.get(1);
                             tmpParam.setListItemsDisplayCodeName(curColumnNameList);
                             tmpParam.setListItemsDisplayName(curColumnNameList);
                             tmpParam.setListItemsValue(curColumnValueList);
@@ -652,6 +680,102 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     }
 
     /**
+     * 
+     * <p>
+     * You can fill the filter as the format below:
+     * </p>
+     * <l> <li>CUSTOM_COLUMNS:col1</li> <li>CUSTOM_COLUMNS:col1, col2, ...</li> <li>CUSTOM_COLUMNS:*</li> <li>
+     * CUSTOM_COLUMNS:REGEXP:any regular expressions</li> <li>NONE_CUSTOM_COLUMNS:col1</li> <li>
+     * NONE_CUSTOM_COLUMNS:col1, col2, ...</li> <li>NONE_CUSTOM_COLUMNS:*</li> <li>NONE_CUSTOM_COLUMNS:REGEXP:any
+     * regular expressions</li> <li>REGEXP:any regular expressions</li> <li>col1</li> <li>col1,col2, ...</li> <li>*</li>
+     * </l>
+     * 
+     * <br>
+     * You can refer to {@link ColumnListControllerTest } to know how does this method work. </br> <br>
+     * DOC ycbai Comment method "filterColumns".
+     * 
+     * @param param
+     * @param curColumnNameList
+     * @param curColumnValueList
+     * @param customColMap
+     * @return
+     */
+    private static List<String[]> filterColumns(IElementParameter param, String[] curColumnNameList, String[] curColumnValueList,
+            Map<String, Boolean> customColMap) {
+        List<String[]> updatedColumns = new ArrayList<String[]>();
+        String[] columnNameList = curColumnNameList;
+        String[] columnValueList = curColumnValueList;
+
+        String filterColumns = param.getFilter();
+        if (filterColumns != null) { // Hide all filter columns.
+            try {
+                String[] tmpColumnNameList = new String[curColumnNameList.length];
+                System.arraycopy(curColumnNameList, 0, tmpColumnNameList, 0, tmpColumnNameList.length);
+                String filter = filterColumns;
+                boolean onlyFilterCustom = false;
+                if (filter.startsWith(FILTER_PREFIX_CUSTOM)) {
+                    filter = filter.substring(FILTER_PREFIX_CUSTOM.length());
+                    onlyFilterCustom = true;
+                }
+                boolean onlyFilterNoneCustom = false;
+                if (filter.startsWith(FILTER_PREFIX_NONE_CUSTOM)) {
+                    filter = filter.substring(FILTER_PREFIX_NONE_CUSTOM.length());
+                    onlyFilterNoneCustom = true;
+                }
+                boolean unlimited = !onlyFilterCustom && !onlyFilterNoneCustom;
+                boolean hasReg = false;
+                if (filter.startsWith(FILTER_PREFIX_REGEXP)) {
+                    filter = filter.substring(FILTER_PREFIX_REGEXP.length());
+                    hasReg = true;
+                }
+                boolean filterAll = false;
+                if (filter.equals(FILTER_ALL)) {
+                    filterAll = true;
+                }
+                if (hasReg) {
+                    Perl5Matcher matcher = new Perl5Matcher();
+                    Perl5Compiler compiler = new Perl5Compiler();
+                    Pattern pattern = compiler.compile(filter);
+                    for (String colName : tmpColumnNameList) {
+                        if (!matcher.matches(colName, pattern)
+                                && (onlyFilterCustom && customColMap.get(colName) || onlyFilterNoneCustom
+                                        && !customColMap.get(colName) || unlimited)) {
+                            columnNameList = (String[]) ArrayUtils.removeElement(columnNameList, colName);
+                            columnValueList = (String[]) ArrayUtils.removeElement(columnValueList, colName);
+                        }
+                    }
+                } else {
+                    if (filterAll) {
+                        for (String colName : tmpColumnNameList) {
+                            if (onlyFilterCustom && customColMap.get(colName) || onlyFilterNoneCustom
+                                    && !customColMap.get(colName) || unlimited) {
+                                columnNameList = (String[]) ArrayUtils.removeElement(columnNameList, colName);
+                                columnValueList = (String[]) ArrayUtils.removeElement(columnValueList, colName);
+                            }
+                        }
+                    } else {
+                        String[] filterColumnsArray = filter.split(FILTER_SEPARATOR);
+                        for (String colName : filterColumnsArray) {
+                            if (onlyFilterCustom && customColMap.get(colName) || onlyFilterNoneCustom
+                                    && !customColMap.get(colName) || unlimited) {
+                                columnNameList = (String[]) ArrayUtils.removeElement(columnNameList, colName);
+                                columnValueList = (String[]) ArrayUtils.removeElement(columnValueList, colName);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn(Messages.getString("ColumnListController.invalidRegx", param.getName()), e); //$NON-NLS-1$
+            }
+        }
+
+        updatedColumns.add(columnNameList);
+        updatedColumns.add(columnValueList);
+
+        return updatedColumns;
+    }
+
+    /**
      * FOR ISSUE 1678 <br>
      * null: need tip<br>
      * true: no need to tip, and confirmation is ok. <br>
@@ -742,7 +866,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return synLengthTipFlag.booleanValue();
     }
 
-    private static List<String> getColumnList(IElement element, String context) {
+    private static List<String> getColumnList(IElement element, String context, Map<String, Boolean> customColMap) {
         List<String> columnList = new ArrayList<String>();
 
         IMetadataTable table = null;
@@ -768,6 +892,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
+                if (column.isCustom()) { // for TDI-28502
+                    continue;
+                }
                 // add for bug 12034
                 String label = column.getLabel();
                 //                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
@@ -779,13 +906,16 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 // }
                 // }
                 columnList.add(label);
+                if (customColMap != null) {
+                    customColMap.put(column.getLabel(), column.isCustom());
+                }
             }
         }
 
         return columnList;
     }
 
-    private static List<String> getPrevColumnList(INode node) {
+    private static List<String> getPrevColumnList(INode node, Map<String, Boolean> customColMap) {
         List<String> columnList = new ArrayList<String>();
 
         IConnection connection = null;
@@ -801,6 +931,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             IMetadataTable table = connection.getMetadataTable();
             if (table != null) {
                 for (IMetadataColumn column : table.getListColumns()) {
+                    if (column.isCustom()) { // for TDI-28502
+                        continue;
+                    }
                     columnList.add(column.getLabel());
                 }
             }
@@ -809,7 +942,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return columnList;
     }
 
-    private static Map<IConnection, List<String>> getRefColumnLists(INode node) {
+    private static Map<IConnection, List<String>> getRefColumnLists(INode node, Map<String, Boolean> customColMap) {
         Map<IConnection, List<String>> refColumnLists = new HashMap<IConnection, List<String>>();
 
         List<IConnection> refConnections = new ArrayList<IConnection>();
@@ -827,6 +960,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             }
             for (IMetadataColumn column : table.getListColumns()) {
                 columnList.add(column.getLabel());
+                if (customColMap != null) {
+                    customColMap.put(column.getLabel(), column.isCustom());
+                }
             }
             refColumnLists.put(connection, columnList);
         }
