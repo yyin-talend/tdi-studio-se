@@ -972,8 +972,11 @@ class ExportItemWizardPage extends WizardPage {
         if (filteredCheckboxTree != null) {
             IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
             if (contentProvider instanceof ITreeContentProvider) {
-                Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
-                collectNodes(items, children);
+                // only check childrens of allowed items in this viewer
+                if (selectRepositoryNode(getItemsTreeViewer(), repositoryNode)) {
+                    Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
+                    collectNodes(items, children);
+                }
             }
         }
 
