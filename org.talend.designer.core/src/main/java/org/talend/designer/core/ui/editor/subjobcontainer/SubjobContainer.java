@@ -309,10 +309,10 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         newLocation.x = (location.x / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE;
         newLocation.y = (location.y / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE;
         // bug 5158
-        if (newLocation.y <= 0) {
+        if (newLocation.y <= 0 && location.y < 0) {
             newLocation.y = newLocation.y - TalendEditor.GRID_SIZE;
         }
-        if (newLocation.x <= 0) {
+        if (newLocation.x <= 0 && location.x < 0) {
             newLocation.x = newLocation.x - TalendEditor.GRID_SIZE;
         }
         totalRectangle.setLocation(newLocation);
