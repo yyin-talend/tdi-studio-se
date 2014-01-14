@@ -12,12 +12,21 @@ imports="
         org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.utils.TalendTextUtils	
+       	org.talend.core.model.process.IProcess
+       	org.talend.core.model.process.IElementParameter
+       	org.talend.core.model.utils.NodeUtil
 		"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	
+	IProcess process = node.getProcess();
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
 
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
@@ -26,8 +35,11 @@ imports="
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
    	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
-%>
-
+   	
+   	log4jFileUtil.logParameters(node);
+   	log4jFileUtil.componentStartInfo(node);
+	%>
+ 
 int nb_line_<%=cid%> = 0;
 int limit_<%=cid %> = <%=limit %>;
 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
@@ -248,6 +260,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					}
 				}
 			}
+			log4jFileUtil.startRetriveDataInfo();
 						
 			boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 			String sql = "";
@@ -375,8 +388,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 								} else {
 									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 								}
-							<%
+								<%
+								log4jFileUtil.collectRetriveData("value_" + cid);
 							}
+							log4jFileUtil.debugRetriveData(node);
 			}// end 1
 		}
 	}

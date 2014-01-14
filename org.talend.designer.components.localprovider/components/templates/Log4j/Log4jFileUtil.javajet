@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IElementParameter
 " 
 %>
 <%
@@ -26,36 +27,36 @@ imports="
 		public void componentStartInfo(INode node) {
 			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
-%>
+			%>
 				log.info("<%=cid%> - Start to work");
 				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-<%
+			<%
 			}
 		}
 		
 		public void componentFinishInfo(INode node) {
 			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
-%>
+			%>
 				log.info("<%=cid%> - Done.");
-<%
+			<%
 			}
 		}
 
 		//for all tFileinput* components 
 		public void startRetriveDataInfo() {
 			if (isLog4jEnabled) {
-%>
+			%>
 				log.info("<%=cid%> - Retrieving records from the datasource.");
-<%
+			<%
 			}
 		}
 		
 		public void retrievedDataNumberInfo() {
 			if (isLog4jEnabled) {
-%>
+			%>
 				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
-<%
+			<%
 			}
 		}
 		
@@ -63,9 +64,43 @@ imports="
 		public void retrievedDataNumberInfo(INode node) {
 			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
-%>
+			%>
 				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
-<%
+			<%
+			}
+		}
+		
+		public void logParameters(INode node){
+			beforeComponentProcess(node);
+			if(isLog4jEnabled){
+			%>
+				StringBuilder log4jParamters_<%=cid%> = new StringBuilder();
+			   	log4jParamters_<%=cid%>.append("<%=cid%>" + " - Parameters:");
+			   	<%
+			   	java.util.List<org.talend.core.model.process.EParameterFieldType> ignoreT = java.util.Arrays.asList(org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE, org.talend.core.model.process.EParameterFieldType.TABLE);
+		   		for(IElementParameter ep : NodeUtil.getDisplayedParameters(node)){
+		   			if(ignoreT.contains(ep.getFieldType())){
+		   				continue;
+		   			}
+		   			String name = ep.getName();
+		   			String value = NodeUtil.getNormalizeParameterValue(node, ep);
+		   			%>
+					log4jParamters_<%=cid%>.append("<%=name%>" + " = " + <%=value%>);
+					log4jParamters_<%=cid%>.append(" | ");
+				<%
+		   		}
+		   		%>
+		   		log.debug(log4jParamters_<%=cid%>);
+	   		<%
+	   		}
+		}
+		
+		public void collectRetriveData(String columnValue){
+			if(isLog4jEnabled){
+			%>
+				log4jSb_<%=cid%>.append(<%=columnValue%>);
+				log4jSb_<%=cid%>.append("|");								
+			<%
 			}
 		}
 		
@@ -73,11 +108,11 @@ imports="
 		public void debugRetriveData(INode node) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
-%>
+			%>
 				log.debug("<%=cid%> - Retrieving the record " + (nb_line_<%=cid%>) + ".");
 				log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%>) + ": " + log4jSb_<%=cid%>);
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-<%		
+			<%		
 			}
 		}
 		
@@ -85,24 +120,25 @@ imports="
 		public void debugWriteData(INode node) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
-%>
+			%>
 				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " to the file.");
 				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
-<%		
+			<%		
 			}
 		}
 		
 		//for all tFileOutput* components
+		//TODO: should rename as writtenDataNumberInfo?
 		public void writeDataFinishInfo(INode node) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
-%>
+			%>
 				log.info("<%=cid%> - Written records count: " + nb_line_<%=cid %> + " .");
-<%		
+			<%		
 			}
 		}
 	}
 	
 	DefaultLog4jFileUtil log4jFileUtil = new DefaultLog4jFileUtil();
-%>
+	%>

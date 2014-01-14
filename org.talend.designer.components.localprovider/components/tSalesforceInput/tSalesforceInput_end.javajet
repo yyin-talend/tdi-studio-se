@@ -8,8 +8,11 @@ imports="
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
 		java.util.List
+       	org.talend.core.model.process.IElementParameter
+       	org.talend.core.model.utils.NodeUtil
 		"
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 
@@ -68,5 +71,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		}
 	}
 }
+log4jFileUtil.retrievedDataNumberInfo(node);
 %>
 globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid%>);
+<%log4jFileUtil.componentFinishInfo(node);%>
