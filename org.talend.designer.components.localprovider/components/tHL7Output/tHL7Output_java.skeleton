@@ -156,10 +156,12 @@ public class CLASS {
             }
             prevMap = tmpMap;
         }
-        HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
-        node.calAddPath(repeativeNodes);
-        setIMetadataColumn(node, colList);
-        nodes.add(node);
+        if (prevMap != null) {
+            HL7Node node = new HL7Node(prevMap.get("PATH"),prevMap.get("COLUMN"),prevMap.get("VALUE"));
+            node.calAddPath(repeativeNodes);
+            setIMetadataColumn(node, colList);
+            nodes.add(node);
+        }
 
         return nodes;
     }
