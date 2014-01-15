@@ -1,10 +1,4 @@
 <%@ jet 
-imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
-    org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.IElementParameter
-" 
 %>
 <%
 	//this util class use by set log4j debug paramters
@@ -21,7 +15,7 @@ imports="
 	    
 		private void init() {
 	    	cid = node.getUniqueName();
-			isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+			isLog4jEnabled = ("true").equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		}
 		
 		public void componentStartInfo(INode node) {
@@ -78,12 +72,12 @@ imports="
 			   	log4jParamters_<%=cid%>.append("<%=cid%>" + " - Parameters:");
 			   	<%
 			   	java.util.List<org.talend.core.model.process.EParameterFieldType> ignoreT = java.util.Arrays.asList(org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE, org.talend.core.model.process.EParameterFieldType.TABLE);
-		   		for(IElementParameter ep : NodeUtil.getDisplayedParameters(node)){
+		   		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
 		   			if(ignoreT.contains(ep.getFieldType())){
 		   				continue;
 		   			}
 		   			String name = ep.getName();
-		   			String value = NodeUtil.getNormalizeParameterValue(node, ep);
+		   			String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
 		   			%>
 					log4jParamters_<%=cid%>.append("<%=name%>" + " = " + <%=value%>);
 					log4jParamters_<%=cid%>.append(" | ");

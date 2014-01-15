@@ -12,9 +12,6 @@ imports="
         org.talend.core.model.process.INode
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.utils.TalendTextUtils	
-       	org.talend.core.model.process.IProcess
-       	org.talend.core.model.process.IElementParameter
-       	org.talend.core.model.utils.NodeUtil
 		"
 %>
 
@@ -25,9 +22,6 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	IProcess process = node.getProcess();
-	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
