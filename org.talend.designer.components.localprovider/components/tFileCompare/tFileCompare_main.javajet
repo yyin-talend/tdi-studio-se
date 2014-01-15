@@ -8,6 +8,8 @@ imports="
 "
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -20,6 +22,11 @@ String noDifferMessage = ElementParameterParser.getValue(node, "__NO_DIFFER_MESS
 String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
 String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+log4jFileUtil.logParameters(node);
+log4jFileUtil.componentStartInfo(node);
 %>
 
 boolean result_<%=cid%> = true;
@@ -104,6 +111,12 @@ if (print) {
 <%
 }
 
+if(isLog4jEnabled) {
+%>
+	log.info("<%=cid%> - Compare result : " + message<%=cid %> + ".");
+<%
+}
+
 for (IConnection conn : node.getOutgoingConnections()) {
 	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
@@ -115,6 +128,13 @@ for (IConnection conn : node.getOutgoingConnections()) {
 		<%=conn.getName() %>.differ = (result_<%=cid%>)?0:1;
 		<%=conn.getName() %>.message = message<%=cid %>;
 <%
+		if(isLog4jEnabled) {
+%>
+			log.info("<%=cid%> - Compare date : " + routines.system.FormatterUtils.format_Date(<%=conn.getName() %>.moment,"dd-MM-yyyy HH:mm:ss") + ".");
+<%
+		}
 	}
 }
+
+log4jFileUtil.componentFinishInfo(node);
 %>

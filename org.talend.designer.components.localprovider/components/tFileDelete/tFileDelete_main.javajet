@@ -5,6 +5,9 @@
 		org.talend.core.model.process.ElementParameterParser
 		"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -15,6 +18,11 @@ String path = ElementParameterParser.getValue(node, "__PATH__");
 String failon = ElementParameterParser.getValue(node, "__FAILON__");
 boolean ifFolder = ("true").equals(ElementParameterParser.getValue(node, "__FOLDER__"));
 boolean either = ("true").equals(ElementParameterParser.getValue(node, "__FOLDER_FILE__"));
+
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+log4jFileUtil.logParameters(node);
+log4jFileUtil.componentStartInfo(node);
 %>
 class DeleteFolder<%=cid%>{
 	 /**
@@ -61,24 +69,55 @@ if(either){
 		if(path_<%=cid%>.isFile()){
 	    	if(path_<%=cid%>.delete()){
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+<%
+				if(isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - File : "+ path_<%=cid%>.getAbsolutePath() + " is deleted.");
+<%
+				}
+%>
 	    	}else{
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+<%
+				if(isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Fail to delete file : "+ path_<%=cid%>.getAbsolutePath());
+<%
+				}
+%>
 	    	}
 		}else if(path_<%=cid%>.isDirectory()){ 
 	    	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
 	    	if(df<%=cid%>.delete(path_<%=cid%>)){
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path deleted.");
+<%
+				if(isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Directory : "+ path_<%=cid%>.getAbsolutePath() + " is deleted.");
+<%
+				}
+%>
 	    	}else{
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No path deleted.");
+<%
+				if(isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Fail to delete directory : "+ path_<%=cid%>.getAbsolutePath());
+<%
+				}
+%>
 	    	}
 		}
     }else{
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "File or path does not exists or is invalid.");
-
 <%
 		if(("true").equals(failon)){
 %>
     		throw new RuntimeException("File or path does not exists or is invalid.");
+<%
+		} else if(isLog4jEnabled) {
+%>
+    		log.error("<%=cid%> - File or directory : "+ path_<%=cid%>.getAbsolutePath() + " does not exists or is invalid.");
 <%
 		}
 %>
@@ -94,16 +133,33 @@ if(either){
 		DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
 		if(df<%=cid%>.delete(file<%=cid%>)){
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path deleted.");
+<%
+			if(isLog4jEnabled) {
+%>
+    		log.info("<%=cid%> - Directory : "+ file<%=cid%>.getAbsolutePath() + " is deleted.");
+<%
+			}
+%>
     	}else{
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "No path deleted.");
+<%
+			if(isLog4jEnabled) {
+%>
+    		log.info("<%=cid%> - Fail to delete directory : "+ file<%=cid%>.getAbsolutePath());
+<%
+			}
+%>
     	}
 	}else{
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path does not exists or is invalid.");
-
 <%
 		if(("true").equals(failon)){
 %>
     		throw new RuntimeException("Path does not exists or is invalid.");
+<%
+		} else if(isLog4jEnabled) {
+%>
+			log.error("<%=cid%> - "+ file<%=cid%>.getAbsolutePath() + " does not exists or is invalid or is not a directory.");
 <%
 		}
 %>
@@ -116,8 +172,22 @@ if(either){
     if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile()){
     	if(file_<%=cid%>.delete()){
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+<%
+			if(isLog4jEnabled) {
+%>
+    		log.info("<%=cid%> - File : "+ file_<%=cid%>.getAbsolutePath() + " is deleted.");
+<%
+			}
+%>
     	}else{
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+<%
+			if(isLog4jEnabled) {
+%>
+    		log.info("<%=cid%> - Fail to delete file : "+ file_<%=cid%>.getAbsolutePath());
+<%
+			}
+%>
     	}
     }else{
     	globalMap.put("<%=cid %>_CURRENT_STATUS", "File does not exists or is invalid.");
@@ -126,12 +196,18 @@ if(either){
 %>
     		throw new RuntimeException("File does not exists or is invalid.");
 <%
+		} else if(isLog4jEnabled) {
+%>
+			log.error("<%=cid%> - "+ file_<%=cid%>.getAbsolutePath() + " does not exists or is invalid or is not a file.");
+<%
 		}
 %>
 	}
 	globalMap.put("<%=cid %>_DELETE_PATH",<%=fileName%>);
 <%
 }
+
+log4jFileUtil.componentFinishInfo(node);
 %>
     
      

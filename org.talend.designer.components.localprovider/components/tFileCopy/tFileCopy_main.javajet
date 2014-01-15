@@ -4,7 +4,10 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser
 		"
-%>	
+%>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 
@@ -27,6 +30,11 @@
 	boolean rpFile = ("true").equals(ElementParameterParser.getValue(node,"__REPLACE_FILE__"));
 
 	boolean creatDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__"));
+	
+	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
+	log4jFileUtil.logParameters(node);
+	log4jFileUtil.componentStartInfo(node);
 	
 	if (isCopyADir){ // copy a directory
 %>     
@@ -76,6 +84,9 @@
 									org.talend.FileCopy.copyFile(srcFilePath, desFilePath, false);
 								} catch (java.lang.Exception e){ 
 									e.printStackTrace();
+									<%if(isLog4jEnabled) {%>
+									log.error("<%=cid%> - " + e.getMessage());
+									<%}%>
 								}
 							}
 	
@@ -91,6 +102,13 @@
 					} 
         		}else{
         			System.err.println("Path name \""+rootFolder.getPath()+"\"  does not denote a directory, or if an I/O error occurs.");
+<%
+					if(isLog4jEnabled) {
+%>
+					log.error("<%=cid%> - Path name \""+rootFolder.getPath()+"\"  does not denote a directory, or if an I/O error occurs.");
+<%
+					}
+%>
         		}
 			}
 		}
@@ -142,10 +160,24 @@
 %>
 				java.io.File isRemoved_<%=cid %> = new java.io.File(<%=fileName%>);
 				if(isRemoved_<%=cid %>.exists()) {
-					System.err.println("The source file could not be removed from the folder because it is open or you only have read-only rights.\n");
+<%
+				if(isLog4jEnabled) {
+%>
+					log.error("<%=cid%> - The source file \"" + srcFileName_<%=cid %> + "\" could not be removed from the folder because it is open or you only have read-only rights.");
+<%
 				}
-			
-<%			}
+%>
+					System.err.println("The source file could not be removed from the folder because it is open or you only have read-only rights.\n");
+				} 
+<%
+				if(isLog4jEnabled) {
+%>
+				else {
+					log.info("<%=cid%> - The source file \"" + srcFileName_<%=cid %> + "\" is deleted.");
+				}
+<%
+				}
+			}
 %>
 
 		}
@@ -156,5 +188,7 @@
 		globalMap.put("<%=cid %>_DESTINATION_DIRECTORY", desFile_<%=cid %>.getParent());
 <%
 	}
+	
+	log4jFileUtil.componentFinishInfo(node);
 %>        
         
