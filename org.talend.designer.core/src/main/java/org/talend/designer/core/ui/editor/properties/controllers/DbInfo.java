@@ -23,6 +23,7 @@ import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.metadata.managment.connection.manager.DatabaseConnConstants;
+import org.talend.utils.sql.ConnectionUtils;
 
 /**
  * DOC hyWang class global comment. Detailled comment
@@ -213,20 +214,15 @@ public class DbInfo {
             ExceptionHandler.process(e);
         } finally {
             // bug 9162
-            if ((driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass()) || isJavaDB()
-                    || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
-                        .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
-                try {
-                    // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
-                    if (conn != null && !conn.isClosed()) {
-                        conn.close();
-                    }
-                    if (isJavaDB()) {
-                        wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
-                    }
-                } catch (SQLException e) {
-                    // exception of shutdown success. no need to catch.
+            try {
+                // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
+                boolean isHsql = ConnectionUtils.isHsql(url);
+                ConnectionUtils.closeConnection(conn, isHsql);
+                if (wapperDriver != null && isJavaDB()) {
+                    wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                 }
+            } catch (SQLException e) {
+                // exception of shutdown success. no need to catch.
             }
         }
     }
