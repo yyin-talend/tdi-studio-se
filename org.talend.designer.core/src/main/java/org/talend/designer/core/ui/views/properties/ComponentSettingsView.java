@@ -48,8 +48,11 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.HorizontalTabFactory;
@@ -569,7 +572,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     EComponentCategory[] newCategories;
                     // rusuming checkBox only for ON_SUBJOB_OK , modified by nma, order 8663
                     // dont display Recovery tab on M/R for TDI-25789
-                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK) && !isMRProcess) {
+                    boolean needAvoid = needAvoidRecovery(elem);
+                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK) && !isMRProcess && !needAvoid) {
                         newCategories = new EComponentCategory[length + 1];
                         for (int i = 0; i < length; i++) {
                             newCategories[i] = categories[i];
@@ -620,6 +624,26 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             return EElementType.SUBJOB.getCategories();
         }
         return null;
+    }
+
+    private boolean needAvoidRecovery(IElement elem) {
+        if (elem instanceof IConnection) {
+            INode source = ((IConnection) elem).getSource();
+            List<? extends IConnection> conns = source.getIncomingConnections();
+            for (IConnection conn : conns) {
+                Object propertyValue = conn.getPropertyValue(Connection.LINESTYLE_PROP);
+                if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
+                        || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
+                        || propertyValue.equals(EConnectionType.RUN_IF)) {
+                    return true;
+                } else {
+                    if (needAvoidRecovery(conn)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
