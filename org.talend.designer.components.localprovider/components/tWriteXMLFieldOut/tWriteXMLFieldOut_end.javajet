@@ -322,3 +322,4 @@ globalMap.put("<%=virtualTargetCid%>_FINISH" + (listGroupby_<%=cid%>==null?"":li
 	}
 }
 %>
+resourceMap.put("finish_<%=cid%>", true);
