@@ -3533,23 +3533,11 @@ public class Node extends Element implements IGraphicalNode {
 
                     if (inputMeta != null && outputMeta != null) {
                         INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                        if (connector != null
-                                && connector.getMaxLinkInput() != 0
-                                && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
-                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
-                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
-                                    && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                        if (connector != null && connector.getMaxLinkInput() != 0) {
+                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
                                 String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
                                         inputConnecion.getName());
                                 Problems.add(ProblemStatus.WARNING, this, warningMessage);
-                            } else {
-                                schemaSynchronized = false;
-                                String errorMessage = Messages.getString(
-                                        "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
                     }
@@ -3559,9 +3547,6 @@ public class Node extends Element implements IGraphicalNode {
                             String sourceType = column.getType();
                             String typevalue = column.getTalendType();
                             String currentDbmsId = outputMeta.getDbms();
-                            // TDI-21862:when drag/drop a special schema onto a component,need check if this
-                            // schema's
-                            // dbType compatible with this component
                             if (!typevalue.equals("id_Dynamic") && currentDbmsId != null
                                     && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
                                 String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
@@ -3586,22 +3571,11 @@ public class Node extends Element implements IGraphicalNode {
 
                 if (inputMeta != null && outputMeta != null) {
                     INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                    if (connector != null
-                            && connector.getMaxLinkInput() != 0
-                            && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
-                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
-                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
-                                && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                    if (connector != null && connector.getMaxLinkInput() != 0) {
+                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
                             String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
                                     inputConnecion.getName());
                             Problems.add(ProblemStatus.WARNING, this, warningMessage);
-                        } else {
-                            schemaSynchronized = false;
-                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
                 }
@@ -3631,15 +3605,12 @@ public class Node extends Element implements IGraphicalNode {
                     if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
                         for (IConnection connection : inputs) {
                             if (connection.isActivate() && connection.getName().equals(connParam.getValue())) {
-                                if (!table.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
-                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
-                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
+
+                                if (!table.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_NONE)) {
                                     schemaSynchronized = false;
-                                    String errorMessage = Messages.getString(
-                                            "Node.differentFromSchemaDefined", connection.getName()); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                            connection.getName());
+                                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
                                 }
                             }
                         }
