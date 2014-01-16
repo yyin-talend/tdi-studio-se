@@ -152,7 +152,7 @@ public class HL7PublicUtil {
                 HL7TreeNode childEle = cloneATreeNode(child, label);
 
                 childEle.setLabel(label);
-                if (childEle instanceof Element) {
+                if (!(child instanceof Group)) {
                     ((Element) childEle).setRow(label);
                 }
 
@@ -166,8 +166,12 @@ public class HL7PublicUtil {
         HL7TreeNode node = new Element();
         String nodeLabel = getLabel(treeNode, true);
         node.setLabel(nodeLabel);
-        if (node instanceof Element) {
-            ((Element) node).setRow(label);
+        String rowLabel = label;
+        if (treeNode instanceof SegmentModel) {
+            ((Element) node).setRow(nodeLabel);
+            rowLabel = nodeLabel;
+        } else if (!(treeNode instanceof Group)) {
+            ((Element) node).setRow(rowLabel);
         }
         node.setMain(true);
         Object[] children = getChildList(treeNode);// treeNode.getChildren();
@@ -175,11 +179,15 @@ public class HL7PublicUtil {
             for (Object element : children) {
 
                 if (getChildList(element).length > 0) {
-                    HL7TreeNode childEle = cloneATreeNode(element, label);
                     String tlabel = getLabel(element, true);
+                    String childLabel = rowLabel;
+                    HL7TreeNode childEle = cloneATreeNode(element, rowLabel);
+                    if (element instanceof SegmentModel) {
+                        childLabel = tlabel;
+                    }
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
-                        ((Element) childEle).setRow(label);
+                        ((Element) childEle).setRow(childLabel);
                         ((Element) childEle).setColumnName(getLabel(element, true));
                     }
 
