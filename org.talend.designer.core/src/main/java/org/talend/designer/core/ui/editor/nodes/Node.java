@@ -3077,17 +3077,17 @@ public class Node extends Element implements IGraphicalNode {
                             if (map.containsValue(rowName)) {
                                 if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) { //$NON-NLS-1$ //$NON-NLS-2$
                                     schemaName = map.get("SCHEMA"); //$NON-NLS-1$
-                                    int first = schemaName.indexOf("_"); //$NON-NLS-1$
-                                    int second = schemaName.lastIndexOf("_"); //$NON-NLS-1$
-                                    if (first > 0 && first < second) {
-                                        schemaName = schemaName.substring(first + 1, second);
-                                        break;
-                                    }
+                                    // int first = schemaName.indexOf("_"); //$NON-NLS-1$
+                                    // int second = schemaName.lastIndexOf("_"); //$NON-NLS-1$
+                                    // if (first > 0 && first < second) {
+                                    // schemaName = schemaName.substring(first + 1, second);
+                                    break;
+                                    // }
                                 }
                             }
                         }
                         for (IMetadataTable nodeTable : tables) {
-                            if (schemaName != null && nodeTable.getLabel() != null && nodeTable.getLabel().equals(schemaName)) {
+                            if (nodeTable.getTableName() != null && nodeTable.getTableName().equals(schemaName)) {
                                 if (!metadataTable.sameMetadataAs(nodeTable, IMetadataColumn.OPTIONS_NONE)) {
                                     String errorMessage = Messages.getString("Node.schemaNotSynchronized"); //$NON-NLS-1$
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);

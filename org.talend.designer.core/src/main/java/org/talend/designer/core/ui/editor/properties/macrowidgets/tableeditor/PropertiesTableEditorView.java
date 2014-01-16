@@ -68,6 +68,7 @@ import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.event.CheckColumnSelectionListener;
 
@@ -228,21 +229,25 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             if (element instanceof INode) {
                                 INode node = (INode) element;
                                 if (node.getComponent().getName() != null && node.getComponent().getName().equals("tHL7Output")) {
-                                    IElementParameter rootParameter = element.getElementParameter("ROOT");
-                                    if (rootParameter != null) {
-                                        List<Map<String, String>> rootValue = (List<Map<String, String>>) rootParameter
-                                                .getValue();
-                                        if (rootValue != null) {
-                                            for (int i = 0; i < rootValue.size(); i++) {
-                                                Map<String, String> map = rootValue.get(i);
-                                                String columnName = map.get("COLUMN");
-                                                String split[] = columnName.split(":");
-                                                if (split.length == 2 && !returnedValue.equals("<Empty>")) {
-                                                    String newName = returnedValue + ":" + split[1];
-                                                    map.put("COLUMN", newName);
-                                                } else if (split.length == 1 && !returnedValue.equals("<Empty>")) {
-                                                    String newName = (String) returnedValue;
-                                                    map.put("COLUMN", newName);
+                                    // no change since it's in repository mode.
+                                    if (!EmfComponent.REPOSITORY.equals(node.getPropertyValue(EParameterName.PROPERTY_TYPE
+                                            .getName()))) {
+                                        IElementParameter rootParameter = element.getElementParameter("ROOT");
+                                        if (rootParameter != null) {
+                                            List<Map<String, String>> rootValue = (List<Map<String, String>>) rootParameter
+                                                    .getValue();
+                                            if (rootValue != null) {
+                                                for (int i = 0; i < rootValue.size(); i++) {
+                                                    Map<String, String> map = rootValue.get(i);
+                                                    String columnName = map.get("COLUMN");
+                                                    String split[] = columnName.split(":");
+                                                    if (split.length == 2 && !returnedValue.equals("<Empty>")) {
+                                                        String newName = returnedValue + ":" + split[1];
+                                                        map.put("COLUMN", newName);
+                                                    } else if (split.length == 1 && !returnedValue.equals("<Empty>")) {
+                                                        String newName = (String) returnedValue;
+                                                        map.put("COLUMN", newName);
+                                                    }
                                                 }
                                             }
                                         }
