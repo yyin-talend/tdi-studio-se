@@ -141,17 +141,20 @@ if((codePart.equals(ECodePart.END))&&(stat)){
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   if (runTrace.isPause()) {
    while (runTrace.isPause()) {
-   
    	Thread.sleep(100);
    }
   }	 else {
   	
-   // here we dump the line content for trace purpose
-   runTrace.sendTrace("<%=conn.getName() %>","<%=startNodeCid %>","<%
-         for (IMetadataColumn column : metadata.getListColumns()) {
-   %> <%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
-         }
-%>");
+   	// here we dump the line content for trace purpose
+   	java.util.LinkedHashMap<String, String> runTraceData = new java.util.LinkedHashMap<String,String>();
+	<%
+	for(IMetadataColumn column : metadata.getListColumns()){
+	%>
+		runTraceData.put("<%=column.getLabel()%>", String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));
+	<%
+    }
+	%>
+   	runTrace.sendTrace("<%=conn.getName()%>","<%=startNodeCid%>", runTraceData);
 	}
 	<%
 	    

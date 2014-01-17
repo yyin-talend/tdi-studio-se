@@ -1681,26 +1681,28 @@ if(!isVirtualOut) { // T_TM_M_320
 	                        
 	                        if (trace) { // only for traces to be able to use preview mode in tMap.
        	                    	if(hasJoinedTable(outputTableName, data)){ 
-       	                    		String buff = "";        	                              
-       	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
-  	                                   buff += outputTableEntry.getName() + "=\"+"+outputTableName + "_tmp." + outputTableEntry.getName() +"+\"|";
-       	                    		 }
+      	                    		sb.append("\n").append("java.util.LinkedHashMap<String,String> runTraceData" + indexCurrentTable +"=new java.util.LinkedHashMap<String,String>();");
+									sb.append("\n");    
+	   	                    		for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
+  	                                	sb.append("runTraceData" + indexCurrentTable + ".put(\"" + outputTableEntry.getName() + "\", String.valueOf("+outputTableName + "_tmp." + outputTableEntry.getName() +"));");
+  	                                	sb.append("\n");
+       	                    		}
 
-       	                         sb.append("\n").append(
-       	                              "runTrace.sendTrace(\""+ outputTableName + "[MAIN]" +"\",\""+ node.getUniqueName() + "\",\"" +
-       	                              buff + "\"); "
-       	                          );
-		                    	} else  if (outputTable.getIsJoinTableOf()!=null) {
-       	                    		String buff = "";        	                              
-      	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
- 	                                   buff += outputTableEntry.getName() + "=\"+"+outputTable.getIsJoinTableOf() + "_tmp." + outputTableEntry.getName() +"+\"|";
-      	                    		 }
-        							sb.append("\n").append(
-             	                              "runTrace.sendTrace(\""+outputTable.getIsJoinTableOf() +":"+ outputTableName +"\",\""+ node.getUniqueName() + "\",\"" +
-                    					buff
-                						+ "\");"
+       	                         	sb.append(
+       	                              	"runTrace.sendTrace(\""+ outputTableName + "[MAIN]" +"\",\""+ node.getUniqueName() + "\"," +
+       	                              	"runTraceData" + indexCurrentTable + ");"
+       	                          	);
+		                    	}else if(outputTable.getIsJoinTableOf()!=null){
+       	                    		sb.append("\n").append("java.util.LinkedHashMap<String,String> runTraceData" + indexCurrentTable +"=new java.util.LinkedHashMap<String,String>();");
+									sb.append("\n");         	                              
+      	                    		for(ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()){ 
+      	                    			sb.append("runTraceData" + indexCurrentTable + ".put(\"" + outputTableEntry.getName() + "\", String.valueOf("+ outputTable.getIsJoinTableOf() + "_tmp." + outputTableEntry.getName() +"));");
+  	                                	sb.append("\n");
+      	                    		}
+        							sb.append(
+             	                        "runTrace.sendTrace(\"" + outputTable.getIsJoinTableOf() + ":" + outputTableName + "\",\"" + node.getUniqueName() + "\"," +
+                    					"runTraceData" + indexCurrentTable + ");"
 						            );
-									
 	                    		}
 	                        }
 	                        
