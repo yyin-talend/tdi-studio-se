@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -55,6 +54,7 @@ import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
+import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -62,7 +62,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
-import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.prefs.RunProcessTokenCollector;
@@ -72,6 +71,11 @@ import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.runprocess.data.PerformanceData;
 import org.talend.utils.network.FreePortFinder;
+
+import routines.system.NoHeaderObjectInputStream;
+import routines.system.NoHeaderObjectOutputStream;
+import routines.system.TraceDataBean;
+import routines.system.TraceStatusBean;
 
 /**
  * Context of a running process. <br/>
@@ -1159,7 +1163,8 @@ public class RunProcessContext {
             // Waiting connection from process
             Socket processSocket = null;
             ServerSocket serverSock = null;
-            final Map<IConnection, Map<String, String>> connAndTraces = new HashMap<IConnection, Map<String, String>>();
+            // used for trace of tmap
+            final Map<IConnection, Map<String, TraceData>> connAndTraces = new HashMap<IConnection, Map<String, TraceData>>();
             do {
                 try {
                     serverSock = new ServerSocket(getTracesPort());
@@ -1191,36 +1196,35 @@ public class RunProcessContext {
             if (processSocket != null && !stopThread) {
                 try {
                     InputStream in = processSocket.getInputStream();
-                    LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
+                    NoHeaderObjectInputStream reader = new NoHeaderObjectInputStream(in);
                     setBasicRun(false);
 
                     boolean lastIsPrivious = false;
                     boolean lastRow = false;
-                    final List<Map<String, String>> connectionData = new ArrayList<Map<String, String>>();
+                    final List<Map<String, TraceData>> connectionData = new ArrayList<Map<String, TraceData>>();
                     while (!stopThread) {
-                        final String data = reader.readLine();
-                        PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                                processSocket.getOutputStream())), true);
+                        final Object data = reader.readObject();
+                        NoHeaderObjectOutputStream pred = new NoHeaderObjectOutputStream(processSocket.getOutputStream());
 
                         // System.out.println(data);
 
                         if (data == null) {
                             stopThread = true;
-                        } else if ("ID_STATUS".equals(data)) {
+                        } else if (TraceStatusBean.ID_STATUS.equals(data)) {
                             if (isTracPause()) {
-                                pred.println("PAUSE"); //$NON-NLS-1$
+                                pred.writeObject(TraceStatusBean.PAUSE);
                             } else if (lastIsRow) {
-                                pred.println("NEXT_ROW");
+                                pred.writeObject(TraceStatusBean.NEXT_ROW);
                             } else {
                                 // testing only
-                                pred.println("NEXT_BREAKPOINT");
+                                pred.writeObject(TraceStatusBean.NEXT_BREAKPOINT);
                             }
 
                             continue;
-                        } else if ("UI_STATUS".equals(data)) {
+                        } else if (TraceStatusBean.UI_STATUS.equals(data)) {
                             // wait for UI here, for next click, then send STATUS_OK
                             if (isBasicRun()) {
-                                pred.println("STATUS_OK");
+                                pred.writeObject(TraceStatusBean.STATUS_OK);
                             }
 
                             if (!checkBreakpoint()) {
@@ -1237,13 +1241,13 @@ public class RunProcessContext {
                             if (isNextPoint()) {
 
                                 firePropertyChange(PREVIOUS_ROW, false, true);
-                                pred.println("STATUS_OK");
+                                pred.writeObject(TraceStatusBean.STATUS_OK);
                                 setNextBreakPoint(false);
                                 lastIsRow = false;
                             } else if (isNextRow()) {
                                 firePropertyChange(PREVIOUS_ROW, false, true);
                                 if (readSize > 0) {
-                                    pred.println("STATUS_WAITING");
+                                    pred.writeObject(TraceStatusBean.STATUS_WAITING);
                                     if (lastIsPrivious) {
                                         readSize = readSize - connectionSize.size();
                                         lastIsPrivious = false;
@@ -1251,7 +1255,8 @@ public class RunProcessContext {
                                     for (int b = 0; b < connectionSize.size(); b++) {
                                         if ((dataSize - readSize < connectionData.size())) {
                                             if (readSize >= 0) {
-                                                final Map<String, String> nextRowTrace = connectionData.get(dataSize - readSize);
+                                                final Map<String, TraceData> nextRowTrace = connectionData.get(dataSize
+                                                        - readSize);
                                                 if (nextRowTrace != null) {
                                                     String connectionId = null;
                                                     for (String key : nextRowTrace.keySet()) {
@@ -1283,7 +1288,7 @@ public class RunProcessContext {
                                     }
                                     lastRow = true;
                                 } else {
-                                    pred.println("STATUS_OK");
+                                    pred.writeObject(TraceStatusBean.STATUS_OK);
                                 }
                                 setNextRow(false);
                                 lastIsRow = true;
@@ -1298,7 +1303,7 @@ public class RunProcessContext {
                                 for (int b = 0; b < connectionSize.size(); b++) {
                                     readSize = readSize + 1;
                                     if (dataSize - readSize >= 0) {
-                                        final Map<String, String> previousRowTrace = connectionData.get(dataSize - readSize);
+                                        final Map<String, TraceData> previousRowTrace = connectionData.get(dataSize - readSize);
                                         if (previousRowTrace != null) {
                                             String connectionId = null;
                                             for (String key : previousRowTrace.keySet()) {
@@ -1329,21 +1334,25 @@ public class RunProcessContext {
                                         }
                                     }
                                 }
-                                pred.println("STATUS_WAITING");
+                                pred.writeObject(TraceStatusBean.STATUS_WAITING);
                                 setPreviousRow(false);
                             } else {
                                 if (dataSize == connectionSize.size()) {
                                     firePropertyChange(PREVIOUS_ROW, true, false);
                                 }
                                 lastIsRow = false;
-                                pred.println("STATUS_WAITING");
+                                pred.writeObject(TraceStatusBean.STATUS_WAITING);
                             }
                             // firePropertyChange(BREAKPOINT_BAR, false, false);
                             continue;
-                        } else {
+                        } else if (data instanceof TraceDataBean && ((TraceDataBean) data).getData() != null) {
                             firePropertyChange(BREAKPOINT_BAR, true, false);
-                            TraceData traceData = new TraceData(data);
-                            final String idPart = traceData.getElementId();
+                            TraceDataBean traceDataBean = (TraceDataBean) data;
+                            TraceData traceData = new TraceData();
+                            traceData.setConnectionId(traceDataBean.getConnectionId());
+                            traceData.setNbLine(traceDataBean.getNbLine());
+                            traceData.setData(traceDataBean.getData());
+                            final String idPart = traceData.getConnectionId();
                             String id = null;
                             boolean isMapTrace = false;
                             if (idPart != null) {
@@ -1362,20 +1371,20 @@ public class RunProcessContext {
                                 if (!connectionSize.contains(connection)) {
                                     connectionSize.add(connection);
                                 }
-                                int sepIndex1 = data.indexOf("|");
-                                int sepIndex2 = sepIndex1 != -1 ? data.indexOf("|", sepIndex1 + 1) : -1;
-                                if (sepIndex2 != -1) {
-                                    String lineCountStr = data.substring(sepIndex1 + 1, sepIndex2);
-                                    if (lineCountStr.equals("1")) {
-                                        setBasicRun(false);
-                                    }
+                                // int sepIndex1 = data.indexOf("|");
+                                // int sepIndex2 = sepIndex1 != -1 ? data.indexOf("|", sepIndex1 + 1) : -1;
+                                // if (sepIndex2 != -1) {
+                                int lineCount = traceData.getNbLine();
+                                if (lineCount == 1) {
+                                    setBasicRun(false);
                                 }
-                                Map<String, String> traceMap = connAndTraces.get(connection);
+                                // }
+                                Map<String, TraceData> traceMap = connAndTraces.get(connection);
                                 if (traceMap == null) {
-                                    traceMap = new HashMap<String, String>();
+                                    traceMap = new HashMap<String, TraceData>();
                                     connAndTraces.put(connection, traceMap);
                                 }
-                                traceMap.put(idPart, data);
+                                traceMap.put(idPart, traceData);
                                 if (isMapTrace) {
                                     continue;
                                 }
@@ -1393,7 +1402,7 @@ public class RunProcessContext {
                                     @Override
                                     public void run() {
                                         if (data != null) {
-                                            Map<String, String> curTraceData = connAndTraces.get(connection);
+                                            Map<String, TraceData> curTraceData = connAndTraces.get(connection);
                                             setTraceData(connection, curTraceData);
                                             connAndTraces.clear();
                                         }
@@ -1404,6 +1413,9 @@ public class RunProcessContext {
                     }
                 } catch (IOException e) {
                     // Do nothing : process is ended
+                } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 } finally {
                     try {
                         setBasicRun(false);
@@ -1422,14 +1434,14 @@ public class RunProcessContext {
             }
         }
 
-        private void setTraceData(IConnection conn, Map<String, String> curTraceData) {
+        private void setTraceData(IConnection conn, Map<String, TraceData> curTraceData) {
             if (conn != null) {
-                Map<String, String> dataMap = new HashMap<String, String>(curTraceData);
+                Map<String, TraceData> dataMap = new HashMap<String, TraceData>(curTraceData);
                 conn.setTraceData(dataMap);
                 String uniqueName = ConnectionUtil.getConnectionUnifiedName(conn);
                 IConnection[] shadowConnections = traceConnectionsManager.getShadowConnenctions(uniqueName);
                 if (shadowConnections != null) {
-                    String data = dataMap.get(uniqueName);
+                    TraceData data = dataMap.get(uniqueName);
                     for (IConnection shadowConn : shadowConnections) {
                         // FIXME, because the connection name is front of data, and not used, so no need change the data
                         // for shadow connection.

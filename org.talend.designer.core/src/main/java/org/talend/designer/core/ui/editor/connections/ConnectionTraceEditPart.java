@@ -29,6 +29,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.TraceData;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.dialog.FilterColumnDialog;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -131,7 +132,7 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         ConnectionTraceFigure htmlFigure = (ConnectionTraceFigure) getFigure();
 
         ConnectionTrace connectionTrace = (ConnectionTrace) getModel();
-        String trace = connectionTrace.getTrace();
+        TraceData trace = connectionTrace.getTrace();
         if (trace == null) {
             Point offset = conn.getConnectionLabel().getOffset();
             connectionTrace.getOffset().x = offset.x;
