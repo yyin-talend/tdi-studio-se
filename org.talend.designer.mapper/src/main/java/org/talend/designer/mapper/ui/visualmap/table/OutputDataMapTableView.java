@@ -48,6 +48,7 @@ import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEdi
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.process.TraceData;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.external.connection.IOConnection;
@@ -367,18 +368,9 @@ public class OutputDataMapTableView extends DataMapTableView {
                     IMetadataColumn metadataColumn = bean.getMetadataColumn();
                     if (metadataColumn != null) {
                         String label = metadataColumn.getLabel();
-                        String preview = bean.getPreviewValue();
-                        if (preview != null) {
-                            String[] split = preview.split("\\|");
-                            for (int i = 0; i < split.length; i++) {
-                                if (split[i] != null) {
-                                    String[] columnValue = split[i].split("=");
-                                    if (columnValue.length == 2 && columnValue[0] != null && columnValue[0].trim().equals(label)) {
-                                        return columnValue[1];
-                                    }
-                                }
-
-                            }
+                        TraceData preview = bean.getPreviewValue();
+                        if (preview != null && preview.getData() != null) {
+                            return preview.getData().get(label);
                         }
 
                     }

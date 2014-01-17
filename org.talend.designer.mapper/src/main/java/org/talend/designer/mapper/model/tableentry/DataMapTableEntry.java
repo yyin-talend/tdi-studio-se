@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.TraceData;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
@@ -104,13 +105,13 @@ public abstract class DataMapTableEntry implements ITableEntry {
         this.problems = problems;
     }
 
-    public String getPreviewValue() {
+    public TraceData getPreviewValue() {
         if (getParent() instanceof AbstractInOutTable) {
             AbstractInOutTable abstractTable = (AbstractInOutTable) getParent();
             if (abstractTable.getConnection() != null) {
                 IConnection connection = abstractTable.getConnection().getConnecion();
                 if (connection != null) {
-                    Map<String, String> traceData = connection.getTraceData();
+                    Map<String, TraceData> traceData = connection.getTraceData();
                     if (traceData != null) {
                         if (abstractTable instanceof OutputTable) {
                             OutputTable output = (OutputTable) abstractTable;
@@ -133,7 +134,7 @@ public abstract class DataMapTableEntry implements ITableEntry {
             }
         }
 
-        return "";
+        return null;
     }
 
     private boolean hasJoinedTable(OutputTable currentTable) {

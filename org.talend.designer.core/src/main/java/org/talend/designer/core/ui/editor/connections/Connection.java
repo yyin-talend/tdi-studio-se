@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
@@ -39,6 +38,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.TraceData;
 import org.talend.core.repository.model.ILocalRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.DesignerPlugin;
@@ -97,7 +97,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private boolean readOnly = false;
 
-    private Map<String, String> traceData;
+    private Map<String, TraceData> traceData;
 
     private String connectorName;
 
@@ -977,21 +977,29 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     @Override
-    public void setTraceData(Map<String, String> traceData) {
-        Map<String, String> oldData = this.traceData;
-        if (!ObjectUtils.equals(oldData, traceData)) {
-            this.traceData = traceData;
-            if (traceData != null) {
-                String traceValue = traceData.get(ConnectionUtil.getConnectionUnifiedName(this));
-                trace.setTrace(traceValue);
-            } else {
-                trace.setTrace(null);
-            }
+    public void setTraceData(Map<String, TraceData> traceData) {
+        if (trace == null) {
+            return;
         }
+        this.traceData = traceData;
+        if (traceData != null) {
+            trace.setTrace(traceData.get(ConnectionUtil.getConnectionUnifiedName(this)));
+        } else {
+            trace.setTrace(null);
+        }
+        // if (!ObjectUtils.equals(oldData, traceData)) {
+        // this.traceData = traceData;
+        // if (traceData != null) {
+        // String traceValue = traceData.get(ConnectionUtil.getConnectionUnifiedName(this));
+        // trace.setTrace(traceValue);
+        // } else {
+        // trace.setTrace(null);
+        // }
+        // }
     }
 
     @Override
-    public Map<String, String> getTraceData() {
+    public Map<String, TraceData> getTraceData() {
         return this.traceData;
     }
 

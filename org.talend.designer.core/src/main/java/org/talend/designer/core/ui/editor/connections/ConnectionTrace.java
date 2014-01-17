@@ -18,6 +18,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.TraceData;
 import org.talend.designer.core.model.components.EParameterName;
 
 /**
@@ -32,7 +33,7 @@ public class ConnectionTrace extends Element {
 
     public static final String TRACE_PROP = "traceChange"; //$NON-NLS-1$
 
-    private String trace = null; //$NON-NLS-1$
+    private TraceData trace = null; //$NON-NLS-1$
 
     private Connection connection = null;
 
@@ -44,12 +45,12 @@ public class ConnectionTrace extends Element {
         this.connection = connection;
     }
 
-    public void setTrace(String trace) {
+    public void setTrace(TraceData trace) {
         this.trace = trace;
         firePropertyChange(TRACE_PROP, null, null);
     }
 
-    public String getTrace() {
+    public TraceData getTrace() {
         return trace;
     }
 

@@ -35,6 +35,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.TraceData;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -312,14 +313,11 @@ public class ToolbarInputZone extends ToolbarZone {
             if (incomingConnections != null && incomingConnections.size() == 1) {
                 IConnection connection = incomingConnections.get(0);
                 if (connection != null) {
-                    Map<String, String> traceData = connection.getTraceData();
+                    Map<String, TraceData> traceData = connection.getTraceData();
                     if (traceData != null) {
-                        String data = traceData.get(connection.getName());
+                        TraceData data = traceData.get(connection.getName());
                         if (data != null) {
-                            int sepIndex = data.indexOf("|"); // index separator for row name
-                            String dataWithoutRowName = data.substring(sepIndex + 1);
-                            sepIndex = dataWithoutRowName.indexOf("|");
-                            return "row: " + dataWithoutRowName.substring(0, sepIndex);
+                            return "row: " + data.getNbLine();
                         }
                     }
                 }
