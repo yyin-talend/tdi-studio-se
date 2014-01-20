@@ -5,6 +5,9 @@
 		org.talend.core.model.process.ElementParameterParser
 	"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -21,6 +24,9 @@
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 	String decryptMethod = ElementParameterParser.getValue(node, "__DECRYPT_METHOD__");
+
+	log4jFileUtil.logParameters(node);
+	log4jFileUtil.componentStartInfo(node);
 %>      
 		com.talend.compress.zip.Util util_<%=cid %> = new com.talend.compress.zip.Util(<%=extractPath%>);
         

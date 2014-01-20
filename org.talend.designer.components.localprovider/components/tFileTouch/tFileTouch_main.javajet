@@ -5,6 +5,9 @@
 		org.talend.core.model.process.ElementParameterParser
 		"
 %>	
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -12,7 +15,11 @@
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");	
 	boolean replaceFile=("true").equals(ElementParameterParser.getValue(node,"__REPLACE_FILE__"));
 	boolean createDir=("true").equals(ElementParameterParser.getValue(node, "__CREATEDIR__"));
-   
+	
+ 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+ 	
+ 	log4jFileUtil.logParameters(node);
+	log4jFileUtil.componentStartInfo(node);
 %>     
 		java.io.File file_<%=cid %> = new java.io.File((<%=fileName%>));
 <%if(createDir){%>
@@ -26,5 +33,17 @@
         boolean result<%=cid %> = file_<%=cid %>.createNewFile();
         //if file already exists, modify the last-modified-time of the file
         if (!result<%=cid %>) {
+            <%if(isLog4jEnabled) {%>
+    		log.info("<%=cid%> - File : " + file_<%=cid %>.getAbsolutePath() + " already exist, only modify the last-modified-time of the file.");
+    		<%}%>
         	file_<%=cid %>.setLastModified((new Date()).getTime());
         }
+        <%if(isLog4jEnabled) {%>
+        else {
+        	log.info("<%=cid%> - File : " + file_<%=cid %>.getAbsolutePath() + " is created successfully");
+        }
+  		<%}%>
+  		      
+<%
+log4jFileUtil.componentFinishInfo(node);
+%>

@@ -7,6 +7,9 @@
 		java.util.Map
 	"
 %>
+
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+	
     <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -27,6 +30,9 @@
 	
 	String zip64Mode = ElementParameterParser.getValue(node, "__ZIP64_MODE__");
 	String encryptMethod = ElementParameterParser.getValue(node, "__ENCRYPT_METHOD__");
+
+	log4jFileUtil.logParameters(node);
+	log4jFileUtil.componentStartInfo(node);
 	%>
 
 
@@ -68,14 +74,16 @@
    }
    %>     
    	
-   	  zip_<%=cid%>.setEncoding(<%=encoding%>);
-   	  zip_<%=cid%>.setZip64Mode("<%=zip64Mode%>");
-   	  zip_<%=cid%>.setEncrypted(<%=isEncrypted%>);
-   	  zip_<%=cid%>.setPassword(<%=password%>);
-   	  zip_<%=cid%>.setUseAesEncryption(<%="AES256".equals(encryptMethod)%>);
+   zip_<%=cid%>.setEncoding(<%=encoding%>);
+   zip_<%=cid%>.setZip64Mode("<%=zip64Mode%>");
+   zip_<%=cid%>.setEncrypted(<%=isEncrypted%>);
+   zip_<%=cid%>.setPassword(<%=password%>);
+   zip_<%=cid%>.setUseAesEncryption(<%="AES256".equals(encryptMethod)%>);
+  
+   zip_<%=cid%>.doZip();
    	  
-   	  zip_<%=cid%>.doZip();
-   	  
-      globalMap.put("<%=cid %>_ARCHIVE_FILEPATH",zipFile_<%=cid %>);
-      globalMap.put("<%=cid %>_ARCHIVE_FILENAME",(<%=zipFile %>).contains("\\")?
+   globalMap.put("<%=cid %>_ARCHIVE_FILEPATH",zipFile_<%=cid %>);
+   globalMap.put("<%=cid %>_ARCHIVE_FILENAME",(<%=zipFile %>).contains("\\")?
     (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("\\")+2)): (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("/"))+1));
+
+   <%log4jFileUtil.componentFinishInfo(node);%>

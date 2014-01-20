@@ -6,6 +6,8 @@ imports="
 "
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -21,6 +23,11 @@ String rowSeparator = ElementParameterParser.getValue(
     "__ROWSEPARATOR__"
 );
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+log4jFileUtil.logParameters(node);
+log4jFileUtil.componentStartInfo(node);
 %>
 String tmp_<%=cid%> = <%=filename%>;
 int emptyLineCount_<%=cid%> = 0;
@@ -105,9 +112,19 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
   br_<%=cid %>.close();
 } 
 <%
-  if ("true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY_ROW__")) ){
+if ("true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY_ROW__")) ){
 %>
   lineCount_<%=cid %> -= emptyLineCount_<%=cid%>;
 <%}%>   
-  globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
+
+  globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);
+  
+<%
+if(isLog4jEnabled) {
+%>
+    log.info("<%=cid%> - File : " + <%=filename%> + " row count is " + lineCount_<%=cid %>);
+<%
+}
+log4jFileUtil.componentFinishInfo(node);
+%> 
 
