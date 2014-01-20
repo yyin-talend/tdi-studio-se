@@ -57,7 +57,9 @@ import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.runprocess.RunProcessContext;
+import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 
 /**
  * gcui class global comment. Detailled comment <br/>
@@ -69,7 +71,7 @@ public class JobVMArgumentsComposite {
 
     protected TableViewer viewer;
 
-    private List<String> list = new ArrayList<String>();
+    private final List<String> list = new ArrayList<String>();
 
     private Composite buttonBox;
 
@@ -429,13 +431,19 @@ public class JobVMArgumentsComposite {
                 setAllEnabled(null, checkBox.getSelection());
             }
             if (viewer != null && !viewer.getTable().isDisposed()) {
-                IElementParameter param = getJobProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
-                if (param != null && param.getValue() != null) {
-                    String s = (String) param.getValue();
-                    if (s != null && !"".equals(s)) { //$NON-NLS-1$
-                        for (String tmp : readString(s)) {
-                            list.add(tmp);
-                        }
+                String vmarguments = "";
+                if (!checkBox.getSelection()) {
+                    vmarguments = RunProcessPlugin.getDefault().getPreferenceStore()
+                            .getString(RunProcessPrefsConstants.VMARGUMENTS);
+                } else {
+                    IElementParameter param = getJobProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
+                    if (param != null && param.getValue() != null) {
+                        vmarguments = (String) param.getValue();
+                    }
+                }
+                if (vmarguments != null && !"".equals(vmarguments)) { //$NON-NLS-1$ 
+                    for (String tmp : readString(vmarguments)) {
+                        list.add(tmp);
                     }
                 }
             }
