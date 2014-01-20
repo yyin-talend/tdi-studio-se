@@ -1083,7 +1083,6 @@ public class CLASS {
 
             StringBuilder setStmt = new StringBuilder();
 
-            System.out.println(column.isUpdateKey() && whereSupportNull && column.getColumn().isNullable());
             // the 3 conditions are important
             if (column.isUpdateKey() && whereSupportNull && column.getColumn().isNullable()) {
                 setStmt.append(generateSetBooleanForNullableKeyStmt(column, index, incomingConnName, cid, NORMAL_TYPE));
@@ -2493,7 +2492,6 @@ public class CLASS {
         }        
         
 		public String generateSetStmt(String typeToGenerate, String dbType, Column column, int index, String incomingConnName, String cid, int actionType, String dynamic) {
-			System.out.println(cid+ " begin to invoke "+dynamic+"  typeToGenerate:"+typeToGenerate+" dbType:"+dbType+" index:"+index);
 			if(dynamic==null) {
 				dynamic="";
 			} else {
