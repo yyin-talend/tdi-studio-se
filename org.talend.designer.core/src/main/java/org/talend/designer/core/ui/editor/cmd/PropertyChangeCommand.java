@@ -448,6 +448,16 @@ public class PropertyChangeCommand extends Command {
         return false;
     }
 
+    private boolean needClearOldColumns() {
+        if (elem instanceof Node) {
+            if (propName.equals("ACTION")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void setUpdate(boolean update) {
         toUpdate = update;
     }
@@ -620,7 +630,7 @@ public class PropertyChangeCommand extends Command {
                         // automatically
                         List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
                         for (IMetadataColumn column : metadataTable.getListColumns()) {
-                            if (column.isCustom() || column.isReadOnly()) {
+                            if (column.isCustom() || column.isReadOnly() || needClearOldColumns()) {
                                 columnsToRemove.add(column);
                             }
                         }
