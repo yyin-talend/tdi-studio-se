@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -194,9 +195,11 @@ public class EditQueriesAction extends AContextualAction {
                 // Studio does not support this action for hive, TDI-25365.
                 if (!isUnderDBConnection(repositoryNode)) {
                     canWork = false;
-                } else {
-                    DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
-                    DatabaseConnection dbConn = (DatabaseConnection) item.getConnection();
+                }
+                Item item = repositoryNode.getObject().getProperty().getItem();
+                if (item instanceof DatabaseConnectionItem) {
+                    DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                    DatabaseConnection dbConn = (DatabaseConnection) dbItem.getConnection();
                     String dbType = dbConn.getDatabaseType();
                     if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)) {
                         canWork = false;
