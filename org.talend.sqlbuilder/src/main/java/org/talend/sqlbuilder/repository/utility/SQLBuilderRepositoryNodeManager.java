@@ -707,8 +707,7 @@ public class SQLBuilderRepositoryNodeManager {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         } finally {
-            boolean isHsql = ConnectionUtils.isHsql(metadataConnectionTemp.getUrl());
-            ConnectionUtils.closeConnection(sqlConn, isHsql);
+            ConnectionUtils.closeConnection(sqlConn);
             if (derbyDriver != null) {
                 try {
                     derbyDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$

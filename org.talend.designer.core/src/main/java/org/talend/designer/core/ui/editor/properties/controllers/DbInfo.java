@@ -216,8 +216,7 @@ public class DbInfo {
             // bug 9162
             try {
                 // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
-                boolean isHsql = ConnectionUtils.isHsql(url);
-                ConnectionUtils.closeConnection(conn, isHsql);
+                ConnectionUtils.closeConnection(conn);
                 if (wapperDriver != null && isJavaDB()) {
                     wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                 }
