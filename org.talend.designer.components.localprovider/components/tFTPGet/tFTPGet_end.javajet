@@ -36,95 +36,95 @@ if (("true").equals(useExistingConn)) {
 nb_file_<%=cid%> = getter_<%=cid %>.count;
 
 <%if (sftp) {%>
-  msg_<%=cid%>.add(getter_<%=cid%>.count + " files have been downloaded.");
-  StringBuffer sb_<%=cid %> = new StringBuffer();
+	msg_<%=cid%>.add(getter_<%=cid%>.count + " files have been downloaded.");
+	StringBuffer sb_<%=cid %> = new StringBuffer();
 
-  for (String item_<%=cid %> : msg_<%=cid %>) {
-    sb_<%=cid %>.append(item_<%=cid %>).append("\n");
-  }
-  globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
+	for (String item_<%=cid %> : msg_<%=cid %>) {
+		sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+	}
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 
-  <%if (!("true").equals(useExistingConn)) {%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Closing the connection to the server.");
-	<%}%>
-    session_<%=cid%>.disconnect(); 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to the server closed.");
-	<%}%>
-  <%}%>    
+	<%if (!("true").equals(useExistingConn)) {%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the server.");
+		<%}%>
+		session_<%=cid%>.disconnect(); 
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the server closed.");
+		<%}%>
+	<%}%>    
 <%} else if (!ftps) {%>
-  msg_<%=cid%>.add(ftp_<%=cid%>.getDownloadCount() + " files have been downloaded.");
-  String[] msgAll_<%=cid %> = msg_<%=cid%>.getAll();
-  StringBuffer sb_<%=cid %> = new StringBuffer();
+	msg_<%=cid%>.add(ftp_<%=cid%>.getDownloadCount() + " files have been downloaded.");
+	String[] msgAll_<%=cid %> = msg_<%=cid%>.getAll();
+	StringBuffer sb_<%=cid %> = new StringBuffer();
 
-  if (msgAll_<%=cid %> != null) {
-    for (String item_<%=cid %> : msgAll_<%=cid %>) {
-      sb_<%=cid %>.append(item_<%=cid %>).append("\n");
-    }
-  }
-  globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
+	if (msgAll_<%=cid %> != null) {
+    	for (String item_<%=cid %> : msgAll_<%=cid %>) {
+			sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+    	}
+	}
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 
   <%
-  if (!("true").equals(useExistingConn)) {
+	if (!("true").equals(useExistingConn)) {
   
-    if(("true").equals(ignoreFailureAtQuit)){
+		if(("true").equals(ignoreFailureAtQuit)){
     %>
-      try {
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the server.");
-		<%}%>
-        ftp_<%=cid %>.quit();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the server closed.");
-		<%}%>
-      } catch(java.net.SocketException se_<%=cid%>) {
-		<%if(isLog4jEnabled){%>
-			log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
-		<%}%>
-        //ignore failure
-      }
+			try {
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Closing the connection to the server.");
+				<%}%>
+        		ftp_<%=cid %>.quit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Connection to the server closed.");
+				<%}%>
+    		} catch(java.net.SocketException se_<%=cid%>) {
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
+				<%}%>
+        		//ignore failure
+      		}
     <%
-    } else {
+		} else {
     %>
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the server.");
-		<%}%>
-      ftp_<%=cid %>.quit();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the server closed.");
-		<%}%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the server.");
+			<%}%>
+      		ftp_<%=cid %>.quit();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the server closed.");
+			<%}%>
     <%
-    }
-  }else{
-	    if(!moveToCurrentDir){
+		}
+	}else{
+		if(!moveToCurrentDir){
 %>
 	  		ftp_<%=cid %>.chdir(rootDir_<%=cid %>);
 <%	
 		}
-  }
+	}
 } else { // *** ftps *** //
 
-  if (!("true").equals(useExistingConn)){
+	if (!("true").equals(useExistingConn)){
   %>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Closing the connection to the server.");
-	<%}%>
-    ftp_<%=cid%>.disconnect(true);
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to the server closed.");
-	<%}%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the server.");
+		<%}%>
+    	ftp_<%=cid%>.disconnect(true);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the server closed.");
+		<%}%>
   <%
-  }else{
+  	}else{
 	    if(!moveToCurrentDir){
 %>
 	  		ftp_<%=cid %>.changeDirectory(rootDir_<%=cid %>);
 <%	
 		}
-  }
+	}
 }
 %>
-globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
+	globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Downloaded files count: " + nb_file_<%=cid%>  + ".");
 	log.info("<%=cid%> - Done.");

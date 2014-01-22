@@ -5,8 +5,11 @@
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
+    org.talend.core.model.process.IElementParameter
+    org.talend.core.model.utils.NodeUtil 
   "
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();  
@@ -45,19 +48,22 @@ if (("true").equals(useExistingConn)) {
 } else {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.logParameters(node); 
+log4jFileUtil.componentStartInfo(node); 
 %>
-java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
+	java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
 
 <%
 if (files.size() == 0) {
 %>
-  maskList_<%=cid %>.add("*");
+	maskList_<%=cid %>.add("*");
 <%
 } else {
   for (int i = 0; i < files.size(); i++) {
     Map<String, String> line = files.get(i);
     %> 
-    maskList_<%=cid %>.add(<%= line.get("FILEMASK") %>); 
+		maskList_<%=cid %>.add(<%= line.get("FILEMASK") %>); 
   <%
   }
 }
@@ -66,136 +72,177 @@ if (files.size() == 0) {
 //And it can not work with the FTP proxy directly, only support the socks proxy.
 if (useProxy) {
 %>
-  java.util.Properties props_<%=cid%> = System.getProperties();
-  props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
-  props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
-  props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
-  props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
+	java.util.Properties props_<%=cid%> = System.getProperties();
+	props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
+	props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
+	props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
+	props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
 <%
 }
 
-if (sftp) {
+if (sftp) {// *** sftp *** //
 
-  if (("false").equals(useExistingConn)) {
-  %>
-    class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-      String passphrase_<%=cid %> = <%=passPhrase %>;
+	if (("false").equals(useExistingConn)) {
+	%>
+		class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+			String passphrase_<%=cid %> = <%=passPhrase %>;
 
-      public String getPassphrase() { return passphrase_<%=cid %>; }
+			public String getPassphrase() { return passphrase_<%=cid %>; }
 
-      public String getPassword() { return null; } 
+			public String getPassword() { return null; } 
 
-      public boolean promptPassword(String arg0) { return true; } 
+			public boolean promptPassword(String arg0) { return true; } 
 
-      public boolean promptPassphrase(String arg0) { return true; } 
+			public boolean promptPassphrase(String arg0) { return true; } 
 
-      public boolean promptYesNo(String arg0) { return true; } 
+			public boolean promptYesNo(String arg0) { return true; } 
 
-      public void showMessage(String arg0) { } 
+			public void showMessage(String arg0) { } 
 
-      public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
-        boolean[] echo) {
-        String[] password_<%=cid%> = {<%=pass%>};
-        return password_<%=cid%>;
-      }
-    }; 
-    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
-    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+			public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+			boolean[] echo) {
+				String[] password_<%=cid%> = {<%=pass%>};
+				return password_<%=cid%>;
+			}
+		}; 
+		final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
+		com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
 
-    <%if (("PUBLICKEY").equals(authMethod)) {%>
-      jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
-    <%}%>
-    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+		<%if (("PUBLICKEY").equals(authMethod)) {%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - SFTP authentication using a public key.");
+				log.debug("Private key: '" + <%=privateKey %> + "'.");
+			<%}%>
+			jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+		<%}%>
+		com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
 
-    <%if (("PASSWORD").equals(authMethod)) {%> 
-      session_<%=cid%>.setPassword(<%=pass%>); 
-    <%}%>
-    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
-	<%if (!useProxy) {%>
-  	if(("true").equals(System.getProperty("http.proxySet")) ){
-  		com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
-  		if(!"".equals(System.getProperty("http.proxyUser"))){
-  			proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+		<%if (("PASSWORD").equals(authMethod)) {%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - SFTP authentication using a password.");
+	  		<%}%> 
+      		session_<%=cid%>.setPassword(<%=pass%>); 
+		<%}%>
+		session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+		<%if (!useProxy) {%>
+		if(("true").equals(System.getProperty("http.proxySet")) ){
+			com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
+  			if(!"".equals(System.getProperty("http.proxyUser"))){
+  				proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+  			}
+  			session_<%=cid%>.setProxy(proxy_<%=cid%>);
   		}
-  		session_<%=cid%>.setProxy(proxy_<%=cid%>);
-  	}
-	<%}%>
-    session_<%=cid%>.connect();
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
-    channel_<%=cid%>.connect();
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
-    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
+		<%}%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" + <%=user%> + "'.");
+		<%}%>
+		session_<%=cid%>.connect();
+		com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
+		channel_<%=cid%>.connect();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		<%}%>
+		com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    	c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%
-  } else {
+	} else {
   %>    
-    com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
-    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
-  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
-  	}
+    	com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+		<%if(isLog4jEnabled){%>
+			if(c_<%=cid%>!=null && c_<%=cid%>.getSession()!=null) {
+				log.info("<%=cid%> - Uses an existing connection as " + c_<%=cid%>.getSession().getUserName() + ". Connection hostname: " + c_<%=cid%>.getSession().getHost() + ". Connection port: " + c_<%=cid%>.getSession().getPort() + "."); 
+			}
+		<%}%>
+	    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+	  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
+	  	}
   <%
-  }
+	}
   %>
-  String remotedir_<%=cid %> = <%=remotedir %>.replaceAll("\\\\", "/");
-  java.util.Vector<com.jcraft.jsch.ChannelSftp.LsEntry> vector_<%=cid %> = c_<%=cid%>.ls(remotedir_<%=cid %>);
-  com.jcraft.jsch.ChannelSftp.LsEntry[] sftpFiles_<%=cid %> = vector_<%=cid %>.toArray(new com.jcraft.jsch.ChannelSftp.LsEntry[0]);
-  int nb_file_<%=cid%> = 0;  
-  List<String> fileListTemp_<%=cid %> = new java.util.ArrayList<String>();
+	String remotedir_<%=cid %> = <%=remotedir %>.replaceAll("\\\\", "/");
+	java.util.Vector<com.jcraft.jsch.ChannelSftp.LsEntry> vector_<%=cid %> = c_<%=cid%>.ls(remotedir_<%=cid %>);
+	com.jcraft.jsch.ChannelSftp.LsEntry[] sftpFiles_<%=cid %> = vector_<%=cid %>.toArray(new com.jcraft.jsch.ChannelSftp.LsEntry[0]);
+	int nb_file_<%=cid%> = 0;  
+	List<String> fileListTemp_<%=cid %> = new java.util.ArrayList<String>();
 
-  for (String filemask_<%=cid %> : maskList_<%=cid %>) {
-    java.util.regex.Pattern fileNamePattern_<%=cid %> = java.util.regex.Pattern.compile(filemask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+	for (String filemask_<%=cid %> : maskList_<%=cid %>) {
+		java.util.regex.Pattern fileNamePattern_<%=cid %> = java.util.regex.Pattern.compile(filemask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
     
-    for (com.jcraft.jsch.ChannelSftp.LsEntry filemaskTemp_<%=cid %> : sftpFiles_<%=cid %>) {
-      if (fileNamePattern_<%=cid %>.matcher(filemaskTemp_<%=cid %>.getFilename()).matches()) {
-        fileListTemp_<%=cid %>.add(filemaskTemp_<%=cid %>.getFilename());
-      }
-    }
-  }    
+		for (com.jcraft.jsch.ChannelSftp.LsEntry filemaskTemp_<%=cid %> : sftpFiles_<%=cid %>) {
+			if (fileNamePattern_<%=cid %>.matcher(filemaskTemp_<%=cid %>.getFilename()).matches()) {
+				fileListTemp_<%=cid %>.add(filemaskTemp_<%=cid %>.getFilename());
+      		}
+    	}
+  	}    
 
-  for (String sftpFile_<%=cid %> : fileListTemp_<%=cid %>) {
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Listing files from server.");
+	<%}%>
+	for (String sftpFile_<%=cid %> : fileListTemp_<%=cid %>) {
 
     if ((".").equals(sftpFile_<%=cid %>) || ("..").equals(sftpFile_<%=cid %>)) {
       continue;
     }
     String currentFileName_<%=cid%> = sftpFile_<%=cid %>; 
     String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + sftpFile_<%=cid %>;
+	<%if(isLog4jEnabled){%>
+		log.trace("<%=cid%> - Listed file : '" + currentFilePath_<%=cid%> + "' .");
+	<%}%> 
     globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
     globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
     nb_file_<%=cid%>++;
 
-<%} else {%>
-  int nb_file_<%=cid%> = 0;
-  com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
-
-  <%if (("true").equals(useExistingConn)) {%>
-    ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
-  	<%if(!moveToCurrentDir){%>
-  		String rootDir_<%=cid %> = ftp_<%=cid %>.pwd();
-  	<%}%>
-  <%} else {%>    
-    ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-    ftp_<%=cid %>.setRemoteHost(<%=host %>);
-    ftp_<%=cid %>.setRemotePort(<%=port %>);
-
-    <%if (("ACTIVE").equals(connectMode)) {%>
-      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
-    <%} else {%>
-      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
-    <%}%>
-    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
-    ftp_<%=cid %>.connect();  
-    ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
-  <%}%>      
-  String remotedir_<%=cid %> = <%=remotedir%>;
-  ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
-  String[] fileList_<%=cid %>;
-
-  if (<%=dirFull %>) {
-    fileList_<%=cid %> = ftp_<%=cid %>.dir(null, true);
-  } else {
-    fileList_<%=cid %> = ftp_<%=cid %>.dir(null, false);
-  }
 <%
-  if (("true").equals(useExistingConn)) {
+} else {// *** ftp *** //
+%>
+  	int nb_file_<%=cid%> = 0;
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
+
+  	<%if (("true").equals(useExistingConn)) {%>
+		<%if(isLog4jEnabled){%>
+			if(ftp_<%=cid %>!=null) {
+				log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
+			}
+		<%}%>
+	    ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	  	<%if(!moveToCurrentDir){%>
+	  		String rootDir_<%=cid %> = ftp_<%=cid %>.pwd();
+	  	<%}%>
+	<%} else {%>    
+	    ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	    ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	    ftp_<%=cid %>.setRemotePort(<%=port %>);
+    
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - " + <%=(("ACTIVE").equals(connectMode))?"\"Using the active mode.\"":"\"Using the passive mode.\""%>);
+		<%}%>
+	    <%if (("ACTIVE").equals(connectMode)) {%>
+	      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+	    <%} else {%>
+	      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+	    <%}%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a password.");
+			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" +<%=user %>+ "'.");
+		<%}%>
+	    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
+	    ftp_<%=cid %>.connect();  
+	    ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		<%}%>  
+	<%}%>      
+	String remotedir_<%=cid %> = <%=remotedir%>;
+	ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
+	String[] fileList_<%=cid %>;
+
+	if (<%=dirFull %>) {
+		fileList_<%=cid %> = ftp_<%=cid %>.dir(null, true);
+	} else {
+		fileList_<%=cid %> = ftp_<%=cid %>.dir(null, false);
+	}
+<%
+	if (("true").equals(useExistingConn)) {
 		if(!moveToCurrentDir){
 %>
   			ftp_<%=cid %>.chdir(rootDir_<%=cid %>);
@@ -203,23 +250,29 @@ if (sftp) {
 		}
 	}
 %>
-  List<String> fileListTemp_<%=cid %> = new java.util.ArrayList<String>();
+	List<String> fileListTemp_<%=cid %> = new java.util.ArrayList<String>();
 
-  for (String filemask_<%=cid %> : maskList_<%=cid %>) {
-    java.util.regex.Pattern fileNamePattern_<%=cid %> = java.util.regex.Pattern.compile(filemask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+	for (String filemask_<%=cid %> : maskList_<%=cid %>) {
+		java.util.regex.Pattern fileNamePattern_<%=cid %> = java.util.regex.Pattern.compile(filemask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+	
+	    for (String filemaskTemp_<%=cid %> : fileList_<%=cid %>) {
+			if (fileNamePattern_<%=cid %>.matcher(filemaskTemp_<%=cid %>).matches()) {
+	        	fileListTemp_<%=cid %>.add(filemaskTemp_<%=cid %>);
+	      	}
+		}
+	}    
+	int i_<%=cid %> = -1;
 
-    for (String filemaskTemp_<%=cid %> : fileList_<%=cid %>) {
-      if (fileNamePattern_<%=cid %>.matcher(filemaskTemp_<%=cid %>).matches()) {
-        fileListTemp_<%=cid %>.add(filemaskTemp_<%=cid %>);
-      }
-    }
-  }    
-  int i_<%=cid %> = -1;
-
-  while (++i_<%=cid %> < fileListTemp_<%=cid %>.size()) {
-    String currentFileName_<%=cid%> = fileListTemp_<%=cid %>.get(i_<%=cid %>); 
-    String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + fileListTemp_<%=cid %>.get(i_<%=cid %>);
-    globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
-    globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
-    nb_file_<%=cid%>++;
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Listing files.");
+	<%}%> 
+	while (++i_<%=cid %> < fileListTemp_<%=cid %>.size()) {
+	    String currentFileName_<%=cid%> = fileListTemp_<%=cid %>.get(i_<%=cid %>); 
+	    String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + fileListTemp_<%=cid %>.get(i_<%=cid %>);
+		<%if(isLog4jEnabled){%>
+			log.trace("<%=cid%> - List file : '" + currentFilePath_<%=cid%> + "' .");
+		<%}%> 
+	    globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
+	    globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+	    nb_file_<%=cid%>++;
 <%}%>

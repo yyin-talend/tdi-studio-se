@@ -31,35 +31,35 @@ if (("true").equals(useExistingConn)) {
 
 if (sftp) {
 %>
-  String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
+	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
   
-  try{
-    if (c_<%=cid %>.stat(<%=remoteDir %> + "/" + <%=filename %>).getAtimeString() != null) {
-		<%if(isLog4jEnabled){%>
-			log.debug("<%=cid%> - '" + <%=filename %> + "' exists in the remote directory '"+ <%=remoteDir %> + "' .");
-		<%}%>
-      globalMap.put("<%=cid %>_EXISTS", true);
-    }
-  } catch (java.lang.Exception e) {
+	try{
+		if (c_<%=cid %>.stat(<%=remoteDir %> + "/" + <%=filename %>).getAtimeString() != null) {
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - '" + <%=filename %> + "' exists in the remote directory '"+ <%=remoteDir %> + "' .");
+			<%}%>
+      		globalMap.put("<%=cid %>_EXISTS", true);
+		}
+	} catch (java.lang.Exception e) {
 		<%if(isLog4jEnabled){%>
 			log.debug("<%=cid%> - '" + <%=filename %> + "' doesn't exist in the remote directory '"+ <%=remoteDir %> + "' .");
 		<%}%>
-    globalMap.put("<%=cid %>_EXISTS", false);
-  }
-  globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
+		globalMap.put("<%=cid %>_EXISTS", false);
+	}
+	globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
 <%} else {%>
-  String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
+	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
 
-  if (ftp_<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)) {
+	if (ftp_<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)) {
 		<%if(isLog4jEnabled){%>
 			log.debug("<%=cid%> - '" + <%=filename%> + "' exists in the remote directory '"+ <%=remoteDir %> + "' .");
 		<%}%>
-    globalMap.put("<%=cid %>_EXISTS", true);
-  } else {
+    	globalMap.put("<%=cid %>_EXISTS", true);
+	} else {
 		<%if(isLog4jEnabled){%>
 			log.debug("<%=cid%> - '" + <%=filename%> + "' doesn't exist in the remote directory '"+ <%=remoteDir %> + "' .");
 		<%}%>
-    globalMap.put("<%=cid %>_EXISTS", false);
-  }
-  globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
+		globalMap.put("<%=cid %>_EXISTS", false);
+	}
+	globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
 <%}%>

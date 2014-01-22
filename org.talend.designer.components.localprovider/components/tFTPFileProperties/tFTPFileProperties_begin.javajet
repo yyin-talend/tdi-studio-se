@@ -6,8 +6,11 @@ imports="
   org.talend.core.model.process.IConnectionCategory
   org.talend.designer.codegen.config.CodeGeneratorArgument
   java.util.List
+    org.talend.core.model.process.IElementParameter
+    org.talend.core.model.utils.NodeUtil 
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -49,6 +52,9 @@ if (("true").equals(useExistingConn)) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
 
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.logParameters(node); 
+log4jFileUtil.componentStartInfo(node); 
 if (useProxy) {
 %>
   java.util.Properties props_<%=cid%> = System.getProperties();
@@ -79,133 +85,175 @@ if (outputConnName == null) {
 
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
 //And it can not work with the FTP proxy directly, only support the socks proxy.
-if (sftp) {
+if (sftp) {  // *** sftp *** //
 
-  if (("false").equals(useExistingConn)) {
-  %>
-    class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-      String passphrase_<%=cid %> = <%=passPhrase %>;
-      public String getPassphrase() { return passphrase_<%=cid %>; }
-      public String getPassword() { return null; } 
-      public boolean promptPassword(String arg0) { return true; } 
-      public boolean promptPassphrase(String arg0) { return true; } 
-      public boolean promptYesNo(String arg0) { return true; } 
-      public void showMessage(String arg0) { } 
+	if (("false").equals(useExistingConn)) {
+	%>
+		class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+			String passphrase_<%=cid %> = <%=passPhrase %>;
+			public String getPassphrase() { return passphrase_<%=cid %>; }
+			public String getPassword() { return null; } 
+			public boolean promptPassword(String arg0) { return true; } 
+			public boolean promptPassphrase(String arg0) { return true; } 
+			public boolean promptYesNo(String arg0) { return true; } 
+			public void showMessage(String arg0) { } 
 
-      public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
-        boolean[] echo) {
-        String[] password_<%=cid%> = {<%=pass%>};
-        return password_<%=cid%>;
-      }
-    }; 
-    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
-    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+      		public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+        	boolean[] echo) {
+        		String[] password_<%=cid%> = {<%=pass%>};
+        		return password_<%=cid%>;
+      		}
+    	}; 
+    	final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
+    	com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
 
-    <%if (("PUBLICKEY").equals(authMethod)) {%>
-      jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
-    <%}%>
-    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+	    <%if (("PUBLICKEY").equals(authMethod)) {%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - SFTP authentication using a public key.");
+				log.debug("Private key: '" + <%=privateKey %> + "'.");
+	  		<%}%>
+	      jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+	    <%}%>
+    	com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
 
-    <%if (("PASSWORD").equals(authMethod)) {%> 
-      session_<%=cid%>.setPassword(<%=pass%>); 
-    <%}%>
-    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
-	<%if (!useProxy) {%>
-  	if(("true").equals(System.getProperty("http.proxySet")) ){
-  		com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
-  		if(!"".equals(System.getProperty("http.proxyUser"))){
-  			proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+	    <%if (("PASSWORD").equals(authMethod)) {%> 
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - SFTP authentication using a password.");
+			<%}%>
+	      session_<%=cid%>.setPassword(<%=pass%>); 
+	    <%}%>
+    	session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+		<%if (!useProxy) {%>
+	  	if(("true").equals(System.getProperty("http.proxySet")) ){
+	  		com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
+	  		if(!"".equals(System.getProperty("http.proxyUser"))){
+	  			proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+	  		}
+	  		session_<%=cid%>.setProxy(proxy_<%=cid%>);
+	  	}
+		<%}%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" + <%=user%> + "'.");
+		<%}%>
+	    session_<%=cid%>.connect();
+	    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
+	    channel_<%=cid%>.connect();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		<%}%>
+	    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+	    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
+	<%} else {%>    
+		com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+		<%if(isLog4jEnabled){%>
+			if(c_<%=cid%>!=null && c_<%=cid%>.getSession()!=null) {
+				log.info("<%=cid%> - Uses an existing connection as " + c_<%=cid%>.getSession().getUserName() + ". Connection hostname: " + c_<%=cid%>.getSession().getHost() + ". Connection port: " + c_<%=cid%>.getSession().getPort() + "."); 
+			}
+		<%}%>
+		if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+	  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
   		}
-  		session_<%=cid%>.setProxy(proxy_<%=cid%>);
-  	}
-	<%}%>
-    session_<%=cid%>.connect();
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
-    channel_<%=cid%>.connect();
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
-    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
-  <%} else {%>    
-    com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
-    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
-  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
-  	}
-  <%}%> 
-  String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
-  <%=outputConnName %> = new <%=outputConnName %>Struct();
-  String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
-  com.jcraft.jsch.SftpATTRS lstat_<%=cid %> = c_<%=cid %>.lstat(remoteFile_<%=cid %>);
+  	<%}%> 
+	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
+	<%=outputConnName %> = new <%=outputConnName %>Struct();
+	String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
+	com.jcraft.jsch.SftpATTRS lstat_<%=cid %> = c_<%=cid %>.lstat(remoteFile_<%=cid %>);
 
-  if (lstat_<%=cid %> != null) {
-    <%=outputConnName %>.abs_path = (remoteFile_<%=cid %>).replaceAll("//", "/");
-    <%=outputConnName %>.dirname = <%=remoteDir %>;
-    <%=outputConnName %>.basename = <%=filename%>;
-    <%=outputConnName %>.size = lstat_<%=cid %>.getSize();
-    <%=outputConnName %>.mtime = (long)lstat_<%=cid %>.getMTime();
-    <%=outputConnName %>.mtime_string = lstat_<%=cid %>.getMtimeString();
+	if (lstat_<%=cid %> != null) {
+	    <%=outputConnName %>.abs_path = (remoteFile_<%=cid %>).replaceAll("//", "/");
+	    <%=outputConnName %>.dirname = <%=remoteDir %>;
+	    <%=outputConnName %>.basename = <%=filename%>;
+	    <%=outputConnName %>.size = lstat_<%=cid %>.getSize();
+	    <%=outputConnName %>.mtime = (long)lstat_<%=cid %>.getMTime();
+	    <%=outputConnName %>.mtime_string = lstat_<%=cid %>.getMtimeString();
 
-    <%if (MD5) {%>
-      // Calculation of the Message Digest MD5
-      java.io.InputStream is_<%=cid %> = c_<%=cid%>.get(remoteFile_<%=cid %>);
-      byte[] buffer_<%=cid %> = new byte[8192];
-      int read_<%=cid %> = 0;
-      java.security.MessageDigest dgs_<%=cid %> = java.security.MessageDigest.getInstance("MD5");
-
-      while ( (read_<%=cid %> = is_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
-        dgs_<%=cid %>.update(buffer_<%=cid %>, 0, read_<%=cid %>);
-      }
-      <%=outputConnName %>.md5 =String.format("%032x", new java.math.BigInteger(1, dgs_<%=cid %>.digest()));
-      is_<%=cid %>.close();
-    <%}%>
-  }  
+	    <%if (MD5) {%>
+	      // Calculation of the Message Digest MD5
+	      java.io.InputStream is_<%=cid %> = c_<%=cid%>.get(remoteFile_<%=cid %>);
+	      byte[] buffer_<%=cid %> = new byte[8192];
+	      int read_<%=cid %> = 0;
+	      java.security.MessageDigest dgs_<%=cid %> = java.security.MessageDigest.getInstance("MD5");
+	
+	      while ( (read_<%=cid %> = is_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
+	        dgs_<%=cid %>.update(buffer_<%=cid %>, 0, read_<%=cid %>);
+	      }
+	      <%=outputConnName %>.md5 =String.format("%032x", new java.math.BigInteger(1, dgs_<%=cid %>.digest()));
+	      is_<%=cid %>.close();
+		<%}%>
+	}  
 <%
-} else {
+} else {// *** ftp *** //
 %>
-  com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 
-  <%if (("true").equals(useExistingConn)) {%>
-    ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
-  <%} else {%>
-    ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-    ftp_<%=cid %>.setRemoteHost(<%=host %>);
-    ftp_<%=cid %>.setRemotePort(<%=port %>);
+	<%if (("true").equals(useExistingConn)) {%>
+		<%if(isLog4jEnabled){%>
+			if(ftp_<%=cid %>!=null) {
+				log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
+			}
+		<%}%>
+		ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	<%} else {%>
+	    ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	    ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	    ftp_<%=cid %>.setRemotePort(<%=port %>);
 
-    <%if (("ACTIVE").equals(connectMode)) {%>
-      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
-    <%} else {%>
-      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
-    <%}%>
-    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
-    ftp_<%=cid %>.connect();
-    ftp_<%=cid %>.login(<%=username %>, <%=password %>);
-  <%}%>
-  <%
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - " + <%=(("ACTIVE").equals(connectMode))?"\"Using the active mode.\"":"\"Using the passive mode.\""%>);
+		<%}%>
+		<%if (("ACTIVE").equals(connectMode)) {%>
+	    	ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+		<%} else {%>
+	    	ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+	    <%}%>
+		ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a password.");
+			log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" +<%=user %>+ "'.");
+		<%}%>
+	    ftp_<%=cid %>.connect();
+	    ftp_<%=cid %>.login(<%=username %>, <%=password %>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
+		<%}%>  
+	<%}%>
+	<%
   //add feature 19709,add the "Transfer mode" option,
   //the default transfer mode is ASCII,we don't change the mode when ascii is choosed.
-  if("binary".equalsIgnoreCase(mode)){
-  %>
-  	ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
-  <%
-  }
-  %>
-  String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
-  <%=outputConnName %> = new <%=outputConnName %>Struct();
-  String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
+	if("binary".equalsIgnoreCase(mode)){
+	%>
+		ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+	<%
+	}
+	%>
+	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
+	<%=outputConnName %> = new <%=outputConnName %>Struct();
+  	String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
 
-  if (ftp_<%=cid %>.exists(remoteFile_<%=cid %>)) {
-    <%=outputConnName %>.abs_path = (remoteFile_<%=cid %>).replaceAll("//", "/");
-    <%=outputConnName %>.dirname = <%=remoteDir %>;
-    <%=outputConnName %>.basename = <%=filename%>;
-    <%=outputConnName %>.size = ftp_<%=cid %>.size(remoteFile_<%=cid %>);
-    <%=outputConnName %>.mtime = ftp_<%=cid %>.modtime(remoteFile_<%=cid %>).getTime();
-    <%=outputConnName %>.mtime_string =ftp_<%=cid %>.modtime(remoteFile_<%=cid %>).toString();
+	if (ftp_<%=cid %>.exists(remoteFile_<%=cid %>)) {
+	    <%=outputConnName %>.abs_path = (remoteFile_<%=cid %>).replaceAll("//", "/");
+	    <%=outputConnName %>.dirname = <%=remoteDir %>;
+	    <%=outputConnName %>.basename = <%=filename%>;
+	    <%=outputConnName %>.size = ftp_<%=cid %>.size(remoteFile_<%=cid %>);
+	    <%=outputConnName %>.mtime = ftp_<%=cid %>.modtime(remoteFile_<%=cid %>).getTime();
+	    <%=outputConnName %>.mtime_string =ftp_<%=cid %>.modtime(remoteFile_<%=cid %>).toString();
+		<%if(isLog4jEnabled){%>
+			log4jSb_<%=cid%>.append("<%=cid%> - File properties for remoteDir is : '" + <%=remoteDir %> + "',file name is : '" + <%=filename%> +"',file size is : '" + <%=outputConnName %>.size + "',file last modify time is : '" + <%=outputConnName %>.mtime_string + "'");
+		<%}%>
 
-    <%if (MD5) {%>
-      // Calculation of the Message Digest MD5
-      java.security.MessageDigest dgs_<%=cid %> = java.security.MessageDigest.getInstance("MD5");
-      dgs_<%=cid %>.update(ftp_<%=cid %>.get(remoteFile_<%=cid %>));
-      <%=outputConnName %>.md5 =String.format("%032x", new java.math.BigInteger(1, dgs_<%=cid %>.digest()));
-    <%}%>
-  }
+	    <%if (MD5) {%>
+	      // Calculation of the Message Digest MD5
+	      java.security.MessageDigest dgs_<%=cid %> = java.security.MessageDigest.getInstance("MD5");
+	      dgs_<%=cid %>.update(ftp_<%=cid %>.get(remoteFile_<%=cid %>));
+	      <%=outputConnName %>.md5 =String.format("%032x", new java.math.BigInteger(1, dgs_<%=cid %>.digest()));
+			<%if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append(",md5 message is : '"+ <%=outputConnName %>.md5 + "'.");
+			<%}%>
+	    <%}%>
+		<%if(isLog4jEnabled){%>
+			log.trace(log4jSb_<%=cid%>);
+		<%}%>
+  	}
 <%
 }
 %>

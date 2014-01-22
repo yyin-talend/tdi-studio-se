@@ -34,42 +34,42 @@ if (sftp && !("true").equals(useExistingConn)) {
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Closing the connection to the server.");
 	<%}%>
-  session_<%=cid%>.disconnect(); 
+	session_<%=cid%>.disconnect(); 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Connection to the server closed.");
 	<%}%>
 <%
 } else {
-  if (!("true").equals(useExistingConn)) {
-    if (("true").equals(ignoreFailureAtQuit)) {
+	if (!("true").equals(useExistingConn)) {
+		if (("true").equals(ignoreFailureAtQuit)) {
     %>
-      try {
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the server.");
-		<%}%>
-        ftp_<%=cid %>.quit();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the server closed.");
-		<%}%>
-      } catch(java.net.SocketException se_<%=cid%>) {
-		<%if(isLog4jEnabled){%>
-			log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
-		<%}%>
-        //ignore failure
-      }
+			try {
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Closing the connection to the server.");
+				<%}%>
+				ftp_<%=cid %>.quit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Connection to the server closed.");
+				<%}%>
+      		} catch(java.net.SocketException se_<%=cid%>) {
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
+				<%}%>
+        		//ignore failure
+      		}
     <%
-    } else {
+    	} else {
     %>
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the server.");
-		<%}%>
-      ftp_<%=cid %>.quit();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the server closed.");
-		<%}%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the server.");
+			<%}%>
+      		ftp_<%=cid %>.quit();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the server closed.");
+			<%}%>
     <%
-    }
-  }
+		}
+	}
 }
 %>
 <%if(isLog4jEnabled){%>

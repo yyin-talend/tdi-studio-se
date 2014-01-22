@@ -15,6 +15,7 @@ String cid = node.getUniqueName();
 String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 boolean bUseExistingConn = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 boolean sftp = false;
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -47,23 +48,48 @@ if (bUseExistingConn) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
 
-if (sftp && !bUseExistingConn) {
+if (sftp && !bUseExistingConn) { // *** sftp *** //
 %>
-  session_<%=cid%>.disconnect(); 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Closing the connection to the server.");
+	<%}%>
+	session_<%=cid%>.disconnect(); 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to the server closed.");
+	<%}%>  
 <%
-} else {
-  if (!bUseExistingConn) {
-    if (("true").equals(ignoreFailureAtQuit)) {
+} else {// *** ftp *** //
+	if (!bUseExistingConn) {
+    	if (("true").equals(ignoreFailureAtQuit)) {
     %>
-      try {
-        ftp_<%=cid %>.quit();
-      } catch (java.net.SocketException se_<%=cid%>) {
-        //ignore failure
-      }
-    <%} else {%>
-      ftp_<%=cid %>.quit();
+			try {
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Closing the connection to the server.");
+				<%}%>
+    		    ftp_<%=cid %>.quit();
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Connection to the server closed.");
+				<%}%>  
+			} catch (java.net.SocketException se_<%=cid%>) {
+				<%if(isLog4jEnabled){%>
+					log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
+				<%}%> 
+        	//ignore failure
+			}
+		<%} else {%>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the server.");
+			<%}%>
+			ftp_<%=cid %>.quit();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the server closed.");
+			<%}%>  
     <%
-    }
-  }
+		}
+  	}
 }
 %>
+
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Done.");
+<%}%>
