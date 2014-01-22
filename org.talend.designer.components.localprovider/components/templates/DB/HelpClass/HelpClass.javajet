@@ -40,14 +40,16 @@ imports="
 		
 		public void useShareConnection(INode node) {
 			String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+			String shareDBClass = "SharedDBConnection";
 			if(isLog4jEnabled){
+				shareDBClass = "SharedDBConnectionLog4j";
 %>
-			SharedDBConnection.initLogger(log,"<%=cid%>");
+			SharedDBConnectionLog4j.initLogger(log,"<%=cid%>");
 <%
 			}
 %>
 			String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-			conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,dbUser_<%=cid%> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
+			conn_<%=cid%> = <%=shareDBClass%>.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,dbUser_<%=cid%> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
 <%
 		}
 		
