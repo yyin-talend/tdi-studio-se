@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -114,11 +115,12 @@ public class ConnectionTest {
 
     @Test
     public void testSetTraceData() {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("key", "value");
+        Map<String, TraceData> map = new HashMap<String, TraceData>();
+        TraceData data = new TraceData();
+        map.put("key", data);
         connection.setTraceData(map);
-        String value = connection.getTraceData().get("key");
-        assertEquals(value, "value");
+        TraceData value = connection.getTraceData().get("key");
+        assertEquals(data, value);
 
         connection.setTraceData(null);
         assertNull(connection.getTraceData());
