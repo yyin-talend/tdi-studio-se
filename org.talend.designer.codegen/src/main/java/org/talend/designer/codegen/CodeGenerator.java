@@ -337,8 +337,9 @@ public class CodeGenerator implements ICodeGenerator {
                         } else {
                             StringBuffer finallyPart = new StringBuffer();
                             componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                            componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.BEGIN, null));
-
+                            for(INode mergeNode:subTree.getMergeNodes()){
+                            	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
+                            }
                             List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
                             for (INode startNode : sortedMergeBranchStarts) {
                                 componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.BEGIN, null));
@@ -350,9 +351,11 @@ public class CodeGenerator implements ICodeGenerator {
                                 componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
                                 finallyPart.append(generateComponentsCode(subTree, startNode, ECodePart.FINALLY, null));
                             }
-
-                            componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END, null));
-                            finallyPart.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.FINALLY, null));
+                            
+                            for(INode mergeNode:subTree.getMergeNodes()){
+                            	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
+                            	finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
+                            }
                             Vector subprocess_footerArgument = new Vector(2);
                             subprocess_footerArgument.add(subTree);
                             subprocess_footerArgument.add(finallyPart.toString());
@@ -1064,9 +1067,9 @@ public class CodeGenerator implements ICodeGenerator {
                                 // generateTypedComponentCode
                                 // (EInternalTemplate.SUBPROCESS_HEADER,
                                 // subTree));
-                                componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.BEGIN,
-                                        null));
-
+                                for(INode mergeNode:subTree.getMergeNodes()){
+                                	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.BEGIN, null));
+                                }
                                 List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
                                 for (INode startNode : sortedMergeBranchStarts) {
                                     componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.BEGIN, null));
@@ -1080,11 +1083,10 @@ public class CodeGenerator implements ICodeGenerator {
                                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN,
                                         subTree.getRootNode()));
 
-                                componentsCode
-                                        .append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END, null));
-
-                                finallyPart.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.FINALLY,
-                                        null));
+                                for(INode mergeNode:subTree.getMergeNodes()){
+                                	componentsCode.append(generateComponentsCode(subTree, mergeNode, ECodePart.END, null));
+                                	finallyPart.append(generateComponentsCode(subTree, mergeNode, ECodePart.FINALLY, null));
+                                }
 
                                 // componentsCode.append(
                                 // generateTypedComponentCode
