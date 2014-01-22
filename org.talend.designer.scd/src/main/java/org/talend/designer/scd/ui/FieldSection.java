@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.scd.ScdManager;
+import org.talend.designer.scd.ScdParameterConstants;
 import org.talend.designer.scd.util.DragDropManager;
 
 /**
@@ -52,6 +53,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
 
     private boolean editable;
 
+    private int type;
+
     /**
      * DOC hcw FieldSection constructor comment.
      * 
@@ -64,6 +67,22 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
         tableModel = new ArrayList<String>();
         this.editable = editable;
+    }
+
+    /**
+     * DOC hcyi FieldSection constructor comment.
+     * 
+     * @param parent
+     */
+    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded, boolean editable,
+            int type) {
+        super(parent, width, height, scdManager, toolbarNeeded);
+        dragDropManager = new DragDropManager();
+        dragDropManager.addDragSupport(tableViewer.getTable(), this);
+        dragDropManager.addDropSupport(tableViewer.getTable(), this);
+        tableModel = new ArrayList<String>();
+        this.editable = editable;
+        this.type = type;
     }
 
     @Override
@@ -232,10 +251,28 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         String[] items = data.split("\\|"); //$NON-NLS-1$
         // skip items[0], which is the number of selected elements
         for (int i = 1; i < items.length; i++) {
-            tableModel.add(items[i]);
+            switch (type) {
+            case ScdParameterConstants.DROP_COPY_TYPE1FIELDS:
+            case ScdParameterConstants.DROP_COPY_TYPE2FIELDS:
+                if (!scdManager.getTypeTable().contains(items[i])) {
+                    scdManager.getTypeTable().add(items[i]);
+                } else {
+                    continue;
+                }
+                break;
+            case ScdParameterConstants.DROP_COPY_SOURCEKEYS:
+                if (!scdManager.getSourceKeys().contains(items[i])) {
+                    scdManager.getSourceKeys().add(items[i]);
+                } else {
+                    continue;
+                }
+                break;
+            }
+            if (type != ScdParameterConstants.DROP_COPY_SOURCEKEYS) {
+                tableModel.add(items[i]);
+            }
         }
         tableViewer.setInput(tableModel);
-
     }
 
     /*
@@ -253,6 +290,19 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
             for (TableItem item : items) {
                 if (toRemove[i].equals(item.getText())) {
                     tableModel.remove(item.getData());
+                    switch (type) {
+                    case ScdParameterConstants.DROP_COPY_TYPE1FIELDS:
+                    case ScdParameterConstants.DROP_COPY_TYPE2FIELDS:
+                        if (scdManager.getTypeTable().contains(item.getData())) {
+                            scdManager.getTypeTable().remove(item.getData());
+                        }
+                        break;
+                    case ScdParameterConstants.DROP_COPY_SOURCEKEYS:
+                        if (scdManager.getSourceKeys().contains(item.getData())) {
+                            scdManager.getSourceKeys().remove(item.getData());
+                        }
+                        break;
+                    }
                     break;
                 }
             }
@@ -268,6 +318,31 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDropDelegate#isDropAllowed(java.lang.String)
      */
     public boolean isDropAllowed(String data) {
+        switch (type) {
+        case ScdParameterConstants.DROP_COPY_TYPE1FIELDS:
+        case ScdParameterConstants.DROP_COPY_TYPE2FIELDS:
+            List<String> typeTable = scdManager.getTypeTable();
+            String[] items = data.split("\\|");
+            // skip items[0], which is the number of selected elements
+            for (int i = 1; i < items.length; i++) {
+                // drop to current field
+                if (typeTable.contains(items[i])) {
+                    return false;
+                }
+            }
+            break;
+        case ScdParameterConstants.DROP_COPY_SOURCEKEYS:
+            List<String> sourceKeys = scdManager.getSourceKeys();
+            String[] sourceKeyItems = data.split("\\|");
+            // skip items[0], which is the number of selected elements
+            for (int i = 1; i < sourceKeyItems.length; i++) {
+                // drop to current field
+                if (sourceKeys.contains(sourceKeyItems[i])) {
+                    return false;
+                }
+            }
+            break;
+        }
         return true;
     }
 
@@ -310,8 +385,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
             this.column = column;
             this.viewer = viewer;
             columnNames = scdManager.getInputColumnNames();
-            editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), columnNames
-                    .toArray(new String[columnNames.size()]), SWT.READ_ONLY);
+            editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(),
+                    columnNames.toArray(new String[columnNames.size()]), SWT.READ_ONLY);
         }
 
         /*

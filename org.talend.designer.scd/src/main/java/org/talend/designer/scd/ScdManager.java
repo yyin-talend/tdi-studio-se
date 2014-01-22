@@ -75,6 +75,8 @@ public class ScdManager {
 
     private List<String> unusedFields;
 
+    private List<String> typeTable = new ArrayList<String>();
+
     /**
      * DOC hcw ScdManager constructor comment.
      * 
@@ -220,6 +222,10 @@ public class ScdManager {
         reloadType1Parameter();
         reloadType2Parameter();
         reloadType3Parameter();
+        //
+        typeTable.addAll(type1Table != null ? type1Table : Collections.EMPTY_LIST);
+        typeTable.addAll(type2Table != null ? type2Table : Collections.EMPTY_LIST);
+        typeTable.addAll(getUsedType3Columns(type3Table));
     }
 
     /**
@@ -698,6 +704,10 @@ public class ScdManager {
 
     public List<Type3Field> getType3Table() {
         return type3Table;
+    }
+
+    public List<String> getTypeTable() {
+        return this.typeTable;
     }
 
     public ScdComponent getComponent() {

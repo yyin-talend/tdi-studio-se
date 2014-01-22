@@ -22,6 +22,8 @@ public class ScdParameterConstants {
 
     public static final String SOURCE_KEYS_ITEM_NAME = "NAME"; //$NON-NLS-1$
 
+    public static final int DROP_COPY_SOURCEKEYS = 4;
+
     // type 0
     public static final String USE_L0 = "USE_L0"; //$NON-NLS-1$
 
@@ -35,6 +37,8 @@ public class ScdParameterConstants {
     public static final String L1_FIELDS_PARAM_NAME = "L1_FIELDS"; //$NON-NLS-1$
 
     public static final String L1_FIELDS_ITEM_NAME = "NAME"; //$NON-NLS-1$
+
+    public static final int DROP_COPY_TYPE1FIELDS = 1;
 
     // type 2
     public static final String USE_L2 = "USE_L2"; //$NON-NLS-1$
@@ -70,6 +74,8 @@ public class ScdParameterConstants {
     public static final String USE_L2_VERSION = "USE_L2_VERSION"; //$NON-NLS-1$
 
     public static final String L2_VERSION_FIELD = "L2_VERSION_FIELD"; //$NON-NLS-1$
+
+    public static final int DROP_COPY_TYPE2FIELDS = 2;
 
     // type 3
     public static final String USE_L3 = "USE_L3"; //$NON-NLS-1$

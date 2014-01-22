@@ -75,7 +75,7 @@ public class DragDropManager {
 
             @Override
             public void dragEnter(DropTargetEvent event) {
-                if (!delegate.isDropAllowed(currentSelectionText)) {
+                if (event.detail == DND.DROP_COPY && !delegate.isDropAllowed(currentSelectionText)) {
                     event.detail = DND.DROP_NONE;
                     return;
                 }
@@ -104,6 +104,10 @@ public class DragDropManager {
 
             @Override
             public void drop(DropTargetEvent event) {
+                if (!delegate.isDropAllowed(currentSelectionText)) {
+                    event.detail = DND.DROP_NONE;
+                    return;
+                }
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
                     // Get the dropped data
                     String data = (String) event.data;
