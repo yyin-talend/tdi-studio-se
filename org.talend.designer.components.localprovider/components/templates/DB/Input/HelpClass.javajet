@@ -97,9 +97,9 @@ imports="
 		}
 		
 		public String getQueryString(INode node) {
-			String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-			dbquery = dbquery.replaceAll("\n"," ");
-			dbquery = dbquery.replaceAll("\r"," ");
+			String dbquery= ElementParameterParser.getValue(node, "__QUERY__").trim();
+			dbquery = dbquery.replaceAll("\\n","\\\\n");
+			dbquery = dbquery.replaceAll("\\r","\\\\r");
 			
 			return dbquery;
 		}
