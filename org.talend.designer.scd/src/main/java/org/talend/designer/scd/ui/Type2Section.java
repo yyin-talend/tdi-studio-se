@@ -66,6 +66,12 @@ public class Type2Section extends FieldSection {
         dragDropManager = new DragDropManager();
     }
 
+    public Type2Section(Composite parent, int width, int height, ScdManager scdManager, int type) {
+        super(parent, width, height, scdManager, false, false, type);
+        editorManager = new TableEditorManager();
+        dragDropManager = new DragDropManager();
+    }
+
     @Override
     protected void createContents(Composite composite) {
         super.createContents(composite);

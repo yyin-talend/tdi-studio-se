@@ -243,9 +243,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             // drag from current field
             buf.append(selection[i].getText(0));
         }
-
         return buf.toString();
-
     }
 
     /*
@@ -262,6 +260,11 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             // drop to current field
             field.setCurrentValue(items[i]);
             field.setPreviousValue(PREVIOUS_NAME_PREFIX + items[i]);
+            if (!scdManager.getTypeTable().contains(items[i])) {
+                scdManager.getTypeTable().add(items[i]);
+            } else {
+                continue;
+            }
             tableModel.add(field);
         }
         tableViewer.setInput(tableModel);
@@ -274,6 +277,15 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDropDelegate#isDropAllowed(java.lang.String)
      */
     public boolean isDropAllowed(String data) {
+        List<String> typeTable = scdManager.getTypeTable();
+        String[] items = data.split("\\|");
+        // skip items[0], which is the number of selected elements
+        for (int i = 1; i < items.length; i++) {
+            // drop to current field
+            if (typeTable.contains(items[i])) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -308,6 +320,9 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             }
             if (itemToRemove != null) {
                 tableModel.remove((Type3Field) itemToRemove.getData());
+                if (scdManager.getTypeTable().contains(toRemove[i])) {
+                    scdManager.getTypeTable().remove(toRemove[i]);
+                }
                 editorManager.removeEditors(itemToRemove);
             }
         }
