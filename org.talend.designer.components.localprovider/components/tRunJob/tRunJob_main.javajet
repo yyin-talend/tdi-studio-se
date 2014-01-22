@@ -59,9 +59,54 @@ String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+boolean propagateData = false;
+Set<String> inputCols = new HashSet<String>();
+String inputConnName = null;
 %>
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
+//For TDI-28558
+if(!useDynamicJob && !useIndependentProcess){
+	List<IMetadataColumn> inputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	List<IMetadataColumn> outputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	if (node.getIncomingConnections()!=null) {
+		for (IConnection incomingConn : node.getIncomingConnections()) {
+			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				inputConnName = incomingConn.getName();
+				IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+					inputMetadataColumn.add(inputCol);
+					inputCols.add(inputCol.getLabel());
+				}
+				break;
+			}
+		}
+	}
+	if(node.getOutgoingConnections()!=null) {
+		for (IConnection outputConn : node.getOutgoingConnections()) {
+			if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				IMetadataTable outputMetadataTable = outputConn.getMetadataTable();
+				for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
+					outputMetadataColumn.add(outputCol);
+				}
+			}
+		}
+	}
+	if(inputMetadataColumn!=null && outputMetadataColumn!=null){
+		if(inputMetadataColumn.size() == outputMetadataColumn.size()){
+			int size = inputMetadataColumn.size();
+			for(int i = 0;i< size; i++){
+				if(!inputMetadataColumn.get(i).getLabel().equals(outputMetadataColumn.get(i).getLabel()) ||
+				   !inputMetadataColumn.get(i).getType().equals(outputMetadataColumn.get(i).getType())){
+					propagateData = false;
+					break;
+				}else{
+					propagateData = true;
+				}
+			}
+		}
+	}
+}
 if(useDynamicJob){
 	useIndependentProcess = true;
 	%>
@@ -332,45 +377,67 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
       }
     }
   }
-  if(firstConnName != null) {//b
-    if(inConns == null || inConns.size() == 0){//c
+	if(firstConnName != null) {//b
     %>
-      for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
-      <%
-      int columnSize = columns.size();
-      for (int i = 0; i < columnSize; i++) {//a
-        IMetadataColumn column = columns.get(i);
-        String label = column.getLabel();
-        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-        JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-        String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-        %>		
-        if(<%=i %> < item_<%=cid %>.length){				
-           <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
-             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
-           <%} else if(javaType == JavaTypesManager.DATE) {%>
-             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
-           <%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
-             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
-           <%}else if(javaType == JavaTypesManager.LIST) {%>
-           	 <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>], ",");
-           <%} else {%>
-             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
-           <%}%>
-        }else{
-  	      <%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-        }
+		for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
+			if(childJob_<%=cid %>.hastBufferOutputComponent()){
+		    	<%
+				int columnSize = columns.size();
+				for (int i = 0; i < columnSize; i++) {//a
+					IMetadataColumn column = columns.get(i);
+					String label = column.getLabel();
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+		        %>		
+					if(<%=i %> < item_<%=cid %>.length){				
+		           		<%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
+			           		<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
+		           		<%} else if(javaType == JavaTypesManager.DATE) {%>
+			           		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
+		           		<%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
+		           			<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
+		           		<%}else if(javaType == JavaTypesManager.LIST) {%>
+		           			<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>], ",");
+		           		<%} else {%>
+		           			<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
+		           		<%}%>
+	           		}else{
+		           		<%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+	           		}
         <%
-      }//a
-    }else{//c
-    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
-    %>
-      {
-    <%
-    }
-    
-  }//b  
-  
+				}//a
+%>
+			}else{
+<%
+				if(propagateData){//d
+					for (IConnection conn : node.getOutgoingConnections()) {
+						if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+							IMetadataTable outputMetadataTable = conn.getMetadataTable();
+							if (outputMetadataTable!=null) {
+								for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
+									if (inputCols.contains(outputCol.getLabel())) {
+%>
+										<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+<%
+									}
+								}
+							}
+						}
+					}
+				}//d
+			    if(inConns == null || inConns.size() == 0 || !propagateData){//c
+%>
+				    if(!childJob_<%=cid %>.hastBufferOutputComponent()){
+					    continue;
+			    	}
+<%
+				}//c
+%>
+		    }
+<%
+
+	}//b  
 } else { //AAAAAAAAAAAA
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
