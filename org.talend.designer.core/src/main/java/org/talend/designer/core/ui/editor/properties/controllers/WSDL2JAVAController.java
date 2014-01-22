@@ -92,6 +92,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -249,10 +250,11 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      */
     private void generateJavaFile() {
 
-        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
 
             @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
+            protected void run() throws PersistenceException {
                 Node node = (Node) elem;
 
                 IProcess process = node.getProcess();
@@ -387,31 +389,9 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                 // }
                 FilesUtils.removeFolder(dir, true);
             }
-
         };
-        IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                try {
-                    ISchedulingRule schedulingRule = workspace.getRoot();
-                    // the update the project files need to be done in the workspace runnable to avoid all
-                    // notification
-                    // of changes before the end of the modifications.
-                    workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
-                } catch (CoreException e) {
-                    // throw new InvocationTargetException(e);
-                }
-            }
-        };
-        try {
-            PlatformUI.getWorkbench().getProgressService().run(true, true, iRunnableWithProgress);
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-        } catch (InterruptedException e) {
-            ExceptionHandler.process(e);
-        }
+        workUnit.setAvoidUnloadResources(true);
+        factory.executeRepositoryWorkUnit(workUnit);
     }
 
     private void refreshProject() {
