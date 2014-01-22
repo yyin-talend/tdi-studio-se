@@ -4,9 +4,11 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
 soapUtil_<%=cid%>.close();
+<%log4jFileUtil.componentFinishInfo(node);%>
