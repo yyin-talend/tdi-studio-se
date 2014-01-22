@@ -120,22 +120,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 	if((columnList != null && columnList.size() > 0 && !("NONE".equals(tableAction))) || "CLEAR".equals(tableAction) || "TRUNCATE".equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
 		%>
-		java.lang.Class.forName("org.netezza.Driver");
+		String driverClass_<%=cid%> = "org.netezza.Driver";
+		java.lang.Class.forName(driverClass_<%=cid%>);
 		String url_<%=cid%> = "jdbc:netezza://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpass%>;
 		String tableName_<%=cid%> = <%=dbtable%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		<%
-	   		log4jCodeGenerateUtil.debugConnectionParams(node,"org.netezza.Driver");	
+	   		log4jCodeGenerateUtil.debugConnectionParams(node);	
 		%>	
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
-		<%}%>
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
-		<%}%>
+		<%log4jCodeGenerateUtil.connect();%>
 		<%
 		
         if(("DROP_CREATE").equals(tableAction)) {
@@ -254,17 +249,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 						<%}%>
 						stmtDrop_<%=cid%>.close();
                     }catch(java.sql.SQLException e){
-                    	if(<%=dieOnError%>)
+                    	if(<%=dieOnError%>){
 							<%if(isLog4jEnabled){%>
 								log.fatal("<%=cid%> - Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
 							<%}%>
 							 throw new RuntimeException ("Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
                     	
-                    	else
+                    	}else{
 							<%if(isLog4jEnabled){%>
 								log.error("<%=cid%> - Failure to drop table '" + tableName_<%=cid%>  + "'. process terminated");
 							<%}%>
 							 e.printStackTrace();
+						}
                     }
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = null;

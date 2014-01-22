@@ -49,12 +49,12 @@ if(useExistingConn) {
 %>
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	String dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
-	String userName_<%=cid%> = (String)globalMap.get("<%=user%>");
+	String dbUser_<%=cid%> = (String)globalMap.get("<%=user%>");
 <%
 }else{
 %>
 	String dbschema_<%=cid%> = <%=dbschema%>; 
-	String userName_<%=cid%> = <%=userName %>;
+	String dbUser_<%=cid%> = <%=userName %>;
 <%
 	if ("jconn3.jar".equals(dbVersion)) {//sybase IQ 12
 %>
@@ -95,12 +95,12 @@ if(useExistingConn) {
 %>
    
     java.lang.Class.forName(dirverName);
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid%>, <%=password %>);
+    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, <%=password %>);
 <%
 }
 %>
 
-	String tableName_<%=cid%> = userName_<%=cid%> + "." + <%=table%>;
+	String tableName_<%=cid%> = dbUser_<%=cid%> + "." + <%=table%>;
 	if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
 		tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
 	}

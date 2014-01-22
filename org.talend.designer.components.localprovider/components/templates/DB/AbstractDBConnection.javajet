@@ -29,12 +29,13 @@ imports="
 	connUtil.createURL(node);
 %>
 
-	String userName_<%=cid%> = <%=(dbuser != null && dbuser.trim().length() == 0)? "null":dbuser%>;<%//the tSQLiteConnection component not contain user and pass return null%>
-	String password_<%=cid%> = <%=(dbpass != null && dbpass.trim().length() == 0)? "null":dbpass%>;
+	String dbUser_<%=cid%> = <%=(dbuser != null && dbuser.trim().length() == 0)? "null":dbuser%>;<%//the tSQLiteConnection component not contain user and pass return null%>
+	String dbPwd_<%=cid%> = <%=(dbpass != null && dbpass.trim().length() == 0)? "null":dbpass%>;
 
 	java.sql.Connection conn_<%=cid%> = null;
-
+	<%@ include file="../Log4j/Log4jDBConnUtil.javajet"%>
 <%
+	log4jCodeGenerateUtil.infoComponentStart(node);
 	if(isUseSharedConnection){
 %>
 	<%connUtil.useShareConnection(node);%>
@@ -50,7 +51,12 @@ imports="
 		}
 %>
 		<%connUtil.classForName(node);%>
-		<%connUtil.createConnection(node);%>
+		<%
+		log4jCodeGenerateUtil.debugConnectionParams(node);
+		log4jCodeGenerateUtil.connect_begin();
+		connUtil.createConnection(node);
+		log4jCodeGenerateUtil.connect_end();
+		%>
 		globalMap.put("conn_<%=cid%>", conn_<%=cid%>);
 <%
 		if(specify_alias){
@@ -65,4 +71,5 @@ imports="
 	}
 <%
 	connUtil.afterComponentProcess(node);
+	log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

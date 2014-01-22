@@ -88,20 +88,15 @@ imports="
 <%
 			}
 %>
-				java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+				String driverClass_<%=cid%> = "<%=this.getDirverClassName(node) %>";
+				java.lang.Class.forName(driverClass_<%=cid%>);
 				<%this.setURL(node);%>
 				String dbUser_<%=cid %> = <%=dbuser%>;
 				String dbPwd_<%=cid %> = <%=dbpwd%>;
 				<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 				<%
-					log4jCodeGenerateUtil.debugConnectionParams(node,this.getDirverClassName(node));	
-				%>
-<%
-				if(isLog4jEnabled){
-%>
-					log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid %> + "'.");
-<%
-				}
+					log4jCodeGenerateUtil.debugConnectionParams(node);	
+					log4jCodeGenerateUtil.connect_begin();
 				if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
@@ -121,11 +116,7 @@ imports="
 					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 				}
-				if(isLog4jEnabled){
-%>
-					log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
-<%
-				}
+				log4jCodeGenerateUtil.connect_end();
 			if(specify_alias){
 %>
 				}

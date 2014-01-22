@@ -222,7 +222,6 @@ if(useExistingConnection) {
 		} else {
 <%
 	}
-	String javaDbDriver   = "org.gjt.mm.mysql.Driver";
 	dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 %>
 		String dbProperties_<%=cid%> = <%=dbproperties%>;
@@ -237,11 +236,12 @@ if(useExistingConnection) {
 			
 			url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + properties_<%=cid%>;
 		}
+		String driverClass_<%=cid%> = "org.gjt.mm.mysql.Driver";
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;    
-		java.lang.Class.forName("<%=javaDbDriver %>");
+		java.lang.Class.forName(driverClass_<%=cid%>);
 		<%
-	   		log4jCodeGenerateUtil.debugConnectionParams(node,javaDbDriver);	
+	   		log4jCodeGenerateUtil.debugConnectionParams(node);	
 		%>	
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");

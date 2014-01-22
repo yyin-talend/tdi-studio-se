@@ -31,15 +31,21 @@ imports="
 		
 		public void classForName(INode node){
 %>
-		java.lang.Class.forName(<%=this.getDirverClassName(node)%>);
+		String driverClass_<%=cid%> = <%=this.getDirverClassName(node)%>;
+		java.lang.Class.forName(driverClass_<%=cid%>);
 <%
 		}
 		
 		public void useShareConnection(INode node) {
 			String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+			if(isLog4jEnabled){
+%>
+				SharedDBConnection.initLogger(log,"<%=cid%>");
+<%
+			}
 %>
 			String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-			conn_<%=cid%> = SharedDBConnection.getDBConnection(<%=this.getDirverClassName(node)%>,url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> , sharedConnectionName_<%=cid%>);
+			conn_<%=cid%> = SharedDBConnection.getDBConnection(<%=this.getDirverClassName(node)%>,url_<%=cid%>,dbUser_<%=cid%> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
 <%
 		}
 		
@@ -63,5 +69,5 @@ imports="
 	
 	globalMap.put("conn_<%=cid %>", conn_<%=cid %>);
 	globalMap.put("url_<%=cid %>", url_<%=cid%>);
-	//globalMap.put("user_<%=cid %>", userName_<%=cid %>);
-	//globalMap.put("pass_<%=cid %>", password_<%=cid %>);
+	//globalMap.put("user_<%=cid %>", dbUser_<%=cid%>);
+	//globalMap.put("pass_<%=cid %>", dbPwd_<%=cid%>);

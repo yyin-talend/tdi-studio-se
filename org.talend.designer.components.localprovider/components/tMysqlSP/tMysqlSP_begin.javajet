@@ -41,10 +41,10 @@ if(useExistingConn) {
     } else {
         connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + dbProperties_<%=cid%>;
     }
-    String userName_<%=cid%> = <%=dbuser%>;
-    String password_<%=cid%> = <%=dbpwd%>;
+    String dbUser_<%=cid%> = <%=dbuser%>;
+    String dbPwd_<%=cid%> = <%=dbpwd%>;
     java.lang.Class.forName("org.gjt.mm.mysql.Driver");
-    java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, userName_<%=cid%>, password_<%=cid%>);
+    java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
     <%
 }
 %>

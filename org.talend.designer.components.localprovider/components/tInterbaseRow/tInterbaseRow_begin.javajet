@@ -41,9 +41,9 @@ imports="
         %>
         java.lang.Class.forName("<%=javaDbDriver %>");        
         String url_<%=cid %> = "jdbc:interbase://" + <%=host%> + "/" + <%=dbname%>;        
-        String userName_<%=cid%> = <%=username%>;        
-        String password_<%=cid%> = <%=password%>;        
-        java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
+        String dbUser_<%=cid%> = <%=username%>;        
+        String dbPwd_<%=cid%> = <%=password%>;        
+        java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
         <%
     }
     %>

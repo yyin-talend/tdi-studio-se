@@ -50,8 +50,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
-
-java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
+String driverClass_<%=cid%> = "com.teradata.jdbc.TeraDriver";
+java.lang.Class.forName(driverClass_<%=cid%>);
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+"/TYPE=FASTLOAD";
 
 String dbProperties_<%=cid%> = <%=dbproperties%>;
@@ -98,7 +98,7 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 <%
-  	log4jCodeGenerateUtil.debugConnectionParams(node,"com.teradata.jdbc.TeraDriver");	
+  	log4jCodeGenerateUtil.debugConnectionParams(node);	
 %>	
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Connection attempt to '" +  url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");

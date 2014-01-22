@@ -13,6 +13,7 @@ imports="
 		protected String dbhost;
 	    protected String dbport;
 	    protected String dbname;
+	    protected boolean isLog4jEnabled;
 	    
 	    public void beforeComponentProcess(INode node){
 	    }
@@ -23,6 +24,7 @@ imports="
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		}
 		
 		public String getDirverClassName(INode node){
@@ -31,26 +33,37 @@ imports="
 		
 		public void classForName(INode node){
 %>
-			java.lang.Class.forName("<%=this.getDirverClassName(node)%>");
+			String driverClass_<%=cid%> = "<%=this.getDirverClassName(node)%>";
+			java.lang.Class.forName(driverClass_<%=cid%>);
 <%
 		}
 		
 		public void useShareConnection(INode node) {
 			String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+			if(isLog4jEnabled){
+%>
+			SharedDBConnection.initLogger(log,"<%=cid%>");
+<%
+			}
 %>
 			String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-			conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> , sharedConnectionName_<%=cid%>);
+			conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,dbUser_<%=cid%> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
 <%
 		}
 		
 		public void createConnection(INode node) {
 %>
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,userName_<%=cid%>,password_<%=cid%>);
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
 		}
 		
 		public void setAutoCommit(INode node) {
 			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
+			if(isLog4jEnabled){
+%>
+			log.debug("<%=cid%> - Connection is set auto commit to '<%=setAutoCommit%>'.");
+<%
+			}
 %>
 			conn_<%=cid%>.setAutoCommit(<%=setAutoCommit%>);
 <%

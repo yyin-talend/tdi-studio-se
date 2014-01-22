@@ -36,5 +36,5 @@ imports="
 	globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
 	globalMap.put("host_<%=cid%>", <%=dbhost%>);
 	globalMap.put("dbname_<%=cid%>", <%=dbname%>);
-	globalMap.put("username_<%=cid%>", userName_<%=cid%>);
-	globalMap.put("password_<%=cid%>", password_<%=cid%>);
+	globalMap.put("username_<%=cid%>", dbUser_<%=cid%>);
+	globalMap.put("password_<%=cid%>", dbPwd_<%=cid%>);

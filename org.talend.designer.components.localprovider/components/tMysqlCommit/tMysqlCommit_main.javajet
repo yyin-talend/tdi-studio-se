@@ -5,7 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -17,6 +17,7 @@ imports="
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
     String conn = "conn_" + connection;
+	log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 
@@ -44,15 +45,15 @@ imports="
 	}
 %>
 
-if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
-{
-<%  if(close){%>
-	try{
-<% }%>
-		conn_<%=cid%>.commit();
-<%  if(close){%>
-	}finally{
-    	conn_<%=cid%>.close();
-    }
-<% }%>
+if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+	<%if(close){%>
+		try{
+	<%}%>
+			<%log4jCodeGenerateUtil.commit();%>
+	<%if(close){%>
+		}finally{
+			<%log4jCodeGenerateUtil.close();%>
+	    }
+	<%}%>
 }
+<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

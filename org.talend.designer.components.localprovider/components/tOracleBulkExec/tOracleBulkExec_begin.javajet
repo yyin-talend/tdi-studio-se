@@ -87,8 +87,8 @@ String serviceUrl_<%=cid %> = null;
 String host_<%=cid %> = null;
 String dbname_<%=cid %> = null;
 String dbschema_<%=cid %> = null;
-String username_<%=cid %> = null;
-String password_<%=cid %> = null;
+String dbUser_<%=cid %> = null;
+String dbPwd_<%=cid %> = null;
 String port_<%=cid%> = null;
 String connectionType_<%=cid%>=null;
 String url_<%=cid%> = null;
@@ -110,8 +110,8 @@ if(useExistingConnection) {
     host_<%=cid%> = (String)globalMap.get("<%=existHost%>");
     dbname_<%=cid%> = (String)globalMap.get("<%=existDbName%>");
     dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
-    username_<%=cid%> = (String)globalMap.get("<%=existUsername%>");
-    password_<%=cid%> = (String)globalMap.get("<%=existPassword%>");
+    dbUser_<%=cid%> = (String)globalMap.get("<%=existUsername%>");
+    dbPwd_<%=cid%> = (String)globalMap.get("<%=existPassword%>");
     port_<%=cid%> = (String)globalMap.get("<%=existPort%>");
     connectionType_<%=cid%> = (String)globalMap.get("<%=existConnectonType%>");
     url_<%=cid%> = (String)globalMap.get("<%=racUrl%>");
@@ -136,8 +136,8 @@ if(useExistingConnection) {
 	<%
 	}
 	%>
-    username_<%=cid%> = <%=dbuser%>;
-    password_<%=cid%> = <%=dbpass%>;
+    dbUser_<%=cid%> = <%=dbuser%>;
+    dbPwd_<%=cid%> = <%=dbpass%>;
         
     <%
 	String rac_url = ElementParameterParser.getValue(node, "__RAC_URL__");
@@ -171,15 +171,15 @@ if(useExistingConnection) {
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid %>,dbPwd_<%=cid %>);
 <%
 	} else {
 %>
 	String atnParams_<%=cid%> = <%=dbproperties%>;
 	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
 	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
-	atnParamsPrope_<%=cid%>.put("user",username_<%=cid %>);
-	atnParamsPrope_<%=cid%>.put("password",password_<%=cid%>);
+	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid %>);
+	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
 	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
@@ -540,7 +540,7 @@ if(("true").equals(use_existing_ctl_file)) {
 }
 %>
 
-String command_<%=cid %> = "sqlldr '" + username_<%=cid %> + "/" + password_<%=cid %> + "@" + serviceUrl_<%=cid %> + "' CONTROL='" + ctlf_<%=cid %> + "' LOG='" + logf_<%=cid %> + "'";
+String command_<%=cid %> = "sqlldr '" + dbUser_<%=cid %> + "/" + dbPwd_<%=cid %> + "@" + serviceUrl_<%=cid %> + "' CONTROL='" + ctlf_<%=cid %> + "' LOG='" + logf_<%=cid %> + "'";
 
 <%
 if(("UPDATE").equals(data_action)) {

@@ -222,10 +222,11 @@ if(useExistingConnection) {
 }
 %>
 		<%if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){%>
-			java.lang.Class.forName("oracle.jdbc.OracleDriver");	
+			String driverClass_<%=cid%> = "oracle.jdbc.OracleDriver";
 		<%}else {%>
-			java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");	
+			String driverClass_<%=cid%> = "oracle.jdbc.driver.OracleDriver";
 		<%}%>
+			java.lang.Class.forName(driverClass_<%=cid%>);	
 <%
 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 		String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");
@@ -259,11 +260,7 @@ if(useExistingConnection) {
 		String dbPwd_<%=cid%> = <%=dbpwd%>;
 		dbschema_<%=cid%> = <%=tableSchema%>;	
 		<%
-		if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){
-		    log4jCodeGenerateUtil.debugConnectionParams(node,"oracle.jdbc.OracleDriver");	
-		}else {
-			log4jCodeGenerateUtil.debugConnectionParams(node,"oracle.jdbc.driver.OracleDriver");	
-		}
+		log4jCodeGenerateUtil.debugConnectionParams(node);	
 		%>	
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> +"' with the username '" + dbUser_<%=cid%> + "'.");
