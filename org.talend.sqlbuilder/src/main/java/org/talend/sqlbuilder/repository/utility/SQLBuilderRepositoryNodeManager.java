@@ -707,7 +707,9 @@ public class SQLBuilderRepositoryNodeManager {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         } finally {
-            ConnectionUtils.closeConnection(sqlConn);
+            if (sqlConn != null) {
+                ConnectionUtils.closeConnection(sqlConn);
+            }
             if (derbyDriver != null) {
                 try {
                     derbyDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
