@@ -12,10 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +26,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.TraceData;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -60,8 +58,10 @@ public class ConnectionTest {
     public void setUp() throws Exception {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         IProcess2 process = new Process(property);
-        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput", ComponentCategory.CATEGORY_4_DI.getName());
-        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput",
+                ComponentCategory.CATEGORY_4_DI.getName());
         source = new Node(sourceCom, process);
         target = new Node(targetCom, process);
 
@@ -114,11 +114,12 @@ public class ConnectionTest {
 
     @Test
     public void testSetTraceData() {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("key", "value");
+        Map<String, TraceData> map = new HashMap<String, TraceData>();
+        TraceData data = new TraceData();
+        map.put("key", data);
         connection.setTraceData(map);
-        String value = connection.getTraceData().get("key");
-        assertEquals(value, "value");
+        TraceData value = connection.getTraceData().get("key");
+        assertEquals(data, value);
 
         connection.setTraceData(null);
         assertNull(connection.getTraceData());
