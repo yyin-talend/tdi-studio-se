@@ -21,7 +21,6 @@ import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
 
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
-import org.talend.core.model.metadata.builder.util.MetadataConnectionUtils;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
@@ -70,12 +69,8 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             } else {
                 // https://jira.talendforge.org/browse/TDI-28578
                 String tableName = ti.getSimpleName();
-                boolean isOracle = false;
-                if (treeNode != null && treeNode.getMetaData() != null) {
-                    isOracle = MetadataConnectionUtils.isOracle(treeNode.getMetaData().getJDBCMetaData());
-                }
 
-                if (isOracle && tableName.contains("/")) {
+                if (tableName.contains("/")) {
                     tableName = tableName.replaceAll("/", "//");
                 }
                 resultSet = node.getSession().getMetaData().getJDBCMetaData()
