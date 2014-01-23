@@ -70,7 +70,11 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             } else {
                 // https://jira.talendforge.org/browse/TDI-28578
                 String tableName = ti.getSimpleName();
-                boolean isOracle = MetadataConnectionUtils.isOracle(treeNode.getMetaData().getJDBCMetaData());
+                boolean isOracle = false;
+                if (treeNode != null && treeNode.getMetaData() != null) {
+                    isOracle = MetadataConnectionUtils.isOracle(treeNode.getMetaData().getJDBCMetaData());
+                }
+
                 if (isOracle && tableName.contains("/")) {
                     tableName = tableName.replaceAll("/", "//");
                 }
