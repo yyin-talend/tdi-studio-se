@@ -158,7 +158,19 @@ public class TalendCompletionProposalComputer implements IJavaCompletionProposal
             String code = getContextContent(ctxParam);
             String description = getContextDescription(ctxParam, display);
 
+            String ctxName = ctxParam.getName();
+
             if (prefix.equals("") || display.startsWith(prefix)) { //$NON-NLS-1$
+                TalendCompletionProposal proposal = new TalendCompletionProposal(code, offset - prefix.length(),
+                        replacementLength, code.length(), ImageProvider.getImage(ECoreImage.CONTEXT_ICON), display, null,
+                        description);
+                proposal.setType(TalendCompletionProposal.CONTEXT);
+                proposals.add(proposal);
+            } else if (prefix.equals("") || ctxName.startsWith(prefix)) { //$NON-NLS-1$
+                if (code.startsWith(CONTEXT_PREFIX)) {
+                    code = code.replaceFirst(CONTEXT_PREFIX, "");
+                }
+
                 TalendCompletionProposal proposal = new TalendCompletionProposal(code, offset - prefix.length(),
                         replacementLength, code.length(), ImageProvider.getImage(ECoreImage.CONTEXT_ICON), display, null,
                         description);
