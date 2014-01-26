@@ -2270,7 +2270,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     // if goes here, it means simply there is a problem since the name is not the same as the unique
                     // name.
                     // we just force the name here since in all case the job was wrong first !
-                    connec.setName(connec.getUniqueName());
+                    connec.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), connec.getName());
+                    uniqueName = connec.getName();
                 }
             }
             // at this point we should have the uniquename set correctly in the connection.
