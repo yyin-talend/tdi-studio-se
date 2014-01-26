@@ -13,6 +13,7 @@
 package org.talend.designer.codegen.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -63,8 +64,9 @@ public class NodesSubTree {
     boolean subTreeContainsParallelIterate = false;
 
     List<INode> mergeBranchStarts;
+    
+    List<INode> mergeNodes;
 
-    INode mergeNode;
 
     boolean isRefSubTree = false;// for mr only
 
@@ -107,7 +109,7 @@ public class NodesSubTree {
             mergeBranchStarts.add(node);
 
             Map<INode, Integer> mergeInfo = rootNode.getLinkedMergeInfo();
-            mergeNode = (mergeInfo.keySet().toArray(new INode[1])[0]);
+            mergeNodes = Arrays.asList(mergeInfo.keySet().toArray(new INode[mergeInfo.size()]));
 
             uniteMergeSubTree(nodes);
         }
@@ -168,11 +170,14 @@ public class NodesSubTree {
             }
 
             // if the node link with the same merge node
-            if (node.isActivate() && node.isSubProcessStart() && node.getLinkedMergeInfo() != null
-                    && node.getLinkedMergeInfo().get(mergeNode) != null) {
-                mergeBranchStarts.add(node);
-                buildSubTree(node, true);
+            for(INode mNode:mergeNodes){
+            	if (node.isActivate() && node.isSubProcessStart() && node.getLinkedMergeInfo() != null
+                        && node.getLinkedMergeInfo().get(mNode) != null) {
+                    mergeBranchStarts.add(node);
+                    buildSubTree(node, true);
+                }
             }
+            
         }
     }
 
@@ -442,11 +447,24 @@ public class NodesSubTree {
 
                 @Override
                 public int compare(INode node1, INode node2) {
-                    if (node1.getLinkedMergeInfo().get(mergeNode) > node2.getLinkedMergeInfo().get(mergeNode)) {
-                        return 1;
-                    } else {
+                	Map<INode,Integer> mergeInfo1=node1.getLinkedMergeInfo();
+                	Map<INode,Integer> mergeInfo2=node2.getLinkedMergeInfo();
+                	for(INode mNode:mergeNodes){
+                		if (mergeInfo1.get(mNode)!=null && mergeInfo2.get(mNode)!=null) {
+                			if(mergeInfo1.get(mNode) > mergeInfo2.get(mNode)){
+                				return 1;
+                			}else{
+                				return -1;
+                			}
+                		}
+                		if (mergeInfo1.get(mNode)!=null && mergeInfo2.get(mNode)==null) {
+                			return -1;
+                		}
+                		if (mergeInfo1.get(mNode)==null && mergeInfo2.get(mNode)!=null) {
+                			return 1;
+                		}
+                	}
                         return -1;
-                    }
 
                 }
             });
@@ -458,10 +476,11 @@ public class NodesSubTree {
     public boolean isMergeSubTree() {
         return this.isMergeSubTree;
     }
+    
+    public List<INode> getMergeNodes() {
+		return mergeNodes;
+	}
 
-    public INode getMergeNode() {
-        return this.mergeNode;
-    }
 
     /**
      * Getter for allMainSubTreeConnections.

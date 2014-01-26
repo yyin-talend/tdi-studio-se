@@ -1104,13 +1104,15 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 <%
       }
     }
-    
-	List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
-	if ((rootConns!=null)&&(rootConns.size()>0)) {
+    List<INode> mergeNodes =subTree.getMergeNodes();
+    for(INode mNode:mergeNodes){
+		List< ? extends IConnection> rootConns = mNode.getOutgoingConnections();
+		if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
-		<%=createPrivateClassInstance(subTree.getMergeNode(), rootConns.get(0).getName(), false)%>
+			<%=createPrivateClassInstance(mNode, rootConns.get(0).getName(), false)%>
 <%
-	}
+		}
+    }
     
   }
 %>
