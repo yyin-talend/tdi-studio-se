@@ -2269,8 +2269,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     // here force a rename without call the ChangeConnTextCommand
                     // if goes here, it means simply there is a problem since the name is not the same as the unique
                     // name.
-                    // we just force the name here since in all case the job was wrong first !
-                    connec.setName(connec.getUniqueName());
+                    // we just force the unique name here since in all case the job was wrong first !
+
+                    connec.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), connec.getName());
+                    uniqueName = connec.getName();
                 }
             }
             // at this point we should have the uniquename set correctly in the connection.
