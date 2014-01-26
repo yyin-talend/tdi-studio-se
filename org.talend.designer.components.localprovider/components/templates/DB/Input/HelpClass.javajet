@@ -97,20 +97,11 @@ imports="
 		}
 		
 		public String getQueryString(INode node) {
-			String dbquery= ElementParameterParser.getValue(node, "__QUERY__").trim();
-			String newquery="";
-			int begin = 0;
-			int end = 0;
-			while(dbquery.indexOf("+",begin)!=-1){
-				end = dbquery.indexOf("+",begin);
-				newquery+=dbquery.substring(begin,end).trim()+" + ";
-				begin=end+1;
-			}
-			newquery+=dbquery.substring(begin).trim();
-			newquery = newquery.replaceAll("\\r\\n","\\\\n");
-			newquery = newquery.replaceAll("\\n","\\\\n");
-			newquery = newquery.replaceAll("\\r","\\\\r");
-			return newquery;
+			String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+			dbquery = dbquery.replaceAll("\n"," ");
+			dbquery = dbquery.replaceAll("\r"," ");
+			
+			return dbquery;
 		}
 		
 		public void createStatement(INode node) {
