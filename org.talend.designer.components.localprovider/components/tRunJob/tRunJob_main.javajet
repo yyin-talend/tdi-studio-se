@@ -393,10 +393,14 @@ String inputConnName = null;
 	      		}
 	    	}
 		}
+		boolean inConnNull = false;
+		if(inConns == null || inConns.size() == 0) {
+			inConnNull = true; 
+		}
 		if(firstConnName != null) {//b
 	    %>
 			for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
-				if(childJob_<%=cid %>.hastBufferOutputComponent()){
+				if(childJob_<%=cid %>.hastBufferOutputComponent() || <%=inConnNull%>){
 			    	<%
 					int columnSize = columns.size();
 					for (int i = 0; i < columnSize; i++) {//a
@@ -424,15 +428,7 @@ String inputConnName = null;
 	        <%
 					}//a
 %>
-				}else{
-<%
-				    if(inConns == null || inConns.size() == 0 || !propagateData){//c
-%>
-					    continue;
-<%
-					}//c
-%>
-			    }
+				}
 <%
 		}//b  
 	} else { //AAAAAAAAAAAA
