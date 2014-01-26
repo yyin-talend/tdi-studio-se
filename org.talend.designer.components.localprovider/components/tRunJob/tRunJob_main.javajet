@@ -84,7 +84,7 @@ String inputConnName = null;
 		}
 		if(node.getOutgoingConnections()!=null) {
 			for (IConnection outputConn : node.getOutgoingConnections()) {
-				if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 					IMetadataTable outputMetadataTable = outputConn.getMetadataTable();
 					for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
 						outputMetadataColumn.add(outputCol);
@@ -106,22 +106,6 @@ String inputConnName = null;
 				}
 			}
 		}
-		if(propagateData){//d
-			for (IConnection conn : node.getOutgoingConnections()) {
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					IMetadataTable outputMetadataTable = conn.getMetadataTable();
-					if (outputMetadataTable!=null) {
-						for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
-							if (inputCols.contains(outputCol.getLabel())) {
-%>
-								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
-<%
-							}
-						}
-					}
-				}
-			}
-		}//d
 	}
 	
 	if(useDynamicJob){
@@ -387,7 +371,7 @@ String inputConnName = null;
 		String firstConnName = null; 
 		if(outConns != null && outConns.size() > 0) {
 			for (IConnection conn : outConns) {
-				if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+				if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
 	      			firstConnName = conn.getName(); //get the first available flow link
 	      			break;
 	      		}
@@ -425,8 +409,28 @@ String inputConnName = null;
 		           		}else{
 			           		<%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 		           		}
-	        <%
+<%
 					}//a
+					if (inConnNull==false && propagateData) {//d
+%>
+					} else {
+<%
+						for (IConnection conn : node.getOutgoingConnections()) {
+							if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+								IMetadataTable outputMetadataTable = conn.getMetadataTable();
+								if (outputMetadataTable!=null) {
+									for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
+										if (inputCols.contains(outputCol.getLabel())) {
+%>
+								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+<%
+										}
+									}
+								}
+								break;
+							}
+						}
+					}//d
 %>
 				}
 <%
