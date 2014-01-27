@@ -74,38 +74,25 @@ if(metadatas !=null && metadatas.size()>0){
 	}
 }
 %>
-
+java.sql.Connection conn_<%=cid%> = null;
 <%
 if(useExistingConn) {
     String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
     String conn = "conn_" + connection;
     %>
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-	<% if(isLog4jEnabled) { %> 
-		if(conn_<%=cid%> != null) {
-			if(conn_<%=cid%>.getMetaData() != null) {
-				log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + "."); 
-			} 
-		}
-	<%}
+    conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	<%
+	log4jCodeGenerateUtil.useExistConnection(node);
 } else {
     %>
-    String driverClass_<%=cid%> = "com.teradata.jdbc.TeraDriver";
-	java.lang.Class.forName(driverClass_<%=cid%>);
+    String driverClass_<%=previousNode.getUniqueName()%> = "com.teradata.jdbc.TeraDriver";
+	java.lang.Class.forName(driverClass_<%=previousNode.getUniqueName()%>);
     String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+ "/DATABASE=" + <%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
-	<%
-   		log4jCodeGenerateUtil.debugConnectionParams(previousNode);	
-	%>	 
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection attempt to '" + url_<%=cid %> + "' with the username '" + dbUser_<%=cid%> + "'.");
-	<%}%>
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Connection to '" + url_<%=cid %> + "' has succeeded.");
-	<%}%>
-    <%
+<%
+   	log4jCodeGenerateUtil.debugConnectionParams(previousNode);
+   	log4jCodeGenerateUtil.connect(node);
 }
 %>
 
@@ -285,13 +272,7 @@ pstmt_<%=cid %>.close();
 if(!useExistingConn) {
     %>
     if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the database.");
-		<%}%>
-        conn_<%=cid%> .close();
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the database closed.");
-		<%}%>
+		<%log4jCodeGenerateUtil.close();%>
     }
     <%
 }

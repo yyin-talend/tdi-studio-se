@@ -99,11 +99,15 @@ imports="
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 	 		
 %>
-			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>").newInstance();
+			    String driverClass_<%=cid%> = "<%=this.getDirverClassName(node) %>";
+			    java.lang.Class.forName(driverClass_<%=cid%>).newInstance();
 				<%this.setURL(node);%>
 		        String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
-		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+			<%
+			log4jCodeGenerateUtil.debugConnectionParams(node);
+			log4jCodeGenerateUtil.connect();
+			%>
 <%
 		}
 		public String getDirverClassName(INode node){

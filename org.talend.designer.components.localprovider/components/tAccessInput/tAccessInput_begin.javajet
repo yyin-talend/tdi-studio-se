@@ -48,11 +48,14 @@ imports="
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 %>
-			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+			String driverClass_<%=cid%> = "<%=this.getDirverClassName(node) %>";
+			java.lang.Class.forName(driverClass_<%=cid%>);
 			<%this.setURL(node);%>
 	        String dbUser_<%=cid %> = <%=dbuser%>;
 	        String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
+			log4jCodeGenerateUtil.debugConnectionParams(node);
+			log4jCodeGenerateUtil.connect_begin();
 			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
@@ -68,6 +71,7 @@ imports="
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 			}
+			log4jCodeGenerateUtil.connect_end();
 		}
 		
 		//-----------according schema type to generate ResultSet

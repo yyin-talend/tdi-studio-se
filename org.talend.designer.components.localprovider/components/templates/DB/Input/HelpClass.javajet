@@ -5,6 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
+<%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
 <%
 	//this util class use by connection component
 	class DefaultDBInputUtil {
@@ -17,14 +18,11 @@ imports="
 	    protected String dbuser;
 		protected String dbpwd ;
 		protected boolean isLog4jEnabled;
+		protected DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil;
 	    
 	    public void beforeComponentProcess(INode node){
 	    	cid = node.getUniqueName();
-	    	isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	    	if(isLog4jEnabled){
-%>
-		    	log.info("<%=cid%> - Start to work.");
-<%			}
+	    	log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil();
 	    }
 	    
 	    public void afterUseExistConnection(INode node) {
@@ -70,7 +68,6 @@ imports="
 			   	String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
 				<%this.setURL(node);%>
-				<%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
 				<%
 				log4jCodeGenerateUtil.debugConnectionParams(node);
 				log4jCodeGenerateUtil.connect_begin();
@@ -207,9 +204,6 @@ imports="
                     <%
                 } else {
                     %>
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Null value in non-Nullable column");
-					<%}%>    
                     throw new RuntimeException("Null value in non-Nullable column");
                     <%    
                 }

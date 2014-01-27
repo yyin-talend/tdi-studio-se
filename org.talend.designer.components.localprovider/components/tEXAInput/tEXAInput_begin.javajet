@@ -18,6 +18,7 @@ imports="
     class DBInputBeginUtil extends DefaultDBInputUtil{
     
         public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
             cid = node.getUniqueName();
         }
         

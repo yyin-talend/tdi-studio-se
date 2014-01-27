@@ -55,11 +55,15 @@ imports="
 <%
 			}
 %>
-					java.lang.Class.forName(<%=this.getDirverClassName(node) %>);
+					String driverClass_<%=cid%> = <%=this.getDirverClassName(node) %>;
+					java.lang.Class.forName(driverClass_<%=cid%>);
 					<%this.setURL(node);%>
 					String dbUser_<%=cid %> = <%=dbuser%>;
 					String dbPwd_<%=cid %> = <%=dbpwd%>;
-					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+					<%
+					log4jCodeGenerateUtil.debugConnectionParams(node);
+					log4jCodeGenerateUtil.connect();
+					%>
 <%
 			if(specify_alias){
 %>

@@ -32,9 +32,7 @@ imports="
 			super.createConnection(node);
 			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
 			if(("true").equals(useCursor)) { 
-%>
-				conn_<%=cid%>.setAutoCommit(false); 
-<%
+				log4jCodeGenerateUtil.autoCommit(node,false);
 			}
 		}
 		

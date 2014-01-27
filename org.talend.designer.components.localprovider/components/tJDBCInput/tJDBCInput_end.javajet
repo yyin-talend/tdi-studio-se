@@ -6,6 +6,7 @@ imports="
 "
 %>
 
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
@@ -21,12 +22,16 @@ String cid = node.getUniqueName();
 	if(("false").equals(useExistingConn)){
 %>
 if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-	conn_<%=cid %>.close();
+	<%log4jCodeGenerateUtil.close(node);%>
 }
 <%
 	}
 %>
 }
 globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
+<%
+log4jCodeGenerateUtil.retrieveRecordsCount(node);
+log4jCodeGenerateUtil.infoComponentEnd(node);
+%>
 
 

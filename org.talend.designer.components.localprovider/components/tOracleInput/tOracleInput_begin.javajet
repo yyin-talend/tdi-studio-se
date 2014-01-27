@@ -93,7 +93,6 @@ imports="
 				<%this.setURL(node);%>
 				String dbUser_<%=cid %> = <%=dbuser%>;
 				String dbPwd_<%=cid %> = <%=dbpwd%>;
-				<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 				<%
 					log4jCodeGenerateUtil.debugConnectionParams(node);	
 					log4jCodeGenerateUtil.connect_begin();
@@ -310,9 +309,6 @@ imports="
 <%
 					} else {
 %>    
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - Null value in non-Nullable column");
-						<%}%>
 						throw new RuntimeException("Null value in non-Nullable column");
 <%    
 					}
@@ -358,9 +354,6 @@ imports="
 <%
 				} else {
 %>    
-						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - Null value in non-Nullable column");
-						<%}%>
  	                	throw new RuntimeException("Null value in non-Nullable column");
 <%    
 				}

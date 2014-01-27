@@ -35,6 +35,7 @@ imports="
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
     
     dbInputBeginUtil.beforeComponentProcess(node);
+    log4jCodeGenerateUtil.infoComponentStart(node);
     int dynamic_index=-1;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas != null) && (metadatas.size()>0)) {
@@ -70,13 +71,7 @@ imports="
 		        <%
 		        }
 		        %>
-				<% if(isLog4jEnabled) { %>
-					if(conn_<%=cid%> != null) {
-						if(conn_<%=cid%>.getMetaData() != null) {
-							log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
-						}
-					}
-				<% } %>
+				<%log4jCodeGenerateUtil.useExistConnection(node);%>
 <%
 				dbInputBeginUtil.afterUseExistConnection(node);
 		
@@ -88,14 +83,7 @@ imports="
 		    <%dbInputBeginUtil.createStatement(node);%>
 		    
 		    String dbquery_<%=cid%> = <%=dbInputBeginUtil.getQueryString(node)%>;
-<%
-			if(isLog4jEnabled && ("true").equals(useExistingConn)) {
-%>
-				log.info("<%=cid%> - Executing the query: '" + dbquery_<%=cid%> + "'.");
-<%
-			}
-%>
-		    
+			<%log4jCodeGenerateUtil.query(node);%>		    
 		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
 		    java.sql.ResultSet rs_<%=cid %> = null;
 		try{
