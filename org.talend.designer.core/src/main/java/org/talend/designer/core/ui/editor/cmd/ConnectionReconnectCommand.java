@@ -278,14 +278,19 @@ public class ConnectionReconnectCommand extends Command {
             connection.updateName();
 
             if (newTargetSchemaType != null) {
+                // TDI-28557:if target is repository mode,can not propagate to target and set to build-in,or target is
+                // build-in mode,need user to choose by the pop up dialog
+                boolean isPropagate = false;
+                boolean isRepoMode = newTargetSchemaType.equals(EmfComponent.REPOSITORY);
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
                         && !connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
                     IMetadataTable targetOldMetadataTable = newTarget.getMetadataFromConnector(connector.getName());
                     if (oldMetadataTable != null && targetOldMetadataTable != null) {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
+                        isPropagate = (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated() && !isRepoMode && (targetOldMetadataTable
+                                .getListColumns().isEmpty() || getPropagateDialog()));
                         // For the auto propagate.
-                        if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
-                                && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                        if (isPropagate) {
                             IElementParameter param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                             if (param != null && param.getContext() != null
                                     && !param.getContext().equals(connection.getLineStyle().getName())) {
@@ -298,8 +303,9 @@ public class ConnectionReconnectCommand extends Command {
                         }
                     }
                 }
-                newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-
+                if (isPropagate) {
+                    newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                }
             }
             ((Process) oldSource.getProcess()).checkStartNodes();
             ((Process) oldSource.getProcess()).checkProcess();
