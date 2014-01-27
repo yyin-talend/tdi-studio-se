@@ -66,43 +66,61 @@ String inputConnName = null;
 	java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
 	//For TDI-28558
-	if(!useDynamicJob && !useIndependentProcess){
-		List<IMetadataColumn> inputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
-		List<IMetadataColumn> outputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
-		if (node.getIncomingConnections()!=null) {
-			for (IConnection incomingConn : node.getIncomingConnections()) {
-				if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					inputConnName = incomingConn.getName();
-					IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
-					for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
-						inputMetadataColumn.add(inputCol);
-						inputCols.add(inputCol.getLabel());
+
+	List<IMetadataColumn> inputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	List<IMetadataColumn> outputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	if (node.getIncomingConnections()!=null) {
+		for (IConnection incomingConn : node.getIncomingConnections()) {
+			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				inputConnName = incomingConn.getName();
+				IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+					inputMetadataColumn.add(inputCol);
+					inputCols.add(inputCol.getLabel());
+				}
+				break;
+			}
+		}
+	}
+	if(node.getOutgoingConnections()!=null) {
+		for (IConnection outputConn : node.getOutgoingConnections()) {
+			if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+				IMetadataTable outputMetadataTable = outputConn.getMetadataTable();
+				for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
+					outputMetadataColumn.add(outputCol);
+				}
+			}
+		}
+	}
+	if(inputMetadataColumn!=null && outputMetadataColumn!=null){
+		if(inputMetadataColumn.size() == outputMetadataColumn.size()){
+			int size = inputMetadataColumn.size();
+			for(int i = 0;i< size; i++){
+				if(!inputMetadataColumn.get(i).getLabel().equals(outputMetadataColumn.get(i).getLabel()) ||
+				   !inputMetadataColumn.get(i).getType().equals(outputMetadataColumn.get(i).getType())){
+					propagateData = false;
+					break;
+				}else{
+					propagateData = true;
+				}
+			}
+		}
+	}
+	if(useDynamicJob || useIndependentProcess){
+		if (propagateData) {
+			for (IConnection conn : node.getOutgoingConnections()) {
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+					IMetadataTable outputMetadataTable = conn.getMetadataTable();
+					if (outputMetadataTable!=null) {
+						for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
+							if (inputCols.contains(outputCol.getLabel())) {
+%>
+								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+<%
+							}
+						}
 					}
 					break;
-				}
-			}
-		}
-		if(node.getOutgoingConnections()!=null) {
-			for (IConnection outputConn : node.getOutgoingConnections()) {
-				if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-					IMetadataTable outputMetadataTable = outputConn.getMetadataTable();
-					for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
-						outputMetadataColumn.add(outputCol);
-					}
-				}
-			}
-		}
-		if(inputMetadataColumn!=null && outputMetadataColumn!=null){
-			if(inputMetadataColumn.size() == outputMetadataColumn.size()){
-				int size = inputMetadataColumn.size();
-				for(int i = 0;i< size; i++){
-					if(!inputMetadataColumn.get(i).getLabel().equals(outputMetadataColumn.get(i).getLabel()) ||
-					   !inputMetadataColumn.get(i).getType().equals(outputMetadataColumn.get(i).getType())){
-						propagateData = false;
-						break;
-					}else{
-						propagateData = true;
-					}
 				}
 			}
 		}
