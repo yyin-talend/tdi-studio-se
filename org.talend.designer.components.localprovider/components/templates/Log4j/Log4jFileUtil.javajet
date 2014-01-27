@@ -23,7 +23,7 @@
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Start to work");
-				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+				final StringBuffer log4jSb_<%=cid%> = new StringBuffer();
 			<%
 			}
 		}
@@ -50,6 +50,15 @@
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
+			<%
+			}
+		}
+		
+		public void retrievedDataNumberInfoFromGlobalMap(INode node) {
+			beforeComponentProcess(node);
+			if (isLog4jEnabled) {
+			%>
+				log.info("<%=cid%> - Retrieved records count: "+ globalMap.get("<%=cid %>_NB_LINE") + " .");
 			<%
 			}
 		}
@@ -81,6 +90,11 @@
 		   			}
 		   			String name = ep.getName();
 		   			String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
+		   			if(value == null || "".equals(value.trim())) {
+		   				value = "\"\"";
+		   			} else if("\"\\n\"".equals(value) || "\"\\r\"".equals(value) || "\"\\r\\n\"".equals(value)) {
+		   				value = value.replaceAll("\\\\","\\\\\\\\");
+		   			}
 		   			%>
 					log4jParamters_<%=cid%>.append("<%=name%>" + " = " + <%=value%>);
 					log4jParamters_<%=cid%>.append(" | ");
@@ -101,16 +115,92 @@
 			}
 		}
 		
-		//for all tFileinput* components		
-		public void debugRetriveData(INode node) {
+		public void collectRetriveData(String connName,String columnValue,int index,int length){
+			if(isLog4jEnabled){
+			%>
+				log4jSb_<%=cid%>.append(<%=connName%>.<%=columnValue%>);
+				<%if(index < length - 1) {%>
+				log4jSb_<%=cid%>.append("|");
+				<%}%>
+			<%
+			}
+		}
+		
+		public void collectRetriveData(org.talend.core.model.process.IConnection outputConn){
+			if(isLog4jEnabled){
+				if(outputConn == null) {
+					return;
+				}
+    			org.talend.core.model.metadata.IMetadataTable metadata = outputConn.getMetadataTable();
+    			if(metadata == null) {
+    				return;
+    			}
+    			java.util.List<org.talend.core.model.metadata.IMetadataColumn> listColumns = metadata.getListColumns();
+    			if(listColumns == null) {
+    				return;
+    			}
+    			java.util.Iterator<org.talend.core.model.metadata.IMetadataColumn> iterator = listColumns.iterator();
+    			while(iterator.hasNext()) {
+    				org.talend.core.model.metadata.IMetadataColumn column = iterator.next();
+%>
+					log4jSb_<%=cid%>.append(<%=outputConn.getName()%>.<%=column.getLabel()%>);
+<%
+					if(iterator.hasNext()) {
+%>
+						log4jSb_<%=cid%>.append("|");
+<%
+					}
+				}
+			}
+		}
+		
+		public void collectRetriveData(String connectionName,org.talend.core.model.metadata.IMetadataTable metadata){
+			if(isLog4jEnabled){
+    			if(metadata == null) {
+    				return;
+    			}
+    			java.util.List<org.talend.core.model.metadata.IMetadataColumn> listColumns = metadata.getListColumns();
+    			if(listColumns == null) {
+    				return;
+    			}
+    			java.util.Iterator<org.talend.core.model.metadata.IMetadataColumn> iterator = listColumns.iterator();
+    			while(iterator.hasNext()) {
+    				org.talend.core.model.metadata.IMetadataColumn column = iterator.next();
+%>
+					log4jSb_<%=cid%>.append(<%=connectionName%>.<%=column.getLabel()%>);
+<%
+					if(iterator.hasNext()) {
+%>
+						log4jSb_<%=cid%>.append("|");
+<%
+					}
+				}
+			}
+		}
+		
+		public void debugRetriveData() {
+			if(isLog4jEnabled){
+			%>
+				log.trace("<%=cid%> - Content of current record : " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%
+			}
+		}
+		
+		//for all tFileinput* components
+		public void debugRetriveData(INode node,boolean hasIncreased) {
 			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 			%>
-				log.debug("<%=cid%> - Retrieving the record " + (nb_line_<%=cid%>) + ".");
-				log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%>) + ": " + log4jSb_<%=cid%>);
+				log.debug("<%=cid%> - Retrieving the record " + (nb_line_<%=cid%><%=hasIncreased?"":"+1"%>) + ".");
+				log.trace("<%=cid%> - Content of the record " + (nb_line_<%=cid%><%=hasIncreased?"":"+1"%>) + ": " + log4jSb_<%=cid%>);
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 			<%		
 			}
+		}
+		
+		public void debugRetriveData(INode node) {
+			debugRetriveData(node,true);
 		}
 		
 		//for all tFileOutput* components		

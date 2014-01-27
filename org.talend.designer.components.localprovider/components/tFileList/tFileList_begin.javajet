@@ -7,6 +7,9 @@
     java.util.Map
   " 
 %>
+	
+  <%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+  
   <%
   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
   INode node = (INode)codeGenArgument.getArgument();
@@ -19,6 +22,11 @@
   boolean toSlash = ("true").equals(ElementParameterParser.getValue(node, "__FORMAT_FILEPATH_TO_SLASH__"));
   boolean caseSensitive = ("YES").equals(ElementParameterParser.getValue(node, "__CASE_SENSITIVE__"));
   
+  final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+  log4jFileUtil.logParameters(node);
+  log4jFileUtil.componentStartInfo(node);
+
   class codeGenerater{
     public void genFileNameOder(String _cid, String _suffix){
       if ("ASC".equals(_suffix)){
@@ -418,4 +426,8 @@
       globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
       globalMap.put("<%=cid %>_CURRENT_FILEDIRECTORY", currentFileDirectory_<%=cid%>);
       globalMap.put("<%=cid %>_CURRENT_FILEEXTENSION", currentFileExtension_<%=cid%>);
-      globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>); 
+      globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);
+      
+      <%if(isLog4jEnabled) {%>
+		log.info("<%=cid%> - Current file path : " + currentFilePath_<%=cid%>);
+	  <%}%>

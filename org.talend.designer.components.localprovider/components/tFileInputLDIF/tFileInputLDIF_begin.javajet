@@ -13,6 +13,9 @@ imports="
 		java.util.Map
 	"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+	
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -36,6 +39,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<Map<String, String>> textEncodingColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TEXTENCODING__");
 		boolean isBinary = false;
 		boolean isBase64 = false;
+		
+		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    	log4jFileUtil.logParameters(node);
+    	log4jFileUtil.componentStartInfo(node);
 %>
 ///////////////////////////////////
 		java.io.DataInputStream dis_<%=cid%> = null;
@@ -65,6 +72,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int nb_line_<%=cid %> = 0;
         
         ///////////////////////////////////
+     	<%log4jFileUtil.startRetriveDataInfo();%>
+      
 	  try{
 	  	dis_<%=cid%>=new java.io.DataInputStream(new java.io.FileInputStream(<%=filename %>));
         netscape.ldap.util.LDIF ldif_<%=cid %> = new netscape.ldap.util.LDIF(dis_<%=cid%>);
@@ -412,7 +421,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 			
 <%			
-			} //4%>
+			} //4
+			
+			log4jFileUtil.collectRetriveData(firstConnName,metadata);
+			log4jFileUtil.debugRetriveData(node);
+%>
 			
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>			
 			
@@ -424,6 +437,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
+        	if(isLog4jEnabled){
+        	%>
+        		log.error("<%=cid%> - " +e.getMessage());
+        	<%
+        	}
+        	
             if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>

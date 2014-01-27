@@ -9,7 +9,7 @@
 		org.talend.core.model.process.IConnectionCategory
 	"
 %>
-
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -36,6 +36,11 @@
 	if(columnList!=null && outgoingConns!=null && outgoingConns.size()>0) {
 		for(IConnection outgoingConn : outgoingConns) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			
+				final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+				log4jFileUtil.logParameters(node);
+				log4jFileUtil.componentStartInfo(node);
+				
 				if(asInputstream) {
 %>
 					java.io.FileInputStream fis_<%=cid%> = null;
@@ -71,6 +76,9 @@
 <%
 					} else {
 %>
+						<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " +e_<%=cid%>.getMessage());
+						<%}%>
 						System.err.println(e_<%=cid%>);
 <%
 					}

@@ -7,7 +7,7 @@
 		java.util.List
 	" 
 %>
-
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -22,7 +22,10 @@
 		break;
 	}
 }
-<%if(uncompress){//compress%>}<%}%>
+			<%if(uncompress){//compress%>}<%}%>
+
+			<%log4jFileUtil.retrievedDataNumberInfo(node);%>
+			
 if(!(filename_<%=cid %> instanceof java.io.InputStream)){
 	if(reader_<%=cid %>!=null) {
 		reader_<%=cid %>.close();
@@ -30,6 +33,7 @@ if(!(filename_<%=cid %> instanceof java.io.InputStream)){
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
+			log4jFileUtil.componentFinishInfo(node);
 		}
 	}
 %>      
