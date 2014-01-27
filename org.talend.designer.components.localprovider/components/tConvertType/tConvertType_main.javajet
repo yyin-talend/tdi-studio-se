@@ -56,7 +56,10 @@
 		    }
   		}
 	} 
-  
+  	
+  	if(outConn == null && rejectConnName != null){
+  		outConn = rejectConns.get(0);
+  	}
 	String outconnName = outConn.getName();
 	// Output Reject flow
 	boolean bOutputReject = (rejectConnName != null) && (!bDieOnError);
