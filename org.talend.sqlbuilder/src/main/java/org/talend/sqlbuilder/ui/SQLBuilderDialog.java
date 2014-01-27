@@ -505,9 +505,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                     }
                     // for hsqldb in-process
-                    boolean isHSQL = driverClassName != null
-                            && driverClassName.equals(EDatabase4DriverClassName.HSQLDB.getDriverClass());
-                    ConnectionUtils.closeConnection(connection, isHSQL);
+                    if (connection != null) {
+                        ConnectionUtils.closeConnection(connection);
+                    }
 
                 } catch (SQLException e) {
                     // exception of shutdown success. no need to catch.

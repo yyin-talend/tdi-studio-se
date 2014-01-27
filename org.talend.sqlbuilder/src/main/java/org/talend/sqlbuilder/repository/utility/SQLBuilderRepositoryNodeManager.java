@@ -79,6 +79,7 @@ import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
+import org.talend.utils.sql.ConnectionUtils;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
 
@@ -706,12 +707,8 @@ public class SQLBuilderRepositoryNodeManager {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         } finally {
-            if (dbType != null
-                    && (dbType.equals(EDatabaseTypeName.HSQLDB.getDisplayName())
-                            || dbType.equals(EDatabaseTypeName.HSQLDB_SERVER.getDisplayName())
-                            || dbType.equals(EDatabaseTypeName.HSQLDB_WEBSERVER.getDisplayName()) || dbType
-                                .equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()))) {
-                extractMeta.closeConnection();
+            if (sqlConn != null) {
+                ConnectionUtils.closeConnection(sqlConn);
             }
             if (derbyDriver != null) {
                 try {
