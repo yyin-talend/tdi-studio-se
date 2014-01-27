@@ -105,11 +105,15 @@ public class SetSubstitutionAction extends SelectionAction {
                 String message = "This element will be copied as part of the substitution group automatically." + "\n"
                         + "If this element must be abstract and must be extended only, you can delete it.";
                 SubsMessageDialog dialog = new SubsMessageDialog(null, message);
-                if (dialog.open() == Window.OK) {
+                int open = dialog.open();
+                if (open == Window.OK) {
                     boolean hideDialogNextTime = dialog.getResult();
                     if (hideDialogNextTime) {
                         section.put(HIDE_MESSAGE, true);
                     }
+                }
+                if (open == Window.CANCEL) {
+                    return;
                 }
             }
 
