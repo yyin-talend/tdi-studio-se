@@ -24,7 +24,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.PerspectiveBarManager;
+import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
@@ -95,6 +98,14 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
          */
         @Override
         public void run() {
+            IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            PerspectiveBarManager barManager = null;
+            if (activeWorkbenchWindow != null) {
+                barManager = ((WorkbenchWindow) activeWorkbenchWindow).getPerspectiveBar();
+                if (barManager != null) {
+                    barManager.getControl().setEnabled(false);
+                }
+            }
             String path = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
                 IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
