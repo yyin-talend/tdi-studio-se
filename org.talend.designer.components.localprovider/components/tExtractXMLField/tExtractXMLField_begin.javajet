@@ -84,18 +84,22 @@ class NameSpaceTool_<%=cid%> {
 	 *	case 4 : fn:functionA(fn:functionB(locationXPathExpression))
 	 *	and like that.
 	*/
-	private java.util.regex.Pattern simpleFunctionPattern = null;
-	private StringBuffer stringBuffer = new StringBuffer();
-	private java.util.Map<String,String> resultCache = new java.util.HashMap<String,String>();
+	private java.util.regex.Pattern simpleFunctionPattern;
+	private StringBuffer stringBuffer;
+	private java.util.Map<String,String> resultCache;
 	
 	public String addDefaultNSPrefix(final String xpathExpression, String loopPath) {
-		if(resultCache.get(xpathExpression)!=null) {
-    		return resultCache.get(xpathExpression);
+	    if (defualtNSPath.size() < 1) {
+        	return xpathExpression;
     	}
     	
-    	if (defualtNSPath.size() < 1) {
-        	resultCache.put(xpathExpression,xpathExpression);
-        	return xpathExpression;
+    	if(resultCache == null) {
+    		resultCache = new java.util.HashMap<String,String>();
+    	}
+    	
+    	String resultXpathExpression = resultCache.get(xpathExpression);
+		if(resultXpathExpression!=null) {
+    		return resultXpathExpression;
     	}
     	
     	String locationPathExpression = xpathExpression;
@@ -110,6 +114,9 @@ class NameSpaceTool_<%=cid%> {
 			int start = xpathExpression.lastIndexOf('(');
 			int end = xpathExpression.indexOf(')');
 			if(start < end) {
+			    if(stringBuffer == null) {
+    				stringBuffer = new StringBuffer();
+    			}
 				locationPathExpression = xpathExpression.substring(start+1,end);
 				stringBuffer.append(xpathExpression.substring(0,start+1));
 				tail = xpathExpression.substring(end);
@@ -120,7 +127,7 @@ class NameSpaceTool_<%=cid%> {
     	
     	locationPathExpression = addDefaultNSPrefixForLocationXPathExpression(locationPathExpression,loopPath);
     	
-    	String resultXpathExpression = locationPathExpression;
+    	resultXpathExpression = locationPathExpression;
     	
     	if(isSimpleFunctionXPath) {
         	stringBuffer.append(locationPathExpression);
