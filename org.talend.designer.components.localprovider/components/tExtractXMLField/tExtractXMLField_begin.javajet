@@ -76,60 +76,121 @@ class NameSpaceTool_<%=cid%> {
         }
     }
     
-    public String addDefaultNSPrefix(String path, String loopPath) {
-        if (defualtNSPath.size() > 0) {
-        	String fullPath = loopPath;
-        	if(!path.equals(fullPath)){
-            	for (String tmp : path.split("/")) {
-            		if (("..").equals(tmp)) {
-                        fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
-                    } else {
-                        fullPath += "/" + tmp;
-                    }
-            	}
-            }
-        	int[] indexs = new int[fullPath.split("/").length - 1];
-            java.util.Arrays.fill(indexs, -1);
-            int length = 0;
-            for (int i = 0; i < defualtNSPath.size(); i++) {
-                if (defualtNSPath.get(i).length() > length && fullPath.startsWith(defualtNSPath.get(i))) {
-                    java.util.Arrays.fill(indexs, defualtNSPath.get(i).split("/").length - 2, indexs.length, i);
-                    length = defualtNSPath.get(i).length();
+    /**
+	 *	the regex for the xpath like that : 
+	 *	case 1 : functionA(locationXPathExpression) 
+	 *	case 2 : fn:functionA(locationXPathExpression) 
+	 *	case 3 : functionA(functionB(locationXPathExpression))
+	 *	case 4 : fn:functionA(fn:functionB(locationXPathExpression))
+	 *	and like that.
+	*/
+	private java.util.regex.Pattern simpleFunctionPattern;
+	private StringBuffer stringBuffer;
+	private java.util.Map<String,String> resultCache;
+	
+	public String addDefaultNSPrefix(final String xpathExpression, String loopPath) {
+	    if (defualtNSPath.size() < 1) {
+        	return xpathExpression;
+    	}
+    	
+    	if(resultCache == null) {
+    		resultCache = new java.util.HashMap<String,String>();
+    	}
+    	
+    	String resultXpathExpression = resultCache.get(xpathExpression);
+		if(resultXpathExpression!=null) {
+    		return resultXpathExpression;
+    	}
+    	
+    	String locationPathExpression = xpathExpression;
+    	
+    	if(simpleFunctionPattern == null) {
+    		simpleFunctionPattern = java.util.regex.Pattern.compile("([a-zA-z0-9]+:)?[a-zA-Z]+-?[A-Za-z]+\\(.*\\)");
+    	}
+    	
+    	boolean isSimpleFunctionXPath = simpleFunctionPattern.matcher(xpathExpression).matches();
+    	String tail = null;
+    	if(isSimpleFunctionXPath) {
+			int start = xpathExpression.lastIndexOf('(');
+			int end = xpathExpression.indexOf(')');
+			if(start < end) {
+			    if(stringBuffer == null) {
+    				stringBuffer = new StringBuffer();
+    			}
+				locationPathExpression = xpathExpression.substring(start+1,end);
+				stringBuffer.append(xpathExpression.substring(0,start+1));
+				tail = xpathExpression.substring(end);
+			} else {
+				isSimpleFunctionXPath = false;
+			}
+    	}
+    	
+    	locationPathExpression = addDefaultNSPrefixForLocationXPathExpression(locationPathExpression,loopPath);
+    	
+    	resultXpathExpression = locationPathExpression;
+    	
+    	if(isSimpleFunctionXPath) {
+        	stringBuffer.append(locationPathExpression);
+    		stringBuffer.append(tail);
+    		resultXpathExpression = stringBuffer.toString();
+    		stringBuffer.setLength(0);
+        }
+    	
+    	resultCache.put(xpathExpression,resultXpathExpression);
+    	return resultXpathExpression;
+	}
+	
+    private String addDefaultNSPrefixForLocationXPathExpression(String path, String loopPath) {
+    	String fullPath = loopPath;
+    	if(!path.equals(fullPath)){
+        	for (String tmp : path.split("/")) {
+        		if (("..").equals(tmp)) {
+                    fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
+                } else {
+                    fullPath += "/" + tmp;
                 }
+        	}
+        }
+    	int[] indexs = new int[fullPath.split("/").length - 1];
+        java.util.Arrays.fill(indexs, -1);
+        int length = 0;
+        for (int i = 0; i < defualtNSPath.size(); i++) {
+            if (defualtNSPath.get(i).length() > length && fullPath.startsWith(defualtNSPath.get(i))) {
+                java.util.Arrays.fill(indexs, defualtNSPath.get(i).split("/").length - 2, indexs.length, i);
+                length = defualtNSPath.get(i).length();
             }
-
-            StringBuilder newPath = new StringBuilder();
-            String[] pathStrs = path.split("/");
-            for (int i = 0; i < pathStrs.length; i++) {
-                String tmp = pathStrs[i];
-                if (newPath.length() > 0) {
-                    newPath.append("/");
-                }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
-                    int index = indexs[i + indexs.length - pathStrs.length];
-                    if (index >= 0) {
-                    	//==== add by wliu to support both filter and functions==
-						if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
-							String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
-							newPath.append(tmpStr);
-						}else{
-							if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
-								newPath.append(tmp);
-							}else{
-						//==add end=======	
-                        		newPath.append("pre").append(index).append(":").append(tmp);
-                        	}
-                        }                    
-                    } else {
-                        newPath.append(tmp);
-                    }
+        }
+    
+        StringBuilder newPath = new StringBuilder();
+        String[] pathStrs = path.split("/");
+        for (int i = 0; i < pathStrs.length; i++) {
+            String tmp = pathStrs[i];
+            if (newPath.length() > 0) {
+                newPath.append("/");
+            }
+            if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
+                int index = indexs[i + indexs.length - pathStrs.length];
+                if (index >= 0) {
+                	//==== add by wliu to support both filter and functions==
+    				if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
+    					String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
+    					newPath.append(tmpStr);
+    				}else{
+    					if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
+    						newPath.append(tmp);
+    					}else{
+    				//==add end=======	
+                    		newPath.append("pre").append(index).append(":").append(tmp);
+                    	}
+                    }                    
                 } else {
                     newPath.append(tmp);
                 }
+            } else {
+                newPath.append(tmp);
             }
-            return newPath.toString();
         }
-        return path;
+        return newPath.toString();
     }
     
 	private String matches = "@*\\b[a-z|A-Z|_]+[[-]*\\w]*\\b[^'|^\\(]";
@@ -246,6 +307,8 @@ if (outConn!=null) {
 			public void putExtractValue_<%=extractColNo/schemaOptNum%>(<%=NodeUtil.getPrivateConnClassName(outConn)%>Struct <%=firstConnName%>,<%if(inConn!=null){%><%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=inConn.getName()%>,<%}%>
 				String xmlStr_<%=cid%>,org.dom4j.tree.AbstractNode temp_<%=cid %>,NameSpaceTool_<%=cid%> nsTool_<%=cid%>,String loopQuery_<%=cid %>,java.util.HashMap xmlNameSpaceMap_<%=cid%>,org.dom4j.Node node_<%=cid %>,
 					String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%>)throws java.lang.Exception {
+				
+					boolean resultIsNode_<%=cid%> = true;
 <%
 				}
 %>
@@ -253,9 +316,10 @@ if (outConn!=null) {
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
 			    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
 			    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
-    				node_<%=cid%> = temp_<%=cid%>;
+			    	resultIsNode_<%=cid%> = false;
     				str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
    				}else{
+   					resultIsNode_<%=cid%> = true;
 				    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
 <%
 					if(("true").equals(nodeCheck)){
@@ -301,19 +365,19 @@ if (outConn!=null) {
 							if(javaType == JavaTypesManager.STRING){
 								if(column.isNullable()){
 %>
-									if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+									if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
 											<%=firstConnName %>.<%=column.getLabel() %> =null;
-									}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+									}else if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
 										<%=firstConnName %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+									}else if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
 										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault()%>;
 									}else{
 <%
 								}else{ // column.isNullable()
 %>
-									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+									if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
 										<%=firstConnName %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+									}else if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
 										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
 									}else{
 <%
@@ -321,15 +385,15 @@ if (outConn!=null) {
 							}else{ // other type
 								if(column.isNullable()){
 %>	
-										if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+										if(resultIsNode_<%=cid%> && xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
 											<%=firstConnName %>.<%=column.getLabel() %> =null;
-										}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+										}else if(resultIsNode_<%=cid%> && (xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>))){
 											<%=firstConnName %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
 										}else{
 <%
 								}else{ // column.isNullable()
 %>
-										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										if(resultIsNode_<%=cid%> && (xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>))){
 											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
 										}else{
 <%
