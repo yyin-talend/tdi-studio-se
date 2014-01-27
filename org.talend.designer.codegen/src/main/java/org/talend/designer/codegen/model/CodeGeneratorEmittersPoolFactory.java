@@ -43,6 +43,11 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.PerspectiveBarManager;
+import org.eclipse.ui.internal.WorkbenchWindow;
+import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.model.components.IComponentConstants;
@@ -328,7 +333,29 @@ public final class CodeGeneratorEmittersPoolFactory {
         job.setPriority(Job.LONG);
         job.schedule();
         job.wakeUp(); // start as soon as possible
+        job.addJobChangeListener(new JobChangeAdapter() {
 
+            @Override
+            public void done(IJobChangeEvent event) {
+                new UIJob("") {
+
+                    @Override
+                    public IStatus runInUIThread(IProgressMonitor monitor) {
+                        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                        PerspectiveBarManager barManager = null;
+                        if (activeWorkbenchWindow != null) {
+                            barManager = ((WorkbenchWindow) activeWorkbenchWindow).getPerspectiveBar();
+                            if (barManager != null) {
+                                barManager.getControl().setEnabled(true);
+                            }
+                        }
+                        return org.eclipse.core.runtime.Status.OK_STATUS;
+                    }
+
+                }.schedule();
+            }
+
+        });
         return job;
     }
 
