@@ -545,64 +545,46 @@ public class PropertyChangeCommand extends Command {
                 if (node.getMetadataList().size() > 0) {
                     IMetadataTable metadataTable = null;
                     IMetadataTable newMetadataTable = null;
-                    if (node.getComponent() != null && "tSalesforceOutput".equals(node.getComponent().getName())) {
-                        // for feature 0014652
-                        boolean isBuiltIn = false;
-                        final IElementParameter elementParameter = node.getElementParameter(EParameterName.PROPERTY_TYPE
-                                .getName());
-                        if (elementParameter != null) {
-                            Object value = elementParameter.getValue();
-                            if ("BUILT_IN".equals(value.toString())) {//$NON-NLS-1$
-                                isBuiltIn = true;
-                            }
-                        }
-                        if (isBuiltIn) {
-                            metadataTable = node.getMetadataFromConnector(testedParam.getContext());
-                            testedParam.setValueToDefault(node.getElementParameters());
-                            IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
-                            if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
-                                newMetadataTable = defaultMetadataTable;
-                            }
+                    // for feature 0014652
+                    boolean isBuiltIn = false;
 
-                        } else {
-                            metadataTable = node.getMetadataFromConnector(testedParam.getContext());
-                            if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
-                                newMetadataTable = metadataTable;
-                            }
+                    final IElementParameter elementParameter = testedParam.getChildParameters().get(
+                            EParameterFieldType.SCHEMA_TYPE.getName());
+                    if (elementParameter != null) {
+                        Object value = elementParameter.getValue();
+                        if ("BUILT_IN".equals(value.toString())) {//$NON-NLS-1$
+                            isBuiltIn = true;
                         }
-                        IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
-                        if (testedParam.getName().equals("SCHEMA_FLOW")) {//$NON-NLS-1$
-                            IElementParameter param = node.getElementParameter(EParameterName.SCHEMA.getName());
-                            IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
-                            newMetadataTable = meta.clone(true);
-                            List<IMetadataColumn> toAdd = new ArrayList<IMetadataColumn>();
-                            for (IMetadataColumn column : defaultMetadataTable.clone(true).getListColumns()) {
-                                boolean found = false;
-                                for (IMetadataColumn existingColumn : newMetadataTable.getListColumns()) {
-                                    if (existingColumn.getLabel().equals(column.getLabel())) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found) {
-                                    toAdd.add(column);
-                                }
+                    }
 
-                                newMetadataTable.getListColumns().addAll(toAdd);
-                            }
-                        }
-                    } else {
+                    if (isBuiltIn || elementParameter == null) {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
                         newMetadataTable = (IMetadataTable) testedParam.getValue();
-
+                    } else {
+                        metadataTable = node.getMetadataFromConnector(testedParam.getContext());
+                        if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
+                            newMetadataTable = metadataTable;
+                        }
                     }
                     if (metadataTable != null && newMetadataTable != null) {
                         newMetadataTable.setTableName(metadataTable.getTableName());
                         newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
 
-                        // fix for TDI-19963: switch between readonly table and table with custom coumns
-                        if (newMetadataTable.isReadOnly()) {
+                        // condition to know if it needs to clear the table or not to get the new table:
+                        // if table have any non-custom column or if "newMetadataTable" is empty, then clear
+
+                        boolean needClearTargetTable = newMetadataTable.getListColumns().isEmpty();
+                        if (!needClearTargetTable) {
+                            needClearTargetTable = true;
+                            for (IMetadataColumn column : newMetadataTable.getListColumns()) {
+                                if (!column.isCustom()) {
+                                    needClearTargetTable = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (needClearTargetTable) {
                             metadataTable.getListColumns().clear();
                         }
 
@@ -614,7 +596,6 @@ public class PropertyChangeCommand extends Command {
                                 columnsToRemove.add(column);
                             }
                         }
-                        boolean isSameMeta = metadataTable.sameMetadataAs(newMetadataTable);
                         metadataTable.getListColumns().removeAll(columnsToRemove);
 
                         boolean onlyHaveCustomInDefault = true;
@@ -634,19 +615,6 @@ public class PropertyChangeCommand extends Command {
 
                         changeMetadataCommand = new ChangeMetadataCommand(node, null, null, newMetadataTable);
                         changeMetadataCommand.execute(true);
-                        IElementParameter component = elem.getElementParameter(EParameterName.COMPONENT_NAME.getName());
-                        if (component != null && component.getValue().equals("tSalesforceOutput")) {//$NON-NLS-1$  
-                            if (((Node) elem).getIncomingConnections().size() > 0) {
-                                IConnection connection = ((Node) elem).getIncomingConnections().get(0);
-                                Node source = (Node) connection.getSource();
-                                Node target = (Node) connection.getTarget();
-                                EConnectionType lineStyle = connection.getLineStyle();
-                                if (!isSameMeta
-                                        && MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot"))) {
-                                    source.takeSchemaFrom(target, lineStyle.getName());
-                                }
-                            }
-                        }
                     }
                 }
             }
