@@ -206,18 +206,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
             boolean flowMainInput = false;
             boolean multipleInput = false;
             boolean tableReadOnly = false;
-            IMetadataTable table = node.getMetadataTable(param.getContext());
+
+            IMetadataTable table = node.getMetadataFromConnector(param.getContext());
             if (table != null) {
-                if (table.isReadOnly()) {
-                    tableReadOnly = true;
-                    for (IMetadataColumn column : table.getListColumns()) {
-                        if (!column.isReadOnly()) {
-                            tableReadOnly = false;
-                        }
-                    }
-                }
-            }
-            if (!tableReadOnly) {
+                tableReadOnly = table.isReadOnly() || param.isReadOnly(node.getElementParametersWithChildrens());
                 for (IConnection connec : node.getIncomingConnections()) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                             || connec.getLineStyle().equals(EConnectionType.TABLE)
@@ -225,10 +217,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         flowMainInput = true;
                     }
                 }
+                IMetadataTable inputTable = null;
                 if (flowMainInput) {
                     int nbMain = 0;
                     for (IConnection connec : node.getIncomingConnections()) {
                         if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                            if (inputTable == null) {
+                                inputTable = connec.getMetadataTable();
+                            }
                             nbMain++;
                         }
                     }
@@ -241,19 +237,30 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
 
                 }
-            }
-            if (flowMainInput && !multipleInput && !tableReadOnly) {
-                resetBtn = createAdditionalButton(
-                        subComposite,
-                        btn,
-                        btnSize,
-                        param,
-                        Messages.getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
-                        top);
-                resetBtn.setData(NAME, RESET_COLUMNS);
+                if (flowMainInput && !multipleInput) {
+                    // if component allow schema auto propagation, verify if input/output schemas are the same
+                    // if not, allow to use the button sync.
 
-                lastControlUsed = resetBtn;
+                    if (node.getComponent().isSchemaAutoPropagated()
+                            && !table.sameMetadataAs(inputTable, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
+                        tableReadOnly = false;
+                    }
+                    resetBtn = createAdditionalButton(
+                            subComposite,
+                            btn,
+                            btnSize,
+                            param,
+                            Messages.getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
+                            top, !tableReadOnly);
+                    resetBtn.setData(NAME, RESET_COLUMNS);
 
+                    lastControlUsed = resetBtn;
+
+                }
             }
 
             if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) {
@@ -264,7 +271,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     newButton = btn;
                 }
                 Button retrieveSchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, RETRIEVE_SCHEMA,
-                        RETRIEVE_SCHEMA, top);
+                        RETRIEVE_SCHEMA, top, param.isReadOnly());
                 retrieveSchemaButton.setData(NAME, RETRIEVE_SCHEMA);
 
                 lastControlUsed = retrieveSchemaButton;
@@ -280,7 +287,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
                 Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param,
                         Messages.getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
-                                .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
+                                .getString("SchemaController.copyChildSchema.tooltip"), top, param.isReadOnly()); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
 
                 lastControlUsed = copySchemaButton;
@@ -320,7 +327,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
     }
 
     private Button createAdditionalButton(Composite subComposite, Button button, Point buttonSize, IElementParameter param,
-            String text, String tooltip, int top) {
+            String text, String tooltip, int top, boolean enabled) {
         Button subButton = getWidgetFactory().createButton(subComposite, text, SWT.PUSH);
         subButton.setToolTipText(tooltip);
 
@@ -335,7 +342,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         subButton.setLayoutData(data);
 
         subButton.setData(PARAMETER_NAME, param.getName());
-        subButton.setEnabled(!param.isReadOnly());
+        subButton.setEnabled(enabled);
         if (subButtonnSize.y > buttonSize.y) {
             buttonSize.y = subButtonnSize.y;
         }
