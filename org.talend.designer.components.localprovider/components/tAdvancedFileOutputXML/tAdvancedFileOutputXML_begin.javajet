@@ -80,14 +80,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String fileName_<%=cid%> = <%=fileName%>;
 			Boolean alreadyExistsFile_<%=cid%> = new java.io.File(fileName_<%=cid %>).exists();
 			fileName_<%=cid%> = new java.io.File(fileName_<%=cid%>).getAbsolutePath().replace("\\", "/");
-			String file_<%=cid%> = "";
+			
+			String fileNameWithoutSuffix_<%=cid%> = "";
 			
 			if (fileName_<%=cid%>.indexOf("/") < 0) {
 				throw new IllegalArgumentException("not a correct file name.");				
 			} else {
 				String tail_<%=cid%> = fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/"));
-				file_<%=cid %> = tail_<%=cid%>.lastIndexOf(".") > 0 ? fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf(".")) : fileName_<%=cid%>;
+				fileNameWithoutSuffix_<%=cid%> = tail_<%=cid%>.lastIndexOf(".") > 0 ? fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf(".")) : fileName_<%=cid%>;
 			}
+			
+			final String file_<%=cid%> = fileNameWithoutSuffix_<%=cid%>;
+			
 			java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 
 			<%if (("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))) {%>
