@@ -114,6 +114,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor();
 
+    private static boolean firstTime = true;
+
     /***/
     private static class JobRunnable extends Thread {
 
@@ -198,20 +200,26 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TimeMeasure.step("initialize Jet Emitters", "initialize and generate each jet emitters"); //$NON-NLS-1$ //$NON-NLS-2$
 
                 if (!CommonUIPlugin.isFullyHeadless()) {
-                    Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
+                    if (firstTime) {
+                        Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
 
-                        @Override
-                        protected IStatus run(IProgressMonitor monitor) {
-                            CorePlugin.getDefault().getDesignerCoreService()
-                                    .synchronizeDesignerUI(new PropertyChangeEvent(this, IComponentConstants.NORMAL, null, null));
-                            return Status.OK_STATUS;
-                        }
+                            @Override
+                            protected IStatus run(IProgressMonitor monitor) {
+                                CorePlugin
+                                        .getDefault()
+                                        .getDesignerCoreService()
+                                        .synchronizeDesignerUI(
+                                                new PropertyChangeEvent(this, IComponentConstants.NORMAL, null, null));
+                                return Status.OK_STATUS;
+                            }
 
-                    };
-                    job.setUser(true);
-                    job.setPriority(Job.INTERACTIVE);
-                    job.schedule();
-                    job.wakeUp(); // start as soon as possible
+                        };
+                        job.setUser(true);
+                        job.setPriority(Job.INTERACTIVE);
+                        job.schedule();
+                        job.wakeUp(); // start as soon as possible
+                        firstTime = false;
+                    }
                 }
                 log.debug(Messages.getString(
                         "CodeGeneratorEmittersPoolFactory.componentCompiled", (System.currentTimeMillis() - startTime))); //$NON-NLS-1$
@@ -333,29 +341,6 @@ public final class CodeGeneratorEmittersPoolFactory {
         job.setPriority(Job.LONG);
         job.schedule();
         job.wakeUp(); // start as soon as possible
-        job.addJobChangeListener(new JobChangeAdapter() {
-
-            @Override
-            public void done(IJobChangeEvent event) {
-                new UIJob("") {
-
-                    @Override
-                    public IStatus runInUIThread(IProgressMonitor monitor) {
-                        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                        PerspectiveBarManager barManager = null;
-                        if (activeWorkbenchWindow != null) {
-                            barManager = ((WorkbenchWindow) activeWorkbenchWindow).getPerspectiveBar();
-                            if (barManager != null) {
-                                barManager.getControl().setEnabled(true);
-                            }
-                        }
-                        return org.eclipse.core.runtime.Status.OK_STATUS;
-                    }
-
-                }.schedule();
-            }
-
-        });
         return job;
     }
 

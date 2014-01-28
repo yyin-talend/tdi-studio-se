@@ -389,15 +389,6 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
                                 ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
                                         .getService(ICodeGeneratorService.class);
                                 Job refreshTemplates = service.refreshTemplates();
-                                refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
-
-                                    @Override
-                                    public void done(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
-                                        ComponentPaletteUtilities.updatePalette();
-                                        monitor.worked(100);
-                                        monitor.done();
-                                    };
-                                });
 
                             }
                         });
