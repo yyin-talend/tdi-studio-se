@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.beans.PropertyChangeEvent;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.model.components.IComponentConstants;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -167,6 +170,10 @@ public class CodeGeneratorService implements ICodeGeneratorService {
 
         if (oldComponent != null) {
             viewer.setElement(oldComponent);
+        }
+        if (!CommonUIPlugin.isFullyHeadless()) {
+        	 CorePlugin.getDefault().getDesignerCoreService()
+             .synchronizeDesignerUI(new PropertyChangeEvent(this, IComponentConstants.NORMAL, null, null));
         }
         return job;
     }

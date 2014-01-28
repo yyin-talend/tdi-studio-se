@@ -98,14 +98,6 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
          */
         @Override
         public void run() {
-        	IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            PerspectiveBarManager barManager = null;
-            if (activeWorkbenchWindow != null) {
-                barManager = ((WorkbenchWindow) activeWorkbenchWindow).getPerspectiveBar();
-                if (barManager != null) {
-                    barManager.getControl().setEnabled(false);
-                }
-            }
             String path = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
                 IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
