@@ -157,7 +157,7 @@ Object[] resultMessageObj_<%=cid%> = null;
     				}//TD512
     				
     				//make sure to filter the schema "Id", when updating (but not when upserting)
-  			        if(("Id".equals(column.getLabel()) && !("upsert".equals(action))) || generateFinished) continue;
+  			        if(("Id".equals(column.getLabel()) && (!("upsert".equals(action)) || ("upsert".equals(action) && !"Id".equals(upsertkey)))) || generateFinished) continue;
     				
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
