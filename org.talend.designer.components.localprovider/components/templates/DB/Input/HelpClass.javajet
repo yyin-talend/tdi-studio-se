@@ -3,7 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.utils.NodeUtil
 " 
 %>
 <%@ include file="../../Log4j/Log4jDBConnUtil.javajet"%>
@@ -96,7 +95,7 @@ imports="
 		
 		public String getQueryString(INode node) {
 			String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-			dbquery = NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
+			dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 			
 			return dbquery;
 		}
