@@ -592,10 +592,10 @@ public class PropertyChangeCommand extends Command {
 
                         boolean needClearTargetTable = newMetadataTable.getListColumns().isEmpty();
                         if (!needClearTargetTable) {
-                            needClearTargetTable = true;
+                            needClearTargetTable = false;
                             for (IMetadataColumn column : newMetadataTable.getListColumns()) {
                                 if (!column.isCustom()) {
-                                    needClearTargetTable = false;
+                                    needClearTargetTable = true;
                                     break;
                                 }
                             }
