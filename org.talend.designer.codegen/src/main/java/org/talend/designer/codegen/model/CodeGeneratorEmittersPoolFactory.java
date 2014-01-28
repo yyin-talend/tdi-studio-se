@@ -36,7 +36,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
@@ -45,6 +47,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.PerspectiveBarManager;
+import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.CommonUIPlugin;
@@ -76,6 +82,7 @@ import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
+import org.eclipse.ui.internal.WorkbenchWindow;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
@@ -111,6 +118,8 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static IStatus status = null;
 
     private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor();
+    
+    private static boolean firstTime = true;
 
     /***/
     private static class JobRunnable extends Thread {
@@ -197,20 +206,23 @@ public final class CodeGeneratorEmittersPoolFactory {
                 monitorWrap.done();
 
                 if (!CommonUIPlugin.isFullyHeadless()) {
-                    Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
+	            	 if (firstTime) {
+	            		 Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.updatePaletteForEditors")) { //$NON-NLS-1$
 
-                        @Override
-                        protected IStatus run(IProgressMonitor monitor) {
-                            CorePlugin.getDefault().getDesignerCoreService()
-                                    .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
-                            return Status.OK_STATUS;
-                        }
+	                         @Override
+	                         protected IStatus run(IProgressMonitor monitor) {
+	                             CorePlugin.getDefault().getDesignerCoreService()
+	                                     .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+	                             return Status.OK_STATUS;
+	                         }
 
-                    };
-                    job.setUser(true);
-                    job.setPriority(Job.INTERACTIVE);
-                    job.schedule();
-                    job.wakeUp(); // start as soon as possible
+	                     };
+	                     job.setUser(true);
+	                     job.setPriority(Job.INTERACTIVE);
+	                     job.schedule();
+	                     job.wakeUp(); // start as soon as possible
+	                     firstTime = false;
+	            	 }
                 }
                 log.debug(Messages.getString(
                         "CodeGeneratorEmittersPoolFactory.componentCompiled", (System.currentTimeMillis() - startTime))); //$NON-NLS-1$
@@ -336,7 +348,6 @@ public final class CodeGeneratorEmittersPoolFactory {
         job.setPriority(Job.INTERACTIVE);
         job.schedule();
         job.wakeUp(); // start as soon as possible
-
         return job;
     }
 
