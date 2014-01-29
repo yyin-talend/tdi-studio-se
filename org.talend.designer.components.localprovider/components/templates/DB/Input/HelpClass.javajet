@@ -99,8 +99,7 @@ imports="
 		
 		public String getQueryString(INode node) {
 			String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-			dbquery = dbquery.replaceAll("\n"," ");
-			dbquery = dbquery.replaceAll("\r"," ");
+			dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 			
 			return dbquery;
 		}
