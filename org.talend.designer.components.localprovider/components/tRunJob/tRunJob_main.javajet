@@ -110,7 +110,7 @@ String inputConnName = null;
 		}
 	}
 	if(useDynamicJob || useIndependentProcess || !isPropagateChildResult){
-		if (propagateData || !isPropagateChildResult) {
+		if (propagateData) {
 			for (IConnection conn : node.getOutgoingConnections()) {
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 					IMetadataTable outputMetadataTable = conn.getMetadataTable();
