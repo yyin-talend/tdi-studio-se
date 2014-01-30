@@ -1641,7 +1641,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // Setting,such as the target is TMap
                                 if (node.getOutgoingConnections().size() > 0) {
                                     if (node.getExternalNode() instanceof MapperExternalNode) {
-                                        node.setExternalData(null);
+                                        CreateComponentOnLinkHelper.setupTMap(node);
                                     }
                                     if (originalTarget.getExternalNode() instanceof MapperExternalNode) {
                                         CreateComponentOnLinkHelper.updateTMap(originalTarget, targetConnection, node

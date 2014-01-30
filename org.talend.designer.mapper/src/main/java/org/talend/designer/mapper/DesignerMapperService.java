@@ -147,6 +147,7 @@ public class DesignerMapperService implements IDesignerMapperService {
         data.setUiProperties(MapperFactory.eINSTANCE.createUiProperties());
         data.getUiProperties().setShellMaximized(true);
 
+        data.getInputTables().clear();
         InputTable inputTable = MapperFactory.eINSTANCE.createInputTable();
         data.getInputTables().add(inputTable);
         inputTable.setName(inputConnection.getName());
@@ -159,6 +160,7 @@ public class DesignerMapperService implements IDesignerMapperService {
             inputTable.getMapperTableEntries().add(tableEntry);
         }
 
+        data.getOutputTables().clear();
         OutputTable outputTable = MapperFactory.eINSTANCE.createOutputTable();
         data.getOutputTables().add(outputTable);
         outputTable.setName(outputConnection.getName());
