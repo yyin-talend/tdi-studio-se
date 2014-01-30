@@ -67,7 +67,7 @@ Set<String> inputCols = new HashSet<String>();
 String inputConnName = null;
 %>
 	java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
-<%
+	<%
 	//For TDI-28558
 
 	List<IMetadataColumn> inputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
@@ -117,9 +117,9 @@ String inputConnName = null;
 					if (outputMetadataTable!=null) {
 						for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
 							if (inputCols.contains(outputCol.getLabel())) {
-%>
+							%>
 								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
-<%
+							<%
 							}
 						}
 					}
@@ -172,7 +172,7 @@ String inputConnName = null;
 					childJob = commandLine[0];
 				} else if (i > 0){
 					if (commandLine[i].indexOf("\"") >= 0){
-	      %>
+	      			%>
 	        			paraList_<%=cid %>.add(<%=commandLine[i] %>);
 	      			<%}else{%>
 	        			paraList_<%=cid %>.add("<%=commandLine[i] %>");
@@ -180,47 +180,47 @@ String inputConnName = null;
 	    		}
 	  		}
 		} else {
-	  %>
+	  	%>
 			String osName_<%=cid %> = System.getProperty("os.name");
 			if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
-	      <%
+	      		<%
 				for (int i = 0; i < commandLineWindows.length; i++) {
 					if (i == 0){
-		      %>
+		     	 	%>
 		      			paraList_<%=cid %>.add("<%=commandLineWindows[i]%>");
-		      <%
+		      		<%
 					} else if (i > 0){
 		      			if (commandLineWindows[i].indexOf("\"") >= 0){
 							if(commandLineWindows[i].indexOf(".jar")>=0){
-		      %>
+		      				%>
 								paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLineWindows[i] %>));
-		      <%
+		      				<%
 							}else{
-		      %>
+		      				%>
 		      					paraList_<%=cid %>.add(<%=commandLineWindows[i] %>);
-		      <%
+		      				<%
 		          			}
 		      			}else{
 		          			if(commandLineWindows[i].indexOf(".jar")>=0){
-              %>
+              				%>
 		        				paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLineWindows[i] %>"));
-		      <%
+		      				<%
 		          			}else{
-              %>
+              				%>
 		      					paraList_<%=cid %>.add("<%=commandLineWindows[i] %>");
-		      <%
+		      				<%
 		          			}
 		      			}	
 		    		}
 		  		}
-		  %>
+		  		%>
 			} else {
-	      <%
+	      		<%
 				for (int i = 0; i < commandLineUnix.length; i++) {
 					if (i == 0){
-		      %>
+		      		%>
 						paraList_<%=cid %>.add("<%=commandLineUnix[i]%>");
-		      <%
+		      		<%
 		    		} else if (i > 0){
 		      			String param;
 						if (commandLineUnix[i].indexOf("\"") >= 0){
@@ -230,34 +230,36 @@ String inputConnName = null;
 						}
 						if (param.contains("$ROOT_PATH")) {
 							if(param.indexOf(".jar") >= 0){
-		      %>
+		      				%>
 								paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
 		      				<%}else{%>
 		        				paraList_<%=cid %>.add(<%=param %>.replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%
+		     	 			<%
 		      				}
 		      			}else{
 							if(param.indexOf(".jar") >= 0){
-		      %>
+		      				%>
 		      					paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
 		      				<%}else{%>
 								paraList_<%=cid %>.add(<%=param %>);
-		      <%			}
+		      				<%			
+		      				}
 		      			}	
 	    			}
 		  		}
-		  %>
+		  		%>
 			}    
-	  <%
+	  	<%
 		}
 		if(isLog4jEnabled){//For TDI-27659
-	%>
+		%>
 			if(!"".equals(log4jLevel)){
 				paraList_<%=cid %>.add("--log4jLevel="+log4jLevel);
 			}
-	<%	}
+		<%
+		}
 	}
-%>
+	%>
 	//for feature:10589
 	<%if(useIndependentProcess){%>
 		paraList_<%=cid %>.add("--stat_port=" + null);
@@ -277,7 +279,7 @@ String inputConnName = null;
 	
 	java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
 
-<%
+	<%
 	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
 	List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
 	if(iterateConns != null)  { 
@@ -288,14 +290,14 @@ String inputConnName = null;
 		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 	}
 	if(transmitWholeContext){//111111
-%>
-<% 
+	%>
+		<% 
 		//bug21906
 		String localContext = "context";
 		if(parallelIterate) {
 			localContext = "localContext";
 		}
-%> 
+		%> 
 		<%=localContext%>.synchronizeContext();
 		java.util.Enumeration<?> propertyNames_<%=cid %> = <%=localContext%>.propertyNames();
 		while (propertyNames_<%=cid %>.hasMoreElements()) {
@@ -303,20 +305,20 @@ String inputConnName = null;
 			Object value_<%=cid %> = (Object) <%=localContext%>.get(key_<%=cid %>);       
 			paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
 		}
-<%
+		<%
 		List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
 		for (IContextParameter ctxParam :params){
 			String ctxParamName = ctxParam.getName();
- %>  
+ 			%>  
 			parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
-		<%}
-
+		<%
+		}
 	}//111111
-%>
+	%>
 
 	Object obj_<%=cid%> = null;
 
-<%
+	<%
 	for (int i=0; i<contextParams.size(); i++) {
 		Map<String, String> contextParam = contextParams.get(i);
 		String name = contextParam.get("PARAM_NAME_COLUMN");
@@ -325,18 +327,21 @@ String inputConnName = null;
 		if(parallelIterate && value!=null && value.contains("context.")) {
 			value = value.replace("context.","localContext.");
 		}
-%>
+		%>
 		obj_<%=cid%> = <%=value %>;
 		paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
 		parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
-	<%}%>
+	<%
+	}
+	%>
 	<%if(printParameter){%>
 		System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraList_<%=cid %> + "\n");
-	<%}
+	<%
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 	if (!useIndependentProcess){//AAAAAAAAAAAA
-%>
+	%>
 		<%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
 	    // pass DataSources
 	    java.util.Map<String, routines.system.TalendDataSource> talendDataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap
@@ -360,10 +365,10 @@ String inputConnName = null;
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - The child job '<%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%>' is done.");
 		<%}%>
-	  <%
+	  	<%
 		if (childJob != null) {
 	    	if (isRunInMultiThread){
-	    %>
+    		%>
 				((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
 			<%}else {%>
 				errorCode = childJob_<%=cid %>.getErrorCode();
@@ -406,7 +411,7 @@ String inputConnName = null;
 			List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
 			blockCodes.add(new BlockCode("C_01"));
 			((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
-	    %>
+	    	%>
 			for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
 				if(childJob_<%=cid %>.hastBufferOutputComponent() || <%=inConnNull%>){
 			    	<%
@@ -417,7 +422,7 @@ String inputConnName = null;
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-			        %>		
+			        	%>		
 						if(<%=i %> < item_<%=cid %>.length){				
 			           		<%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
 				           		<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
@@ -433,21 +438,21 @@ String inputConnName = null;
 		           		}else{
 			           		<%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 		           		}
-<%
+					<%
 					}//a
 					if (inConnNull==false && propagateData) {//d
-%>
-					} else {
-<%
+					%>
+						} else {
+						<%
 						for (IConnection conn : node.getOutgoingConnections()) {
 							if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 								IMetadataTable outputMetadataTable = conn.getMetadataTable();
 								if (outputMetadataTable!=null) {
 									for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
 										if (inputCols.contains(outputCol.getLabel())) {
-%>
-								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
-<%
+										%>
+											<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+										<%
 										}
 									}
 								}
@@ -455,15 +460,15 @@ String inputConnName = null;
 							}
 						}
 					}//d
-%>
+					%>
 				}
-<%
+		<%
 		}//b  
 	} else { //AAAAAAAAAAAA
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-		// use independent process to run subjob
-%>
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+	// use independent process to run subjob
+	%>
 		Runtime runtime_<%=cid %> = Runtime.getRuntime();
 		final Process ps_<%=cid %>;
 		ps_<%=cid %> = runtime_<%=cid %>.exec((String[])paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
@@ -539,39 +544,29 @@ String inputConnName = null;
 				System.err.println("Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 			<%}%>
   		}
- 
 
-
-<%
-	String firstConnName = null; 
-	if(outConns != null && outConns.size() > 0) {
-		for (IConnection conn : outConns) {
-			if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-				firstConnName = conn.getName(); //get the first available flow link
-				break;
+		<%
+		String firstConnName = null; 
+		if(outConns != null && outConns.size() > 0) {
+			for (IConnection conn : outConns) {
+				if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+					firstConnName = conn.getName(); //get the first available flow link
+					break;
+				}
 			}
 		}
-	}
-	if(firstConnName != null) {//b
-    	if(inConns == null || inConns.size() == 0){//c
-    %>
-      		{
-			<%if(isLog4jEnabled){%>
-				log.error("<%=cid %> - Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
-			<%}%>
-	      	System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
-    	<%}else{//c
-    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
-    %>
-			{
-    <%
-		}//c
-	}//b  
-%>
-  
-<%
+		if(firstConnName != null) {//b
+	    	if(inConns == null || inConns.size() == 0){//c
+			%>
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid %> - Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+				<%}%>
+  				System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
+			<%
+			}//c
+		}//b  
 	}//AAAAAAAAAAAA
-%>
+	%>
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Done.");
 	<%}%>
