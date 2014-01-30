@@ -164,12 +164,23 @@
 
         return bufferValue;
     }
-
-
+    
+    public boolean hastBufferOutputComponent() {
+		boolean hastBufferOutput = false;
+    	<%//For TDI-28558
+        	List<INode> tBufferNodesList = (List<INode>)process.getNodesOfType("tBufferOutput");
+        	if(tBufferNodesList != null && tBufferNodesList.size() > 0) {
+    	%>
+        		hastBufferOutput = true;
+    	<%
+        	}
+		%>
+        return hastBufferOutput;
+    }
     public int runJobInTOS(String[] args) {
 	   	// reset status
 	   	status = "";
-	   	
+
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {

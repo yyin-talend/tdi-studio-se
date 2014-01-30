@@ -14,6 +14,7 @@ imports="
   org.talend.core.model.process.IProcess
   org.talend.core.model.process.IContextParameter
   org.talend.core.model.process.IConnectionCategory
+  org.talend.core.model.process.BlockCode
   java.util.Map
   java.util.List
   java.util.Set
@@ -56,391 +57,472 @@ String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};
 String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
+boolean isPropagateChildResult = ("true").equals(ElementParameterParser.getValue(node, "__PROPAGATE_CHILD_RESULT__"));
+
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
+boolean propagateData = false;
+Set<String> inputCols = new HashSet<String>();
+String inputConnName = null;
 %>
-java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
-<%
-if(useDynamicJob){
-	useIndependentProcess = true;
-	%>
-	if(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
-		throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
-	}
-	paraList_<%=cid %>.addAll(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
+	java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 	<%
-}else{
-	try {
-	  if(useIndependentProcess){
-	    commandLineWindows = ProcessorUtilities.getCommandLine("win32",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-	    // remove the 2 fist lines
-	    if (commandLineWindows.length > 0 && ProcessorUtilities.isExportConfig()){
-	      int tmpSize = commandLineWindows.length - 2;
-	      String[] tmp = new String[tmpSize];
-	      System.arraycopy(commandLineWindows, 2, tmp, 0, tmpSize);
-	      commandLineWindows = tmp;
-	    }
-	    commandLineUnix = ProcessorUtilities.getCommandLine("linux",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-	    // remove the 2 first lines
-	    if (commandLineUnix.length > 0 && ProcessorUtilities.isExportConfig()){
-	      int tmpSize = commandLineUnix.length - 2;
-	      String[] tmp = new String[tmpSize];
-	      System.arraycopy(commandLineUnix, 2, tmp, 0, tmpSize);
-	      commandLineUnix = tmp;
-	    }
-	  }else{
-	    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
-	  }
-	} catch (ProcessorException e) {
+	//For TDI-28558
+
+	List<IMetadataColumn> inputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	List<IMetadataColumn> outputMetadataColumn = new java.util.ArrayList<IMetadataColumn>();
+	if (node.getIncomingConnections()!=null) {
+		for (IConnection incomingConn : node.getIncomingConnections()) {
+			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				inputConnName = incomingConn.getName();
+				IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+					inputMetadataColumn.add(inputCol);
+					inputCols.add(inputCol.getLabel());
+				}
+				break;
+			}
+		}
 	}
-
-
-	if (!useIndependentProcess) {
-	  for (int i = 0; i < commandLine.length; i++) {
-		if (i == 0){
-	      childJob = commandLine[0];
-	    } else if (i > 0){
-	      if (commandLine[i].indexOf("\"") >= 0){
-	      %>
-	        paraList_<%=cid %>.add(<%=commandLine[i] %>);
-	      <%}else{%>
-	        paraList_<%=cid %>.add("<%=commandLine[i] %>");
-	      <%}
-	    }
-	  }
-	} else {
-	  %>
-	  String osName_<%=cid %> = System.getProperty("os.name");
-	  if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
-	      <%
-		  for (int i = 0; i < commandLineWindows.length; i++) {
-		    if (i == 0){
-		      %>
-		      paraList_<%=cid %>.add("<%=commandLineWindows[i]%>");
-		      <%
-		    } else if (i > 0){
-		      if (commandLineWindows[i].indexOf("\"") >= 0){
-		          if(commandLineWindows[i].indexOf(".jar")>=0){
-		      %>
-		        	paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLineWindows[i] %>));
-		      <%
-		          }else{
-		      %>
-		      		paraList_<%=cid %>.add(<%=commandLineWindows[i] %>);
-		      <%
-		          }
-		      }else{
-		          if(commandLineWindows[i].indexOf(".jar")>=0){
-              %>
-		        	paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLineWindows[i] %>"));
-		      <%
-		          }else{
-              %>
-		      		paraList_<%=cid %>.add("<%=commandLineWindows[i] %>");
-		      <%
-		          }
-		      }
-		    }
-		  }
-		  %>
-	  } else {
-	      <%
-		  for (int i = 0; i < commandLineUnix.length; i++) {
-		    if (i == 0){
-		      %>
-		      paraList_<%=cid %>.add("<%=commandLineUnix[i]%>");
-		      <%
-		    } else if (i > 0){
-		      String param;
-		      if (commandLineUnix[i].indexOf("\"") >= 0){
-		        param = commandLineUnix[i];
-		      } else {
-		      	param = "\""+commandLineUnix[i]+"\"";
-		      }
-		      if (param.contains("$ROOT_PATH")) {
-		      	if(param.indexOf(".jar") >= 0){
-		      %>
-		        paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%}else{%>
-		        paraList_<%=cid %>.add(<%=param %>.replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%
-		      	}
-		      }else{
-		     	if(param.indexOf(".jar") >= 0){
-		      %>
-		        paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%}else{%>
-		        paraList_<%=cid %>.add(<%=param %>);
-		      <%}
-		      }
-		    }
-		  }
-		  %>
-	  }    
-	  <%
+	if(node.getOutgoingConnections()!=null) {
+		for (IConnection outputConn : node.getOutgoingConnections()) {
+			if (outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+				IMetadataTable outputMetadataTable = outputConn.getMetadataTable();
+				for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
+					outputMetadataColumn.add(outputCol);
+				}
+			}
+		}
 	}
-}
-%>
-//for feature:10589
-<%if(useIndependentProcess){%>
-paraList_<%=cid %>.add("--stat_port=" + null);
-<%}else{%>
-paraList_<%=cid %>.add("--stat_port=" + portStats);
-<%}%>
-
-if(resuming_logs_dir_path != null){
-  paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
-}
-String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
-String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
-if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != null){
-  paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
-}
-paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
-
-java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
-
-<%
-Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
-List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
-if(iterateConns != null)  { 
-	iterateConnSet.addAll(iterateConns);
-}
-boolean parallelIterate = false;
-for (IConnection iterateConn : iterateConnSet) {
-	parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
-}
-if(transmitWholeContext){//111111
-%>
-<% 
-	//bug21906
-	String localContext = "context";
-	if(parallelIterate) {
-		localContext = "localContext";
+	if(inputMetadataColumn!=null && outputMetadataColumn!=null){
+		if(inputMetadataColumn.size() == outputMetadataColumn.size()){
+			int size = inputMetadataColumn.size();
+			for(int i = 0;i< size; i++){
+				if(!inputMetadataColumn.get(i).getLabel().equals(outputMetadataColumn.get(i).getLabel()) ||
+				   !inputMetadataColumn.get(i).getType().equals(outputMetadataColumn.get(i).getType())){
+					propagateData = false;
+					break;
+				}else{
+					propagateData = true;
+				}
+			}
+		}
 	}
-%> 
-  <%=localContext%>.synchronizeContext();
-  java.util.Enumeration<?> propertyNames_<%=cid %> = <%=localContext%>.propertyNames();
-  while (propertyNames_<%=cid %>.hasMoreElements()) {
-    String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
-    Object value_<%=cid %> = (Object) <%=localContext%>.get(key_<%=cid %>);       
-    paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
-  }
-  
-<%
- List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
-    for (IContextParameter ctxParam :params){
-    	String ctxParamName = ctxParam.getName();
- %>  
-		    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
- <%}
+	if(useDynamicJob || useIndependentProcess || !isPropagateChildResult){
+		if (propagateData) {
+			for (IConnection conn : node.getOutgoingConnections()) {
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+					IMetadataTable outputMetadataTable = conn.getMetadataTable();
+					if (outputMetadataTable!=null) {
+						for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
+							if (inputCols.contains(outputCol.getLabel())) {
+							%>
+								<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+							<%
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	if(useDynamicJob){
+		useIndependentProcess = true;
+		%>
+		if(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
+			throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
+		}
+		paraList_<%=cid %>.addAll(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
+	<%
+	}else{
+		try {
+			if(useIndependentProcess){
+		    	commandLineWindows = ProcessorUtilities.getCommandLine("win32",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+		    	// remove the 2 fist lines
+		    	if (commandLineWindows.length > 0 && ProcessorUtilities.isExportConfig()){
+		    		int tmpSize = commandLineWindows.length - 2;
+		    		String[] tmp = new String[tmpSize];
+		    		System.arraycopy(commandLineWindows, 2, tmp, 0, tmpSize);
+		    		commandLineWindows = tmp;
+	    		}
+		    	commandLineUnix = ProcessorUtilities.getCommandLine("linux",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+	    		// remove the 2 first lines
+				if (commandLineUnix.length > 0 && ProcessorUtilities.isExportConfig()){
+					int tmpSize = commandLineUnix.length - 2;
+					String[] tmp = new String[tmpSize];
+					System.arraycopy(commandLineUnix, 2, tmp, 0, tmpSize);
+					commandLineUnix = tmp;
+				}
+			}else{
+		    	commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
+			}
+		} catch (ProcessorException e) {
+		}
 
-}//111111
-%>
 
-Object obj_<%=cid%> = null;
+		if (!useIndependentProcess) {
+			for (int i = 0; i < commandLine.length; i++) {
+				if (i == 0){
+					childJob = commandLine[0];
+				} else if (i > 0){
+					if (commandLine[i].indexOf("\"") >= 0){
+	      			%>
+	        			paraList_<%=cid %>.add(<%=commandLine[i] %>);
+	      			<%}else{%>
+	        			paraList_<%=cid %>.add("<%=commandLine[i] %>");
+	      			<%}
+	    		}
+	  		}
+		} else {
+	  	%>
+			String osName_<%=cid %> = System.getProperty("os.name");
+			if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
+	      		<%
+				for (int i = 0; i < commandLineWindows.length; i++) {
+					if (i == 0){
+		     	 	%>
+		      			paraList_<%=cid %>.add("<%=commandLineWindows[i]%>");
+		      		<%
+					} else if (i > 0){
+		      			if (commandLineWindows[i].indexOf("\"") >= 0){
+							if(commandLineWindows[i].indexOf(".jar")>=0){
+		      				%>
+								paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLineWindows[i] %>));
+		      				<%
+							}else{
+		      				%>
+		      					paraList_<%=cid %>.add(<%=commandLineWindows[i] %>);
+		      				<%
+		          			}
+		      			}else{
+		          			if(commandLineWindows[i].indexOf(".jar")>=0){
+              				%>
+		        				paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLineWindows[i] %>"));
+		      				<%
+		          			}else{
+              				%>
+		      					paraList_<%=cid %>.add("<%=commandLineWindows[i] %>");
+		      				<%
+		          			}
+		      			}	
+		    		}
+		  		}
+		  		%>
+			} else {
+	      		<%
+				for (int i = 0; i < commandLineUnix.length; i++) {
+					if (i == 0){
+		      		%>
+						paraList_<%=cid %>.add("<%=commandLineUnix[i]%>");
+		      		<%
+		    		} else if (i > 0){
+		      			String param;
+						if (commandLineUnix[i].indexOf("\"") >= 0){
+							param = commandLineUnix[i];
+						} else {
+							param = "\""+commandLineUnix[i]+"\"";
+						}
+						if (param.contains("$ROOT_PATH")) {
+							if(param.indexOf(".jar") >= 0){
+		      				%>
+								paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
+		      				<%}else{%>
+		        				paraList_<%=cid %>.add(<%=param %>.replace("$ROOT_PATH",System.getProperty("user.dir")));
+		     	 			<%
+		      				}
+		      			}else{
+							if(param.indexOf(".jar") >= 0){
+		      				%>
+		      					paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
+		      				<%}else{%>
+								paraList_<%=cid %>.add(<%=param %>);
+		      				<%			
+		      				}
+		      			}	
+	    			}
+		  		}
+		  		%>
+			}    
+	  	<%
+		}
+	}
+	%>
+	//for feature:10589
+	<%if(useIndependentProcess){%>
+		paraList_<%=cid %>.add("--stat_port=" + null);
+	<%}else{%>
+		paraList_<%=cid %>.add("--stat_port=" + portStats);
+	<%}%>
 
-<%
-for (int i=0; i<contextParams.size(); i++) {
-  Map<String, String> contextParam = contextParams.get(i);
-  String name = contextParam.get("PARAM_NAME_COLUMN");
-  String value = contextParam.get("PARAM_VALUE_COLUMN");
-  //bug22181
-  if(parallelIterate && value!=null && value.contains("context.")) {
-  	value = value.replace("context.","localContext.");
-  }
-%>
-  obj_<%=cid%> = <%=value %>;
-  paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
-  parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
-<%}%>
-<%if(printParameter){%>
-  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraList_<%=cid %> + "\n");
-<%}
+	if(resuming_logs_dir_path != null){
+		paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
+	}
+	String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
+	String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
+	if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != null){
+		paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
+	}
+	paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
+	
+	java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
 
+	<%
+	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
+	List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
+	if(iterateConns != null)  { 
+		iterateConnSet.addAll(iterateConns);
+	}
+	boolean parallelIterate = false;
+	for (IConnection iterateConn : iterateConnSet) {
+		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
+	}
+	if(transmitWholeContext){//111111
+	%>
+		<% 
+		//bug21906
+		String localContext = "context";
+		if(parallelIterate) {
+			localContext = "localContext";
+		}
+		%> 
+		<%=localContext%>.synchronizeContext();
+		java.util.Enumeration<?> propertyNames_<%=cid %> = <%=localContext%>.propertyNames();
+		while (propertyNames_<%=cid %>.hasMoreElements()) {
+			String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
+			Object value_<%=cid %> = (Object) <%=localContext%>.get(key_<%=cid %>);       
+			paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+		}
+		<%
+		List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
+		for (IContextParameter ctxParam :params){
+			String ctxParamName = ctxParam.getName();
+ 			%>  
+			parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
+		<%
+		}
+	}//111111
+	%>
+
+	Object obj_<%=cid%> = null;
+
+	<%
+	for (int i=0; i<contextParams.size(); i++) {
+		Map<String, String> contextParam = contextParams.get(i);
+		String name = contextParam.get("PARAM_NAME_COLUMN");
+		String value = contextParam.get("PARAM_VALUE_COLUMN");
+		//bug22181
+		if(parallelIterate && value!=null && value.contains("context.")) {
+			value = value.replace("context.","localContext.");
+		}
+		%>
+		obj_<%=cid%> = <%=value %>;
+		paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
+		parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
+	<%
+	}
+	%>
+	<%if(printParameter){%>
+		System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraList_<%=cid %> + "\n");
+	<%
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-if (!useIndependentProcess){//AAAAAAAAAAAA
-%>
-  <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
-    // pass DataSources
-    java.util.Map<String, routines.system.TalendDataSource> talendDataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap
-            .get(KEY_DB_DATASOURCES);
-    if (null != talendDataSources_<%=cid%>) {
-        java.util.Map<String, javax.sql.DataSource> dataSources_<%=cid%> = new java.util.HashMap<String, javax.sql.DataSource>();
-        for (java.util.Map.Entry<String, routines.system.TalendDataSource> talendDataSourceEntry_<%=cid%> : talendDataSources_<%=cid%>
-                .entrySet()) {
-            dataSources_<%=cid%>.put(talendDataSourceEntry_<%=cid%>.getKey(),
-                    talendDataSourceEntry_<%=cid%>.getValue().getRawDataSource());
-        }
-        childJob_<%=cid %>.setDataSources(dataSources_<%=cid%>);
-    }
-<%if(originalContext){%>  
-  childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
-<%}%>  
-  String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
-  <%
-  if (childJob != null) {
-    if (isRunInMultiThread ){
-    %>
-      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
-    <%}else {%>
-      errorCode = childJob_<%=cid %>.getErrorCode();
-    <%}%>
-            
-    if(childJob_<%=cid %>.getErrorCode() == null){
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
-    }else{
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
-    }
-    if (childJob_<%=cid %>.getExceptionStackTrace() != null) { 
-    	globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
-    }
+	if (!useIndependentProcess){//AAAAAAAAAAAA
+	%>
+		<%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+	    // pass DataSources
+	    java.util.Map<String, routines.system.TalendDataSource> talendDataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap
+	            .get(KEY_DB_DATASOURCES);
+	    if (null != talendDataSources_<%=cid%>) {
+	        java.util.Map<String, javax.sql.DataSource> dataSources_<%=cid%> = new java.util.HashMap<String, javax.sql.DataSource>();
+	        for (java.util.Map.Entry<String, routines.system.TalendDataSource> talendDataSourceEntry_<%=cid%> : talendDataSources_<%=cid%>
+			        .entrySet()) {
+	            dataSources_<%=cid%>.put(talendDataSourceEntry_<%=cid%>.getKey(),
+	                    talendDataSourceEntry_<%=cid%>.getValue().getRawDataSource());
+	        }
+	        childJob_<%=cid %>.setDataSources(dataSources_<%=cid%>);
+	    }
+		<%if(originalContext){%>  
+			childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
+		<%}%>  
+		String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+	  	<%
+		if (childJob != null) {
+	    	if (isRunInMultiThread){
+    		%>
+				((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
+			<%}else {%>
+				errorCode = childJob_<%=cid %>.getErrorCode();
+		    <%}%>
+	            
+	    	if(childJob_<%=cid %>.getErrorCode() == null){
+				globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
+	    	}else{
+				globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
+		    }
+		    if (childJob_<%=cid %>.getExceptionStackTrace() != null) { 
+		    	globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+		    }
+	  
+			<%if (dieOnError) { %> 
+				if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
+	        		throw new RuntimeException("Child job running failed");
+				}
+			<%}
+		}%>
+	  	<%
+
+		String firstConnName = null; 
+		if(outConns != null && outConns.size() > 0) {
+			for (IConnection conn : outConns) {
+				if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
+	      			firstConnName = conn.getName(); //get the first available flow link
+	      			break;
+	      		}
+	    	}
+		}
+		boolean inConnNull = false;
+		if(inConns == null || inConns.size() == 0) {
+			inConnNull = true; 
+		}
+		if(firstConnName != null && (isPropagateChildResult || inConnNull)) {//b
+			List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+			blockCodes.add(new BlockCode("C_01"));
+			((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+	    	%>
+			for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
+				if(childJob_<%=cid %>.hastBufferOutputComponent() || <%=inConnNull%>){
+			    	<%
+					int columnSize = columns.size();
+					for (int i = 0; i < columnSize; i++) {//a
+						IMetadataColumn column = columns.get(i);
+						String label = column.getLabel();
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+			        	%>		
+						if(<%=i %> < item_<%=cid %>.length){				
+			           		<%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
+				           		<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
+			           		<%} else if(javaType == JavaTypesManager.DATE) {%>
+				           		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
+			           		<%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
+			           			<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
+			           		<%}else if(javaType == JavaTypesManager.LIST) {%>
+			           			<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>], ",");
+			           		<%} else {%>
+			           			<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
+			           		<%}%>
+		           		}else{
+			           		<%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+		           		}
+					<%
+					}//a
+					if (inConnNull==false && propagateData) {//d
+					%>
+						} else {
+						<%
+						for (IConnection conn : node.getOutgoingConnections()) {
+							if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+								IMetadataTable outputMetadataTable = conn.getMetadataTable();
+								if (outputMetadataTable!=null) {
+									for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
+										if (inputCols.contains(outputCol.getLabel())) {
+										%>
+											<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+										<%
+										}
+									}
+								}
+								break;
+							}
+						}
+					}//d
+					%>
+				}
+		<%
+		}//b  
+	} else { //AAAAAAAAAAAA
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+	// use independent process to run subjob
+	%>
+		Runtime runtime_<%=cid %> = Runtime.getRuntime();
+		final Process ps_<%=cid %>;
+		ps_<%=cid %> = runtime_<%=cid %>.exec((String[])paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+
+		Thread normal_<%=cid %> = new Thread() {
+			public void run() {
+				try {
+					java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
+					String line = "";
+					try {
+						while((line = reader.readLine()) != null) {
+						System.out.println(line);
+						}
+					} finally {
+					reader.close();
+					}
+				} catch(java.io.IOException ioe) {
+					ioe.printStackTrace();
+				}
+	    	}
+  		};
+		normal_<%=cid %>.start();
+
+		final StringBuffer errorMsg_<%=cid %> = new StringBuffer();
+		Thread error_<%=cid %> = new Thread() {
+			public void run() {
+				try {
+					java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
+					String line = "";
+        			try {
+          				while((line = reader.readLine()) != null) {
+            				errorMsg_<%=cid %>.append(line).append("\n");
+          				}
+        			} finally {
+          				reader.close();
+        			}
+      			} catch(java.io.IOException ioe) {
+			        ioe.printStackTrace();
+      			}
+    		}
+		};
+		error_<%=cid %>.start();
+
+		//0 indicates normal termination	
+		int result_<%=cid %> = ps_<%=cid %>.waitFor();
+		normal_<%=cid %>.join(10000);
+		error_<%=cid %>.join(10000);
   
-    <%if (dieOnError) { %> 
-      if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
-        throw new RuntimeException("Child job running failed");
-      }
-    <%}
-  }%>
-  <%
-  String firstConnName = null; 
-  if(outConns != null && outConns.size() > 0) {
-    for (IConnection conn : outConns) {
-      if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-      	firstConnName = conn.getName(); //get the first available flow link
-      	break;
-      }
-    }
-  }
-  if(firstConnName != null) {//b
-    if(inConns == null || inConns.size() == 0){//c
-    %>
-      for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
-      <%
-      int columnSize = columns.size();
-      for (int i = 0; i < columnSize; i++) {//a
-        IMetadataColumn column = columns.get(i);
-        String label = column.getLabel();
-        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-        JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-        String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-        %>		
-        if(<%=i %> < item_<%=cid %>.length){				
-           <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
-             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
-           <%} else if(javaType == JavaTypesManager.DATE) {%>
-             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
-           <%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
-             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
-           <%}else if(javaType == JavaTypesManager.LIST) {%>
-           	 <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>], ",");
-           <%} else {%>
-             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
-           <%}%>
-        }else{
-  	      <%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-        }
-        <%
-      }//a
-    }else{//c
-    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
-    %>
-      {
-    <%
-    }
-    
-  }//b  
-  
-} else { //AAAAAAAAAAAA
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE",result_<%=cid %>);
+		if(result_<%=cid %> != 0){
+   			globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE",errorMsg_<%=cid %>.toString());
+			<%if (dieOnError) { %>  
+	    		throw new RuntimeException("Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+			<%}else{%>
+				System.err.println("Child job returns " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+			<%}%>
+  		}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-  // use independent process to run subjob
-%>
-  Runtime runtime_<%=cid %> = Runtime.getRuntime();
-  final Process ps_<%=cid %>;
-  ps_<%=cid %> = runtime_<%=cid %>.exec((String[])paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
-
-  Thread normal_<%=cid %> = new Thread() {
-    public void run() {
-      try {
-        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
-        String line = "";
-        try {
-          while((line = reader.readLine()) != null) {
-            System.out.println(line);
-          }
-        } finally {
-          reader.close();
-        }
-      } catch(java.io.IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
-  };
-  normal_<%=cid %>.start();
-
-  final StringBuffer errorMsg_<%=cid %> = new StringBuffer();
-  Thread error_<%=cid %> = new Thread() {
-    public void run() {
-      try {
-        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
-        String line = "";
-        try {
-          while((line = reader.readLine()) != null) {
-            errorMsg_<%=cid %>.append(line).append("\n");
-          }
-        } finally {
-          reader.close();
-        }
-      } catch(java.io.IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
-  };
-  error_<%=cid %>.start();
-
-  //0 indicates normal termination	
-  int result_<%=cid %> = ps_<%=cid %>.waitFor();
-  normal_<%=cid %>.join(10000);
-  error_<%=cid %>.join(10000);
-  
-  globalMap.put("<%=cid %>_CHILD_RETURN_CODE",result_<%=cid %>);
-  if(result_<%=cid %> != 0){
-   		globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE",errorMsg_<%=cid %>.toString());
-	<%if (dieOnError) { %>  
-	    throw new RuntimeException("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
-	<%}else{%>
-		System.err.println("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
-	<%}%>
-  }
- 
-
-
-<%
-  String firstConnName = null; 
-  if(outConns != null && outConns.size() > 0) {
-    for (IConnection conn : outConns) {
-      if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-      	firstConnName = conn.getName(); //get the first available flow link
-      	break;
-      }
-    }
-  }
-  if(firstConnName != null) {//b
-    if(inConns == null || inConns.size() == 0){//c
-    %>
-      {
-      	System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
-    <%}else{//c
-    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
-    %>
-      {
-    <%
-    }//c
-  }//b  
-%>
-  
-<%
-}//AAAAAAAAAAAA
-%>
+		<%
+		String firstConnName = null; 
+		if(outConns != null && outConns.size() > 0) {
+			for (IConnection conn : outConns) {
+				if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+					firstConnName = conn.getName(); //get the first available flow link
+					break;
+				}
+			}
+		}
+		if(firstConnName != null) {//b
+	    	if(inConns == null || inConns.size() == 0){//c
+			%>
+  				System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
+			<%
+			}//c
+		}//b  
+	}//AAAAAAAAAAAA
+	%>
