@@ -154,64 +154,73 @@ package <%= packageName %>;
 <%
 	for (INode node : graphicalNodes) {
 		Object value = node.getPropertyValue("STARTABLE");
-		if (null != value && (Boolean) value) { %>
-			private org.osgi.framework.BundleContext bundleContext;
-
-			public void setBundleContext(org.osgi.framework.BundleContext bundleContext) {
-				this.bundleContext = bundleContext;
-			}
-			<% break;
-		}
-	}
+		if (null != value && (Boolean) value) {
 %>
+	private org.osgi.framework.BundleContext bundleContext;
 
+	public void setBundleContext(org.osgi.framework.BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
+	}
 <%
+            break;
+		}
+	}
 
+    boolean hasSam = false;
 	for (INode node : graphicalNodes) {
-		String useRegistry = "false";
-		String dataFormat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
-		if(isStudioEEVersion && !"RAW".equals(dataFormat) && !"CXF_MESSAGE".equals(dataFormat)){
-		 	useRegistry = ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__");
-		}
-		if("cCXF".equals(node.getComponent().getName()) 
-							&& "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))  
-							&& !"RAW".equals(ElementParameterParser.getValue(node, "__DATAFORMAT__"))&& !"true".equals(useRegistry) ) { %>
-			//ESB Service Activity Monitor Feature
-			private org.apache.cxf.feature.Feature eventFeature;
-
-			public void setEventFeature(org.apache.cxf.feature.Feature eventFeature) {
-				this.eventFeature = eventFeature;
-			}
-
-// https://issues.apache.org/jira/browse/CAMEL-6783
-static class FeatureWrapper extends org.apache.cxf.feature.AbstractFeature {
-
-	private final org.apache.cxf.feature.Feature f;
-
-	public FeatureWrapper(org.apache.cxf.feature.Feature f) {
-		this.f = f;
-	}
-
-	public void initialize(org.apache.cxf.endpoint.Server server, org.apache.cxf.Bus bus) {
-		f.initialize(server, bus);
-	}
-
-	public void initialize(org.apache.cxf.endpoint.Client client, org.apache.cxf.Bus bus) {
-		f.initialize(client, bus);
-	}
-
-	public void initialize(org.apache.cxf.interceptor.InterceptorProvider interceptorProvider, org.apache.cxf.Bus bus) {
-		f.initialize(interceptorProvider, bus);
-	}
-
-	public void initialize(org.apache.cxf.Bus bus) {
-		f.initialize(bus);
-	}
-}
-
-			<% break;
+		if ("cCXF".equals(node.getComponent().getName())) {
+            boolean useRegistry = false;
+            String dataFormat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+            if (isStudioEEVersion && !"RAW".equals(dataFormat) && !"CXF_MESSAGE".equals(dataFormat)) {
+                useRegistry = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_REGISTRY__"));
+            }
+		    if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))
+				&& !"RAW".equals(dataFormat) && !useRegistry) {
+				hasSam = true;
+            }
+		} else if ("cCXFRS".equals(node.getComponent().getName())) {
+            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
+                hasSam = true;
+            }
 		}
 	}
+
+    if (hasSam) {
+%>
+    //ESB Service Activity Monitor Feature
+    private org.apache.cxf.feature.Feature eventFeature;
+
+    public void setEventFeature(org.apache.cxf.feature.Feature eventFeature) {
+        this.eventFeature = eventFeature;
+    }
+
+    // https://issues.apache.org/jira/browse/CAMEL-6783
+    static class FeatureWrapper extends org.apache.cxf.feature.AbstractFeature {
+
+        private final org.apache.cxf.feature.Feature f;
+
+        public FeatureWrapper(org.apache.cxf.feature.Feature f) {
+            this.f = f;
+        }
+
+        public void initialize(org.apache.cxf.endpoint.Server server, org.apache.cxf.Bus bus) {
+            f.initialize(server, bus);
+        }
+
+        public void initialize(org.apache.cxf.endpoint.Client client, org.apache.cxf.Bus bus) {
+            f.initialize(client, bus);
+        }
+
+        public void initialize(org.apache.cxf.interceptor.InterceptorProvider interceptorProvider, org.apache.cxf.Bus bus) {
+            f.initialize(interceptorProvider, bus);
+        }
+
+        public void initialize(org.apache.cxf.Bus bus) {
+            f.initialize(bus);
+        }
+    }
+<%
+    }
 %>
 
 	private Map<String, String> uriMap;
@@ -581,6 +590,12 @@ for (INode node : graphicalNodes) {
 		}
 		uri = sb.toString();
 
+    } else if ("cCXFRS".equals(componentName)) {
+        StringBuilder sb = new StringBuilder("\"cxfrs://\"+");
+
+        sb.append(ElementParameterParser.getValue(node, "__URL__")).append("+\"?loggingFeatureEnabled=true\"");
+
+        uri = sb.toString();
 	} else if ("cFtp".equals(componentName)) {
 		String type = ElementParameterParser.getValue(node, "__TYPE__");
 		String username = ElementParameterParser.getValue(node, "__USERNAME__");
