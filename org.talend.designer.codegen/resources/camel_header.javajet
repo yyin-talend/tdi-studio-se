@@ -1050,6 +1050,20 @@ if (isProvider) {
 <%
             if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__"))) {
 %>
+               class EsbJobCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
+                            private String correlationId;
+                            public EsbJobCorrelationCallbackHandler(final String correlationId) {
+                                if (null != correlationId && correlationId.length() > 0) {
+                                    this.correlationId = correlationId;
+                                }
+                            }
+                            public String getCorrelationId() {
+                                return correlationId;
+                            };
+                        }
+                final Object correlationIDCallbackHandler = new EsbJobCorrelationCallbackHandler(<%=ElementParameterParser.getValue(node, "__CORRELATION_VALUE__")%>);
+                bus_<%=cid%>.getProperties().put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, 
+                    correlationIDCallbackHandler);
                 bus_<%=cid%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
 <%          }
             if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {

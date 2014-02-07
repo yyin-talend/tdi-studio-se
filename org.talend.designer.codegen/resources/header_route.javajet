@@ -593,8 +593,15 @@ for (INode node : graphicalNodes) {
     } else if ("cCXFRS".equals(componentName)) {
         StringBuilder sb = new StringBuilder("\"cxfrs://\"+");
 
-        sb.append(ElementParameterParser.getValue(node, "__URL__")).append("+\"?loggingFeatureEnabled=true\"");
+        sb.append(ElementParameterParser.getValue(node, "__URL__"));
+        sb.append("+\"?loggingFeatureEnabled=").append(ElementParameterParser.getValue(node, "__LOG_MESSAGES__")).append("\"");
 
+        List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
+        for (Map<String, String> map : tableValues) {
+            String argName = map.get("NAME").trim();
+            String argValue = map.get("VALUE").trim();
+            sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+        }
         uri = sb.toString();
 	} else if ("cFtp".equals(componentName)) {
 		String type = ElementParameterParser.getValue(node, "__TYPE__");
