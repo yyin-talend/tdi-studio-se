@@ -182,6 +182,24 @@ package <%= packageName %>;
             if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
                 hasSam = true;
             }
+            String cid = node.getUniqueName();
+%>
+    public interface Service_<%=cid%> {
+        @javax.ws.rs.<%=ElementParameterParser.getValue(node, "__HTTP_METHOD__")%>()
+        @javax.ws.rs.Path(<%=ElementParameterParser.getValue(node, "__PATH__")%>)
+<% 
+             org.talend.designer.codegen.config.NodeParamsHelper paramsHelper = new org.talend.designer.codegen.config.NodeParamsHelper(node);
+             String contentType = paramsHelper.getVisibleStringParam("__ACCEPT_TYPE__");
+             if (!contentType.isEmpty()) {
+%>
+        @javax.ws.rs.Produces("<%=contentType%>")
+<%
+             }
+%>
+        Object invoke();
+    }
+<%
+
 		}
 	}
 
@@ -602,6 +620,8 @@ for (INode node : graphicalNodes) {
             String argValue = map.get("VALUE").trim();
             sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
         }
+        sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + cid + '"');
+
         uri = sb.toString();
 	} else if ("cFtp".equals(componentName)) {
 		String type = ElementParameterParser.getValue(node, "__TYPE__");
