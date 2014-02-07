@@ -98,5 +98,4 @@ if(!usePartialUpdate){
  	<%}%>
  	
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);  
- 	globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);           
             
