@@ -27,7 +27,7 @@
 			if(nodeNames.contains(uniqueName)){
 				//happen the cycle problem!!!
 				//return null;
-				throw new java.lang.Exception("happen the cycle problem!!!");
+				throw new java.lang.Exception("Problem with " + uniqueName + " caused by cross-linking two tHashOutput components to each other.");
 			}else{
 				nodeNames.add(uniqueName);
 				//1. get the tHashOuput node
