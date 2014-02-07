@@ -620,7 +620,7 @@ for (INode node : graphicalNodes) {
             String argValue = map.get("VALUE").trim();
             sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
         }
-        sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + cid + '"');
+        sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + node.getUniqueName() + '"');
 
         uri = sb.toString();
 	} else if ("cFtp".equals(componentName)) {
