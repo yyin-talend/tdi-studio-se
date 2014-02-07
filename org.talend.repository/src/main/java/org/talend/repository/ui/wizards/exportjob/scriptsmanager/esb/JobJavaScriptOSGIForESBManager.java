@@ -660,7 +660,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasCXFRegistryConsumer = false;
         boolean hasCXFRegistryProvider = false;
         
-        Collection<NodeType> cCXFs = EmfModelUtils.getComponentsByName(processItem, "cCXF");
+        Collection<NodeType> cCXFs = EmfModelUtils.getComponentsByName(processItem, "cCXF", "cCXFRS");
         if(!cCXFs.isEmpty()) {
         	//consumers.
         	Set<String> consumerNodes = new HashSet<String>();
