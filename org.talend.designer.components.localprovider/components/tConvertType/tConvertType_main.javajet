@@ -147,6 +147,12 @@
               				}
             <%
             			}
+            			
+            			if (bOutputReject){   
+			            	if(!rejectSameAsOutput){%>
+								<%=rejectConnName %>.<%=outLabel %> = <%=preconnName %>.<%=preLabel %>;
+			              <%}
+			            }     
             
 			            if ("Date".equals(outType) && "String".equals(inType)) {%>
 			              <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
@@ -163,8 +169,6 @@
 			            if (bOutputReject){%>    
 			            	<%if(rejectSameAsOutput){%>
 								<%=rejectConnName %>.<%=outLabel %> = <%=outconnName %>.<%=outLabel %>;
-			              	<%}else{%>
-								<%=rejectConnName %>.<%=outLabel %> = <%=preconnName %>.<%=preLabel %>;
 			              	<%}%>
 			            <%}%>            
 					} catch(java.lang.Exception e){
@@ -230,7 +234,13 @@
           			}
         <%
         		}
-        
+        		
+        		if (bOutputReject){
+					if(!rejectSameAsOutput){%>
+						<%=rejectConnName %>.<%=outLabel %> = <%=preconnName %>.<%=preLabel %>;
+		          <%}
+        		}
+        		
         		if ("Date".equals(outType) && "String".equals(inType)) {%>
           			<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
         		<%} else if ("String".equals(outType) && "Date".equals(inType)) {%>
@@ -247,8 +257,6 @@
         %>    
 					<%if(rejectSameAsOutput){%>
 						<%=rejectConnName %>.<%=outLabel %> = <%=outconnName %>.<%=outLabel %>;
-					<%}else{%>
-						<%=rejectConnName %>.<%=outLabel %> = <%=preconnName %>.<%=preLabel %>;
 		            <%}%>
         <%
         		}
