@@ -33,10 +33,12 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
  */
 public class ColumnInfoTab extends AbstractDataSetTab {
 
+    @Override
     public String getLabelText() {
         return Messages.getString("DatabaseDetailView.Tab.ColumnInfo"); //$NON-NLS-1$
     }
 
+    @Override
     public DataSet getDataSet() throws Exception {
 
         INode node = getNode();
@@ -63,12 +65,19 @@ public class ColumnInfoTab extends AbstractDataSetTab {
                 String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
                         .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(), ti.getSchemaName(),
-                        realTableName, "%"); //$NON-NLS-1$
+                resultSet = treeNode.getMetaData().getJDBCMetaData()
+                        .getColumns(ti.getCatalogName(), ti.getSchemaName(), realTableName, "%"); //$NON-NLS-1$
 
             } else {
+                // https://jira.talendforge.org/browse/TDI-28578
+                String tableName = ti.getSimpleName();
 
-                resultSet = node.getSession().getMetaData().getColumns(tableNode.getTableInfo());
+                if (tableName.contains("/")) {
+                    tableName = tableName.replaceAll("/", "//");
+                }
+                resultSet = node.getSession().getMetaData().getJDBCMetaData()
+                        .getColumns(ti.getCatalogName(), ti.getSchemaName(), tableName, "%");
+                // resultSet = node.getSession().getMetaData().getColumns(tableNode.getTableInfo());
             }
 
             DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 });
@@ -79,6 +88,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
         return null;
     }
 
+    @Override
     public String getStatusMessage() {
         return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status", getNode().getQualifiedName()); //$NON-NLS-1$
     }
