@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -1200,21 +1199,6 @@ public class ImportItemUtil {
                     // if (collector.getPaths().contains(itemPath)) { //commet by tdq import
                     ItemRecord itemRecord = computeItemRecord(collector, path);
                     if (itemRecord.getProperty() != null) {
-                        boolean alreadyInList = false;
-                        for (ItemRecord currentItemRecord : items) {
-                            if (StringUtils.equals(currentItemRecord.getProperty().getId(), itemRecord.getProperty().getId())
-                                    && StringUtils.equals(currentItemRecord.getProperty().getVersion(), itemRecord.getProperty()
-                                            .getVersion())) {
-                                // if have any duplicate item from same project & same folder, just don't do
-                                // anything,
-                                // no need to display.
-                                alreadyInList = true;
-                                break;
-                            }
-                        }
-                        if (alreadyInList) {
-                            continue;
-                        }
                         items.add(itemRecord);
 
                         if (checkItem(itemRecord, overwrite)) {
