@@ -112,10 +112,11 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         String request = evt.getPropertyName();
 
-        if (request.equals(NodeLabel.OFFSET_CHANGE)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (request.equals(NodeLabel.OFFSET_CHANGE)) {
             refreshVisuals();
             getParent().refresh();
         }
@@ -143,7 +144,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             }
         }
 
-        if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
+        if (request.equals(NodeLabel.LOCATION)) {
             refreshVisuals();
             getParent().refresh();
         }
@@ -256,7 +257,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
     @Override
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setSelected(final int value) {
         if (value != SELECTED_NONE) {
             List<EditPart> listEditParts = this.getViewer().getSelectedEditParts();
@@ -267,7 +268,8 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 super.setSelected(value);
             }
         } else {
-            getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
+            // fix for TDI-28664:can not get correct drop target after rename the node
+            // getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
             super.setSelected(value);
         }
     }
