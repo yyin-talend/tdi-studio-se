@@ -5,14 +5,12 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
-
 <%
-        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-        INode node = (INode)codeGenArgument.getArgument();
-        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-        String cid = node.getUniqueName();      
-
-        String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    String cid = node.getUniqueName();      
+    String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 %>
 	try{
         if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
@@ -42,7 +40,7 @@ imports="
 				}
            	}
 			<%if(isLog4jEnabled){%>
-				log.debug("<%=cid%> - Uploaded file '" + sourceList_<%=cid %>.toString() + "' to remote directory '" + <%=remotedir %>+ "' successfully.");
+				log.trace("<%=cid%> - Uploaded file '" + sourceList_<%=cid %>.toString() + "' to remote directory '" + <%=remotedir %>+ "' successfully.");
 			<%}%>
             nb_file_<%=cid %> = sourceFileNames_<%=cid %>.length;
             globalMap.put("<%=cid %>_STATUS", "File put OK.");

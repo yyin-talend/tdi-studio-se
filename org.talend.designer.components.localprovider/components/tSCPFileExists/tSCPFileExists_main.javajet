@@ -5,14 +5,13 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
-
 <%
-        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-        INode node = (INode)codeGenArgument.getArgument();
-        String cid = node.getUniqueName();
-        String remoteDir = ElementParameterParser.getValue(node,"__REMOTEDIR__");
-        String fileExists = ElementParameterParser.getValue(node,"__EXISTFILE__");
-        boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+    String remoteDir = ElementParameterParser.getValue(node,"__REMOTEDIR__");
+    String fileExists = ElementParameterParser.getValue(node,"__EXISTFILE__");
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 		
 		//initial the command
@@ -21,10 +20,8 @@ imports="
 		globalMap.put("<%=cid %>_FILENAME", <%=fileExists %>);
 		/* Create a session */
 		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
-		
 		//execute the command
 		sess_<%=cid%>.execCommand((command_<%=cid %>).toString());		
-		
 		//get the return info
 		java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
 		java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
@@ -35,7 +32,6 @@ imports="
 		}		
 	    brout_<%=cid%>.close();
 		stdout_<%=cid%>.close();
-		
 		java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
         java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
         String line_err_<%=cid%> = "";
@@ -45,7 +41,6 @@ imports="
 		}
 		breer_<%=cid%>.close();
 		stderr_<%=cid%>.close();
-		
 		 /* Close this session */			
 		sess_<%=cid%>.close();
 		if(("").equals(stringStderr_<%=cid %>.toString()) || stringStderr_<%=cid %>.toString() == null){
