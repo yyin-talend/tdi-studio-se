@@ -267,7 +267,8 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 super.setSelected(value);
             }
         } else {
-            getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
+            // fix for TDI-28664:can not get correct drop target after rename the node
+            // getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
             super.setSelected(value);
         }
     }
