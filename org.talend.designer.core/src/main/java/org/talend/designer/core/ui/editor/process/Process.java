@@ -1818,7 +1818,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             note.setText(noteType.getText());
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
-            addNote(note);
+            addNote(note, false);
         }
     }
 
@@ -3246,10 +3246,16 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         this.repositoryId = repositoryId;
     }
 
-    public void addNote(Note note) {
+    public void addNote(Note note, boolean fireUpdate) {
         elem.add(note);
         notes.add(note);
-        fireStructureChange(NEED_UPDATE_JOB, elem);
+        if (fireUpdate) {
+            fireStructureChange(NEED_UPDATE_JOB, elem);
+        }
+    }
+
+    public void addNote(Note note) {
+        addNote(note, true);
     }
 
     public void removeNote(Note note) {

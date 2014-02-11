@@ -710,7 +710,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 oldProcess.getUpdateManager().updateAll();
                 designerEditor.setDirty(isDirty);
                 List<Node> nodes = (List<Node>) oldProcess.getGraphicalNodes();
-                for (Node node : nodes) {
+                List<Node> newNodes = new ArrayList<Node>();
+                newNodes.addAll(nodes);
+                for (Node node : newNodes) {
                     node.getProcess().checkStartNodes();
                     node.checkAndRefreshNode();
                     IElementParameter ep = node.getElementParameter("ACTIVATE");
