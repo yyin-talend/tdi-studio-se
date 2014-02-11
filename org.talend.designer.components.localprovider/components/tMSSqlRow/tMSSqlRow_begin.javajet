@@ -54,9 +54,9 @@ imports="
 				%>
 		        String  tableName_<%=cid%> = null;
 		        if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-		            tableName_<%=cid%> = "[" +　<%=tableName%> + "]";
+		            tableName_<%=cid%> = "[" + <%=tableName%> + "]";
 		        } else {
-		            tableName_<%=cid%> = "[" +　dbschema_<%=cid%> + "].[" + <%=tableName%> + "]";
+		            tableName_<%=cid%> = "[" + dbschema_<%=cid%> + "].[" + <%=tableName%> + "]";
 		        }
 		        stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ tableName_<%=cid%> +" ON");
 			<%
