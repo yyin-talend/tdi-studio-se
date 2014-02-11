@@ -1455,7 +1455,10 @@ public class WebServiceUI implements AbstractWebService {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = listTable.getSelection();
-                currentFunction = (Function) item[0].getData();
+                currentFunction = item.length > 0 ? (Function) item[0].getData() : null;
+                if (currentFunction == null) {
+                    return;
+                }
 
                 // if select the same as before ,don't change it
                 // IElementParameter METHODPara = connector.getElementParameter("METHOD"); //$NON-NLS-1$
@@ -1549,7 +1552,7 @@ public class WebServiceUI implements AbstractWebService {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = portListTable.getSelection();
-                currentPortName = (PortNames) item[0].getData();
+                currentPortName = item.length > 0 ? (PortNames) item[0].getData() : null;
                 if (connection != null) {
                     if (currentPortName != null) {
                         connection.setPortName(currentPortName.getPortName());
