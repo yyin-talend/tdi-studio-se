@@ -6,40 +6,33 @@ imports="
 " 
 %>
 
+<%@ include file="../templates/DB/Row/HelpClass.javajet"%>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbschema= ElementParameterParser.getValue(node, "__DB_SCHEMA__");
-	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	%>
-        String dbProperties_<%=cid%> = <%=dbproperties%>;
-        String url_<%=cid%> = null;
-        if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
-            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=dbschema%>; 
-        } else {
-            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ";" + <%=dbproperties%>;
-        }
-        String dbUser_<%=cid %> = <%=dbuser%>;
-        String dbPwd_<%=cid %> = <%=dbpwd%>;
-        java.lang.Class.forName("com.exasol.jdbc.EXADriver");
-        java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
-    <%
-        if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-            %>
-            conn_<%=cid%>.setAutoCommit(false);            
-            int commitEvery_<%=cid%> = <%=commitEvery%>;
-            int commitCounter_<%=cid%> = 0;
-            <%
-        }
-    %>
-    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();    
-    String query_<%=cid %> = "";
-    boolean whetherReject_<%=cid%> = false;    
+	class DBRowBeginUtil extends DefaultDBRowUtil{
+	
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+	    }
+	    
+		public void setURL(INode node) {
+			log4jCodeGenerateUtil.dbSchema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+		%>
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+	        String url_<%=cid%> = null;
+	        if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=log4jCodeGenerateUtil.dbSchema%>; 
+	        } else {
+	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=log4jCodeGenerateUtil.dbSchema%> + ";" + <%=dbproperties%>;
+	        }
+		<%
+		}
+		
+		public String getDirverClassName(INode node){
+			return "com.exasol.jdbc.EXADriver";
+		}
+	}
+	dbRowBeginUtil = new DBRowBeginUtil();
+%>
+<%@ include file="../templates/DB/Row/AbstractDBRowBegin.javajet"%>

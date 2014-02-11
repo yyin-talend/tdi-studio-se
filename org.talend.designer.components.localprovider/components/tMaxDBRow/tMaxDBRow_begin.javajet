@@ -3,59 +3,28 @@ imports="
 			org.talend.core.model.process.INode 
 			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
-" 
+		" 
 %>
-
+<%@ include file="../templates/DB/Row/HelpClass.javajet"%>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
+
+	class DBRowBeginUtil extends DefaultDBRowUtil{
 	
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
-    
-	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
-%>
-java.lang.Class.forName("com.sap.dbtech.jdbc.DriverSapDB");
-
-String url_<%=cid %> = "jdbc:sapdb://"+<%=dbhost%>+":"+<%=dbport%>+"/" + <%=dbname%>;
-
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
-boolean whetherReject_<%=cid%> = false;
-
-<%
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-%>
-
-int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-int commitCounter_<%=cid%> = 0;
-
-conn_<%=cid%>.setAutoCommit(false);
-<%
-}
-%>
-<%
-	if (usePrepareStatement ) {
-%>
-	java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
-<%
-	} else {
-%>
-	java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-<%
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+	    }
+	    
+		public void setURL(INode node) {
+		%>
+			String url_<%=cid %> = "jdbc:sapdb://"+<%=dbhost%>+":"+<%=dbport%>+"/" + <%=dbname%>;
+		<%
+		}
+		
+		public String getDirverClassName(INode node){
+			return "com.sap.dbtech.jdbc.DriverSapDB";
+		}
 	}
+	dbRowBeginUtil = new DBRowBeginUtil();
 %>
-String query_<%=cid %> = "";
+<%@ include file="../templates/DB/Row/AbstractDBRowBegin.javajet"%>

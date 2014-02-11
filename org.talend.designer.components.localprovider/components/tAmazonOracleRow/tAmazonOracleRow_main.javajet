@@ -13,7 +13,7 @@ imports="
 		java.util.HashSet
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -100,9 +100,9 @@ if(("true").equals(propagateRecordset)){
 try {
 <%		
 	if (usePrepareStatement) {
-	
+		log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - | Prameter Index | Prameter Type | Parameter Value |");
 		for (Map<String, String> param : prepareStatementParameters) {
-			
+			log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - | "+param.get("PARAMETER_INDEX")+" | "+param.get("PARAMETER_TYPE")+" | \"+"+param.get("PARAMETER_VALUE")+"+\" |");
 			if ("Date".equals(param.get("PARAMETER_TYPE"))) {
 %>
 				if((<%=param.get("PARAMETER_VALUE")%>==null))
@@ -179,10 +179,12 @@ try {
         whetherReject_<%=cid%> = true;
         <%
         if (("true").equals(dieOnError)) {
+        	log4jCodeGenerateUtil.logError(node,"fatal");
             %>
             throw(e);
             <%
         } else {
+        	log4jCodeGenerateUtil.logError(node,"error");
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                 %>
                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -247,9 +249,9 @@ if(!("true").equals(useExistingConn)) {
 	    %>
 	    commitCounter_<%=cid%>++;
         if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-        
-        	conn_<%=cid%>.commit();
-        	
+			<%
+			log4jCodeGenerateUtil.commit(node);
+			%>
         	commitCounter_<%=cid%>=0;
         	
         }

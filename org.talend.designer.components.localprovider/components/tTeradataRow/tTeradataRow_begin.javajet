@@ -1,96 +1,36 @@
 <%@ jet 
 imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-" 
+			org.talend.core.model.process.INode 
+			org.talend.core.model.process.ElementParameterParser 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+		" 
 %>
-<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
-
+<%@ include file="../templates/DB/Row/HelpClass.javajet"%>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
+
+	class DBRowBeginUtil extends DefaultDBRowUtil{
 	
-	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
-    	   
-    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-    
-	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
-    boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	log4jCodeGenerateUtil.infoComponentStart(node);
-    if(useExistingConn) {
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		String conn = "conn_" + connection;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+	    }
+	    
+		public void setURL(INode node) {
 		%>
-		java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-		<%if(isLog4jEnabled){%>
-			if(conn_<%=cid%> != null) {
-				if(conn_<%=cid%>.getMetaData() != null) {
-					log.info("<%=cid%> - Uses an existing connection as " + conn_<%=cid%>.getMetaData().getUserName() + ". Connection URL: " + conn_<%=cid%>.getMetaData().getURL() + ".");
-				}
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+			String url_<%=cid%> = null;
+			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+				url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;     
+			} else {
+			    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbproperties%>;
 			}
-			log.info("<%=cid%> - Executing the query: '" + <%=dbquery%> + "'.");
-		<%}%>
 		<%
-	} else {
-	    %>
-		String driverClass_<%=cid%> = "com.teradata.jdbc.TeraDriver";
-		java.lang.Class.forName(driverClass_<%=cid%>);
-	    String dbProperties_<%=cid%> = <%=dbproperties%>;
-		String url_<%=cid%> = null;
-		if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
-			url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;     
-		} else {
-		    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbproperties%>;
-		}       
-	    String dbUser_<%=cid %> = <%=dbuser%>;
-	    String dbPwd_<%=cid %> = <%=dbpwd%>;
-		<%
-	   		log4jCodeGenerateUtil.debugConnectionParams(node);	
-		%>	 
-	    <%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
-		<%}%>
-	    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-	    <%
-		if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
-		<%}%>
-		<%
+		}
+		
+		public String getDirverClassName(INode node){
+			return "com.teradata.jdbc.TeraDriver";
+		}
 	}
+	dbRowBeginUtil = new DBRowBeginUtil();
 %>
-
-<%
-if(!useExistingConn) {
-    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
-        %>
-        conn_<%=cid%>.setAutoCommit(false);        
-        int commitEvery_<%=cid%> = <%=commitEvery%>;    
-        int commitCounter_<%=cid%> = 0;
-        <%
-    }
-}
-%>
-<%
-	if (usePrepareStatement ) {
-%>
-	java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
-<%
-	} else {
-%>
-	java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-<%
-	}
-%>
-String query_<%=cid %> = "";
-boolean whetherReject_<%=cid%> = false;
+<%@ include file="../templates/DB/Row/AbstractDBRowBegin.javajet"%>
