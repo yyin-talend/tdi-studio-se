@@ -15,6 +15,8 @@ package org.talend.designer.xmlmap.figures.table;
 import org.talend.designer.gefabstractmap.figures.manager.TableManager;
 import org.talend.designer.gefabstractmap.part.MapperTablePart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
 
 /**
  * created by Administrator on 2013-1-14 Detailled comment
@@ -65,6 +67,16 @@ public class XmlMapTableManager extends TableManager {
     @Override
     public void setActivateCondensedTool(boolean active) {
         getModel().setActivateCondensedTool(active);
+        if (active) {
+            if (getModel() instanceof InputXmlTree) {
+                InputXmlTree inputXmlTree = (InputXmlTree) getModel();
+                if (inputXmlTree.isLookup() && !inputXmlTree.getLookupMode().equals(LOOKUP_MODE.LOAD_ONCE.toString())) {
+                    setActivateGlobalMap(false);
+                }
+            }
+        } else {
+            setActivateGlobalMap(true);
+        }
     }
 
     /*
@@ -108,4 +120,30 @@ public class XmlMapTableManager extends TableManager {
         getModel().setExpressionFilter(filter);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.gefabstractmap.figures.manager.TableManager#isActivateGlobalMap()
+     */
+    @Override
+    public boolean isActivateGlobalMap() {
+        if (getModel() instanceof InputXmlTree) {
+            InputXmlTree inputXmlTree = (InputXmlTree) getModel();
+            return inputXmlTree.isActivateGlobalMap();
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.gefabstractmap.figures.manager.TableManager#setActivateGlobalMap(boolean)
+     */
+    @Override
+    public void setActivateGlobalMap(boolean active) {
+        if (getModel() instanceof InputXmlTree) {
+            InputXmlTree inputXmlTree = (InputXmlTree) getModel();
+            inputXmlTree.setActivateGlobalMap(active);
+        }
+    }
 }

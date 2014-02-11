@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -22,6 +23,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -32,11 +34,14 @@ import org.talend.designer.gefabstractmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.gefabstractmap.part.InputTablePart;
 import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
+import org.talend.designer.xmlmap.figures.GlobalMapKeysEntityFigure;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
+import org.talend.designer.xmlmap.figures.table.GlobalMapContainer;
 import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
 import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -44,6 +49,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -109,17 +115,54 @@ public class InputXmlTreeEditPart extends InputTablePart implements NodeEditPart
 
     @Override
     public IFigure getContentPane() {
-        return ((InputXmlTreeFigure) getFigure()).getColumnContainer();
+        return (InputXmlTreeFigure) getFigure();
     }
 
     @Override
     protected List getModelChildren() {
-        return ((InputXmlTree) getModel()).getNodes();
+        List list = new ArrayList();
+        list.addAll(((InputXmlTree) getModel()).getGlobalMapKeysValues());
+        list.addAll(((InputXmlTree) getModel()).getNodes());
+        return list;
     }
 
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
-        super.addChildVisual(childEditPart, index);
+        IFigure child = ((GraphicalEditPart) childEditPart).getFigure();
+        if (childEditPart instanceof TreeNodeEditPart) {
+            ((InputXmlTreeFigure) getFigure()).getColumnContainer().add(child);
+        } else if (childEditPart instanceof GlobalMapNodeEditPart) {
+            GlobalMapContainer globalMapContainer = (GlobalMapContainer) ((InputXmlTreeFigure) getFigure())
+                    .getGlobalMapContainer();
+            if (globalMapContainer != null && globalMapContainer.getTableFigure() != null) {
+                globalMapContainer.getTableFigure().getTableItemContainer().add(child);
+            }
+        } else {
+            super.addChildVisual(childEditPart, index);
+        }
+    }
+
+    @Override
+    protected void removeChildVisual(EditPart childEditPart) {
+        IFigure child = ((GraphicalEditPart) childEditPart).getFigure();
+        if (childEditPart instanceof TreeNodeEditPart) {
+            ((InputXmlTreeFigure) getFigure()).getColumnContainer().remove(child);
+        } else if (childEditPart instanceof GlobalMapNodeEditPart) {
+            GlobalMapContainer globalMapContainer = (GlobalMapContainer) ((InputXmlTreeFigure) getFigure())
+                    .getGlobalMapContainer();
+            if (globalMapContainer != null && globalMapContainer.getTableFigure() != null) {
+                globalMapContainer.getTableFigure().getTableItemContainer().remove(child);
+                if (child instanceof GlobalMapKeysEntityFigure) {
+                    MapperManager manager = ((XmlMapGraphicViewer) childEditPart.getViewer()).getMapperManager();
+                    GlobalMapNode globalMapNode = ((GlobalMapKeysEntityFigure) child).getGlobalMapNode();
+                    if (manager != null && globalMapNode != null) {
+                        XmlMapUtil.detachLookupSource(globalMapNode, manager.getExternalData());
+                    }
+                }
+            }
+        } else {
+            super.removeChildVisual(childEditPart);
+        }
     }
 
     @Override
@@ -132,6 +175,7 @@ public class InputXmlTreeEditPart extends InputTablePart implements NodeEditPart
         case Notification.REMOVE_MANY:
             switch (featureId) {
             case XmlmapPackage.INPUT_XML_TREE__NODES:
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
                 refreshChildren();
                 break;
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
@@ -142,6 +186,7 @@ public class InputXmlTreeEditPart extends InputTablePart implements NodeEditPart
         case Notification.SET:
             switch (featureId) {
             case XmlmapPackage.INPUT_XML_TREE__NODES:
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
                 refreshChildren();
                 break;
             case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_CONDENSED_TOOL:

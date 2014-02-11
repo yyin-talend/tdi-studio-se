@@ -113,6 +113,10 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createVarNodeAdapter();
             }
             @Override
+            public Adapter caseGlobalMapNode(GlobalMapNode object) {
+                return createGlobalMapNodeAdapter();
+            }
+            @Override
             public Adapter caseIConnection(IConnection object) {
                 return createIConnectionAdapter();
             }
@@ -291,6 +295,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createVarNodeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode <em>Global Map Node</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode
+     * @generated
+     */
+    public Adapter createGlobalMapNodeAdapter() {
         return null;
     }
 

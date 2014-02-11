@@ -161,6 +161,15 @@ public class XmlmapSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case XmlmapPackage.GLOBAL_MAP_NODE: {
+                GlobalMapNode globalMapNode = (GlobalMapNode)theEObject;
+                T result = caseGlobalMapNode(globalMapNode);
+                if (result == null) result = caseTreeNode(globalMapNode);
+                if (result == null) result = caseAbstractNode(globalMapNode);
+                if (result == null) result = caseMapperTableEntity(globalMapNode);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case XmlmapPackage.ICONNECTION: {
                 IConnection iConnection = (IConnection)theEObject;
                 T result = caseIConnection(iConnection);
@@ -339,6 +348,21 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseVarNode(VarNode object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Global Map Node</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Global Map Node</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseGlobalMapNode(GlobalMapNode object) {
         return null;
     }
 

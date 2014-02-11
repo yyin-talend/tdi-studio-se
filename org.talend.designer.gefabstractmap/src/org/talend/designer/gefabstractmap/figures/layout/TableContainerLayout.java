@@ -21,6 +21,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.designer.gefabstractmap.figures.manager.TableManager;
+import org.talend.designer.gefabstractmap.figures.table.AbstractGlobalMapContainer;
 import org.talend.designer.gefabstractmap.figures.table.AbstractTable;
 import org.talend.designer.gefabstractmap.figures.treesettings.AbstractTreeSettingContainer;
 import org.talend.designer.gefabstractmap.figures.treesettings.FilterContainer;
@@ -103,6 +104,13 @@ public class TableContainerLayout extends ToolbarLayout {
                 }
             }
 
+            if (child instanceof AbstractGlobalMapContainer) {
+                if (tableMananger.isActivateGlobalMap()) {
+                    child.setBounds(new Rectangle(x, y, 0, 0));
+                    continue;
+                }
+            }
+
             int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
             if (matchWidth) {
                 width = transposer.t(child.getMaximumSize()).width;
@@ -171,6 +179,13 @@ public class TableContainerLayout extends ToolbarLayout {
                     continue;
                 }
             }
+
+            if (child instanceof AbstractGlobalMapContainer) {
+                if (tableMananger.isActivateGlobalMap()) {
+                    continue;
+                }
+            }
+
             childSize = transposer.t(preferred ? getChildPreferredSize(child, wHint, hHint) : getChildMinimumSize(child, wHint,
                     hHint));
             height += childSize.height;

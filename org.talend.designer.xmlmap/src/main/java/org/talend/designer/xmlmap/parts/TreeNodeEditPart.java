@@ -188,11 +188,6 @@ public class TreeNodeEditPart extends TableEntityPart implements NodeEditPart {
     }
 
     @Override
-    protected void addChildVisual(EditPart childEditPart, int index) {
-        super.addChildVisual(childEditPart, index);
-    }
-
-    @Override
     protected void removeChildVisual(EditPart childEditPart) {
         super.removeChildVisual(childEditPart);
     }

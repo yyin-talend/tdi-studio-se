@@ -53,4 +53,8 @@ public abstract class TableManager extends ModelManager {
     public abstract void setActivateExpressionFilter(boolean active);
 
     public abstract void setMinimized(boolean minisized);
+
+    public abstract boolean isActivateGlobalMap();
+
+    public abstract void setActivateGlobalMap(boolean active);
 }

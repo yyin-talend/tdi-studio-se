@@ -329,13 +329,31 @@ public interface XmlmapPackage extends EPackage {
     int INPUT_XML_TREE__PERSISTENT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 5;
 
     /**
+     * The feature id for the '<em><b>Activate Global Map</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 6;
+
+    /**
+     * The feature id for the '<em><b>Global Map Keys Values</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 7;
+
+    /**
      * The number of structural features of the '<em>Input Xml Tree</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int INPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 6;
+    int INPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 8;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl <em>Output Xml Tree</em>}' class.
@@ -1118,6 +1136,214 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 1;
 
     /**
+     * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.GlobalMapNodeImpl <em>Global Map Node</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.GlobalMapNodeImpl
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getGlobalMapNode()
+     * @generated
+     */
+    int GLOBAL_MAP_NODE = 9;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__NAME = TREE_NODE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Expression</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__EXPRESSION = TREE_NODE__EXPRESSION;
+
+    /**
+     * The feature id for the '<em><b>Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__TYPE = TREE_NODE__TYPE;
+
+    /**
+     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__OUTGOING_CONNECTIONS = TREE_NODE__OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__INCOMING_CONNECTIONS = TREE_NODE__INCOMING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Filter Out Going Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__FILTER_OUT_GOING_CONNECTIONS = TREE_NODE__FILTER_OUT_GOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Children</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__CHILDREN = TREE_NODE__CHILDREN;
+
+    /**
+     * The feature id for the '<em><b>Xpath</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__XPATH = TREE_NODE__XPATH;
+
+    /**
+     * The feature id for the '<em><b>Loop</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__LOOP = TREE_NODE__LOOP;
+
+    /**
+     * The feature id for the '<em><b>Node Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__NODE_TYPE = TREE_NODE__NODE_TYPE;
+
+    /**
+     * The feature id for the '<em><b>Pattern</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__PATTERN = TREE_NODE__PATTERN;
+
+    /**
+     * The feature id for the '<em><b>Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__KEY = TREE_NODE__KEY;
+
+    /**
+     * The feature id for the '<em><b>Group</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__GROUP = TREE_NODE__GROUP;
+
+    /**
+     * The feature id for the '<em><b>Main</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__MAIN = TREE_NODE__MAIN;
+
+    /**
+     * The feature id for the '<em><b>Lookup Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__LOOKUP_OUTGOING_CONNECTIONS = TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Lookup Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__LOOKUP_INCOMING_CONNECTIONS = TREE_NODE__LOOKUP_INCOMING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Default Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__DEFAULT_VALUE = TREE_NODE__DEFAULT_VALUE;
+
+    /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__NULLABLE = TREE_NODE__NULLABLE;
+
+    /**
+     * The feature id for the '<em><b>Choice</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__CHOICE = TREE_NODE__CHOICE;
+
+    /**
+     * The feature id for the '<em><b>Substitution</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__SUBSTITUTION = TREE_NODE__SUBSTITUTION;
+
+    /**
+     * The feature id for the '<em><b>Optional</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE__OPTIONAL = TREE_NODE__OPTIONAL;
+
+    /**
+     * The number of structural features of the '<em>Global Map Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_MAP_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1125,7 +1351,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getIConnection()
      * @generated
      */
-    int ICONNECTION = 9;
+    int ICONNECTION = 10;
 
     /**
      * The number of structural features of the '<em>IConnection</em>' class.
@@ -1144,7 +1370,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getINodeConnection()
      * @generated
      */
-    int INODE_CONNECTION = 10;
+    int INODE_CONNECTION = 11;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1190,7 +1416,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getConnection()
      * @generated
      */
-    int CONNECTION = 11;
+    int CONNECTION = 12;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1236,7 +1462,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getLookupConnection()
      * @generated
      */
-    int LOOKUP_CONNECTION = 12;
+    int LOOKUP_CONNECTION = 13;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1282,7 +1508,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getFilterConnection()
      * @generated
      */
-    int FILTER_CONNECTION = 13;
+    int FILTER_CONNECTION = 14;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1328,7 +1554,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getInputLoopNodesTable()
      * @generated
      */
-    int INPUT_LOOP_NODES_TABLE = 14;
+    int INPUT_LOOP_NODES_TABLE = 15;
 
     /**
      * The feature id for the '<em><b>Inputloopnodes</b></em>' reference list.
@@ -1356,7 +1582,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getNodeType()
      * @generated
      */
-    int NODE_TYPE = 15;
+    int NODE_TYPE = 16;
 
 
     /**
@@ -1575,6 +1801,28 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getInputXmlTree_Persistent();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isActivateGlobalMap <em>Activate Global Map</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Activate Global Map</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isActivateGlobalMap()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EAttribute getInputXmlTree_ActivateGlobalMap();
+
+    /**
+     * Returns the meta object for the containment reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getGlobalMapKeysValues <em>Global Map Keys Values</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Global Map Keys Values</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getGlobalMapKeysValues()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EReference getInputXmlTree_GlobalMapKeysValues();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree <em>Output Xml Tree</em>}'.
@@ -2011,6 +2259,16 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getVarNode_Nullable();
 
     /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode <em>Global Map Node</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Global Map Node</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode
+     * @generated
+     */
+    EClass getGlobalMapNode();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2346,6 +2604,22 @@ public interface XmlmapPackage extends EPackage {
         EAttribute INPUT_XML_TREE__PERSISTENT = eINSTANCE.getInputXmlTree_Persistent();
 
         /**
+         * The meta object literal for the '<em><b>Activate Global Map</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP = eINSTANCE.getInputXmlTree_ActivateGlobalMap();
+
+        /**
+         * The meta object literal for the '<em><b>Global Map Keys Values</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES = eINSTANCE.getInputXmlTree_GlobalMapKeysValues();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl <em>Output Xml Tree</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2676,6 +2950,16 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute VAR_NODE__NULLABLE = eINSTANCE.getVarNode_Nullable();
+
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.GlobalMapNodeImpl <em>Global Map Node</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.GlobalMapNodeImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getGlobalMapNode()
+         * @generated
+         */
+        EClass GLOBAL_MAP_NODE = eINSTANCE.getGlobalMapNode();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.

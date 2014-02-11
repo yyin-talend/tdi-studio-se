@@ -35,6 +35,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
+import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 
@@ -257,6 +258,11 @@ public class InputTreeSettingTable extends AbstractTable {
         switch (type) {
         case XmlmapPackage.INPUT_XML_TREE__LOOKUP_MODE:
             lookupModel.setText(getLookupDisplayName(inputxmlTree.getLookupMode()));
+            if (inputxmlTree.isLookup() && inputxmlTree.getLookupMode().equals(LOOKUP_MODE.LOAD_ONCE.toString())) {
+                inputxmlTree.setActivateGlobalMap(true);
+            } else {
+                inputxmlTree.setActivateGlobalMap(false);
+            }
             break;
         case XmlmapPackage.INPUT_XML_TREE__MATCHING_MODE:
             matchModel.setText(getMatchModelDisplayName(inputxmlTree.getMatchingMode()));

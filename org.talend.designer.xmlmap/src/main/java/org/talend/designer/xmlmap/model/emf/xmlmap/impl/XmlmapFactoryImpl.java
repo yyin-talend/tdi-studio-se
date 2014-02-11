@@ -68,6 +68,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
             case XmlmapPackage.TREE_NODE: return createTreeNode();
             case XmlmapPackage.OUTPUT_TREE_NODE: return createOutputTreeNode();
             case XmlmapPackage.VAR_NODE: return createVarNode();
+            case XmlmapPackage.GLOBAL_MAP_NODE: return createGlobalMapNode();
             case XmlmapPackage.CONNECTION: return createConnection();
             case XmlmapPackage.LOOKUP_CONNECTION: return createLookupConnection();
             case XmlmapPackage.FILTER_CONNECTION: return createFilterConnection();
@@ -175,6 +176,16 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
     public VarNode createVarNode() {
         VarNodeImpl varNode = new VarNodeImpl();
         return varNode;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public GlobalMapNode createGlobalMapNode() {
+        GlobalMapNodeImpl globalMapNode = new GlobalMapNodeImpl();
+        return globalMapNode;
     }
 
     /**

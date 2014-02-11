@@ -89,6 +89,15 @@ public interface XmlmapFactory extends EFactory {
     VarNode createVarNode();
 
     /**
+     * Returns a new object of class '<em>Global Map Node</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Global Map Node</em>'.
+     * @generated
+     */
+    GlobalMapNode createGlobalMapNode();
+
+    /**
      * Returns a new object of class '<em>Connection</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

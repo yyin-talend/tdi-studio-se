@@ -21,6 +21,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
@@ -38,6 +40,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl#getLookupMode <em>Lookup Mode</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl#isInnerJoin <em>Inner Join</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl#isPersistent <em>Persistent</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl#isActivateGlobalMap <em>Activate Global Map</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl#getGlobalMapKeysValues <em>Global Map Keys Values</em>}</li>
  * </ul>
  * </p>
  *
@@ -153,6 +157,36 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
      * @ordered
      */
     protected boolean persistent = PERSISTENT_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isActivateGlobalMap() <em>Activate Global Map</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isActivateGlobalMap()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean ACTIVATE_GLOBAL_MAP_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isActivateGlobalMap() <em>Activate Global Map</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isActivateGlobalMap()
+     * @generated
+     * @ordered
+     */
+    protected boolean activateGlobalMap = ACTIVATE_GLOBAL_MAP_EDEFAULT;
+
+    /**
+     * The cached value of the '{@link #getGlobalMapKeysValues() <em>Global Map Keys Values</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getGlobalMapKeysValues()
+     * @generated
+     * @ordered
+     */
+    protected EList<GlobalMapNode> globalMapKeysValues;
 
     /**
      * <!-- begin-user-doc -->
@@ -295,11 +329,46 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isActivateGlobalMap() {
+        return activateGlobalMap;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setActivateGlobalMap(boolean newActivateGlobalMap) {
+        boolean oldActivateGlobalMap = activateGlobalMap;
+        activateGlobalMap = newActivateGlobalMap;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP, oldActivateGlobalMap, activateGlobalMap));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EList<GlobalMapNode> getGlobalMapKeysValues() {
+        if (globalMapKeysValues == null) {
+            globalMapKeysValues = new EObjectContainmentEList<GlobalMapNode>(GlobalMapNode.class, this, XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES);
+        }
+        return globalMapKeysValues;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case XmlmapPackage.INPUT_XML_TREE__NODES:
                 return ((InternalEList<?>)getNodes()).basicRemove(otherEnd, msgs);
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
+                return ((InternalEList<?>)getGlobalMapKeysValues()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -324,6 +393,10 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
                 return isInnerJoin();
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
                 return isPersistent();
+            case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP:
+                return isActivateGlobalMap();
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
+                return getGlobalMapKeysValues();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -356,6 +429,13 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
                 setPersistent((Boolean)newValue);
                 return;
+            case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP:
+                setActivateGlobalMap((Boolean)newValue);
+                return;
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
+                getGlobalMapKeysValues().clear();
+                getGlobalMapKeysValues().addAll((Collection<? extends GlobalMapNode>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -386,6 +466,12 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
                 setPersistent(PERSISTENT_EDEFAULT);
                 return;
+            case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP:
+                setActivateGlobalMap(ACTIVATE_GLOBAL_MAP_EDEFAULT);
+                return;
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
+                getGlobalMapKeysValues().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -410,6 +496,10 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
                 return innerJoin != INNER_JOIN_EDEFAULT;
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
                 return persistent != PERSISTENT_EDEFAULT;
+            case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP:
+                return activateGlobalMap != ACTIVATE_GLOBAL_MAP_EDEFAULT;
+            case XmlmapPackage.INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES:
+                return globalMapKeysValues != null && !globalMapKeysValues.isEmpty();
         }
         return super.eIsSet(featureID);
     }
@@ -434,6 +524,8 @@ public class InputXmlTreeImpl extends AbstractInOutTreeImpl implements InputXmlT
         result.append(innerJoin);
         result.append(", persistent: ");
         result.append(persistent);
+        result.append(", activateGlobalMap: ");
+        result.append(activateGlobalMap);
         result.append(')');
         return result.toString();
     }
