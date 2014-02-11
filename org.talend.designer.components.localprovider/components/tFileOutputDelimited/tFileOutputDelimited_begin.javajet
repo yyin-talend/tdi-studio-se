@@ -400,6 +400,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 		    		    //routines.system.Row
 		    		    java.util.zip.ZipOutputStream zipOut_<%=cid%>= null;    		    
 		    		    java.io.Writer out<%=cid%> = null;
+		    		    
+		    		    if(file_<%=cid%>.exists()) {
+		    		    	file_<%=cid%>.delete();
+		    		    }
 	    		    	zipOut_<%=cid%>= new java.util.zip.ZipOutputStream(
 	    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
 	    		    	zipOut_<%=cid%>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
@@ -409,6 +413,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 					%>		
 		    		    //routines.system.Row
 		    		    java.io.Writer out<%=cid%> = null;
+		    		    
+		    		    <%if(!isAppend) {%>
+		    		    java.io.File fileToDelete_<%=cid%> = new java.io.File(fileName_<%=cid%>);
+		    		    if(fileToDelete_<%=cid%>.exists()) {
+		    		    	fileToDelete_<%=cid%>.delete();
+		    		    }
+		    		    <%}%>
 	            		out<%=cid%> = new <%=writerClass%>(new java.io.OutputStreamWriter(
 	            		new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 					<% 
@@ -417,6 +428,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				%>
 	                java.io.Writer out<%=cid%> = null;
 	                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
+	                
+	    		    <%if(!isAppend) {%>
+	    		    if(file<%=cid%>.exists()) {
+		    			file<%=cid%>.delete();
+	    		    }
+	    		    <%}%>
                 	out<%=cid%> = new <%=writerClass%>(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 				<%
@@ -719,6 +736,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 			    		    java.util.zip.ZipOutputStream zipOut_<%=cid%> = null;
 			                java.io.Writer out<%=cid%> = null;
 			                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null; 
+			                
+    		    		    if(file_<%=cid%>.exists()) {
+		    		    		file_<%=cid%>.delete();
+	    		   		 	}
 		                	zipOut_<%=cid%>=new java.util.zip.ZipOutputStream(
 		    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
 			    		    zipOut_<%=cid%>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
@@ -731,6 +752,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						%>		
 			                java.io.Writer out<%=cid%> = null;
 			                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
+			                
+    		    		    <%if(!isAppend) {%>
+    		    		    java.io.File fileToDelete_<%=cid%> = new java.io.File(fileName_<%=cid%>);
+    		    		    if(fileToDelete_<%=cid%>.exists()) {
+    		    		    	fileToDelete_<%=cid%>.delete();
+    		    		    }
+    		    		    <%}%>
 		                	out<%=cid%> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 		                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 							java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
@@ -748,6 +776,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 			    		    //routines.system.Row
 			    		    java.util.zip.ZipOutputStream zipOut_<%=cid%> = null;
 							com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
+							
+    		    		    if(file_<%=cid%>.exists()) {
+		    		    		file_<%=cid%>.delete();
+	    		   		 	}
 		                	zipOut_<%=cid%>=new java.util.zip.ZipOutputStream(
 		    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
 		    		    	zipOut_<%=cid%>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
@@ -758,6 +790,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}else{
 						%>
 							com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
+							
+	    		   		 	<%if(!isAppend) {%>
+    		    		    java.io.File fileToDelete_<%=cid%> = new java.io.File(fileName_<%=cid%>);
+    		    		    if(fileToDelete_<%=cid%>.exists()) {
+    		    		    	fileToDelete_<%=cid%>.delete();
+    		    		    }
+    		    		    <%}%>
 		                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
 		                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)));
 		                    CsvWriter<%=cid%>.setSeparator(csvSettings_<%=cid%>.getFieldDelim());
@@ -770,6 +809,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
 		                java.io.Writer out<%=cid%> = null;
 		                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
+		                
+    	    		    <%if(!isAppend) {%>
+    	    		    if(file<%=cid%>.exists()) {
+    		    			file<%=cid%>.delete();
+    	    		    }
+    	    		    <%}%>
 	                	out<%=cid%> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 	                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 	                	java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
@@ -781,6 +826,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 	%>
 		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
 		                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null; 
+		                
+    	    		    <%if(!isAppend) {%>
+    	    		    if(file<%=cid%>.exists()) {
+    		    			file<%=cid%>.delete();
+    	    		    }
+    	    		    <%}%>
 	                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
 	                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)));
 	                    CsvWriter<%=cid%>.setSeparator(csvSettings_<%=cid%>.getFieldDelim());

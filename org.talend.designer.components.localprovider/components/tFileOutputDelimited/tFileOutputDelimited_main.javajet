@@ -247,10 +247,16 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                splitedFileNo_<%=cid%>++;
     		                out<%=cid %>.close(); 
     		                //close original outputStream
+    		                
+    		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);  
+    		                
+        	    		    <%if(!isAppend) {%>
+        	    		    if(file<%=cid%>.exists()) {
+        		    			file<%=cid%>.delete();
+        	    		    }
+        	    		    <%}%>	
     		                out<%=cid %> = new <%=isInRowMode?"routines.system.BufferedOutput":"java.io.BufferedWriter"%>(new java.io.OutputStreamWriter(
     		                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>),<%= encoding%>));
-    		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);  					
-    
     		                <%
     		                if(isIncludeHeader){
     		                    %>
@@ -592,7 +598,16 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        splitedFileNo_<%=cid%>++;
             			        CsvWriter<%=cid%>.close(); 
             			        //close original outputStream
+            			        
+            	    		    <%if(!isAppend) {%>
+        		    		    java.io.File fileToDelete_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
+        		    		    if(fileToDelete_<%=cid%>.exists()) {
+        		    		    	fileToDelete_<%=cid%>.delete();
+        		    		    }
+            	    		    <%}%>
+            	    		    
             			        <%if(isInRowMode){%>
+            			        out<%=cid %>.close();
             			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 								strWriter<%=cid%> = new java.io.StringWriter();
