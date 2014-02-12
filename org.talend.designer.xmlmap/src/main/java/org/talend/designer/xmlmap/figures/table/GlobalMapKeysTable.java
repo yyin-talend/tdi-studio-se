@@ -24,11 +24,9 @@ import org.talend.designer.gefabstractmap.figures.table.TableColumn;
 import org.talend.designer.gefabstractmap.resource.ImageInfo;
 import org.talend.designer.gefabstractmap.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.i18n.Messages;
-import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -44,8 +42,6 @@ public class GlobalMapKeysTable extends AbstractTable {
     private TableColumn addColumn;
 
     private ColumnSash columnSash;
-
-    private AbstractNode selectedTreeNode;
 
     /**
      * DOC hcyi InputTreeGlobalMapKeysTable constructor comment.
@@ -67,11 +63,6 @@ public class GlobalMapKeysTable extends AbstractTable {
     protected void createColumns() {
         layoutManager.setAjustToTableWidth(false);
         if (inputxmlTree != null && inputxmlTree.isLookup()) {
-            if (inputxmlTree.getLookupMode().equals(LOOKUP_MODE.LOAD_ONCE.toString())) {
-                inputxmlTree.setActivateGlobalMap(true);
-            } else {
-                inputxmlTree.setActivateGlobalMap(false);
-            }
             expressionColumn = new TableColumn(ColumnKeyConstant.KEY_EXPRESSION);
             expressionColumn.setText(Messages.getString("InputTreeGlobalMapKeysTable.expressionTitle"));
             addColumn(expressionColumn);
@@ -104,7 +95,6 @@ public class GlobalMapKeysTable extends AbstractTable {
                     GlobalMapNode defaultGlobalMapNode = XmlmapFactory.eINSTANCE.createGlobalMapNode();
                     defaultGlobalMapNode.setExpression("");
                     defaultGlobalMapNode.setName("\"myKey\"");
-                    selectedTreeNode = defaultGlobalMapNode;
                     inputxmlTree.getGlobalMapKeysValues().add(defaultGlobalMapNode);
                 }
 

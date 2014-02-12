@@ -259,9 +259,9 @@ public class InputTreeSettingTable extends AbstractTable {
         case XmlmapPackage.INPUT_XML_TREE__LOOKUP_MODE:
             lookupModel.setText(getLookupDisplayName(inputxmlTree.getLookupMode()));
             if (inputxmlTree.isLookup() && inputxmlTree.getLookupMode().equals(LOOKUP_MODE.LOAD_ONCE.toString())) {
-                inputxmlTree.setActivateGlobalMap(true);
-            } else {
                 inputxmlTree.setActivateGlobalMap(false);
+            } else {
+                inputxmlTree.setActivateGlobalMap(true);
             }
             break;
         case XmlmapPackage.INPUT_XML_TREE__MATCHING_MODE:
