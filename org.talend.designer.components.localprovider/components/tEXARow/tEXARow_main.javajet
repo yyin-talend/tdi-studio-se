@@ -54,8 +54,8 @@ for(IConnection conn : outgoingConns) {
     }
 }
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-       dbquery = dbquery.replaceAll("\n"," ");
-	   dbquery = dbquery.replaceAll("\r"," ");
+
+	   dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 
 %>
 
