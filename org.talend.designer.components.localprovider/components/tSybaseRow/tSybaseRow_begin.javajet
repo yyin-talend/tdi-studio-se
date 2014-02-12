@@ -24,8 +24,8 @@ String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	dbquery = dbquery.replaceAll("\n"," ");
-    	dbquery = dbquery.replaceAll("\r"," ");
+	
+    	dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
     
 boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 if(useExistingConn) {

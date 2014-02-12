@@ -26,8 +26,8 @@ String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLU
 
 boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-		dbquery = dbquery.replaceAll("\n"," ");
-		dbquery = dbquery.replaceAll("\r"," ");
+		
+		dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");  
 
 String incomingConnName = null;
