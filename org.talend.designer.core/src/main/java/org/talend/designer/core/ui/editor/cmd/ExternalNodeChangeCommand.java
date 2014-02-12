@@ -316,12 +316,13 @@ public class ExternalNodeChangeCommand extends Command {
                                 dataTable = tempTable;
                             }
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
-                                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                                        && param.getContext().equals(
-                                                connection.getTarget().getConnectorFromName(connection.getConnectorName())
-                                                        .getBaseSchema())) {
-                                    schemaParam = param;
-                                    break;
+                                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                                    INodeConnector connector = connection.getTarget().getConnectorFromName(
+                                            connection.getConnectorName());
+                                    if (connector != null && param.getContext().equals(connector.getBaseSchema())) {
+                                        schemaParam = param;
+                                        break;
+                                    }
                                 }
                             }
                             if (schemaParam != null) {
