@@ -3,12 +3,15 @@ imports="
 	org.talend.core.model.process.INode 
 	org.talend.core.model.process.ElementParameterParser 
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IElementParameter
+    org.talend.core.model.utils.NodeUtil 
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+
 String cid = node.getUniqueName();
 String host=ElementParameterParser.getValue(node, "__HOST__");
 String port=ElementParameterParser.getValue(node, "__PORT__");
@@ -23,13 +26,19 @@ String passwd =ElementParameterParser.getValue(node, "__PASS__");
 String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.logParameters(node); 
+log4jFileUtil.componentStartInfo(node); 
 %>
 java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
 <%if(useAuth){%>
-env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
-env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Authentication using username and password.");
+	<%}%>
+	env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
+	env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
 <%}%>
 env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
@@ -46,10 +55,17 @@ if(("LDAPS").equals(protocol) || ("TLS").equals(protocol)){
 	if(("true").equals(advanced)){
 		if(alwaysTrust) {
 %>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Adnanced CA trusting all certs.");
+			<%}%>
 			talend.ssl.AdvancedSocketFactory.alwaysTrust();
 <%
 		} else {
 %>
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Advanced CA using a store CA file and Keystore password.");
+				log.debug("Store CA : '" + <%=storepath %> + "'.");
+			<%}%>
 			talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
 			if(storepwd !=null && storepwd.length() !=0 ){%>
@@ -60,6 +76,9 @@ if(("LDAPS").equals(protocol) || ("TLS").equals(protocol)){
 	}
 }
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Connection attempt to '"+ <%=host%> + "'.");
+<%}%>
 javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
 globalMap.put("conn_<%=cid%>",ctx_<%=cid%>);
 globalMap.put("connBaseDN_<%=cid%>",<%=baseDN%>);
@@ -72,3 +91,6 @@ if(("TLS").equals(protocol)){
 <%
 }
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Connection to '"+<%=host%> + "' has succeeded.");
+<%}%>

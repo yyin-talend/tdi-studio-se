@@ -11,9 +11,16 @@ imports="
     String cid = node.getUniqueName();
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = (javax.naming.ldap.InitialLdapContext)globalMap.get("<%=conn%>");
 	if(ctx_<%=cid%> != null)
 	{
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the server.");
+		<%}%>
 		ctx_<%=cid%>.close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the server closed.");
+		<%}%>
 	}
