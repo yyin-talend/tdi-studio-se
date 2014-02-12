@@ -28,7 +28,7 @@ logTable = ("".equals(logTable) || "\"\"".equals(logTable)) ? table + "+\"_lt\""
 
 boolean useQuery = "true".equals(ElementParameterParser.getValue(node, "__USE_QUERY__"));
 String query = ElementParameterParser.getValue(node, "__QUERY__"); 
-query = query.replaceAll("\n"," ").replaceAll("\r"," ");
+query = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(query);
 
 String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");

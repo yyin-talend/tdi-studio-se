@@ -14,10 +14,9 @@
 	
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String assemblyName = ElementParameterParser.getValue(node,"__ASSEMBLY_NAME__");
-    String className = ElementParameterParser.getValue(node,"__CLASS_NAME__");
-    String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
+	String className = ElementParameterParser.getValue(node,"__CLASS_NAME__");
+	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
 
