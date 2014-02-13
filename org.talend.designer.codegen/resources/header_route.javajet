@@ -609,10 +609,10 @@ for (INode node : graphicalNodes) {
 		uri = sb.toString();
 
     } else if ("cCXFRS".equals(componentName)) {
-        StringBuilder sb = new StringBuilder("\"cxfrs://\"+");
+        StringBuilder sb = new StringBuilder("\"cxfrs://bean://" + node.getUniqueName() + '"');
 
-        sb.append(ElementParameterParser.getValue(node, "__URL__"));
-        sb.append("+\"?loggingFeatureEnabled=").append(ElementParameterParser.getValue(node, "__LOG_MESSAGES__")).append("\"");
+        //sb.append(ElementParameterParser.getValue(node, "__URL__"));
+        sb.append("+\"?loggingFeatureEnabled=").append(ElementParameterParser.getValue(node, "__LOG_MESSAGES__")).append('"');
 
         List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
         for (Map<String, String> map : tableValues) {
@@ -620,7 +620,7 @@ for (INode node : graphicalNodes) {
             String argValue = map.get("VALUE").trim();
             sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
         }
-        sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + node.getUniqueName() + '"');
+        //sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + node.getUniqueName() + '"');
 
         uri = sb.toString();
 	} else if ("cFtp".equals(componentName)) {

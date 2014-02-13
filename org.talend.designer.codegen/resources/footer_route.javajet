@@ -421,11 +421,7 @@ for (IContextParameter ctxParam : params) {
 
 class <%=process.getName()%>_Registry extends SimpleRegistry {
 
-	private Registry wrapped = null;
-
-	public <%=process.getName()%>_Registry() {
-		this(new SimpleRegistry());
-	}
+	private final Registry wrapped;
 
 	public <%=process.getName()%>_Registry(Registry wrapped) {
 		this.wrapped = wrapped;
@@ -433,10 +429,7 @@ class <%=process.getName()%>_Registry extends SimpleRegistry {
 
 	@Override
 	public Object lookupByName(String name) {
-		Object obj = null;
-		if (wrapped != null) {
-			obj = wrapped.lookupByName(name);
-		}
+		Object obj = wrapped.lookupByName(name);
 		if (obj == null) {
 			obj = super.lookupByName(name);
 		}
@@ -445,10 +438,7 @@ class <%=process.getName()%>_Registry extends SimpleRegistry {
 
 	@Override
 	public <T> T lookupByNameAndType(String name, Class<T> type) {
-		T t = null;
-		if (wrapped != null) {
-			t = wrapped.lookupByNameAndType(name, type);
-		}
+		T t = wrapped.lookupByNameAndType(name, type);
 		if (t == null) {
 			t = super.lookupByNameAndType(name, type);
 		}
@@ -457,10 +447,7 @@ class <%=process.getName()%>_Registry extends SimpleRegistry {
 	
 	@Override
 	public <T> Map<String, T> findByTypeWithName(Class<T> type) {
-		Map<String, T> result = null;
-		if (wrapped != null) {
-			result = wrapped.findByTypeWithName(type);
-		}
+		Map<String, T> result = wrapped.findByTypeWithName(type);
 		if (result == null) {
 			result = super.findByTypeWithName(type);
 		}
@@ -469,10 +456,7 @@ class <%=process.getName()%>_Registry extends SimpleRegistry {
 
 	@Override
 	public <T> Set<T> findByType(Class<T> type){
-		Set<T> result = null;
-		if (wrapped != null) {
-			result = wrapped.findByType(type);
-		}
+		Set<T> result = wrapped.findByType(type);
 		if (result == null) {
 			result = super.findByType(type);
 		}

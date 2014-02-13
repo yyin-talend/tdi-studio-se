@@ -1033,80 +1033,18 @@ if (isProvider) {
 			}
     } else if ("cCXFRS".equals(nodeComponentName)) {
         String cid = node.getUniqueName();
-            String uri = cid;
-            // http://jira.talendforge.org/browse/TESB-5241
-            /*
-             * change to use label + unique to make it unique but readable
-             */
-            IElementParameter param = node.getElementParameter("LABEL");
-            if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
-                uri = (String)param.getValue()+'_'+uri;
-            }
-            String endpointVar = "endpoint_" + node.getUniqueName();
+        String uri = cid;
+        // http://jira.talendforge.org/browse/TESB-5241
+        /*
+         * change to use label + unique to make it unique but readable
+         */
+        IElementParameter param = node.getElementParameter("LABEL");
+        if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+            uri = (String)param.getValue()+'_'+uri;
+        }
 %>
-        org.apache.camel.component.cxf.jaxrs.CxfRsEndpoint <%=endpointVar%> = (org.apache.camel.component.cxf.jaxrs.CxfRsEndpoint)endpoint(uriMap.get("<%=uri%>"));
-        org.apache.cxf.Bus bus_<%=cid%> = org.apache.camel.component.cxf.CxfEndpointUtils.createBus(getContext());
-        <%=endpointVar%>.setBus(bus_<%=cid%>);
+        org.apache.camel.component.cxf.jaxrs.CxfRsEndpoint endpoint_<%=cid%> = (org.apache.camel.component.cxf.jaxrs.CxfRsEndpoint)endpoint(uriMap.get("<%=uri%>"));
 <%
-            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__"))) {
-%>
-               class EsbJobCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
-                            private String correlationId;
-                            public EsbJobCorrelationCallbackHandler(final String correlationId) {
-                                if (null != correlationId && correlationId.length() > 0) {
-                                    this.correlationId = correlationId;
-                                }
-                            }
-                            public String getCorrelationId() {
-                                return correlationId;
-                            };
-                        }
-                final Object correlationIDCallbackHandler = new EsbJobCorrelationCallbackHandler(<%=ElementParameterParser.getValue(node, "__CORRELATION_VALUE__")%>);
-                bus_<%=cid%>.getProperties().put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, 
-                    correlationIDCallbackHandler);
-                bus_<%=cid%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
-<%          }
-            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
-                List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
-%>
-                if (null != bundleContext) {
-                    org.talend.esb.servicelocator.cxf.LocatorFeature locatorFeature_<%=cid%> = new org.talend.esb.servicelocator.cxf.LocatorFeature();
-
-                    <% if (!customProperties.isEmpty()) { %>
-                        java.util.Map<String, String> slCustomProps_<%=cid%> = new java.util.HashMap<String, String>();
-                        <% for (Map<String, String> custProp : customProperties) { %>
-                            slCustomProps_<%=cid%>.put(<%=custProp.get("NAME")%>, <%=custProp.get("VALUE")%>);
-                        <% } %>
-<%
-                            boolean actAsConsumer = false;
-                            List<? extends IConnection> conns = node.getIncomingConnections();
-                            if (!conns.isEmpty()) {
-                                INode source = conns.get(0).getSource();
-                                if (!("cErrorHandler".equals(source.getComponent().getName())
-                                        && source.getIncomingConnections().isEmpty())) {
-                                    actAsConsumer = true;
-                                }
-                            }
-%>
-                        <% if (actAsConsumer) { %>
-                            locatorFeature_<%=cid%>.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
-                        <% } else { %>
-                            locatorFeature_<%=cid%>.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
-                        <% } %>
-                    <% } %>
-
-                    bus_<%=cid%>.getFeatures().add(locatorFeature_<%=cid%>);
-                }
-<%
-            }
-
-            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
-%>
-                if (eventFeature != null) {
-                    bus_<%=cid%>.getFeatures().add(new FeatureWrapper(eventFeature));
-                }
-<%
-            }
 	}else if("cFtp".equals(nodeComponentName)){
 			String ftpEndpointVar = "ftp_" + node.getUniqueName();
 			String cid = node.getUniqueName();

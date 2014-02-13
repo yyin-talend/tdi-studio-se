@@ -112,7 +112,91 @@
 					contextRegister.register("DEFAULT_CXF_BINDING", new CXFProviderBinding());
 <%				}
 			}
-			
+
+			for (INode node : process.getNodesOfType("cCXFRS")) {
+                String cid = node.getUniqueName();
+%>
+                org.apache.cxf.jaxrs.AbstractJAXRSFactoryBean factory_<%=cid%>;
+<%
+                boolean isProvider = node.getIncomingConnections().isEmpty();
+				if (isProvider) {
+%>
+                    org.apache.cxf.jaxrs.JAXRSServerFactoryBean sf_<%=cid%> = new org.apache.cxf.jaxrs.JAXRSServerFactoryBean();
+					sf_<%=cid%>.setResourceClasses(Service_<%=cid%>.class);
+					sf_<%=cid%>.setResourceProvider(Service_<%=cid%>.class, new org.apache.camel.component.cxf.jaxrs.CamelResourceProvider(Service_<%=cid%>.class));
+                    factory_<%=cid%> = sf_<%=cid%>;
+<%
+				} else {
+%>
+                    factory_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean();
+<%
+				}
+%>
+                factory_<%=cid%>.setAddress(<%=ElementParameterParser.getValue(node, "__URL__")%>);
+<%
+                if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
+%>
+                    if (null != bundleContext) {
+                        org.talend.esb.servicelocator.cxf.LocatorFeature locatorFeature_<%=cid%> = new org.talend.esb.servicelocator.cxf.LocatorFeature();
+<%
+                        List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
+                        if (!customProperties.isEmpty()) {
+%>
+                            java.util.Map<String, String> slCustomProps_<%=cid%> = new java.util.HashMap<String, String>();
+<%
+                            for (Map<String, String> custProp : customProperties) {
+%>
+                                slCustomProps_<%=cid%>.put(<%=custProp.get("NAME")%>, <%=custProp.get("VALUE")%>);
+<%
+                            }
+
+                            if (isProvider) { 
+%>
+                                locatorFeature_<%=cid%>.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
+<%
+                            } else {
+%>
+                                locatorFeature_<%=cid%>.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
+<%
+                            }
+                        }
+%>
+                        factory_<%=cid%>.getFeatures().add(locatorFeature_<%=cid%>);
+                   }
+<%
+                }
+
+                if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
+%>
+                    if (eventFeature != null) {
+                        factory_<%=cid%>.getFeatures().add(new FeatureWrapper(eventFeature));
+                    }
+<%
+                }
+
+                if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__"))) {
+%>
+                    class EsbJobCorrelationCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
+                                private String correlationId;
+                                public EsbJobCorrelationCallbackHandler(final String correlationId) {
+                                    if (null != correlationId && correlationId.length() > 0) {
+                                        this.correlationId = correlationId;
+                                    }
+                                }
+                                public String getCorrelationId() {
+                                    return correlationId;
+                                };
+                            }
+                    factory_<%=cid%>.getProperties(true).put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, 
+                        new EsbJobCorrelationCallbackHandler(<%=ElementParameterParser.getValue(node, "__CORRELATION_VALUE__")%>));
+                    factory_<%=cid%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
+<%
+                }
+%>
+                contextRegister.register("<%=cid%>", factory_<%=cid%>);
+<%
+			}
+
 			//then process cBeanRegister components
 			List<? extends INode> beanRegisterNodes = process.getNodesOfType("cBeanRegister");
 			if(beanRegisterNodes != null && beanRegisterNodes.size()>0){
