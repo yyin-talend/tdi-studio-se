@@ -122,10 +122,19 @@
 				if (isProvider) {
 %>
                     org.apache.cxf.jaxrs.JAXRSServerFactoryBean sf_<%=cid%> = new org.apache.cxf.jaxrs.JAXRSServerFactoryBean();
+                    factory_<%=cid%> = sf_<%=cid%>;
 					sf_<%=cid%>.setResourceClasses(Service_<%=cid%>.class);
 					sf_<%=cid%>.setResourceProvider(Service_<%=cid%>.class, new org.apache.camel.component.cxf.jaxrs.CamelResourceProvider(Service_<%=cid%>.class));
-                    factory_<%=cid%> = sf_<%=cid%>;
 <%
+                    if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"))) {
+                        if("BASIC".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
+%>
+                            org.apache.cxf.jaxrs.security.JAASAuthenticationFilter jaas_<%=cid%> = new org.apache.cxf.jaxrs.security.JAASAuthenticationFilter();
+                            jaas_<%=cid%>.setContextName("karaf");
+                            sf_<%=cid%>.setProvider(jaas_<%=cid%>);
+<%
+                        }
+                    }
 				} else {
 %>
                     factory_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean();
