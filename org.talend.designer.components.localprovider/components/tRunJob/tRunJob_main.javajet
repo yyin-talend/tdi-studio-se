@@ -99,7 +99,7 @@ String inputConnName = null;
 			int size = inputMetadataColumn.size();
 			for(int i = 0;i< size; i++){
 				if(!inputMetadataColumn.get(i).getLabel().equals(outputMetadataColumn.get(i).getLabel()) ||
-				   !inputMetadataColumn.get(i).getType().equals(outputMetadataColumn.get(i).getType())){
+				   !inputMetadataColumn.get(i).getTalendType().equals(outputMetadataColumn.get(i).getTalendType())){
 					propagateData = false;
 					break;
 				}else{
