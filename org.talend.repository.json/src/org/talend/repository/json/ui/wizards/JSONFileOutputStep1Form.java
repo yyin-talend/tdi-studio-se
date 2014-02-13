@@ -578,13 +578,6 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             outputFilePathText = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                     outputFilePathText));
         }
-        // Valid File
-        if (jsonFilePathText != null && !jsonFilePathText.equals("")) {
-            File file = new File(jsonFilePathText);
-            if (!file.exists() || !isJSONFile(jsonFilePathText)) {
-                msgError.append("JSON File Path is incorrect or incomplete, it must be changed.\n");
-            }
-        }
         if (outputFilePathText != null && !outputFilePathText.equals("") && !isJSONFile(outputFilePathText)) {
             msgError.append("Output file is not a JSON file\n");
         }
