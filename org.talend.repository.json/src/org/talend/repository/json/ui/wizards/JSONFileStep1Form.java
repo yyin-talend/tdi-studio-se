@@ -614,24 +614,8 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
             return false;
         }
-
-        // Valid File
-        if (jsonFilePathText != null && !jsonFilePathText.equals("")) {
-            File file = new File(jsonFilePathText);
-            if (!file.exists() || !isJSONFile(jsonFilePathText)) {
-                updateStatus(IStatus.ERROR, "JSON File Path is incorrect or incomplete, it must be changed.\n"); //$NON-NLS-1$
-                return false;
-            }
-        }
         updateStatus(IStatus.OK, null);
         return true;
-    }
-
-    private boolean isJSONFile(String value) {
-        if (value != null) {
-            return value.toLowerCase().endsWith(".json");
-        }
-        return false;
     }
 
     /*
