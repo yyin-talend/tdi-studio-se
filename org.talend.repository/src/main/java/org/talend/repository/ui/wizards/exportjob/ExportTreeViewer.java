@@ -145,7 +145,7 @@ public class ExportTreeViewer {
 
         Label label = new Label(itemComposite, SWT.NONE);
         label.setText(Messages.getString("ExportTreeViewer.selectItems")); //$NON-NLS-1$
-        GridDataFactory.swtDefaults().span(2, 1).applyTo(label);
+        GridDataFactory.swtDefaults().grab(true, false).span(2, 1).applyTo(label);
 
         createTreeViewer(itemComposite);
 
