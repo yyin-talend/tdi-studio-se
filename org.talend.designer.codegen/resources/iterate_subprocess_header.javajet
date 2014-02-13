@@ -111,11 +111,14 @@ for (IConnection iterateConn : iterateConnSet) { //1
 						}
 					}
     
-					List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
-					if ((rootConns!=null)&&(rootConns.size()>0)) {
-					%>
-						<%=createPrivateClassInstance(subTree.getMergeNode(), rootConns.get(0).getName(), false)%>
-					<%
+					List<INode> mergeNodes =subTree.getMergeNodes();
+				    for(INode mNode:mergeNodes){
+						List< ? extends IConnection> rootConns = mNode.getOutgoingConnections();
+						if ((rootConns!=null)&&(rootConns.size()>0)) {
+						%>
+							<%=createPrivateClassInstance(mNode, rootConns.get(0).getName(), false)%>
+						<%
+						}
 					}
 				}
 			
