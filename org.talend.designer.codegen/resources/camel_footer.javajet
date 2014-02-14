@@ -137,8 +137,17 @@
                     }
 				} else {
 %>
-                    factory_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean();
+                    org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean cf_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean();
+                    factory_<%=cid%> = cf_<%=cid%>;
 <%
+                    if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"))) {
+                        if("BASIC".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
+%>
+                            cf_<%=cid%>.setUsername(<%=ElementParameterParser.getValue(node, "__USERNAME__")%>);
+                            cf_<%=cid%>.setPassword(<%=ElementParameterParser.getValue(node, "__PASSWORD__")%>);
+<%
+                        }
+                    }
 				}
 %>
                 factory_<%=cid%>.setAddress(<%=ElementParameterParser.getValue(node, "__URL__")%>);
