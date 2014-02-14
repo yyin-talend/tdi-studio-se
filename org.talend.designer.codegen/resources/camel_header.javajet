@@ -98,7 +98,6 @@
 <%
 			}
 
-			boolean hasCXFComponent = false;
 			boolean hasCXFSamlTokenProvider = false;
 			boolean hasCXFSamlTokenConsumer = false;
 			boolean hasCXFSamlTokenAuthorizationConsumer = false;
@@ -109,84 +108,73 @@
 			boolean hasCXFComponentConsumer = false;
 			boolean hasCXFRegistryProvider = false;
 			boolean hasCXFRegistryConsumer = false;
-			boolean hasCXFCorrelationConsumer = false;
 			boolean hasCXFSAMLPropagateConsumer = false;
 			boolean isStudioEEVersion = org.talend.core.PluginChecker.isTIS();
-			List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
-			if( null != cxfNodes && cxfNodes.size() >0 ){
-				hasCXFComponent = true;
-				for(INode n: cxfNodes){
-					String useRegistry = "false";
-					if(isStudioEEVersion){
-						useRegistry = ElementParameterParser.getValue(n, "__ENABLE_REGISTRY__");
-					}
-					String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
-					String formatType = ElementParameterParser.getValue(n, "__DATAFORMAT__");
-					if("RAW".equals(formatType) || "CXF_MESSAGE".equals(formatType)){
-						useRegistry = "false";
-						useSecurity = "false";
-					}
-					String securityType = ElementParameterParser.getValue(n, "__SECURITY_TYPE__");
-					int incomingConnections = n.getIncomingConnections().size();
-					if(!hasCXFComponentConsumer && incomingConnections>0){
-						hasCXFComponentConsumer = true;
-					}
-					String useCorrelation = ElementParameterParser.getValue(n, "__ENABLE_CORRELATION__");
-					if("RAW".equals(formatType)){
-						useCorrelation = "false";
-					}
-					if("false".equals(useCorrelation)){
-						useCorrelation = useRegistry;
-					}
-					if("true".equals(useCorrelation) && incomingConnections>0 ){
-						hasCXFCorrelationConsumer = true;
-					}
-					if("true".equals(useRegistry)){
-						useSecurity = "false";
-						if(incomingConnections == 0){
-								hasCXFRegistryProvider = true;
-						}else{
-							hasCXFRegistryConsumer = true;
-							if(!hasCXFSAMLPropagateConsumer && Boolean.parseBoolean(ElementParameterParser.getValue(n, "__USE_PROPAGATE_CREDENTIAL__"))){
-								hasCXFSAMLPropagateConsumer = true;
-							}
+
+            List<INode> cxfNodes = new ArrayList<INode>();
+            cxfNodes.addAll(process.getNodesOfType("cCXF"));
+			boolean hasCXFComponent = !cxfNodes.isEmpty();
+			cxfNodes.addAll(process.getNodesOfType("cCXFRS"));
+			for(INode n: cxfNodes) {
+			    boolean isProvider = n.getIncomingConnections().isEmpty();
+                hasCXFComponentConsumer &= !isProvider;
+
+				String useRegistry = "false";
+				if(isStudioEEVersion){
+					useRegistry = ElementParameterParser.getValue(n, "__ENABLE_REGISTRY__");
+				}
+				String useSecurity = ElementParameterParser.getValue(n, "__ENABLE_SECURITY__");
+				String formatType = ElementParameterParser.getValue(n, "__DATAFORMAT__");
+				if("RAW".equals(formatType) || "CXF_MESSAGE".equals(formatType)){
+					useRegistry = "false";
+					useSecurity = "false";
+				}
+				String securityType = ElementParameterParser.getValue(n, "__SECURITY_TYPE__");
+
+				if("true".equals(useRegistry)){
+					useSecurity = "false";
+					if (isProvider) {
+						hasCXFRegistryProvider = true;
+					} else {
+						hasCXFRegistryConsumer = true;
+						if(!hasCXFSAMLPropagateConsumer && Boolean.parseBoolean(ElementParameterParser.getValue(n, "__USE_PROPAGATE_CREDENTIAL__"))){
+							hasCXFSAMLPropagateConsumer = true;
 						}
 					}
-					if("true".equals(useSecurity)){
-						if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer || !hasCXFSAMLPropagateConsumer)){
-							if(incomingConnections == 0){
-								hasCXFSamlTokenProvider = true;
-							}else{
-								hasCXFSamlTokenConsumer = true;
-								if(!hasCXFSamlTokenAuthorizationConsumer && isStudioEEVersion){
-									if("true".equals(ElementParameterParser.getValue(n, "__USE_AUTHORIZATION__"))){
-										hasCXFSamlTokenAuthorizationConsumer = true;
-									}
-								}
-								if(!hasCXFSAMLPropagateConsumer){
-									String samlSecurityType = ElementParameterParser.getValue(n, "__SAML_SECURITY_TYPES__");
-									if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
-										hasCXFSAMLPropagateConsumer = true;
-									}
+				}
+				if("true".equals(useSecurity)){
+					if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer || !hasCXFSAMLPropagateConsumer)){
+						if (isProvider) {
+							hasCXFSamlTokenProvider = true;
+						} else {
+							hasCXFSamlTokenConsumer = true;
+							if(!hasCXFSamlTokenAuthorizationConsumer && isStudioEEVersion){
+								if("true".equals(ElementParameterParser.getValue(n, "__USE_AUTHORIZATION__"))){
+									hasCXFSamlTokenAuthorizationConsumer = true;
 								}
 							}
-						}else if("USER".equals(securityType) && (!hasCXFUsernameTokenProvider || !hasCXFUsernameTokenConsumer)){
-							if(incomingConnections == 0){
-								hasCXFUsernameTokenProvider = true;
-							}else{
-								hasCXFUsernameTokenConsumer = true;
+							if(!hasCXFSAMLPropagateConsumer){
+								String samlSecurityType = ElementParameterParser.getValue(n, "__SAML_SECURITY_TYPES__");
+								if("PROPAGATE_UP".equals(samlSecurityType) || "PROPAGATE_AP".equals(samlSecurityType)){
+									hasCXFSAMLPropagateConsumer = true;
+								}
 							}
-						}else if(("BASIC".equals(securityType)||"DIGEST".equals(securityType)) && (!hasCXFHTTPAuthProvider || !hasCXFHTTPAuthConsumer)){
-							if(incomingConnections == 0){
-								hasCXFHTTPAuthProvider = true;
-							}else{
-								hasCXFHTTPAuthConsumer = true;
-							}
+						}
+					}else if("USER".equals(securityType) && (!hasCXFUsernameTokenProvider || !hasCXFUsernameTokenConsumer)){
+						if(isProvider){
+							hasCXFUsernameTokenProvider = true;
+						}else{
+							hasCXFUsernameTokenConsumer = true;
+						}
+					}else if(("BASIC".equals(securityType)||"DIGEST".equals(securityType)) && (!hasCXFHTTPAuthProvider || !hasCXFHTTPAuthConsumer)){
+						if(isProvider){
+							hasCXFHTTPAuthProvider = true;
+						}else{
+							hasCXFHTTPAuthConsumer = true;
 						}
 					}
 				}
 			}
-
 
 		if(hasCXFSAMLPropagateConsumer){
 %>
@@ -909,7 +897,7 @@ if (isProvider) {
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String roleName = "\"\"";
 			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__").trim();
-			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
+			boolean isProvider = node.getIncomingConnections().isEmpty();
 			boolean isUseAuthorization = false;
 			String securityToken = "(String[])null";
 			boolean isUsePropagateSamlUP = false;
@@ -998,21 +986,10 @@ if (isProvider) {
 						<% for (Map<String, String> custProp : customProperties) { %>
 							slCustomProps_<%=cid%>.put(<%=custProp.get("NAME")%>, <%=custProp.get("VALUE")%>);
 						<% } %>
-<%
-							boolean actAsConsumer = false;
-							List<? extends IConnection> conns = node.getIncomingConnections();
-							if (!conns.isEmpty()) {
-								INode source = conns.get(0).getSource();
-								if (!("cErrorHandler".equals(source.getComponent().getName())
-										&& source.getIncomingConnections().isEmpty())) {
-									actAsConsumer = true;
-								}
-							}
-%>
-						<% if (actAsConsumer) { %>
-							locatorFeature.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
+						<% if (isProvider) { %>
+                            locatorFeature.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
 						<% } else { %>
-							locatorFeature.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
+                            locatorFeature.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
 						<% } %>
 					<% } %>
 
