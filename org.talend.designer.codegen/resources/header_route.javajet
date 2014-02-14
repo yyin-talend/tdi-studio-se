@@ -182,7 +182,8 @@ package <%= packageName %>;
             if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
                 hasSam = true;
             }
-            String cid = node.getUniqueName();
+            if (node.getIncomingConnections().isEmpty()) {
+                String cid = node.getUniqueName();
 %>
     public interface Service_<%=cid%> {
         @javax.ws.rs.<%=ElementParameterParser.getValue(node, "__HTTP_METHOD__")%>()
@@ -199,7 +200,7 @@ package <%= packageName %>;
         Object invoke();
     }
 <%
-
+            }
 		}
 	}
 
