@@ -46,6 +46,12 @@
 		<%
 		}
 
+		public void newConnection(){
+		%>
+			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		<%
+		}
+
 		public void createConnection(INode node, boolean needUserAndPassword) {
 	 		useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	 		if(("true").equals(useExistingConn)) {
@@ -92,9 +98,8 @@
 				%>
 					String dbUser_<%=cid %> = <%=dbuser%>;
 					String dbPwd_<%=cid %> = <%=dbpwd%>;
-					<%log4jCodeGenerateUtil.connect_begin();%>
-					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-				<%
+					<%log4jCodeGenerateUtil.connect_begin();
+					newConnection();
 				} else {
 					log4jCodeGenerateUtil.connect_begin_noUser();
 				%>

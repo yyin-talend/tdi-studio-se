@@ -45,7 +45,6 @@ imports="
 			<%
 				super.afterUseExistConnection(node);
 			} else {
-				String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 		    %>
 				String driverClass_<%=cid%> = "sun.jdbc.odbc.JdbcOdbcDriver";
 				java.lang.Class.forName(driverClass_<%=cid%>);
