@@ -133,6 +133,12 @@
                             jaas_<%=cid%>.setContextName("karaf");
                             sf_<%=cid%>.setProvider(jaas_<%=cid%>);
 <%
+                        } else if ("SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
+%>
+                            if (null != securityProps) {
+                                org.talend.esb.security.saml.SAMLRESTUtils.configureRestProvider(sf_<%=cid%>, securityProps);
+                            }
+<%
                         }
                     }
 				} else {
@@ -154,7 +160,7 @@
                                 <% if ("true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"))) { %>
                                     org.talend.esb.security.saml.SAMLUtils.applyAuthorization(stsClient, <%=ElementParameterParser.getValue(node, "__ROLE__")%>);
                                 <% } %>
-                                org.talend.esb.security.saml.SAMLUtils.configureRestClient(cf_<%=cid%>, stsClient);
+                                org.talend.esb.security.saml.SAMLRESTUtils.configureRestClient(cf_<%=cid%>, stsClient);
                             }
 <%
                         }
