@@ -19,15 +19,16 @@
 	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{" />
 ]]#
 #end
+#if ($route.hasCXFSamlProviderAuthz)
+#[[
+    <cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{" />
+]]#
+#end
 #if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
 #[[
 	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{" />
 	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{" />
 ]]#
-#end
-
-#if ($route.useSAM)
-	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
 	<bean id="route" class="${route.className}">
@@ -36,7 +37,9 @@
 		<!-- ESB Features For CXF -->
 
 #if ($route.useSAM)
-		<property name="eventFeature" ref="eventFeature" />
+		<property name="eventFeature">
+            <reference interface="org.talend.esb.sam.agent.feature.EventFeature" />
+		</property>
 #end
 
 #if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
@@ -69,8 +72,6 @@
 				<entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
 				<entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
 				<entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
-
-				<entry key="https.config" value="$client{https.config}" />
 			</map>
 		</property>
 		<property name="stsProperties">
@@ -92,6 +93,15 @@
 				<entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
 			</map>
 		</property>
+]]#
+#end
+#if ($route.hasCXFSamlProviderAuthz)
+#[[
+        <property name="authorizationInterceptor">
+            <bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
+                <property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
+            </bean>
+        </property>
 ]]#
 #end
 

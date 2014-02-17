@@ -101,6 +101,7 @@
 			boolean hasCXFSamlTokenProvider = false;
 			boolean hasCXFSamlTokenConsumer = false;
 			boolean hasCXFSamlTokenAuthorizationConsumer = false;
+            boolean hasCXFSamlTokenAuthorizationProvider = false;
 			boolean hasCXFUsernameTokenProvider = false;
 			boolean hasCXFUsernameTokenConsumer = false;
 			boolean hasCXFHTTPAuthConsumer = false;
@@ -146,6 +147,11 @@
 					if("SAML".equals(securityType) && (!hasCXFSamlTokenProvider || !hasCXFSamlTokenConsumer || !hasCXFSAMLPropagateConsumer)){
 						if (isProvider) {
 							hasCXFSamlTokenProvider = true;
+                            if(!hasCXFSamlTokenAuthorizationProvider && isStudioEEVersion){
+                                if("true".equals(ElementParameterParser.getValue(n, "__USE_AUTHORIZATION__"))){
+                                    hasCXFSamlTokenAuthorizationProvider = true;
+                                }
+                            }
 						} else {
 							hasCXFSamlTokenConsumer = true;
 							if(!hasCXFSamlTokenAuthorizationConsumer && isStudioEEVersion){
@@ -599,12 +605,22 @@ if(hasCXFRegistryProvider){
 <%
 }
 
-if(hasCXFSamlTokenProvider || hasCXFRegistryProvider){
+if (hasCXFSamlTokenProvider || hasCXFRegistryProvider) {
 %>
 private Map<String, String> securityProps;
 
-public void setSecurityProps(Map<String, String> securityProps){
+public void setSecurityProps(Map<String, String> securityProps) {
 	this.securityProps = securityProps;
+}
+<%
+}
+
+if (hasCXFSamlTokenAuthorizationProvider) {
+%>
+private Interceptor<? extends Message> authorizationInterceptor;
+
+public void setAuthorizationInterceptor(Interceptor<? extends Message> authorizationInterceptor) {
+    this.authorizationInterceptor = authorizationInterceptor;
 }
 <%
 }

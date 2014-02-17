@@ -132,6 +132,9 @@
                             org.apache.cxf.jaxrs.security.JAASAuthenticationFilter jaas_<%=cid%> = new org.apache.cxf.jaxrs.security.JAASAuthenticationFilter();
                             jaas_<%=cid%>.setContextName("karaf");
                             sf_<%=cid%>.setProvider(jaas_<%=cid%>);
+                            <% if ("true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"))) { %>
+                            sf_<%=cid%>.getInInterceptors().add(authorizationInterceptor);
+                            <% } %>
 <%
                         } else if ("SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
 %>
