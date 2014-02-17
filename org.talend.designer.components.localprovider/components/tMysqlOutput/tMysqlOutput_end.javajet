@@ -539,51 +539,42 @@ skeleton="../templates/db_output_bulk.skeleton"
 		<%}%>
     	<%
 	}
-    %>
+%>
 
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
-	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
-	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
-	nb_line_rejected_<%=cid%>=nb_line_rejected_<%=cid%> + rejectedCount_<%=cid%>;
-
-    globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
-    globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
-    globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
-    globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
-    globalMap.put("<%=cid %>_NB_LINE_REJECTED", nb_line_rejected_<%=cid%>);
+<%@ include file="../templates/DB/Output/DBOutputEndGlobalVars.javajet"%>
     
-	<%
+<%
 	if(isLog4jEnabled){
 		if (("INSERT").equals(dataAction)) { 
-	%>
+%>
 		log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
-	<%
+<%
 		} else if (("UPDATE").equals(dataAction)) {
-	%>
+%>
 	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
-	<%
+<%
 		} else if (("DELETE").equals(dataAction)) {
-	%>
+%>
 	  	log.info("<%=cid%> - Has deleted " + nb_line_deleted_<%=cid%> + " records.");
-	<%
+<%
 		} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
-	%>
+%>
 	  	log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
 	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
-	<%
+<%
 		} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
-	%>
+%>
 	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
 	  	log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
-	<%
+<%
 		}
 	    if (rejectConnName!=null) {
-	%>
+%>
 		log.info("<%=cid%> - Has rejected " + nb_line_rejected_<%=cid%> + "records.");
-	<%
+<%
 		}
-	%>
+%>
 		log.info("<%=cid%> - Done.");
-	<%
+<%
 	}
-	%>
+%>
