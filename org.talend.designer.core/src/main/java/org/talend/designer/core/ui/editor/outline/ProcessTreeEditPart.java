@@ -108,36 +108,43 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
             public int compare(Node o1, Node o2) {
                 String s1 = o1.getUniqueName().toLowerCase();
                 String s2 = o2.getUniqueName().toLowerCase();
-                return s1.compareToIgnoreCase(s2);
-                // if (s1.charAt(0) > s2.charAt(0)) {
-                // return 1;
-                // } else if (s1.charAt(0) < s2.charAt(0)) {
-                // return -1;
-                // } else { // The alphanumeric section
-                // String alphabet1 = s1.replaceAll("\\d+$", "");
-                // String alphabet2 = s2.replaceAll("\\d+$", "");
-                // // If you don't want to case-sensitive, or
-                // // compareTo
-                // int cmpAlphabet = alphabet1.compareToIgnoreCase(alphabet2);
-                // if (cmpAlphabet != 0) {
-                // return cmpAlphabet;
-                // }
-                // // Digital section
-                // String numeric1 = s1.replaceAll("^[a-zA-Z_]+", "");
-                // String numeric2 = s2.replaceAll("^[a-zA-Z_]+", "");
-                // if ("".equals(numeric1)) {
-                // /*
-                // * Even if the numeric2 is the empty string also does not matter, of course, if the comparison
-                // * is not String ( or other immutable objects ) is another matter
-                // */
-                // return -1;
-                // }
-                // if ("".equals(numeric2)) {
-                // return 1;
-                // }
-                // int result = Integer.parseInt(numeric1) - Integer.parseInt(numeric2);
-                // return result;
-                // }
+                if (s1.charAt(0) > s2.charAt(0)) {
+                    return 1;
+                } else if (s1.charAt(0) < s2.charAt(0)) {
+                    return -1;
+                } else { // The alphanumeric section
+                    String alphabet1 = s1.replaceAll("\\d+$", "");
+                    String alphabet2 = s2.replaceAll("\\d+$", "");
+                    // If you don't want to case-sensitive, or
+                    // compareTo
+                    int cmpAlphabet = alphabet1.compareToIgnoreCase(alphabet2);
+                    if (cmpAlphabet != 0) {
+                        return cmpAlphabet;
+                    }
+                    // Digital section
+                    if (s1.lastIndexOf("_") == -1) {
+                        return s1.compareToIgnoreCase(s2);
+                    }
+                    String numeric1 = s1.substring(s1.lastIndexOf("_") + 1);
+                    String numeric2 = s2.substring(s2.lastIndexOf("_") + 1);
+                    if ("".equals(numeric1)) {
+                        /*
+                         * Even if the numeric2 is the empty string also does not matter, of course, if the comparison
+                         * is not String ( or other immutable objects ) is another matter
+                         */
+                        return -1;
+                    }
+                    if ("".equals(numeric2)) {
+                        return 1;
+                    }
+                    int result;
+                    try {
+                        result = Integer.parseInt(numeric1) - Integer.parseInt(numeric2);
+                    } catch (NumberFormatException e) {
+                        return s1.compareToIgnoreCase(s2);
+                    }
+                    return result;
+                }
             }
 
         });
