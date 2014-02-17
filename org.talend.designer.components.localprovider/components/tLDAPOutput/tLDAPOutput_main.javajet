@@ -48,6 +48,7 @@ imports="
 	    rejectColumnList = metadataTable.getListColumns();	    
 	}
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     for(IConnection conn : outgoingConns) {
         if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -286,6 +287,9 @@ imports="
 							found = true;
 						}catch(javax.naming.NameNotFoundException nfEx_<%=cid%>)
 						{
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - " + nfEx_<%=cid%>.getMessage());
+							<%}%>
 							ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 							nb_line_<%=cid %> ++;
 						}
@@ -297,21 +301,27 @@ imports="
 <%
 					}
 %>
+					<%if(isLog4jEnabled){%>
+						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " for dn is '" + dn_<%=cid%> + "'.");
+					<%}%>
 	}catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {
 %>
-        throw(e);
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e.getMessage());
+			<%}%>
+        	throw(e);
 <%
         } else {
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 %>
-        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+        		<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
                 for(IMetadataColumn column : columnList) {
 %>
-        <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+        			<%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
 <%
                 }
 %>
@@ -323,32 +333,37 @@ imports="
                 System.err.print(e.getMessage());
 <%
             }
+			if(isLog4jEnabled){
+%>
+				log.error("<%=cid%> - " + e.getMessage());
+<%
+			}
         }
 %>
     }
 <%
     	if(outgoingConns != null && outgoingConns.size() > 0) {
 %>
-        if(!whetherReject_<%=cid%>) {
+        	if(!whetherReject_<%=cid%>) {
 <%
-            for(IConnection outgoingConn : outgoingConns) {
-                if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
-                    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            	for(IConnection outgoingConn : outgoingConns) {
+                	if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
+                   		if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-			<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+							<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
 <%
-                        for(IMetadataColumn column : columnList) {
+                        	for(IMetadataColumn column : columnList) {
 %>
-            <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+            					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
 <% 
-                        }
-                    }
-                }
-            }
+                        	}
+                    	}
+                	}
+            	}
 %>
-        }
+       	 	}
 <%
-    }
+		}
 				}
 			}
 		}
