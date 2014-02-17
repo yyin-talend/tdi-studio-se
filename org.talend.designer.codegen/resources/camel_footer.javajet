@@ -174,7 +174,17 @@
 <%
                 if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
 %>
+                    factory_<%=cid%>.setServiceName(new javax.xml.namespace.QName(
+                        <%=ElementParameterParser.getValue(node, "__SERVICE_NAMESPACE__")%>,
+                        <%=ElementParameterParser.getValue(node, "__SERVICE_NAME__")%>));
                     if (null != bundleContext) {
+<%
+                        if (!isProvider) {
+%>
+                            factory_<%=cid%>.setAddress("locator://rest");
+<%
+                        }
+%>
                         org.talend.esb.servicelocator.cxf.LocatorFeature locatorFeature_<%=cid%> = new org.talend.esb.servicelocator.cxf.LocatorFeature();
 <%
                         List<Map<String, String>> customProperties = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SL_META_DATA__");
@@ -188,7 +198,7 @@
 <%
                             }
 
-                            if (isProvider) { 
+                            if (isProvider) {
 %>
                                 locatorFeature_<%=cid%>.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
 <%
@@ -201,6 +211,11 @@
 %>
                         factory_<%=cid%>.getFeatures().add(locatorFeature_<%=cid%>);
                    }
+<%
+                } else if (!isProvider) {
+%>
+                    // {baseUri}cCXFRS
+                    factory_<%=cid%>.setServiceName(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node, "__URL__")%>, "cCXFRS"));
 <%
                 }
 
