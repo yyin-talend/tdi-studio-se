@@ -310,3 +310,5 @@
   <%
 	}//occure Reject end
   %>
+  
+	nb_line_<%=cid%> ++ ;
