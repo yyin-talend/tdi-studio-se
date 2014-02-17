@@ -368,7 +368,14 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         return super.performOk();
     }
 
-    private void finish(IProgressMonitor... monitorWrap) {
+    @Override
+	public boolean performCancel() {
+    	resetCustomComponentSetting();
+        refreshViewer();
+		return super.performCancel();
+	}
+
+	private void finish(IProgressMonitor... monitorWrap) {
         IProgressMonitor monitor = null;
         if (monitorWrap != null && monitorWrap.length == 1) {
             monitor = monitorWrap[0];
