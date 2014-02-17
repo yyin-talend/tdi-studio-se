@@ -141,10 +141,21 @@
                     factory_<%=cid%> = cf_<%=cid%>;
 <%
                     if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"))) {
-                        if("BASIC".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
+                        if ("BASIC".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
 %>
                             cf_<%=cid%>.setUsername(<%=ElementParameterParser.getValue(node, "__USERNAME__")%>);
                             cf_<%=cid%>.setPassword(<%=ElementParameterParser.getValue(node, "__PASSWORD__")%>);
+<%
+                        } else if ("SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
+%>
+                            if (null != stsProperties) {
+                                org.apache.cxf.ws.security.trust.STSClient stsClient = org.talend.esb.security.saml.SAMLUtils.createStsClient(
+                                    cf_<%=cid%>.getBus(), stsProperties, <%=ElementParameterParser.getValue(node, "__USERNAME__")%>, <%=ElementParameterParser.getValue(node, "__PASSWORD__")%>, null);
+                                <% if ("true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"))) { %>
+                                    org.talend.esb.security.saml.SAMLUtils.applyAuthorization(stsClient, <%=ElementParameterParser.getValue(node, "__ROLE__")%>);
+                                <% } %>
+                                org.talend.esb.security.saml.SAMLUtils.configureRestClient(cf_<%=cid%>, stsClient);
+                            }
 <%
                         }
                     }
