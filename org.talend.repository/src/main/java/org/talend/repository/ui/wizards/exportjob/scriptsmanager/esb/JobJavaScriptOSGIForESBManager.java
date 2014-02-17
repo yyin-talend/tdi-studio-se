@@ -797,19 +797,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (null != restRequestComponent) {
                     if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) { //$NON-NLS-1$
                         String authType = EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent); //$NON-NLS-1$
-                        boolean needAuthorization = EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent); //$NON-NLS-1$
                         if ("BASIC".equals(authType)) { //$NON-NLS-1$
                             importPackages.add("org.apache.cxf.jaxrs.security"); //$NON-NLS-1$
-                        }
-                        if ("SAML".equals(authType) && !needAuthorization) { //$NON-NLS-1$
+                        } else if ("SAML".equals(authType)) { //$NON-NLS-1$
                             importPackages.add("org.apache.cxf.interceptor.security"); //$NON-NLS-1$
                             importPackages.add("org.apache.cxf.rs.security.saml"); //$NON-NLS-1$
+                            if (EmfModelUtils.computeCheckElementValue("NEED_AUTHORIZATION", restRequestComponent)) { //$NON-NLS-1$
+                                importPackages.add("org.talend.esb.authorization.xacml.rt.pep");//$NON-NLS-1$
+                            }
                         }
-                        if ("SAML".equals(authType) && needAuthorization){ //$NON-NLS-1$
-                            importPackages.add("org.apache.cxf.interceptor.security"); //$NON-NLS-1$
-                            importPackages.add("org.apache.cxf.rs.security.saml"); //$NON-NLS-1$
-                            importPackages.add("org.talend.esb.authorization.xacml.rt.pep");//$NON-NLS-1$
-                        }//$NON-NLS-1$
                     }
                     if (EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) { //$NON-NLS-1$
                         importPackages.add("org.talend.esb.servicelocator.cxf"); //$NON-NLS-1$
