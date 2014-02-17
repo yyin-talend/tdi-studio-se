@@ -117,7 +117,7 @@
 			cxfNodes.addAll(process.getNodesOfType("cCXFRS"));
 			for(INode n: cxfNodes) {
 			    boolean isProvider = n.getIncomingConnections().isEmpty();
-                hasCXFComponentConsumer &= !isProvider;
+                hasCXFComponentConsumer |= !isProvider;
 
 				String useRegistry = "false";
 				if(isStudioEEVersion){
