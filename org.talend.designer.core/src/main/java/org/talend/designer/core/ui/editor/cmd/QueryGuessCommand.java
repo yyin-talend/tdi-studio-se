@@ -39,18 +39,15 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
@@ -68,7 +65,7 @@ public class QueryGuessCommand extends Command {
 
     private Object oldValue;
 
-    private IMetadataTable newOutputMetadataTable;
+    private final IMetadataTable newOutputMetadataTable;
 
     private Map<String, String> dbNameAndDbTypeMap;
 
@@ -309,7 +306,7 @@ public class QueryGuessCommand extends Command {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         boolean isTeradata = false;
         if (dbType != null) {
-            isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
+            isTeradata = dbType.equalsIgnoreCase(EDatabaseTypeName.TERADATA.getDisplayName());
         }
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             List<? extends IElementParameter> elementParameters = this.node.getElementParameters();
