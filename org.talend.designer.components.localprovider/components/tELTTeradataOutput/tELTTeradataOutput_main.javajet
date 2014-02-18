@@ -74,25 +74,25 @@ if(metadatas !=null && metadatas.size()>0){
 	}
 }
 %>
-java.sql.Connection conn_<%=cid%> = null;
+java.sql.Connection conn_<%=previousNode.getUniqueName()%> = null;
 <%
 if(useExistingConn) {
     String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
     String conn = "conn_" + connection;
     %>
-    conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    conn_<%=previousNode.getUniqueName()%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
-	log4jCodeGenerateUtil.useExistConnection(node);
+	log4jCodeGenerateUtil.useExistConnection(previousNode);
 } else {
     %>
     String driverClass_<%=previousNode.getUniqueName()%> = "com.teradata.jdbc.TeraDriver";
 	java.lang.Class.forName(driverClass_<%=previousNode.getUniqueName()%>);
-    String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+ "/DATABASE=" + <%=dbname%>;
-    String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
+    String url_<%=previousNode.getUniqueName() %> = "jdbc:teradata://" + <%=dbhost%>+ "/DATABASE=" + <%=dbname%>;
+    String dbUser_<%=previousNode.getUniqueName() %> = <%=dbuser%>;
+    String dbPwd_<%=previousNode.getUniqueName() %> = <%=dbpwd%>;
 <%
    	log4jCodeGenerateUtil.debugConnectionParams(previousNode);
-   	log4jCodeGenerateUtil.connect(node);
+   	log4jCodeGenerateUtil.connect(previousNode);
 }
 %>
 
@@ -187,7 +187,7 @@ for(Column colStmt:stmtStructure){
 	
 	
 String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) "+select_query;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(insertQuery);
 
 	<%
 	}else if (("UPDATE").equals(dataAction)){
@@ -198,7 +198,7 @@ String updateQuery = "UPDATE "+tableName_<%=cid%>+" FROM (" + select_query + ") 
 +"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(updateQuery);
 
 	<%		
 	}else if (("DELETE").equals(dataAction)){
@@ -209,7 +209,7 @@ String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+selec
 +"  AND " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
+pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(deleteQuery);
 
 	<%		
 	}
@@ -271,8 +271,8 @@ pstmt_<%=cid %>.close();
 <%
 if(!useExistingConn) {
     %>
-    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-		<%log4jCodeGenerateUtil.close();%>
+    if(conn_<%=previousNode.getUniqueName()%> != null && !conn_<%=previousNode.getUniqueName()%>.isClosed()) {
+		<%log4jCodeGenerateUtil.close(previousNode);%>
     }
     <%
 }
