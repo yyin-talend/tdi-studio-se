@@ -1,114 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
-	||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
-#end
->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
 	<!-- Talend Route OSGi blueprint descriptor -->
+#if ($hasCXFSamlConsumer || $hasCXFSamlProvider
+	||$hasCXFRegistryProvider || $hasCXFRegistryConsumer)
+#[[
+	<cm:cm-properties persistent-id="org.talend.esb.job" id="org.talend.esb.job"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+]]#
+#end
+#if ($hasCXFSamlProvider || $hasCXFRegistryProvider)
+#[[
+	<cm:cm-properties persistent-id="org.talend.esb.job.service" id="org.talend.esb.job.service"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+]]#
+#end
+#if ($hasCXFSamlProviderAuthz)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+]]#
+#end
+#if ($hasCXFSamlConsumer || $hasCXFRegistryConsumer)
+#[[
+	<cm:cm-properties persistent-id="org.talend.esb.job.client" id="org.talend.esb.job.client"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+	<cm:cm-properties persistent-id="org.talend.esb.job.client.sts" id="org.talend.esb.job.client.sts"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
+]]#
+#end
 
-#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
-	||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
-#[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{" />
-]]#
-#end
-#if ($route.hasCXFSamlProvider || $route.hasCXFRegistryProvider)
-#[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{" />
-]]#
-#end
-#if ($route.hasCXFSamlProviderAuthz)
-#[[
-    <cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{" />
-]]#
-#end
-#if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
-#[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{" />
-	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{" />
-]]#
-#end
-
-	<bean id="route" class="${route.className}">
+	<bean id="route" class="${className}">
 		<property name="bundleContext" ref="blueprintBundleContext" />
-
 		<!-- ESB Features For CXF -->
-
-#if ($route.useSAM)
+#if ($useSAM)
 		<property name="eventFeature">
-            <reference interface="org.talend.esb.sam.agent.feature.EventFeature" />
+			<reference interface="org.talend.esb.sam.agent.feature.EventFeature" />
 		</property>
 #end
-
-#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
-||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
+#if ($hasCXFSamlConsumer || $hasCXFSamlProvider
+||$hasCXFRegistryProvider || $hasCXFRegistryConsumer)
 #[[
-		<property name="policies">
-			<map>
-				<entry key="policy.username" value="$job{policy.username}" />
-				<entry key="policy.saml" value="$job{policy.saml}" />
-				<entry key="policy.saml.authz" value="$job{policy.saml.authz}" />
-			</map>
+		<property name="policies" ref="org.talend.esb.job" />
+]]#
+#end
+#if ($hasCXFSamlProvider || $hasCXFRegistryProvider)
+#[[
+		<property name="securityProps" ref="org.talend.esb.job.service" />
+]]#
+#end
+#if ($hasCXFSamlConsumer || $hasCXFRegistryConsumer)
+#[[
+		<property name="clientProperties" ref="org.talend.esb.job.client" />
+		<property name="stsProperties" ref="org.talend.esb.job.client.sts" />
+]]#
+#end
+#if ($hasCXFSamlProviderAuthz)
+#[[
+		<property name="authorizationInterceptor">
+			<bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
+				<property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
+			</bean>
 		</property>
 ]]#
 #end
-#if ($route.hasCXFSamlProvider || $route.hasCXFRegistryProvider)
-#[[
-		<property name="securityProps" >
-			<map>
-				<entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
-				<entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
-				<entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
-			</map>
-		</property>
-]]#
-#end
-#if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
-#[[
-		<property name="clientProperties">
-			<map>
-				<entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
-				<entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
-				<entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
-			</map>
-		</property>
-		<property name="stsProperties">
-			<map>
-				<entry key="sts.namespace" value="$sts{sts.namespace}" />
-				<entry key="sts.service.name" value="$sts{sts.service.name}" />
-				<entry key="sts.endpoint.name" value="$sts{sts.endpoint.name}" />
-				<entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}" />
 
-				<entry key="ws-security.sts.token.username" value="$sts{ws-security.sts.token.username}" />
-				<entry key="ws-security.sts.token.usecert" value="$sts{ws-security.sts.token.usecert}" />
-				<entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}" />
-
-				<entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
-				<entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}" />
-				<entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}" />
-
-				<entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
-				<entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
-			</map>
-		</property>
-]]#
-#end
-#if ($route.hasCXFSamlProviderAuthz)
-#[[
-        <property name="authorizationInterceptor">
-            <bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
-                <property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
-            </bean>
-        </property>
-]]#
-#end
-
-#if (!$route.dataSources.isEmpty())
+#if (!$dataSources.isEmpty())
 		<property name="dataSources">
 			<map>
-#foreach ($alias in $route.dataSources)
+#foreach ($alias in $dataSources)
 				<entry key="${alias}">
 					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
 				</entry>
@@ -124,7 +84,7 @@
 			<value>routines.system.api.TalendESBRoute</value>
 		</interfaces>
 		<service-properties>
-			<entry key="name" value="${route.name}" />
+			<entry key="name" value="${name}" />
 			<entry key="type" value="route" />
 		</service-properties>
 	</service>

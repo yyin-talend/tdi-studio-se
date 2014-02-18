@@ -630,11 +630,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private static final String TEMPLATE_BLUEPRINT_ROUTE = "/resources/route-template.xml"; //$NON-NLS-1$
 
     private void createRouteBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
-        // velocity template context
-        Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("route", collectRouteInfo(processItem, process)); //$NON-NLS-1$
-
-        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
+        TemplateProcessor.processTemplate("ROUTE_BLUEPRINT_CONFIG", collectRouteInfo(processItem, process), targetFile, //$NON-NLS-1$
                 getTemplateReader(TEMPLATE_BLUEPRINT_ROUTE));
     }
 
