@@ -1,6 +1,8 @@
 package org.talend.msmq;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import ionic.Msmq.Message;
 import ionic.Msmq.MessageQueueException;
@@ -142,8 +144,15 @@ public class MsmqUtil {
         return msmqHandle != null;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setHost(String host) throws UnknownHostException{
+    	try {
+			if(InetAddress.getByName(host)!=null){
+				this.host = InetAddress.getByName(host).getHostAddress();
+			}
+		} catch (UnknownHostException e) {
+			this.host = host;
+			throw e;
+		}
     }
 
     public void setQueue(String queueName) {
