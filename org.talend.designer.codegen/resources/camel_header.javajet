@@ -617,9 +617,9 @@ public void setSecurityProps(Map<String, String> securityProps) {
 
 if (hasCXFSamlTokenAuthorizationProvider) {
 %>
-private Interceptor<? extends Message> authorizationInterceptor;
+private org.apache.cxf.interceptor.Interceptor<? extends org.apache.cxf.message.Message> authorizationInterceptor;
 
-public void setAuthorizationInterceptor(Interceptor<? extends Message> authorizationInterceptor) {
+public void setAuthorizationInterceptor(org.apache.cxf.interceptor.Interceptor<? extends org.apache.cxf.message.Message> authorizationInterceptor) {
     this.authorizationInterceptor = authorizationInterceptor;
 }
 <%
@@ -906,12 +906,9 @@ if (isProvider) {
 				}
 			}
 
-			String role = ElementParameterParser.getValue(node, "__ROLE_NAME__");
-
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
-			String roleName = "\"\"";
 			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__").trim();
 			boolean isProvider = node.getIncomingConnections().isEmpty();
 			boolean isUseAuthorization = false;
@@ -951,6 +948,7 @@ if (isProvider) {
 					securityToken = "org.apache.cxf.transport.http.auth.HttpAuthHeader.AUTH_TYPE_DIGEST";
 				}
 			}
+			String roleName = "\"\"";
 			if(!isProvider && (useRegistry || isUseAuthorization)) {
 				roleName = ElementParameterParser.getValue(node, "__ROLE_NAME__");
 				if(null == roleName || "".equals(roleName)){

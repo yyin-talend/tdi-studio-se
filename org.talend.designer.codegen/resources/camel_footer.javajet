@@ -161,7 +161,7 @@
                                 org.apache.cxf.ws.security.trust.STSClient stsClient = org.talend.esb.security.saml.SAMLUtils.createStsClient(
                                     cf_<%=cid%>.getBus(), stsProperties, <%=ElementParameterParser.getValue(node, "__USERNAME__")%>, <%=ElementParameterParser.getValue(node, "__PASSWORD__")%>, null);
                                 <% if ("true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"))) { %>
-                                    org.talend.esb.security.saml.SAMLUtils.applyAuthorization(stsClient, <%=ElementParameterParser.getValue(node, "__ROLE__")%>);
+                                    org.talend.esb.security.saml.SAMLUtils.applyAuthorization(stsClient, <%=ElementParameterParser.getValue(node, "__ROLE_NAME__")%>);
                                 <% } %>
                                 org.talend.esb.security.saml.SAMLRESTUtils.configureRestClient(cf_<%=cid%>, stsClient);
                             }
