@@ -64,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				} 
 					if(i != sizeColumns - 1) {
 %>					
-							out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+							out<%=cid %>.write(OUT_DELIM_<%=cid %>.toString());
 <%
     				}
     			}
