@@ -306,7 +306,7 @@ public class QueryGuessCommand extends Command {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         boolean isTeradata = false;
         if (dbType != null) {
-            isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
+            isTeradata = dbType.equalsIgnoreCase(EDatabaseTypeName.TERADATA.getDisplayName());
         }
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             List<? extends IElementParameter> elementParameters = this.node.getElementParameters();

@@ -47,6 +47,7 @@ import org.talend.core.utils.KeywordsValidator;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Column;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.ErDiagram;
@@ -59,6 +60,7 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.UIUtils;
+import org.talend.utils.sql.ConnectionUtils;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
@@ -244,7 +246,17 @@ public class ErDiagramComposite extends SashForm {
     private String getSchema() {
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
                 .getConnection();
-        return connection.getUiSchema();
+        String schema = "";
+        if (ConnectionUtils.isTeradata(connection.getURL())) {
+            schema = connection.getSID();
+        } else {
+            schema = connection.getUiSchema();
+        }
+        if (connection.isContextMode()) {
+            schema = DatabaseConnectionParameterUtil.getContextTrueValue(connection, schema);
+        }
+        return schema;
+
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
