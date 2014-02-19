@@ -120,7 +120,8 @@ if(("UPDATE").equals(dataAction)) {
 }
 if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0) {
 %>
-		String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" +<%=field_separator%> + "'" 
+		Character OUT_DELIM_<%=cid %> = <%=field_separator%>.charAt(0);
+		String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" +OUT_DELIM_<%=cid %> + "'" 
 	    <%if(hasNullString){
 		%> + " NULL '"  + <%=null_string%> + "'"
 		<%}%>
