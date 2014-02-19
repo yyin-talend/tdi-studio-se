@@ -324,6 +324,7 @@ public class CategoryComposite extends Composite {
                             } else {
                                 expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
                             }
+                            expressionComposite.modificationRecord.pushRecored(expressionComposite.getExpression());
                         } else {
                             if (docDisplayer instanceof Text) {
                                 ((Text) docDisplayer).setText("");

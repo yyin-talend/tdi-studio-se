@@ -109,6 +109,7 @@ public class ExpressionComposite extends Composite {
                 try {
                     document.replace(sel.x, sel.y, textToInsert);
                     viewer.setSelectedRange(sel.x + textToInsert.length(), sel.y);
+                    modificationRecord.pushRecored(textControl.getText());
                 } catch (BadLocationException e1) {
                     MessageBoxExceptionHandler.process(e1);
                 }
@@ -283,7 +284,7 @@ public class ExpressionComposite extends Composite {
 
                 if (textTransfer.isSupportedType(event.currentDataType)) {
                     String str = (String) event.data;
-
+                    modificationRecord.pushRecored(textControl.getText() + str);
                     ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
                     expressionComposite.setExpression(str, true);
                 }
