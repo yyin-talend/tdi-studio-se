@@ -283,7 +283,13 @@ public class ExternalNodeChangeCommand extends Command {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
                 boolean sameMetadataAs = connection.getMetadataTable().sameMetadataAs(dataComponent.getTable());
                 IMetadataTable tempTable = null;
-                if (sameMetadataAs) {
+                boolean isSchemaAutoPropagated = true;
+                if (connection.getTarget().getComponent() instanceof EmfComponent) {
+                    EmfComponent component = (EmfComponent) connection.getTarget().getComponent();
+                    isSchemaAutoPropagated = component.isSchemaAutoPropagated();
+                }
+
+                if (sameMetadataAs || !isSchemaAutoPropagated) {
                     for (IMetadataTable itable : newMetaDataList) {
                         if (connection.getMetadataTable().getTableName().equals(itable.getTableName())) {
                             sameMetadataAs = connection.getMetadataTable().sameMetadataAs(itable);
@@ -291,8 +297,7 @@ public class ExternalNodeChangeCommand extends Command {
                             break;
                         }
                     }
-                }
-                if (!sameMetadataAs) {
+                } else {
                     IMetadataTable table = connection.getMetadataTable();
                     if (table == null || table.getListColumns().isEmpty()) {
                         initTraceList.add(connection);
