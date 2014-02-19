@@ -197,6 +197,7 @@ public class TestComposite extends Composite {
                 Variable var = (Variable) (((IStructuredSelection) event.getSelection()).getFirstElement());
                 ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
                 expressionComposite.setExpression(var.getName(), true);
+                expressionComposite.modificationRecord.pushRecored(expressionComposite.getExpression());
             }
 
         });

@@ -95,7 +95,8 @@ public class ExpressionRecorder {
             }
             return expression;
         }
-        return ""; //$NON-NLS-1$
+        ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
+        return expressionComposite.textControl.getText();
     }
 
     /**
