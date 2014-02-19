@@ -60,25 +60,25 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
  */
 public class ExternalNodeChangeCommand extends Command {
 
-    private Node node;
+    private final Node node;
 
-    private IExternalData oldExternalData;
+    private final IExternalData oldExternalData;
 
-    private List<IMetadataTable> oldMetaDataList;
+    private final List<IMetadataTable> oldMetaDataList;
 
-    private IExternalData newExternalData;
+    private final IExternalData newExternalData;
 
-    private List<IMetadataTable> newMetaDataList;
+    private final List<IMetadataTable> newMetaDataList;
 
     private Map<Connection, IODataComponent> connectionsToDelete;
 
-    private List<ChangeMetadataCommand> metadataOutputChanges = new ArrayList<ChangeMetadataCommand>();
+    private final List<ChangeMetadataCommand> metadataOutputChanges = new ArrayList<ChangeMetadataCommand>();
 
-    private Map<Connection, IMetadataTable> metadataInputChanges = new HashMap<Connection, IMetadataTable>();
+    private final Map<Connection, IMetadataTable> metadataInputChanges = new HashMap<Connection, IMetadataTable>();
 
-    private Map<Connection, Boolean> metadataInputWasRepository = new HashMap<Connection, Boolean>();
+    private final Map<Connection, Boolean> metadataInputWasRepository = new HashMap<Connection, Boolean>();
 
-    private IODataComponentContainer inAndOut;
+    private final IODataComponentContainer inAndOut;
 
     private Boolean propagate;
 
@@ -283,7 +283,13 @@ public class ExternalNodeChangeCommand extends Command {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
                 boolean sameMetadataAs = connection.getMetadataTable().sameMetadataAs(dataComponent.getTable());
                 IMetadataTable tempTable = null;
-                if (sameMetadataAs) {
+                boolean isSchemaAutoPropagated = true;
+                if (connection.getTarget().getComponent() instanceof EmfComponent) {
+                    EmfComponent component = (EmfComponent) connection.getTarget().getComponent();
+                    isSchemaAutoPropagated = component.isSchemaAutoPropagated();
+                }
+
+                if (sameMetadataAs || !isSchemaAutoPropagated) {
                     for (IMetadataTable itable : newMetaDataList) {
                         if (connection.getMetadataTable().getTableName().equals(itable.getTableName())) {
                             sameMetadataAs = connection.getMetadataTable().sameMetadataAs(itable);
@@ -291,8 +297,7 @@ public class ExternalNodeChangeCommand extends Command {
                             break;
                         }
                     }
-                }
-                if (!sameMetadataAs) {
+                } else {
                     IMetadataTable table = connection.getMetadataTable();
                     if (table == null || table.getListColumns().isEmpty()) {
                         initTraceList.add(connection);
