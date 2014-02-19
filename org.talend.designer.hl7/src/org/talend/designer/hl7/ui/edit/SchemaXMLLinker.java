@@ -193,6 +193,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
                             mappableNodes = ((HL7OutputManager) getManager()).getTreeData(""); //$NON-NLS-1$
                         }
                         createLoopLinks(mappableNodes);
+                        xmlViewer.refresh();
                         getBackgroundRefresher().refreshBackground();
                     }
 
