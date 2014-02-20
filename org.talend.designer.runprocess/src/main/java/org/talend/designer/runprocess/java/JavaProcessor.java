@@ -1325,7 +1325,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         for (INode node : graphicalNodes) {
             String nodeName = node.getComponent().getName();
             if (("tESBConsumer".equals(nodeName) || "tESBProviderRequest".equals(nodeName) //$NON-NLS-1$ //$NON-NLS-2$
-                    || "tRESTClient".equals(nodeName) || "tRESTRequest".equals(nodeName)) //$NON-NLS-1$ //$NON-NLS-2$
+                    || "tRESTClient".equals(nodeName) || "tRESTRequest".equals(nodeName) //$NON-NLS-1$ //$NON-NLS-2$
+                    || "cCXFRS".equals(nodeName)) //$NON-NLS-1$
                     && node.isActivate()) {
 
                 if (!samEnabled) {
