@@ -651,14 +651,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean useSAM = false;
         boolean hasCXFSamlConsumer = false;
         boolean hasCXFSamlProvider = false;
-        boolean hasCXFSamlProviderAuthz = false;
-        boolean hasCXFSamlConsumerAuthz = false;
-        boolean hasCXFRegistryConsumer = false;
-        boolean hasCXFRegistryProvider = false;
-        
-        Collection<NodeType> cCXFs = EmfModelUtils.getComponentsByName(processItem, "cCXF", "cCXFRS");
+        boolean hasCXFRSSamlProviderAuthz = false;
+
+        Collection<NodeType> cCXFs = EmfModelUtils.getComponentsByName(processItem, "cCXF");
+        boolean hasCXFComponent = !cCXFs.isEmpty();
+        cCXFs.addAll(EmfModelUtils.getComponentsByName(processItem, "cCXFRS"));
         if(!cCXFs.isEmpty()) {
-        	//consumers.
         	Set<String> consumerNodes = new HashSet<String>();
         	@SuppressWarnings("unchecked")
 			List<ConnectionType> connections = processItem.getProcess().getConnection();
@@ -686,7 +684,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 	            		nodeUseRegistry = true;
 	            		//https://jira.talendforge.org/browse/TESB-10725
 	            		nodeUseSAM = false;
-		        	}else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
+		        	} else if (EmfModelUtils.computeCheckElementValue("ENABLE_SECURITY", node)) { //$NON-NLS-1$
 	        			String securityType = EmfModelUtils.computeTextElementValue(
 	        					"SECURITY_TYPE", node); //$NON-NLS-1$
 	        			if ("SAML".equals(securityType)) { //$NON-NLS-1$
@@ -697,17 +695,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 				}
 	            useSAM |= nodeUseSAM;
 	            if(consumerNodes.contains(ElementParameterParser.getUNIQUENAME(node))) {
-	            	hasCXFSamlConsumer |= nodeUseSaml;
-	            	hasCXFSamlConsumerAuthz |= nodeUseAuthz;
-	            	hasCXFRegistryConsumer |= nodeUseRegistry;
+	            	hasCXFSamlConsumer |= nodeUseSaml | nodeUseRegistry;
 	            }else {
-	            	hasCXFSamlProvider |= nodeUseSaml;
-	            	hasCXFSamlProviderAuthz |= nodeUseAuthz;
-	            	hasCXFRegistryProvider |= nodeUseRegistry;
+	            	hasCXFSamlProvider |= nodeUseSaml | nodeUseRegistry;
+	            	hasCXFRSSamlProviderAuthz |= nodeUseAuthz;
 				}
 	        
-	            if(useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion
-	            		|| (hasCXFRegistryConsumer && hasCXFRegistryProvider && hasCXFSamlProviderAuthz && hasCXFSamlConsumerAuthz))){
+	            if(useSAM && hasCXFSamlConsumer && hasCXFSamlConsumer && (!isEEVersion || hasCXFRSSamlProviderAuthz)) {
 	            	break;
 	            }
 	        }
@@ -715,10 +709,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         routeInfo.put("useSAM", useSAM); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlConsumer", hasCXFSamlConsumer); //$NON-NLS-1$
         routeInfo.put("hasCXFSamlProvider", hasCXFSamlProvider); //$NON-NLS-1$
-        routeInfo.put("hasCXFSamlConsumerAuthz", hasCXFSamlConsumerAuthz); //$NON-NLS-1$
-        routeInfo.put("hasCXFSamlProviderAuthz", hasCXFSamlProviderAuthz); //$NON-NLS-1$
-        routeInfo.put("hasCXFRegistryConsumer", hasCXFRegistryConsumer); //$NON-NLS-1$
-        routeInfo.put("hasCXFRegistryProvider", hasCXFRegistryProvider); //$NON-NLS-1$
+        routeInfo.put("hasCXFRSSamlProviderAuthz", hasCXFRSSamlProviderAuthz && !hasCXFComponent); //$NON-NLS-1$
+        routeInfo.put("hasCXFComponent", hasCXFComponent); //$NON-NLS-1$
 
         // route OSGi DataSources
         routeInfo.put("dataSources", DataSourceConfig.getAliases(process)); //$NON-NLS-1$

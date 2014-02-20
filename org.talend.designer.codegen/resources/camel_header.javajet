@@ -615,7 +615,7 @@ public void setSecurityProps(Map<String, String> securityProps) {
 <%
 }
 
-if (hasCXFSamlTokenAuthorizationProvider) {
+if (hasCXFSamlTokenAuthorizationProvider && !hasCXFComponent) {
 %>
 private org.apache.cxf.interceptor.Interceptor<? extends org.apache.cxf.message.Message> authorizationInterceptor;
 
@@ -625,8 +625,8 @@ public void setAuthorizationInterceptor(org.apache.cxf.interceptor.Interceptor<?
 <%
 }
 
-if(hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer
-	||hasCXFRegistryProvider || hasCXFRegistryConsumer){
+if(hasCXFComponent && (hasCXFSamlTokenProvider || hasCXFSamlTokenConsumer
+	||hasCXFRegistryProvider || hasCXFRegistryConsumer)){
 %>
 
 

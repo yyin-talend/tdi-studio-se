@@ -2,26 +2,25 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
 	<!-- Talend Route OSGi blueprint descriptor -->
-#if ($hasCXFSamlConsumer || $hasCXFSamlProvider
-	||$hasCXFRegistryProvider || $hasCXFRegistryConsumer)
+#if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
 	<cm:cm-properties persistent-id="org.talend.esb.job" id="org.talend.esb.job"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
-#if ($hasCXFSamlProvider || $hasCXFRegistryProvider)
+#if ($hasCXFSamlProvider)
 #[[
 	<cm:cm-properties persistent-id="org.talend.esb.job.service" id="org.talend.esb.job.service"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
-#if ($hasCXFSamlProviderAuthz)
+#if ($hasCXFRSSamlProviderAuthz)
 #[[
 	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
-#if ($hasCXFSamlConsumer || $hasCXFRegistryConsumer)
+#if ($hasCXFSamlConsumer)
 #[[
 	<cm:cm-properties persistent-id="org.talend.esb.job.client" id="org.talend.esb.job.client"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
@@ -38,24 +37,23 @@
 			<reference interface="org.talend.esb.sam.agent.feature.EventFeature" />
 		</property>
 #end
-#if ($hasCXFSamlConsumer || $hasCXFSamlProvider
-||$hasCXFRegistryProvider || $hasCXFRegistryConsumer)
+#if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
 		<property name="policies" ref="org.talend.esb.job" />
 ]]#
 #end
-#if ($hasCXFSamlProvider || $hasCXFRegistryProvider)
+#if ($hasCXFSamlProvider)
 #[[
 		<property name="securityProps" ref="org.talend.esb.job.service" />
 ]]#
 #end
-#if ($hasCXFSamlConsumer || $hasCXFRegistryConsumer)
+#if ($hasCXFSamlConsumer)
 #[[
 		<property name="clientProperties" ref="org.talend.esb.job.client" />
 		<property name="stsProperties" ref="org.talend.esb.job.client.sts" />
 ]]#
 #end
-#if ($hasCXFSamlProviderAuthz)
+#if ($hasCXFRSSamlProviderAuthz)
 #[[
 		<property name="authorizationInterceptor">
 			<bean class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
