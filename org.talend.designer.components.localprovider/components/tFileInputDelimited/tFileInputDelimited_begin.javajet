@@ -15,6 +15,7 @@
 	" 
 %>
 	<%@ include file="../templates/Row/RowHelper.javajet"%>
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 	<% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -29,35 +30,13 @@
 	String vcid = "";
 	IProcess process = node.getProcess();
 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.logParameters(node); 
+	log4jFileUtil.componentStartInfo(node); 
 	Map<String,String> varsMap=new java.util.HashMap<String,String>();
 	if(isLog4jEnabled){
 		varsMap.put("log4jSb_"+cid,"StringBuffer");
 	}
-	/* Build the Log4J message for the different parameters */
 	
-	if(isLog4jEnabled) {
-%>
-		String log4jFileInputDelimitedParamters_<%=cid%> = "";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "FILENAME = " + <%=ElementParameterParser.getValue(node, "__FILENAME__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "CSV_OPTION = " + <%=ElementParameterParser.getValue(node, "__CSV_OPTION__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "FIELDSEPARATOR = " + <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "HEADER = " + <%=ElementParameterParser.getValue(node, "__HEADER__")%> + " | ";
-		<% if("false".equals(ElementParameterParser.getValue(node, "__UNCOMPRESS__"))) {%>
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "FOOTER = " + <%=ElementParameterParser.getValue(node, "__FOOTER__")%> + " | ";
-		<% } %>
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "LIMIT = " + <%="".equals(ElementParameterParser.getValue(node, "__LIMIT__"))?"\"\"":ElementParameterParser.getValue(node, "__LIMIT__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "REMOVE_EMPTY_ROW = " + <%=ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "UNCOMPRESS = " + <%=ElementParameterParser.getValue(node, "__UNCOMPRESS__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "DIE_ON_ERROR = " + <%=ElementParameterParser.getValue(node, "__DIE_ON_ERROR__")%> + " | ";
-		log4jFileInputDelimitedParamters_<%=cid%> = log4jFileInputDelimitedParamters_<%=cid%> + "REMOVE_EMPTY_ROW = " + <%=ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__")%> + " | ";
-		
-		log4jFileInputDelimitedParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jFileInputDelimitedParamters_<%=cid%>;
-		log.debug(log4jFileInputDelimitedParamters_<%=cid%>);
-<%
-	}
-	
-	/* -------------------------- */
-
 	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 	if(destination!=null && !"".equals(destination)){
 		vcid = destination;
@@ -151,9 +130,6 @@
 	}
 	GenerateCode generateCode = new GenerateCode();
 	%>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Start to work.");
-	<%}%>
 	<%
 
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
@@ -539,7 +515,6 @@
 					}
 					%>
 				    <%if(isLog4jEnabled){%>
-						StringBuffer log4jSb_<%=cid%> = new StringBuffer();
 				    	log.info("<%=cid%> - Retrieving records from the datasource.");
 				    <%}%>
 					while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
@@ -1255,7 +1230,6 @@
 	    		}//TD110 end
 	        
 			    <%if(isLog4jEnabled){%>
-					StringBuffer log4jSb_<%=cid%> = new StringBuffer();
 			    	log.info("<%=cid%> - Retrieving records from the datasource.");
 			    <%}%>
 	        	while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && csvReader<%=cid %>.readNext() ) { 
