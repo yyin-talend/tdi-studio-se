@@ -93,6 +93,14 @@
 		   				value = "\"\"";
 		   			} else if("\"\\n\"".equals(value) || "\"\\r\"".equals(value) || "\"\\r\\n\"".equals(value)) {
 		   				value = value.replaceAll("\\\\","\\\\\\\\");
+		   			} else if("\"\"\"".equals(value)){
+		   				value = "\"" + "\\" +  "\"" + "\"";
+		   			} else if("\"\"\\r\\n\"\"".equals(value)){
+		   				value = "\"\\\\r\\\\n\"";
+		   			} else if("\"\"\\r\"\"".equals(value)){
+		   				value = "\"\\\\r\"";
+		   			} else if("\"\"\\n\"\"".equals(value)){
+		   				value = "\"\\\\n\"";
 		   			}
 		   			%>
 					log4jParamters_<%=cid%>.append("<%=name%>" + " = " + <%=value%>);

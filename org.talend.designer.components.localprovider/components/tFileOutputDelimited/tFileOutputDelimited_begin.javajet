@@ -12,9 +12,10 @@ imports="
     org.talend.core.model.utils.NodeUtil
     java.util.List
     org.talend.core.model.process.IProcess
+    org.talend.core.model.process.IElementParameter
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <% 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -45,35 +46,9 @@ String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 IProcess process = node.getProcess();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-
-if(isLog4jEnabled) {
+log4jFileUtil.logParameters(node); 
+log4jFileUtil.componentStartInfo(node); 
 %>
-	String log4jFileOutputDelimitedParamters_<%=cid%> = "";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "FILENAME = " + <%=ElementParameterParser.getValue(node, "__FILENAME__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "CSV_OPTION = " + <%=ElementParameterParser.getValue(node, "__CSV_OPTION__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "FIELDSEPARATOR = " + <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "INCLUDE_HEADER = " + <%=ElementParameterParser.getValue(node, "__INCLUDEHEADER__")%> + " | ";
-	<%
-	if(!"true".equals(ElementParameterParser.getValue(node, "__APPEND__"))) {
-	%>
-		log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "COMPRESS = " + <%=ElementParameterParser.getValue(node, "__COMPRESS__")%> + " | ";
-	<%
-	}
-	%>
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "APPEND = " + <%=ElementParameterParser.getValue(node, "__APPEND__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "CREATE_DIRECTORY_IF_NOT_EXISTS = " + <%=ElementParameterParser.getValue(node, "__CREATE__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "SPLIT_INTO_SEVERAL_FILES = " + <%=ElementParameterParser.getValue(node, "__SPLIT__")%> + " | ";
-	log4jFileOutputDelimitedParamters_<%=cid%> = log4jFileOutputDelimitedParamters_<%=cid%> + "OUTPUT_IN_ROW_MODE = " + <%=ElementParameterParser.getValue(node, "__ROW_MODE__")%> + " | ";
-	
-	log4jFileOutputDelimitedParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jFileOutputDelimitedParamters_<%=cid%>;
-	log.debug(log4jFileOutputDelimitedParamters_<%=cid%>);
-<%
-}
-%>
-<%if(isLog4jEnabled){%>
-	StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-	log.info("<%=cid%> - Start to work.");
-<%}%>
 String fileName_<%=cid%> = "";
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
