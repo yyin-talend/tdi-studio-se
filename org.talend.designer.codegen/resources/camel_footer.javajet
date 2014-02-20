@@ -223,7 +223,7 @@
                 if ("true".equals(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
 %>
                     if (eventFeature != null) {
-                        factory_<%=cid%>.getFeatures().add(new FeatureWrapper(eventFeature));
+                        factory_<%=cid%>.getFeatures().add(eventFeature);
                     } else {
                         factory_<%=cid%>.getFeatures().add(new org.springframework.context.support.ClassPathXmlApplicationContext("META-INF/tesb/agent-context.xml").getBean(org.talend.esb.sam.agent.feature.EventFeature.class));
                     }
