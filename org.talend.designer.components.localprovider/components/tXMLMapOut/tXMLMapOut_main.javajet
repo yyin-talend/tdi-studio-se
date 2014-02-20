@@ -35,6 +35,7 @@
 			java.util.Collections
             java.util.ArrayList
         	org.talend.core.model.metadata.types.JavaType
+        	org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode
 "
 skeleton="../tXMLMap/tXMLMap_java.skeleton"
 %>
