@@ -378,7 +378,7 @@ skeleton="tXMLMap_java.skeleton"
 								if(globalMapEntries != null) {
 									for(GlobalMapNode entry : globalMapEntries) {
 									%>
-										globalMap.put(<%= entry.getName()%>, <%= entry.getExpression() %>);
+										globalMap.put(<%= entry.getName()%>, <%= matchXmlTreeExpr.generateExprCode(entry.getExpression()) %>);
 									<%
 									}
 								}
