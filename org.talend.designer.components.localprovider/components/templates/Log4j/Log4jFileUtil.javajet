@@ -1,5 +1,4 @@
 <%@ jet 
-" 
 %>
 <%
 	//this util class use by set log4j debug paramters
