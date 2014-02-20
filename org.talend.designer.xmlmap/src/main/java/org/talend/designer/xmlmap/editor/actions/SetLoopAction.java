@@ -257,7 +257,11 @@ public class SetLoopAction extends SelectionAction {
         if (node.eContainer() instanceof TreeNode && rootGroup != node.eContainer()) {
             TreeNode parent = (TreeNode) node.eContainer();
             if (!parent.isGroup()) {
-                parent.setGroup(true);
+            	if (parent.isChoice() || parent.isSubstitution()) {
+            		parent.setGroup(false);
+                } else {
+                	parent.setGroup(true);
+                }
             }
         }
     }
