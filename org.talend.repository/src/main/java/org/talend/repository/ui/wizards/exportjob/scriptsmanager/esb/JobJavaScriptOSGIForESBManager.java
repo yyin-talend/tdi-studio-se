@@ -675,7 +675,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 	            String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
 	            
 	            if (!useSAM && !"RAW".equals(format)) { //$NON-NLS-1$
-	            	nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
+	            	nodeUseSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node) //$NON-NLS-1$
+	            	    || EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node); //$NON-NLS-1$
 	            }
 
 	            //security is disable in case CXF_MESSAGE or RAW dataFormat

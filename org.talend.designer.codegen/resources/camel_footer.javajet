@@ -172,12 +172,14 @@
 %>
                 factory_<%=cid%>.setAddress(<%=ElementParameterParser.getValue(node, "__URL__")%>);
 <%
-                if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
+                if ("true".equals(ElementParameterParser.getValue(node, "__SERVICE_LOCATOR__"))) {
 %>
                     factory_<%=cid%>.setServiceName(new javax.xml.namespace.QName(
                         <%=ElementParameterParser.getValue(node, "__SERVICE_NAMESPACE__")%>,
                         <%=ElementParameterParser.getValue(node, "__SERVICE_NAME__")%>));
-                    if (null != bundleContext) {
+                    if (null == bundleContext) {
+                        factory_<%=cid%>.setBus(new org.apache.cxf.bus.spring.SpringBusFactory().createBus("META-INF/tesb/locator/beans.xml"));
+                    }
 <%
                         if (!isProvider) {
 %>
@@ -210,7 +212,6 @@
                         }
 %>
                         factory_<%=cid%>.getFeatures().add(locatorFeature_<%=cid%>);
-                   }
 <%
                 } else if (!isProvider) {
 %>
@@ -219,10 +220,12 @@
 <%
                 }
 
-                if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
+                if ("true".equals(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
 %>
                     if (eventFeature != null) {
                         factory_<%=cid%>.getFeatures().add(new FeatureWrapper(eventFeature));
+                    } else {
+                        factory_<%=cid%>.getFeatures().add(new org.springframework.context.support.ClassPathXmlApplicationContext("META-INF/tesb/agent-context.xml").getBean(org.talend.esb.sam.agent.feature.EventFeature.class));
                     }
 <%
                 }

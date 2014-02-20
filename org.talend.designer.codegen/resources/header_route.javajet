@@ -179,7 +179,7 @@ package <%= packageName %>;
 				hasSam = true;
             }
 		} else if ("cCXFRS".equals(node.getComponent().getName())) {
-            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SAM__"))) {
+            if ("true".equals(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
                 hasSam = true;
             }
             if (node.getIncomingConnections().isEmpty()) {
