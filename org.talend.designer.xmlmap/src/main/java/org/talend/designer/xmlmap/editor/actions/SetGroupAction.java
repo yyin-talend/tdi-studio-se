@@ -149,7 +149,11 @@ public class SetGroupAction extends SelectionAction {
             model.setGroup(true);
             if (!subGroupTraceNames.isEmpty()) {
                 for (TreeNode groupNode : subGroupTraceNames) {
-                    groupNode.setGroup(true);
+                    if (groupNode.isChoice() || groupNode.isSubstitution()) {
+                        groupNode.setGroup(false);
+                    } else {
+                        groupNode.setGroup(true);
+                    }
                 }
             }
         } else {
