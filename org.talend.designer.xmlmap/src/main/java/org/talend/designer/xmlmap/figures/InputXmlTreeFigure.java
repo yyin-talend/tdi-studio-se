@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.figures;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.designer.xmlmap.figures.table.GlobalMapContainer;
 import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.XmlMapFilterContainer;
@@ -73,8 +74,8 @@ public class InputXmlTreeFigure extends XmlmapInOutTreeFigure {
             filterFigure = new XmlMapFilterContainer(getMappManager(), (Composite) getMappManager().getEditPart().getViewer()
                     .getControl());
             parent.add(filterFigure);
-
+            globalMapContainer = new GlobalMapContainer(getMappManager());
+            parent.add(globalMapContainer);
         }
     }
-
 }

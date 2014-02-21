@@ -1,7 +1,6 @@
 /**
- * <copyright>
- * </copyright>
- *
+ * <copyright> </copyright>
+ * 
  * $Id$
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
@@ -11,19 +10,15 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
-
 import org.talend.designer.gefabstractmap.model.abstractmap.AbstractmapPackage;
-
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
@@ -40,134 +35,121 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
- * <!-- begin-user-doc -->
- * An implementation of the model <b>Package</b>.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
  * @generated
  */
 public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
+
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass xmlMapDataEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass abstractInOutTreeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass inputXmlTreeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass outputXmlTreeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass varTableEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass abstractNodeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass treeNodeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass outputTreeNodeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass varNodeEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass globalMapNodeEClass = null;
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass iConnectionEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass iNodeConnectionEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass connectionEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass lookupConnectionEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass filterConnectionEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EClass inputLoopNodesTableEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private EEnum nodeTypeEEnum = null;
 
     /**
-     * Creates an instance of the model <b>Package</b>, registered with
-     * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
-     * package URI value.
-     * <p>Note: the correct way to create the package is via the static
-     * factory method {@link #init init()}, which also performs
-     * initialization of the package, or returns the registered package,
-     * if one already exists.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * Creates an instance of the model <b>Package</b>, registered with {@link org.eclipse.emf.ecore.EPackage.Registry
+     * EPackage.Registry} by the package package URI value.
+     * <p>
+     * Note: the correct way to create the package is via the static factory method {@link #init init()}, which also
+     * performs initialization of the package, or returns the registered package, if one already exists. <!--
+     * begin-user-doc --> <!-- end-user-doc -->
+     * 
      * @see org.eclipse.emf.ecore.EPackage.Registry
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#eNS_URI
      * @see #init()
@@ -178,8 +160,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private static boolean isInited = false;
@@ -225,8 +206,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getXmlMapData() {
@@ -234,8 +214,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getXmlMapData_InputTrees() {
@@ -243,8 +222,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getXmlMapData_OutputTrees() {
@@ -252,8 +230,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getXmlMapData_VarTables() {
@@ -261,8 +238,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getXmlMapData_Connections() {
@@ -270,8 +246,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getAbstractInOutTree() {
@@ -279,8 +254,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_ExpressionFilter() {
@@ -288,8 +262,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_ActivateExpressionFilter() {
@@ -297,8 +270,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_ActivateCondensedTool() {
@@ -306,8 +278,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_Minimized() {
@@ -315,8 +286,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_Name() {
@@ -324,8 +294,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getAbstractInOutTree_FilterIncomingConnections() {
@@ -333,8 +302,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractInOutTree_MultiLoops() {
@@ -342,8 +310,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getInputXmlTree() {
@@ -351,8 +318,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getInputXmlTree_Nodes() {
@@ -360,8 +326,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getInputXmlTree_Lookup() {
@@ -369,8 +334,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getInputXmlTree_MatchingMode() {
@@ -378,8 +342,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getInputXmlTree_LookupMode() {
@@ -387,8 +350,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getInputXmlTree_InnerJoin() {
@@ -396,8 +358,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getInputXmlTree_Persistent() {
@@ -409,13 +370,28 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getInputXmlTree_ActivateGlobalMap() {
+        return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getInputXmlTree_GlobalMapKeysValues() {
+        return (EReference)inputXmlTreeEClass.getEStructuralFeatures().get(7);
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getOutputXmlTree() {
         return outputXmlTreeEClass;
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getOutputXmlTree_Nodes() {
@@ -423,8 +399,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputXmlTree_Reject() {
@@ -432,8 +407,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputXmlTree_RejectInnerJoin() {
@@ -441,8 +415,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputXmlTree_ErrorReject() {
@@ -450,8 +423,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputXmlTree_AllInOne() {
@@ -459,8 +431,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputXmlTree_EnableEmptyElement() {
@@ -468,8 +439,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getOutputXmlTree_InputLoopNodesTables() {
@@ -477,8 +447,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getVarTable() {
@@ -486,8 +455,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getVarTable_Name() {
@@ -495,8 +463,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getVarTable_Nodes() {
@@ -504,8 +471,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getVarTable_Minimized() {
@@ -513,8 +479,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getAbstractNode() {
@@ -522,8 +487,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractNode_Name() {
@@ -531,8 +495,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractNode_Expression() {
@@ -540,8 +503,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getAbstractNode_Type() {
@@ -549,8 +511,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getAbstractNode_OutgoingConnections() {
@@ -558,8 +519,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getAbstractNode_IncomingConnections() {
@@ -567,8 +527,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getAbstractNode_FilterOutGoingConnections() {
@@ -576,8 +535,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getTreeNode() {
@@ -585,8 +543,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getTreeNode_Children() {
@@ -594,8 +551,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Xpath() {
@@ -603,8 +559,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Loop() {
@@ -612,8 +567,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_NodeType() {
@@ -621,8 +575,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Pattern() {
@@ -630,8 +583,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Key() {
@@ -639,8 +591,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Group() {
@@ -648,8 +599,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Main() {
@@ -657,8 +607,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getTreeNode_LookupOutgoingConnections() {
@@ -666,8 +615,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getTreeNode_LookupIncomingConnections() {
@@ -675,8 +623,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_DefaultValue() {
@@ -684,8 +631,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Nullable() {
@@ -693,8 +639,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Choice() {
@@ -702,8 +647,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Substitution() {
@@ -711,8 +655,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getTreeNode_Optional() {
@@ -720,8 +663,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getOutputTreeNode() {
@@ -729,8 +671,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getOutputTreeNode_Aggregate() {
@@ -738,8 +679,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getOutputTreeNode_InputLoopNodesTable() {
@@ -747,8 +687,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getVarNode() {
@@ -756,8 +695,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getVarNode_Nullable() {
@@ -765,8 +703,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getGlobalMapNode() {
+        return globalMapNodeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getIConnection() {
@@ -774,8 +719,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getINodeConnection() {
@@ -783,8 +727,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getINodeConnection_Name() {
@@ -792,8 +735,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getINodeConnection_Source() {
@@ -801,8 +743,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getINodeConnection_Target() {
@@ -810,8 +751,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getConnection() {
@@ -819,8 +759,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getLookupConnection() {
@@ -828,8 +767,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getFilterConnection() {
@@ -837,8 +775,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EAttribute getFilterConnection_Name() {
@@ -846,8 +783,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getFilterConnection_Source() {
@@ -855,8 +791,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getFilterConnection_Target() {
@@ -864,8 +799,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EClass getInputLoopNodesTable() {
@@ -873,8 +807,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EReference getInputLoopNodesTable_Inputloopnodes() {
@@ -882,8 +815,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public EEnum getNodeType() {
@@ -891,8 +823,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public XmlmapFactory getXmlmapFactory() {
@@ -900,8 +831,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private boolean isCreated = false;
@@ -909,8 +839,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     /**
      * Creates the meta-model objects for the package.  This method is
      * guarded to have no affect on any invocation but its first.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public void createPackageContents() {
@@ -940,6 +869,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__LOOKUP_MODE);
         createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__INNER_JOIN);
         createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__PERSISTENT);
+        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__ACTIVATE_GLOBAL_MAP);
+        createEReference(inputXmlTreeEClass, INPUT_XML_TREE__GLOBAL_MAP_KEYS_VALUES);
 
         outputXmlTreeEClass = createEClass(OUTPUT_XML_TREE);
         createEReference(outputXmlTreeEClass, OUTPUT_XML_TREE__NODES);
@@ -987,6 +918,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         varNodeEClass = createEClass(VAR_NODE);
         createEAttribute(varNodeEClass, VAR_NODE__NULLABLE);
 
+        globalMapNodeEClass = createEClass(GLOBAL_MAP_NODE);
+
         iConnectionEClass = createEClass(ICONNECTION);
 
         iNodeConnectionEClass = createEClass(INODE_CONNECTION);
@@ -1011,8 +944,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     private boolean isInitialized = false;
@@ -1020,8 +952,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     /**
      * Complete the initialization of the package and its meta-model.  This
      * method is guarded to have no affect on any invocation but its first.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
     public void initializePackageContents() {
@@ -1052,6 +983,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         treeNodeEClass.getESuperTypes().add(this.getAbstractNode());
         outputTreeNodeEClass.getESuperTypes().add(this.getTreeNode());
         varNodeEClass.getESuperTypes().add(this.getAbstractNode());
+        globalMapNodeEClass.getESuperTypes().add(this.getTreeNode());
         iNodeConnectionEClass.getESuperTypes().add(this.getIConnection());
         connectionEClass.getESuperTypes().add(this.getINodeConnection());
         lookupConnectionEClass.getESuperTypes().add(this.getINodeConnection());
@@ -1080,6 +1012,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getInputXmlTree_LookupMode(), ecorePackage.getEString(), "lookupMode", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputXmlTree_InnerJoin(), ecorePackage.getEBoolean(), "innerJoin", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputXmlTree_Persistent(), ecorePackage.getEBoolean(), "persistent", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputXmlTree_ActivateGlobalMap(), ecorePackage.getEBoolean(), "activateGlobalMap", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getInputXmlTree_GlobalMapKeysValues(), this.getGlobalMapNode(), null, "globalMapKeysValues", null, 0, -1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputXmlTreeEClass, OutputXmlTree.class, "OutputXmlTree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getOutputXmlTree_Nodes(), this.getOutputTreeNode(), null, "nodes", null, 0, -1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1127,6 +1061,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, VarNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(globalMapNodeEClass, GlobalMapNode.class, "GlobalMapNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
         initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(iNodeConnectionEClass, INodeConnection.class, "INodeConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1156,4 +1092,4 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createResource(eNS_URI);
     }
 
-} //XmlmapPackageImpl
+} // XmlmapPackageImpl

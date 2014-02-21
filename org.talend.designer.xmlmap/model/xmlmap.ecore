@@ -33,6 +33,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lookupMode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="innerJoin" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateGlobalMap" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="globalMapKeysValues" upperBound="-1"
+        eType="#//GlobalMapNode" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputXmlTree" eSuperTypes="#//AbstractInOutTree">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -91,6 +94,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="VarNode" eSuperTypes="#//AbstractNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GlobalMapNode" eSuperTypes="#//TreeNode"/>
   <eClassifiers xsi:type="ecore:EEnum" name="NodeType">
     <eLiterals name="ELEMENT"/>
     <eLiterals name="ATTRIBUT" value="1"/>

@@ -371,6 +371,16 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             TextAreaBehavior behavior = new TextAreaBehavior();
             cellEditor = new ExpressionCellEditor(composite, behavior, source, DirectEditType.EXPRESSION_FILTER);
             cellAndType.put(cellEditor, DirectEditType.EXPRESSION_FILTER);
+        } else if (figure instanceof IExpressionBuilderCell && model instanceof InputXmlTree) {
+            IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
+                    IExpressionBuilderDialogService.class);
+            CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
+            cellEditor = new ExpressionCellEditor(composite, behavior, source, DirectEditType.EXPRESSION);
+            ((ExpressionCellEditor) cellEditor).setOwnerId(((InputXmlTree) model).getLookupMode());
+            IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
+                    .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);
+            cellAndType.put(cellEditor, DirectEditType.EXPRESSION);
+            behavior.setCellEditorDialog(dialog);
         }
 
         // }
