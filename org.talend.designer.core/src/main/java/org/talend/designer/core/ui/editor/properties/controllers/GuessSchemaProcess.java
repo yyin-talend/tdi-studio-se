@@ -66,9 +66,9 @@ public class GuessSchemaProcess {
 
     private Process process;
 
-    private Property property;
+    private final Property property;
 
-    private INode node;
+    private final INode node;
 
     private IComponent outputComponent;
 
@@ -78,13 +78,13 @@ public class GuessSchemaProcess {
 
     private IPath temppath;
 
-    private String currentProcessEncoding = "GBK"; //$NON-NLS-1$
+    private final String currentProcessEncoding = "GBK"; //$NON-NLS-1$
 
-    private IContext selectContext;
+    private final IContext selectContext;
 
-    private Connection conn;
+    private final Connection conn;
 
-    private DbInfo info;
+    private final DbInfo info;
 
     private IProcess originalProcess;
 
@@ -234,6 +234,10 @@ public class GuessSchemaProcess {
         }
         // the Sqlite
         if (EDatabaseTypeName.SQLITE.getXmlName().equals(info.getDbType())) {
+            createStatament = "conn.createStatement()";
+        }
+        // the VERTICA
+        if (EDatabaseTypeName.VERTICA.getXmlName().equals(info.getDbType())) {
             createStatament = "conn.createStatement()";
         }
         codeStart = systemProperty

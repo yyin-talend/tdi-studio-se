@@ -246,6 +246,13 @@ public class DbInfo {
             }
         }
         driverClassName = ExtractMetaDataUtils.getInstance().getDriverClassByDbType(dbType);
+        if (dbType.equals(EDatabaseTypeName.VERTICA.getXmlName())) {
+            if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
+                    || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
+                    || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)) {
+                driverClassName = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+            }
+        }
     }
 
     private void genarateDriverJarPath() {
