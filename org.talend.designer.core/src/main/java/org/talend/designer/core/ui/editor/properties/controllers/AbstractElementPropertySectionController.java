@@ -72,6 +72,7 @@ import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.ConnParameterKeys;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
@@ -1434,6 +1435,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverJar(TalendTextUtils.removeQuotes(driverJar));
 
         String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
+        String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
+        if ("VERTICA_6_0".equals(dbVersion)) {
+            connParameters.setDbVersion(EDatabaseVersion4Drivers.VERTICA_6.getVersionValue());
+            driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+        } else if (EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
+                || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)) {
+            connParameters.setDbVersion(dbVersion);
+            driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+        }
+
         connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
 
         if (driverClass != null && !"".equals(driverClass)
@@ -1553,8 +1564,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
         connParameters.setUrl(url);
-        connParameters.setDriverClass(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                EConnectionParameterName.DRIVER_CLASS.getName(), context)));
+
+        String driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                EConnectionParameterName.DRIVER_CLASS.getName(), context));
+        String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
+        if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
+                || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
+                || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)) {
+            driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+        }
+        connParameters.setDriverClass(driverClass);
+
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
