@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.navigator.CommonViewerSorter;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
@@ -112,9 +113,9 @@ public class RepositoryReviewDialog extends Dialog {
     private RepositoryTreeViewer repositoryTreeViewer;
 
     private IRepositoryView repView;
-    
+
     private IElement elem;
-    
+
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
@@ -185,6 +186,7 @@ public class RepositoryReviewDialog extends Dialog {
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
     }
+
     /**
      * DOC ycbai RepositoryReviewDialog constructor comment.
      * 
@@ -300,7 +302,7 @@ public class RepositoryReviewDialog extends Dialog {
         }
 
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
-            return new ValidationRuleTypeProcessor(repositoryType,elem);
+            return new ValidationRuleTypeProcessor(repositoryType, elem);
         }
 
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
@@ -367,6 +369,12 @@ public class RepositoryReviewDialog extends Dialog {
             protected TreeViewer createTreeViewer(Composite parent, int style) {
                 return new RepositoryTreeViewer(parent, style);
             }
+
+            @Override
+            protected void checkSorter(TreeViewer treeViewer) {
+                treeViewer.setSorter(new CommonViewerSorter());
+            }
+
             /*
              * (non-Javadoc)
              * 
@@ -417,7 +425,7 @@ public class RepositoryReviewDialog extends Dialog {
                 boolean highlightOKButton = isSelectionValid(event);
                 getButton(IDialogConstants.OK_ID).setEnabled(highlightOKButton);
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                if (selection != null) {
+                if (selection != null && !selection.isEmpty()) {
                     RepositoryNode node = (RepositoryNode) selection.getFirstElement();
                     if (!highlightOKButton && node.getType() == ENodeType.REPOSITORY_ELEMENT
                             && node.getObjectType().equals(ERepositoryObjectType.METADATA_VALIDATION_RULES)) {
