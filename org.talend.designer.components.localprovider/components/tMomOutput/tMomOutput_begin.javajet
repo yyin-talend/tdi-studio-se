@@ -30,6 +30,7 @@ class="MomInput"
 	
 	boolean failover =  ("true").equals(ElementParameterParser.getValue(node, "__FAILOVER__"));
 	List<Map<String,String>> servers = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SERVERS__");
+	List<Map<String,String>> additionalOpts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADDITIONAL_OPTIONS__");
 
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
@@ -158,7 +159,13 @@ class="MomInput"
 				}
 				%>
 				url_<%=cid %> = url_<%=cid %> +")?randomize=false";
-			<%}else{%>
+				<%
+				for(Map<String, String> optrion : additionalOpts) {
+				%>
+					url_<%=cid %> = url_<%=cid %> +"&"+<%=optrion.get("OPTION_NAME")%>+"="+<%=optrion.get("OPTION_VALUE")%>;
+				<%
+				}
+			}else{%>
 				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
 			<%}%>			
 			
