@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.navigator.CommonViewerSorter;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
@@ -369,6 +370,11 @@ public class RepositoryReviewDialog extends Dialog {
                 return new RepositoryTreeViewer(parent, style);
             }
 
+            @Override
+            protected void checkSorter(TreeViewer treeViewer) {
+                treeViewer.setSorter(new CommonViewerSorter());
+            }
+
             /*
              * (non-Javadoc)
              * 
@@ -420,7 +426,7 @@ public class RepositoryReviewDialog extends Dialog {
                 boolean highlightOKButton = isSelectionValid(event);
                 getButton(IDialogConstants.OK_ID).setEnabled(highlightOKButton);
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                if (selection != null) {
+                if (selection != null && !selection.isEmpty()) {
                     RepositoryNode node = (RepositoryNode) selection.getFirstElement();
                     if (!highlightOKButton && node.getType() == ENodeType.REPOSITORY_ELEMENT
                             && node.getObjectType().equals(ERepositoryObjectType.METADATA_VALIDATION_RULES)) {
