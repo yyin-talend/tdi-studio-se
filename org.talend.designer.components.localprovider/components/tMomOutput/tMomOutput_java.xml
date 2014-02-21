@@ -158,8 +158,8 @@
   	<PARAMETER NAME="ADDITIONAL_OPTIONS" FIELD="TABLE" NB_LINES="5" NUM_ROW="3"
         SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'ACTIVEMQ') and (FAILOVER == 'true')">
       <ITEMS>
-        <ITEM NAME="OPTION_NAME"  />
-        <ITEM NAME="OPTION_VALUE" />
+        <ITEM NAME="OPTION_NAME" FIELD="String"/>
+        <ITEM NAME="OPTION_VALUE" FIELD="String"/>
       </ITEMS>
     </PARAMETER>
   
