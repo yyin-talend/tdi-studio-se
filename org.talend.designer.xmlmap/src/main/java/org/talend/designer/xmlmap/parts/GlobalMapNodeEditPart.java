@@ -157,7 +157,11 @@ public class GlobalMapNodeEditPart extends TableEntityPart implements NodeEditPa
             default:
             }
         case Notification.ADD:
+        case Notification.ADD_MANY:
             switch (featureId) {
+            case XmlmapPackage.GLOBAL_MAP_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+                refreshSourceConnections();
+                break;
             case XmlmapPackage.GLOBAL_MAP_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 refreshTargetConnections();
                 break;
@@ -165,8 +169,7 @@ public class GlobalMapNodeEditPart extends TableEntityPart implements NodeEditPa
         case Notification.REMOVE:
         case Notification.REMOVE_MANY:
             switch (featureId) {
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-            case XmlmapPackage.TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+            case XmlmapPackage.GLOBAL_MAP_NODE__LOOKUP_OUTGOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
             case XmlmapPackage.GLOBAL_MAP_NODE__LOOKUP_INCOMING_CONNECTIONS:

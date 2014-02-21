@@ -85,7 +85,7 @@ public class GlobalMapKeysEntityFigure extends TableEntityFigure {
                 if (me.getSource() != null && me.getSource() instanceof ImageFigure) {
                     ImageFigure imageFigure = (ImageFigure) me.getSource();
                     GlobalMapKeysTable globalMapKeysTable = getGlobalMapKeysTable(imageFigure);
-                    if (globalMapKeysTable != null) {
+                    if (globalMapKeysTable != null && globalMapKeysTable.getInputxmlTree() != null) {
                         EList<GlobalMapNode> globalMapKeysValues = globalMapKeysTable.getInputxmlTree().getGlobalMapKeysValues();
                         if (globalMapKeysValues.contains(globalMapNode)) {
                             globalMapKeysValues.remove(globalMapNode);

@@ -71,11 +71,11 @@ public class XmlMapTableManager extends TableManager {
             if (getModel() instanceof InputXmlTree) {
                 InputXmlTree inputXmlTree = (InputXmlTree) getModel();
                 if (inputXmlTree.isLookup() && !inputXmlTree.getLookupMode().equals(LOOKUP_MODE.LOAD_ONCE.toString())) {
-                    setActivateGlobalMap(false);
+                    setActivateGlobalMap(true);
                 }
             }
         } else {
-            setActivateGlobalMap(true);
+            setActivateGlobalMap(false);
         }
     }
 

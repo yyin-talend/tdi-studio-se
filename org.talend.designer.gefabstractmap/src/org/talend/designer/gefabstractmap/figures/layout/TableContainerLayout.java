@@ -105,7 +105,7 @@ public class TableContainerLayout extends ToolbarLayout {
             }
 
             if (child instanceof AbstractGlobalMapContainer) {
-                if (tableMananger.isActivateGlobalMap()) {
+                if (!tableMananger.isActivateGlobalMap()) {
                     child.setBounds(new Rectangle(x, y, 0, 0));
                     continue;
                 }
@@ -181,7 +181,7 @@ public class TableContainerLayout extends ToolbarLayout {
             }
 
             if (child instanceof AbstractGlobalMapContainer) {
-                if (tableMananger.isActivateGlobalMap()) {
+                if (!tableMananger.isActivateGlobalMap()) {
                     continue;
                 }
             }
