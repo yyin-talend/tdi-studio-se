@@ -108,4 +108,26 @@ public class VarTableManager extends TableManager {
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.gefabstractmap.figures.manager.TableManager#isActivateGlobalMap()
+     */
+    @Override
+    public boolean isActivateGlobalMap() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.gefabstractmap.figures.manager.TableManager#setActivateGlobalMap(boolean)
+     */
+    @Override
+    public void setActivateGlobalMap(boolean active) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

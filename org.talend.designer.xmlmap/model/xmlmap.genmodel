@@ -34,6 +34,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/lookupMode"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/innerJoin"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/persistent"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/activateGlobalMap"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//InputXmlTree/globalMapKeysValues"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//OutputXmlTree">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputXmlTree/nodes"/>
@@ -81,6 +83,7 @@
     <genClasses ecoreClass="xmlmap.ecore#//VarNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarNode/nullable"/>
     </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//GlobalMapNode"/>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//IConnection"/>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//INodeConnection">
       <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//INodeConnection/name"/>

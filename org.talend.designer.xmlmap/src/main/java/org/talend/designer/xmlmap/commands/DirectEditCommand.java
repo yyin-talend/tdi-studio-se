@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
@@ -204,14 +205,15 @@ public class DirectEditCommand extends Command {
                             MessageDialog.openError(null, "Error", message);
                             return;
                         }
+                        String oldName = model.getName();
+                        String oldExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + oldName;
+                        model.setName((String) newValue);
+                        String newExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + model.getName();
+                        XmlMapUtil.updateTargetExpression(model, oldExpression, newExpression, expressionManager);
+                    } else if (model instanceof GlobalMapNode) {
+                        model.setName((String) newValue);
                     }
-                    String oldName = model.getName();
-                    String oldExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + oldName;
-                    model.setName((String) newValue);
-                    String newExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + model.getName();
-                    XmlMapUtil.updateTargetExpression(model, oldExpression, newExpression, expressionManager);
                 }
-
             }
 
         } catch (PatternSyntaxException ex) {

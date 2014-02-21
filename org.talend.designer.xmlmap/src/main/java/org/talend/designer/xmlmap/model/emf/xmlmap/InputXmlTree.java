@@ -22,6 +22,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getLookupMode <em>Lookup Mode</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isInnerJoin <em>Inner Join</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isPersistent <em>Persistent</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isActivateGlobalMap <em>Activate Global Map</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getGlobalMapKeysValues <em>Global Map Keys Values</em>}</li>
  * </ul>
  * </p>
  *
@@ -175,5 +177,47 @@ public interface InputXmlTree extends AbstractInOutTree {
      * @generated
      */
     void setPersistent(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Activate Global Map</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Activate Global Map</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Activate Global Map</em>' attribute.
+     * @see #setActivateGlobalMap(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getInputXmlTree_ActivateGlobalMap()
+     * @model
+     * @generated
+     */
+    boolean isActivateGlobalMap();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isActivateGlobalMap <em>Activate Global Map</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Activate Global Map</em>' attribute.
+     * @see #isActivateGlobalMap()
+     * @generated
+     */
+    void setActivateGlobalMap(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Global Map Keys Values</b></em>' containment reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.GlobalMapNode}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Global Map Keys Values</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Global Map Keys Values</em>' containment reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getInputXmlTree_GlobalMapKeysValues()
+     * @model containment="true"
+     * @generated
+     */
+    EList<GlobalMapNode> getGlobalMapKeysValues();
 
 } // InputXmlTree

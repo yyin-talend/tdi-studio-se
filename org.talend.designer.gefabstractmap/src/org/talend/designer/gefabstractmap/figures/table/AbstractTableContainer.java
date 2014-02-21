@@ -55,6 +55,8 @@ public abstract class AbstractTableContainer extends GenericFigure {
 
     private boolean withScroll;
 
+    protected AbstractGlobalMapContainer globalMapContainer;
+
     public AbstractTableContainer(TableManager tableModelManager) {
         this(tableModelManager, true);
     }
@@ -148,4 +150,11 @@ public abstract class AbstractTableContainer extends GenericFigure {
         return this.table;
     }
 
+    public AbstractTreeSettingContainer getSettingContainer() {
+        return this.settingContainer;
+    }
+
+    public AbstractGlobalMapContainer getGlobalMapContainer() {
+        return this.globalMapContainer;
+    }
 }

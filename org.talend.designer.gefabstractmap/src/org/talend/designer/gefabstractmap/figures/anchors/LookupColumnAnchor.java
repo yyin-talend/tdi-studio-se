@@ -8,7 +8,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.swt.SWT;
 import org.talend.designer.gefabstractmap.figures.manager.TableEntityManager;
-import org.talend.designer.gefabstractmap.figures.table.entity.TableTreeEntityFigure;
+import org.talend.designer.gefabstractmap.figures.table.entity.TableEntityFigure;
 import org.talend.designer.gefabstractmap.part.BaseConnectionEditPart;
 import org.talend.designer.gefabstractmap.part.LookupConnectionPart;
 import org.talend.designer.gefabstractmap.part.MapperTablePart;
@@ -46,8 +46,8 @@ public class LookupColumnAnchor extends ChopboxAnchor {
 
             if (getOwner() == null) {
                 return null;
-            } else if (getOwner() instanceof TableTreeEntityFigure) {
-                TableTreeEntityFigure nodeFigure = (TableTreeEntityFigure) getOwner();
+            } else if (getOwner() instanceof TableEntityFigure) {
+                TableEntityFigure nodeFigure = (TableEntityFigure) getOwner();
                 if (nodeFigure.getElement() != null) {
                     ref = nodeFigure.getElement().getBounds().getLeft();
                     getOwner().translateToAbsolute(ref);
