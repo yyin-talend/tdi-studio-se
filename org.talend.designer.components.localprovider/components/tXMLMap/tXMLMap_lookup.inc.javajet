@@ -374,6 +374,14 @@ skeleton="tXMLMap_java.skeleton"
 		  							} else {
 								<%
 								}
+								List<GlobalMapNode> globalMapEntries = nextInputTable.getGlobalMapKeysValues();
+								if(globalMapEntries != null) {
+									for(GlobalMapNode entry : globalMapEntries) {
+									%>
+										globalMap.put(<%= entry.getName()%>, <%= matchXmlTreeExpr.generateExprCode(entry.getExpression()) %>);
+									<%
+									}
+								}
 								%>
 									<%= lookupSubProcessStartNodeName %>Process(globalMap);
 								<%
