@@ -350,6 +350,10 @@ public class ConnectionManager {
                 + countNbMergeOutgoing(target.getSubProcessStartNode(false));
     }
 
+    public static boolean canConnectToSource(INode oldSource, INode newSource, INode target, EConnectionType lineStyle,
+            String connectorName, String connectionName){
+        return canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName, false);
+    }
     /**
      * Will return true if the connection can connect or not between source & target.
      * 
@@ -361,7 +365,7 @@ public class ConnectionManager {
      * @return
      */
     public static boolean canConnectToSource(INode oldSource, INode newSource, INode target, EConnectionType lineStyle,
-            String connectorName, String connectionName) {
+            String connectorName, String connectionName, boolean isNewComponent) {
         if (newSource.getConnectorFromName(connectorName) == null) {
             // if the new source don't contain the kind of link, then we can't connect the link.
             return false;
@@ -402,11 +406,13 @@ public class ConnectionManager {
         // }
         
         //check extensionPoints
-        Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
-        for(IConnectionValidator validator: connectionValidators){
-            boolean canConnectToSource = validator.canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName);
-            if(!canConnectToSource){
-                return false;
+        if(!isNewComponent){
+            Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
+            for(IConnectionValidator validator: connectionValidators){
+                boolean canConnectToSource = validator.canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName);
+                if(!canConnectToSource){
+                    return false;
+                }
             }
         }
         

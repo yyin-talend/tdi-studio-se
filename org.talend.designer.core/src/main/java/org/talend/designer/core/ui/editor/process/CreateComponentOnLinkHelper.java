@@ -225,7 +225,7 @@ public class CreateComponentOnLinkHelper {
                 boolean b1 = ConnectionManager.canConnectToTarget(source, null, node, connectionType, sourceConnector.getName(),
                         null);
                 boolean b2 = ConnectionManager.canConnectToSource(source, node, target, outputConnectionType,
-                        targetConnector.getName(), null);
+                        targetConnector.getName(), null, true);
                 return b1 && b2;
             }
         }
