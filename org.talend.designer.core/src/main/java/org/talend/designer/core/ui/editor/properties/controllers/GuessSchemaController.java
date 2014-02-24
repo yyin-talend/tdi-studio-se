@@ -442,8 +442,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     tempMetatable.setTableName(inputNode.getUniqueName());
                 }
                 IMetadataTable outputMetaCopy, originaleOutputTable;
-
-                String propertyName = (String) btn.getData(PARAMETER_NAME);
+                String propertyName = "";
+                if (!btn.isDisposed()) {
+                    propertyName = (String) btn.getData(PARAMETER_NAME);
+                }
                 IElementParameter param = inputNode.getElementParameter(propertyName);
                 for (IElementParameter eParam : elem.getElementParameters()) {
                     if (eParam.getContext() != null) {
@@ -475,6 +477,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         }
 
                         changeMetadataCommand = new ChangeMetadataCommand(inputNode, param, originaleOutputTable, outputMetaCopy);
+                        changeMetadataCommand.execute();
                     }
                 }
             }
