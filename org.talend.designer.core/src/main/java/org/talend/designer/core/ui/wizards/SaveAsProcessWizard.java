@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.part.EditorPart;
 import org.osgi.framework.FrameworkUtil;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -37,6 +38,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -82,7 +84,7 @@ public class SaveAsProcessWizard extends Wizard {
         }
 
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-        this.path = service.getRepositoryPath((RepositoryNode) repositoryNode);
+        this.path = service.getRepositoryPath(repositoryNode);
 
         this.oldProcessItem = (ProcessItem) jobEditorInput.getItem();
         oldProperty = this.oldProcessItem.getProperty();
@@ -100,6 +102,7 @@ public class SaveAsProcessWizard extends Wizard {
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_WIZ));
     }
 
+    @Override
     public void addPages() {
         mainPage = new NewProcessWizardPage(property, path);
         mainPage.initializeSaveAs(oldProperty.getLabel(), oldProperty.getVersion(), true);
@@ -112,6 +115,7 @@ public class SaveAsProcessWizard extends Wizard {
         setWindowTitle("Save As");
     }
 
+    @Override
     public boolean performFinish() {
 
         boolean ok = false;
@@ -152,36 +156,44 @@ public class SaveAsProcessWizard extends Wizard {
     }
 
     private void update(final ProcessType processType) {
-
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+        RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>("Save job") {
 
             @Override
-            public void run(final IProgressMonitor monitor) throws CoreException {
+            protected void run() throws LoginException, PersistenceException {
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+                    @Override
+                    public void run(final IProgressMonitor monitor) throws CoreException {
+                        try {
+
+                            oldProcessItem.setProcess(processType);
+
+                            assginVlaues(oldProperty, property);
+
+                            repositoryFactory.save(oldProcessItem);
+
+                            // assign value
+                            processItem = oldProcessItem;
+                        } catch (PersistenceException pe) {
+                            throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass())
+                                    .getSymbolicName(), "persistance error", pe)); //$NON-NLS-1$
+                        }
+                    }
+                };
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 try {
-
-                    oldProcessItem.setProcess(processType);
-
-                    assginVlaues(oldProperty, property);
-
-                    repositoryFactory.save(oldProcessItem);
-
-                    // assign value
-                    processItem = oldProcessItem;
-                } catch (PersistenceException pe) {
-                    throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass()).getSymbolicName(),
-                            "persistance error", pe)); //$NON-NLS-1$
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace runnable to avoid all notification
+                    // of changes before the end of the modifications.
+                    workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                } catch (CoreException e) {
+                    MessageBoxExceptionHandler.process(e.getCause());
                 }
             }
         };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        try {
-            ISchedulingRule schedulingRule = workspace.getRoot();
-            // the update the project files need to be done in the workspace runnable to avoid all notification
-            // of changes before the end of the modifications.
-            workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
-        } catch (CoreException e) {
-            MessageBoxExceptionHandler.process(e.getCause());
-        }
+        rwu.setAvoidUnloadResources(true);
+        rwu.setAvoidSvnUpdate(true);
+        repositoryFactory.executeRepositoryWorkUnit(rwu);
     }
 
     public ProcessItem getProcess() {
