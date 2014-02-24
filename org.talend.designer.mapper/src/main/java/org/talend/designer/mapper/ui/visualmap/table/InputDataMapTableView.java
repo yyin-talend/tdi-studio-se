@@ -846,14 +846,6 @@ public class InputDataMapTableView extends DataMapTableView {
                             }
                         }
                     }
-                    previous = getInputTable().isInnerJoin();
-                    getInputTable().setInnerJoin(false);
-                    if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previous)) {
-                        if (changedOptions > 0) {
-                            changedOptions--;
-                        }
-
-                    }
 
                     innerJoinCheckItemEditable = false;
                 }
