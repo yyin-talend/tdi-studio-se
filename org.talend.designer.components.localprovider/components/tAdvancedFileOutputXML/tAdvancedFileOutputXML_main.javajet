@@ -18,12 +18,15 @@ imports="
 skeleton="tAdvancedFileOutputXML_java.skeleton"
 %>
 
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+final INode node = (INode)codeGenArgument.getArgument();
+%>
+
 <%@ include file="tAdvancedFileOutputXML_begin.inc.javajet"%>
 
 <%
 // ------------------- *** Common code start *** ------------------- //
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String cid_original = cid;
 cid = cid_original.replace("tAdvancedFileOutputXML","tAFOX");
@@ -152,11 +155,13 @@ if(("Dom4j").equals(mode)){
     generateToolByDom4j.bAddEmptyAttr = bAddEmptyAttr;
     generateToolByDom4j.bAddUnmappedAttr = bAddUnmappedAttr;
     generateToolByDom4j.cid = cid;
+    generateToolByDom4j.touchXMLNode.cid = cid;
+    generateToolByDom4j.bigMethodHelper.cid = cid;
     generateToolByDom4j.tool = tool;
     
     //start generate code
 %>
-	org.dom4j.Element subTreeRootParent_<%=cid%> = null;
+	<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByNull();%>
 	
 	// build root xml tree 
 	if (needRoot_<%=cid%>) {
@@ -165,12 +170,13 @@ if(("Dom4j").equals(mode)){
 			orders_<%=cid %>[0] = 0;
 		}
 <% 
+	generateToolByDom4j.touchXMLNode.putDocument();
 	generateToolByDom4j.generateCode(root,"root","doc");
 	if(!isMerge || useStream){ // add a prerequisite useStream to ignore the append mode
 %>
-		root4Group_<%=cid%> = subTreeRootParent_<%=cid%>;
+		root4Group_<%=cid%> =  <%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>;
 	}else{
-		subTreeRootParent_<%=cid%>=root4Group_<%=cid%>;
+		<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByRootGroup();%>
 	}
 	// build group xml tree 
 <%
@@ -201,7 +207,7 @@ if(groupTable.size()>0){					//init the generate tool.
 				firstGroupPathElement_<%=cid%> = firstGroupPathElement_<%=cid%>.getParent();
 			}
 		}
-		subTreeRootParent_<%=cid %> = firstGroupPathElement_<%=cid%>;
+		<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByFirstGroup();%>
 		
 		boolean bl_<%=cid %>= false;//true:find the insert node;false:not
 <%
@@ -213,7 +219,7 @@ if(groupTable.size()>0){					//init the generate tool.
 			generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){
-			java.util.List<org.dom4j.Element> listNodes= subTreeRootParent_<%=cid %>.elements();
+			java.util.List<org.dom4j.Element> listNodes= <%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>.elements();
 			if(listNodes!=null && listNodes.size()>0){
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
@@ -230,7 +236,7 @@ if(groupTable.size()>0){					//init the generate tool.
 <%
 					}
 %>
-							subTreeRootParent_<%=cid %> =  tempElem;
+							<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByTempElem();%>
 							break;
 						}
 					}
@@ -246,11 +252,11 @@ if(groupTable.size()>0){					//init the generate tool.
 <%
 					if(isOptimizeCode){
 %>
-						org.dom4j.Element group<%=i%>__<%=cid%> = advancedXMLUtil_<%=cid%>.generateCodeDom4j_UnFindInsertNode<%=i%>(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,subTreeRootParent_<%=cid%>,orders_<%=cid %>,bl_<%=cid %>);
+						org.dom4j.Element group<%=i%>__<%=cid%> = advancedXMLUtil_<%=cid%>.generateCodeDom4j_UnFindInsertNode<%=i%>(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,<%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>,orders_<%=cid %>,bl_<%=cid %>);
 <%
 						if(("ELEMENT").equals(groupList.get(i).type) && (0!=(groupList.get(i).special & 2))){
 %>
-						subTreeRootParent_<%=cid%>=group<%=i%>__<%=cid%>;
+						<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByGroup(i);%>
 <%
 						}
 					}else{
@@ -294,11 +300,11 @@ if(groupTable.size()>0){					//init the generate tool.
 <% 
 			if(isOptimizeCode){
 %>
-				org.dom4j.Element group<%=i%>__<%=cid%>=advancedXMLUtil_<%=cid%>.generateCodeDom4j_group<%=i%>(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,subTreeRootParent_<%=cid%>,orders_<%=cid%>);
+				org.dom4j.Element group<%=i%>__<%=cid%>=advancedXMLUtil_<%=cid%>.generateCodeDom4j_group<%=i%>(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,<%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>,orders_<%=cid%>);
 <%
 				if(("ELEMENT").equals(groupRootNode.type) && (0!=(groupRootNode.special & 2))){
 %>
-				subTreeRootParent_<%=cid%>=group<%=i%>__<%=cid%>;
+				<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByGroup(i);%>
 <%
 				}
 			}else{
@@ -328,13 +334,13 @@ if(groupTable.size()>0){					//init the generate tool.
 %>
         isNewElememt_<%=cid %>=true;
         if(groupElementList_<%=cid%>.size()<=<%=i%>){
-			groupElementList_<%=cid%>.add(group<%=i%>__<%=cid%>);
+			groupElementList_<%=cid%>.add(<%generateToolByDom4j.touchXMLNode.getXMLElement("group"+i+"_");%>);
         }else{
-        	groupElementList_<%=cid%>.set(<%=i%>,group<%=i%>__<%=cid%>);
+        	groupElementList_<%=cid%>.set(<%=i%>,<%generateToolByDom4j.touchXMLNode.getXMLElement("group"+i+"_");%>);
         }
         
 	}else{
-		subTreeRootParent_<%=cid%>=groupElementList_<%=cid%>.get(<%=i%>);
+		<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByGroupList(i);%>
 	}
 
 <%
@@ -348,11 +354,11 @@ if(groupTable.size()>0){					//init the generate tool.
 	if(loopTable!=null && loopTable.size()>0){
 		if(isOptimizeCode){
 %>
-			org.dom4j.Element loop_<%=cid%>=advancedXMLUtil_<%=cid%>.generateCodeDom4j_Loop(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,subTreeRootParent_<%=cid%>,orders_<%=cid%><%if(!useStream && isMerge && groupTable.size()>0){%>, bl_<%=cid %><%}%>);
+			org.dom4j.Element loop_<%=cid%>=advancedXMLUtil_<%=cid%>.generateCodeDom4j_Loop(nestXMLTool_<%=cid%>,valueMap_<%=cid%>,<%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>,orders_<%=cid%><%if(!useStream && isMerge && groupTable.size()>0){%>, bl_<%=cid %><%}%>);
 <%
 				if(("ELEMENT").equals(loop.type) && (0!=(loop.special & 2))){
 %>
-				subTreeRootParent_<%=cid%>=loop_<%=cid%>;
+				<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByLoop();%>
 <%
 				}
 		}else{

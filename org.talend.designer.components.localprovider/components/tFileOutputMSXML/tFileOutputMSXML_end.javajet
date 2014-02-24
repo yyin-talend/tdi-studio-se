@@ -24,7 +24,7 @@ skeleton="tFileOutputMSXML_java.skeleton"
 
 // ------------------- *** Common code start *** ------------------- //
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
+final INode node = (INode)codeGenArgument.getArgument();
 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
 
 String cid = node.getUniqueName();
@@ -109,6 +109,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
     
+	nameToElement_<%=cid%>.clear();
+	
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 
 <%	if(isDeleteEmptyFile){%>

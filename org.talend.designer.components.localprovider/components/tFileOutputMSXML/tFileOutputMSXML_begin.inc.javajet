@@ -99,6 +99,182 @@ class XMLTool{
 	}
 }
 
+abstract class TouchXMLNode {
+	protected String cid = null;
+	
+	abstract void getXMLNode(String currEleName);
+	
+	abstract void getXMLElement(String currEleName);
+	
+	abstract void putCurrentElementByQName(String currEleName);
+	
+	abstract void putCurrentElementByNull(String currEleName);
+	
+	abstract void putCurrentElementByParentWithoutNamespacePrefix(String currEleName,String parentName,XMLNode node,int index);
+	
+	abstract void putCurrentElementByParent(String currEleName,String parentName,XMLNode node);
+	
+	abstract void putSubTreeRootParentByCurrentElement(String currEleName);
+	
+	abstract void putSubTreeRootParentByNull();
+	
+	abstract void putSubTreeRootParentBySourceRoot(String sourceName);
+	
+	abstract void putSourceRoot(String sourceName);
+	
+	abstract void putSubTreeRootParentByTempElem();
+	
+	abstract void putDocument();
+}
+
+//get mean reference
+//put mean declare,assign action
+class ReferenceTouchXMLNode extends TouchXMLNode {
+
+	void getXMLNode(String currEleName) {
+%>
+		<%=currEleName%>_<%=cid%>
+<%
+	}
+	
+	void getXMLElement(String currEleName) {
+		getXMLNode(currEleName);
+	}
+
+	void putCurrentElementByQName(String currEleName) {
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement(qname_<%=currEleName%>_<%=cid%>);
+<%
+	}
+	
+	void putCurrentElementByNull(String currEleName) {
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = null;
+<%
+	}
+	
+	void putCurrentElementByParentWithoutNamespacePrefix(String currEleName,String parentName,XMLNode node,int index) {
+%>
+		<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name.substring(index+1)%>");
+<%
+	}
+	
+	void putCurrentElementByParent(String currEleName,String parentName,XMLNode node) {
+%>
+		<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
+<%
+	}
+	
+	void putSubTreeRootParentByCurrentElement(String currEleName) {
+%>
+		subTreeRootParent_<%=cid%> = <%=currEleName%>_<%=cid%>;
+<%
+	}
+	
+	void putSubTreeRootParentByNull() {
+%>
+		org.dom4j.Element subTreeRootParent_<%=cid%> = null;
+<%
+	}
+	
+	void putSubTreeRootParentBySourceRoot(String sourceName) {
+%>
+		subTreeRootParent_<%=cid %>= root_<%=sourceName %>_<%=cid%>;
+<%
+	}
+	
+	void putSourceRoot(String sourceName) {
+		//do nothing
+	}
+	
+	void putSubTreeRootParentByTempElem() {
+%>
+		subTreeRootParent_<%=cid %> =  tempElem;
+<%
+	}
+	
+	void putDocument() {
+		//do nothing
+	}
+}
+
+class MappingTouchXMLNode extends TouchXMLNode {
+
+	void getXMLNode(String currEleName) {
+%>
+		nameToElement_<%=cid%>.get("<%=currEleName%>")
+<%
+	}
+	
+	void getXMLElement(String currEleName) {
+%>
+		((org.dom4j.Element)(nameToElement_<%=cid%>.get("<%=currEleName%>")))
+<%
+	}
+
+	void putCurrentElementByQName(String currEleName) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>",org.dom4j.DocumentHelper.createElement(qname_<%=currEleName%>_<%=cid%>));
+<%
+	}
+	
+	void putCurrentElementByNull(String currEleName) {
+		//do nothing
+	}
+	
+	void putCurrentElementByParentWithoutNamespacePrefix(String currEleName,String parentName,XMLNode node,int index) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>",<%getXMLNode(parentName);%>.addElement("<%=node.name.substring(index+1)%>"));
+<%
+	}
+	
+	void putCurrentElementByParent(String currEleName,String parentName,XMLNode node) {
+%>
+		nameToElement_<%=cid%>.put("<%=currEleName%>",<%getXMLNode(parentName);%>.addElement("<%=node.name%>"));
+<%
+	}
+	
+	void putSubTreeRootParentByCurrentElement(String currEleName) {
+%>
+		nameToElement_<%=cid%>.put("subTreeRootParent",<%getXMLNode(currEleName);%>);
+<%
+	}
+	
+	void putSubTreeRootParentByNull() {
+%>
+		nameToElement_<%=cid%>.put("subTreeRootParent",null);
+<%
+	}
+	
+	void putSubTreeRootParentBySourceRoot(String sourceName) {
+%>
+		nameToElement_<%=cid%>.put("subTreeRootParent",root_<%=sourceName %>_<%=cid%>);
+<%
+	}
+	
+	void putSourceRoot(String sourceName) {
+%>
+		nameToElement_<%=cid%>.put("root_<%=sourceName%>",root_<%=sourceName %>_<%=cid %>);
+<%
+	}
+	
+	void putSubTreeRootParentByTempElem() {
+%>
+		nameToElement_<%=cid%>.put("subTreeRootParent",tempElem);
+<%
+	}
+	
+	void putDocument() {
+%>
+		nameToElement_<%=cid%>.put("doc",doc_<%=cid %>);
+<%
+	}
+}
+%>
+
+<%@ include file="../tAdvancedFileOutputXML/BigMethodHelper.javajet"%>
+
+<%
 // ------------------- *** Dom4j generation mode start *** ------------------- //
 class GenerateToolByDom4j{
 	String cid = null;
@@ -109,8 +285,41 @@ class GenerateToolByDom4j{
 	
 	boolean allOrderValid = false;
 	
+	//opt for big xml config tree
+	BigMethodHelper bigMethodHelper = null;
+	TouchXMLNode touchXMLNode = null;
+	
+	public GenerateToolByDom4j() {
+		bigMethodHelper = new BigMethodHelper();
+		touchXMLNode = bigMethodHelper.getTouchXMLNode();
+	}
+	
 	public void generateCode(XMLNode node, String currEleName, String parentName){
+		if(!("ELEMENT").equals(node.type)){
+			return;
+		}
+		
+		bigMethodHelper.setGenerateId(currEleName);
+		//start the class
+		bigMethodHelper.generateClassNameWithRBlock();
+		
+		bigMethodHelper.resetIndex();
+		
+		generateMainCode(node,currEleName,parentName);
+		
+		//end the last method
+		bigMethodHelper.generateLeftBlock();
+		
+		//end the class
+		bigMethodHelper.generateLeftBlock();
+		
+		bigMethodHelper.generateMethodCall();
+	}
+	
+	public void generateMainCode(XMLNode node, String currEleName, String parentName){
 		if(("ELEMENT").equals(node.type)){
+			bigMethodHelper.generateMethod();
+			
 			createElement(currEleName,node,parentName);
 			setText(currEleName,node);
 			for(XMLNode ns:node.namespaces){
@@ -124,22 +333,22 @@ class GenerateToolByDom4j{
 				String prefix = node.name.substring(0,idx);
 				String localName = node.name.substring(idx + 1);
 %>
-			<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName("<%=localName%>",<%=currEleName%>_<%=cid%>.getNamespaceForPrefix("<%=prefix%>")));
+			<%touchXMLNode.getXMLElement(currEleName);%>.setQName(org.dom4j.DocumentHelper.createQName("<%=localName%>",<%touchXMLNode.getXMLElement(currEleName);%>.getNamespaceForPrefix("<%=prefix%>")));
 <%
 			}
 			int index = 0;
 			for(XMLNode child:node.elements){
 				if(0==(child.special & 1)){
-					generateCode(child,currEleName+"_"+index++,currEleName);
+					generateMainCode(child,currEleName+"_"+index++,currEleName);
 				}
 			}
 			if(node.relatedColumn != null && (node.special & 2)==0 && (node.special & 1)==0){
 				if(!outputAsXSD && !allowEmpty){
 %>
-			if (<%=currEleName%>_<%=cid%>.content().size() == 0 
-				&& <%=currEleName%>_<%=cid%>.attributes().size() == 0 
-				&& <%=currEleName%>_<%=cid%>.declaredNamespaces().size() == 0) {
-                <%=parentName%>_<%=cid%>.remove(<%=currEleName%>_<%=cid%>);
+			if (<%touchXMLNode.getXMLNode(currEleName);%>.content().size() == 0 
+				&& <%touchXMLNode.getXMLElement(currEleName);%>.attributes().size() == 0 
+				&& <%touchXMLNode.getXMLElement(currEleName);%>.declaredNamespaces().size() == 0) {
+                <%touchXMLNode.getXMLNode(parentName);%>.remove(<%touchXMLNode.getXMLElement(currEleName);%>);
             }			
 <%
 				}
@@ -159,10 +368,10 @@ class GenerateToolByDom4j{
 		
 %>
 		org.dom4j.QName qname_<%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>"));
-		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement(qname_<%=currEleName%>_<%=cid%>);
+		<%touchXMLNode.putCurrentElementByQName(currEleName);%>
 		
-		java.util.List<org.dom4j.Element> allElements_<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.elements();
-		java.util.List<org.dom4j.Element> elements_<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.elements(qname_<%=currEleName%>_<%=cid%>);
+		java.util.List<org.dom4j.Element> allElements_<%=currEleName%>_<%=cid%> = <%touchXMLNode.getXMLElement(parentName);%>.elements();
+		java.util.List<org.dom4j.Element> elements_<%=currEleName%>_<%=cid%> = <%touchXMLNode.getXMLElement(parentName);%>.elements(qname_<%=currEleName%>_<%=cid%>);
 		int order_<%=currEleName%>_<%=cid%> = allElements_<%=currEleName%>_<%=cid%>.size();
 		int app_size_<%=cid %> = elements_<%=currEleName%>_<%=cid%>.size();
 		if(app_size_<%=cid %> > 0){
@@ -180,7 +389,7 @@ class GenerateToolByDom4j{
 				localName = namespaceHelper.getLocalName();
 %>
 			org.dom4j.QName qname_sibling_<%=currEleName%>_<%=cid%>_<%=i%> = org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>"));
-			org.dom4j.Element sibling_<%=currEleName%>_<%=cid%>_<%=i%> = <%=parentName%>_<%=cid%>.element(qname_sibling_<%=currEleName%>_<%=cid%>_<%=i%>);
+			org.dom4j.Element sibling_<%=currEleName%>_<%=cid%>_<%=i%> = <%touchXMLNode.getXMLElement(parentName);%>.element(qname_sibling_<%=currEleName%>_<%=cid%>_<%=i%>);
 			int index_sibling_<%=currEleName%>_<%=cid%>_<%=i%> = allElements_<%=currEleName%>_<%=cid%>.indexOf(sibling_<%=currEleName%>_<%=cid%>_<%=i%>);
 			if(index_sibling_<%=currEleName%>_<%=cid%>_<%=i%> > -1) {
 				order_<%=currEleName%>_<%=cid%> = index_sibling_<%=currEleName%>_<%=cid%>_<%=i%>;
@@ -196,28 +405,30 @@ class GenerateToolByDom4j{
 			}
 %>
 		}
-		<%=parentName%>_<%=cid%>.elements().add(order_<%=currEleName%>_<%=cid%>,<%=currEleName%>_<%=cid%>);
+		<%touchXMLNode.getXMLElement(parentName);%>.elements().add(order_<%=currEleName%>_<%=cid%>,<%touchXMLNode.getXMLNode(currEleName);%>);
 <%
 		}else{
+			
+			touchXMLNode.putCurrentElementByNull(currEleName);
+			
 			if(index>0 && node.parent!=null){
 %>
-		org.dom4j.Element <%=currEleName%>_<%=cid%>;
-		if (<%=parentName%>_<%=cid%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
-            <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name.substring(index+1)%>");
+		if (<%touchXMLNode.getXMLElement(parentName);%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
+            <%touchXMLNode.putCurrentElementByParentWithoutNamespacePrefix(currEleName,parentName,node,index);%>
         } else {
-        	<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
+        	<%touchXMLNode.putCurrentElementByParent(currEleName,parentName,node);%>
         }
 <%
 			}else{
 %>
-		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
+		<%touchXMLNode.putCurrentElementByParent(currEleName,parentName,node);%>
 <%
 			}
 		}
 		
 		if(0!=(node.special & 2)){
 %>
-		subTreeRootParent_<%=cid%> = <%=currEleName%>_<%=cid%>;
+		<%touchXMLNode.putSubTreeRootParentByCurrentElement(currEleName);%>
 <%
 		}
 	}
@@ -228,35 +439,35 @@ class GenerateToolByDom4j{
 			if(javaType == JavaTypesManager.OBJECT){
 %>
 		if(<%tool.getValue(node); %>!=null){
-			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
+			nestXMLTool_<%=cid%> .parseAndAdd(<%touchXMLNode.getXMLElement(currEleName);%>,<%tool.getValue(node);%>);
 		}
 <%
 				if(outputAsXSD){
 %>
 		else{
-			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,"");
-			<%=currEleName%>_<%=cid%>.addAttribute("xsi:nil","true");
+			nestXMLTool_<%=cid%> .parseAndAdd(<%touchXMLNode.getXMLElement(currEleName);%>,"");
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("xsi:nil","true");
 		}
 <%
 				}
 			}else{
 %>
 		if(<%tool.getValue(node);%>!=null){
-			nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
+			nestXMLTool_<%=cid%> .setText(<%touchXMLNode.getXMLElement(currEleName);%>,<%tool.getValue(node);%>);
 		}
 <%
 				if(outputAsXSD){
 %>
 		else{
-			<%=currEleName%>_<%=cid%>.setText("");
-			<%=currEleName%>_<%=cid%>.addAttribute("xsi:nil","true");
+			<%touchXMLNode.getXMLNode(currEleName);%>.setText("");
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("xsi:nil","true");
 		}
 <%
 				}
 			}
 		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
 %>
-		nestXMLTool_<%=cid %>.parseAndAdd(<%=currEleName %>_<%=cid %>,"<%=node.defaultValue %>");
+		nestXMLTool_<%=cid %>.parseAndAdd(<%touchXMLNode.getXMLElement(currEleName);%>,"<%=node.defaultValue %>");
 
 <%
 		}
@@ -273,11 +484,11 @@ class GenerateToolByDom4j{
 <%
 			if(uri==null) {
 %>
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.name%>",<%tool.getValue(node);%>);
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("<%=node.name%>",<%tool.getValue(node);%>);
 <%
 			} else {
 %>
-			<%=currEleName%>_<%=cid%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),<%tool.getValue(node);%>);
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),<%tool.getValue(node);%>);
 <%
 			}
 %>
@@ -286,11 +497,11 @@ class GenerateToolByDom4j{
 		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
 			if(uri==null) {
 %>
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.name%>", "<%=node.defaultValue %>");
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute("<%=node.name%>", "<%=node.defaultValue %>");
 <%
 			} else {
 %>
-			<%=currEleName%>_<%=cid%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),"<%=node.defaultValue %>");
+			<%touchXMLNode.getXMLElement(currEleName);%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),"<%=node.defaultValue %>");
 <%
 			}
 		}
@@ -299,11 +510,11 @@ class GenerateToolByDom4j{
 		if(node.relatedColumn!=null){
 %>
 		if(<%tool.getValue(node);%>!=null){
-			<%=currEleName%>_<%=cid%>.addNamespace("<%=node.path%>",TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>));
+			<%touchXMLNode.getXMLElement(currEleName);%>.addNamespace("<%=node.path%>",TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>));
 <%
 			if(node.path ==null || node.path.length()==0){
 %>
-        	<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName%>_<%=cid%>.getName(),
+        	<%touchXMLNode.getXMLElement(currEleName);%>.setQName(org.dom4j.DocumentHelper.createQName(<%touchXMLNode.getXMLNode(currEleName);%>.getName(),
         	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>))));
 <%
 			}
@@ -312,11 +523,11 @@ class GenerateToolByDom4j{
 <%
 		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
 %>
-			<%=currEleName %>_<%=cid %>.addNamespace("<%=node.path %>",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"));
+			<%touchXMLNode.getXMLElement(currEleName);%>.addNamespace("<%=node.path %>",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"));
 <%
 			if(node.path ==null || node.path.length()==0){
 %>
-        	<%=currEleName %>_<%=cid %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>_<%=cid %>.getName(),
+        	<%touchXMLNode.getXMLElement(currEleName);%>.setQName(org.dom4j.DocumentHelper.createQName(<%touchXMLNode.getXMLNode(currEleName);%>.getName(),
         	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"))));
 <%
 			}
@@ -555,7 +766,7 @@ class TalendWrapTool_<%=cid %> {
 		if (this.isOptimizeCode) {
 			if (this.isBeginPart) {
 %>
-public void create<%=conn.getUniqueName()%>Doc(<%=NodeUtil.getPrivateConnClassName(conn)%>Struct <%=conn.getUniqueName()%>) {
+public void create<%=conn.getUniqueName()%>Doc(<%=NodeUtil.getPrivateConnClassName(conn)%>Struct <%=conn.getUniqueName()%>) throws java.lang.Exception {
 <%
 			} else { // main part
 %>
@@ -570,7 +781,7 @@ talendWrapTool_<%=cid %>.create<%=conn.getUniqueName()%>Doc(<%=conn.getUniqueNam
     public void generateVarsPart() {
 %>
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
-java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
+final java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
 boolean isXML10Char_<%=cid%> = true;
 
 // sort group root element for judgement of group
@@ -738,13 +949,15 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 	    	generateToolByDom4j.allowEmpty = true;
 	    }
 	    generateToolByDom4j.cid = cid;
+	   	generateToolByDom4j.touchXMLNode.cid = cid;
+	   	generateToolByDom4j.bigMethodHelper.cid = cid;
 	    generateToolByDom4j.tool = tool;
 	    generateToolByDom4j.namespaceHelper = namespaceHelper;
 	    generateToolByDom4j.allOrderValid = allOrderValid;
 	    
 	    //start generate code
 %>
-	org.dom4j.Element subTreeRootParent_<%=cid%> = null;
+	<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByNull();%>
 	
 <%		//the first input connection
 		if(sourceName.equals(firstConnName)){
@@ -753,12 +966,12 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 	if (needRoot_<%=sourceName%>_<%=cid%>) {
 		needRoot_<%=sourceName%>_<%=cid%> = false;
 <%	
+		generateToolByDom4j.touchXMLNode.putDocument();
 		generateToolByDom4j.generateCode(root,"root","doc");
 %>
-		root_<%=sourceName %>_<%=cid %> = subTreeRootParent_<%=cid %>;
+		root_<%=sourceName %>_<%=cid %> = <%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>;
 	}else{
-		subTreeRootParent_<%=cid %>= root_<%=sourceName %>_<%=cid%>;
-
+		<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentBySourceRoot(sourceName);%>
 	}
 <%
 		}else{
@@ -786,13 +999,12 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 			(org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
 		if(!DocumentHelper.isMatchAtRoot(root_<%=sourceName %>_<%=cid %>,prefixToUriForNamespace_<%=sourceName %>_<%=cid%>)) {
 			System.err.println("warn:::the pre input source content is empty!");
+			<%generateToolByDom4j.touchXMLNode.putDocument();%>
 			<%generateToolByDom4j.generateCode(root,"root","doc");%>
 			root_<%=sourceName %>_<%=cid %> = (org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
 		}
-		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
-	}else{
-		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
 	}
+	<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentBySourceRoot(sourceName);%>
 <%
 			}else{
 				//find the father main node in the branch
@@ -811,10 +1023,11 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 		xpath_<%=sourceName%>_<%=cid%>.setNamespaceURIs(prefixToUriForNamespace_<%=sourceName %>_<%=cid%>);
 		root_<%=sourceName %>_<%=cid %> = 
 			(org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
-	<%generateToolByDom4j.generateCode(tempNode,"root", "root_"+sourceName); %>
-		root_<%=sourceName%>_<%=cid%> = subTreeRootParent_<%=cid%>;
+		<%generateToolByDom4j.touchXMLNode.putSourceRoot(sourceName);%>
+		<%generateToolByDom4j.generateCode(tempNode,"root", "root_"+sourceName); %>
+		root_<%=sourceName%>_<%=cid%> = <%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>;
 	}else{
-		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
+		<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentBySourceRoot(sourceName);%>
 	}
 <%
 			}
@@ -839,7 +1052,7 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 				generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){
-			java.util.List<org.dom4j.Element> listNodes= subTreeRootParent_<%=cid %>.elements();
+			java.util.List<org.dom4j.Element> listNodes= <%generateToolByDom4j.touchXMLNode.getXMLElement("subTreeRootParent");%>.elements();
 			if(listNodes!=null && listNodes.size()>0){
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
@@ -848,7 +1061,7 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 					<%=namespaceHelper.buildCurrentGroupDeclaredNamespacesMapping("currentDeclaredNamespacesMapping")%>
 					if(DocumentHelper.compareNodes("<%=currentFinalGroupXpath %>",tempElem,uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%>,currentDeclaredNamespacesMapping,<%if(sourceName.equals(firstConnName)) {%>false<%} else {%>true<%}%>)){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
-							subTreeRootParent_<%=cid %> =  tempElem;
+							<%generateToolByDom4j.touchXMLNode.putSubTreeRootParentByTempElem();%>
 							break;
 						}
 					}

@@ -22,7 +22,7 @@ skeleton="tFileOutputMSXML_java.skeleton"
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
+final INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String incomingName = (String)codeGenArgument.getIncomingName();
@@ -115,6 +115,9 @@ class NestXMLTool_<%=cid%>{
 
 
 final org.dom4j.Document doc_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
+
+final java.util.Map<String,org.dom4j.Branch> nameToElement_<%=cid%> = new java.util.HashMap<String,org.dom4j.Branch>();
+
 final NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 
 final org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
