@@ -552,6 +552,12 @@ class TalendWrapTool_<%=cid %> {
 	}
 	
 	public void generateWrapMethod (IConnection conn ) {
+		if(!this.isBeginPart) {
+%>
+nb_line_<%=cid%>++;
+<%
+		}
+		
 		if (this.isOptimizeCode) {
 			if (this.isBeginPart) {
 %>
@@ -559,7 +565,6 @@ public void create<%=conn.getUniqueName()%>Doc(<%=NodeUtil.getPrivateConnClassNa
 <%
 			} else { // main part
 %>
-nb_line_<%=cid%>++;
 talendWrapTool_<%=cid %>.create<%=conn.getUniqueName()%>Doc(<%=conn.getUniqueName()%>);
 <%
 			}
