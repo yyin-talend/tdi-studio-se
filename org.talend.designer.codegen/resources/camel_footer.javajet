@@ -202,11 +202,11 @@
 
                             if (isProvider) {
 %>
-                                locatorFeature_<%=cid%>.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
+                                locatorFeature_<%=cid%>.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
 <%
                             } else {
 %>
-                                locatorFeature_<%=cid%>.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
+                                locatorFeature_<%=cid%>.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
 <%
                             }
                         }
