@@ -108,7 +108,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private static Logger log = Logger.getLogger(GuessSchemaController.class);
 
-    private Map<IElementParameter, Button> queryButton = new HashMap<IElementParameter, Button>();
+    private final Map<IElementParameter, Button> queryButton = new HashMap<IElementParameter, Button>();
 
     // added by hyWang
     private DbInfo info;
@@ -324,7 +324,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private String memoSQL = null;
 
-    private List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
+    private final List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
 
     private void runShadowProcess(final Property property, final Node inputNode, final IContext selectContext,
             final IElementParameter switchParam) {
@@ -443,7 +443,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
                 IMetadataTable outputMetaCopy, originaleOutputTable;
 
-                String propertyName = (String) btn.getData(PARAMETER_NAME);
+                String propertyName = "";
+                if (!btn.isDisposed()) {
+                    propertyName = (String) btn.getData(PARAMETER_NAME);
+                }
                 IElementParameter param = inputNode.getElementParameter(propertyName);
                 for (IElementParameter eParam : elem.getElementParameters()) {
                     if (eParam.getContext() != null) {
@@ -475,6 +478,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         }
 
                         changeMetadataCommand = new ChangeMetadataCommand(inputNode, param, originaleOutputTable, outputMetaCopy);
+                        changeMetadataCommand.execute();
                     }
                 }
             }
