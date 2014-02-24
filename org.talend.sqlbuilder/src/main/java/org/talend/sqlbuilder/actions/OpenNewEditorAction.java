@@ -108,10 +108,6 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         IRepositoryViewObject object = SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject();
         connParam.setRepositoryName(object.getLabel());
         connParam.setRepositoryId(object.getId());
-        // whether is first open Sql Builder
-        if (!connParam.isFirstOpenSqlBuilder()) {
-            connParam.setQuery(""); //$NON-NLS-1$
-        }
         connParam.setFirstOpenSqlBuilder(false);
         if (isQuery) {
             DBTreeProvider provider = (DBTreeProvider) selectionProvider.getContentProvider();
