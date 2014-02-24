@@ -363,14 +363,15 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 @SuppressWarnings("rawtypes")
                 List dataList = (List) data;
                 boolean sameNumberOfParamAssSourceTable = true;
-                if ((!dataList.isEmpty()) && (dataList.get(0) instanceof IMetadataColumn)) {
-                    // avoid to take as parameter a full schema since properties doesn't accept this anyway
+                if (dataList.isEmpty() || !(dataList.get(0) instanceof HashMap)) {
+                    // only accept data from another property (list of HashMap)
                     return false;
                 }
-                int a = dataList.size();
+                @SuppressWarnings("rawtypes")
+                int sourceColumnNumber = ((HashMap) dataList.get(0)).size();
                 int colNum = getExtendedTableViewer().getTableViewerCreator().getTable().getColumnCount() - 1;
                 if (data != null) {
-                    if (colNum == a) {
+                    if (colNum == sourceColumnNumber) {
                         sameNumberOfParamAssSourceTable = true;
                     } else {
                         sameNumberOfParamAssSourceTable = false;
