@@ -171,13 +171,21 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
             public void run(IProgressMonitor monitor) {
 
                 TreeItem root = xmlViewer.getTree().getItem(0);
+                //
+                boolean noCurSchema = false;
+                if (root != null && root.getData() != null && root.getData() instanceof HL7TreeNode) {
+                    HL7TreeNode node = (HL7TreeNode) root.getData();
+                    if (node.getColumnLabel().equals("")) {
+                        noCurSchema = true;
+                    }
+                }
                 if (getManager().getHl7Component().isHL7Output()) {
                     if (getManager() instanceof HL7OutputManager) {
                         List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
                         IElementParameter param = getManager().getHl7Component().getElementParameterFromField(
                                 EParameterFieldType.PROPERTY_TYPE);
                         String value = (String) param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).getValue();
-                        if (value.equals(EmfComponent.BUILTIN)) {
+                        if (value.equals(EmfComponent.BUILTIN) && !noCurSchema) {
                             List<HL7TreeNode> treeData = ((HL7OutputManager) getManager())
                                     .getTreeData(((HL7OutputManager) getManager()).getCurrentSchema(false));
                             for (HL7TreeNode data : treeData) {
