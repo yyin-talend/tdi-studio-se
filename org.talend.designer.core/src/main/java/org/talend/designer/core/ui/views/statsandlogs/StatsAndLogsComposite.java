@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.statsandlogs;
 
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -76,37 +74,14 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         // TODO Auto-generated method stub
         super.addComponents(forceRedraw, reInitialize, height);
         // achen add to fix 0005991 & 0005993 when reload
+        // TDI-28709: by default the main composite is opposite with the "STATANDLOG_USE_PROJECT_SETTINGS"
         Object value = ElementParameter2ParameterType.getParameterValue(elem,
                 EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
         if (value != null && value instanceof Boolean) {
             Boolean v = (Boolean) value;
-            useProjectSetting.setSelection(v.booleanValue());
             setMainCompositeEnable(!v.booleanValue());
-            topComposite.setEnabled(true);
-            if (v.booleanValue()) {
-                if (elem == null) {
-                    return;
-                }
-                // achen modify to fix 0005991& 0005993
-                ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem,
-                        ProjectManager.getInstance().getCurrentProject(), StatsAndLogsComposite.this);
-                refresh();
-            }
-
-        }
-        if (useProjectSetting != null) {
-            useProjectSetting.removeSelectionListener(selectionListener);
-            useProjectSetting.addSelectionListener(selectionListener);
         }
     }
-
-    SelectionAdapter selectionListener = new SelectionAdapter() {
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            useProjectSettingButtonClick();
-        }
-    };
 
     /*
      * (non-Javadoc)

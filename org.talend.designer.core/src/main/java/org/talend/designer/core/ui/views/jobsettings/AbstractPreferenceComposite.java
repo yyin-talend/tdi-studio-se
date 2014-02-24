@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -77,11 +78,14 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.ProjectSettingDialog;
@@ -163,6 +167,27 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                 useProjectSetting.setText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
                 useProjectSetting.setToolTipText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
                 useProjectSetting.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+
+                // TDI-28709: Enhance the display of refresh Stats & Logs composite after import ProjectSetting.xml
+                Object value = ElementParameter2ParameterType.getParameterValue(elem,
+                        EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
+                if (value != null && value instanceof Boolean) {
+                    Boolean v = (Boolean) value;
+                    useProjectSetting.setSelection(v.booleanValue());
+                    topComposite.setEnabled(true);
+                    if (v.booleanValue()) {
+                        if (elem == null) {
+                            return;
+                        }
+                        // achen modify to fix 0005991& 0005993
+                        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem, ProjectManager.getInstance()
+                                .getCurrentProject(), null);
+                    }
+                }
+                if (useProjectSetting != null) {
+                    useProjectSetting.removeSelectionListener(selectionListener);
+                    useProjectSetting.addSelectionListener(selectionListener);
+                }
             }
             // end
             if (hasRunJobNode(false) && needApplyToChildren()) {
@@ -184,6 +209,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     // Process process = (Process) elem;
     // return (ProcessItem) process.getProperty().getItem();
     // }
+    SelectionAdapter selectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            useProjectSettingButtonClick();
+        }
+    };
 
     /**
      * 
