@@ -39,6 +39,7 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedButtonEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.extended.table.IExtendedButtonListener;
+import org.talend.commons.ui.utils.SimpleClipboard;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
@@ -348,7 +349,29 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
-                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+                Object data = SimpleClipboard.getInstance().getData();
+                if (data == null || !(data instanceof List)) {
+                    return false;
+                }
+                @SuppressWarnings("rawtypes")
+                List dataList = (List) data;
+                boolean sameNumberOfParamAssSourceTable = true;
+                if ((!dataList.isEmpty()) && (dataList.get(0) instanceof IMetadataColumn)) {
+                    // avoid to take as parameter a full schema since properties doesn't accept this anyway
+                    return false;
+                }
+                int a = dataList.size();
+                int colNum = getExtendedTableViewer().getTableViewerCreator().getTable().getColumnCount() - 1;
+                if (data != null) {
+                    if (colNum == a) {
+                        sameNumberOfParamAssSourceTable = true;
+                    } else {
+                        sameNumberOfParamAssSourceTable = false;
+                    }
+                }
+
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
+                        && sameNumberOfParamAssSourceTable;
             }
 
             @Override
