@@ -286,6 +286,10 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                     return false;
                 }
             }
+            // filter tdm items
+            else if (contentType == ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "HIERARCHICAL_MAPPER")) {
+                return false;
+            }
         }
 
         // for sub folder in db connection
