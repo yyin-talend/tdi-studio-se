@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -77,11 +78,14 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.ProjectSettingDialog;
@@ -163,6 +167,27 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                 useProjectSetting.setText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
                 useProjectSetting.setToolTipText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
                 useProjectSetting.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+
+                // TDI-28709: Enhance the display of refresh Stats & Logs composite after import ProjectSetting.xml
+                Object value = ElementParameter2ParameterType.getParameterValue(elem,
+                        EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
+                if (value != null && value instanceof Boolean) {
+                    Boolean v = (Boolean) value;
+                    useProjectSetting.setSelection(v.booleanValue());
+                    topComposite.setEnabled(true);
+                    if (v.booleanValue()) {
+                        if (elem == null) {
+                            return;
+                        }
+                        // achen modify to fix 0005991& 0005993
+                        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem, ProjectManager.getInstance()
+                                .getCurrentProject(), null);
+                    }
+                }
+                if (useProjectSetting != null) {
+                    useProjectSetting.removeSelectionListener(selectionListener);
+                    useProjectSetting.addSelectionListener(selectionListener);
+                }
             }
             // end
             if (hasRunJobNode(false) && needApplyToChildren()) {
@@ -184,6 +209,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     // Process process = (Process) elem;
     // return (ProcessItem) process.getProperty().getItem();
     // }
+    SelectionAdapter selectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            useProjectSettingButtonClick();
+        }
+    };
 
     /**
      * 
@@ -193,8 +225,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
      */
     protected void setMainCompositeEnable(boolean enabled) {
         Control[] controls = getComposite().getChildren();
-        for (int i = 0; i < controls.length; i++) {
-            Control control = controls[i];
+        for (Control control : controls) {
             if (control != topComposite) {
                 if (control instanceof Composite) {
                     if (control instanceof CCombo) {
@@ -253,16 +284,16 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
     private void setEditable(Composite parent, boolean editable) {
         Control[] children = parent.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof Composite) {
-                if (children[i] instanceof CCombo) {
-                    setTextEnable(children[i], editable, editable);
+        for (Control element : children) {
+            if (element instanceof Composite) {
+                if (element instanceof CCombo) {
+                    setTextEnable(element, editable, editable);
                 }
-                setEditable((Composite) children[i], editable);
-            } else if (children[i] instanceof Button) {
-                setTextEnable(children[i], editable, editable);
+                setEditable((Composite) element, editable);
+            } else if (element instanceof Button) {
+                setTextEnable(element, editable, editable);
             } else {
-                setTextEnable(children[i], editable, true);
+                setTextEnable(element, editable, true);
             }
         }
     }
@@ -322,6 +353,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
     MouseListener listenerSelection = new MouseAdapter() {
 
+        @Override
         public void mouseDown(MouseEvent e) {
             if (inUseProjectSettingMode(elem, section, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS)
                     || inUseProjectSettingMode(elem, section, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS)) {
@@ -349,10 +381,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     private void addButtonListeners() {
         reloadBtn.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 onReloadButtonClick();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -360,10 +394,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
         saveBtn.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 onSaveButtonClick();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -380,6 +416,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                  * @see
                  * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
                  */
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
 
                 }
@@ -389,11 +426,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                  * 
                  * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
                  */
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     // zli for bug 12335
                     final ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                             .getShell()) {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
                             IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -609,7 +648,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             message = Messages.getString("ReloadFromProjectSettingsMessages"); //$NON-NLS-1$
         }
 
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message);
         if (isOK) {
             onReloadPreference();
 
@@ -651,7 +690,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         } else {
             message = Messages.getString("SaveToProjectSettingsMessage"); //$NON-NLS-1$
         }
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$       
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message);
         if (isOK) {
             onSavePreference();
         }
@@ -774,10 +813,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
         @Override
         protected void okPressed() {
-            if (noUseProjectSettingsButton.getSelection())
+            if (noUseProjectSettingsButton.getSelection()) {
                 setOptionValue("noUseProjectSettings"); //$NON-NLS-1$
-            if (updateProjectSettingsButton.getSelection())
+            }
+            if (updateProjectSettingsButton.getSelection()) {
                 setOptionValue("updateProjectSettings");//$NON-NLS-1$
+            }
 
             super.okPressed();
         }

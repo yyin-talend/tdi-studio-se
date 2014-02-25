@@ -154,6 +154,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -3834,6 +3835,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         ParametersType parameters = processType.getParameters();
         if (parameters != null) {
             loadElementParameters(this, parameters.getElementParameter());
+            updateProSetingParameters(parameters.getElementParameter());
             loadRoutinesParameters(processType);
         }
     }
@@ -3856,6 +3858,21 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
         // }
 
+    }
+
+    private void updateProSetingParameters(EList listParamType) {
+        // TDI-28709:after import the ProjectSetting.xml,do not open job directly run job,should try to update
+        // projcetSetting first
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(pType.getName())) {
+                if (Boolean.valueOf(pType.getValue())) {
+                    ProjectSettingManager.reloadStatsAndLogFromProjectSettings(this, ProjectManager.getInstance()
+                            .getCurrentProject(), null);
+                    break;
+                }
+            }
+        }
     }
 
     /**
