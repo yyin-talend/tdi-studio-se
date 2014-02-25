@@ -275,9 +275,11 @@ COMPATIBILITY="ALL"
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
         <ITEM NAME="FILE_PARAMS_VALUE"/>
+        <ITEM NAME="CONTEXT_TYPE"/>
+        <ITEM NAME="CONTEXT_CHARSET"/>
       </ITEMS>
     </PARAMETER>
-
+    
     <PARAMETER
        NAME="USE_PROXY"
        FIELD="CHECK"
