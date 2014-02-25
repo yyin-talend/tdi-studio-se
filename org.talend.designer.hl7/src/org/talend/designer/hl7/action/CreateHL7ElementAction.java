@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
@@ -109,7 +110,9 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
      */
     private boolean createChildNode(HL7TreeNode node) {
         if (node.getColumn() != null) {
-            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), "Warning",
+            if (!MessageDialog.openConfirm(
+                    xmlViewer.getControl().getShell(),
+                    "Warning",
                     "Do you want to disconnect the existing linker and then add an sub element for the selected element"
                             + node.getLabel() + "\"?")) {
                 return false;
@@ -149,7 +152,15 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
             }
         }
         HL7TreeNode child = new Element(label);
-        child.setRow(node.getRow());
+        // if the root not have CurSchema
+        if (node.getRow() == null || node.getRow().equals("")) {
+            if (hl7ui != null && hl7ui.gethl7Manager() instanceof HL7OutputManager) {
+                child.setRow(((HL7OutputManager) hl7ui.gethl7Manager()).getCurrentSchema(false));
+            }
+        } else {
+            child.setRow(node.getRow());
+        }
+
         node.addChild(child);
         this.xmlViewer.refresh();
         this.xmlViewer.expandAll();

@@ -196,6 +196,8 @@ public class HL7OutputManager extends HL7Manager {
             initCurrentSchema();
 
         } else if (rootTable != null && rootTable.size() <= 0) {
+            HL7TreeNode rootNode = null;
+            // this code seems no use,but will keep like this now ...
             for (IConnection connection : incomingConnections) {
                 IMetadataTable metadataTable = connection.getMetadataTable();
                 metadataTable.setLabel(connection.getUniqueName());
@@ -224,7 +226,6 @@ public class HL7OutputManager extends HL7Manager {
                 treeData = new ArrayList<HL7TreeNode>();
                 if (i == 0)// the first schema as current
                     currentSchema = metadataTableName;// metadataTable.getLabel();
-                HL7TreeNode rootNode = null;
                 HL7TreeNode current = null;
                 HL7TreeNode temp = null;
                 HL7TreeNode mainNode = null;
@@ -298,14 +299,15 @@ public class HL7OutputManager extends HL7Manager {
                     if (haveOrder) {
                         orderNode(rootNode);
                     }
-                    treeData.add(rootNode);
-                    rootNode.setRow(rowName);
-                    contents.put(metadataTableName, treeData);
                     i++;
                 }
             }
+            if (rootNode != null && treeData != null) {
+                treeData.add(rootNode);
+                // rootNode.setRow(rowName);
+                contents.put(rootNode.getColumnLabel(), treeData);
+            }
         }
-
     }
 
     // // build group tree

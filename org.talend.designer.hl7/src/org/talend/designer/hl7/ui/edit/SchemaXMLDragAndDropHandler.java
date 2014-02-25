@@ -215,12 +215,20 @@ public class SchemaXMLDragAndDropHandler {
                     Item targetItem = (Item) event.item;
                     if (targetItem != null) {
                         Object data = targetItem.getData();
-                        if (data instanceof HL7TreeNode) {
-                            HL7TreeNode rootElement = getRootElement((HL7TreeNode) data);
-
-                            if (rootElement != null) {// && !(rootElement instanceof HL7Root)
-                                return currentSchema.equals(rootElement.getRow());
+                        if (data != null && data instanceof HL7TreeNode) {
+                            HL7TreeNode treeNode = ((HL7TreeNode) data);
+                            if (treeNode.getParent() == null) {
+                                MessageDialog.openConfirm(event.display.getActiveShell(), "Warning", "\"" + treeNode.getLabel()
+                                        + "\" " + "is root, can not have linker,you should create sub-elements or attributes.");
+                                return false;
                             }
+                            String columnLabel = treeNode.getRow();
+                            return columnLabel != null ? columnLabel.startsWith(currentSchema) : false;
+                            // HL7TreeNode rootElement = getRootElement((HL7TreeNode) data);
+                            //
+                            // if (rootElement != null) {// && !(rootElement instanceof HL7Root)
+                            // return currentSchema.equals(rootElement.getRow());
+                            // }
                         }
                     }
                 }
