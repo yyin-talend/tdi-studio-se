@@ -370,8 +370,9 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
 
     @Override
     public boolean performCancel() {
-        resetCustomComponentSetting();
-        refreshViewer();
+        if (componentViewer != null) {
+            resetCustomComponentSetting();
+        }
         return super.performCancel();
     }
 
