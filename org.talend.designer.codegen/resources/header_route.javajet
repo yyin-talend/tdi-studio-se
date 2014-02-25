@@ -199,6 +199,31 @@ package <%= packageName %>;
 %>
         Object invoke();
     }
+
+static class CxfPayloadProvider implements javax.ws.rs.ext.MessageBodyWriter<org.apache.camel.component.cxf.CxfPayload<javax.xml.transform.Source>> {
+    public boolean isWriteable(Class<?> cls, java.lang.reflect.Type type, java.lang.annotation.Annotation[] anns, javax.ws.rs.core.MediaType mt) {
+        return cls == org.apache.camel.component.cxf.CxfPayload.class;
+    }
+    public long getSize(org.apache.camel.component.cxf.CxfPayload<javax.xml.transform.Source> obj, Class<?> cls, java.lang.reflect.Type type,
+            java.lang.annotation.Annotation[] anns, javax.ws.rs.core.MediaType mt) {
+        return -1;
+    }
+    public void writeTo(org.apache.camel.component.cxf.CxfPayload<javax.xml.transform.Source> obj, Class<?> cls, java.lang.reflect.Type type,
+            java.lang.annotation.Annotation[] anns, javax.ws.rs.core.MediaType mt,
+            javax.ws.rs.core.MultivaluedMap<String, Object> headers, java.io.OutputStream os)
+            throws java.io.IOException, javax.ws.rs.WebApplicationException {
+        java.util.List<javax.xml.transform.Source> bodySource = obj.getBodySources();
+        if (bodySource == null || bodySource.size() != 1) {
+            throw new javax.ws.rs.InternalServerErrorException();
+        }
+        try {
+            org.apache.cxf.staxutils.StaxUtils.copy(bodySource.get(0), os);
+        } catch (javax.xml.stream.XMLStreamException ex) {
+            throw new javax.ws.rs.InternalServerErrorException(ex);
+        }
+        
+    }
+}
 <%
             }
 		}

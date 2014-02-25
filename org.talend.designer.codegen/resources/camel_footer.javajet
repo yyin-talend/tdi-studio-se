@@ -125,6 +125,7 @@
                     factory_<%=cid%> = sf_<%=cid%>;
 					sf_<%=cid%>.setResourceClasses(Service_<%=cid%>.class);
 					sf_<%=cid%>.setResourceProvider(Service_<%=cid%>.class, new org.apache.camel.component.cxf.jaxrs.CamelResourceProvider(Service_<%=cid%>.class));
+					sf_<%=cid%>.setProvider(new CxfPayloadProvider());
 					// avoid JAXBException in runtime
 					sf_<%=cid%>.setProvider(new org.apache.cxf.jaxrs.provider.SourceProvider());
 <%
