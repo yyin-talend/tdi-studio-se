@@ -193,6 +193,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         // event
         treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 List<RepositoryObject> objects = new ArrayList<RepositoryObject>();
@@ -211,10 +212,12 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         });
         treeViewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 //
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 // refreshCheckedTreeView();
             }
@@ -285,6 +288,10 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         && node.getLabel().equalsIgnoreCase(RepositoryConstants.SYSTEM_DIRECTORY)) {
                     return false;
                 }
+            }
+            // filter tdm items
+            else if (contentType == ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "HIERARCHICAL_MAPPER")) {
+                return false;
             }
         }
 
@@ -389,10 +396,12 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
         versionColumn.addControlListener(new ControlListener() {
 
+            @Override
             public void controlMoved(ControlEvent e) {
                 //
             }
 
+            @Override
             public void controlResized(ControlEvent e) {
                 if (!isFixedstatus()) {
                     refreshTableItems();
@@ -929,6 +938,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
     private void updateItemsVersion() {
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
                 Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
