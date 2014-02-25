@@ -662,6 +662,23 @@ public class UpdateNodeParameterCommand extends Command {
                         }
                         builtIn = false;
                     }
+                    
+                    String inputSchemaParamName = UpdatesConstants.INPUT_SCHEMA + UpdatesConstants.COLON
+                            + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+                    IElementParameter inputRepositoryParam = node.getElementParameter(inputSchemaParamName);
+                    if (inputRepositoryParam != null && oldSourceId.equals(inputRepositoryParam.getValue())) {
+                        node.setPropertyValue(inputSchemaParamName, newSourceId);
+                        if (newTable != null) {
+                            for (INodeConnector nodeConnector : node.getListConnector()) {
+                                if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
+                                    MetadataToolHelper
+                                            .copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                }
+                            }
+                        }
+                        builtIn = false;
+                    }
+                    
                     // for tELTAggregate
                     schemaParamName = UpdatesConstants.SCHEMA_TARGET + UpdatesConstants.COLON
                             + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
