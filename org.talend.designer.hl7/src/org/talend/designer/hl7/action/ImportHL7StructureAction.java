@@ -24,8 +24,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Attribute;
@@ -129,13 +133,25 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
 
     private void initXmlTreeData(List<String> schemaList, List<HL7FileNode> root, List<HL7TreeNode> treeData) {
         Map<String, HL7TreeNode> mapNodes = new HashMap<String, HL7TreeNode>();
+        List<? extends IConnection> incomingConnections = new ArrayList<IConnection>();
         if (hl7ui != null) {
             if (hl7ui.gethl7Manager() instanceof HL7OutputManager) {
                 ((HL7OutputManager) hl7ui.gethl7Manager()).getContents().clear();
+                incomingConnections = NodeUtil.getIncomingConnections(hl7ui.gethl7Manager().getHl7Component(),
+                        IConnectionCategory.FLOW);
             }
         }
+
         HL7TreeNode rootNode = null;
         for (String rowName : schemaList) {
+            IMetadataTable metadataTable = null;
+            for (IConnection connection : incomingConnections) {
+                if (connection.getUniqueName().equals(rowName)) {
+                    metadataTable = connection.getMetadataTable();
+                    metadataTable.setLabel(connection.getUniqueName());
+                }
+            }
+
             HL7TreeNode current = null;
             HL7TreeNode temp = null;
             HL7TreeNode mainNode = null;
@@ -147,7 +163,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
             String schemaId = rowName + ":";//((MetadataTable) obj).getLabel() + ":"; //$NON-NLS-1$
             // build root tree
             for (int i = 0; i < root.size(); i++) {
-                HL7FileNode node = (HL7FileNode) root.get(i);
+                HL7FileNode node = root.get(i);
                 String newPath = node.getFilePath();
                 defaultValue = node.getDefaultValue();
                 String columnName = node.getRelatedColumn();
@@ -198,6 +214,29 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
 
                 if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                     columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+                    // group node can not get the metadata table
+                    if (metadataTable == null) {
+                        IMetadataTable metadataTableTemp = null;
+                        for (IConnection connection : incomingConnections) {
+                            metadataTableTemp = connection.getMetadataTable();
+                            String connectionName = metadataTableTemp.getLabel();
+                            if (connectionName == null) {
+                                connectionName = connection.getUniqueName();
+                            }
+                            if (columnName.startsWith(connectionName)) {
+                                break;
+                            }
+                        }
+                        if (metadataTableTemp != null) {
+                            temp.setColumnName(columnName);
+                            temp.setColumn(metadataTableTemp.getColumn(columnName));
+                            temp.setTable(metadataTableTemp);
+                        }
+                    } else {
+                        temp.setColumnName(columnName);
+                        temp.setColumn(metadataTable.getColumn(columnName));
+                        temp.setTable(metadataTable);
+                    }
                 }
             }
 
