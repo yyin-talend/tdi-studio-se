@@ -483,7 +483,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam.setRequired(false);
         tmpParam.setGroup("TYPE"); //$NON-NLS-1$
         tmpParam.setGroupDisplayName("Type");
-        tmpParam.setShowIf("#NODE@OUT.END_OF_FLOW == 'false'");
+        tmpParam.setShowIf("(#NODE@OUT.END_OF_FLOW == 'false' OR #NODE@IN.SUBTREE_START == 'true')");
         addElementParameter(tmpParam);
 
         tmpParam = new ElementParameter(this);
