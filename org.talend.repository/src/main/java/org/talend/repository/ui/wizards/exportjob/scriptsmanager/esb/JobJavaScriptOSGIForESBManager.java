@@ -416,13 +416,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
     }
 
-    private static String getPackageName(ProcessItem processItem) {
-        return JavaResourcesHelper.getProjectFolderName(processItem)
-                + PACKAGE_SEPARATOR
-                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                        .getVersion());
-    }
-
     private boolean isRoute() {
         return ROUTE.equals(itemType);
     }
@@ -454,7 +447,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // job name and class name
         jobInfo.put("name", name); //$NON-NLS-1$
-        jobInfo.put("className", getPackageName(processItem) + PACKAGE_SEPARATOR + name); //$NON-NLS-1$
+        jobInfo.put("className", JavaResourcesHelper.getJobClassName(processItem)); //$NON-NLS-1$
 
         // additional Talend job interfaces (ESB related)
         boolean isESBJob = isTalendESBJob(processItem);
@@ -650,7 +643,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // route name and class name
         String name = processItem.getProperty().getLabel();
         routeInfo.put("name", name); //$NON-NLS-1$
-        routeInfo.put("className", getPackageName(processItem) + PACKAGE_SEPARATOR + name); //$NON-NLS-1$
+        routeInfo.put("className", JavaResourcesHelper.getJobClassName(processItem)); //$NON-NLS-1$
 
         boolean useSAM = false;
         boolean hasCXFSamlConsumer = false;
@@ -784,7 +777,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String requireBundle = ""; //$NON-NLS-1$
         String delim = ""; //$NON-NLS-1$
         for (ProcessItem pi : itemToBeExport) {
-            exportPackage.append(delim).append(getPackageName(pi));
+            exportPackage.append(delim).append(JavaResourcesHelper.getJobClassPackageName(pi));
             delim = ","; //$NON-NLS-1$
             // Add Route Resource Export packages
             // http://jira.talendforge.org/browse/TESB-6227
