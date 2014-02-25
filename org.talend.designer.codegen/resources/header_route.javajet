@@ -185,9 +185,9 @@ package <%= packageName %>;
             if (node.getIncomingConnections().isEmpty()) {
                 String cid = node.getUniqueName();
 %>
+    @javax.ws.rs.Path(<%=ElementParameterParser.getValue(node, "__PATH__")%>)
     public interface Service_<%=cid%> {
         @javax.ws.rs.<%=ElementParameterParser.getValue(node, "__HTTP_METHOD__")%>()
-        @javax.ws.rs.Path(<%=ElementParameterParser.getValue(node, "__PATH__")%>)
 <% 
              org.talend.designer.codegen.config.NodeParamsHelper paramsHelper = new org.talend.designer.codegen.config.NodeParamsHelper(node);
              String contentType = paramsHelper.getVisibleStringParam("__ACCEPT_TYPE__");
@@ -197,7 +197,24 @@ package <%= packageName %>;
 <%
              }
 %>
-        Object invoke();
+        Object invoke(
+<%
+        List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
+        boolean paramCommaWritten = false;
+        for (Map<String, String> map : tableValues) {
+            String argName = map.get("NAME").trim();
+            //String argValue = map.get("VALUE").trim();
+            if (!paramCommaWritten) {
+                paramCommaWritten = true;
+            } else {
+                %>, <%
+            }
+%>
+            @javax.ws.rs.QueryParam(<%=argName%>) String <%=argName.replace('"', ' ')%>
+<%
+        }
+%>
+        );
     }
 
 static class CxfPayloadProvider implements javax.ws.rs.ext.MessageBodyWriter<org.apache.camel.component.cxf.CxfPayload<javax.xml.transform.Source>> {
@@ -644,7 +661,7 @@ for (INode node : graphicalNodes) {
         for (Map<String, String> map : tableValues) {
             String argName = map.get("NAME").trim();
             String argValue = map.get("VALUE").trim();
-            sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+            sb.append("+\"&\"+" + argName + "+'='+" + argValue);
         }
         //sb.append("+\"&resourceClasses=" + packageName + '.' + process.getName() + "$Service_" + node.getUniqueName() + '"');
 
