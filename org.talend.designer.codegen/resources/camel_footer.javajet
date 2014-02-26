@@ -149,7 +149,14 @@
                     }
 				} else {
 %>
-                    org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean cf_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean();
+                    org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean cf_<%=cid%> = new org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean() {
+                        // https://issues.apache.org/jira/browse/CAMEL-7229
+                        public void setBus(org.apache.cxf.Bus bus) {
+                            if (null == this.bus) {
+                                super.setBus(bus);
+                            }
+                        };
+                    };
                     factory_<%=cid%> = cf_<%=cid%>;
 <%
                     if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"))) {
