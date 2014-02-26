@@ -19,7 +19,11 @@ public class MsmqUtil {
 
     private String msgContent;
 
-    boolean bTried = false;
+    private String queueType="\\private$";
+    
+    private boolean isTransaction;
+    
+    private boolean createIfNotExists;
     
     String ipAddr = "";
 
@@ -33,10 +37,12 @@ public class MsmqUtil {
     public static void main(String[] args) throws java.lang.Exception {
         org.talend.msmq.MsmqUtil msgu = new org.talend.msmq.MsmqUtil();
         msgu.setHost("127.0.0.1");
-        msgu.setQueue("ytao4");
-        msgu.createIfNotExists(true);
+        msgu.setQueue("jzhao");
+        msgu.setCreateIfNotExists(true);
+        msgu.setQueueType("");
+        msgu.setIsTransaction(true);
         msgu.open();
-        String str = "�ǵ�abc";
+        String str = "test_abc";
         // str = CharacterSetToolkit.toUnicode(str, true);
         // System.out.println(str);
         msgu.setMsg(str);
@@ -83,9 +89,9 @@ public class MsmqUtil {
             // msmqHandle= new Queue(fullname, 0x02); // 0x02 == SEND only
         } catch (MessageQueueException ex1) {
 
-            if (bTried) {
+            if (createIfNotExists) {
             	System.out.println("Queue open failure: " + ex1);
-                bTried = false;
+                createIfNotExists = false;
                 create();
             }else{
             	 throw ex1;
@@ -100,7 +106,11 @@ public class MsmqUtil {
 	    String mLabel = "inserted by " + this.getClass().getName() + ".java";
 	    String correlationID = "L:none";
 	    Message msg = new Message(msgContent, mLabel, correlationID);
-	    msmqHandle.send(msg);
+	    if(isTransaction){
+	    	msmqHandle.send(msg,TransactionType.SINGLE_MESSAGE);
+	    }else{
+	    	msmqHandle.send(msg);
+	    }
     }
 
     public String receive() throws MessageQueueException, UnsupportedEncodingException {
@@ -121,7 +131,7 @@ public class MsmqUtil {
         if ((c[0] >= '1') && (c[0] <= '9'))
             a1 = "TCP";
 
-        return "DIRECT=" + a1 + ":" + h1 + "\\private$\\" + queueShortName;
+        return "DIRECT=" + a1 + ":" + h1 +queueType+ "\\" + queueShortName;
     }
 
     private void create() throws MessageQueueException {
@@ -129,10 +139,10 @@ public class MsmqUtil {
                 .equals(host))) {
             throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
         }
-        String fullname = ".\\private$\\" + queueName;
+        String fullname = "."+queueType+"\\" + queueName;
         String qLabel = "Created by " + this.getClass().getName() + ".java";
-        boolean transactional = false; // should the queue be transactional
-        msmqHandle = Queue.create(fullname, qLabel, transactional);
+        
+        msmqHandle = Queue.create(fullname, qLabel, isTransaction);
     }
 
     private void checkOpen() throws MessageQueueException {
@@ -163,7 +173,14 @@ public class MsmqUtil {
         this.msgContent = msg;
     }
 
-    public void createIfNotExists(boolean bool) {
-        bTried = true;
-    }
+    public void setQueueType(String queueType) {
+		this.queueType = queueType;
+	}
+
+	public void setIsTransaction(boolean isTransaction) {
+		this.isTransaction = isTransaction;
+	}
+    public void setCreateIfNotExists(boolean createIfNotExists) {
+		this.createIfNotExists = createIfNotExists;
+	}
 }

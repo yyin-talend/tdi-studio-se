@@ -16,7 +16,9 @@
 	String cid = node.getUniqueName();
 	List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
-	    
+	String queueType = ElementParameterParser.getValue(node, "__QUEUE_TYPE__");
+	boolean isCreateQueueNotExist = ("true").equals(ElementParameterParser.getValue(node,"__CREATE_QUEUE_NOT_EXIST__"));
+	   
 	if (inConns != null && inConns.size() > 0){
 		IMetadataTable inTable = inConns.get(0).getMetadataTable();
 		List<IMetadataColumn> columns = inTable.getListColumns();
@@ -29,7 +31,19 @@
 			try{
 				msgu_<%=cid%>.setHost(<%=host%>);
 				msgu_<%=cid%>.setQueue(<%=queue%>); 
-				msgu_<%=cid%>.createIfNotExists(true);
+				msgu_<%=cid%>.setCreateIfNotExists(<%=isCreateQueueNotExist%>);
+				<%
+		   		if(queueType!=null && queueType.endsWith("PUBLIC")){
+				%>
+					msgu_<%=cid%>.setQueueType(""); 
+				<%
+				}
+				if(queueType!=null && queueType.startsWith("TRANSACTION")){
+				%>
+					msgu_<%=cid%>.setIsTransaction(true);
+				<%
+				}
+		   		%>
 				msgu_<%=cid%>.open();
 				resourceMap.put("msgu_<%=cid%>", msgu_<%=cid%>);
 			}catch(java.net.UnknownHostException ex_<%=cid%>){

@@ -18,6 +18,7 @@
 	    
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+	String queueType = ElementParameterParser.getValue(node, "__QUEUE_TYPE__");
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 	if (outConns != null && outConns.size() > 0){
 	%>
@@ -25,6 +26,13 @@
 	    try{
 	    	msgu_<%=cid%>.setHost(<%=host%>);
 	   		msgu_<%=cid%>.setQueue(<%=queue%>); 
+	   		<%
+	   		if("PUBLIC".equals(queueType)){
+			%>
+				msgu_<%=cid%>.setQueueType(""); 
+			<%
+			}
+	   		%>
 	    	msgu_<%=cid%>.open();
 	    	if (msgu_<%=cid%>.isOpen()){
 				<%
