@@ -275,8 +275,8 @@ COMPATIBILITY="ALL"
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
         <ITEM NAME="FILE_PARAMS_VALUE"/>
-        <ITEM NAME="CONTEXT_TYPE"/>
-        <ITEM NAME="CONTEXT_CHARSET"/>
+		<ITEM NAME="FILE_PARAMS_CONTENT_TYPE" VALUE="&quot;application/octet-stream&quot;"/>
+		<ITEM NAME="FILE_PARAMS_CHARSET" VALUE="&quot;ISO-8859-1&quot;"/>
       </ITEMS>
     </PARAMETER>
     
