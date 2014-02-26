@@ -164,6 +164,7 @@ public class DBStructureComposite extends Composite {
     private void hookDoubleClickAction() {
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 doubleClickAction.run();
             }
@@ -188,8 +189,12 @@ public class DBStructureComposite extends Composite {
         final RepositoryNode selectQuery = this.treeLabelProvider.getSelectedExtReposiotryNode();
         expandNodes = new ArrayList<RepositoryNode>();
         getNeedExpandedNodes(selectQuery);
-        treeViewer.setExpandedElements(expandNodes.toArray(new Object[0]));
-        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
+        if (expandNodes.size() > 0) {
+            treeViewer.setExpandedElements(expandNodes.toArray(new Object[0]));
+        }
+        if (treeViewer.getTree().getItemCount() > 0) {
+            treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
+        }
         Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, connParameters, true);
         tempOpenNewEditorAction.run();
     }
@@ -293,10 +298,12 @@ public class DBStructureComposite extends Composite {
         treeViewer.setSorter(new DBTreeViewerSorter());
         treeViewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 // doSetColorOrNot(event);
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 // doSetColorOrNot(event);
             }
@@ -399,11 +406,12 @@ public class DBStructureComposite extends Composite {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 fillContextMenu(manager);
             }
 
-            @SuppressWarnings("unchecked")//$NON-NLS-1$
+            @SuppressWarnings("unchecked")
             private void fillContextMenu(IMenuManager manager) {
                 // GenerateSelectSQL
                 manager.add(generateSelectAction);
@@ -470,6 +478,7 @@ public class DBStructureComposite extends Composite {
         public void run() {
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
 
@@ -483,6 +492,7 @@ public class DBStructureComposite extends Composite {
                     try {
                         Display.getDefault().asyncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 treeViewer.refresh();
                             }
@@ -516,6 +526,7 @@ public class DBStructureComposite extends Composite {
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
 
@@ -564,6 +575,7 @@ public class DBStructureComposite extends Composite {
         final RepositoryNode rootNode = SQLBuilderRepositoryNodeManager.getRoot(refreshNode);
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 if (treeViewer != null && treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
                     ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
@@ -594,7 +606,7 @@ public class DBStructureComposite extends Composite {
             init();
         }
 
-        @SuppressWarnings("unchecked")//$NON-NLS-1$
+        @SuppressWarnings("unchecked")
         public void init() {
             IStructuredSelection selection = (IStructuredSelection) getSelectionProvider().getSelection();
             if (selection.isEmpty()) {
@@ -615,7 +627,8 @@ public class DBStructureComposite extends Composite {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                @SuppressWarnings("unchecked")//$NON-NLS-1$
+                @Override
+                @SuppressWarnings("unchecked")
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
                     try {
@@ -659,6 +672,7 @@ public class DBStructureComposite extends Composite {
      * 
      * @Override
      */
+    @Override
     public void dispose() {
         super.dispose();
     }
@@ -690,6 +704,7 @@ public class DBStructureComposite extends Composite {
      */
     class DBTreeViewerSorter extends ViewerSorter {
 
+        @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
             int comparedResult = 0;
             if (e1 instanceof IRepositoryNode && e2 instanceof IRepositoryNode) {
