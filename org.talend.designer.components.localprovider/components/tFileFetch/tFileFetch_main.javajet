@@ -218,9 +218,11 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 				j++;
 				String name = param.get("FILE_PARAMS_NAME");
 				String value = param.get("FILE_PARAMS_VALUE");
+				String content_type = param.get("FILE_PARAMS_CONTENT_TYPE");
+				String charset = param.get("FILE_PARAMS_CHARSET");
 				varPartList.add("file_" + j + "_" + cid);
 				%>
-				org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j%>_<%=cid%>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));  
+				org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j%>_<%=cid%>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>), <%=content_type%>, <%=charset%>);
 			<%
 			}
 		}
