@@ -1592,6 +1592,7 @@ if(!isVirtualOut) { // T_TM_M_320
 							sb.append(cr + "count_" + outputTableName + "_" + componentNameForKeyProblem + "++;" + cr);
 						}
 						int currentRow = 0;
+						boolean needAppendColumnLog = true;
 	                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
 							if(isLog4jEnabled){
 								if(currentRow != 0) {
@@ -1607,6 +1608,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	                        
 	                        String outputExpression = outputTableEntry.getExpression();
 	                        if (outputExpression == null || outputExpression.trim().length() == 0) {
+	                        	needAppendColumnLog = false;
 	                        	if(metadataColumnFromConn == null) {
 		                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry
 	    	                                .getType(), outputTableEntry.isNullable());
@@ -1650,13 +1652,14 @@ if(!isVirtualOut) { // T_TM_M_320
     	                    String expression = assignationVar + " = " + outputExpression + ";";
 	
 	                        sb.append(cr).append(expression);
-							if(isLog4jEnabled){
+							if(isLog4jEnabled && needAppendColumnLog){
 								sb.append(cr + "log4jSb_" + outputTableName + "_" + componentNameForKeyProblem + ".append(" + outputExpression + ");" + cr);
 							}
 	
 	                        if (checkingSyntax) {
 	                            sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
 	                        }
+	                        needAppendColumnLog = true;
 	                    } // for entries
 						
 						
