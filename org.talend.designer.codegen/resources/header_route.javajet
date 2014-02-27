@@ -657,10 +657,10 @@ for (INode node : graphicalNodes) {
         //sb.append(ElementParameterParser.getValue(node, "__URL__"));
         sb.append("+\"?loggingFeatureEnabled=").append(ElementParameterParser.getValue(node, "__LOG_MESSAGES__")).append('"');
 
-        if (node.getIncomingConnections().isEmpty()) {
-            // https://issues.apache.org/jira/browse/CAMEL-7246
-            // sb.append("+\"&bindingStyle=SimpleConsumer\"");
-        } else {
+        // https://issues.apache.org/jira/browse/CAMEL-7246
+        /*if (node.getIncomingConnections().isEmpty()) {
+            sb.append("+\"&bindingStyle=SimpleConsumer\"");
+        } else*/ {
             List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
             for (Map<String, String> map : tableValues) {
                 String argName = map.get("NAME").trim();
