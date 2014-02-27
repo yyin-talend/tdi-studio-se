@@ -67,3 +67,5 @@ if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseShare
 	}
 }
 %>
+
+    globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

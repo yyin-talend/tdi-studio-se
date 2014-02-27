@@ -258,6 +258,7 @@ imports="
 		}// for
 	}
 	%>
-
+	
+	nb_line_<%=cid%>++;
 
 		

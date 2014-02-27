@@ -62,6 +62,7 @@ imports="
 		columns = metadata.getListColumns();
 	} %>
 
+int nb_line_<%=cid%> = 0;
 javax.jms.Connection connection_<%=cid %> = null;
 try {
 
