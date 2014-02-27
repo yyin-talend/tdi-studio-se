@@ -308,6 +308,6 @@ class="MomInput"
 	}  
 %>
 	
-
+	nb_line_<%=cid%>++;
 
 		

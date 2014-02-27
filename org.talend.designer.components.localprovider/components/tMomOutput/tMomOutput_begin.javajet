@@ -61,6 +61,7 @@ class="MomInput"
 	}
 	%>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+	int nb_line_<%=cid%> = 0;
 
 	<%	
 	if (isUseSharedConnection) { 
