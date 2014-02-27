@@ -190,29 +190,24 @@ package <%= packageName %>;
         @javax.ws.rs.<%=ElementParameterParser.getValue(node, "__HTTP_METHOD__")%>()
 <% 
              org.talend.designer.codegen.config.NodeParamsHelper paramsHelper = new org.talend.designer.codegen.config.NodeParamsHelper(node);
-             String contentType = paramsHelper.getVisibleStringParam("__ACCEPT_TYPE__");
-             if (!contentType.isEmpty()) {
+             String acceptType = paramsHelper.getVisibleStringParam("__ACCEPT_TYPE__");
+             if (!acceptType.isEmpty()) {
 %>
-        @javax.ws.rs.Produces("<%=contentType%>")
+        @javax.ws.rs.Produces("<%=acceptType%>")
 <%
              }
 %>
         Object invoke(
 <%
-        List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
         boolean paramCommaWritten = false;
-        for (Map<String, String> map : tableValues) {
-            String argName = map.get("NAME").trim();
-            //String argValue = map.get("VALUE").trim();
-            if (!paramCommaWritten) {
-                paramCommaWritten = true;
-            } else {
-                %>, <%
-            }
+        String contentType = paramsHelper.getVisibleStringParam("__CONTENT_TYPE__");
+             if (!contentType.isEmpty()) {
+                 paramCommaWritten = true;
+                 String contentClass = "*/*".equals(contentType) ? "String" : "org.w3c.dom.Document";
 %>
-            @javax.ws.rs.QueryParam(<%=argName%>) String <%=argName.replace('"', ' ')%>
+                <%=contentClass%> payload
 <%
-        }
+             }
 %>
         );
     }
@@ -657,16 +652,11 @@ for (INode node : graphicalNodes) {
         //sb.append(ElementParameterParser.getValue(node, "__URL__"));
         sb.append("+\"?loggingFeatureEnabled=").append(ElementParameterParser.getValue(node, "__LOG_MESSAGES__")).append('"');
 
-        // https://issues.apache.org/jira/browse/CAMEL-7246
-        /*if (node.getIncomingConnections().isEmpty()) {
-            sb.append("+\"&bindingStyle=SimpleConsumer\"");
-        } else*/ {
-            List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
-            for (Map<String, String> map : tableValues) {
-                String argName = map.get("NAME").trim();
-                String argValue = map.get("VALUE").trim();
-                sb.append("+\"&\"+" + argName + "+'='+" + argValue);
-            }
+        List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
+        for (Map<String, String> map : tableValues) {
+            String argName = map.get("NAME").trim();
+            String argValue = map.get("VALUE").trim();
+            sb.append("+\"&\"+" + argName + "+'='+" + argValue);
         }
 
         uri = sb.toString();
