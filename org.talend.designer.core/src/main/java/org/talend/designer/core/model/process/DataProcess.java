@@ -2926,8 +2926,13 @@ public class DataProcess implements IGeneratingProcess {
             newGraphicalNode.getExternalNode().setExternalEmfData(externalEmfData);
         }
         // fwang fixed bug TDI-8027
-        if (graphicalNode.getExternalData() != null) {
-            newGraphicalNode.setExternalData(graphicalNode.getExternalData());
+        IExternalData externalData = graphicalNode.getExternalData();
+        if (externalData != null) {
+            try {
+                newGraphicalNode.setExternalData(externalData.clone());
+            } catch (CloneNotSupportedException e) {
+                newGraphicalNode.setExternalData(externalData);
+            }
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
