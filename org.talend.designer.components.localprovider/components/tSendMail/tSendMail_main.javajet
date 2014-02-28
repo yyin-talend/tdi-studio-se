@@ -7,6 +7,7 @@
 	java.util.List
   "
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -27,6 +28,9 @@ String mimesubtype = ElementParameterParser.getValue(node, "__TEXT_SUBTYPE__");
 boolean setLocalhost = "true".equals(ElementParameterParser.getValue(node, "__SET_LOCALHOST__"));  
 String localhost = ElementParameterParser.getValue(node, "__LOCALHOST__");  
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.logParameters(node); 
+log4jFileUtil.componentStartInfo(node); 
 
 	//Bug12952, move all begin part to here below
 	String smtpHost    = ElementParameterParser.getValue(node, "__SMTP_HOST__");
@@ -96,112 +100,126 @@ boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DI
 	//end of the former begin part
 %>
 
-String message_<%=cid %> = ((<%=message %>) == null || "".equals(<%=message %>)) ? "\"\"" : (<%=message %>) ;
-java.util.Properties props_<%=cid %> = System.getProperties();     
-props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
-props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+	String message_<%=cid %> = ((<%=message %>) == null || "".equals(<%=message %>)) ? "\"\"" : (<%=message %>) ;
+	java.util.Properties props_<%=cid %> = System.getProperties();     
+	props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
+	props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
 <% 
-if (setLocalhost){%>
-props_<%=cid %>.put("mail.smtp.localhost", <%=localhost%>);
+	if (setLocalhost){%>
+		props_<%=cid %>.put("mail.smtp.localhost", <%=localhost%>);
 <% }%>
-props_<%=cid %>.put("mail.mime.encodefilename", "true");
+		props_<%=cid %>.put("mail.mime.encodefilename", "true");
 <% 
-if (startTLS){%>
-  props_<%=cid %>.put("mail.smtp.starttls.enable","true");
+	if (startTLS){%>
+		props_<%=cid %>.put("mail.smtp.starttls.enable","true");
 <%
-}
-if (ifSSL){
+	}
+	if (ifSSL){
 %>  
-  java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-  props_<%=cid %>.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-  props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
-  props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
+		java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		props_<%=cid %>.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
+		props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
 <%
-}
+	}
 %>     
-try {
-  <%if ("false".equals(needAuth)) { %>  
-    props_<%=cid %>.put("mail.smtp.auth", "false");
-    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
-  <%} else{%>
-    props_<%=cid %>.put("mail.smtp.auth", "true");
-    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new javax.mail.Authenticator(){         
-      protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-        return new javax.mail.PasswordAuthentication(<%=authUsername %>, <%=authPassword %>); 
-      }         
-    });   
-  <%}%>
-  javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
-  msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>, <%=personalName%>));
-  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
-  if (cc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
-  if (bcc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
-  msg_<%=cid %>.setSubject(subject_<%=cid %>);
+	try {
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + smtpHost_<%=cid %> +"'.");
+		<%}%>
+		<%if ("false".equals(needAuth)) { %>  
+			props_<%=cid %>.put("mail.smtp.auth", "false");
+			javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
+		<%} else{%>
+			props_<%=cid %>.put("mail.smtp.auth", "true");
+			javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new javax.mail.Authenticator(){         
+				protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+				return new javax.mail.PasswordAuthentication(<%=authUsername %>, <%=authPassword %>); 
+				}         
+			});   
+		<%}%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + smtpHost_<%=cid %> + "' has succeeded.");
+		<%}%>
+		javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
+		msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>, <%=personalName%>));
+		msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
+		if (cc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
+		if (bcc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
+		msg_<%=cid %>.setSubject(subject_<%=cid %>);
 
-  for (int i_<%=cid %> = 0; i_<%=cid %> < headers_<%=cid %>.size(); i_<%=cid %>++) {
-    java.util.Map<String, String> header_<%=cid %> = headers_<%=cid %>.get(i_<%=cid %>);
-    msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));    
-  }  
-  msg_<%=cid %>.setSentDate(new Date());
-  msg_<%=cid %>.setHeader("X-Priority", "<%=priority %>"); //High->1 Normal->3 Low->5
-  javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
-  javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();
-  mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>, "<%=mimesubtype %>");
-  mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
+		for (int i_<%=cid %> = 0; i_<%=cid %> < headers_<%=cid %>.size(); i_<%=cid %>++) {
+			java.util.Map<String, String> header_<%=cid %> = headers_<%=cid %>.get(i_<%=cid %>);
+			msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));    
+		}  
+		msg_<%=cid %>.setSentDate(new Date());
+		msg_<%=cid %>.setHeader("X-Priority", "<%=priority %>"); //High->1 Normal->3 Low->5
+		javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
+		javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();
+		mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>, "<%=mimesubtype %>");
+		mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
   
-  javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = null;
-  
-  for (int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++){
-    String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
-    javax.activation.FileDataSource fds_<%=cid %> = null;
-    java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
-    <%if (!checkAttachementOnSend) {%>
-      if (!file_<%=cid %>.exists()){
-        continue;
-      }
-    <%}%>
-    if (file_<%=cid%>.isDirectory()){
-      java.io.File[] subFiles_<%=cid%> = file_<%=cid%>.listFiles();
-      
-      for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
-        if (subFile_<%=cid%>.isFile()){
-          fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
-          mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
-          mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
-          mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
-          if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
-	      	mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
-	      }
-          mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
-        }
-      }
-    }else{
-      mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
-      fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
-      mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>)); 
-      mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
-      if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
-      	mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
-      }
-      mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
-    }
-  }
-  // -- set the content --
-  msg_<%=cid %>.setContent(mp_<%=cid %>);
-   // add handlers for main MIME types
- javax.activation.MailcapCommandMap mc_<%=cid%> = ( javax.activation.MailcapCommandMap)javax.activation.CommandMap.getDefaultCommandMap();
- mc_<%=cid%>.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
- mc_<%=cid%>.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
- mc_<%=cid%>.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
- mc_<%=cid%>.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
- mc_<%=cid%>.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
- javax.activation.CommandMap.setDefaultCommandMap(mc_<%=cid%>);
-  // -- Send the message --
-  javax.mail.Transport.send(msg_<%=cid %>);
-} catch(java.lang.Exception e){
-  <%if (isDieOnError){%>
-    throw(e);
-  <%}else{%>
-    System.err.println(e.toString());
-  <%}%>
-}
+		javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = null;
+
+		for (int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++){
+			String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
+			javax.activation.FileDataSource fds_<%=cid %> = null;
+			java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
+			<%if (!checkAttachementOnSend) {%>
+				if (!file_<%=cid %>.exists()){
+					continue;
+				}
+			<%}%>
+    		if (file_<%=cid%>.isDirectory()){
+				java.io.File[] subFiles_<%=cid%> = file_<%=cid%>.listFiles();
+				for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
+					if (subFile_<%=cid%>.isFile()){
+						fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
+						mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
+						mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
+						mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
+						if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
+							mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
+						}
+						mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+					}
+				}
+    		}else{
+				mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
+				fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
+				mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>)); 
+				mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
+				if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
+					mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
+				}
+				mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+			}
+		}
+		// -- set the content --
+		msg_<%=cid %>.setContent(mp_<%=cid %>);
+		// add handlers for main MIME types
+		javax.activation.MailcapCommandMap mc_<%=cid%> = ( javax.activation.MailcapCommandMap)javax.activation.CommandMap.getDefaultCommandMap();
+		mc_<%=cid%>.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+		mc_<%=cid%>.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+		mc_<%=cid%>.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+		mc_<%=cid%>.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+		mc_<%=cid%>.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+		javax.activation.CommandMap.setDefaultCommandMap(mc_<%=cid%>);
+		// -- Send the message --
+		javax.mail.Transport.send(msg_<%=cid %>);
+	} catch(java.lang.Exception e){
+  		<%if (isDieOnError){%>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + e.toString());
+			<%}%>
+			throw(e);
+		<%}else{%>
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + e.toString());
+			<%}%>
+  			System.err.println(e.toString());
+		<%}%>
+	}
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Done.");
+	<%}%>
