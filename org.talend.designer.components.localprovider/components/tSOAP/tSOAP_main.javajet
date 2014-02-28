@@ -19,7 +19,6 @@ String cid = node.getUniqueName();
 
 IProcess process = node.getProcess();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
-log4jFileUtil.beforeComponentProcess(node);
 String endpoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
 String action = ElementParameterParser.getValue(node,"__ACTION__");
 String soapMessageStr = ElementParameterParser.getValue(node,"__SOAPMESSAGE__");

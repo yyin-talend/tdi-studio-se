@@ -8,18 +8,13 @@
 	    String cid = null;
  		boolean isLog4jEnabled = false;
  		
-	    public void beforeComponentProcess(INode node){
-	    	this.node = node;
-	    	init();
-	    }
-	    
-		private void init() {
-	    	cid = node.getUniqueName();
-			isLog4jEnabled = ("true").equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-		}
-		
+ 		public DefaultLog4jFileUtil(INode node) {
+ 			this.node = node;
+ 			this.cid = node.getUniqueName();
+			this.isLog4jEnabled = ("true").equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+ 		}
+ 		
 		public void componentStartInfo(INode node) {
-			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Start to work");
@@ -29,7 +24,6 @@
 		}
 		
 		public void componentFinishInfo(INode node) {
-			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Done.");
@@ -55,7 +49,6 @@
 		}
 		
 		public void retrievedDataNumberInfoFromGlobalMap(INode node) {
-			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Retrieved records count: "+ globalMap.get("<%=cid %>_NB_LINE") + " .");
@@ -65,7 +58,6 @@
 		
 		//for all tFileinput* components 
 		public void retrievedDataNumberInfo(INode node) {
-			beforeComponentProcess(node);
 			if (isLog4jEnabled) {
 			%>
 				log.info("<%=cid%> - Retrieved records count: "+ nb_line_<%=cid%> + " .");
@@ -74,7 +66,6 @@
 		}
 		
 		public void logParameters(INode node){
-			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 			%>
 				StringBuilder log4jParamters_<%=cid%> = new StringBuilder();
@@ -196,7 +187,6 @@
 		
 		//for all tFileinput* components
 		public void debugRetriveData(INode node,boolean hasIncreased) {
-			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 			%>
 				log.debug("<%=cid%> - Retrieving the record " + (nb_line_<%=cid%><%=hasIncreased?"":"+1"%>) + ".");
@@ -212,7 +202,6 @@
 		
 		//for all tFileOutput* components		
 		public void debugWriteData(INode node) {
-			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 			%>
 				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " to the file.");
@@ -225,7 +214,6 @@
 		//for all tFileOutput* components
 		//TODO: should rename as writtenDataNumberInfo?
 		public void writeDataFinishInfo(INode node) {
-			beforeComponentProcess(node);
 			if(isLog4jEnabled){
 			%>
 				log.info("<%=cid%> - Written records count: " + nb_line_<%=cid %> + " .");
@@ -234,5 +222,5 @@
 		}
 	}
 	
-	DefaultLog4jFileUtil log4jFileUtil = new DefaultLog4jFileUtil();
+	DefaultLog4jFileUtil log4jFileUtil = new DefaultLog4jFileUtil((INode)(((org.talend.designer.codegen.config.CodeGeneratorArgument)argument).getArgument()));
 	%>
