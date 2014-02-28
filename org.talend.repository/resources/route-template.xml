@@ -4,13 +4,13 @@
 	<!-- Talend Route OSGi blueprint descriptor -->
 #if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
-	<cm:cm-properties persistent-id="org.talend.esb.job" id="org.talend.esb.job"
+	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
 #if ($hasCXFSamlProvider)
 #[[
-	<cm:cm-properties persistent-id="org.talend.esb.job.service" id="org.talend.esb.job.service"
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
@@ -22,9 +22,9 @@
 #end
 #if ($hasCXFSamlConsumer)
 #[[
-	<cm:cm-properties persistent-id="org.talend.esb.job.client" id="org.talend.esb.job.client"
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
-	<cm:cm-properties persistent-id="org.talend.esb.job.client.sts" id="org.talend.esb.job.client.sts"
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0" />
 ]]#
 #end
@@ -39,18 +39,53 @@
 #end
 #if ($hasCXFComponent && ($hasCXFSamlConsumer || $hasCXFSamlProvider))
 #[[
-		<property name="policies" ref="org.talend.esb.job" />
+        <property name="policies">
+            <map>
+                <entry key="policy.username" value="$job{policy.username}" />
+                <entry key="policy.saml" value="$job{policy.saml}" />
+                <entry key="policy.saml.authz" value="$job{policy.saml.authz}" />
+            </map>
+        </property>
 ]]#
 #end
 #if ($hasCXFSamlProvider)
 #[[
-		<property name="securityProps" ref="org.talend.esb.job.service" />
+        <property name="securityProps" >
+            <map>
+                <entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
+                <entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
+                <entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
+            </map>
+        </property>
+]]#
 ]]#
 #end
 #if ($hasCXFSamlConsumer)
 #[[
-		<property name="clientProperties" ref="org.talend.esb.job.client" />
-		<property name="stsProperties" ref="org.talend.esb.job.client.sts" />
+            <map>
+                <entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
+                <entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
+                <entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
+            </map>
+        <property name="stsProperties">
+            <map>
+                <entry key="sts.namespace" value="$sts{sts.namespace}" />
+                <entry key="sts.service.name" value="$sts{sts.service.name}" />
+                <entry key="sts.endpoint.name" value="$sts{sts.endpoint.name}" />
+                <entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}" />
+
+                <entry key="ws-security.sts.token.username" value="$sts{ws-security.sts.token.username}" />
+                <entry key="ws-security.sts.token.usecert" value="$sts{ws-security.sts.token.usecert}" />
+                <entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}" />
+
+                <entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
+                <entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}" />
+                <entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}" />
+
+                <entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
+                <entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
+            </map>
+        </property>
 ]]#
 #end
 #if ($hasCXFRSSamlProviderAuthz)
