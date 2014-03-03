@@ -110,7 +110,8 @@
 									if(conn.getTarget().getUniqueName().equals(thashNode.getUniqueName())){
 										boolean isLinked = "true".equals(ElementParameterParser.getValue(thashNode, "__LINK_WITH__"));
 										String matchingMode = ElementParameterParser.getValue(thashNode,"__KEYS_MANAGEMENT__");
-										if(isLinked || !"KEEP_FIRST".equals(matchingMode)) {
+										boolean hashKeyFromInputConnector = "true".equals(ElementParameterParser.getValue(thashNode, "__HASH_KEY_FROM_INPUT_CONNECTOR__"));
+										if(isLinked || !"KEEP_FIRST".equals(matchingMode) || hashKeyFromInputConnector) {
 											continue;
 										}
                                     	IMetadataTable thashNodeMetadata = null;
