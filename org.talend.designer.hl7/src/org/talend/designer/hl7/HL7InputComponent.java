@@ -30,8 +30,6 @@ import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.INode;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -121,29 +119,6 @@ public class HL7InputComponent extends AbstractExternalNode {
                         }
                     }
                 }
-            }
-        }
-        if (node != null && !EmfComponent.REPOSITORY.equals(node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))) {
-            List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
-            boolean flagRoot = false;
-            String schemaId = oldName + ":";
-
-            for (Map<String, String> map : listRoot) {
-                String rowName = map.get(COLUMN);
-                if (rowName == null) {
-                    continue;
-                }
-                if (rowName.equals(oldName)) {
-                    map.put(COLUMN, newName);
-                    flagRoot = true;
-                } else if (rowName.startsWith(schemaId)) {
-                    rowName = newName + rowName.substring(rowName.indexOf(":"));
-                    map.put(COLUMN, rowName);
-                    flagRoot = true;
-                }
-            }
-            if (flagRoot) {
-                this.getElementParameter(ROOT).setValue(listRoot);
             }
         }
     }

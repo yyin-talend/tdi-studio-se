@@ -189,8 +189,11 @@ public class HL7OutputManager extends HL7Manager {
                 i++;
             }
             if (rootNode != null && treeData != null) {
+                // the root node should not set the ColumnLabel
+                if (rootNode.getRow() != null) {
+                    rootNode.setRow(null);
+                }
                 treeData.add(rootNode);
-                // rootNode.setRow(rowName);
                 contents.put(rootNode.getColumnLabel(), treeData);
             }
             initCurrentSchema();
@@ -303,8 +306,11 @@ public class HL7OutputManager extends HL7Manager {
                 }
             }
             if (rootNode != null && treeData != null) {
+                // the root node should not set the ColumnLabel
+                if (rootNode.getRow() != null) {
+                    rootNode.setRow(null);
+                }
                 treeData.add(rootNode);
-                // rootNode.setRow(rowName);
                 contents.put(rootNode.getColumnLabel(), treeData);
             }
         }
