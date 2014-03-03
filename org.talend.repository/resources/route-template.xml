@@ -61,12 +61,13 @@
 #end
 #if ($hasCXFSamlConsumer)
 #[[
-        <property name="clientProperties"/>
+        <property name="clientProperties">
             <map>
                 <entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
                 <entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
                 <entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
             </map>
+        </property>
         <property name="stsProperties">
             <map>
                 <entry key="sts.namespace" value="$sts{sts.namespace}" />
