@@ -277,6 +277,10 @@ public class BuildInDBStructure extends SashForm {
         public void init() {
             selectedNodes.clear();
             Object[] structuredSelection = ((IStructuredSelection) treeViewer.getSelection()).toArray();
+            if (structuredSelection.length == 0) {
+                setEnabled(false);
+                return;
+            }
             for (Object object : structuredSelection) {
                 if (object instanceof MetadataTable) {
                     selectedNodes.clear();
