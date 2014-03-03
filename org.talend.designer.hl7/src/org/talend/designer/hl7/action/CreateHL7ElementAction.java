@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.hl7.action;
 
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -108,7 +109,7 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
      * 
      * @param node
      */
-    private boolean createChildNode(HL7TreeNode node) {
+    private boolean createChildNode(final HL7TreeNode node) {
         if (node.getColumn() != null) {
             if (!MessageDialog.openConfirm(
                     xmlViewer.getControl().getShell(),
@@ -122,8 +123,23 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
         String label = "";
         final String nodeLabel = node.getLabel() + "-";
         while (!StringUtil.validateLabelForXML(label)) {
+            // add validator
+            IInputValidator validator = new IInputValidator() {
+
+                public String isValid(String newText) {
+                    if (newText != null) {
+                        String text = newText.trim();
+                        for (HL7TreeNode children : node.getChildren()) {
+                            if (text.equals(children.getLabel())) {
+                                return "The name already existed."; //$NON-NLS-1$
+                            }
+                        }
+                    }
+                    return null;
+                }
+            };
             InputDialog dialog = new InputDialog(null, "Input element's label", "Input the new element's valid label", nodeLabel,
-                    null) {
+                    validator) {
 
                 /*
                  * (non-Javadoc)
@@ -132,13 +148,7 @@ public class CreateHL7ElementAction extends SelectionProviderAction {
                  */
                 @Override
                 protected void okPressed() {
-                    String eleName = this.getValue();
-                    // if (eleName.startsWith(nodeLabel)) {
                     super.okPressed();
-                    // } else {
-                    // setErrorMessage("Element's label must start with " + "\"" + nodeLabel + "\"");
-                    // }
-
                 }
 
             };
