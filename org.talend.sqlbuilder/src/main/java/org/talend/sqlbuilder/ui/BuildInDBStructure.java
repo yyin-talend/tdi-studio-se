@@ -178,6 +178,7 @@ public class BuildInDBStructure extends SashForm {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 manager.add(generateSelectAction);
             }
@@ -277,6 +278,10 @@ public class BuildInDBStructure extends SashForm {
         public void init() {
             selectedNodes.clear();
             Object[] structuredSelection = ((IStructuredSelection) treeViewer.getSelection()).toArray();
+            if (structuredSelection.length == 0) {
+                setEnabled(false);
+                return;
+            }
             for (Object object : structuredSelection) {
                 if (object instanceof MetadataTable) {
                     selectedNodes.clear();
@@ -351,6 +356,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
          */
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (element instanceof IMetadataTable) {
                 return tableImage;
@@ -364,6 +370,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
          */
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof SchemaTreeNode) {
                 return ((SchemaTreeNode) element).getName();
@@ -382,6 +389,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
+        @Override
         public Object[] getChildren(Object parentElement) {
             return getElements(parentElement);
         }
@@ -391,6 +399,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
+        @Override
         public Object getParent(Object element) {
             if (element instanceof SchemaTreeNode) {
                 return ((SchemaTreeNode) element).getParent();
@@ -405,6 +414,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
+        @Override
         public boolean hasChildren(Object element) {
             if (element instanceof SchemaTreeNode) {
                 return true;
@@ -421,6 +431,7 @@ public class BuildInDBStructure extends SashForm {
          * 
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
+        @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof SchemaTreeNode) {
                 return ((SchemaTreeNode) inputElement).getChildren().toArray();
@@ -436,6 +447,7 @@ public class BuildInDBStructure extends SashForm {
          * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
          * java.lang.Object, java.lang.Object)
          */
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
         }
