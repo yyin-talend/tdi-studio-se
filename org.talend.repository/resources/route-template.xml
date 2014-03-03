@@ -61,6 +61,7 @@
 #end
 #if ($hasCXFSamlConsumer)
 #[[
+        <property name="clientProperties"/>
             <map>
                 <entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
                 <entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
