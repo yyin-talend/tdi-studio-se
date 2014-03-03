@@ -18,18 +18,27 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IHL7Constant;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.NodeUtil;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Attribute;
@@ -39,6 +48,7 @@ import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.designer.hl7.ui.form.AbstractHL7StepForm;
 import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.util.HL7PublicUtil;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 import ca.uhn.hl7v2.model.Message;
 
@@ -142,6 +152,9 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
             }
         }
 
+        IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
+        List<MetadataTable> iMetadataTables = new ArrayList<MetadataTable>();
+        INode targetNode = null;
         HL7TreeNode rootNode = null;
         for (String rowName : schemaList) {
             IMetadataTable metadataTable = null;
@@ -150,7 +163,14 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                     metadataTable = connection.getMetadataTable();
                     metadataTable.setLabel(connection.getUniqueName());
                 }
+                targetNode = connection.getTarget();
             }
+
+            MetadataTable targetMetadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            targetMetadataTable.setId(factory.getNextId());
+            targetMetadataTable.setLabel(rowName);
+            iMetadataTables.add(targetMetadataTable);
+            List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
 
             HL7TreeNode current = null;
             HL7TreeNode temp = null;
@@ -237,9 +257,18 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                         temp.setColumn(metadataTable.getColumn(columnName));
                         temp.setTable(metadataTable);
                     }
+                    //
+                    if (!temp.isMain()) {
+                        MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                        newColumn.setLabel(columnName);
+                        newColumn.setName(temp.getLabel());
+                        newColumn.setLength(226);
+                        newColumn.setTalendType("id_String");
+                        columns.add(newColumn);
+                    }
                 }
             }
-
+            targetMetadataTable.getColumns().addAll(columns);
             if (rootNode == null) {
                 rootNode = new Element("rootTag");
             }
@@ -259,6 +288,18 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
             for (HL7TreeNode hl7Node : treeData) {
                 form.getContents().put(rootNode.getColumnLabel(), hl7Node);
             }
+        }
+        // execute the commands,initialize the propertiesView .
+        List<Command> commands = new ArrayList<Command>();
+        for (MetadataTable tableTemp : iMetadataTables) {
+            if (targetNode != null) {
+                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(targetNode.getExternalNode(),
+                        IHL7Constant.TABLE_SCHEMAS, tableTemp.getLabel(), ConvertionHelper.convert(tableTemp));
+                commands.add(hl7Cmd);
+            }
+        }
+        for (Command command : commands) {
+            command.execute();
         }
     }
 
