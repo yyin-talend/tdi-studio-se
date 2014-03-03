@@ -64,6 +64,8 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.eclipse.ui.navigator.IExtensionStateModel;
+import org.eclipse.ui.navigator.INavigatorContentService;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
@@ -90,6 +92,7 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.viewer.ui.provider.INavigatorContentServiceProvider;
 import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
 
 /**
@@ -439,8 +442,20 @@ public class ExportItemWizardPage extends WizardPage {
                 if (baseViewId != null) {
                     provider.setViewId(baseViewId);
                 }
+                CheckboxTreeViewer viwer = (CheckboxTreeViewer) provider.createViewer(parent);
 
-                return (CheckboxTreeViewer) provider.createViewer(parent);
+                // FIXME this is temp fix for 5.4.2
+                INavigatorContentService navigatorContentService = ((INavigatorContentServiceProvider) viwer)
+                        .getNavigatorContentService();
+                if (navigatorContentService != null) {
+                    IExtensionStateModel findStateModel = navigatorContentService
+                            .findStateModel("com.oaklandsw.transform.navigatorContent");//$NON-NLS-1$
+                    if (findStateModel != null) {
+                        findStateModel.setBooleanProperty("org.talend.repository.ui.actions.importexport", true);//$NON-NLS-1$
+                    }
+                }
+
+                return viwer;
 
             }
 
