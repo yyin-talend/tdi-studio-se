@@ -58,7 +58,6 @@
             </map>
         </property>
 ]]#
-]]#
 #end
 #if ($hasCXFSamlConsumer)
 #[[
