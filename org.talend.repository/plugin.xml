@@ -2120,10 +2120,11 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.4.1"
               class="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
               id="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
               name="UpdateJobSettingsForPostgresMigrationTask"
-              version="version">
+              version="5.4.2">
         </projecttask>
         <projecttask
               beforeLogon="true"
