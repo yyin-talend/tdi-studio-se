@@ -224,11 +224,6 @@ public class SchemaXMLDragAndDropHandler {
                             }
                             String columnLabel = treeNode.getRow();
                             return columnLabel != null ? columnLabel.startsWith(currentSchema) : false;
-                            // HL7TreeNode rootElement = getRootElement((HL7TreeNode) data);
-                            //
-                            // if (rootElement != null) {// && !(rootElement instanceof HL7Root)
-                            // return currentSchema.equals(rootElement.getRow());
-                            // }
                         }
                     }
                 }
@@ -240,7 +235,7 @@ public class SchemaXMLDragAndDropHandler {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
-            if (targetItem == null || !isEnabled(event)) {
+            if (targetItem == null) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
@@ -287,7 +282,7 @@ public class SchemaXMLDragAndDropHandler {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
-            if (targetItem == null) {
+            if (targetItem == null || !isEnabled(event)) {
                 return;
             }
 
