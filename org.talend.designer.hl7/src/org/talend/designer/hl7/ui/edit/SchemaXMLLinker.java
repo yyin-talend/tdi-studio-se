@@ -54,10 +54,6 @@ import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.utils.TreeUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
@@ -172,34 +168,10 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
 
                 TreeItem root = xmlViewer.getTree().getItem(0);
                 //
-                boolean noCurSchema = false;
-                if (root != null && root.getData() != null && root.getData() instanceof HL7TreeNode) {
-                    HL7TreeNode node = (HL7TreeNode) root.getData();
-                    if (node.getColumnLabel().equals("")) {
-                        noCurSchema = true;
-                    }
-                }
+                List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
                 if (getManager().getHl7Component().isHL7Output()) {
                     if (getManager() instanceof HL7OutputManager) {
-                        List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
-                        IElementParameter param = getManager().getHl7Component().getElementParameterFromField(
-                                EParameterFieldType.PROPERTY_TYPE);
-                        String value = (String) param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).getValue();
-                        if (value.equals(EmfComponent.BUILTIN) && !noCurSchema) {
-                            List<HL7TreeNode> treeData = ((HL7OutputManager) getManager())
-                                    .getTreeData(((HL7OutputManager) getManager()).getCurrentSchema(false));
-                            for (HL7TreeNode data : treeData) {
-                                if (data.isMain()) {
-                                    if (data.hasChildren()) {
-                                        mappableNodes.addAll(data.getChildren());
-                                    }
-                                } else {
-                                    mappableNodes.add(data);
-                                }
-                            }
-                        } else {
-                            mappableNodes = ((HL7OutputManager) getManager()).getTreeData(""); //$NON-NLS-1$ 
-                        }
+                        mappableNodes = ((HL7OutputManager) getManager()).getTreeData(""); //$NON-NLS-1$ 
                         createLoopLinks(mappableNodes);
                         xmlViewer.refresh();
                         getBackgroundRefresher().refreshBackground();
