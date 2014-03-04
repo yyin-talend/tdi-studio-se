@@ -2109,6 +2109,22 @@
               name="ChangeDefaultValueFortCassandraOutputDefineCFStructure"
               version="5.4.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
+              id="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
+              name="UpdateJobSettingsForPostgresMigrationTask"
+              version="5.4.2">
+        </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.ChangePostgresDbVersionForProjectSetting"
+              id="org.talend.repository.model.migration.ChangePostgresDbVersionForProjectSetting"
+              name="ChangePostgresDbVersionForProjectSetting"
+              version="5.4.2">
+        </projecttask>
    </extension>
    
    <extension
