@@ -106,7 +106,7 @@ public class UIManager {
      */
     public void autoMap(String currentSchema) {
         if (this.hl7Manager instanceof HL7OutputManager) {
-            List<HL7TreeNode> roots = this.hl7Manager.getTreeData(currentSchema);
+            List<HL7TreeNode> roots = this.hl7Manager.getTreeData("");
             List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
             for (HL7TreeNode root : roots) {
                 getMappableNode((Element) root, mappableNodes);
@@ -120,6 +120,14 @@ public class UIManager {
                         node.setDefaultValue(null);
                         node.setColumn(column);
                         break;
+                    }
+                    String[] splits = node.getColumnLabel().split(":");
+                    for (String s : splits) {
+                        if (s.equals(column.getLabel())) {
+                            node.setDefaultValue(null);
+                            node.setColumn(column);
+                            break;
+                        }
                     }
                 }
             }
