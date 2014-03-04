@@ -186,32 +186,59 @@ package <%= packageName %>;
             if (node.getIncomingConnections().isEmpty()) {
                 String cid = node.getUniqueName();
                 hasCXFRSProvider = true;
+
+final Map<String, String> contentTypes = new java.util.HashMap<String, String>() {{
+        put("XML", "{ \"application/xml\", \"text/xml\" }");
+        put("JSON", "{ \"application/json\" }");
+        put("XML-JSON", "{ \"application/xml\", \"text/xml\", \"application/json\" }");
+        put("FORM", "{ \"application/x-www-form-urlencoded\" }");
+        put("MULTIPART", "{ \"multipart/form-data\", \"multipart/mixed\", \"multipart/related\" }");
+        put("HTML", "{ \"text/html\" }");
+        put("ANY", "{ \"*/*\" }");
+    }};
 %>
     public interface Service_<%=cid%> {
-        @javax.ws.rs.Path(<%=ElementParameterParser.getValue(node, "__PATH__")%>)
-        @javax.ws.rs.<%=ElementParameterParser.getValue(node, "__HTTP_METHOD__")%>()
 <% 
-             org.talend.designer.codegen.config.NodeParamsHelper paramsHelper = new org.talend.designer.codegen.config.NodeParamsHelper(node);
-             String acceptType = paramsHelper.getVisibleStringParam("__ACCEPT_TYPE__");
-             if (!acceptType.isEmpty()) {
+                List<Map<String, String>> mappings = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+                for (Map<String, String> mapping : mappings) {
+                    String outputConn = mapping.get("SCHEMA");
+
+                    String httpVerb = mapping.get("HTTP_VERB");
+                    String uriPattern = mapping.get("URI_PATTERN");
+                    String consumes = mapping.get("CONSUMES");
+                    String produces = mapping.get("PRODUCES");
 %>
-        @javax.ws.rs.Produces("<%=acceptType%>")
+        @javax.ws.rs.Path(<%=uriPattern%>)
+        @javax.ws.rs.<%=httpVerb%>()
 <%
-             }
+            if (contentTypes.containsKey(consumes)) {
+                String consumesContentTypes = contentTypes.get(consumes);
 %>
-        Object invoke(
+        @javax.ws.rs.Consumes(<%=consumesContentTypes%>)
 <%
-        boolean paramCommaWritten = false;
-        String contentType = paramsHelper.getVisibleStringParam("__CONTENT_TYPE__");
-             if (!contentType.isEmpty()) {
-                 paramCommaWritten = true;
-                 String contentClass = "*/*".equals(contentType) ? "String" : "org.w3c.dom.Document";
+            }
+
+             //if (null != produces) {
+            if (contentTypes.containsKey(produces)) {
+                String producesContentTypes = contentTypes.get(produces);
+%>
+        @javax.ws.rs.Produces(<%=producesContentTypes%>)
+<%
+            }
+%>
+        Object <%=outputConn%>(
+<%
+            if (contentTypes.containsKey(consumes)) {
+                 String contentClass = "ANY".equals(consumes) ? "String" : "org.w3c.dom.Document";
 %>
                 <%=contentClass%> payload
 <%
-             }
+            }
 %>
         );
+<% 
+                }
+%>
     }
 
 <%
