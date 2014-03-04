@@ -188,6 +188,10 @@ public class HL7OutputManager extends HL7Manager {
                 }
                 i++;
             }
+            if (incomingConnections.size() > 0 && rootNode == null) {
+                rootNode = new Element("rootTag");
+                treeData = new ArrayList<HL7TreeNode>();
+            }
             if (rootNode != null && treeData != null) {
                 // the root node should not set the ColumnLabel
                 if (rootNode.getRow() != null) {
