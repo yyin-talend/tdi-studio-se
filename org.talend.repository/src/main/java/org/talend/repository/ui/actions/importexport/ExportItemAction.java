@@ -125,6 +125,9 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
 
     @Override
     protected void doRun() {
+        if (toolbarAction) {
+            this.setWorkbenchPart(null);
+        }
         IRepositoryView repositoryView = getViewPart();
         if (repositoryView != null && repositoryView.getViewer() instanceof TreeViewer) {
             ((TreeViewer) repositoryView.getViewer()).getTree().setFocus();
