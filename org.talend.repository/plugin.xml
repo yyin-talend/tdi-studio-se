@@ -2118,6 +2118,21 @@
               name="AddHashKeyFromInputConnector4tHashOutput"
               version="5.2.4">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
+              id="org.talend.repository.model.migration.UpdateJobSettingsForPostgresMigrationTask"
+              name="UpdateJobSettingsForPostgresMigrationTask"
+              version="version">
+        </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.ChangePostgresDbVersionForProjectSetting"
+              id="org.talend.repository.model.migration.ChangePostgresDbVersionForProjectSetting"
+              name="ChangePostgresDbVersionForProjectSetting"
+              version="5.4.2">
+        </projecttask>
    </extension>
    
    <extension
