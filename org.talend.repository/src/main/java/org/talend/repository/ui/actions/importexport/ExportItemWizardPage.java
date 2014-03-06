@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -322,33 +321,16 @@ public class ExportItemWizardPage extends WizardPage {
         if (type == ERepositoryObjectType.SVN_ROOT) {
             viewer.setExpandedState(nodeObject, true);
         }
-        Object parent = null;
-        Object repositoryNode = null;
-        if (nodeObject instanceof RepositoryNode) {
-            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                repositoryNode = nodeHandler.getRepositoryNode(((RepositoryNode) nodeObject).getObject());
-                if (repositoryNode != null) {
-                    // here we start another recursive loop
-                    // this one will try to expand RepositoryNode
-                    // while the current one will try to expand IResource (or other) node.
-                    expandParent(viewer, ((RepositoryNode) nodeObject).getParent(), type);
-                    break;
-                }
-            }
-        }
-        if (repositoryNode == null) {
-            repositoryNode = nodeObject;
-        }
-        parent = getParentNode(repositoryNode);
+        Object parent = getParentNode(nodeObject);
 
         if (parent != null) {
             expandParent(viewer, parent, type);
         }
-        if (repositoryNode instanceof ProjectRepositoryNode
-                || ((repositoryNode instanceof RepositoryNode) && ((RepositoryNode) repositoryNode).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
-            viewer.expandToLevel(repositoryNode, 3);
-        } else if (!(repositoryNode instanceof IFile)) {
-            viewer.expandToLevel(repositoryNode, 1);
+        if (nodeObject instanceof ProjectRepositoryNode
+                || ((nodeObject instanceof RepositoryNode) && ((RepositoryNode) nodeObject).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
+            viewer.expandToLevel(nodeObject, 3);
+        } else {
+            viewer.expandToLevel(nodeObject, 1);
         }
     }
 
