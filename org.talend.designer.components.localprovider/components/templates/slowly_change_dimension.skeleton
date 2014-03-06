@@ -956,7 +956,7 @@ public class CLASS {
             return selectionSQL.toString();
         }
         protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
-        	return "\" + ((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\")" +     
+        	return "\" + ((schema_" + cid +"!= null && schema_" +cid+".trim().length()!=0)?schema_"+cid+" +\".\":\"\")" +     
             getSequence(scdConfiger.getSurrogateKeySequence());
         }
         public String createInsertionSQL(SCDConfiger scdConfiger) {
@@ -1488,7 +1488,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "+ \" nextval for \"+((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\" + \"";
+            return "+ \" nextval for \"+((schema_" + cid +"!= null && schema_" +cid+".trim().length()!=0)?schema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -2077,7 +2077,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim()!=\"\")?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
+        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim().length()!=0)?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -2269,7 +2269,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim()!=\"\")?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
+        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim().length()!=0)?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
         }
         protected String getIncrement() {
             return "";
