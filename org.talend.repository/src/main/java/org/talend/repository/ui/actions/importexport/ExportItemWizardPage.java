@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -32,7 +31,9 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -322,33 +323,16 @@ public class ExportItemWizardPage extends WizardPage {
         if (type == ERepositoryObjectType.SVN_ROOT) {
             viewer.setExpandedState(nodeObject, true);
         }
-        Object parent = null;
-        Object repositoryNode = null;
-        if (nodeObject instanceof RepositoryNode) {
-            for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
-                repositoryNode = nodeHandler.getRepositoryNode(((RepositoryNode) nodeObject).getObject());
-                if (repositoryNode != null) {
-                    // here we start another recursive loop
-                    // this one will try to expand RepositoryNode
-                    // while the current one will try to expand IResource (or other) node.
-                    expandParent(viewer, ((RepositoryNode) nodeObject).getParent(), type);
-                    break;
-                }
-            }
-        }
-        if (repositoryNode == null) {
-            repositoryNode = nodeObject;
-        }
-        parent = getParentNode(repositoryNode);
+        Object parent = getParentNode(nodeObject);
 
         if (parent != null) {
             expandParent(viewer, parent, type);
         }
-        if (repositoryNode instanceof ProjectRepositoryNode
-                || ((repositoryNode instanceof RepositoryNode) && ((RepositoryNode) repositoryNode).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
-            viewer.expandToLevel(repositoryNode, 3);
-        } else if (!(repositoryNode instanceof IFile)) {
-            viewer.expandToLevel(repositoryNode, 1);
+        if (nodeObject instanceof ProjectRepositoryNode
+                || ((nodeObject instanceof RepositoryNode) && ((RepositoryNode) nodeObject).getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS)) {
+            viewer.expandToLevel(nodeObject, 3);
+        } else {
+            viewer.expandToLevel(nodeObject, 1);
         }
     }
 
@@ -428,6 +412,18 @@ public class ExportItemWizardPage extends WizardPage {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 // refreshExportDependNodes();
+            }
+
+        });
+        exportItemsTreeViewer.addCheckStateListener(new ICheckStateListener() {
+
+            @Override
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                // if (event.getChecked()) {
+                // initcheckedNodes.add(event.getElement());
+                // } else {
+                // initcheckedNodes.remove(event.getElement());
+                // }
             }
 
         });
@@ -729,10 +725,7 @@ public class ExportItemWizardPage extends WizardPage {
                 checkedDependency.clear();
                 implicitDependences.clear();
                 CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                // exportItemsTreeViewer.expandAll();
-                // exportItemsTreeViewer.collapseAll();
                 Set allNode = new HashSet();
-                // exportItemsTreeViewer.expandToLevel(3);
                 if (exportDependencies.getSelection()) {
                     refreshExportDependNodes();
                     exportDependenciesSelected();
@@ -797,6 +790,7 @@ public class ExportItemWizardPage extends WizardPage {
                     } else {
                         implicitDependences.add(repositoryObject);
                     }
+                    // check relateion ship for job -->map -->structure
                     for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                         List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(repositoryObject);
                         if (!nodesAndDependencies.isEmpty()) {
@@ -805,7 +799,7 @@ public class ExportItemWizardPage extends WizardPage {
                     }
                 }
 
-                // check process again incase Relation is not saved for mapper
+                // check relateion ship for map -->structure
                 for (Item item : selectedItems) {
                     for (IExtendedRepositoryNodeHandler nodeHandler : RepositoryContentManager.getExtendedNodeHandler()) {
                         List nodesAndDependencies = nodeHandler.getRepositoryNodeAndDependencies(new RepositoryObject(item
