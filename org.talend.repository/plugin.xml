@@ -127,12 +127,6 @@
              name="View Impact">
        </Action>
       <Action
-            class="org.talend.repository.ui.actions.importexport.ImportItemAction"
-            id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
-            isEditAction="false"
-            isReadAction="false"
-            name="Import Items"/>
-      <Action
             class="org.talend.repository.ui.actions.importexport.ExportItemAction"
             id="org.talend.repository.localprovider.ui.actions.ExportItemAction"
             isEditAction="false"
@@ -343,7 +337,7 @@
             label="Local Action set"
             visible="false">
          <action
-               class="org.talend.repository.ui.actions.importexport.ImportItemAction"
+               class="org.talend.repository.items.importexport.ui.actions.ImportItemsAction"
                icon="platform:/plugin/org.talend.common.ui.runtime/icons/import.gif"
                id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
                label="%ImportItemAction.title"
