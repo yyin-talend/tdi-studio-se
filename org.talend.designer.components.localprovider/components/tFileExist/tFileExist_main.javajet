@@ -25,7 +25,7 @@ java.io.File file_<%=cid%> = new java.io.File(<%=fileName%>);
 if (!file_<%=cid%>.exists()) {
     globalMap.put("<%=cid %>_EXISTS",false);
     <%if(isLog4jEnabled) {%>
-    log.info("<%=cid%> - Directory or file : " + file_<%=cid%>.getAbsolutePath() + " don't exist.");
+    log.info("<%=cid%> - Directory or file : " + file_<%=cid%>.getAbsolutePath() + " doesn't exist.");
     <%}%>
 }else{
 	globalMap.put("<%=cid %>_EXISTS",true);

@@ -99,7 +99,7 @@ if(file_<%=cid %>.exists()) {
     if(isLog4jEnabled) {
 %>
 	else {
-		log.info("<%=cid%> - File : " + file_<%=cid %>.getAbsolutePath() + " don't exist.");
+		log.info("<%=cid%> - File : " + file_<%=cid %>.getAbsolutePath() + " doesn't exist.");
 	}
 <%
     }
