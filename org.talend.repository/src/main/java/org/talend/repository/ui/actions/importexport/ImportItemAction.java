@@ -40,7 +40,9 @@ import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
+ * @deprecated by ImportItemsAction, use the new import system to replace.
  */
+@Deprecated
 public final class ImportItemAction extends AContextualAction implements IWorkbenchWindowActionDelegate {
 
     private static final String IMPORT_ITEM = Messages.getString("ImportItemAction.Label"); //$NON-NLS-1$
