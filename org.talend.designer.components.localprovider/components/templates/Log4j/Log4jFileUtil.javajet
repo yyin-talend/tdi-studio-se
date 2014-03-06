@@ -7,6 +7,7 @@
 		INode node = null;
 	    String cid = null;
  		boolean isLog4jEnabled = false;
+ 		java.util.List<String> ignoredParamsList=null;
  		
  		public DefaultLog4jFileUtil(INode node) {
  			this.node = node;
@@ -65,6 +66,10 @@
 			}
 		}
 		
+		public void setIgnoredParamsList(java.util.List<String> ignoredParamsList){
+			this.ignoredParamsList=ignoredParamsList;
+		}
+		
 		public void logParameters(INode node){
 			if(isLog4jEnabled){
 			%>
@@ -75,7 +80,7 @@
 			   		org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
 			   		org.talend.core.model.process.EParameterFieldType.LABEL);
 		   		for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
-		   			if(ignoreT.contains(ep.getFieldType())){
+		   			if(ignoreT.contains(ep.getFieldType()) || (ignoredParamsList!=null && ignoredParamsList.contains(ep.getName()))){
 		   				continue;
 		   			}
 		   			String name = ep.getName();
