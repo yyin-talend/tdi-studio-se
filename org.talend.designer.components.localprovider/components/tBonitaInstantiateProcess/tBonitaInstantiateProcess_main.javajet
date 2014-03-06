@@ -9,6 +9,7 @@ imports="
 			org.talend.core.model.metadata.IMetadataColumn
 			org.talend.core.model.metadata.IMetadataTable
 			org.talend.core.model.metadata.types.JavaTypesManager
+			org.talend.core.model.metadata.types.JavaType
 " 
 %>
 
@@ -41,17 +42,31 @@ imports="
 								<%
 								}
 								%>
-								parameters_<%=cid%>.append("<entry><string><%=columns.get(i).getLabel() %></string><string>");
+								parameters_<%=cid%>.append("<entry><string><%=columns.get(i).getLabel() %></string>");
 								<%if(!JavaTypesManager.isJavaPrimitiveType(columns.get(i).getTalendType(), columns.get(i).isNullable())) {%>
 									if(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%> != null) {
-								<%}%>
-										parameters_<%=cid%>.append("<![CDATA[");
+								<%}
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(columns.get(i).getTalendType());
+									if(javaType == JavaTypesManager.DATE){
+									%>
+										java.io.StringWriter sw_<%=cid%> = new java.io.StringWriter();
+										new com.thoughtworks.xstream.XStream().marshal(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>, new com.thoughtworks.xstream.io.xml.CompactWriter(sw_<%=cid%>));
+										parameters_<%=cid%>.append(sw_<%=cid%>);
+									<%
+									}else{
+									%>
+										parameters_<%=cid%>.append("<string><![CDATA[");
 										parameters_<%=cid%>.append(java.net.URLEncoder.encode(java.net.URLEncoder.encode(String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>), utf8Charset),utf8Charset));
-										parameters_<%=cid%>.append("]]>");
+										parameters_<%=cid%>.append("]]></string>");
+									<%
+									}
+									%>
 								<%if(!JavaTypesManager.isJavaPrimitiveType(columns.get(i).getTalendType(), columns.get(i).isNullable())) {%>
+									}else{
+										parameters_<%=cid%>.append("<string></string>");
 									}
 								<%}%>
-								parameters_<%=cid%>.append("</string></entry>");
+								parameters_<%=cid%>.append("</entry>");
 								<%
 								if (i==sizeColumns-1) {
 								%>
