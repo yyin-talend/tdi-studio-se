@@ -2936,31 +2936,32 @@ public class Node extends Element implements IGraphicalNode {
      * DOC hcyi Comment method "checkHasMultiPrejobOrPostJobComponents".
      */
     private void checkHasMultiPrejobOrPostJobComponents() {
+        Map<String, INode> multiNodes = new HashMap<String, INode>();
         if (PluginChecker.isJobLetPluginLoaded()) {
             IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
             if (jobletService != null) {
-                if (jobletService.isJobletComponent(this)) {
-                    Map<String, INode> multiNodes = new HashMap<String, INode>();
-                    // need to check all node from the process
-                    for (INode proGraphicNode : process.getGraphicalNodes()) {
-                        boolean jobletComponent = jobletService.isJobletComponent(proGraphicNode);
-                        if (jobletComponent) {
-                            // change process.getGeneratingNodes() to
-                            // jobletService.getGraphNodesForJoblet(proGraphicNode) for TDI-26472
-                            for (INode node : jobletService.getGraphNodesForJoblet(proGraphicNode)) {
-                                if (("preStaLogCon").equals(node.getUniqueName())) {
-                                    continue;
-                                }
-                                checktPreOrPost(multiNodes, node);
-
-                            }
-                        } else {
-                            if (("preStaLogCon").equals(proGraphicNode.getUniqueName())) {
-                                continue;
-                            }
-                            checktPreOrPost(multiNodes, proGraphicNode);
+                // need to check all node from the process
+                List<INode> joblets = new ArrayList<INode>();
+                for (INode proGraphicNode : process.getGraphicalNodes()) {
+                    boolean jobletComponent = jobletService.isJobletComponent(proGraphicNode);
+                    if (jobletComponent) {
+                        joblets.add(proGraphicNode);
+                    } else {
+                        if (("preStaLogCon").equals(proGraphicNode.getUniqueName())) {
+                            continue;
                         }
+                        checktPreOrPost(multiNodes, proGraphicNode);
+                    }
+                }
+                for (INode jNode : joblets) {
+                    // change process.getGeneratingNodes() to
+                    // jobletService.getGraphNodesForJoblet(proGraphicNode) for TDI-26472
+                    for (INode node : jobletService.getGraphNodesForJoblet(jNode)) {
+                        if (("preStaLogCon").equals(node.getUniqueName())) {
+                            continue;
+                        }
+                        checktPreOrPost(multiNodes, node);
                     }
                 }
             }
