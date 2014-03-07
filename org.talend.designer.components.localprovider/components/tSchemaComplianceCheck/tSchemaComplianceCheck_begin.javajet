@@ -193,11 +193,11 @@
 			} //CONDITION_00130 STOP
 		} //METHOD_TESTPRECISION STOP
 
-		public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, int maxLength, String cid) { //METHOD_TESTDATALENGTH START
+		public void testDataLength(boolean _bNullable, String _sInConnName,IMetadataColumn inColumn, IMetadataColumn metadataColumn, int maxLength, String cid) { //METHOD_TESTDATALENGTH START
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
 			boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, metadataColumn.isNullable());
 			boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);
-			String colName = metadataColumn.getLabel();
+			String colName = inColumn.getLabel();
 
 			if (maxLength > 0 && ( bIsStringType || bIsIntegerType )){ //CONDITION_00140 START
 %>
@@ -546,7 +546,7 @@
 
 		// length checking
 		if (bMaxLenLimited){
-			checker.testDataLength(bNullable, sInConnName, "true".equals(anotherChecked)?schemaColumn:inColumn, maxLength, cid);
+			checker.testDataLength(bNullable, sInConnName,inColumn, "true".equals(anotherChecked)?schemaColumn:inColumn, maxLength, cid);
 		}
 
 		// precision checking
