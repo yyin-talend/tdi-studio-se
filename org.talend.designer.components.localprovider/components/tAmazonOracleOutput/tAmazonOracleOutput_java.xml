@@ -255,16 +255,6 @@
       <DEFAULT>oracle_id</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
-      NAME="JDBC_URL"
-	  FIELD="TEXT"
-      NUM_ROW="45"
-      REQUIRED="true"
-	  SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_WALLET')"
-    >
-	<DEFAULT>"jdbc:oracle:oci:/@talend"</DEFAULT>
-	 </PARAMETER>
-
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>

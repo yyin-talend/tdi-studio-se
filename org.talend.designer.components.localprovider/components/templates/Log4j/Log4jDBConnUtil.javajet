@@ -5,138 +5,92 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
+<%@ include file="Log4jFileUtil.javajet"%>
 <%
-	//this util class use by set log4j debug paramters
-	class DefaultLog4jCodeGenerateUtil {
-	
-		INode node = null;
-	    String cid = null;
-		String dbproperties = null;
-		String dbhost = null;
-    	String dbport = null;
-    	String dbname = null;
-    	String dbserver = null;
-    	String dbuser = null;
- 		String dbpwd = null;
-		String connectionType = null;
- 		String dbVersion =  null; 
- 		String dbSchema = null;
- 		String useCursor = null;
- 		String trimAllColumn = null;
- 		String noNullValues = null;
- 		String dbquery= null;
- 		String table = null;
- 		String useExistingConnection = null;
- 		String commitEvery = "";
+	class DefaultLog4jCodeGenerateUtil extends DefaultLog4jFileUtil{
+
  		String connection = "";
- 		boolean isLog4jEnabled = false;
  		boolean hasInit = false;
- 		boolean output = false;//true:when it is output component.
- 		
+ 		String dataAction ;
+ 		String dataOperationPrefix;
+		String useBatchSize;
+		String batchSize;
+		String dbSchema;
+ 		boolean logCommitCounter = false;
+
+		public DefaultLog4jCodeGenerateUtil(){
+			ignoreLogParameter();
+		}
+
+		public void ignoreLogParameter(){
+			ignoredParamsList = new java.util.ArrayList<String>();
+			ignoredParamsList.add("PASS");
+		}
+
+		public DefaultLog4jCodeGenerateUtil(INode node) {
+			super(node);
+			ignoreLogParameter();
+	    	init();
+		}
+
 	    public void beforeComponentProcess(INode node){
 	    	this.node = node;
 	    	init();
 	    }
-	    
+
 		private void init() {
 			if(hasInit){
 				return;
 			}
-	    	cid = node.getUniqueName();
-			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-			dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
-	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-	    	dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
-	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
-			connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-	 		dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-	 		dbSchema = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
-	 		useCursor = ElementParameterParser.getValue(node,"__USE_CURSOR__");
-	 		trimAllColumn = ElementParameterParser.getValue(node,"__TRIM_ALL_COLUMN__");
-	 		noNullValues = ElementParameterParser.getValue(node,"__NO_NULL_VALUES__");
-	 		dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-			dbquery = dbquery.replaceAll("\n"," ");
-			dbquery = dbquery.replaceAll("\r"," ");
-			table= ElementParameterParser.getValue(node, "__TABLE__");
-			isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-			useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-			commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+ 			this.cid = node.getUniqueName();
+			this.isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 			connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			if(!"".equals(connection)){
 				connection = "'" + connection+"' ";
 			}
-			if("false".equals(useExistingConnection)){
-				connection = "";
-				if(!("").equals(commitEvery) && !("0").equals(commitEvery) && "".equals(dbquery)){
-					output=true;
-				}
+			//for output
+			dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+			if(dataAction != null && !("").equals(dataAction)){
+				logCommitCounter=true;
 			}
+			useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
+			batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 			hasInit = true;
 		}
-		
+
 		public void infoComponentStart(INode node) {
 			beforeComponentProcess(node);
-			if (isLog4jEnabled) {
-%>
-				log.info("<%=cid%> - Start to work.");
-<%
-			}
+			logInfo(node,"info",cid+" - Start to work.");
 		}
-		
+
 		public void infoComponentEnd(INode node) {
 			beforeComponentProcess(node);
-			if (isLog4jEnabled) {
-%>
-				log.info("<%=cid%> - Done.");
-<%
-			}
+			logInfo(node,"info",cid+" - Done.");
 		}
-		
+
 		public void initDbDebugRowBuffer() {
 			if (isLog4jEnabled) {
-%>
+			%>
 				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
-<%
+				String dataOperationPrefix_<%=cid%> = "";
+			<%
 			}
 		}
-		
+
 		public void debugDriverClassName() {
-			if (isLog4jEnabled) {
-%>
-				log.debug("<%=cid%> - Driver ClassName: "+driverClass_<%=cid%>+".");
-<%
-			}
+			logInfo(node,"debug",cid+" - Driver ClassName: \"+driverClass_"+cid+"+\".");
 		}
-		
+
 		public void debugConnectionParams(INode node) {
 			beforeComponentProcess(node);
-			generateConnectionParams();
 			debugDriverClassName();
-			if (isLog4jEnabled) {
-%>
-				log.debug(log4jDebugParamters_<%=cid%>);
-<%
-			}
+			super.logParameters(node);
 		}
-	
+
 		public void dbConnectionParamsForELT(INode previousNode){
 			cid = previousNode.getUniqueName();
-			dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
-	    	dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
-	    	dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 		}
-		
-		public void additionalParameter(INode node) {
-			String needtoConvet2Upper= ElementParameterParser.getValue(node, "__Convert_to_UPPer__");
-		}
-		
-		public void generateAdditionalParameters(INode node) {
-			additionalParameter(node);
-		}
-		
+
 		public void useExistConnection(INode node){
 			beforeComponentProcess(node);
 			if(isLog4jEnabled) {
@@ -149,12 +103,12 @@ imports="
 			<%
 			}
 		}
-		
+
 		public void connect(INode node){
 			beforeComponentProcess(node);
 			connect();
 		}
-		
+
 		public void connect(){
 			connect_begin();
 			%>
@@ -162,53 +116,33 @@ imports="
 			<%
 			connect_end();
 		}
-		
+
 		public void connect_begin(){
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
-			<%
-			}
+			logInfo(node,"info",cid+" - Connection attempt to '\" + url_"+cid+" + \"' with the username '\" + dbUser_"+cid+" + \"'.");
 		}
-		
+
 		public void connect_begin_noUser(){
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "'.");
-			<%
-			}
+			logInfo(node,"info",cid+" - Connection attempt to '\" + url_"+cid+" + \"'.");
 		}
-		
+
 		public void connect_end(){
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded.");
-			<%
-			}
+			logInfo(node,"info",cid+" - Connection to '\" + url_"+cid+" + \"' has succeeded.");
 		}
-		
+
 		public void rollback(INode node){
 			beforeComponentProcess(node);
-			if(isLog4jEnabled){
+			logInfo(node,"debug",cid+" - Connection "+connection+"starting to rollback.");
 			%>
-				log.debug("<%=cid%> - Connection <%=connection%>starting to rollback.");
+			conn_<%=cid%>.rollback();
 			<%
-			}
-			%>
-				conn_<%=cid%>.rollback();
-			<%
-			if(isLog4jEnabled){
-			%>
-				log.debug("<%=cid%> - Connection <%=connection%>rollback has succeeded.");
-			<%
-			}
+			logInfo(node,"debug",cid+" - Connection "+connection+"rollback has succeeded.");
 		}
-		
+
 		public void commit(INode node){
 			beforeComponentProcess(node);
 			commit();
 		}
-		
+
 		public void commit(){
 			commit_begin();
 			%>
@@ -216,33 +150,23 @@ imports="
 			<%
 			commit_end();
 		}
-		
+
 		public void commit_begin(){
-			if(isLog4jEnabled){
-				if(output){
-			%>
-					log.debug("<%=cid%> - Connection <%=connection%>starting to commit " + commitCounter_<%=cid%>+ " records.");
-			<%
-				}else{
-			%>
-					log.debug("<%=cid%> - Connection <%=connection%>starting to commit.");
-			<%
-				}
+			if(logCommitCounter){
+				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit \" + commitCounter_"+cid+"+ \" records.");
+			}else{
+				logInfo(node,"debug",cid+" - Connection "+connection+"starting to commit.");
 			}
 		}
 		public void commit_end(){
-			if(isLog4jEnabled){
-			%>
-				log.debug("<%=cid%> - Connection <%=connection%>commit has succeeded.");
-			<%
-			}
+			logInfo(node,"debug",cid+" - Connection "+connection+"commit has succeeded.");
 		}
-		
+
 		public void close(INode node){
 			beforeComponentProcess(node);
 			close();
 		}
-		
+
 		public void close(){
 			close_begin();
 			%>
@@ -250,99 +174,47 @@ imports="
 			<%
 			close_end();
 		}
-		
+
 		public void close_begin(){
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Closing the connection <%=connection%>to the database.");
-			<%
-			}
+			logInfo(node,"info",cid+" - Closing the connection "+connection+"to the database.");
 		}
 		public void close_end(){
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Connection <%=connection%>to the database closed.");
-			<%
-			}
+			logInfo(node,"info",cid+" - Connection "+connection+"to the database closed.");
 		}
-		
+
 		public void autoCommit(INode node,boolean autoCommit){
 			beforeComponentProcess(node);
-			if(isLog4jEnabled){
-			%>
-				log.debug("<%=cid%> - Connection is set auto commit to '<%=autoCommit%>'.");
-			<%
-			}
+			logInfo(node,"debug",cid+" - Connection is set auto commit to '"+autoCommit+"'.");
 			%>
 				conn_<%=cid%>.setAutoCommit(<%=autoCommit%>);
 			<%
 		}
-		
+
 		public void query(INode node){
 			beforeComponentProcess(node);
-			if(isLog4jEnabled) {
-			%>
-				log.info("<%=cid%> - Executing the query: '" + <%=dbquery%> + "'.");
-			<%
-			}
+			//for input
+	 		String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+			dbquery = dbquery.replaceAll("\n"," ");
+			dbquery = dbquery.replaceAll("\r"," ");
+			logInfo(node,"info",cid+" - Executing the query: '\" + "+dbquery +" + \"'.");
 		}
-		
+
 		public void retrieveRecordsCount(INode node){
 			beforeComponentProcess(node);
-			if(isLog4jEnabled){
-			%>
-				log.info("<%=cid%> - Retrieved records count: "+nb_line_<%=cid%> + " .");
-			<%
-			}
+			logInfo(node,"info",cid+" - Retrieved records count: \"+nb_line_"+cid+" + \" .");
 		}
-		
-		public void appendParameter(String property,String value){
-			if(value != null && !("\"\"").equals(value) && !("").equals(value)){
-			%>
-				log4jDebugParamters_<%=cid%> += "<%=property%> = " + <%=value%> + " | ";
-			<%
-			}
-		}
-		
-		public void appendParameterQuote(String property,String value){
-			if(value != null && !("\"\"").equals(value) && !("").equals(value)){
-			%>
-				log4jDebugParamters_<%=cid%> += "<%=property%> = <%=value%> | ";
-			<%
-			}
-		}
-		
-		public void generateConnectionParams() {
-			if(isLog4jEnabled) {
-%>
-				String log4jDebugParamters_<%=cid%> = "";
-				<%
-				appendParameterQuote("CONNECTION_TYPE",connectionType);
-				appendParameterQuote("DBVERSION",dbVersion);
-				appendParameter("PROPERTIES",dbproperties);
-				appendParameter("HOST",dbhost);
-				appendParameter("PORT",dbport);
-				appendParameter("DBNAME",dbname);
-				appendParameter("DBSERVER",dbserver);
-				appendParameter("DBSCHEMA",dbSchema);
-				appendParameter("USERNAME",dbuser);
-				appendParameter("USE_CURSOR",useCursor);
-				appendParameter("TRIM_ALL_COLUMN",trimAllColumn);
-				appendParameter("NO_NULL_VALUES",noNullValues);
-				appendParameter("TABLE",table);
-				%>
-				log4jDebugParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jDebugParamters_<%=cid%>;
-<%	
-			}
-	    }
-	    
-	    public void logError(INode node,String logLevel){
+
+		public void logError(INode node,String logLevel,String exception){
 	    	beforeComponentProcess(node);
 	    	if(isLog4jEnabled){
 	    	%>
-				log.<%=logLevel%>("<%=cid%> - " + e.getMessage());
+				log.<%=logLevel%>("<%=cid%> - " + <%=exception%>.getMessage());
 			<%
 			}
+	    }
+
+	    public void logError(INode node,String logLevel){
+	    	logError(node,logLevel,"e");
 	    }
 	    
 	    public void logInfo(INode node,String logLevel,String message){
@@ -353,7 +225,76 @@ imports="
 			<%
 			}
 	    }
+		/**
+		*batchType :
+		*			1: do not get return value of executeBatch();
+		*			2: get return value of executeBatch();
+		*
+		*/
+		public void executeBatch(INode node,int batchType){
+			beforeComponentProcess(node);
+			boolean logBatch = ("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize);
+			if(logBatch){
+				logInfo(node,"debug",cid+" - Executing the "+dataAction+" batch.");
+			}
+			if(batchType==1){
+			%>
+				pstmt_<%=cid %>.executeBatch();
+			<%
+			}else if(batchType==2){
+			%>
+				int countSum_<%=cid%> = 0;
+				for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+					countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+				}
+			<%
+			}
+			if(logBatch){
+				logInfo(node,"debug",cid+" - The "+dataAction+" batch execution has succeeded.");
+			}
+		}
+
+	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName){
+	    	beforeComponentProcess(node);
+	    	if(isLog4jEnabled){
+				int count = 0;
+				for(org.talend.core.model.metadata.IMetadataColumn column : columnList) {
+					count++;
+					%>
+					log4jSb_<%=cid%>.append(<%=incomingConnName%>.<%=column.getLabel()%>);
+					<%
+					if(count < columnList.size()){
+					%>
+						log4jSb_<%=cid%>.append("|");
+					<%
+					}
+				}
+				if (("true").equals(useBatchSize) && !("").equals(batchSize)&&!("0").equals(batchSize)) {
+				%>
+					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + " to the <%=dataAction%> batch.");
+				<%
+				}else{
+				%>
+					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + ".");
+				<%
+				}
+				%>
+				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+				<%
+			}
+	    }
+
+		public void defineDataOperationPrefix(INode node,String operation){
+			beforeComponentProcess(node);
+			if(isLog4jEnabled) {
+			%>
+				dataOperationPrefix_<%=cid%> = "<%=operation%>";
+			<%
+			}
+		}
+
 	}
-	
+
 	DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil();
 %>

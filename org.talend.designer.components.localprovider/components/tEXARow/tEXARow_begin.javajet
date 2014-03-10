@@ -17,14 +17,14 @@ imports="
 	    }
 	    
 		public void setURL(INode node) {
-			log4jCodeGenerateUtil.dbSchema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+			String dbSchema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 		%>
 			String dbProperties_<%=cid%> = <%=dbproperties%>;
 	        String url_<%=cid%> = null;
 	        if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
-	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=log4jCodeGenerateUtil.dbSchema%>; 
+	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=dbSchema%>; 
 	        } else {
-	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=log4jCodeGenerateUtil.dbSchema%> + ";" + <%=dbproperties%>;
+	            url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbSchema%> + ";" + <%=dbproperties%>;
 	        }
 		<%
 		}
