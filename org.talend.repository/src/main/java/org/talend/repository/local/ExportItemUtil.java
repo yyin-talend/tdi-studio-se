@@ -47,6 +47,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -70,6 +71,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.repository.utils.XmiResourceManager;
+import org.talend.core.service.ITransformService;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.IFileExporterFullPath;
@@ -313,14 +315,31 @@ public class ExportItemUtil {
 
             allItems = sortItemsByProject(allItems, itemProjectMap);
 
+            ITransformService tdmService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
+                tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
+            }
             itemProjectMap.clear();
             Set<String> jarNameList = new HashSet<String>();
             Iterator<Item> iterator = allItems.iterator();
+            Set<String> projectHasTdm = new HashSet<String>();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
                 project = pManager.getProject(item);
 
                 String label = item.getProperty().getLabel();
+                // for tdm .settings/com.oaklandsw.base.projectProps
+                String technicalLabel = project.getTechnicalLabel();
+                if (tdmService != null && !projectHasTdm.contains(technicalLabel) && tdmService.isTransformItem(item)) {
+                    projectHasTdm.add(technicalLabel);
+                    IPath tdmPropsPath = getProjectPath().append(FileConstants.TDM_PROPS_PATH);
+                    IPath propsSourcePath = workspacePath.append(tdmPropsPath);
+                    IPath propsTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(tdmPropsPath);
+                    FilesUtils.copyFile(new File(propsSourcePath.toPortableString()),
+                            new File(propsTargetPath.toPortableString()));
+                    toExport.put(propsTargetPath.toFile(), tdmPropsPath);
+
+                }
 
                 // project
                 IPath proRelativePath = getProjectPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
