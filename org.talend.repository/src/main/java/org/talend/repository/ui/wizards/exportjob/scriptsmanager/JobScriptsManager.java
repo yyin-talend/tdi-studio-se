@@ -55,6 +55,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.runtime.repository.build.BuildExportManager;
+import org.talend.core.service.ITransformService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.IProcessor;
@@ -134,6 +135,8 @@ public abstract class JobScriptsManager {
     private File tempExportFolder;
 
     private List<Item> exportCaculatedItems = new ArrayList<Item>();
+
+    private List<Item> exportCaculatedProject = new ArrayList<Item>();
 
     public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
             int tracePort) {
@@ -821,6 +824,11 @@ public abstract class JobScriptsManager {
         Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
                 Arrays.asList(new Item[] { processItem }), false);
 
+        ITransformService tdmService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
+            tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
+        }
+
         try {
             for (IRepositoryViewObject object : allDependencies) {
                 Item item = object.getProperty().getItem();
@@ -834,9 +842,18 @@ public abstract class JobScriptsManager {
                 itemPath = (itemPath == null || itemPath.equals("")) ? "" : itemPath; //$NON-NLS-1$ //$NON-NLS-2$
                 IPath projectRootPath = getCorrespondingProjectRootPath(item);
                 String projectName = getCorrespondingProjectName(item);
+                String relativePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName;
+
+                // add .settings/com.oaklandsw.base.projectProps for tdm
+                if (tdmService != null && !exportCaculatedProject.contains(projectName) && tdmService.isTransformItem(item)) {
+                    IPath propsPath = getCorrespondingProjectRootPath(item).append(FileConstants.TDM_PROPS_PATH);
+                    String propsRelativePath = relativePath;
+                    propsRelativePath = propsRelativePath + PATH_SEPARATOR + FileConstants.TDM_PROPS_FOLDER;
+                    resource.addResource(propsRelativePath, propsPath.toFile().toURL());
+                }
                 // project file
                 IPath projectFilePath = getCorrespondingProjectRootPath(item).append(FileConstants.LOCAL_PROJECT_FILENAME);
-                checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                checkAndAddProjectResource(allResources, resource, relativePath,
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                 IPath itemFilePath;
@@ -846,11 +863,14 @@ public abstract class JobScriptsManager {
                     itemPath = itemPath.substring(typeFolderPath.toString().length());
                 }
                 if (item.getFileExtension() == null || "".equals(item.getFileExtension())) { //$NON-NLS-1$
-                    itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + itemVersionString + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ 
+                    itemFilePath = projectRootPath
+                            .append(typeFolderPath)
+                            .append(itemPath)
+                            .append(itemName
+                                    + (item.isNeedVersion() ? itemVersionString : "") + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ 
                 } else {
                     itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                            .append(itemName + itemVersionString + "." + item.getFileExtension()); //$NON-NLS-1$ 
+                            .append(itemName + (item.isNeedVersion() ? itemVersionString : "") + "." + item.getFileExtension()); //$NON-NLS-1$ 
                 }
 
                 IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
@@ -873,8 +893,7 @@ public abstract class JobScriptsManager {
                     ExceptionHandler.log(Messages.getString("JobScriptsManager.ResourceNotFoundForExport", propertiesFilePath));
                 }
 
-                String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                        + typeFolderPath.toString();
+                String basePath = relativePath + PATH_SEPARATOR + typeFolderPath.toString();
                 if (itemPath != null && !"".equals(itemPath)) { //$NON-NLS-1$
                     basePath = basePath + PATH_SEPARATOR + itemPath;
                 }
