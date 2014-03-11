@@ -90,7 +90,7 @@ public class MsmqUtil {
         } catch (MessageQueueException ex1) {
 
             if (createIfNotExists) {
-            	System.out.println("Queue open failure: " + ex1);
+            	System.out.println("Queue [."+queueType+"\\" + queueName+"] open failure: " + ex1);
                 createIfNotExists = false;
                 create();
             }else{
@@ -143,6 +143,7 @@ public class MsmqUtil {
         String qLabel = "Created by " + this.getClass().getName() + ".java";
         
         msmqHandle = Queue.create(fullname, qLabel, isTransaction);
+        System.out.println("Create queue ["+fullname+"] successfully.");
     }
 
     private void checkOpen() throws MessageQueueException {
