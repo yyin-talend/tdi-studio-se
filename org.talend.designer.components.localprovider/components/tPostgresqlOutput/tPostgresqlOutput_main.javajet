@@ -146,10 +146,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 			for(Column column : colStruct) {
 				if(column.isInsertable()) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-					generateInsertSetStmt(node,manager,typeToGenerate, column, counter, incomingConnName, cid, actionType);
+				 	%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%
 					if(isEnableDebug) {
 					%>
-						query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+						query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
 					<%
 					}
 					if (typeToGenerate.equals("Geometry")) {

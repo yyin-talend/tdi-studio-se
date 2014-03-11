@@ -34,7 +34,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
 						<%
 						counter++;
 					}
