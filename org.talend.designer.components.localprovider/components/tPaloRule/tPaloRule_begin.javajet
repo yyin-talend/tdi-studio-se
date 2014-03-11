@@ -121,5 +121,12 @@ for(int i=0; i<iNbOfCubeRules; i++){
 <%
 	}
 }
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
+<%
+	}
 %>
 
