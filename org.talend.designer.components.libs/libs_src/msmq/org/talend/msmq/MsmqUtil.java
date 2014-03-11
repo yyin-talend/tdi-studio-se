@@ -84,7 +84,7 @@ public class MsmqUtil {
         } catch (MessageQueueException ex1) {
 
             if (bTried) {
-            	System.out.println("Queue open failure: " + ex1);
+            	System.out.println("Queue [.\\private$\\" + queueName+"] open failure: " + ex1);
                 bTried = false;
                 create();
             }else{
@@ -133,6 +133,7 @@ public class MsmqUtil {
         String qLabel = "Created by " + this.getClass().getName() + ".java";
         boolean transactional = false; // should the queue be transactional
         msmqHandle = Queue.create(fullname, qLabel, transactional);
+        System.out.println("Create queue ["+fullname+"] successfully.");
     }
 
     private void checkOpen() throws MessageQueueException {
