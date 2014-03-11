@@ -42,6 +42,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			} else {
 				dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 			}
+			executeBatch = false;
 			numPerInsert = ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__");
 			if ("MYSQL_5".equals(dbVersion) && rejectConnName==null){
 				if(extendedInsert  && ("INSERT").equals(dataAction) && !("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
