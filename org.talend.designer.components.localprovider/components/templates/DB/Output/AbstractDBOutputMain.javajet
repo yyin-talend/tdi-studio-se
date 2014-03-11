@@ -23,7 +23,6 @@ boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__
 boolean showSavePoint = dbOutputBeginUtil.showSavePoint(node);
 //feature:2880
 Manager manager = getManager(dbmsId, cid, node);
-dbOutputBeginUtil.setDBVersion(node,manager);//Oracle,Mysql
 boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
 String incomingConnName = null;
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -52,6 +51,7 @@ for(IConnection conn : outgoingConns) {
 	}
 }
 dbOutputBeginUtil.beforeComponentProcess(node);
+dbOutputBeginUtil.setDBVersion(node,manager);//Oracle,Mysql
 log4jCodeGenerateUtil = dbOutputBeginUtil.log4jCodeGenerateUtil;
 boolean isDynamic = false;
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -295,7 +295,7 @@ if(incomingConnName != null && columnList != null) {
 			pstmt_<%=cid %>.addBatch();
 			nb_line_<%=cid%>++;
 			<%
-			if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+			if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
 			%>
 					batchSizeCounter_<%=cid%>++;
 			<%
@@ -838,7 +838,7 @@ if(incomingConnName != null && columnList != null) {
 			%>
 			pstmt_<%=cid %>.addBatch();
 			<%
-			if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+			if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
 			%>
 				batchSizeCounter_<%=cid%>++;
 			<%
@@ -900,7 +900,7 @@ if(incomingConnName != null && columnList != null) {
 	<%
 	}
 	dbOutputBeginUtil.dataActionMore(node,colStruct,manager,incomingConnName,rejectColumnList, columnList);
-	log4jCodeGenerateUtil.debugRecord(node,columnList,incomingConnName);
+	log4jCodeGenerateUtil.debugRecord(node,columnList,incomingConnName,dbOutputBeginUtil.addBatch() && dbOutputBeginUtil.executeBatch);
 	if(outgoingConns != null && outgoingConns.size() > 0) {
 		%>
 		if(!whetherReject_<%=cid%>) {

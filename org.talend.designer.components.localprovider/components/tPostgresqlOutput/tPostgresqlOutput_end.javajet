@@ -114,6 +114,7 @@ imports="
         if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
 	    %>                
 		    try {
+				if (pstmt_<%=cid %> != null) {
 					<%log4jCodeGenerateUtil.executeBatch(node,2);%>
 			    	<%if (("INSERT").equals(dataAction)) {
 			    	%>
@@ -128,6 +129,7 @@ imports="
 			    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
 			    	<%
 			    	}%>            	    
+				}
 		    }catch (java.sql.BatchUpdateException e_<%=cid%>){
 		    	<%if(("true").equals(dieOnError)) {
 		    		log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);

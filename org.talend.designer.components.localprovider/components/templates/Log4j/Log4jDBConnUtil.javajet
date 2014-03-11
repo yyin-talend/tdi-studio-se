@@ -254,7 +254,7 @@ imports="
 			}
 		}
 
-	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName){
+	    public void debugRecord(INode node,java.util.List<org.talend.core.model.metadata.IMetadataColumn> columnList,String incomingConnName,boolean addBatchLog){
 	    	beforeComponentProcess(node);
 	    	if(isLog4jEnabled){
 				int count = 0;
@@ -269,7 +269,7 @@ imports="
 					<%
 					}
 				}
-				if (("true").equals(useBatchSize) && !("").equals(batchSize)&&!("0").equals(batchSize)) {
+				if (addBatchLog) {
 				%>
 					log.debug("<%=cid%> - " + dataOperationPrefix_<%=cid%> + " the record " + nb_line_<%=cid%> + " to the <%=dataAction%> batch.");
 				<%
