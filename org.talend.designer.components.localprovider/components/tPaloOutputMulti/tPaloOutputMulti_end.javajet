@@ -21,6 +21,7 @@
 	boolean bAddValues = "true".equals(ElementParameterParser.getValue(node,"__ADDVALUES__"));
 
 	boolean bDieOnError = "true".equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 
 
@@ -51,6 +52,13 @@
 		%>
 		}
 		<%
+	}
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
+<%
 	}
 %>
 

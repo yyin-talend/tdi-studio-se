@@ -80,5 +80,12 @@ if(("CREATE").equals(sDatabaseAction)){
 		 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 <%	
 }
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
+<%
+	}
 %>
 globalMap.put("<%=cid %>_DATABASENAME",<%=sDatabaseName%>);

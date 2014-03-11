@@ -31,6 +31,7 @@
 
 	List<Map<String, String>> tDimensionElements = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ELEMENT_HIERACHIE__");
 	List<Map<String, String>> tDimensionElementsSelfReferenced = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ELEMENT_HIERACHIE_SELFREFERENCED__");
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 	String strInputConnectionName="";
 	List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -113,3 +114,12 @@
 <% if(bCreateElements ) {%>
 }
 <%}%>
+<%
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
+<%
+	}
+%>

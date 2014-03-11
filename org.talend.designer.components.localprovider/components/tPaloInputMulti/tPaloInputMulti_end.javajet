@@ -5,12 +5,14 @@
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.process.ElementParameterParser
 	"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	
+	String cid = node.getUniqueName();
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String strOutputConnectionName="";
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
  	if(conns!=null){
@@ -25,6 +27,13 @@
 %>
 	}
 }
+<%
+	}
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
 <%
 	}
 %>

@@ -107,5 +107,12 @@ if(("CREATE").equals(sCubeAction)){
 	pCUBs_<%=cid %>.getCube(<%=sCubeName%>).clear();	
 <%	
 }
+	if(!useExistingConnection){
+%>
+		if(pConn_<%=cid %> != null){
+			pConn_<%=cid %>.logout();
+		}
+<%
+	}
 %>
 globalMap.put("<%=cid %>_CUBENAME",<%=sCubeName%>);
