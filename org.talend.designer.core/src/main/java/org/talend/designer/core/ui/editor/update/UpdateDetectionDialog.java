@@ -202,7 +202,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
                 this.canDeselect = false;
             case RELOAD:
             case JOBLET_UPDATE:
-                this.canCancel = true;
+                this.canCancel = false;
                 this.canDeselect = true;
                 return;
             default:
@@ -391,6 +391,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private void addViewerListener() {
         viewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 if (readOnlyCheck(event)) {
                     updateReadOnlyJobWarnMessage();
