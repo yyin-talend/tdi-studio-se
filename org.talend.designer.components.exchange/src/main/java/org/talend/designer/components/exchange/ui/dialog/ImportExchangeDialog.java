@@ -104,6 +104,7 @@ public class ImportExchangeDialog extends Dialog {
         // init
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 fCategorys.clear();
                 fCategorys = ExchangeWebService.searchCategoryExtensionJSONArray(ExchangeUtils.TYPEEXTENSION);
@@ -113,11 +114,13 @@ public class ImportExchangeDialog extends Dialog {
         });
     }
 
+    @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(Messages.getString("ImportExchangeDialog.dialogTitle")); //$NON-NLS-1$
     }
 
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite exchangeDialogCom = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -130,6 +133,7 @@ public class ImportExchangeDialog extends Dialog {
         return parent;
     }
 
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.FINISH_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
@@ -160,10 +164,12 @@ public class ImportExchangeDialog extends Dialog {
                 .getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) {
                 monitor.beginTask(Messages.getString("ImportExchangeDialog.downloadProgressBar"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         try {
                             new DownloadHelper().download(url, tempFile);
@@ -252,12 +258,13 @@ public class ImportExchangeDialog extends Dialog {
             downloadproperty = new ImportExchangeProperty();
             table.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     TableItem[] itemList = table.getItems();
                     for (int i = 0; i < itemList.length; i++) {
                         if (table.isSelected(i)) {
                             downloadproperty.setDownloadUrl(compatible.get(i).getLinkDownload());
-                            downloadproperty.setFileName(compatible.get(i).getLabel() + ".zip");
+                            downloadproperty.setFileName(compatible.get(i).getFilename());
                         }
                     }
                 }
@@ -288,6 +295,7 @@ public class ImportExchangeDialog extends Dialog {
             refresh.setToolTipText(Messages.getString("ImportExchangeDialog.REFRESH_BUTTON"));//$NON-NLS-1$
             refresh.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     progressBarMessage = Messages.getString("ImportExchangeDialog.REFRESHING_PROGRESSBAR"); //$NON-NLS-1$
                     findChoiceExchange();
@@ -310,10 +318,12 @@ public class ImportExchangeDialog extends Dialog {
         initCategoryCombo();
         categoryCombo.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 progressBarMessage = Messages.getString("ImportExchangeDialog.download.extensions"); //$NON-NLS-1$
                 findChoiceExchange();
@@ -356,10 +366,12 @@ public class ImportExchangeDialog extends Dialog {
         }
         versionCombo.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Combo comboControl = (Combo) e.getSource();
                 String value = comboControl.getText();
@@ -401,10 +413,12 @@ public class ImportExchangeDialog extends Dialog {
                 .getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(IProgressMonitor monitor) {
                 monitor.beginTask(progressBarMessage, IProgressMonitor.UNKNOWN);
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         compatible = ComponentSearcher.getImportComponentExtensions(version, ExchangeUtils.getCurrentLanguage(),
                                 categoryCombo.getSelectionIndex() >= 0 ? fCategorys.get(categoryCombo.getSelectionIndex())
