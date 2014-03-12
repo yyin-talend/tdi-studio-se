@@ -228,7 +228,7 @@ if(incomingConnName != null && columnList != null) {
 			if(column.isUpdatable()) {
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 				%>
-				<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE,null);%>
+				<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE);%>
 				<%
 				if(useStatement || isEnableDebug) {
 					%>
@@ -362,7 +362,7 @@ if(incomingConnName != null && columnList != null) {
 				}
 				//#############
 				if(!useStatement){%>
-					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE,null);%>
+					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE);%>
 				<%
 				}else{
 				%>
@@ -393,7 +393,7 @@ if(incomingConnName != null && columnList != null) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 					if(!useStatement){
 					%>
-						<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE,null);%>
+						<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE);%>
 					<%
 					}
 					if(useStatement || isEnableDebug) {
@@ -504,7 +504,7 @@ if(incomingConnName != null && columnList != null) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
 					if(!useStatement){
 					%>
-						<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null);%>
+						<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE);%>
 					<%
 					}
 					if(useStatement || isEnableDebug) {
@@ -594,7 +594,7 @@ if(incomingConnName != null && columnList != null) {
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
 				if(!useStatement){
 				%>
-					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE,null);%>
+					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE);%>
 				<%
 				}
 				if(useStatement || isEnableDebug) {
@@ -719,7 +719,7 @@ if(incomingConnName != null && columnList != null) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 					if(!useStatement){
 					%>
-					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counter, incomingConnName, cid, INSERT_TYPE,null);%>
+					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, counter, incomingConnName, cid, INSERT_TYPE);%>
 					<%
 					}
 					if(useStatement || isEnableDebug) {
@@ -817,7 +817,7 @@ if(incomingConnName != null && columnList != null) {
 				//#############
 				if(!useStatement){
 				%>
-					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE,null);%>
+					<%dbOutputBeginUtil.generateSetStmt(manager,typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE);%>
 				<%
 				}
 				if(useStatement || isEnableDebug) {

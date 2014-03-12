@@ -304,7 +304,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						if(column.isInsertable()) {
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 							%>
-							<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
+							<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
 							<%
 							if(isEnableDebug) {
 								%>
@@ -385,7 +385,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
 						<%
 						if(isEnableDebug) {
 							%>
@@ -532,7 +532,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid,0,null)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid,0)%>
 						<%
 						if(isEnableDebug) {
 							%>
@@ -597,7 +597,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, 0,null)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, 0)%>
 						<%
 						if(isEnableDebug) {
 						%>
@@ -611,7 +611,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isUpdatable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
 						<%
 						if(isEnableDebug) {
 						%>
@@ -676,7 +676,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						%>
-						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, 0,null)%>
+						<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, 0)%>
 						<%
 						if(isEnableDebug) {
 							%>

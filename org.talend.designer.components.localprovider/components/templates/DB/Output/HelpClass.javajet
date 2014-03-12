@@ -316,7 +316,13 @@
 
 		public void setDBVersion(INode node,Manager manager){}
 		public void generateInsertSetStmt(INode node,Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
-			generateSetStmt(manager,typeToGenerate, column, index, incomingConnName, cid,actionType,null);
+			generateSetStmt(manager,typeToGenerate, column, index, incomingConnName, cid,actionType);
+		}
+
+		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
+		%>
+			<%=manager.generateSetStmt(typeToGenerate, column, index, incomingConnName, cid,actionType)%>
+		<%
 		}
 
 		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType,String dynamic) {

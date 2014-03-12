@@ -85,10 +85,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}
 			else {
 			%>
-			<%=manager.generateSetStmt(typeToGenerate, dbType, column, index, incomingConnName, cid, actionType,null)%>
+			<%=manager.generateSetStmt(typeToGenerate, dbType, column, index, incomingConnName, cid, actionType)%>
 			<%
 			}
 		}
+		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
+			String dbType = column.getColumn().getType();
+			if( null == dbType) {
+				dbType="";
+			}
+			%>
+			<%=manager.generateSetStmt(typeToGenerate,dbType, column, index, incomingConnName, cid,actionType)%>
+		<%
+		}
+
 		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType,String dynamic) {
 			String dbType = column.getColumn().getType();
 			if( null == dbType) {
