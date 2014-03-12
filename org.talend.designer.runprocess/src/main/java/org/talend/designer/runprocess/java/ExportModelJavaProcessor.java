@@ -20,14 +20,21 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.service.IMRProcessService;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -135,33 +142,69 @@ public class ExportModelJavaProcessor extends JavaProcessor {
     public boolean shouldRunAsExport() {
         List<? extends INode> generatedNodes = process.getGeneratingNodes();
         try {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-                IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                        IMRProcessService.class);
-                for (INode node : generatedNodes) {
-                    if (node.getComponent() != null && "tRunJob".equals(node.getComponent().getName())) {
-                        IElementParameter elementParameter = node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS");
-                        if (elementParameter != null) {
-                            Object value = elementParameter.getValue();
-                            if (value != null && !"".equals(value)) {
-                                IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
-                                        .getProxyRepositoryFactory().getLastVersion(value.toString());
-                                if (lastVersion != null) {
-                                    boolean hasMrSubProcess = mrService.isMapReduceItem(lastVersion.getProperty().getItem());
-                                    if (hasMrSubProcess) {
-                                        return true;
-                                    }
+            for (INode node : generatedNodes) {
+                if (node.getComponent() != null && "tRunJob".equals(node.getComponent().getName())) {
+                    IElementParameter elementParameter = node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS");
+                    if (elementParameter != null) {
+                        Object value = elementParameter.getValue();
+                        if (value != null && !"".equals(value)) {
+                            IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
+                                    .getProxyRepositoryFactory().getLastVersion(value.toString());
+                            if (lastVersion != null) {
+                                boolean hasMrSubProcess = hasMrSubProcess(lastVersion.getProperty().getItem());
+                                if (hasMrSubProcess) {
+                                    return true;
                                 }
-
                             }
+
                         }
                     }
                 }
             }
+
         } catch (PersistenceException e) {
             return false;
         }
         return false;
     }
 
+    /**
+     * DOC PLV Comment method "hasMrSubProcess".
+     * 
+     * @param mrService
+     * @param lastVersion
+     * @return
+     * @throws PersistenceException
+     */
+    @SuppressWarnings("unchecked")
+    private boolean hasMrSubProcess(Item item) throws PersistenceException {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
+                    IMRProcessService.class);
+            if (mrService.isMapReduceItem(item)) {
+                return true;
+            } else if (item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
+                ProcessType processType = ((ProcessItem) item).getProcess();
+                EList<NodeType> nodes = processType.getNode();
+                for (NodeType node : nodes) {
+                    if ("tRunJob".equals(node.getComponentName())) {
+                        EList<ElementParameterType> elementParameters = node.getElementParameter();
+                        for (ElementParameterType param : elementParameters) {
+                            if (param.getName() != null && "PROCESS:PROCESS_TYPE_PROCESS".equals(param.getName())) {
+                                Object value = param.getValue();
+                                if (value != null && !"".equals(value)) {
+                                    IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
+                                            .getProxyRepositoryFactory().getLastVersion(value.toString());
+                                    if (lastVersion != null) {
+                                        return hasMrSubProcess(lastVersion.getProperty().getItem());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
