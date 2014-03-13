@@ -109,6 +109,8 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
 
+    private static List<IProcessConvertService> processConvertServices;
+
     @Override
     public List<IProcess2> getOpenedProcess(IEditorReference[] reference) {
         return RepositoryManagerHelper.getOpenedProcess(reference);
@@ -145,7 +147,9 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     public IProcess getProcessFromItemByExtendion(Item item, boolean loadScreenshots) {
         IProcess process = null;
-        List<IProcessConvertService> processConvertServices = ProcessConvertManager.getInstance().extractAllConvertServices();
+        if (processConvertServices == null || processConvertServices.size() == 0) {
+            processConvertServices = ProcessConvertManager.getInstance().extractAllConvertServices();
+        }
         for (IProcessConvertService service : processConvertServices) {
             process = service.getProcessFromItem(item, loadScreenshots);
             if (process != null) {
