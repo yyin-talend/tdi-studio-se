@@ -4195,7 +4195,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="crm4client" MODULE="crm4client.jar" UrlPath="platform:/plugin/org.talend.libraries.crm/lib/crm4client.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.0.jar"
+			<IMPORT NAME="httpcore" MODULE="httpcore-4.1.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.1.2.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="mail" MODULE="mail-1.4.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail-1.4.jar"
 				REQUIRED="true" />
