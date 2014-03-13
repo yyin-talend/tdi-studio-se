@@ -185,7 +185,6 @@ if(columnList != null && columnList.size() > 0) {
 	evPara_<%=cid%>.add("INFORMIXDIR=" + <%=informixDir%>);
 	evPara_<%=cid%>.add("INFORMIXSERVER=" + dbServer_<%=cid%>);
 	evPara_<%=cid%>.add("DBDATE=" + "<%= datePattern %>");
-	evPara_<%=cid%>.add("USERNAME=" + dbUser_<%=cid%>);
 	
 <%
 	if (setDbmoney) {
