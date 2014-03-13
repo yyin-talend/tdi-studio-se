@@ -125,6 +125,7 @@
            NAME="DELIM_ACTION"
            FIELD="TEXT"
            NUM_ROW="1"
+           MAX_LENGTH="1"
            REQUIRED="true"    >
            <DEFAULT>","</DEFAULT>
        </PARAMETER> 

@@ -90,7 +90,8 @@ if(("BINARYFILE").equals(fileType)) {
     <%
 } else {
     %>
-    bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
+    Character field_separator_<%=cid %> = (<%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%>).charAt(0);
+    bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + field_separator_<%=cid %> + "' ";
     bulkSQL_<%=cid%> += "NULL AS '" + <%=ElementParameterParser.getValue(node, "__NULLSTRING__")%> + "' ";
     <%
     if(("CSVFILE").equals(fileType)) {
@@ -98,7 +99,8 @@ if(("BINARYFILE").equals(fileType)) {
         String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
         String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
         %>
-        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+        Character text_enclosure_<%=cid %> = (<%=textEnclosure %>).charAt(0);
+        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + text_enclosure_<%=cid %>.toString().replaceAll("\\\\", "\\\\\\\\") + "' ";
         bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
         bulkSQL_<%=cid%> += "<%=notNullColumns.toString().substring(0, notNullColumns.toString().length() - 1)%>";
         <%

@@ -96,7 +96,8 @@ if(("BINARYFILE").equals(fileType)) {
 } else {
     String nullString = ElementParameterParser.getValue(node, "__NULLSTRING__");        
     %>
-    bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
+    Character field_separator_<%=cid %> = (<%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%>).charAt(0);
+    bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + field_separator_<%=cid %> + "' ";
 	<%if(("TXTFILE").equals(fileType) || (("CSVFILE").equals(fileType) && standardConformingString)) {%>
 		bulkSQL_<%=cid%> += "NULL AS '" + <%=nullString%> + "' ";
 	<%}else{%>
@@ -107,6 +108,7 @@ if(("BINARYFILE").equals(fileType)) {
         String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
         String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
         %>
+        Character text_enclosure_<%=cid%> = (<%=textEnclosure %>).charAt(0);
         <%if(standardConformingString) {
         	if("\"\\\\\"".equals(textEnclosure)){
         %>
@@ -114,7 +116,7 @@ if(("BINARYFILE").equals(fileType)) {
 		<%
 	        }else{
 		%>
-		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS " + ("'".equals(<%=textEnclosure %>)?"E":"") + "'" +("'".equals(<%=textEnclosure %>)?"\\":"") + <%=textEnclosure %>+ "' ";
+		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS " + ("'".equals(text_enclosure_<%=cid%>.toString())?"E":"") + "'" +("'".equals(text_enclosure_<%=cid%>)?"\\":"") + text_enclosure_<%=cid%> + "' ";
 		<%
 			}
 			if("\"\\\\\"".equals(escapeChar)){
@@ -134,7 +136,7 @@ if(("BINARYFILE").equals(fileType)) {
 		<%
 	        }else{
 		%>
-		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + ("'".equals(<%=textEnclosure %>)?"\\":"") + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + ("'".equals(text_enclosure_<%=cid%>.toString())?"\\":"") + text_enclosure_<%=cid%>.toString().replaceAll("\\\\", "\\\\\\\\") + "' ";
 		<%
        		}
 			if("\"\\\\\"".equals(escapeChar )){
