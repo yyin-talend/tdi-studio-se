@@ -57,7 +57,6 @@ import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.service.ITransformService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -367,14 +366,6 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
                     if (lastFileItemUsed instanceof RulesItem) {
                         displayName = "Rules:" //$NON-NLS-1$
                                 + lastFileItemUsed.getProperty().getLabel();
-                    } else {
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
-                            ITransformService tService = (ITransformService) GlobalServiceRegister.getDefault().getService(
-                                    ITransformService.class);
-                            if (tService.isTransformItem(item)) {
-                                displayName = tService.getDisplayName(item);
-                            }
-                        }
                     }
                 }
                 if (item instanceof LinkRulesItem) {

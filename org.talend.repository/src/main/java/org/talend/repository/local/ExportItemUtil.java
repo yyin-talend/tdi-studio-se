@@ -63,6 +63,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.FakePropertyImpl;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
@@ -325,10 +326,18 @@ public class ExportItemUtil {
             Set<String> projectHasTdm = new HashSet<String>();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
+
                 project = pManager.getProject(item);
 
                 String label = item.getProperty().getLabel();
-                // for tdm .settings/com.oaklandsw.base.projectProps
+                // project
+                IPath proRelativePath = getProjectPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+                IPath proSourcePath = workspacePath.append(proRelativePath);
+                IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
+                FilesUtils.copyFile(new File(proSourcePath.toPortableString()), new File(proTargetPath.toPortableString()));
+                toExport.put(proTargetPath.toFile(), proRelativePath);
+
+                // tdm .settings/com.oaklandsw.base.projectProps
                 String technicalLabel = project.getTechnicalLabel();
                 if (tdmService != null && !projectHasTdm.contains(technicalLabel) && tdmService.isTransformItem(item)) {
                     projectHasTdm.add(technicalLabel);
@@ -340,13 +349,17 @@ public class ExportItemUtil {
                     toExport.put(propsTargetPath.toFile(), tdmPropsPath);
 
                 }
+                // tdm simple files
+                if (item.getProperty() instanceof FakePropertyImpl) {
+                    FakePropertyImpl fakeProperty = (FakePropertyImpl) item.getProperty();
+                    IPath itemResPath = fakeProperty.getItemPath().makeRelative();
+                    IPath itemSourcePath = workspacePath.append(itemResPath);
+                    IPath itemTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(itemResPath);
+                    FilesUtils.copyFile(new File(itemSourcePath.toPortableString()), new File(itemTargetPath.toPortableString()));
+                    toExport.put(itemTargetPath.toFile(), itemResPath);
+                    continue;
+                }
 
-                // project
-                IPath proRelativePath = getProjectPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
-                IPath proSourcePath = workspacePath.append(proRelativePath);
-                IPath proTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(proRelativePath);
-                FilesUtils.copyFile(new File(proSourcePath.toPortableString()), new File(proTargetPath.toPortableString()));
-                toExport.put(proTargetPath.toFile(), proRelativePath);
                 // property and related resources eg:item, reference files
                 XmiResourceManager localRepositoryManager = ProxyRepositoryFactory.getInstance()
                         .getRepositoryFactoryFromProvider().getResourceManager();

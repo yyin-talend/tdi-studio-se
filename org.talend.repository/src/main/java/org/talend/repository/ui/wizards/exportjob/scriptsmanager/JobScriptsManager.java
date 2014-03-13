@@ -51,6 +51,7 @@ import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.FakePropertyImpl;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
@@ -855,6 +856,16 @@ public abstract class JobScriptsManager {
                 IPath projectFilePath = getCorrespondingProjectRootPath(item).append(FileConstants.LOCAL_PROJECT_FILENAME);
                 checkAndAddProjectResource(allResources, resource, relativePath,
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+
+                // export simple file
+                if (item.getProperty() instanceof FakePropertyImpl) {
+                    String basePath = relativePath + PATH_SEPARATOR + typeFolderPath.toString();
+                    FakePropertyImpl fakeProperty = (FakePropertyImpl) item.getProperty();
+                    IPath relativeItemPath = fakeProperty.getItemPath();
+                    IPath absItemPath = projectRootPath.removeLastSegments(1).append(relativeItemPath.makeRelative());
+                    resource.addResource(basePath, absItemPath.toFile().toURL());
+                    continue;
+                }
 
                 IPath itemFilePath;
                 String itemVersionString = (itemVersion == null) ? "" : "_" + itemVersion;
