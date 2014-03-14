@@ -13,7 +13,9 @@ String cid = node.getUniqueName();
 %>
 	}
 }finally{
-	rs_<%=cid %>.close();
+	if(rs_<%=cid %> != null){
+		rs_<%=cid %>.close();
+	}
 	stmt_<%=cid%>.close();
 
 <%
