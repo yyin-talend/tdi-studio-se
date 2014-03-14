@@ -74,6 +74,7 @@
 							//only for the lookup branch of the tJoin
 							boolean isLookOftJoin = false;
 							boolean isLookOftRecordMatching = false;
+							boolean isLookOfHashOutput = false;
 							if(conn.getLineStyle().equals(EConnectionType.FLOW_REF)){
 								IProcess process = conn.getTarget().getProcess();
 								for (INode tjoinNode : process.getNodesOfType("tJoin")) {
@@ -98,9 +99,34 @@
 									}
 									isLookOftRecordMatching = true;
 								}
+							} else if(conn.getLineStyle() == EConnectionType.FLOW_MAIN) {
+								IProcess process = conn.getTarget().getProcess();
+								for (INode thashNode : process.getNodesOfType("tHashOutput")) {
+									if(conn.getTarget().getUniqueName().equals(thashNode.getUniqueName())){
+										boolean isLinked = "true".equals(ElementParameterParser.getValue(thashNode, "__LINK_WITH__"));
+										String matchingMode = ElementParameterParser.getValue(thashNode,"__KEYS_MANAGEMENT__");
+										boolean hashKeyFromInputConnector = "true".equals(ElementParameterParser.getValue(thashNode, "__HASH_KEY_FROM_INPUT_CONNECTOR__"));
+										if(isLinked || !"KEEP_FIRST".equals(matchingMode) || hashKeyFromInputConnector) {
+											continue;
+										}
+                                    	IMetadataTable thashNodeMetadata = null;
+                                    	List<IMetadataTable> thashNodeMetadatas = thashNode.getMetadataList();
+                                    	if (thashNodeMetadatas != null && thashNodeMetadatas.size() > 0) {
+                                        	thashNodeMetadata = thashNodeMetadatas.get(0);
+                                        }
+                                        if(thashNodeMetadata!=null) {
+            								for (IMetadataColumn column: thashNodeMetadata.getListColumns()) {
+            									if (column.isKey()) {
+            										hashableColumnsNames.add(column.getLabel());
+            									}
+            								}
+										}
+										isLookOfHashOutput = true;
+									}
+								}
 							}
 													
-							if (!isLookOftJoin && !isLookOftRecordMatching && metadata!=null) { 
+							if (!isLookOftJoin && !isLookOftRecordMatching && !isLookOfHashOutput && metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
 										hashableColumnsNames.add(column.getLabel());
