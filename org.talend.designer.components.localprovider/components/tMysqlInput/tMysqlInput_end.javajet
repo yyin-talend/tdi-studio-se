@@ -14,7 +14,9 @@ imports="
 %>
 	}
 }finally{
-	rs_<%=cid %>.close();
+	if(rs_<%=cid%> !=null){
+		rs_<%=cid %>.close();
+	}
 	stmt_<%=cid %>.close();
 <%
 	if(!("true").equals(useExistingConn))
