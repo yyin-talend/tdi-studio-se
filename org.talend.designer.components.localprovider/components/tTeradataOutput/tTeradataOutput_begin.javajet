@@ -36,6 +36,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}
 		<%
 		}
+		public void defineConnectionParameter(INode node){
+			if(("true").equals(useExistingConn)) {
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				String username = "username_" + connection;
+				%>
+				String dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
+			<%
+			}
+		}
 		public void defineSchema(INode node,Manager manager){
 			dbschema = dbname;
 			defineSchemaTable(node,manager,"dbname_");
