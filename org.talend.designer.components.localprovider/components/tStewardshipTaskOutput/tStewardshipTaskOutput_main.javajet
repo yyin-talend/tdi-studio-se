@@ -93,6 +93,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%if(RESOLUTION_TYPE.equals(type)){%>
 if(!taskFlag_<%=cid%>.equals(<%=dataUtil.getValueExpression(conn.getName(),loopingColumn)%>)){
 <%}%>
+	if(targetRecordExisted_<%=cid%>){
+		record_<%=cid%> = task_<%=cid%>.addTargetRecord();
+		<%
+		if(recordColumns.size()>0){
+			for(Map<String, String> recordColumn:recordColumns){
+			%>
+    			record_<%=cid%>.addSrcColumn(recordColumn_<%=recordColumn.get("CONTENT")%>_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Value_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Type_<%=cid%>,recordColumn_<%=recordColumn.get("CONTENT")%>_Key_<%=cid%>);
+			<%
+			}
+		}
+		%>
+		targetRecordExisted_<%=cid%> = false;
+	}
 	if(tasks_<%=cid%>.getTaskCount()>=<%=maxTaskCount%>){
 		String content = tasks_<%=cid%>.getTasksAndClear();
 		//System.out.println(content);
