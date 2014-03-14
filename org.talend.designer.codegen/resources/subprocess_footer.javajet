@@ -39,6 +39,23 @@
 			}
 		}
 	}
+	
+	List<INode> departitionersInCurrentSubTree = new java.util.ArrayList<INode>();
+	INode startNode = subTree.getRootNode();
+	String startNodeId = startNode.getUniqueName();
+	
+	if(startNodeId!=null && startNodeId.startsWith("tCollector")) {
+		List<? extends INode> departitioners = startNode.getProcess().getNodesOfType("tDepartitioner");
+    	if(departitioners!=null) {
+    		for(INode departitioner : departitioners) {
+    			INode collectorNode = NodeUtil.getSubProcessStartNode(departitioner);
+    			if(collectorNode == startNode) {//in current sub tree
+    				departitionersInCurrentSubTree.add(departitioner);
+    			}
+    		}
+    	}
+	}
+	
 	if(isParallelize){
 	%>
 
@@ -104,28 +121,24 @@
 		}
 	<%
 	}else{
-    	for(INode node : subTree.getNodes()){
-    		if(node!=null){
-    			if("tDepartitioner".equals(node.getComponent().getName())){
-    				String cid = node.getUniqueName();
-				    String connName = null;
-                    if (node.getIncomingConnections().size() == 1) {
-                        IConnection conn = node.getIncomingConnections().get(0);
-                        connName = conn.getName();
-                    }
-    				%>
-    				globalMap.put("COMPLETED_<%=cid%>",Boolean.TRUE);
-                    class DepartitionerPoison_<%=cid%> extends <%=connName%>Struct {
-                    }
-					resourceMap.put("finish_<%=cid%>", true); 
+    	for(INode departitioner : departitionersInCurrentSubTree) {
+			String cid = departitioner.getUniqueName();
+		    String connName = null;
+            if (departitioner.getIncomingConnections().size() == 1) {
+                IConnection conn = departitioner.getIncomingConnections().get(0);
+                connName = conn.getName();
+            }
+			%>
+			globalMap.put("COMPLETED_<%=cid%>",Boolean.TRUE);
+            class DepartitionerPoison_<%=cid%> extends <%=connName%>Struct {
+            }
+			resourceMap.put("finish_<%=cid%>", true); 
 
-					outputQueue_<%=cid%>.put(new DepartitionerPoison_<%=cid%>());
-                    <%if(isLog4jEnabled){%>
-                    	log.info("<%=cid%>[" + Thread.currentThread().getName() + "] - Done.");
-                    <%}%>
-    			<%
-    			}
-    		}
+			outputQueue_<%=cid%>.put(new DepartitionerPoison_<%=cid%>());
+            <%if(isLog4jEnabled){%>
+            	log.info("<%=cid%>[" + Thread.currentThread().getName() + "] - Done.");
+            <%}%>
+		<%
     	}
 	%>
 				}//end the resume
@@ -220,23 +233,20 @@
 					te.setVirtualComponentName(currentVirtualComponent);
 				<%
 				}
-				for(INode node : subTree.getNodes()){
-					if(node!=null){
-						if("tDepartitioner".equals(node.getComponent().getName())){
-							String cid = node.getUniqueName();
-							%>
-							if(resourceMap.get("finish_<%=cid%>") == null){
-								if(resourceMap.get("start_<%=cid%>") != null){
-									<%if(isLog4jEnabled){%>
-										log.error("<%=cid%>[" + Thread.currentThread().getName() + "] - " + e.getMessage());
-									<%}%>
-									globalMap.put("THREADS_HAVE_ERROR", e);
-									return;
-								}
-							}
-						<%	
+				
+				for(INode departitioner : departitionersInCurrentSubTree) {
+					String cid = departitioner.getUniqueName();
+					%>
+					if(resourceMap.get("finish_<%=cid%>") == null){
+						if(resourceMap.get("start_<%=cid%>") != null){
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%>[" + Thread.currentThread().getName() + "] - " + e.getMessage());
+							<%}%>
+							globalMap.put("THREADS_HAVE_ERROR", e);
+							return;
 						}
 					}
+				<%
 				}
 				%>
 				throw te;
@@ -247,23 +257,20 @@
 					runStat.stopThreadStat();
 				<%
 				}
-				for(INode node : subTree.getNodes()){
-					if(node!=null){
-						if("tDepartitioner".equals(node.getComponent().getName())){
-							String cid = node.getUniqueName();
-							%>
-							if(resourceMap.get("finish_<%=cid%>") == null){
-								if(resourceMap.get("start_<%=cid%>") != null){
-									<%if(isLog4jEnabled){%>
-										log.error("<%=cid%>[" + Thread.currentThread().getName() + "] - " + error.getMessage());
-									<%}%>
-									globalMap.put("THREADS_HAVE_ERROR",error);
-									return;
-								}
-							}
-						<%	
+				
+				for(INode departitioner : departitionersInCurrentSubTree) {
+					String cid = departitioner.getUniqueName();
+					%>
+					if(resourceMap.get("finish_<%=cid%>") == null){
+						if(resourceMap.get("start_<%=cid%>") != null){
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%>[" + Thread.currentThread().getName() + "] - " + error.getMessage());
+							<%}%>
+							globalMap.put("THREADS_HAVE_ERROR",error);
+							return;
 						}
 					}
+				<%
 				}
 				%>
 				throw error;

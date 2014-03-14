@@ -51,7 +51,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				%>
 					String readFinishWithExceptionMarkWithPipeId_<%=cid%> = "<%=cid%>_FINISH_WITH_EXCEPTION"+(queue_<%=cid%>==null?"":queue_<%=cid%>.hashCode());
 					if(globalMap.containsKey(readFinishWithExceptionMarkWithPipeId_<%=cid%>)){
-						globalMap.put(readFinishWithExceptionMarkWithPipeId_<%=cid%>, null);// syn
+						if(!(globalMap instanceof java.util.concurrent.ConcurrentHashMap)) {
+							globalMap.put(readFinishWithExceptionMarkWithPipeId_<%=cid%>, null);// syn
+						}
 						globalMap.remove(readFinishWithExceptionMarkWithPipeId_<%=cid%>);
 						return;
 					}
@@ -59,7 +61,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%
 				}
 				%>
-				globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
+				if(!(globalMap instanceof java.util.concurrent.ConcurrentHashMap)) {
+					globalMap.put(readFinishMarkWithPipeId_<%=cid%>,null);//syn
+				}
 				globalMap.remove(readFinishMarkWithPipeId_<%=cid%>);
 			<%
 			}
