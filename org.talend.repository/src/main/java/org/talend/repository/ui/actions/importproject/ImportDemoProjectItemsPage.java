@@ -252,7 +252,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         String relatedImagePath = null;
         Bundle bundle = null;
         if (node != null) {
-            relatedImagePath = node.getIconUrl();//$NON-NLS-1$;
+            relatedImagePath = node.getIconUrl();// ;
             bundle = Platform.getBundle(node.getPluginId());
         }
         try {
@@ -307,10 +307,11 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     public boolean performFinish() {
         List<DemoProjectBean> checkedElements = getCheckedElements();
         final List<ResourcesManager> finalCheckManagers = getResourceManagers(checkedElements);
-        if (populateExistItemRecords(finalCheckManagers)) {
+        String warnMessage = populateExistItemRecords(finalCheckManagers);
+        if (!warnMessage.equals("")) {
             MessageDialog dialog = new MessageDialog(getShell(), Messages.getString("ImportDemoProjectPage.overwrite"), null,
-                    Messages.getString("ImportDemoProjectPage.overwriteItems"), MessageDialog.QUESTION, new String[] {
-                            IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+                    warnMessage, MessageDialog.QUESTION, new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL },
+                    0);
             dialog.open();
             int result = dialog.getReturnCode();
             if (result != MessageDialog.OK) {
@@ -451,7 +452,8 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         }
     }
 
-    private boolean populateExistItemRecords(final List<ResourcesManager> manager) {
+    private String populateExistItemRecords(final List<ResourcesManager> manager) {
+        String messageInfo = ""; //$NON-NLS-1$
         final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
@@ -474,14 +476,19 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                     && itemRecord.getExistingItemWithSameId() instanceof RepositoryViewObject) {
                 RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
                 if (itemRecord.getProperty() != null && reObject != null) {
+                    if (!itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equalsIgnoreCase(reObject.getLabel())) {
+                        messageInfo = Messages.getString("ImportDemoProjectPage.loseItems", reObject.getLabel());
+                    }
                     if (itemRecord.getProperty().getId().equals(reObject.getId())
                             && itemRecord.getProperty().getLabel().equals(reObject.getLabel())) {
-                        return true;
+                        messageInfo = Messages.getString("ImportDemoProjectPage.overwriteItems");
                     }
+
                 }
             }
         }
-        return false;
+        return messageInfo;
     }
 
     private void clearOverWriteErrorMessages(List<ItemRecord> projectRecords, boolean overwrite) {
@@ -489,10 +496,11 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
             String overWriteErrorMessage = Messages.getString("RepositoryUtil.nameUsed").trim();
             List<ItemRecord> overWriteRecords = new ArrayList<ItemRecord>();
             for (ItemRecord itemRecord : projectRecords) {
-                for (String errorMessage : itemRecord.getErrors())
+                for (String errorMessage : itemRecord.getErrors()) {
                     if (errorMessage.equals(overWriteErrorMessage)) {
                         overWriteRecords.add(itemRecord);
                     }
+                }
             }
             for (ItemRecord overRecord : overWriteRecords) {
                 overRecord.getErrors().clear();
