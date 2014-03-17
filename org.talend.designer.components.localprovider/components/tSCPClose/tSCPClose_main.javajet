@@ -5,6 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -12,6 +13,7 @@ imports="
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node); 
 %>
 	ch.ethz.ssh2.Connection conn_<%=cid%> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn%>");
 	if(conn_<%=cid%> != null){
@@ -23,3 +25,4 @@ imports="
 			log.info("<%=cid%> - Connection to the server closed.");
 		<%}%>
 	}
+	<%log4jFileUtil.componentFinishInfo(node);%>

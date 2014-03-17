@@ -40,7 +40,7 @@ imports="
 				}
            	}
 			<%if(isLog4jEnabled){%>
-				log.trace("<%=cid%> - Uploaded file '" + sourceList_<%=cid %>.toString() + "' to remote directory '" + <%=remotedir %>+ "' successfully.");
+				log.debug("<%=cid%> - Uploaded file '" + sourceList_<%=cid %>.toString() + "' to remote directory '" + <%=remotedir %>+ "' successfully.");
 			<%}%>
             nb_file_<%=cid %> = sourceFileNames_<%=cid %>.length;
             globalMap.put("<%=cid %>_STATUS", "File put OK.");

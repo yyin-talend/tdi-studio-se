@@ -33,10 +33,8 @@ String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.componentStartInfo(node); 
 log4jFileUtil.logParameters(node); 
-	if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Start to work.");
-	<%}
 if (useProxy) {
 %>  
   java.util.Properties props_<%=cid%> = System.getProperties();

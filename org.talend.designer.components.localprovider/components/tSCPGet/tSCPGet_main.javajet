@@ -77,7 +77,7 @@ imports="
 						}
 						nb_file_<%=cid%> ++ ;
 						<%if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
+							log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
 						<%}%>
 					}
 				}
@@ -149,7 +149,7 @@ imports="
 		    				}
 							nb_file_<%=cid%> ++ ;
 							<%if(isLog4jEnabled){%>
-								log.trace("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
+								log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
 							<%}%>
 						}
 					}

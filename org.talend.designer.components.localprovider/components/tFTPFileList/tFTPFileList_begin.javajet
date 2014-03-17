@@ -49,8 +49,8 @@ if (("true").equals(useExistingConn)) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.logParameters(node); 
 log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.logParameters(node); 
 %>
 	java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
 
@@ -186,7 +186,7 @@ if (sftp) {// *** sftp *** //
     String currentFileName_<%=cid%> = sftpFile_<%=cid %>; 
     String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + sftpFile_<%=cid %>;
 	<%if(isLog4jEnabled){%>
-		log.trace("<%=cid%> - Listed file : '" + currentFilePath_<%=cid%> + "' .");
+		log.debug("<%=cid%> - Listed file : '" + currentFilePath_<%=cid%> + "' .");
 	<%}%> 
     globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
     globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
@@ -270,7 +270,7 @@ if (sftp) {// *** sftp *** //
 	    String currentFileName_<%=cid%> = fileListTemp_<%=cid %>.get(i_<%=cid %>); 
 	    String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + fileListTemp_<%=cid %>.get(i_<%=cid %>);
 		<%if(isLog4jEnabled){%>
-			log.trace("<%=cid%> - List file : '" + currentFilePath_<%=cid%> + "' .");
+			log.debug("<%=cid%> - List file : '" + currentFilePath_<%=cid%> + "' .");
 		<%}%> 
 	    globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
 	    globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);

@@ -127,7 +127,7 @@
     	FIELD="CLOSED_LIST" 
     	NUM_ROW="90" 
     	SHOW="true">
-    	<ITEMS DEFAULT="replace">
+    	<ITEMS DEFAULT="overwrite">
      	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>
         <ITEM NAME="APPEND"  VALUE="append"/>
         <ITEM NAME="NOREPLACE"  VALUE="none"/>

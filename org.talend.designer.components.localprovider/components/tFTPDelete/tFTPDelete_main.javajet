@@ -66,14 +66,14 @@
 %>			
 							 	c_<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
 								<%if(isLog4jEnabled){%>
-									log.trace("<%=cid%> - File '" + filePath<%=cid%>  + "' was deleted in remote " + <%=remotedir %> + ".");
+									log.debug("<%=cid%> - File '" + filePath<%=cid%>  + "' was deleted in remote " + <%=remotedir %> + ".");
 								<%}%>
 <%
 							}else{
 %>
 							 	c_<%=cid%>.rmdir((<%=remotedir %>)+"/"+ filePath<%=cid%>);
 								<%if(isLog4jEnabled){%>
-									log.trace("<%=cid%> - Directory '" + filePath<%=cid%>  + "' was deleted in remote " + <%=remotedir %> + ".");
+									log.debug("<%=cid%> - Directory '" + filePath<%=cid%>  + "' was deleted in remote " + <%=remotedir %> + ".");
 								<%}%>
 <%
 							}
@@ -142,13 +142,13 @@
 %>				
 								ftp_<%=cid %>.delete(file_<%=cid%>);
 								<%if(isLog4jEnabled){%>
-									log.trace("<%=cid%> - File '" + file_<%=cid%> + "' was deleted.");
+									log.debug("<%=cid%> - File '" + file_<%=cid%> + "' was deleted.");
 								<%}%>
 <%
 							}else{
 %>					
 								<%if(isLog4jEnabled){%>
-									log.trace("<%=cid%> - Directory '" + file_<%=cid%> + "' was deleted.");
+									log.debug("<%=cid%> - Directory '" + file_<%=cid%> + "' was deleted.");
 								<%}%>
 								ftp_<%=cid %>.rmdir(file_<%=cid%>);
 <%

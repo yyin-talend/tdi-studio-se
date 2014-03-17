@@ -12,7 +12,8 @@ imports="
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-    log4jFileUtil.logParameters(node); 
+	log4jFileUtil.componentStartInfo(node); 
+	log4jFileUtil.logParameters(node); 
     String cid = node.getUniqueName();
     String host = ElementParameterParser.getValue(
         node,
@@ -43,9 +44,6 @@ imports="
         "__PASSPHRASE__"
     );
 %>
-	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Start to work.");
-	<%}%>
 	int nb_file_<%=cid%> = 0;
     /* Create a connection instance */
 	<%

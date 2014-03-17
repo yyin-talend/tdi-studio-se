@@ -39,7 +39,7 @@ try{
    			try{
    				c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
 				<%if(isLog4jEnabled){%>
-					log.trace("<%=cid%> - '" + key<%=cid %>  + "' rename ok.");
+					log.debug("<%=cid%> - '" + key<%=cid %>  + "' rename ok.");
 				<%}%>
 	   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
    			}catch(com.jcraft.jsch.SftpException se){
@@ -78,7 +78,7 @@ try{
 		     					ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
 	     					}
 							<%if(isLog4jEnabled){%>
-								log.trace("<%=cid%> - '" + toFile_<%=cid%>  + "' rename ok");
+								log.debug("<%=cid%> - '" + toFile_<%=cid%>  + "' rename ok");
 							<%}%>
 	     					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     					nb_file_<%=cid%>++;
@@ -89,7 +89,7 @@ try{
      				if(!(ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))) {
 						ftp_<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
 						<%if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - '" + key<%=cid %>  + "' rename ok");
+							log.debug("<%=cid%> - '" + key<%=cid %>  + "' rename ok");
 						<%}%>
      					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
      					nb_file_<%=cid%>++;
@@ -116,7 +116,7 @@ try{
 				     				ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
 			     				}
 								<%if(isLog4jEnabled){%>
-									log.trace("<%=cid%> - '" + toFile_<%=cid%>  + "' rename ok");
+									log.debug("<%=cid%> - '" + toFile_<%=cid%>  + "' rename ok");
 								<%}%>
 			     				globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 			     				nb_file_<%=cid%>++;

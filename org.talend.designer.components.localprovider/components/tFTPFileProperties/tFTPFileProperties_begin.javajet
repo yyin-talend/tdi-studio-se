@@ -53,8 +53,8 @@ if (("true").equals(useExistingConn)) {
 }
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.logParameters(node); 
 log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.logParameters(node); 
 if (useProxy) {
 %>
   java.util.Properties props_<%=cid%> = System.getProperties();
@@ -251,7 +251,7 @@ if (sftp) {  // *** sftp *** //
 			<%}%>
 	    <%}%>
 		<%if(isLog4jEnabled){%>
-			log.trace(log4jSb_<%=cid%>);
+			log.debug(log4jSb_<%=cid%>);
 		<%}%>
   	}
 <%

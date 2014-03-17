@@ -60,7 +60,7 @@
 						c_<%=cid%>.put(new java.io.ByteArrayInputStream(new byte[]{}), <%=remotedir %>+"/"+filePath<%=cid%>);
 						globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 						<%if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - '" + filePath<%=cid%>  + "' truncate ok.");
+							log.debug("<%=cid%> - '" + filePath<%=cid%>  + "' truncate ok.");
 						<%}%>
 					} catch (com.jcraft.jsch.SftpException se) {
                 		globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
@@ -102,7 +102,7 @@
 						ftp_<%=cid %>.put(new ByteArrayInputStream(new byte[]{}), listings<%=cid %>[m<%=cid %>]);
 						globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 						<%if(isLog4jEnabled){%>
-							log.trace("<%=cid%> - '" + listings<%=cid %>[m<%=cid %>] + "' truncate ok.");
+							log.debug("<%=cid%> - '" + listings<%=cid %>[m<%=cid %>] + "' truncate ok.");
 						<%}%>
 						nb_file_<%=cid%>++;
 					}
