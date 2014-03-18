@@ -49,12 +49,14 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -104,7 +106,14 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         Shell activeShell = Display.getCurrent().getActiveShell();
         TalendZipFileExportWizard docWizard = new TalendZipFileExportWizard();
         WizardDialog dialog = new WizardDialog(activeShell, docWizard);
-        docWizard.setWindowTitle(Messages.getString("ExportProjectsAsAction.actionTitle")); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.isPoweredbyTalend()) {
+            docWizard.setWindowTitle(Messages.getString("ExportProjectsAsAction.actionTitle")); //$NON-NLS-1$
+        } else {
+            docWizard.setWindowTitle(Messages.getString(
+                    "ExportProjectsAsAction.actionTitleForOthers", brandingService.getShortProductName())); //$NON-NLS-1$
+        }
         dialog.create();
         dialog.open();
 
