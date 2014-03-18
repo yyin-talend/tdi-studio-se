@@ -74,6 +74,7 @@ public class HL7DisconnectAction extends SelectionProviderAction {
             return;
         }
         node.setColumn(null);
+        node.setColumnName(null);
         xmlViewer.refresh(node);
         xmlViewer.expandAll();
         if (hl7ui != null) {
