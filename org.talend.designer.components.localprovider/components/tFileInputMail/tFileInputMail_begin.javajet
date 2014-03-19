@@ -25,8 +25,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // component id
         String cid = node.getUniqueName();
 		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-		log4jFileUtil.logParameters(node); 
 		log4jFileUtil.componentStartInfo(node); 
+		log4jFileUtil.logParameters(node); 
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
         String directory = ElementParameterParser.getValue(node,"__ATTACHMENT_PATH__");
         List<Map<String, String>> mailParts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__MAIL_PARTS__");
