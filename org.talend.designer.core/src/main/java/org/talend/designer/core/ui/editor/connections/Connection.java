@@ -171,12 +171,6 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private void init(INode source, INode target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, final boolean monitorConnection) {
-        if (source.getComponent().getName().startsWith("tUnite")) {
-            System.out.println("here");
-        }
-        if (source.getLabel().equals("CT-1")) {
-            System.out.println("here");
-        }
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             performance = new IterateConnectionPerformance(this);
         } else if (lineStyle.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
@@ -967,9 +961,6 @@ public class Connection extends Element implements IConnection, IPerformance {
            * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
            * ")"; updateName = true; }
            */
-        // if (label.getLabelText().equals("j_CONTRATO1") || label.getLabelText().equals("row10")) {
-        // System.out.println("est");
-        // }
         if (updateName) {
 
             if (!label.getLabelText().equals(labelText)) {
@@ -1028,9 +1019,6 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public ConnectionLabel getConnectionLabel() {
-        if (label.equals("j_CONTRATO1") || label.equals("row10")) {
-            System.out.println("est");
-        }
         return label;
     }
 

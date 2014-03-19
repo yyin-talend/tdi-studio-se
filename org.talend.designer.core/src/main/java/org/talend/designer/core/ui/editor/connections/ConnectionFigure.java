@@ -159,7 +159,8 @@ public class ConnectionFigure extends PolylineConnection {
 
     public void updateStatus() {
         for (IElementParameter enableParallel : figureMap.keySet()) {
-            if (enableParallel != null) {
+            // TDI-25822:until now ,we only support IConnectionCategory.DATA
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) && enableParallel != null) {
                 if (enableParallel.getValue().equals(true)) {
                     // For NONE ,maybe its icon need to keep partitioning
                     if (enableParallel.getName().equals(EParameterName.NONE.getName())) {
