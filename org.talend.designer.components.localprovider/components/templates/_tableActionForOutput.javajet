@@ -22,7 +22,7 @@ if (!isParallelize) {
         	<%if(isLog4jEnabled_tableAction){%>
 				log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
 			<%}%>
-			stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + <%=(useCascade ? "\" cascade\"" : "\"\"")%>);
+			stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" <%=(useCascade ? " + \" cascade\"" : "")%>);
         	<%if(isLog4jEnabled_tableAction){%>
 				log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
 			<%}%>
@@ -280,7 +280,7 @@ if (!isParallelize) {
 	    	    	<%if(isLog4jEnabled_tableAction){%>
 						log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
 					<%}%>
-                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + <%=(useCascade ? "\" cascade\"" : "\"\"")%>);
+                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" <%=(useCascade ? " + \" cascade\"" : "")%>);
 	    	    	<%if(isLog4jEnabled_tableAction){%>
 						log.info("<%=cid%> - Drop table '" + tableName_<%=cid%>+ "' has succeeded.");
 					<%}%>
