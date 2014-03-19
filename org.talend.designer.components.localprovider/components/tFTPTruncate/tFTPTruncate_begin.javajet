@@ -49,7 +49,8 @@ if (("true").equals(useExistingConn)) {
 }
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASSWORD","PRIVATEKEY","PASSPHRASE","PROXY_PASSWORD"));
 log4jFileUtil.logParameters(node); 
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
 //And it can not work with the FTP proxy directly, only support the socks proxy.

@@ -49,7 +49,8 @@ if (("true").equals(useExistingConn)) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 }
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASSWORD","PRIVATEKEY","PASSPHRASE","PROXY_PASSWORD"));
 log4jFileUtil.logParameters(node); 
 %>
 	java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
