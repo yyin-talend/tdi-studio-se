@@ -311,6 +311,12 @@
 		public boolean showSavePoint(INode node){
 			return false;
 		}
+		
+		public void checkExist(Manager manager,String updateWhereStmt){
+		%>
+			String checkExist_<%=cid%> = "SELECT COUNT(1) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt%>";
+		<%
+		}
 
 		public void actionOnTable(INode node,List<Column> stmtStructure){}//for vertica create projection
 

@@ -46,6 +46,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 		public void defineSchema(INode node,Manager manager){
 			defineSchemaTable(node,manager,"dbschema_");
 		}
+		
+		public void checkExist(Manager manager,String updateWhereStmt){
+		%>
+			String checkExist_<%=cid%> = "SELECT COUNT(*) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt%>";
+		<%
+		}
 	}
 	dbOutputBeginUtil = new DBOutputBeginUtil();
 %>

@@ -131,8 +131,8 @@ if(columnList != null && columnList.size() > 0) {
 			<%
 			}
 		} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
+			dbOutputBeginUtil.checkExist(manager,updateWhereStmt.toString());
 			%>
-			String checkExist_<%=cid%> = "SELECT COUNT(1) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt.toString()%>";
 			String insert_<%=cid%> = "INSERT INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 			String update_<%=cid%> = "UPDATE <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 			<%@ include file="../../_hintInsert.javajet" %>
