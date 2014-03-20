@@ -121,14 +121,14 @@ public class UIManager {
                         node.setColumn(column);
                         break;
                     }
-                    String[] splits = node.getColumnLabel().split(":");
-                    for (String s : splits) {
-                        if (s.equals(column.getLabel())) {
-                            node.setDefaultValue(null);
-                            node.setColumn(column);
-                            break;
-                        }
-                    }
+                    // String[] splits = node.getColumnLabel().split(":");
+                    // for (String s : splits) {
+                    // if (s.equals(column.getLabel())) {
+                    // node.setDefaultValue(null);
+                    // node.setColumn(column);
+                    // break;
+                    // }
+                    // }
                 }
             }
             // this.hl7UI.refreshXMLViewer(root);
