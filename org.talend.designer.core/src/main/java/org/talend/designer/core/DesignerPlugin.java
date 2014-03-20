@@ -12,13 +12,9 @@
 // ============================================================================
 package org.talend.designer.core;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.osgi.framework.BundleContext;
-import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -62,10 +58,6 @@ public class DesignerPlugin extends AbstractUIPlugin {
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
-        if (!CommonUIPlugin.isFullyHeadless()) {
-            IPreferenceStore store = EditorsPlugin.getDefault().getPreferenceStore();
-            store.setDefault(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE, 0);
-        }
     }
 
     @Override
