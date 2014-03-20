@@ -293,7 +293,7 @@ imports="
 						}catch(javax.naming.NameNotFoundException nfEx_<%=cid%>)
 						{
 							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> - " + nfEx_<%=cid%>.getMessage());
+								log.warn("<%=cid%> - " + nfEx_<%=cid%>.getMessage());
 							<%}%>
 							ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 							nb_line_<%=cid %> ++;

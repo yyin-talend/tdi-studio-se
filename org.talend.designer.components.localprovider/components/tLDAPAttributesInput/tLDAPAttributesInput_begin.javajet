@@ -370,16 +370,18 @@ imports="
 									} else if(("").equals(rejectConnName)){
 %>
 										System.err.println(e.getMessage());
+<%
+										if(isLog4jEnabled){
+%>
+											log.error("<%=cid%> - " + e.getMessage());
+<%
+										}
+%>
 										<%=firstConnName %> = null;
 <%
 									} else if(rejectConnName.equals(firstConnName)){
 %>
 										<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-<%
-									}
-									if(isLog4jEnabled){
-%>
-										log.error("<%=cid%> - " + e.getMessage());
 <%
 									}
 								}
