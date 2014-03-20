@@ -86,12 +86,12 @@ imports="
 %>
                					System.err.print(e.getMessage());
 <%
-            				}
-							if(isLog4jEnabled){
+								if(isLog4jEnabled){
 %>
-								log.error("<%=cid%> - " + e.getMessage());
+									log.error("<%=cid%> - " + e.getMessage());
 <%
-							}
+								}
+            				}
 				        }
 %>
     				}

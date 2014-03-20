@@ -80,6 +80,11 @@ imports="
 						if (dnColumnName.equals(column.getLabel().trim())) {
 							continue;
 						}
+%>
+						<%if(isLog4jEnabled){%>
+							log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel()%> + "|");
+						<%}%>
+<%
 						if(!("DELETE").equals(insertMode) && !("UPDATA").equals(insertMode)){
 %>
 							if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
@@ -302,6 +307,7 @@ imports="
 					}
 %>
 					<%if(isLog4jEnabled){%>
+						log.trace("<%=cid%> - Writing the record " + log4jSb_<%=cid%>);
 						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " for dn is '" + dn_<%=cid%> + "'.");
 					<%}%>
 	}catch(java.lang.Exception e){
@@ -332,12 +338,12 @@ imports="
 %>
                 System.err.print(e.getMessage());
 <%
-            }
-			if(isLog4jEnabled){
+				if(isLog4jEnabled){
 %>
-				log.error("<%=cid%> - " + e.getMessage());
+					log.error("<%=cid%> - " + e.getMessage());
 <%
-			}
+				}
+            }
         }
 %>
     }

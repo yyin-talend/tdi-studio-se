@@ -378,6 +378,10 @@ do {
 							if("dn".equals(column.getLabel().toLowerCase())){
 %>
 								<%=conn.getName()%>.<%=column.getLabel()%> = ("".equals(sr_<%=cid%>.getName())?sr_<%=cid%>.getName():(sr_<%=cid%>.getName()+ ",")) + baseDN_<%=cid%>;
+								<%if(isLog4jEnabled){%>
+									log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+									log4jSb_<%=cid%>.append("|");								
+								<%}%>
 <%
 							}else{
 %>
