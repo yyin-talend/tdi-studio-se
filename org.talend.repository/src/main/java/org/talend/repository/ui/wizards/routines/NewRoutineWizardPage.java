@@ -137,6 +137,12 @@ public class NewRoutineWizardPage extends PropertiesWizardPage {
 
         // pig udf
         list.addAll(loadRepViewObjectWithOtherTypes(ERepositoryObjectType.PIG_UDF));
+        
+        // List for esb route
+        ERepositoryObjectType routeType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, "ROUTES");
+        if (routeType != null) {
+            list.addAll(loadRepViewObjectWithOtherTypes(routeType));
+        }
         return list;
     }
 
