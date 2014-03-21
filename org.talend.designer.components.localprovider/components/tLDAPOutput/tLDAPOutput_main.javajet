@@ -73,6 +73,9 @@ imports="
 					javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
 					whetherReject_<%=cid%> = false;
 					String dn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=dnColumnName%>).trim();
+					<%if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append(dn_<%=cid%> + "|");
+					<%}%>
 <%
 					for(IMetadataColumn column:columnList){
 						javaType= JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -307,8 +310,7 @@ imports="
 					}
 %>
 					<%if(isLog4jEnabled){%>
-						log.trace("<%=cid%> - Writing the record " + log4jSb_<%=cid%>);
-						log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " for dn is '" + dn_<%=cid%> + "'.");
+						log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ":" + log4jSb_<%=cid%> + ".");
 					<%}%>
 	}catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;

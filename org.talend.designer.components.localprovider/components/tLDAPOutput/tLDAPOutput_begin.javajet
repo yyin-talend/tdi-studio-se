@@ -109,7 +109,7 @@ if(("false").equals(useExistingConn)){
 	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = (javax.naming.ldap.InitialLdapContext)globalMap.get("<%=exConn%>");
 	<%if(isLog4jEnabled){%>
 		if(ctx_<%=cid%>!=null) {
-			log.info("<%=cid%> - Uses an existing connection ,connection URL is: '" + ctx_<%=cid%>.getEnvironment().get("javax.naming.Context.PROVIDER_URL") + "'."); 
+			log.info("<%=cid%> - Uses an existing connection ,connection URL is: '" + ctx_<%=cid%>.getEnvironment().get(javax.naming.Context.PROVIDER_URL) + "'."); 
 		}
 	<%}%>
     String baseDN_<%=cid%> = (String)globalMap.get("<%=exConnBaseDN%>");

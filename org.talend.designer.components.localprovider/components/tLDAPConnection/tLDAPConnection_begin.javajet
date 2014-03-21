@@ -95,3 +95,4 @@ if(("TLS").equals(protocol)){
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Connection to '"+<%=host%> + "' has succeeded.");
 <%}%>
+	<%log4jFileUtil.componentFinishInfo(node);%>
