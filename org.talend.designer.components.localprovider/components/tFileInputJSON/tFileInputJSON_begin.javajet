@@ -155,24 +155,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
   }
 int nb_line_<%=cid%> = 0;
+java.lang.Object jsonText_<%=cid%> = null;
+JSONUtil_<%=cid%> jsonUtil_<%=cid%>=new JSONUtil_<%=cid%>();
+java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
+int recordMaxSize_<%=cid%> = -1;
 
+//init js json engine
 javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
 javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
 if (jsEngine_<%=cid%> == null) {
     System.err.println("No script engine found for JavaScript");
-}
-java.io.InputStream jsonis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js").openStream();
-jsEngine_<%=cid%>.eval( new java.io.BufferedReader(new java.io.InputStreamReader(jsonis_<%=cid%>)));
-
-java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
-jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
+} else {
+    java.net.URL jsonjsUrl_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js");
+    if(jsonjsUrl_<%=cid%>!=null) {
+    	jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonjsUrl_<%=cid%>.openStream())));
+    }
+    
+    java.net.URL jsonpathjsUrl_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js");
+    if(jsonpathjsUrl_<%=cid%>!=null) {
+		jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathjsUrl_<%=cid%>.openStream())));
+	}
 
 <%if(!isUseUrl){//read from a file%>
 	java.io.BufferedReader fr_<%=cid%> = null;
 <%}else{ //read from internet%>
 	java.io.InputStreamReader fr_<%=cid %> = null;
 <%}%>
-java.lang.Object jsonText_<%=cid%> = null;
 	try{
 	<%if(!isUseUrl){//read from a file%>
 		fr_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>),<%=encoding %>));
@@ -182,32 +190,39 @@ java.lang.Object jsonText_<%=cid%> = null;
 		fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream(),<%=encoding %>);
 	<%}%>
 		jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
+		if(jsonText_<%=cid%> == null) {
+			throw new RuntimeException("fail to parse the json file : " + <%if(!isUseUrl) {%> <%=filename %> <%} else {%> <%=urlpath %> <%}%>);
+		}
+	} catch(java.lang.Exception e_<%=cid%>) {
+	<%if (dieOnError) {%>
+		throw e_<%=cid%>;
+	<%} else {%>
+ 		System.err.println(e_<%=cid%>.getMessage());
+	<%}%>
 	} finally {
 		if(fr_<%=cid%> != null ) {
 			fr_<%=cid%>.close();
 		}
     }
-    
-jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
 
-java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
+	if(jsonText_<%=cid%>!=null) {
+		jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
 
-int recordMaxSize_<%=cid%> = -1;
-javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
+		javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
 
-JSONUtil_<%=cid%> jsonUtil_<%=cid%>=new JSONUtil_<%=cid%>();
 <%
-	for(Map<String,String> path:mapping){
-		String column = path.get("SCHEMA_COLUMN");
-		String query = path.get("QUERY");
+    	for(Map<String,String> path:mapping){
+    		String column = path.get("SCHEMA_COLUMN");
+    		String query = path.get("QUERY");
 %>
 
-recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
+		recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
 
 <%
+		}
+%>
 	}
-%>
-
+}
 
 	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < recordMaxSize_<%=cid%>; nbResultArray_<%=cid%>++){
 	
