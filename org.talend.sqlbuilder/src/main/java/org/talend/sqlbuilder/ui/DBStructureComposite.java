@@ -23,7 +23,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -316,7 +315,7 @@ public class DBStructureComposite extends Composite {
 
     // see bug 8621:direct refresh Db metadata in sqlbuilder with folder.
     private void doExpand() {
-        treeViewer.expandAll();
+        treeViewer.expandToLevel(2);
         treeViewer.collapseAll();
     }
 
@@ -520,10 +519,10 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
-            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
-                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-1$
-                return;
-            }
+            //            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
+            //                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-1$
+            // return;
+            // }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 @Override

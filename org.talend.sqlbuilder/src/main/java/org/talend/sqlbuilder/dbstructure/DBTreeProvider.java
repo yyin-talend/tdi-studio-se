@@ -28,10 +28,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -40,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataTableImpl;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
@@ -157,21 +161,41 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     @SuppressWarnings("static-access")//$NON-NLS-1$
     public Object[] getChildren(Object parentElement) {
+        RepositoryNode repositoryNode = (RepositoryNode) parentElement;
+        RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
+        boolean isBuildIn = ((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn();
         if (isRefresh) {
-            RepositoryNode repositoryNode = (RepositoryNode) parentElement;
-            RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
             refreshRootNode(rootNode);
             rootNode.getChildren().clear();
-            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
-                    .getProperty().getItem()).getConnection();
-            boolean isBuildIn = ((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty()
+                    .getItem()).getConnection();
             createTables(rootNode, rootNode.getObject(), metadataConnection, isBuildIn);
             createQueries(rootNode, rootNode.getObject(), metadataConnection, isBuildIn);
             isRefresh = false;
             return repositoryNode.getChildren().toArray();
 
         } else {
-            return ((RepositoryNode) parentElement).getChildren().toArray();
+            // if intialized already > same as now, retrieve the childrens
+            if (!repositoryNode.isInitialized()) {
+                // retrieve columns of the specified table
+                RepositoryNodeType type = (RepositoryNodeType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+                if (type == RepositoryNodeType.TABLE) {
+                    try {
+                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryNode.getObject()).getTable();
+                        DatabaseConnectionItem connItem = repositoryNodeManager.getItem(repositoryNode);
+                        DatabaseConnection dbConn = (DatabaseConnection) connItem.getConnection();
+                        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(dbConn);
+                        repositoryNode.getChildren().clear();
+                        repositoryNodeManager.modifyOldRepositoryNode(dbConn, iMetadataConnection, repositoryNode);
+                        createColumns(repositoryNode, rootNode.getObject(), table, isBuildIn);
+                        // set node intialized to true.
+                        repositoryNode.setInitialized(true);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+            return repositoryNode.getChildren().toArray();
         }
     }
 
@@ -200,6 +224,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     }
 
     public boolean hasChildren(Object element) {
+        // if it's a table
+        // return true.
+        RepositoryNodeType type = (RepositoryNodeType) ((RepositoryNode) element).getProperties(EProperties.CONTENT_TYPE);
+        if (type == RepositoryNodeType.TABLE) {
+            return true;
+        }
         return getChildren(element).length > 0;
     }
 
