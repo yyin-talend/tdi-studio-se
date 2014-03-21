@@ -196,6 +196,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                 Messages.getString("DesignerPreferencePage.computeLength"), getFieldEditorParent()); //$NON-NLS-1$
         addField(displayMethodSize);
 
+        BooleanFieldEditor allowDelConnWithJLTriggLinkCompField = new BooleanFieldEditor(
+                TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT,
+                Messages.getString("DesignerPreferencePage.notShowWarningDialog"), getFieldEditorParent()); //$NON-NLS-1$
+        addField(allowDelConnWithJLTriggLinkCompField);
     }
 
 }
