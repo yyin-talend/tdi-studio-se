@@ -23,7 +23,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -113,9 +112,9 @@ public class DBStructureComposite extends Composite {
 
     private DeleteQueryAction deleteQueryAction;
 
-    private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
+    private final Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 
-    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+    private final SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
     private DBTreeProvider treeLabelProvider;
 
@@ -316,13 +315,13 @@ public class DBStructureComposite extends Composite {
 
     // see bug 8621:direct refresh Db metadata in sqlbuilder with folder.
     private void doExpand() {
-        treeViewer.expandAll();
+        treeViewer.expandToLevel(2);
         treeViewer.collapseAll();
     }
 
-    private ViewerFilter filter = new ViewerFilter() {
+    private final ViewerFilter filter = new ViewerFilter() {
 
-        private List<String> names = new ArrayList<String>();
+        private final List<String> names = new ArrayList<String>();
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -520,10 +519,10 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
-            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
-                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-1$
-                return;
-            }
+            //            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
+            //                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-1$
+            // return;
+            // }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 @Override

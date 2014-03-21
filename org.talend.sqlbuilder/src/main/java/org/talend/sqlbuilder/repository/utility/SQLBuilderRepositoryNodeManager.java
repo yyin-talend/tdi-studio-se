@@ -64,6 +64,7 @@ import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectNodeHelper;
@@ -418,7 +419,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection
      */
     @SuppressWarnings("unchecked")
-    private void modifyOldRepositoryNode(DatabaseConnection connection, IMetadataConnection iMetadataConnection,
+    public void modifyOldRepositoryNode(DatabaseConnection connection, IMetadataConnection iMetadataConnection,
             RepositoryNode oldNode) throws Exception {
 
         boolean status = new ManagerConnection().check(iMetadataConnection);
@@ -433,7 +434,9 @@ public class SQLBuilderRepositoryNodeManager {
             List<MetadataTable> tablesFromEMF = new ArrayList<MetadataTable>();
             tablesFromEMF.addAll(tablesetFromEMF);
             if (oldNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
-                modifyOldConnection(tablesFromEMF, iMetadataConnection, tablesFromDB, oldNode);
+                if (tablesFromEMF.size() < tablesFromDB.size()) {
+                    modifyOldConnection(tablesFromEMF, iMetadataConnection, tablesFromDB, oldNode);
+                }
                 restoreConnection(connection, tablesFromEMF);
             } else if (oldNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.TABLE) {
                 MetadataTable metadataTable = ((MetadataTableRepositoryObject) oldNode.getObject()).getTable();
@@ -515,6 +518,7 @@ public class SQLBuilderRepositoryNodeManager {
                 // /Get MetadataColumn From EMF
                 if (tableFromDB.getSourceName().equals(tableFromEMF.getSourceName())) {
                     tableFromModel = tableFromEMF;
+                    break;
                 }
             }
             if (tableFromModel != null) {
@@ -613,29 +617,29 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setDivergency(!status);
         ConnectionHelper.getTables(connection).clear();
         if (status) {
-            try {
-                List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(
-                        iMetadataConnection, 500);
-                ExtractMetaDataUtils.getInstance().setReconnect(false);
-                for (MetadataTable table : tablesFromDB) {
-                    List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-                    columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                            table.getSourceName()));
-                    table.getColumns().clear();
-                    for (MetadataColumn column : columnsFromDB) {
-                        column.setLabel(""); //$NON-NLS-1$
-                        table.getColumns().add(column);
-                    }
-                    table.setLabel(""); //$NON-NLS-1$
-                    ConnectionHelper.getTables(connection).add(table);
-                }
-                ExtractMetaDataUtils.getInstance().setReconnect(true);
-            } catch (Exception e) {
-                if (parameters != null) {
-                    parameters.setConnectionComment(e.getMessage());
-                }
-                return null;
-            }
+            // try {
+            // List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(
+            // iMetadataConnection, 500);
+            // ExtractMetaDataUtils.getInstance().setReconnect(false);
+            // for (MetadataTable table : tablesFromDB) {
+            // List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
+            // columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+            // table.getSourceName()));
+            // table.getColumns().clear();
+            // for (MetadataColumn column : columnsFromDB) {
+            //                        column.setLabel(""); //$NON-NLS-1$
+            // table.getColumns().add(column);
+            // }
+            //                    table.setLabel(""); //$NON-NLS-1$
+            // ConnectionHelper.getTables(connection).add(table);
+            // }
+            // ExtractMetaDataUtils.getInstance().setReconnect(true);
+            // } catch (Exception e) {
+            // if (parameters != null) {
+            // parameters.setConnectionComment(e.getMessage());
+            // }
+            // return null;
+            // }
 
         } else {
             if (parameters != null) {
@@ -1095,14 +1099,14 @@ public class SQLBuilderRepositoryNodeManager {
             MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
             table.setSourceName(db.getSourceName());
             table.setLabel(""); //$NON-NLS-1$
-            List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                    table.getSourceName());
-            for (MetadataColumn column : columns) {
-                MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                column1.setOriginalField(column.getOriginalField());
-                column1.setLabel(""); //$NON-NLS-1$
-                table.getColumns().add(column1);
-            }
+            // List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+            // table.getSourceName());
+            // for (MetadataColumn column : columns) {
+            // MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
+            // column1.setOriginalField(column.getOriginalField());
+            //                column1.setLabel(""); //$NON-NLS-1$
+            // table.getColumns().add(column1);
+            // }
             metaFromEMF.add(table);
         }
     }
@@ -1348,6 +1352,11 @@ public class SQLBuilderRepositoryNodeManager {
      */
     public static RepositoryNode getRoot(RepositoryNode repositoryNode) {
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+            for (IRepositoryNode node : repositoryNode.getChildren()) {
+                if (getRepositoryType((RepositoryNode) node) == RepositoryNodeType.DATABASE) {
+                    return (RepositoryNode) node;
+                }
+            }
             // return null;
             throw new RuntimeException(Messages.getString("SQLBuilderRepositoryNodeManager.exceptionMessage")); //$NON-NLS-1$
         }
