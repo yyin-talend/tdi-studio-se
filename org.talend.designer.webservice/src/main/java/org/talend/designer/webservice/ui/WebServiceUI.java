@@ -2050,6 +2050,11 @@ public class WebServiceUI implements AbstractWebService {
                             String columnValue = imData.getInputColumnValue();
                             if (columnValue == null || "".equals(columnValue)) {
                                 String paraName = parameter.getName();
+                                // TDI-28561 fixed:code here should be same as the autoMapForOutput() for the case
+                                // parentName.parameterName
+                                if (paraName.startsWith(parameter.getParent().getName()) && parameter.getName().contains(".")) {
+                                    paraName = paraName.substring(paraName.lastIndexOf(".") + 1);
+                                }
                                 if (paraName.equals(inputlabel)) {
                                     imData.setInputColumnValue(connector.initInRoWName() + "." + paraName);
                                     if (!imData.getMetadataColumnList().contains(inputColumn)) {
