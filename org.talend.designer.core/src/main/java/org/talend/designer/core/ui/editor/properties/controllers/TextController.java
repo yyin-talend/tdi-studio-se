@@ -52,9 +52,9 @@ import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
  */
 public class TextController extends AbstractElementPropertySectionController {
 
-    private static boolean estimateInitialized = false;
+    protected static boolean estimateInitialized = false;
 
-    private static int rowSize = 0;
+    protected static int rowSize = 0;
 
     public static boolean dragAndDropAction = false;
 
@@ -103,7 +103,7 @@ public class TextController extends AbstractElementPropertySectionController {
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-        if (!elem.isReadOnly()) {
+        if (!isReadOnly()) {
             if (param.isRepositoryValueUsed()
                     && !(elem instanceof org.talend.designer.core.ui.editor.process.Process
                             || elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement)) {
@@ -112,12 +112,14 @@ public class TextController extends AbstractElementPropertySectionController {
             if (param.isRequired()) {
                 labelText.addModifyListener(new ModifyListener() {
 
+                    @Override
                     public void modifyText(ModifyEvent e) {
                         checkTextError(param, labelText, labelText.getText());
                     }
                 });
             }
-            labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
+            boolean editable = !param.isReadOnly() && !param.isRepositoryValueUsed();
+            labelText.setEditable(editable);
         } else {
             labelText.setEditable(false);
         }
@@ -162,10 +164,14 @@ public class TextController extends AbstractElementPropertySectionController {
 
         hashCurControls.put(param.getName(), labelText);
 
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        Point initialSize = cLayout.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        return null;
+        return cLayout;
+    }
+
+    protected boolean isReadOnly() {
+        return elem.isReadOnly();
     }
 
     /*
@@ -192,6 +198,7 @@ public class TextController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -212,8 +219,7 @@ public class TextController extends AbstractElementPropertySectionController {
         } else {
             if (!value.equals(labelText.getText())) {
                 // see feature 0025
-                if (param.isRepositoryValueUsed() && isPasswordParam(param)
-                        && !ContextParameterUtils.containContextVariables((String) value)) {
+                if (isPasswordParam(param)) {
                     labelText.setText(TalendTextUtils.hidePassword((String) value));
                 } else {
                     labelText.setText((String) value);
@@ -284,9 +290,13 @@ public class TextController extends AbstractElementPropertySectionController {
      * @param parameter
      * @return
      */
-    private boolean isPasswordParam(final IElementParameter parameter) {
-        return parameter.getName().equals(EParameterName.PASS.getName())
-                || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().contains("PASSWORD")); //$NON-NLS-1$
-    }
+    protected boolean isPasswordParam(final IElementParameter parameter) {
+        if (ContextParameterUtils.containContextVariables((String) parameter.getValue())) {
+            return false;
+        }
 
+        return parameter.isRepositoryValueUsed()
+                && (parameter.getName().equals(EParameterName.PASS.getName()) || parameter.getName().contains("PASSWORD") || //$NON-NLS-1$
+                parameter.getRepositoryValue().contains("PASSWORD")); //$NON-NLS-1$
+    }
 }

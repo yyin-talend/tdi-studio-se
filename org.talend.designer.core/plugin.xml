@@ -565,6 +565,11 @@
         class="org.talend.designer.core.ui.editor.properties.controllers.generator.HadoopJarSetupGenerator"
         mapping="HADOOP_JARS_DIALOG"
         name="Hadoop Jars Dialog">
+  </generator>
+  <generator
+        class="org.talend.designer.core.ui.editor.properties.controllers.generator.PasswordControllerGenerator"
+        mapping="PASSWORD"
+        name="Password">
   </generator>   
    </extension>
    <extension

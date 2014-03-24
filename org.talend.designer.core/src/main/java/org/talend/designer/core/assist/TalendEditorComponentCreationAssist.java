@@ -175,6 +175,7 @@ class TalendEditorComponentCreationAssist {
     private void initListeners() {
         assistText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyReleased(KeyEvent e) {
                 if (e.stateMask == SWT.NONE) {
                     if (e.keyCode == SWT.ESC) {
@@ -185,35 +186,41 @@ class TalendEditorComponentCreationAssist {
                 }
             }
 
+            @Override
             public void keyPressed(KeyEvent e) {
             }
         });
         assistText.addFocusListener(new FocusListener() {
 
+            @Override
             public void focusLost(FocusEvent e) {
                 if (!(contentProposalAdapter.isProposalPopupOpen())) {
                     disposeAssistText();
                 }
             }
 
+            @Override
             public void focusGained(FocusEvent e) {
 
             }
         });
         contentProposalAdapter.addContentProposalListener(new IContentProposalListener2() {
 
+            @Override
             public void proposalPopupOpened(ContentProposalAdapter adapter) {
 
             }
 
+            @Override
             public void proposalPopupClosed(ContentProposalAdapter adapter) {
-                if (!assistText.isFocusControl()) {
+                if (assistText != null && !assistText.isFocusControl()) {
                     disposeAssistText();
                 }
             }
         });
         contentProposalAdapter.addContentProposalListener(new IContentProposalListener() {
 
+            @Override
             public void proposalAccepted(IContentProposal proposal) {
                 acceptProposal();
             }
