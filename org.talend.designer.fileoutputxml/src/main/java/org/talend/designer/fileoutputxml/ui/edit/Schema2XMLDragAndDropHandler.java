@@ -54,7 +54,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.DragA
  */
 public class Schema2XMLDragAndDropHandler {
 
-    private Schema2XMLLinker linker;
+    private final Schema2XMLLinker linker;
 
     private DragSource dragSource;
 
@@ -465,6 +465,7 @@ public class Schema2XMLDragAndDropHandler {
                 }
             }
             linker.getXMLViewer().refresh();
+            linker.getXMLViewer().expandAll();
 
             linker.updateLinksStyleAndControlsSelection(control, true);
         }
