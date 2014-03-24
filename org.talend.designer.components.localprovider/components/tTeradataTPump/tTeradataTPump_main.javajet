@@ -60,10 +60,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 %>
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
-java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+<%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
+java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+<%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
 
 <%//build script---------------------------------------------------------%>
-
+try{
+java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
 StringBuilder script_<%=cid%> = new StringBuilder();
 <%
 if(!specifyLogTable) {
@@ -225,3 +226,10 @@ if(returnCodeDie) {
 <%	
 }
 %>
+}finally{
+	try{
+		file_<%=cid %>.delete();
+	}catch(Exception e_<%=cid%>){
+	
+	}
+}
