@@ -79,7 +79,7 @@ if(("false").equals(useExistingConn)){
 	}
 globalMap.put("<%=cid%>_NB_LINE", <%=cid%>_NB_LINE);
 <%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Retrieved record count: " + <%=cid%>_NB_LINE + " .");
+	log.info("<%=cid%> - Retrieved records count: " + <%=cid%>_NB_LINE + " .");
 	log.info("<%=cid%> - Done.");	
 <%}%>
 
