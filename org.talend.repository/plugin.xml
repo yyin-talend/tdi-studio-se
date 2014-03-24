@@ -2137,6 +2137,14 @@
               name="SetContextDumpHidePasswordToFalse"
               version="5.2.4">
         </projecttask>
+         <projecttask
+               beforeLogon="false"
+               breaks="5.4.1"
+               class="org.talend.repository.model.migration.EncryptPasswordInComponentsMigrationTask"
+               id="org.talend.repository.model.migration.EncryptPasswordInComponentsMigrationTask"
+               name="encrypt passwords in new password fields of jobs"
+               version="5.4.2">
+      </projecttask>
    </extension>
    
    <extension

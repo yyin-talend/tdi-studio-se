@@ -64,6 +64,7 @@ import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -1059,7 +1060,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     pType.getElementValue().add(elementValue);
                 }
             }
-        } else {
+        } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD) && value instanceof String) {
+            try {
+                pType.setValue(PasswordEncryptUtil.encryptPassword((String) value));
+            } catch (Exception e) {
+                pType.setValue((String) value);
+            }
+        }
+
+        else {
             if (value == null) {
                 pType.setValue(""); //$NON-NLS-1$
             } else {
@@ -1229,6 +1238,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         }
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
+                    } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                        try {
+                            elemParam.setPropertyValue(pType.getName(), PasswordEncryptUtil.decryptPassword(value));
+                        } catch (Exception e) {
+                            param.setValue(value);
+                        }
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
                             if (value != null && value.length() > 2) {
