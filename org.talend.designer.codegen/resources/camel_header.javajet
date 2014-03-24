@@ -888,9 +888,9 @@ if (isProvider) {
 			/*
 			 * change to use label + unique to make it unique but readable
 			 */
-			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
-				cid = (String)param.getValue()+"_"+cid;
-			}
+//			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+//				cid = (String)param.getValue()+"_"+cid;
+//			}
 			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
@@ -1025,10 +1025,10 @@ if (isProvider) {
 	}else if("cFtp".equals(nodeComponentName)){
 			String ftpEndpointVar = "ftp_" + node.getUniqueName();
 			String cid = node.getUniqueName();
-			IElementParameter labelParam = node.getElementParameter("LABEL");
-			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
-				cid = (String)labelParam.getValue()+"_"+cid;
-			}
+//			IElementParameter labelParam = node.getElementParameter("LABEL");
+//			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
+//				cid = (String)labelParam.getValue()+"_"+cid;
+//			}
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 
 			String userName = ElementParameterParser.getValue(node, "__USERNAME__");
@@ -1051,10 +1051,10 @@ if (isProvider) {
 	}else if("cMail".equals(nodeComponentName)){
 			String mailEndpointVar = "mail_" + node.getUniqueName();
 			String cid = node.getUniqueName();
-			IElementParameter labelParam = node.getElementParameter("LABEL");
-			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
-				cid = (String)labelParam.getValue()+"_"+cid;
-			}
+//			IElementParameter labelParam = node.getElementParameter("LABEL");
+//			if(labelParam != null && !"__UNIQUE_NAME__".equals(labelParam.getValue())){
+//				cid = (String)labelParam.getValue()+"_"+cid;
+//			}
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 
 			String userName = ElementParameterParser.getValue(node, "__USERNAME__");

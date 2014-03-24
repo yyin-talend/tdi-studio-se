@@ -772,10 +772,10 @@ for (INode node : graphicalNodes) {
 	/*
    	 * change to use label + unique to make it unique but readable
    	 */
-	IElementParameter param = node.getElementParameter("LABEL");
-	if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
-		cid = (String)param.getValue()+"_"+cid;	
-	}
+//	IElementParameter param = node.getElementParameter("LABEL");
+//	if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+//		cid = (String)param.getValue()+"_"+cid;	
+//	}
    	
 	componentName = node.getComponent().getName();
 	uri = "";
