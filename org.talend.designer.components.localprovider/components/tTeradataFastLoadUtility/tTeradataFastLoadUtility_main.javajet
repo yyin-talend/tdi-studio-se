@@ -66,10 +66,11 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
-java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+".script");
+java.io.File file_<%=cid%> = new java.io.File(<%=scriptPath%>+<%=table%>+".script");
+java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
 
 <%//build script---------------------------------------------------------%>
-
+try{
 StringBuilder script_<%=cid%> = new StringBuilder();
 fw_<%=cid %>.write("SESSIONS 8;"+ "<%=lineSeparator%>");
 fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";"+ "<%=lineSeparator%>");
@@ -215,3 +216,10 @@ if(returnCodeDie) {
 <%if(isLog4jEnabled){%>
    	log.info("<%=cid%> - Has finished.");
 <%}%>
+}finally{
+	try{
+		file_<%=cid %>.delete();
+	}catch(Exception e_<%=cid%>){
+	
+	}
+}

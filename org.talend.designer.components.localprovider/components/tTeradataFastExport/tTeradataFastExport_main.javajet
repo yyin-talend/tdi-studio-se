@@ -64,17 +64,19 @@ log4jCodeGenerateUtil.infoComponentStart(node);
 <%
 	if(("Windows").equals(execution)){
 %>
-	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+".script");
+	java.io.File file_<%=cid%> = new java.io.File(<%=scriptPath%>+<%=table%>+".script");
 <%
 	}else{
 %>
-	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+".scr");
+	java.io.File file_<%=cid%> = new java.io.File(<%=scriptPath%>+<%=table%>+".scr");
 <%
 	}
 %>
 	
 	<%//build script---------------------------------------------------------%>
 	
+try{
+	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
 	StringBuilder script_<%=cid%> = new StringBuilder();
 	fw_<%=cid %>.write(".LOGTABLE "+<%=logDB%>+"."+<%=logTable%>+";" + "<%=lineSeparator%>");
 	fw_<%=cid %>.write(".LOGON "+<%if(needHost) {%><%=host%>+"/"<%} else {%> "" <%}%>+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
@@ -195,3 +197,10 @@ log4jCodeGenerateUtil.infoComponentStart(node);
 		log.info("<%=cid%> - Excute '" + sb__<%=cid%> + "' has succeeded.");
 	   	log.info("<%=cid%> - Has finished.");
 	<%}%>
+}finally{
+	try{
+		file_<%=cid %>.delete();
+	}catch(Exception e_<%=cid%>){
+	
+	}
+}
