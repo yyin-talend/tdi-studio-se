@@ -1995,7 +1995,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport) {
-        String topFolder = getRootFolderName(getDestinationPath());
+        String topFolder =  getRootFolderName(this.topFolderName);
         for (ExportFileResource fileResource : resourcesToExport) {
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
