@@ -139,6 +139,8 @@ public abstract class JobScriptsManager {
 
     private List<Item> exportCaculatedProject = new ArrayList<Item>();
 
+    protected String topFolderName;
+
     public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
             int tracePort) {
         this.exportChoice = exportChoiceMap;
@@ -1027,6 +1029,24 @@ public abstract class JobScriptsManager {
 
     public void setLog4jLevel(String log4jLevel) {
         this.log4jLevel = log4jLevel;
+    }
+
+    /**
+     * Getter for topFolderName.
+     * 
+     * @return the topFolderName
+     */
+    public String getTopFolderName() {
+        return this.topFolderName;
+    }
+
+    /**
+     * Sets the topFolderName.
+     * 
+     * @param topFolderName the topFolderName to set
+     */
+    public void setTopFolderName(String topFolderName) {
+        this.topFolderName = topFolderName;
     }
 
 }

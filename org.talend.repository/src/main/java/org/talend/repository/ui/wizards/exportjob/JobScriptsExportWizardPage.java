@@ -183,6 +183,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     Set<RepositoryNode> allNode = new HashSet<RepositoryNode>();
 
+    private static final String JOBDESIGNER = "Job Designs";
+
     /**
      * 
      * Gets the set of current job's context.
@@ -1304,6 +1306,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             contextEditableResultValuesList = manager.getContextEditableResultValuesList();
         }
         manager = createJobScriptsManager();
+        if (nodes.length == 1) {
+            RepositoryNode node = nodes[0];
+            if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+                manager.setTopFolderName(JOBDESIGNER);
+            } else {
+                manager.setTopFolderName(getDefaultFileNameWithType());
+            }
+        } else {
+            manager.setTopFolderName(getDefaultFileNameWithType());
+        }
 
         // Save dirty editors if possible but do not stop if not all are saved
         // delete because it have been occurred before
