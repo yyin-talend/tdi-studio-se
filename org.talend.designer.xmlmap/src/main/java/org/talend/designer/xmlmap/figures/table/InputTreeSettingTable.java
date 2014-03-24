@@ -268,7 +268,11 @@ public class InputTreeSettingTable extends AbstractTable {
             matchModel.setText(getMatchModelDisplayName(inputxmlTree.getMatchingMode()));
             break;
         case XmlmapPackage.INPUT_XML_TREE__INNER_JOIN:
-            joinModel.setText(String.valueOf(inputxmlTree.isInnerJoin()));
+            if (inputxmlTree.isInnerJoin()) {
+                joinModel.setText(TreeSettingsConstant.INNER_JOIN);
+            } else {
+                joinModel.setText(TreeSettingsConstant.LEFT_OUTER_JOIN);
+            }
             break;
         case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
             persistentModel.setText(String.valueOf(inputxmlTree.isPersistent()));
