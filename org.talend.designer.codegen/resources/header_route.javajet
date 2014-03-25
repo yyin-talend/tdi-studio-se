@@ -151,16 +151,6 @@ package <%= packageName %>;
  */
 public class <%=process.getName()%> extends SpringRouteBuilder implements TalendESBRoute {
 
-    static class CorrelationIDCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
-        private String correlationId;
-        public void setCorrelationId(String correlationId) {
-            this.correlationId = correlationId;
-        }
-        public String getCorrelationId() {
-            return correlationId;
-        }
-    }
-
 <%
 	for (INode node : graphicalNodes) {
 		Object value = node.getPropertyValue("STARTABLE");
@@ -177,6 +167,7 @@ public class <%=process.getName()%> extends SpringRouteBuilder implements Talend
 	}
 
     boolean hasSam = false;
+    boolean hasCorrelationID = false;
     boolean hasCXFRSProvider = false;
 	for (INode node : graphicalNodes) {
 		if ("cCXF".equals(node.getComponent().getName())) {
@@ -678,6 +669,7 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
             } // service
 
             if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__"))) {
+                hasCorrelationID = true;
 %>
     private final CorrelationIDCallbackHandler correlationIDCallbackHandler_<%=cid%> = new CorrelationIDCallbackHandler();
 <%
@@ -697,6 +689,21 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
 
 <%
     }
+
+    if (hasSam) {
+%>
+    static class CorrelationIDCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
+        private String correlationId;
+        public void setCorrelationId(String correlationId) {
+            this.correlationId = correlationId;
+        }
+        public String getCorrelationId() {
+            return correlationId;
+        }
+    }
+<%
+    }
+
     if (hasCXFRSProvider) {
 %>
 static class CxfPayloadProvider implements javax.ws.rs.ext.MessageBodyWriter<org.apache.camel.component.cxf.CxfPayload<javax.xml.transform.Source>> {
