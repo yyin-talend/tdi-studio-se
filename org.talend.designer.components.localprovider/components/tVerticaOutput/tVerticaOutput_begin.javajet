@@ -81,7 +81,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 				}
 			%>
+				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
 				stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + tableName_<%=cid%>);//
+				stmtCreate_<%=cid%>.close();
 			<%
 			}
 		}
