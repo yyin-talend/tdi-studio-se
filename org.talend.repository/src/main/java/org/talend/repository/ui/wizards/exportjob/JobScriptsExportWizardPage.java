@@ -183,8 +183,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     Set<RepositoryNode> allNode = new HashSet<RepositoryNode>();
 
-    private static final String JOBDESIGNER = "Job Designs";
-
     /**
      * 
      * Gets the set of current job's context.
@@ -1309,7 +1307,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (nodes.length == 1) {
             RepositoryNode node = nodes[0];
             if (node.getType() == ENodeType.SYSTEM_FOLDER) {
-                manager.setTopFolderName(JOBDESIGNER);
+                manager.setTopFolderName(ProjectManager.getInstance().getCurrentProject().getLabel());
             } else {
                 manager.setTopFolderName(getDefaultFileNameWithType());
             }
