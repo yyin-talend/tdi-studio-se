@@ -96,7 +96,7 @@
 
         <PARAMETER 
             NAME="PASS" 
-            FIELD="TEXT" 
+            FIELD="PASSWORD" 
             NUM_ROW="20"
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"

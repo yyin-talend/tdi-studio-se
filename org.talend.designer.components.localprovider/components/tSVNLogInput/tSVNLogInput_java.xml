@@ -63,7 +63,7 @@
 
     <PARAMETER
       NAME="PASSWORD"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="30"
       REQUIRED="true"
       SHOW_IF="NEED_AUTH == 'true'"

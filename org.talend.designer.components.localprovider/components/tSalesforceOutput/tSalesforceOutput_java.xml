@@ -116,7 +116,7 @@
 
         <PARAMETER 
             NAME="PASS" 
-            FIELD="TEXT" 
+            FIELD="PASSWORD" 
             NUM_ROW="30" 
             REPOSITORY_VALUE="PASSWORD" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"

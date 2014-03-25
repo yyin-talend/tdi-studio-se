@@ -55,7 +55,7 @@
 
     <PARAMETER
       NAME="PASS"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="3"
       REQUIRED="true"
     >

@@ -3,33 +3,52 @@
 <%  
 //issue 0010346 Parallelization crash with "Drop table if exists and create"
 Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+boolean isLog4jEnabled_tableAction = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 	manager = getManager(dbmsId, cid);   
 	manager.setNode(node);
 	if(!("NONE").equals(tableAction)) {
 
-        if(("DROP_CREATE").equals(tableAction)) {
+		if(("DROP_CREATE").equals(tableAction)) {
 %>            
-            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-            stmtDrop_<%=cid%>.close();
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-            stmtCreate_<%=cid%>.close();
+			java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
+			<%}%>
+			stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
+			stmtDrop_<%=cid%>.close();
+			java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
+			stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
+			stmtCreate_<%=cid%>.close();
 <%
-        } else if(("CREATE").equals(tableAction)) {
+		} else if(("CREATE").equals(tableAction)) {
 %>
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-            stmtCreate_<%=cid%>.close();
+			java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+			<%}%>
+			stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+			<%if(isLog4jEnabled_tableAction){%>
+				log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+			<%}%>
+			stmtCreate_<%=cid%>.close();
 <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-        	boolean tableNameCaseSensitive=false;
-    		if(DB2.equalsIgnoreCase(dbmsId)||GREENPLUM.equalsIgnoreCase(dbmsId)||PARACCEL.equalsIgnoreCase(dbmsId)
-    			||POSTGRESQL.equalsIgnoreCase(dbmsId)||POSTGREPLUS.equalsIgnoreCase(dbmsId)){
-    			tableNameCaseSensitive=true;
-    		}
+		} else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
+			boolean tableNameCaseSensitive=false;
+			if(DB2.equalsIgnoreCase(dbmsId)||GREENPLUM.equalsIgnoreCase(dbmsId)||PARACCEL.equalsIgnoreCase(dbmsId)
+				||POSTGRESQL.equalsIgnoreCase(dbmsId)||POSTGREPLUS.equalsIgnoreCase(dbmsId)){
+				tableNameCaseSensitive=true;
+			}
 %>
 	         
 <%			
