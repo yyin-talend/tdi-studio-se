@@ -185,7 +185,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
             if ((curreSelect + 1) == 2) {
                 nextButton.setEnabled(false);
             }
-
+            webServiceUI.refreshTableView();
         }
     }
 

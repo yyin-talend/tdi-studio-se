@@ -1154,29 +1154,7 @@ public class WebServiceUI implements AbstractWebService {
                         webServiceDialog.setNextButtonCanuse();
                     }
                 }
-                ExtendedTableModel<InputMappingData> inputModel = expressinPutTableView.getExtendedTableModel();
-                boolean removeLinksIn = true;
-                goin: for (InputMappingData indata : inputModel.getBeansList()) {
-                    if (indata.getInputColumnValue() != null && !"".equals(indata.getInputColumnValue())) { //$NON-NLS-1$
-                        removeLinksIn = false;
-                        break goin;
-                    }
-                }
-
-                ExtendedTableModel<OutPutMappingData> outputModel = expressoutPutTableView.getExtendedTableModel();
-                boolean removeLinksOut = true;
-                goout: for (OutPutMappingData outdata : outputModel.getBeansList()) {
-                    if (outdata.getParameterName() != null && !"".equals(outdata.getParameterName())) { //$NON-NLS-1$
-                        removeLinksOut = false;
-                        break goout;
-                    }
-                }
-
-                if (removeLinksIn && removeLinksOut && tabTotabLinkForin != null) {
-                    tabTotabLinkForin.clearLinks();
-                }
-                expressinPutTableView.getTableViewerCreator().getTableViewer().refresh();
-                rowoutPutTableView.getTableViewerCreator().getTableViewer().refresh();
+                refreshTableView();
             }
         });
     }
@@ -3843,5 +3821,35 @@ public class WebServiceUI implements AbstractWebService {
                 outPutValue.add(parameter);
             }
         }
+    }
+
+    /**
+     * DOC PLV Comment method "refreshTableView".
+     */
+    public void refreshTableView() {
+        ExtendedTableModel<InputMappingData> inputModel = expressinPutTableView.getExtendedTableModel();
+        boolean removeLinksIn = true;
+        goin: for (InputMappingData indata : inputModel.getBeansList()) {
+            if (indata.getInputColumnValue() != null && !"".equals(indata.getInputColumnValue())) { //$NON-NLS-1$
+                removeLinksIn = false;
+                break goin;
+            }
+        }
+
+        ExtendedTableModel<OutPutMappingData> outputModel = expressoutPutTableView.getExtendedTableModel();
+        boolean removeLinksOut = true;
+        goout: for (OutPutMappingData outdata : outputModel.getBeansList()) {
+            if (outdata.getParameterName() != null && !"".equals(outdata.getParameterName())) { //$NON-NLS-1$
+                removeLinksOut = false;
+                break goout;
+            }
+        }
+
+        if (removeLinksIn && removeLinksOut && tabTotabLinkForin != null && tabTotabLinkForout != null) {
+            tabTotabLinkForin.clearLinks();
+            tabTotabLinkForout.clearLinks();
+        }
+        expressinPutTableView.getTableViewerCreator().getTableViewer().refresh();
+        rowoutPutTableView.getTableViewerCreator().getTableViewer().refresh();
     }
 }
