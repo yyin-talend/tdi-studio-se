@@ -2,7 +2,7 @@
 // TransactionType.java
 // ------------------------------------------------------------------
 //
-// Copyright (c) 2006-2010 Dino Chiesa.
+// Copyright (c) 2006-2014 Dino Chiesa.
 // All rights reserved.
 //
 // This code module is part of MsmqJava, a JNI library that provides
