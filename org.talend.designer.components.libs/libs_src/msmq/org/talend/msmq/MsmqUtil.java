@@ -38,7 +38,7 @@ public class MsmqUtil {
         org.talend.msmq.MsmqUtil msgu = new org.talend.msmq.MsmqUtil();
         msgu.setHost("127.0.0.1");
         msgu.setQueue("jzhao");
-        msgu.setCreateIfNotExists(true);
+        msgu.createIfNotExists(true);
         msgu.setQueueType("");
         msgu.setIsTransaction(true);
         msgu.open();
@@ -181,7 +181,7 @@ public class MsmqUtil {
 	public void setIsTransaction(boolean isTransaction) {
 		this.isTransaction = isTransaction;
 	}
-    public void setCreateIfNotExists(boolean createIfNotExists) {
+    public void createIfNotExists(boolean createIfNotExists) {
 		this.createIfNotExists = createIfNotExists;
 	}
 }

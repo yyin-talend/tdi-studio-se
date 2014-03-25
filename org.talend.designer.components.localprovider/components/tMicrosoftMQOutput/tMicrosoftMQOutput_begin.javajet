@@ -31,7 +31,7 @@
 			try{
 				msgu_<%=cid%>.setHost(<%=host%>);
 				msgu_<%=cid%>.setQueue(<%=queue%>); 
-				msgu_<%=cid%>.setCreateIfNotExists(<%=isCreateQueueNotExist%>);
+				msgu_<%=cid%>.createIfNotExists(<%=isCreateQueueNotExist%>);
 				<%
 		   		if(queueType!=null && queueType.endsWith("PUBLIC")){
 				%>
