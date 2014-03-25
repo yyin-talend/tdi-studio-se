@@ -690,7 +690,7 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
 <%
     }
 
-    if (hasSam) {
+    if (hasCorrelationID) {
 %>
     static class CorrelationIDCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
         private String correlationId;
