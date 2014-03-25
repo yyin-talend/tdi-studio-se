@@ -103,25 +103,24 @@ public abstract class MapperRootEditPart extends BaseEditPart implements MouseWh
         separatorLeft.setImage(ImageProviderMapper.getImage(ImageInfo.ZONE_SASH));
         mainFigure.add(separatorLeft);
 
-        // var
-        Figure varZone = new Figure();
-        varZone.setLayoutManager(new ZoneLayout());
+        // search , var
         searchToolBar = createSearchZoneToolBar();
         searchToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
-        varZone.add(searchToolBar);
 
         varScroll = new ScrollPane();
         varScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         centerFigure = new Figure();
 
-        subManager = new ZoneLayout();
+        subManager = createZoneContentLayout();
         subManager.setSpacing(20);
+        subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
-        centerFigure.setBorder(new MarginBorder(5, 60, 5, 60));
+        centerFigure.setBorder(new MarginBorder(10, 40, 10, 40));
         varScroll.getViewport().setContents(centerFigure);
         varScroll.getViewport().setContentsTracksWidth(true);
-        varZone.add(varScroll);
-        mainFigure.add(varZone);
+
+        centerFigure.add(searchToolBar);
+        mainFigure.add(varScroll);
 
         // separetor 2
         SashSeparator separatorRight = new SashSeparator();
@@ -219,7 +218,12 @@ public abstract class MapperRootEditPart extends BaseEditPart implements MouseWh
             Object model = childEditPart.getModel();
             index = getRootModelManager().getVarTables().indexOf(model);
             if (index != -1) {
-                centerFigure.add(child, index);
+                // had added search figure when inited the center figure.
+                if (centerFigure.getChildren() != null && centerFigure.getChildren().size() != 0) {
+                    centerFigure.add(child, index + centerFigure.getChildren().size());
+                } else {
+                    centerFigure.add(child, index);
+                }
             } else {
                 centerFigure.add(child);
             }
