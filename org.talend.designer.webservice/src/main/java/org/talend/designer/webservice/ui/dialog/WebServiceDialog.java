@@ -43,7 +43,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
 
     private WebServiceUI webServiceUI;
 
-    private WebServiceComponentMain webServiceComponentMain;
+    private final WebServiceComponentMain webServiceComponentMain;
 
     private boolean maximized;
 
@@ -63,6 +63,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         return this.webServiceUI;
     }
 
+    @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         if (title != null) {
@@ -102,6 +103,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         return webServiceComponentMain.getWebServiceManager().getUIManager();
     }
 
+    @Override
     protected void buttonPressed(int buttonId) {
         if (IDialogConstants.OK_ID == buttonId) {
             okPressed();
@@ -114,6 +116,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         }
     }
 
+    @Override
     protected void cancelPressed() {
         super.cancelPressed();
         getUIManager().setDialogResponse(SWT.CANCEL);
@@ -125,6 +128,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
 
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         createButton(parent, IDialogConstants.BACK_ID, IDialogConstants.BACK_LABEL, false);
@@ -136,6 +140,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         nextButton = getButton(IDialogConstants.NEXT_ID);
     }
 
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite panel = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -185,10 +190,11 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
             if ((curreSelect + 1) == 2) {
                 nextButton.setEnabled(false);
             }
-
+            webServiceUI.refreshTableView();
         }
     }
 
+    @Override
     protected void okPressed() {
         // if (getWebServiceUI().getIsFirst()) {
         // super.cancelPressed();
@@ -471,6 +477,7 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         box.open();
     }
 
+    @Override
     public void checkPerformed(boolean enable) {
         final Button okBtn = getButton(IDialogConstants.OK_ID);
         if (okBtn != null) {
