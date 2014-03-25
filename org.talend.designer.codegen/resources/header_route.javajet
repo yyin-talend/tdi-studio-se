@@ -149,10 +149,17 @@ package <%= packageName %>;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %>
  */
- public class <%=process.getName()%> extends SpringRouteBuilder implements TalendESBRoute {
+public class <%=process.getName()%> extends SpringRouteBuilder implements TalendESBRoute {
 
-	public <%=process.getName()%>(){
-	}
+    static class CorrelationIDCallbackHandler implements org.talend.esb.policy.correlation.CorrelationIDCallbackHandler {
+        private String correlationId;
+        public void setCorrelationId(String correlationId) {
+            this.correlationId = correlationId;
+        }
+        public String getCorrelationId() {
+            return correlationId;
+        }
+    }
 
 <%
 	for (INode node : graphicalNodes) {
@@ -183,11 +190,11 @@ package <%= packageName %>;
 				hasSam = true;
             }
 		} else if ("cCXFRS".equals(node.getComponent().getName())) {
+            String cid = node.getUniqueName();
             if ("true".equals(ElementParameterParser.getValue(node, "__SERVICE_ACTIVITY_MONITOR__"))) {
                 hasSam = true;
             }
             if (node.getIncomingConnections().isEmpty()) {
-                String cid = node.getUniqueName();
                 hasCXFRSProvider = true;
 
 final Map<String, String> contentTypes = new java.util.HashMap<String, String>() {{
@@ -663,14 +670,21 @@ final Map<String, String> contentTypes = new java.util.HashMap<String, String>()
 %>
         );
 <% 
-                }
+                } // mappings
 %>
     }
 
 <%
-            }
-		}
-	}
+            } // service
+
+            if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_CORRELATION__"))) {
+%>
+    private final CorrelationIDCallbackHandler correlationIDCallbackHandler_<%=cid%> = new CorrelationIDCallbackHandler();
+<%
+            } // CorrelationID
+
+		} // "cCXFRS"
+	} // for
 
     if (hasSam) {
 %>

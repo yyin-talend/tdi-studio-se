@@ -244,12 +244,9 @@
 %>
                     final String correlationId = <%=ElementParameterParser.getValue(node, "__CORRELATION_VALUE__")%>;
                     if (null != correlationId && correlationId.length() > 0) {
+                        correlationIDCallbackHandler_<%=cid%>.setCorrelationId(correlationId);
                         factory_<%=cid%>.getProperties(true).put(org.talend.esb.policy.correlation.feature.CorrelationIDFeature.CORRELATION_ID_CALLBACK_HANDLER, 
-                            new org.talend.esb.policy.correlation.CorrelationIDCallbackHandler() {
-                                public String getCorrelationId() {
-                                    return correlationId;
-                                };
-                            });
+                            correlationIDCallbackHandler_<%=cid%>);
                     }
                     factory_<%=cid%>.getFeatures().add(new org.talend.esb.policy.correlation.feature.CorrelationIDFeature());
 <%
