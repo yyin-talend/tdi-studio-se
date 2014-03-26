@@ -90,6 +90,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     case JOBLET_SCHEMA:
                     case JOBLET_RENAMED:
                     case RELOAD:
+                    case MAP_PATH:
                         image = getImageFromNode(category.getNode());
                         break;
                     case JOB_PROPERTY_MAPREDUCE:

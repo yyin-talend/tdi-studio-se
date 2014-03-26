@@ -347,7 +347,8 @@ public enum EParameterName {
     HADOOP_ADVANCED_PROPERTIES("HADOOP_ADVANCED_PROPERTIES"),
 
     // Added for log4j.xml
-    LOG4J_ACTIVATE("LOG4J_ACTIVATE");
+    LOG4J_ACTIVATE("LOG4J_ACTIVATE"),
+    HMAP_PATH("HMAP_PATH");//$NON-NLS-1$
 
     private String displayName;
 

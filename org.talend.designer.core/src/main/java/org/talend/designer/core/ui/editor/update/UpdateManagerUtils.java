@@ -64,6 +64,7 @@ import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterComma
 import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
+import org.talend.designer.core.ui.editor.update.cmd.UpdateNodePathCommand;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
@@ -532,6 +533,9 @@ public final class UpdateManagerUtils {
         case JOBLET_CONTEXT:
             command = new Command() { // have update in checking.
             };
+            break;
+        case MAP_PATH:
+            command = new UpdateNodePathCommand(result);
             break;
         default:
             break;
