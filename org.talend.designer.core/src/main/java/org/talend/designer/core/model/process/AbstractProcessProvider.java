@@ -187,16 +187,6 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
     }
 
     /**
-     * DOC ycbai Comment method "isJobletTriggerLinkComponent".
-     * 
-     * @param node
-     * @return if the component of this node is JobletTriggerLinkComponent.
-     */
-    public boolean isJobletTriggerLinkComponent(INode node) {
-        return false;
-    }
-
-    /**
      * DOC qli Comment method "isExtensionProcess".
      * 
      * @param process
