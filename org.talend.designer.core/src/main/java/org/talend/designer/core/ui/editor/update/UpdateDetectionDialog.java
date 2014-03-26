@@ -201,6 +201,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
                 this.canCancel = false;
                 this.canDeselect = false;
             case RELOAD:
+            case PATH_UPDATE:
             case JOBLET_UPDATE:
                 this.canCancel = false;
                 this.canDeselect = true;
