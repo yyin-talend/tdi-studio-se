@@ -1062,7 +1062,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             }
         } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD) && value instanceof String) {
             try {
-                pType.setValue(PasswordEncryptUtil.encryptPassword((String) value));
+                pType.setValue(PasswordEncryptUtil.encryptPassword((String) value) + PasswordEncryptUtil.ENCRYPT_KEY);
             } catch (Exception e) {
                 pType.setValue((String) value);
             }
@@ -1239,9 +1239,22 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                        boolean encrypted = true;
                         try {
-                            elemParam.setPropertyValue(pType.getName(), PasswordEncryptUtil.decryptPassword(value));
+                            int ind = value.lastIndexOf(PasswordEncryptUtil.ENCRYPT_KEY);
+                            if (ind == -1) {
+                                encrypted = false;
+                            } else {
+                                String encryptedPart = new StringBuilder(value).replace(ind,
+                                        ind + PasswordEncryptUtil.ENCRYPT_KEY.length(), "").toString(); //$NON-NLS-1$
+                                String decryptedValue = PasswordEncryptUtil.decryptPassword(encryptedPart);
+                                param.setValue(decryptedValue);
+                            }
                         } catch (Exception e) {
+                            encrypted = false;
+                        }
+
+                        if (!encrypted) {
                             param.setValue(value);
                         }
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
