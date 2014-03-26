@@ -490,6 +490,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
                 // checkRequiredModules();
                 return;
+            } else if (getTargetEditPart() instanceof SubjobContainerPart) {
+                // TDI-24985:for palette dnd.
+                Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                if (newObject != null) {
+                    Command command = getCommand();
+                    if (command != null) {
+                        execCommandStack(command);
+                    }
+                }
+                return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
                 JobletContainerPart jobletPart = (JobletContainerPart) getTargetEditPart();
                 if (isLock(jobletPart)) {
