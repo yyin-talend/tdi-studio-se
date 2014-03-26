@@ -27,8 +27,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -138,11 +140,10 @@ public class GEFDeleteAction extends DeleteAction {
             }
             IProcess process = srcNode.getProcess();
             if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
-                AbstractProcessProvider pProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
-                if (pProvider != null) {
-                    if (pProvider.isJobletTriggerLinkComponent(srcNode) || pProvider.isJobletTriggerLinkComponent(tarNode)) {
-                        isConnAttachedJLTriggerComp = true;
-                    }
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null && (service.isTriggerNode(srcNode) || service.isTriggerNode(tarNode))) {
+                    isConnAttachedJLTriggerComp = true;
                 }
             }
         }
