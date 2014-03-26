@@ -207,7 +207,8 @@ public class JobErrorsChecker {
         Item item = null;
         IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
-
+        Integer line = null;
+        String errorMessage = null;
         try {
             for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
                 item = null;
@@ -244,6 +245,8 @@ public class JobErrorsChecker {
                         switch (severity) {
                         case IMarker.SEVERITY_ERROR:
                             ret = true;
+                            line = lineNr;
+                            errorMessage = message;
                             break;
                         default:
                             break;
@@ -263,13 +266,19 @@ public class JobErrorsChecker {
             ExceptionHandler.process(e);
         }
         if (ret && item != null) {
-            if (isJob) {
-                throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
-                        Messages.getString("JobErrorsChecker_compile_error_content", item.getProperty().getLabel()));
-            } else {
-                throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
-                        Messages.getString("CamelJobErrorsChecker_compile_error_content", item.getProperty().getLabel()));
-            }
+        	  if (isJob) {
+                  throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                          Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_line") + ": " + line + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ": " + errorMessage + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_jvmmessage"));
+              } else {
+                  throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                          Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_line") + ": " + line + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ": " + errorMessage + "\n"
+                          + Messages.getString("JobErrorsChecker_compile_error_jvmmessage"));
+              }
         }
     }
 
