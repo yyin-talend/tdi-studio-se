@@ -124,7 +124,7 @@
 
 	<PARAMETER
       NAME="PASSPHRASE"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="50"
       SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
     >

@@ -112,7 +112,7 @@
 
 	<PARAMETER
       NAME="PASSPHRASE"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="50"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
     >
