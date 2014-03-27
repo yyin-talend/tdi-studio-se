@@ -357,7 +357,7 @@ public class JavaProcessUtil {
                                 if (isContextMode) {
                                     getModulesInTable(process, curParam, modulesNeeded);
                                 } else {
-                                    ModuleNeeded module = new ModuleNeeded(null, driverName , null, true);//$NON-NLS-1$
+                                    ModuleNeeded module = new ModuleNeeded(null, driverName, null, true);//$NON-NLS-1$
                                     modulesNeeded.add(module);
                                 }
                             }
@@ -403,8 +403,36 @@ public class JavaProcessUtil {
                     }
                 }
                 if (text != null) {
-                    ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(text), null, true);
-                    modulesNeeded.add(module);
+                    boolean isContextMode = ContextParameterUtils.containContextVariables(text);
+                    if (isContextMode) {
+                        List<IContext> listContext = process.getContextManager().getListContext();
+                        for (IContext context : listContext) {
+                            List<IContextParameter> contextParameterList = context.getContextParameterList();
+                            for (IContextParameter contextPara : contextParameterList) {
+                                String var = ContextParameterUtils.getVariableFromCode(text);
+                                if (var.equals(contextPara.getName())) {
+                                    String values = context.getContextParameter(contextPara.getName()).getValue();
+
+                                    if (curParam.getName().equals(EParameterName.DRIVER_JAR.getName()) && values.contains(";")) { //$NON-NLS-1$
+                                        String[] jars = values.split(";"); //$NON-NLS-1$
+                                        for (String jar2 : jars) {
+                                            String jar = jar2;
+                                            jar = jar.substring(jar.lastIndexOf("\\") + 1); //$NON-NLS-1$
+                                            ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
+                                            modulesNeeded.add(module);
+                                        }
+                                    } else {
+                                        values = values.substring(values.lastIndexOf("\\") + 1); //$NON-NLS-1$
+                                        ModuleNeeded module = new ModuleNeeded(null, values, null, true);
+                                        modulesNeeded.add(module);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(text), null, true);
+                        modulesNeeded.add(module);
+                    }
                 }
             }
         } else if (name.equals(EParameterName.HADOOP_CUSTOM_JARS.getDisplayName())) {
