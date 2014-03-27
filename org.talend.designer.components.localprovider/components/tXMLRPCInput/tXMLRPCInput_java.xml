@@ -71,7 +71,7 @@
     </PARAMETER>
     <PARAMETER
       NAME="AUTH_PASSWORD"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       REQUIRED="true"
       NUM_ROW="3"
       SHOW_IF="NEED_AUTH == 'true'"

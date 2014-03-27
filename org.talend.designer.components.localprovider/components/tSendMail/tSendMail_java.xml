@@ -155,7 +155,7 @@ COMPATIBILITY="ALL"
     </PARAMETER>
     <PARAMETER
       NAME="AUTH_PASSWORD"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       REQUIRED="true"
       NUM_ROW="150"
       SHOW_IF="NEED_AUTH == 'true'"
