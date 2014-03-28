@@ -1567,11 +1567,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_CLASS.getName(), context));
-        String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
-        if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
-                || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
-                || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)) {
-            driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+        if (element != null) {
+            String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
+            if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
+                    || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
+                    || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)) {
+                driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
+            }
         }
         connParameters.setDriverClass(driverClass);
 
