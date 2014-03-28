@@ -827,6 +827,15 @@ public class CLASS {
             String separator = ", ";
             String keySeparator = " AND ";
             searchingSQL.append("SELECT ");
+            List<Column> sourceKeys = scdConfiger.getSourceKeys();
+            for(Column sourceKey : sourceKeys) {
+                if(firstColumn) {
+                    firstColumn = false;
+                } else {
+                    searchingSQL.append(separator);
+                }
+                searchingSQL.append(getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar());
+            }
             if(scdConfiger.isEnableType1()) {
                 List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
                 for(Column type1Attribute : type1Attributes) {
@@ -866,7 +875,6 @@ public class CLASS {
                 searchingSQL.append(separator + getLProtectedChar() + versionField + getRProtectedChar());                
             }
             searchingSQL.append(" FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + " WHERE ");
-            List<Column> sourceKeys = scdConfiger.getSourceKeys();
             for(Column sourceKey : sourceKeys) {
                 if(firstKeyColumn) {
                     firstKeyColumn = false;
