@@ -96,7 +96,7 @@
 
         <PARAMETER 
             NAME="PASS" 
-            FIELD="TEXT" 
+            FIELD="PASSWORD" 
             NUM_ROW="20"
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'BASIC')"
@@ -3383,7 +3383,7 @@
 		
 		<PARAMETER 
 			NAME="PROXY_PASSWORD" 
-			FIELD="TEXT"
+			FIELD="PASSWORD"
 			NUM_ROW="45" 
 			SHOW_IF="USE_PROXY == 'true'" 
 			REPOSITORY_VALUE="PROXY_PASSWORD">

@@ -58,7 +58,7 @@
 
     <PARAMETER
       NAME="PASSPHRASE"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="50"
     >
       <DEFAULT>"password"</DEFAULT>

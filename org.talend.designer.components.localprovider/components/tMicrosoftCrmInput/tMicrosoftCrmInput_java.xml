@@ -56,7 +56,7 @@
             <DEFAULT>"crm1"</DEFAULT>
         </PARAMETER>
 
-        <PARAMETER NAME="PASSWORD" FIELD="TEXT" NUM_ROW="15" REQUIRED="true">
+        <PARAMETER NAME="PASSWORD" FIELD="PASSWORD" NUM_ROW="15" REQUIRED="true">
             <DEFAULT>"crm"</DEFAULT>
         </PARAMETER>
 

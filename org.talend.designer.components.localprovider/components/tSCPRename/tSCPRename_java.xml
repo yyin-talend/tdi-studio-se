@@ -93,7 +93,7 @@
 
     <PARAMETER
       NAME="PASSWORD"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="50"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and ((AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE'))"
     >
@@ -111,7 +111,7 @@
 
 	<PARAMETER
       NAME="PASSPHRASE"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="50"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
     >

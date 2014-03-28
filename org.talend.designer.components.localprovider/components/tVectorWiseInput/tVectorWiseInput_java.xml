@@ -115,7 +115,7 @@
 
     <PARAMETER
       NAME="PASS"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"

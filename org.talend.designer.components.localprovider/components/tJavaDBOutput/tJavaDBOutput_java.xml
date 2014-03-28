@@ -130,7 +130,7 @@
 
     <PARAMETER
       NAME="PASS"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
     >

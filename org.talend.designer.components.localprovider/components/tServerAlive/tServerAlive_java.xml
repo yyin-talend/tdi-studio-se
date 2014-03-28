@@ -114,7 +114,7 @@
 
     <PARAMETER
       NAME="PROXY_PASS"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="40"
       SHOW_IF="(PROTOCOL == 'TELNET') and (ENABLE_PROXY_SERVER == 'true')"
     >
