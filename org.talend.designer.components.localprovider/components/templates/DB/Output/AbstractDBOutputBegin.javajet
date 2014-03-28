@@ -187,7 +187,11 @@ if(isDynamic) {
 	java.sql.PreparedStatement pstmt_<%=cid %> =null;
 	java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
 	java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
+	<%if(isEnableDebug) {%>
+		StringBuffer query_<%=cid%> = null;
+		<%@ include file="../../DB/Output/splitSQLForAllDBInDynamicBegin.javajet" %>
 <%
+	}
 }
 %>
 

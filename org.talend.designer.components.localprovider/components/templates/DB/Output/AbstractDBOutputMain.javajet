@@ -178,8 +178,7 @@ if(isDynamic) {
 			dbOutputBeginUtil.prepareDataActionMore(node,manager,insertColName,insertValueStmt,updateSetStmt,updateWhereStmt);
 			if(isEnableDebug) {
 				%>
-				StringBuffer query_<%=cid%> = null;
-			   <%@ include file="../../DB/Output/splitSQLForAllDBInBegin.javajet" %>
+			   <%@ include file="../../DB/Output/splitSQLForAllDBInDynamicMain.javajet" %>
 			   <%
 			}
 			dbOutputBeginUtil.prepareForTable(node);
