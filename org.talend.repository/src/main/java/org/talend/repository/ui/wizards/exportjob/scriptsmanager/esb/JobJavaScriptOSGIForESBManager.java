@@ -525,6 +525,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // unwrap JSON response (drop root element)
         endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
+        
+        // Convert JSON to string (big double values)
+        endpointInfo.put("convertTypesToStrings", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("CONVERT_VALUES_TO_STRING", restRequestComponent)); //$NON-NLS-1$
 
         // use Authentication & authentication type
         endpointInfo.put("useAuthentication", //$NON-NLS-1$
