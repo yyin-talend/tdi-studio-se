@@ -29,12 +29,12 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
@@ -53,8 +53,6 @@ public class DetecteViewImpactAction extends AContextualAction {
 
     private static final String LABEL = Messages.getString("DetecteViewImpactAction.Label"); //$NON-NLS-1$
 
-    private boolean onlySimpleShow;
-
     /**
      * ggu DetectedModificationAction constructor comment.
      */
@@ -65,17 +63,8 @@ public class DetecteViewImpactAction extends AContextualAction {
     }
 
     public boolean isOnlySimpleShow() {
-        return onlySimpleShow;
-    }
-
-    /**
-     * 
-     * cli Comment method "setOnlySimpleShow".
-     * 
-     * only work for impact analysis
-     */
-    public void setOnlySimpleShow(boolean onlySimpleShow) {
-        onlySimpleShow = onlySimpleShow;
+        // not used
+        return false;
     }
 
     /*
@@ -86,7 +75,13 @@ public class DetecteViewImpactAction extends AContextualAction {
      */
     @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        // try to check via extension point first.
+        boolean canWork = UpdateManagerProviderDetector.INSTANCE.validateAction(viewer, selection);
+        if (canWork) {
+            setEnabled(true);
+            return;
+        }
+        canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isUserReadOnlyOnCurrentProject()) {
@@ -206,6 +201,9 @@ public class DetecteViewImpactAction extends AContextualAction {
         if (node == null) {
             return;
         }
+        // try to check via extension point first.
+        UpdateManagerProviderDetector.INSTANCE.updateForRepository(node, true);
+
         if (node.getObject() instanceof ISubRepositoryObject) {
             ISubRepositoryObject subObject = (ISubRepositoryObject) node.getObject();
             if (subObject != null) {
@@ -240,10 +238,6 @@ public class DetecteViewImpactAction extends AContextualAction {
                         } else {
                             RepositoryUpdateManager.updateFileConnection((ConnectionItem) item, false, isOnlySimpleShow());
                         }
-                    } else
-                    // joblet
-                    if (item instanceof JobletProcessItem) {
-                        RepositoryUpdateManager.updateJoblet((JobletProcessItem) item, false, isOnlySimpleShow());
                     }
 
                 }

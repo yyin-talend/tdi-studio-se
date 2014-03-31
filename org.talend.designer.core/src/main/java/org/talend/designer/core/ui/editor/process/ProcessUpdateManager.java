@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -26,9 +26,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.model.components.IComponentConstants;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -82,9 +82,12 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.service.IEBCDICProviderService;
@@ -2171,83 +2174,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return queryResults;
     }
 
-    /**
-     * 
-     * ggu Comment method "checkJobletNodesContext".
-     * 
-     * check and update, the result only record the operation.
-     */
-    private List<UpdateResult> checkJobletNodesContext() {
-        if (getProcess().isReadOnly()) { // not readonly
-            return Collections.emptyList();
-        }
-        List<AbstractProcessProvider> findAllProcessProviders = AbstractProcessProvider.findAllProcessProviders();
-        List<String> labelList = new ArrayList<String>();
-        for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
-            if (abstractProcessProvider != null) {
-                List<String> tmpList = abstractProcessProvider.updateProcessContextsWithoutUI(getProcess());
-                if (tmpList != null && !tmpList.isEmpty()) {
-                    labelList.addAll(tmpList);
-                }
-            }
-        }
-        // source to variables list map
-        Map<String, Set<String>> reformMap = new HashMap<String, Set<String>>();
-        for (String label : labelList) {
-            String[] str = label.split(UpdatesConstants.SPACE);
-            if (str.length == 2) {
-                String var = str[0].trim();
-                String source = removeBrackets(str[1]);
-                if (IContextParameter.BUILT_IN.equals(source)) {
-                    source = str[1];
-                }
-                Set<String> set = reformMap.get(source);
-                if (set == null) {
-                    set = new HashSet<String>();
-                    reformMap.put(source, set);
-                }
-                if (!set.contains(var)) {
-                    set.add(var);
-                }
-            }
-        }
-        List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
-        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
-        for (String source : reformMap.keySet()) {
-            Set<String> set = reformMap.get(source);
-            if (set != null && !set.isEmpty()) {
-                UpdateCheckResult result = new UpdateCheckResult(set);
-                Object parameter = null;
-                if (getProcess().getContextManager() != null) {
-                    parameter = getProcess().getContextManager().getListContext();
-                }
-                result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, parameter, UpdatesConstants.CONTEXT
-                        + UpdatesConstants.COLON + source);
-                if (!openedProcesses.contains(getProcess())) {
-                    result.setFromItem(true);
-                }
-                result.setJob(getProcess());
-                setConfigrationForReadOnlyJob(result);
-                contextResults.add(result);
-            }
-        }
-
-        return contextResults;
-
-    }
-
-    private String removeBrackets(String str) {
-        if (str == null) {
-            return UpdatesConstants.EMPTY;
-        }
-        final String prefix = "\\"; //$NON-NLS-1$
-        str = str.trim();
-
-        str = str.replaceAll(prefix + UpdatesConstants.LEFT_BRACKETS, UpdatesConstants.EMPTY);
-        str = str.replaceAll(prefix + UpdatesConstants.RIGHT_BRACKETS, UpdatesConstants.EMPTY);
-        return str.trim();
-    }
-
     private List<UpdateResult> checkJobletNodeReload(boolean onlySimpleShow) {
         if (getProcess() == null || jobletProcessProvider == null) {
             return Collections.emptyList();
@@ -2399,58 +2325,63 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     @Override
-    public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type) {
+    public List<UpdateResult> getUpdatesNeeded(IUpdateItemType type) {
         return getUpdatesNeeded(type, false);
     }
 
     @Override
-    public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type, boolean onlySimpleShow) {
+    public List<UpdateResult> getUpdatesNeeded(IUpdateItemType itemType, boolean onlySimpleShow) {
 
-        if (type == null) {
+        if (itemType == null) {
             return null;
         }
         List<UpdateResult> tmpResults = new ArrayList<UpdateResult>();
-        switch (type) {
-        case NODE_PROPERTY:
-        case NODE_SCHEMA:
-        case NODE_QUERY:
-        case NODE_SAP_IDOC:
-        case NODE_SAP_FUNCTION:
-        case NODE_VALIDATION_RULE:
-            tmpResults = checkNodesParameters(type, onlySimpleShow);
-            break;
-        case JOB_PROPERTY_EXTRA:
-        case JOB_PROPERTY_STATS_LOGS:
-        case JOB_PROPERTY_HEADERFOOTER:
-        case JOB_PROPERTY_MAPREDUCE:
-            tmpResults = checkMainParameters(type, onlySimpleShow);
-            break;
-        case CONTEXT:
-            tmpResults = checkContext(onlySimpleShow);
-            break;
-        case CONTEXT_GROUP:
-            tmpResults = checkGroupContext(onlySimpleShow);
-            break;
-        case JOBLET_SCHEMA:
-            tmpResults = checkJobletNodeSchema();
-            break;
-        case JOBLET_RENAMED: // unused
-            // case RELOAD:
-            tmpResults = checkJobletNodesPropertyChanger();
-            break;
-        case RELOAD:
-            tmpResults = checkJobletNodeReload(onlySimpleShow);
-            break;
-        case JOBLET_CONTEXT:
-            tmpResults = checkJobletNodesContext();
-            break;
-        default:
+        if (itemType instanceof EUpdateItemType) {
+            EUpdateItemType type = (EUpdateItemType) itemType;
+            switch (type) {
+            case NODE_PROPERTY:
+            case NODE_SCHEMA:
+            case NODE_QUERY:
+            case NODE_SAP_IDOC:
+            case NODE_SAP_FUNCTION:
+            case NODE_VALIDATION_RULE:
+                tmpResults = checkNodesParameters(type, onlySimpleShow);
+                break;
+            case JOB_PROPERTY_EXTRA:
+            case JOB_PROPERTY_STATS_LOGS:
+            case JOB_PROPERTY_HEADERFOOTER:
+            case JOB_PROPERTY_MAPREDUCE:
+                tmpResults = checkMainParameters(type, onlySimpleShow);
+                break;
+            case CONTEXT:
+                tmpResults = checkContext(onlySimpleShow);
+                break;
+            case CONTEXT_GROUP:
+                tmpResults = checkGroupContext(onlySimpleShow);
+                break;
+            case JOBLET_SCHEMA:
+                tmpResults = checkJobletNodeSchema();
+                break;
+            case JOBLET_RENAMED: // unused
+                // case RELOAD:
+                tmpResults = checkJobletNodesPropertyChanger();
+                break;
+            case RELOAD:
+                tmpResults = checkJobletNodeReload(onlySimpleShow);
+                break;
+            // have moved to extension point
+            // case JOBLET_CONTEXT:
+            // tmpResults = checkJobletNodesContext();
+            // break;
+            default:
+            }
+        } else { // extension
+            tmpResults = UpdateManagerProviderDetector.INSTANCE.retrieveProcessUpdateResults(process, itemType);
         }
         return tmpResults;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean executeUpdates(List<UpdateResult> results) {
         return UpdateManagerUtils.executeUpdates(results, false, true, true);
     }
@@ -2489,12 +2420,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     private void setConfigrationForReadOnlyJob(UpdateCheckResult result) {
-        if (this.process != null && this.process.isReadOnly()) {
-            result.setChecked(false);
-            result.setRemark(Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages")); //$NON-NLS-1$
-            result.setReadOnlyProcess(true);
-        }
-
+        UpdateManagerHelper.setConfigrationForReadOnlyJob(process, result);
     }
 
 }

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,8 +15,8 @@ package org.talend.designer.core.ui.editor.update;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateResult;
 
 /**
@@ -126,7 +126,7 @@ class Category {
     /**
      * only used for image.
      */
-    private EUpdateItemType type;
+    private IUpdateItemType type;
 
     /**
      * only used for node or nodeType icon.
@@ -157,11 +157,11 @@ class Category {
         return this.parent;
     }
 
-    public EUpdateItemType getType() {
+    public IUpdateItemType getType() {
         return this.type;
     }
 
-    public void setType(EUpdateItemType type) {
+    public void setType(IUpdateItemType type) {
         this.type = type;
     }
 

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -19,9 +19,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.IUpdateItemType;
+import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -196,7 +198,9 @@ public class UpdateViewerHelper {
                 && ((Node) item.getParent().getNode()).isJoblet()) {
             jobletUpdate = true;
         }
-        if (item.getParent() != null && item.getParent().getType() == EUpdateItemType.JOBLET_CONTEXT) {
+        IUpdateItemType jobletContextType = UpdateManagerProviderDetector.INSTANCE
+                .getUpdateItemType(UpdateManagerHelper.TYPE_JOBLET_CONTEXT);
+        if (jobletContextType != null && item.getParent() != null && jobletContextType.equals(item.getParent().getType())) {
             jobletContext = true;
         }
         // not checked

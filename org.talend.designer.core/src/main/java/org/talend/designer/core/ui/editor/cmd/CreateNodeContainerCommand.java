@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -20,7 +20,9 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IGraphicalNode;
-import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.IUpdateItemType;
+import org.talend.core.model.update.UpdateManagerHelper;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -50,7 +52,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
         this.nodeContainer = nodeContainer;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public boolean canExecute() {
         for (IGraphicalNode currentNode : (List<IGraphicalNode>) process.getGraphicalNodes()) {
@@ -99,7 +101,11 @@ public class CreateNodeContainerCommand extends CreateCommand {
             // provider.updateJobletContext(nodeContainer.getNode());
             // }
             if (nodeContainer.getNode().getComponent().getComponentType() == EComponentType.JOBLET) {
-                process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
+                IUpdateItemType jobletContextType = UpdateManagerProviderDetector.INSTANCE
+                        .getUpdateItemType(UpdateManagerHelper.TYPE_JOBLET_CONTEXT);
+                if (jobletContextType != null) {
+                    process.getUpdateManager().update(jobletContextType);
+                }
             }
         } else {
             String name = provider.getComponentProcess().getName() + " " + provider.getComponentProcess().getVersion();

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -59,7 +59,9 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -114,28 +116,31 @@ public class UpdateNodeParameterCommand extends Command {
                 break;
             }
         }
-        switch (result.getUpdateType()) {
-        case NODE_PROPERTY:
-            updateProperty();
-            break;
-        case NODE_SCHEMA:
-            updateSchema();
-            break;
-        case NODE_QUERY:
-            updateQuery();
-            break;
-        case NODE_SAP_FUNCTION:
-            updateSAPParameters();
-            break;
-        case NODE_SAP_IDOC:
-            updateSAPIDocParameters();
-            break;
-        case NODE_VALIDATION_RULE:
-            updateValidationRule();
-            break;
-        default:
-            return;
-        }
+        IUpdateItemType updateType = result.getUpdateType();
+        if (updateType instanceof EUpdateItemType) {
+            switch ((EUpdateItemType) updateType) {
+            case NODE_PROPERTY:
+                updateProperty();
+                break;
+            case NODE_SCHEMA:
+                updateSchema();
+                break;
+            case NODE_QUERY:
+                updateQuery();
+                break;
+            case NODE_SAP_FUNCTION:
+                updateSAPParameters();
+                break;
+            case NODE_SAP_IDOC:
+                updateSAPIDocParameters();
+                break;
+            case NODE_VALIDATION_RULE:
+                updateValidationRule();
+                break;
+            default:
+                return;
+            }
+        }// else { // for extension
 
         Node node = (Node) updateObject;
         if (node.getProcess() instanceof IProcess2) {
