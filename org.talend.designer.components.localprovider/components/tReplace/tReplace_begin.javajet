@@ -12,24 +12,3 @@ String cid = node.getUniqueName();
 %>
 
 int nb_line_<%=cid%> = 0;
-int nb_line_ok_<%=cid%> = 0;
-String original_<%=cid%> = null;
-String replaceString_<%=cid%> = null;
-
-class StringUtils_<%=cid%> {
-	public boolean isReplaced(String input,String output){
-		boolean isReplaced = false;
-		if(input!=null){
-			if(!input.equals(output)){
-				isReplaced = true;
-			}
-		}else{
-			if(output!=null){
-				isReplaced = true;
-			}
-		}
-		return isReplaced;
-	}
-}
-
-StringUtils_<%=cid%> stringUtil_<%=cid%>=new StringUtils_<%=cid%>();
