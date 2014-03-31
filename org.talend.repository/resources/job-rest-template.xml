@@ -84,7 +84,7 @@
 			<value>routines.system.api.TalendJob</value>
 		</interfaces>
 		<service-properties>
-			<entry key="name" value="${endpoint.jobClassName}" />
+			<entry key="name" value="${endpoint.jobName}" />
 			<entry key="type" value="job" />
 		</service-properties>
 	</service>

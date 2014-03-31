@@ -36,7 +36,7 @@
 #end
 		</interfaces>
 		<service-properties>
-			<entry key="name" value="${job.className}" />
+			<entry key="name" value="${job.name}" />
 			<entry key="type" value="job" />
 #if ($job.isESBJobFactory)
 			<entry key="multithreading" value="true" />
