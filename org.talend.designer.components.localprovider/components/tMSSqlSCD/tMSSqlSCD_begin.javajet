@@ -127,7 +127,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 			}
 <%
 			}
-			List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
+			List<Column> searchingColumns = getSearchColumnList(scdConfiger);
 			int index = 1;
 		    for(Column searchingColumn : searchingColumns) {
 		    	if((index-1)%schemaOptNum==0){

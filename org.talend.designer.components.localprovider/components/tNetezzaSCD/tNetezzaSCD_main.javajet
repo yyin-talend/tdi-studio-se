@@ -75,7 +75,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
              	paramIndex++;
 			}
         }
-        List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
+        List<Column> searchingColumns = getSearchColumnList(scdConfiger);
         %>
         searchingResult_<%=cid%> = searchingStmt_<%=cid%>.executeQuery();
         while(searchingResult_<%=cid%>.next()) {
