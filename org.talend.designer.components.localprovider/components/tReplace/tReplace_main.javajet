@@ -98,22 +98,13 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 						}
 					}
 %>
-	                stringUtil_<%=cid%>.setMatchedValue(original_<%=cid%>,<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>,stringUtil_<%=cid%>.isMatched);
+					replaceString_<%=cid%> = <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>;
 <%
                 }
             }
-%>
-			if(stringUtil_<%=cid%>.isMatched){
-    	        nb_line_ok_<%=cid%>++;
-    	        stringUtil_<%=cid%>.isSameRow = false;
-			}
-<%
         }
     }
     
-%>
-	stringUtil_<%=cid%>.isMatched = true;
-<%    
     
     //advanced mode Replacement
     if(("true").equals(advancedMode)) {
@@ -123,7 +114,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 String replacePat = pattern.get("REPLACE_COLUMN");
                 if(replacePat != null && !("").equals(replacePat)) {
         	        %>
-					original_<%=cid%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>;
+        	        <%if(!("true").equals(simpleMode)) {%>
+						original_<%=cid%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>;
+					<%}%>
 					<%
                 	if(("null").equals(replacePat.toLowerCase())){
 %>
@@ -131,15 +124,10 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 					<%}else{%>
                     <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%> + "");
                     <%}%>                
-	                stringUtil_<%=cid%>.setMatchedValue(original_<%=cid%>,<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>,stringUtil_<%=cid%>.isMatched);
+	                replaceString_<%=cid%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>;
 <%
                 }
             }
-%>
-			if(stringUtil_<%=cid%>.isMatched && stringUtil_<%=cid%>.isSameRow){
-    	        nb_line_ok_<%=cid%>++;
-			}
-<%
         }
     }  
     
@@ -156,6 +144,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     
     
     %>
+	if(stringUtil_<%=cid%>.isReplaced(original_<%=cid%>,replaceString_<%=cid%>)){
+        nb_line_ok_<%=cid%>++;
+	}
     nb_line_<%=cid%>++;
     <%
 }

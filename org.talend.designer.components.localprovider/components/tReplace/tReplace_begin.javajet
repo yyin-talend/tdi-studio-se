@@ -14,20 +14,21 @@ String cid = node.getUniqueName();
 int nb_line_<%=cid%> = 0;
 int nb_line_ok_<%=cid%> = 0;
 String original_<%=cid%> = null;
+String replaceString_<%=cid%> = null;
 
 class StringUtils_<%=cid%> {
-	boolean isMatched = true;
-	boolean isSameRow = true;
-	public void setMatchedValue(String input,String output,boolean isMatched){
+	public boolean isReplaced(String input,String output){
+		boolean isReplaced = false;
 		if(input!=null){
-			if(isMatched && input.equals(output)){
-				this.isMatched = false;
+			if(!input.equals(output)){
+				isReplaced = true;
 			}
 		}else{
-			if(isMatched && output==null){
-				this.isMatched = false;
+			if(output!=null){
+				isReplaced = true;
 			}
 		}
+		return isReplaced;
 	}
 }
 
