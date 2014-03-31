@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -47,12 +47,16 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IDesignerCoreUIService;
 import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.context.view.AbstractContextView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -64,10 +68,11 @@ import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterComma
 import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
-import org.talend.designer.core.ui.editor.update.cmd.UpdateNodePathCommand;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
@@ -160,10 +165,7 @@ public final class UpdateManagerUtils {
     }
 
     public static String addBrackets(String value) {
-        if (value == null || UpdatesConstants.EMPTY.equals(value.trim())) {
-            return UpdatesConstants.EMPTY;
-        }
-        return UpdatesConstants.SPACE + UpdatesConstants.LEFT_BRACKETS + value + UpdatesConstants.RIGHT_BRACKETS;
+        return UpdateManagerHelper.addBrackets(value);
     }
 
     public static List<IProcess2> getOpenedProcess() {
@@ -364,8 +366,10 @@ public final class UpdateManagerUtils {
                                     } else {
                                         process = (IProcess) result.getJob();
                                     }
-
-                                    if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
+                                    IUpdateItemType jobletContextType = UpdateManagerProviderDetector.INSTANCE
+                                            .getUpdateItemType(UpdateManagerHelper.TYPE_JOBLET_CONTEXT);
+                                    if (process != null && jobletContextType != null
+                                            && (jobletContextType.equals(result.getUpdateType()))) {
                                         if ((result.getParameter() instanceof List) && process.getContextManager() != null) {
                                             process.getContextManager().setListContext((List<IContext>) result.getParameter());
                                         }
@@ -407,6 +411,8 @@ public final class UpdateManagerUtils {
                             }
                         }
                     }
+
+                    UpdateManagerProviderDetector.INSTANCE.postUpdate(results);
 
                     // update joblet reference
                     upadateJobletReferenceInfor();
@@ -453,45 +459,58 @@ public final class UpdateManagerUtils {
             // if (!result.isChecked()) {
             // continue;
             // }
-            switch (result.getUpdateType()) {
-            case CONTEXT:
-            case JOBLET_CONTEXT:
-                if (result.isJoblet() && !result.isChecked()) {
-                    continue;
+            IUpdateItemType updateType = result.getUpdateType();
+
+            if (updateType != null) {
+                if (EUpdateItemType.CONTEXT.equals(updateType)) {
+                    if (result.isJoblet() && !result.isChecked()) {
+                        continue;
+                    }
+                    context = true;
+                } else if (EUpdateItemType.JOB_PROPERTY_EXTRA.equals(updateType)
+                        || EUpdateItemType.JOB_PROPERTY_STATS_LOGS.equals(updateType)
+                        || EUpdateItemType.JOB_PROPERTY_HEADERFOOTER.equals(updateType)) {
+                    jobSetting = true;
+                } else if (EUpdateItemType.NODE_PROPERTY.equals(updateType) || EUpdateItemType.NODE_QUERY.equals(updateType)
+                        || EUpdateItemType.NODE_SCHEMA.equals(updateType)) {
+                    componentSettings = true;
+                } else if (EUpdateItemType.RELOAD.equals(updateType) || EUpdateItemType.JOBLET_RENAMED.equals(updateType)
+                        || EUpdateItemType.JOBLET_SCHEMA.equals(updateType)) {
+                    if (result.isJoblet() && !result.isChecked()) {
+                        continue;
+                    }
+                    palette = true;
                 }
-                context = true;
-                break;
-            case JOB_PROPERTY_EXTRA:
-            case JOB_PROPERTY_STATS_LOGS:
-            case JOB_PROPERTY_HEADERFOOTER:
-                jobSetting = true;
-                break;
-            case NODE_PROPERTY:
-            case NODE_QUERY:
-            case NODE_SCHEMA:// what about MR
-                componentSettings = true;
-                break;
-            case RELOAD:
-            case JOBLET_RENAMED:
-            case JOBLET_SCHEMA:
-                if (result.isJoblet() && !result.isChecked()) {
-                    continue;
-                }
-                palette = true;
-                break;
-            default:
-                break;
             }
+        }
+        // recheck from the providers
+        Set<String> viewIds = UpdateManagerProviderDetector.INSTANCE.needRefreshRelatedViews(results);
+        // context
+        if (!context) {
+            context = viewIds.contains(AbstractContextView.CTX_ID_DESIGNER);
         }
         if (context) {
             Contexts.switchToCurContextsView();
         }
+        // jobsetting
+        if (!jobSetting) {
+            jobSetting = viewIds.contains(JobSettingsView.ID);
+        }
         if (jobSetting) {
             JobSettings.switchToCurJobSettingsView();
+        }
+        // component setting
+        if (!componentSettings) {
+            componentSettings = viewIds.contains(ComponentSettingsView.ID);
         }
         if (componentSettings) {
             ComponentSettings.switchToCurComponentSettingsView();
         }
+        // palette
+        // if (!palette) {
+        // need find the palette id to refresh.
+        // palette=viewIds.contains("???");
+        // }
         if (palette) {
             ComponentPaletteUtilities.updatePalette();
         }
@@ -504,41 +523,41 @@ public final class UpdateManagerUtils {
 
         // update
         Command command = null;
-        switch (result.getUpdateType()) {
-        case NODE_PROPERTY:
-        case NODE_SCHEMA:
-        case NODE_QUERY:
-        case NODE_SAP_IDOC:
-        case NODE_SAP_FUNCTION:
-        case NODE_VALIDATION_RULE:
-            command = new UpdateNodeParameterCommand(result);
-            break;
-        case JOB_PROPERTY_EXTRA:
-        case JOB_PROPERTY_STATS_LOGS:
-        case JOB_PROPERTY_HEADERFOOTER:
-        case JOB_PROPERTY_MAPREDUCE:
-            command = new UpdateMainParameterCommand(result);
-            break;
-        case CONTEXT:
-            command = executeContextUpdates(result);
-            break;
-        case CONTEXT_GROUP:
-            command = executeContextGroupUpdates(result);
-            break;
-        case JOBLET_RENAMED:
-        case JOBLET_SCHEMA:
-        case RELOAD:
-            command = executeJobletNodesUpdates(result);
-            break;
-        case JOBLET_CONTEXT:
-            command = new Command() { // have update in checking.
-            };
-            break;
-        case MAP_PATH:
-            command = new UpdateNodePathCommand(result);
-            break;
-        default:
-            break;
+        IUpdateItemType updateType = result.getUpdateType();
+        if (updateType instanceof EUpdateItemType) {
+            switch ((EUpdateItemType) updateType) {
+            case NODE_PROPERTY:
+            case NODE_SCHEMA:
+            case NODE_QUERY:
+            case NODE_SAP_IDOC:
+            case NODE_SAP_FUNCTION:
+            case NODE_VALIDATION_RULE:
+                command = new UpdateNodeParameterCommand(result);
+                break;
+            case JOB_PROPERTY_EXTRA:
+            case JOB_PROPERTY_STATS_LOGS:
+            case JOB_PROPERTY_HEADERFOOTER:
+            case JOB_PROPERTY_MAPREDUCE:
+                command = new UpdateMainParameterCommand(result);
+                break;
+            case CONTEXT:
+                command = executeContextUpdates(result);
+                break;
+            case CONTEXT_GROUP:
+                command = executeContextGroupUpdates(result);
+                break;
+            case JOBLET_RENAMED:
+            case JOBLET_SCHEMA:
+            case RELOAD:
+                command = executeJobletNodesUpdates(result);
+                break;
+            // case JOBLET_CONTEXT:
+            // command = new Command() { // have update in checking.
+            // };
+            // break;
+            default:
+                break;
+            }
         }
         if (command != null) {
             SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
@@ -561,21 +580,13 @@ public final class UpdateManagerUtils {
             subMonitor.worked(1);
 
         }
+        // from extension point
+        UpdateManagerProviderDetector.INSTANCE.doUpdate(monitor, result);
 
     }
 
     private static String getResultTaskInfor(UpdateResult result) {
-        if (result == null) {
-            return UpdatesConstants.EMPTY;
-        }
-        StringBuffer infor = new StringBuffer();
-        infor.append(result.getName());
-        infor.append(UpdatesConstants.LEFT_BRACKETS);
-        infor.append(result.getCategory());
-        infor.append(UpdatesConstants.SEGMENT);
-        infor.append(result.getJobInfor());
-        infor.append(UpdatesConstants.RIGHT_BRACKETS);
-        return infor.toString();
+        return UpdateManagerHelper.getResultTaskInfor(result);
     }
 
     /*

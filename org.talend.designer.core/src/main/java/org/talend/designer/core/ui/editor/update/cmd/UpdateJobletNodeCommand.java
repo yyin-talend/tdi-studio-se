@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -40,6 +40,8 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
@@ -87,52 +89,57 @@ public class UpdateJobletNodeCommand extends Command {
                 updatePropertyChangeEvents(process, evt);
             } else {
                 //
-                switch (result.getUpdateType()) {
-                case JOBLET_RENAMED:
-                    if (!(parameter instanceof List)) {
-                        return;
-                    }
-                    List<Object> params = (List<Object>) parameter;
-                    if (params.size() != 3) {
-                        return;
-                    }
-                    final String oldName = (String) params.get(1);
-                    final String newName = (String) params.get(2);
+                IUpdateItemType updateType = result.getUpdateType();
+                if (updateType instanceof EUpdateItemType) {
+                    switch ((EUpdateItemType) updateType) {
+                    case JOBLET_RENAMED:
+                        if (!(parameter instanceof List)) {
+                            return;
+                        }
+                        List<Object> params = (List<Object>) parameter;
+                        if (params.size() != 3) {
+                            return;
+                        }
+                        final String oldName = (String) params.get(1);
+                        final String newName = (String) params.get(2);
 
-                    updateRenaming(process, oldName, newName);
-                    break;
-                case RELOAD:
-                    List<Node> jobletNodes = (List<Node>) result.getUpdateObject();
-                    if (jobletNodes != null && !jobletNodes.isEmpty()) {
-                        for (Node node : jobletNodes) {
-                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName(),
-                                    ComponentCategory.CATEGORY_4_DI.getName());
-                            if (newComponent == null) {
-                                continue;
-                            }
-                            // node loaded is from loading in the check.
-                            // need to get the instance from process, or this process will be done with wrong instance
-                            // of node.
-                            Node currentNode = getOriginalNodeFromProcess(node);
-                            boolean neesPro = needPropagate(currentNode);
-                            if (currentNode.isJoblet() || currentNode.isMapReduce()) {// maybe no need modify
-                                if (result.isNeedReloadJoblet()) {
+                        updateRenaming(process, oldName, newName);
+                        break;
+                    case RELOAD:
+                        List<Node> jobletNodes = (List<Node>) result.getUpdateObject();
+                        if (jobletNodes != null && !jobletNodes.isEmpty()) {
+                            for (Node node : jobletNodes) {
+                                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(
+                                        node.getComponent().getName(), ComponentCategory.CATEGORY_4_DI.getName());
+                                if (newComponent == null) {
+                                    continue;
+                                }
+                                // node loaded is from loading in the check.
+                                // need to get the instance from process, or this process will be done with wrong
+                                // instance
+                                // of node.
+                                Node currentNode = getOriginalNodeFromProcess(node);
+                                boolean neesPro = needPropagate(currentNode);
+                                if (currentNode.isJoblet() || currentNode.isMapReduce()) {// maybe no need modify
+                                    if (result.isNeedReloadJoblet()) {
+                                        reloadNode(currentNode, newComponent);
+                                    }
+                                    ((JobletContainer) currentNode.getNodeContainer()).updateJobletNodes(true);
+                                } else {
                                     reloadNode(currentNode, newComponent);
                                 }
-                                ((JobletContainer) currentNode.getNodeContainer()).updateJobletNodes(true);
-                            } else {
-                                reloadNode(currentNode, newComponent);
+                                propagate(currentNode, neesPro);
                             }
-                            propagate(currentNode, neesPro);
+                            process.checkProcess();
                         }
-                        process.checkProcess();
+                        break;
+                    case JOBLET_SCHEMA:
+                        updateSchema(process, (Node) result.getUpdateObject());
+                        break;
+                    default:
                     }
-                    break;
-                case JOBLET_SCHEMA:
-                    updateSchema(process, (Node) result.getUpdateObject());
-                    break;
-                default:
-                }
+                } // else { // for extension
+
             }
         }
     }

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -25,10 +25,14 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.service.IEBCDICProviderService;
 import org.talend.core.service.IMRProcessService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -52,120 +56,122 @@ public class UpdateCheckResult extends UpdateResult {
         super(item);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     public String getName() {
-        String displayName = getUpdateType().getDisplayName();
-        switch (getUpdateType()) {
-        case NODE_SCHEMA:
-            if (getResultType() == EUpdateResult.RENAME) {
-                List<Object> param = (List<Object>) getParameter();
-                String[] oldSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(1));
-                String[] newSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(2));
+        IUpdateItemType updateType = getUpdateType();
+        String displayName = updateType.getDisplayLabel();
+        if (updateType instanceof EUpdateItemType) {
+            switch ((EUpdateItemType) updateType) {
+            case NODE_SCHEMA:
+                if (getResultType() == EUpdateResult.RENAME) {
+                    List<Object> param = (List<Object>) getParameter();
+                    String[] oldSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(1));
+                    String[] newSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(2));
 
-                String display = getRenamedDisplay(oldSourceIdAndChildName[1], newSourceIdAndChildName[1]);
-                if (display != null) {
-                    displayName = display;
-                }
-            } else if (getResultType() == EUpdateResult.DELETE) { // table delete by deselect
-                List<Object> param = (List<Object>) getParameter();
-                String tableDeleted = (String) param.get(0);
-                EUpdateResult status = (EUpdateResult) param.get(1);
-                String display = getDeleteOrReloadDisplay(tableDeleted, status);
-                if (display != null) {
-                    displayName = display;
-                }
-            } else if (getResultType() == EUpdateResult.RELOAD) { // table reload by deselect and reselect
-                List<Object> param = (List<Object>) getParameter();
-                String tableReload = (String) param.get(0);
-                EUpdateResult status = (EUpdateResult) param.get(1);
-                String display = getDeleteOrReloadDisplay(tableReload, status);
-                if (display != null) {
-                    displayName = display;
-                }
-            } else {
-                if (getUpdateObject() instanceof INode && getParameter() instanceof List && PluginChecker.isEBCDICPluginLoaded()) {
-                    IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
-                            IEBCDICProviderService.class);
-                    if (service != null && service.isEbcdicNode((INode) getUpdateObject())) {
-                        List<Object> paramObjs = (List<Object>) getParameter();
-                        if (paramObjs.size() >= 2) {
-                            Object schemaName = paramObjs.get(1);
-                            if (schemaName instanceof String) {
-                                displayName = displayName + UpdateManagerUtils.addBrackets((String) schemaName);
+                    String display = UpdateManagerHelper
+                            .getRenamedDisplay(oldSourceIdAndChildName[1], newSourceIdAndChildName[1]);
+                    if (display != null) {
+                        displayName = display;
+                    }
+                } else if (getResultType() == EUpdateResult.DELETE) { // table delete by deselect
+                    List<Object> param = (List<Object>) getParameter();
+                    String tableDeleted = (String) param.get(0);
+                    EUpdateResult status = (EUpdateResult) param.get(1);
+                    String display = getDeleteOrReloadDisplay(tableDeleted, status);
+                    if (display != null) {
+                        displayName = display;
+                    }
+                } else if (getResultType() == EUpdateResult.RELOAD) { // table reload by deselect and reselect
+                    List<Object> param = (List<Object>) getParameter();
+                    String tableReload = (String) param.get(0);
+                    EUpdateResult status = (EUpdateResult) param.get(1);
+                    String display = getDeleteOrReloadDisplay(tableReload, status);
+                    if (display != null) {
+                        displayName = display;
+                    }
+                } else {
+                    if (getUpdateObject() instanceof INode && getParameter() instanceof List
+                            && PluginChecker.isEBCDICPluginLoaded()) {
+                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                                IEBCDICProviderService.class);
+                        if (service != null && service.isEbcdicNode((INode) getUpdateObject())) {
+                            List<Object> paramObjs = (List<Object>) getParameter();
+                            if (paramObjs.size() >= 2) {
+                                Object schemaName = paramObjs.get(1);
+                                if (schemaName instanceof String) {
+                                    displayName = displayName + UpdateManagerUtils.addBrackets((String) schemaName);
+                                }
                             }
                         }
                     }
                 }
-            }
-            break;
-        case NODE_PROPERTY:
-        case NODE_QUERY:
-        case JOBLET_SCHEMA:
-        case NODE_VALIDATION_RULE:
-            break;
-        case JOB_PROPERTY_EXTRA:
-            displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.EXTRA.getTitle());
-            break;
-        case JOB_PROPERTY_STATS_LOGS:
-            displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
-            break;
-        case JOB_PROPERTY_HEADERFOOTER:
-            displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.HEADERFOOTER.getTitle());
-            break;
-        case CONTEXT_GROUP:
-            if (getUpdateObject() != null && getUpdateObject() instanceof IContext) {
-                displayName = ((IContext) getUpdateObject()).getName();
-            }
-            break;
-        case CONTEXT:
-        case JOBLET_CONTEXT: {
-            String display = null;
-            switch (getResultType()) {
-            case RENAME:
-                List<Object> param = (List<Object>) getParameter();
-                display = getRenamedDisplay((String) param.get(1), (String) param.get(2));
                 break;
-            default:
-                if (getUpdateObject() instanceof Collection) {
-                    display = getCollectionsDisplay(getUpdateObject(), false);
+            case NODE_PROPERTY:
+            case NODE_QUERY:
+            case JOBLET_SCHEMA:
+            case NODE_VALIDATION_RULE:
+                break;
+            case JOB_PROPERTY_EXTRA:
+                displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.EXTRA.getTitle());
+                break;
+            case JOB_PROPERTY_STATS_LOGS:
+                displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
+                break;
+            case JOB_PROPERTY_HEADERFOOTER:
+                displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.HEADERFOOTER.getTitle());
+                break;
+            case CONTEXT_GROUP:
+                if (getUpdateObject() != null && getUpdateObject() instanceof IContext) {
+                    displayName = ((IContext) getUpdateObject()).getName();
                 }
                 break;
-            }
-
-            if (display != null) {
-                displayName = display;
-            }
-            break;
-        }
-        case JOBLET_RENAMED: {
-            List<Object> param = (List<Object>) getParameter();
-            String display = getRenamedDisplay((String) param.get(1), (String) param.get(2));
-            if (display != null) {
-                displayName = display;
-            }
-            break;
-        }
-        case RELOAD:
-            if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
-                PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
-                // reload all compoennts.
-                if (event.getSource() != null && !(event.getSource() instanceof IProcess)) {
-                    displayName = getUpdateType().getDisplayName();
+            case CONTEXT:
+            // case JOBLET_CONTEXT:
+            {
+                String display = null;
+                switch (getResultType()) {
+                case RENAME:
+                    List<Object> param = (List<Object>) getParameter();
+                    display = UpdateManagerHelper.getRenamedDisplay((String) param.get(1), (String) param.get(2));
+                    break;
+                default:
+                    if (getUpdateObject() instanceof Collection) {
+                        display = UpdateManagerHelper.getCollectionsDisplay(getUpdateObject(), false);
+                    }
                     break;
                 }
+
+                if (display != null) {
+                    displayName = display;
+                }
+                break;
             }
-            break;
-        default:
+            case JOBLET_RENAMED: {
+                List<Object> param = (List<Object>) getParameter();
+                String display = UpdateManagerHelper.getRenamedDisplay((String) param.get(1), (String) param.get(2));
+                if (display != null) {
+                    displayName = display;
+                }
+                break;
+            }
+            case RELOAD:
+                if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
+                    PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
+                    // reload all compoennts.
+                    if (event.getSource() != null && !(event.getSource() instanceof IProcess)) {
+                        displayName = updateType.getDisplayLabel();
+                        break;
+                    }
+                }
+                break;
+            default:
+            }
+            return displayName;
+        } else {
+            return UpdateManagerProviderDetector.INSTANCE.getResultName(this);
         }
 
-        return displayName;
-    }
-
-    private String getRenamedDisplay(final String oldName, final String newName) {
-        if (oldName == null || newName == null) {
-            return null;
-        }
-        return oldName + UpdatesConstants.RENAME_SIGN + newName;
     }
 
     private String getDeleteOrReloadDisplay(final String tableName, EUpdateResult status) {
@@ -175,123 +181,98 @@ public class UpdateCheckResult extends UpdateResult {
         return tableName + UpdatesConstants.RENAME_SIGN + status.toString();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private String getCollectionsDisplay(Object object, boolean all) {
-        if (object == null) {
-            return null;
-        }
-        String displayName = UpdatesConstants.EMPTY;
-        if (object instanceof Collection) {
-            for (Object obj : (Collection) object) {
-                String tmp = null;
-                if (obj instanceof String) {
-                    tmp = (String) obj;
-                } else if (obj instanceof INode) {
-                    INode node = (INode) obj;
-                    if (all && !node.getLabel().equals(node.getUniqueName())) {
-                        tmp = node.getLabel() + UpdateManagerUtils.addBrackets(node.getUniqueName());
-                    } else {
-                        tmp = node.getLabel();
-                    }
-                }
-                if (tmp != null) {
-                    displayName = displayName + UpdatesConstants.SEGMENT + tmp;
-                }
-            }
-            if (displayName.startsWith(UpdatesConstants.SEGMENT)) {
-                displayName = displayName.substring(1);
-            }
-        }
-        return displayName;
-    }
-
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getCategory() {
         String category = null;
-        switch (getUpdateType()) {
-        case NODE_PROPERTY:
-        case NODE_SCHEMA:
-        case NODE_QUERY:
-        case NODE_VALIDATION_RULE:
-        case JOBLET_SCHEMA:
-            if (getUpdateObject() != null) {
-                if (getUpdateObject() instanceof Node) {
-                    Node node = (Node) getUpdateObject();
-                    if (node.getUniqueName().equals(node.getLabel())) {
-                        category = node.getUniqueName();
-                    } else {
-                        category = node.getLabel() + UpdateManagerUtils.addBrackets(node.getUniqueName());
-                    }
-                }
-                if (getUpdateObject() instanceof NodeType) {
-                    NodeType node = (NodeType) getUpdateObject();
-                    String uniqueName = null;
-                    for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
-                        if (EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
-                            uniqueName = param.getValue();
-                            break;
+        if (getUpdateType() instanceof EUpdateItemType) {
+            switch ((EUpdateItemType) getUpdateType()) {
+            case NODE_PROPERTY:
+            case NODE_SCHEMA:
+            case NODE_QUERY:
+            case NODE_VALIDATION_RULE:
+            case JOBLET_SCHEMA:
+                if (getUpdateObject() != null) {
+                    if (getUpdateObject() instanceof Node) {
+                        Node node = (Node) getUpdateObject();
+                        if (node.getUniqueName().equals(node.getLabel())) {
+                            category = node.getUniqueName();
+                        } else {
+                            category = node.getLabel() + UpdateManagerUtils.addBrackets(node.getUniqueName());
                         }
+                    }
+                    if (getUpdateObject() instanceof NodeType) {
+                        NodeType node = (NodeType) getUpdateObject();
+                        String uniqueName = null;
+                        for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                            if (EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
+                                uniqueName = param.getValue();
+                                break;
+                            }
 
-                    }
-                    if (uniqueName != null) {
-                        category = uniqueName;
-                    }
-                }
-            }
-            break;
-        case JOB_PROPERTY_EXTRA:
-        case JOB_PROPERTY_STATS_LOGS:
-        case JOB_PROPERTY_HEADERFOOTER:
-        case JOB_PROPERTY_MAPREDUCE:
-            boolean isJoblet = false;
-            boolean isMR = false;
-            if (getUpdateObject() != null) {
-                if (getUpdateObject() instanceof org.talend.designer.core.ui.editor.process.Process) {
-                    if (AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) getUpdateObject())) {
-                        isJoblet = true;
-                    } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-                        IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                                IMRProcessService.class);
-                        org.talend.core.model.properties.Item item = ((org.talend.designer.core.ui.editor.process.Process) getUpdateObject())
-                                .getProperty().getItem();
-                        isMR = mrProcessService.isMapReduceItem(item);
+                        }
+                        if (uniqueName != null) {
+                            category = uniqueName;
+                        }
                     }
                 }
-            }
-            if (isMR) {
-                category = JobSettingsView.VIEW_NAME_MR;// mr
-            } else if (isJoblet) {
-                category = JobSettingsView.VIEW_NAME_JOBLET; // joblet
-            } else {
-                category = JobSettingsView.getViewNameLable();
-            }
-            break;
-        case CONTEXT:
-        case JOBLET_CONTEXT:
-            category = UpdatesConstants.CONTEXT;
-            break;
-        case CONTEXT_GROUP:
-            category = UpdatesConstants.CONTEXT_GROUP;
-            break;
-        case JOBLET_RENAMED:
-        case RELOAD:
-            if (getUpdateObject() != null && getUpdateObject() instanceof List) {
-                String display = getCollectionsDisplay(getUpdateObject(), true);
-                if (display != null) {
-                    category = display;
+                break;
+            case JOB_PROPERTY_EXTRA:
+            case JOB_PROPERTY_STATS_LOGS:
+            case JOB_PROPERTY_HEADERFOOTER:
+            case JOB_PROPERTY_MAPREDUCE:
+                boolean isJoblet = false;
+                boolean isMR = false;
+                if (getUpdateObject() != null) {
+                    if (getUpdateObject() instanceof org.talend.designer.core.ui.editor.process.Process) {
+                        if (AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) getUpdateObject())) {
+                            isJoblet = true;
+                        } else if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
+                            IMRProcessService mrProcessService = (IMRProcessService) GlobalServiceRegister.getDefault()
+                                    .getService(IMRProcessService.class);
+                            org.talend.core.model.properties.Item item = ((org.talend.designer.core.ui.editor.process.Process) getUpdateObject())
+                                    .getProperty().getItem();
+                            isMR = mrProcessService.isMapReduceItem(item);
+                        }
+                    }
                 }
-            } else if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
-                PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
-                // reload all compoennts.
-                if (event.getSource() != null && !(event.getSource() instanceof IProcess)) {
-                    category = UpdatesConstants.COMPONENT;
-                    break;
+                if (isMR) {
+                    category = JobSettingsView.VIEW_NAME_MR;// mr
+                } else if (isJoblet) {
+                    category = JobSettingsView.VIEW_NAME_JOBLET; // joblet
+                } else {
+                    category = JobSettingsView.getViewNameLable();
                 }
-            } else {
-                category = UpdatesConstants.JOBLET;
+                break;
+            case CONTEXT:
+                // case JOBLET_CONTEXT:
+                category = UpdatesConstants.CONTEXT;
+                break;
+            case CONTEXT_GROUP:
+                category = UpdatesConstants.CONTEXT_GROUP;
+                break;
+            case JOBLET_RENAMED:
+            case RELOAD:
+                if (getUpdateObject() != null && getUpdateObject() instanceof List) {
+                    String display = UpdateManagerHelper.getCollectionsDisplay(getUpdateObject(), true);
+                    if (display != null) {
+                        category = display;
+                    }
+                } else if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
+                    PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
+                    // reload all compoennts.
+                    if (event.getSource() != null && !(event.getSource() instanceof IProcess)) {
+                        category = UpdatesConstants.COMPONENT;
+                        break;
+                    }
+                } else {
+                    category = UpdatesConstants.JOBLET;
+                }
+                break;
+            default:
             }
-            break;
-        default:
+        } else {
+            category = UpdateManagerProviderDetector.INSTANCE.getDisplayCategory(this);
         }
 
         return category == null ? UpdatesConstants.EMPTY : category;
@@ -302,6 +283,7 @@ public class UpdateCheckResult extends UpdateResult {
         return this.jobInfor;
     }
 
+    @Override
     protected void updateJobInfor() {
         if (getJob() != null) {
             String jobInfor = null;

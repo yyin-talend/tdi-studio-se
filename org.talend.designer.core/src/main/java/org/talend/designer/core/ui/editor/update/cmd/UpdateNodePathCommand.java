@@ -21,6 +21,8 @@ import org.talend.core.model.process.IGEFProcess;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.service.IDesignerCoreUIService;
@@ -48,7 +50,8 @@ public class UpdateNodePathCommand extends Command {
      */
     @Override
     public void execute() {
-        if (result == null || result.getUpdateType() == null) {
+        IUpdateItemType updateType = result.getUpdateType();
+        if (result == null || updateType == null) {
             return;
         }
         Object updateObject = result.getUpdateObject();
@@ -66,38 +69,40 @@ public class UpdateNodePathCommand extends Command {
             }
         }
         Node node = (Node) updateObject;
-        switch (result.getUpdateType()) {
-        case MAP_PATH:
-            Object parameter = result.getParameter();
-            if (!(parameter instanceof List)) {
-                return;
-            }
-            List<Object> params = (List<Object>) parameter;
-            if (params.size() != 3) {
-                return;
-            }
-            IElementParameter param = (IElementParameter) params.get(0);
-            if (param == null) {
-                return;
-            }
-            String oldPath = (String) params.get(1);
-            String newPath = (String) params.get(2);
-            String relativeNewPath = new Path(newPath).removeFirstSegments(2).removeFileExtension().toPortableString();
-            String fullOldPath = new Path(oldPath).removeFileExtension().toPortableString();
-            String relativeOldPath = new Path(oldPath).removeFirstSegments(2).removeFileExtension().toPortableString();
+        if (updateType instanceof EUpdateItemType) {
+            switch ((EUpdateItemType) updateType) {
+            case MAP_PATH:
+                Object parameter = result.getParameter();
+                if (!(parameter instanceof List)) {
+                    return;
+                }
+                List<Object> params = (List<Object>) parameter;
+                if (params.size() != 3) {
+                    return;
+                }
+                IElementParameter param = (IElementParameter) params.get(0);
+                if (param == null) {
+                    return;
+                }
+                String oldPath = (String) params.get(1);
+                String newPath = (String) params.get(2);
+                String relativeNewPath = new Path(newPath).removeFirstSegments(2).removeFileExtension().toPortableString();
+                String fullOldPath = new Path(oldPath).removeFileExtension().toPortableString();
+                String relativeOldPath = new Path(oldPath).removeFirstSegments(2).removeFileExtension().toPortableString();
 
-            Object value = TalendTextUtils.removeQuotes(String.valueOf(param.getValue()));
-            if (!fullOldPath.equals(value) && !relativeOldPath.equals(value)) {
-                return;
+                Object value = TalendTextUtils.removeQuotes(String.valueOf(param.getValue()));
+                if (!fullOldPath.equals(value) && !relativeOldPath.equals(value)) {
+                    return;
+                }
+                if (fullOldPath.equals(value)) {
+                    String newValue = TalendTextUtils.addQuotes(new Path(newPath).removeFileExtension().toPortableString());
+                    param.setValue(newValue);
+                } else if (relativeOldPath.equals(value)) {
+                    param.setValue(TalendTextUtils.addQuotes(relativeNewPath));
+                }
+                break;
+            default:
             }
-            if (fullOldPath.equals(value)) {
-                String newValue = TalendTextUtils.addQuotes(new Path(newPath).removeFileExtension().toPortableString());
-                param.setValue(newValue);
-            } else if (relativeOldPath.equals(value)) {
-                param.setValue(TalendTextUtils.addQuotes(relativeNewPath));
-            }
-            break;
-        default:
         }
         if (node.getProcess() instanceof IProcess2) {
             PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
