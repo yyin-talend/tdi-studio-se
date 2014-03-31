@@ -12,23 +12,3 @@ String cid = node.getUniqueName();
 %>
 
 int nb_line_<%=cid%> = 0;
-int nb_line_ok_<%=cid%> = 0;
-String original_<%=cid%> = null;
-
-class StringUtils_<%=cid%> {
-	boolean isMatched = true;
-	boolean isSameRow = true;
-	public void setMatchedValue(String input,String output,boolean isMatched){
-		if(input!=null){
-			if(isMatched && input.equals(output)){
-				this.isMatched = false;
-			}
-		}else{
-			if(isMatched && output==null){
-				this.isMatched = false;
-			}
-		}
-	}
-}
-
-StringUtils_<%=cid%> stringUtil_<%=cid%>=new StringUtils_<%=cid%>();

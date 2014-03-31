@@ -57,9 +57,6 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 						String searchStr_<%=cid %>_<%=i %> = <%=searchStr %> + "";
 <%
 					}
-%>
-					original_<%=cid%> = <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>;
-<%
 					if(("true").equals(substitution.get("USE_GLOB"))){
 %>
                     	searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
@@ -97,23 +94,12 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 <%
 						}
 					}
-%>
-	                stringUtil_<%=cid%>.setMatchedValue(original_<%=cid%>,<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>,stringUtil_<%=cid%>.isMatched);
-<%
                 }
             }
-%>
-			if(stringUtil_<%=cid%>.isMatched){
-    	        nb_line_ok_<%=cid%>++;
-    	        stringUtil_<%=cid%>.isSameRow = false;
-			}
-<%
         }
     }
     
-%>
-	stringUtil_<%=cid%>.isMatched = true;
-<%    
+    
     
     //advanced mode Replacement
     if(("true").equals(advancedMode)) {
@@ -122,24 +108,15 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             for(Map<String,String> pattern:patterns){
                 String replacePat = pattern.get("REPLACE_COLUMN");
                 if(replacePat != null && !("").equals(replacePat)) {
-        	        %>
-					original_<%=cid%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>;
-					<%
                 	if(("null").equals(replacePat.toLowerCase())){
 %>
 					<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%>);
 					<%}else{%>
                     <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%> + "");
                     <%}%>                
-	                stringUtil_<%=cid%>.setMatchedValue(original_<%=cid%>,<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>,stringUtil_<%=cid%>.isMatched);
 <%
                 }
             }
-%>
-			if(stringUtil_<%=cid%>.isMatched && stringUtil_<%=cid%>.isSameRow){
-    	        nb_line_ok_<%=cid%>++;
-			}
-<%
         }
     }  
     
