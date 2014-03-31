@@ -77,13 +77,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
              	paramIndex++;
              }
         }
-        List<Column> searchingColumns = getSearchColumnList(scdConfiger);
+        List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
         %>
         searchingResult_<%=cid%> = searchingStmt_<%=cid%>.executeQuery();
         while(searchingResult_<%=cid%>.next()) {
             lookUpValue_<%=cid%> = new SCDStruct_<%=cid%>();
             <%
-            int index = 1;
+            int index = sourceKeys.size() + 1;
             for(Column searchingColumn : searchingColumns) {
                 String generatedType = searchingColumn.getJavaType();
                 if(("byte[]").equals(generatedType)) {

@@ -743,7 +743,34 @@ public class CLASS {
         }
         return insertionColumnList;
     }
-    
+    public List<Column> getSearchingColumnList(SCDConfiger scdConfiger) {
+        List<Column> columnList = new ArrayList<Column>();
+        if(scdConfiger.isEnableType1()) {
+            List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+            for(Column type1Attribute : type1Attributes) {
+                columnList.add(type1Attribute);
+            }
+        }
+        if(scdConfiger.isEnableType2()) {
+            List<Column> type2Attributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+            for(Column type2Attribute : type2Attributes) {
+                columnList.add(type2Attribute);
+            }
+        }
+        if(scdConfiger.isEnableType3()) {
+            List<DimensionType3Attribute> type3Attributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
+            for(DimensionType3Attribute type3Attribute : type3Attributes) {
+                columnList.add(type3Attribute.getCurrentColumn());
+                columnList.add(type3Attribute.getPrevColumn());
+            }
+        }
+        if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType2Configer().isEnableVersion()) {
+            String versionField = scdConfiger.getDimensionType2Configer().getVersionField();
+            String versionFieldType = scdConfiger.getDimensionType2Configer().getVersionFieldType();
+            columnList.add(getColumn(versionField, versionFieldType));
+        }        
+        return columnList;
+    }
     public List<Column> getSearchColumnList(SCDConfiger scdConfiger) {
         List<Column> columnList = new ArrayList<Column>();
         List<Column> sourceKeys = scdConfiger.getSourceKeys();
