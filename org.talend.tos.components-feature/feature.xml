@@ -181,7 +181,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.talend.designer.xmlmap"
          download-size="0"
@@ -194,7 +194,7 @@
          download-size="0"
          install-size="0"
          version="1.6.2.v201012040545"
-         unpack="false" />
+         unpack="false"/>
 
    <plugin
          id="org.talend.designer.webservice"
@@ -246,5 +246,12 @@
          install-size="0"
          version="0.0.0"/>
 
+   <plugin
+         id="org.talend.designer.gefabstractmap.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
 
 </feature>
