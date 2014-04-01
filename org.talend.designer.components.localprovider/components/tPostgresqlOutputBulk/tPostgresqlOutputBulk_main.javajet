@@ -76,7 +76,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	               		String temp_<%=cid %> = row_<%=cid %>[i_<%=cid %>];
 	               		
 	    		        if(i_<%=cid %> != 0) {
-    	    	       		out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+    	    	       		out<%=cid %>.write(OUT_DELIM_<%=cid %>.toString());
         	        	}
         	        	if(!<%=nullString %>.equals(temp_<%=cid %>)){
         	        	  temp_<%=cid %> = temp_<%=cid %>.replaceAll("\\\\","\\\\\\\\");
@@ -88,7 +88,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 					for (int i_<%=cid %> = 0; i_<%=cid %> < row_<%=cid %>.length; i_<%=cid %>++) {
 						if(i_<%=cid %> != 0) {
-                        	out<%=cid%>.write(OUT_DELIM_<%=cid %>);
+                        	out<%=cid%>.write(OUT_DELIM_<%=cid %>.toString());
                         }
                 		String temp_<%=cid %> = row_<%=cid %>[i_<%=cid %>];
                         if(!<%=nullString%>.equals(temp_<%=cid %>)) {

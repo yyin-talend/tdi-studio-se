@@ -109,7 +109,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
 	}
 	if (("DELIMITED").equals(fieldLayout)) {
 %>
-	bulkSQL_<%=cid%> += "DELIMITER '" + <%=fieldTerminator%> + "' ";
+	bulkSQL_<%=cid%> += "DELIMITER '" + (<%=fieldTerminator%>).charAt(0) + "' ";
 <%
 	}
 	else {

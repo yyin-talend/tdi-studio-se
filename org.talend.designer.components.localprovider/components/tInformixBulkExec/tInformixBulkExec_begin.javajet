@@ -113,12 +113,12 @@ if(columnList != null && columnList.size() > 0) {
 		String fileName_<%=cid%> = <%=file%>;
 		String cmdFile_<%=cid%> = fileName_<%=cid%> + ".cmd";
 		String logFile_<%=cid%> = fileName_<%=cid%> + ".log";
-		
+		Character field_separator_<%=cid %> = (<%=field_separator%>).charAt(0);
  		java.io.BufferedWriter bw_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(cmdFile_<%=cid%>));
     	java.io.PrintWriter pw_<%=cid%> = new java.io.PrintWriter(bw_<%=cid%> ,false) ;
     	//file "c:\informix_bulk.txt" delimiter "|" 7 ;insert into feature9999;
     	pw_<%=cid%>.print("FILE \"" + <%=file%> + "\"" );
-    	pw_<%=cid%>.print(" DELIMITER \"" + <%=field_separator%> + "\"");
+    	pw_<%=cid%>.print(" DELIMITER \"" + field_separator_<%=cid %> + "\"");
     	pw_<%=cid%>.println(" " + <%=columnList.size()%> +" ;" );
 <% 
     if(("INSERT").equals(action)) {

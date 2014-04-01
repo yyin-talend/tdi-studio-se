@@ -56,10 +56,11 @@ String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 String maxerrors = ElementParameterParser.getValue(node, "__MAXERRORS__");
 String skiprows = ElementParameterParser.getValue(node, "__SKIPROWS__");
-%> 
+%>
+	Character OUT_DELIM_<%=cid %> = (<%=fieldSeparator%>).charAt(0); 
 	bulkSQL_<%=cid%> += "INSERT INTO " + <%= table %> + " "  
             + " SELECT * FROM EXTERNAL '"+ <%= file %> + "'"
-            + " USING (DELIM '"+<%= fieldSeparator %>+"' REMOTESOURCE 'JDBC' "
+            + " USING (DELIM '"+OUT_DELIM_<%=cid %>+"' REMOTESOURCE 'JDBC' "
 			+ " DATESTYLE '"+<%= dateFormat %>+"' DATEDELIM '"+<%= dateDelim %>+"' "
 			+ " TIMESTYLE '<%= timeFormat %>' TIMEDELIM '"+<%= timeDelim %>+"' "
 			<%if(!"UN_DEFINED".equals(escapeChar)){
