@@ -14,7 +14,6 @@ package org.talend.designer.core.model.process;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -351,9 +350,10 @@ public class ConnectionManager {
     }
 
     public static boolean canConnectToSource(INode oldSource, INode newSource, INode target, EConnectionType lineStyle,
-            String connectorName, String connectionName){
+            String connectorName, String connectionName) {
         return canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName, false);
     }
+
     /**
      * Will return true if the connection can connect or not between source & target.
      * 
@@ -404,18 +404,19 @@ public class ConnectionManager {
         // }
         // }
         // }
-        
-        //check extensionPoints
-        if(!isNewComponent){
+
+        // check extensionPoints
+        if (!isNewComponent) {
             Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
-            for(IConnectionValidator validator: connectionValidators){
-                boolean canConnectToSource = validator.canConnectToSource(oldSource, newSource, target, lineStyle, connectorName, connectionName);
-                if(!canConnectToSource){
+            for (IConnectionValidator validator : connectionValidators) {
+                boolean canConnectToSource = validator.canConnectToSource(oldSource, newSource, target, lineStyle, connectorName,
+                        connectionName);
+                if (!canConnectToSource) {
                     return false;
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -444,6 +445,9 @@ public class ConnectionManager {
         if ((source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || source
                 .getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
                 && newTarget.getDesignSubjobStartNode() != newTarget && !((Node) newTarget).isJoblet()) {
+            return false;
+        }
+        if (newTarget.getJobletNode() != null) {
             return false;
         }
         if (PluginChecker.isJobLetPluginLoaded()) {
@@ -565,15 +569,16 @@ public class ConnectionManager {
         // }
         // }
 
-        //check extensionPoints
+        // check extensionPoints
         Set<IConnectionValidator> connectionValidators = ConnectionValidatorManager.getConnectionValidators();
-        for(IConnectionValidator validator: connectionValidators){
-            boolean canConnectToTarget = validator.canConnectToTarget(source, oldTarget, newTarget, lineStyle, connectorName, connectionName);
-            if(!canConnectToTarget){
+        for (IConnectionValidator validator : connectionValidators) {
+            boolean canConnectToTarget = validator.canConnectToTarget(source, oldTarget, newTarget, lineStyle, connectorName,
+                    connectionName);
+            if (!canConnectToTarget) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -717,7 +722,7 @@ public class ConnectionManager {
         boolean canRename = true;
         if (connType.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             if (!(source.getProcess().checkValidConnectionName(connectionName)) || KeywordsValidator.isKeyword(connectionName)
-                    || "ErrorReject".equals(connectionName) || "context".equals(connectionName)) {//$NON-NLS-N$ //$NON-NLS-N$
+                    || "ErrorReject".equals(connectionName) || "context".equals(connectionName)) {
                 canRename = false;
             }
         } else if (connType.equals(EConnectionType.TABLE)) {
@@ -727,8 +732,8 @@ public class ConnectionManager {
                 canRename = checkConnectionValue(connectionName);
                 if (canRename) {
                     List<? extends IConnection> cons = target.getIncomingConnections();
-                    for (Iterator iter = cons.iterator(); iter.hasNext();) {
-                        Connection conn = (Connection) iter.next();
+                    for (Object element : cons) {
+                        Connection conn = (Connection) element;
                         if (conn.getName().equals(connectionName)) {
                             canRename = false;
                             break;
