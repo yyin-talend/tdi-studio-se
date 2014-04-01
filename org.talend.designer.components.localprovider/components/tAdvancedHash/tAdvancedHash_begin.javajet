@@ -11,6 +11,8 @@
 		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.process.IMatchingMode
 		org.talend.core.model.process.IDataConnection
+		org.talend.designer.mapper.external.data.ExternalMapperData
+		org.talend.designer.mapper.external.data.ExternalMapperTable
 	"
 %>
 
@@ -41,9 +43,24 @@
 				String matchingModeStr = null;
 				boolean bSortOnDisk = "true".equals(ElementParameterParser.getValue(node, "__SORT_ON_DISK__")); 
 				
+				boolean isOneOfReloadLookupMode = false;
+				
 			    if (validTarget instanceof IHashableInputConnections){
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
 					hashConfiguration = target.getHashConfiguration(connection.getName());
+					
+					if("tMap".equals(validTarget.getComponent().getName())) {
+						ExternalMapperData externalData = (ExternalMapperData) (validTarget.getExternalData());
+        				List<ExternalMapperTable> inputTables = externalData.getInputTables();
+						for (ExternalMapperTable inputTable : inputTables) {
+                			if (inputTable.getName().equals(connection.getName())) {
+                				boolean isReloadLookupMode = org.talend.designer.mapper.model.table.LOOKUP_MODE.RELOAD.name().equals(inputTable.getLookupMode());
+    							boolean isCacheOrReloadLookupMode = org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(inputTable.getLookupMode());
+    							isOneOfReloadLookupMode = isReloadLookupMode || isCacheOrReloadLookupMode;
+                				break;
+                			}
+            			}
+					}
 				} else{
 				    List<java.util.Map<String, String>> listBlockings = (List<java.util.Map<String, String>>)ElementParameterParser.getObjectValue(node, "__BLOCKING_DEFINITION__");
 				  	matchingModeStr = (listBlockings == null || listBlockings.size() == 0) ? "ALL_ROWS" : "ALL_MATCHES";
@@ -86,7 +103,7 @@
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   			
-			   <%if (includeParallelComps && !(hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk)) {%>
+			   <%if (includeParallelComps && !(hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk) && !isOneOfReloadLookupMode) {%>
 			   synchronized(this) {
 			   		try {  
 			   		if (globalMap.get("tHash_Lookup_<%=connectionName%>") == null) {
