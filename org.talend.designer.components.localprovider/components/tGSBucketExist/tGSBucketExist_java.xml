@@ -64,7 +64,7 @@
 
 	    <PARAMETER
 	      	NAME="SECRET_KEY"
-	      	FIELD="TEXT"
+	      	FIELD="PASSWORD"
 	      	NUM_ROW="20"
 	      	REQUIRED="true"
 	      	GROUP="CONNECTION_CONFIG"
