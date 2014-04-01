@@ -1741,7 +1741,7 @@ public class CLASS {
 				if (counter < columnList.size()){
 					copyBulkSQL.append(
 					//convertDelim(fieldDelimiter)
-					fieldDelimiter
+					"\"+field_delimiter_"+cid +"+\""
 					+ (column.isNullable() ? " WITH NULL ('" + nullIndicator + "')" : "")
 					+ " ,"
 					+ "\""

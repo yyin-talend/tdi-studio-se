@@ -273,6 +273,7 @@
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="10"
+      MAX_LENGTH="1"
       REQUIRED="true"
     >
       <DEFAULT>"|"</DEFAULT>

@@ -126,42 +126,24 @@
 
        String fieldDelimiter = "comma"; 
 
-       if (delimAction.toLowerCase().equals("\"\\nl\"") ) { 
-                fieldDelimiter = "nl";
-       }
-       else if (delimAction.toLowerCase().equals("\"\\t\"") ){
-            fieldDelimiter = "tab";
-       }
-       else if (delimAction.toLowerCase().equals("\":\"")){
-            fieldDelimiter = "colon";
-       }
-       else if (delimAction.toLowerCase().equals("\";\"")){
-            fieldDelimiter = "\';\'";
-       }
-       else if (delimAction.toLowerCase().equals("\"-\"")){
-            fieldDelimiter = "\'-\'";
-       }
-       else if (delimAction.toLowerCase().equals("\"^\"")){
-            fieldDelimiter = "\'^\'";
-       }
-       else if (delimAction.toLowerCase().equals("\"%\"")){
-            fieldDelimiter = "\'%\'";
-       }
-       else if (delimAction.toLowerCase().equals("\"|\"")){
-            fieldDelimiter = "\'|\'";
-       }
-       else if (delimAction.toLowerCase().equals("\"#\"")){
-            fieldDelimiter = "\'#\'";            
-       }
-       else if (delimAction.toLowerCase().equals("\"@\"")){
-            fieldDelimiter = "\'@\'"; 
-       }
-
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 
 	%>
-	StringBuilder command_<%=cid %> =  new StringBuilder();	
-	
+	StringBuilder command_<%=cid %> =  new StringBuilder();
+	String delimAction_<%=cid%> = <%=delimAction%>;
+	String field_delimiter_<%=cid %> = "";
+	if ("\nl".equals(delimAction_<%=cid%>.toLowerCase()) || "nl".equals(delimAction_<%=cid%>.toLowerCase())) { 
+		field_delimiter_<%=cid %> = "nl";
+	}
+	else if ("\t".equals(delimAction_<%=cid%>.toLowerCase()) || "tab".equals(delimAction_<%=cid%>.toLowerCase())){
+		field_delimiter_<%=cid %> = "tab";
+	}
+	else if (":".equals(delimAction_<%=cid%>.toLowerCase()) || "colon".equals(delimAction_<%=cid%>.toLowerCase())){
+		field_delimiter_<%=cid %> = "colon";
+	}else{
+		field_delimiter_<%=cid %> = "'"+<%=delimAction%>.charAt(0)+"'";
+	}
+
 
 
 	/***********************************************************************/

@@ -29,8 +29,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean isCreateDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));
 %>
 		int nb_line_<%=cid%> = 0;
-		char rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||("").equals(rowSeparator)?"'\\n'" : rowSeparator + ".charAt(0)"%>;
-		char fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||("").equals(fieldSeparator)?"';'" : fieldSeparator + ".charAt(0)"%>;
+		char rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||("\"\"").equals(rowSeparator)?"'\\n'" : rowSeparator + ".charAt(0)"%>;
+		char fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||("\"\"").equals(fieldSeparator)?"';'" : fieldSeparator + ".charAt(0)"%>;
 		
 		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);		
 		<%if(isCreateDir) {%>
