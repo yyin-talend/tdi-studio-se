@@ -1446,6 +1446,9 @@ public class WebServiceUI implements AbstractWebService {
                 // }
                 List<ParameterInfo> listIn = currentFunction.getInputParameters();
                 List<ParameterInfo> listOut = currentFunction.getOutputParameters();
+                if (listIn == null || listOut == null) {
+                    return;
+                }
                 ExtendedTableModel<InputMappingData> columnModel = expressinPutTableView.getExtendedTableModel();
                 columnModel.removeAll();
                 if (listIn != null) {
