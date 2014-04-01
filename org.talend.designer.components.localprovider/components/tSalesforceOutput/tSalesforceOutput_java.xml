@@ -138,7 +138,7 @@
         
         <PARAMETER 
             NAME="OAUTH_CLIENT_SECRET" 
-            FIELD="TEXT" 
+            FIELD="PASSWORD" 
             NUM_ROW="30" 
             REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')" 
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (LOGIN_TYPE == 'OAUTH')"
