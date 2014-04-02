@@ -137,6 +137,11 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
     private static final String TITLE = Messages.getString("StatusManagementDialog.Title"); //$NON-NLS-1$
 
+    public StatusManagerSettingPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     /*
      * (non-Javadoc)
      * 
