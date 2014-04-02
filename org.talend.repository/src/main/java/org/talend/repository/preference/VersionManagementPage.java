@@ -108,6 +108,11 @@ public class VersionManagementPage extends ProjectSettingPage {
 
     private boolean allowVerchange = true;
 
+    public VersionManagementPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     /*
      * (non-Javadoc)
      * 

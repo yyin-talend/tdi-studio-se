@@ -25,6 +25,12 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
  */
 public class ImplicitContextLoadProjectSettingPage extends AbstractJobSettingsPage {
 
+    public ImplicitContextLoadProjectSettingPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
+    @Override
     protected void checkSettingExisted() {
         if (pro.getEmfProject().getImplicitContextSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.
@@ -32,18 +38,22 @@ public class ImplicitContextLoadProjectSettingPage extends AbstractJobSettingsPa
         }
     }
 
+    @Override
     protected Element checkAndCreateElement() {
         return ProjectSettingManager.createImplicitContextLoadElement(pro);
     }
 
+    @Override
     protected EComponentCategory getCategory() {
         return EComponentCategory.EXTRA;
     }
 
+    @Override
     protected String getTaskMessages() {
         return Messages.getString("ImplicitContextLoadProjectSettingPage.saveProjectSettings"); //$NON-NLS-1$
     }
 
+    @Override
     protected ParametersType getParametersType() {
         if (pro != null && pro.getEmfProject() != null && pro.getEmfProject().getImplicitContextSettings() != null) {
             return pro.getEmfProject().getImplicitContextSettings().getParameters();
@@ -51,20 +61,24 @@ public class ImplicitContextLoadProjectSettingPage extends AbstractJobSettingsPa
         return null;
     }
 
+    @Override
     protected String getPropertyTypeName() {
         return JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
                 + EParameterName.PROPERTY_TYPE.getName();
     }
 
+    @Override
     protected String getRepositoryPropertyName() {
         return JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
                 + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
     }
 
+    @Override
     protected EParameterName getParameterName() {
         return EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS;
     }
 
+    @Override
     protected String getDisplayName() {
         return "Implicit Context Load";
     }

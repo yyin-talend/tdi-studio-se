@@ -102,4 +102,9 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
         }
     }
 
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        button.setSelection(false);
+    }
 }

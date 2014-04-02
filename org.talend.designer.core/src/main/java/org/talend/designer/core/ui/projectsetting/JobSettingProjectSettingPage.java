@@ -159,19 +159,21 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
         if (implicit != null) {
             String v = ElementParameter2ParameterType.getParameterValue(implicit.getParameters(),
                     EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getName());
-            if (v != null)
+            if (v != null) {
                 implicitBtn.setSelection(Boolean.valueOf(v));
-            else
+            } else {
                 implicitBtn.setSelection(true);
+            }
         }
         StatAndLogsSettings stat = pro.getEmfProject().getStatAndLogsSettings();
         if (stat != null) {
             String v = ElementParameter2ParameterType.getParameterValue(stat.getParameters(),
                     EParameterName.STATS_DEFAULT_PROJECTSETTING.getName());
-            if (v != null)
+            if (v != null) {
                 statBtn.setSelection(Boolean.valueOf(v));
-            else
+            } else {
                 statBtn.setSelection(true);
+            }
 
         }
     }
@@ -185,5 +187,16 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
     public void refresh() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        retoreDefaultSettings();
+    }
+
+    private void retoreDefaultSettings() {
+        statBtn.setSelection(true);
+        implicitBtn.setSelection(true);
     }
 }

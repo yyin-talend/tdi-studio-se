@@ -130,6 +130,11 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     // private IDesignerCoreService coreService = CorePlugin.getDefault().getDesignerCoreService();
 
+    public StatLogsAndImplicitcontextTreeViewPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -539,6 +544,15 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             checked = statAddedObjects;
             unChecked = statRemovedObjects;
         }
+
+        // if (checked.isEmpty()) {
+        // // TDI-28709:for the case:after import Items(which use project setting for stats & logs),then
+        // // import ProjectSettings.xml,then direcly click "ok",need to check the statCheckedObjects if it has
+        // // RepositoryNodes checked
+        // if (!statCheckedObjects.isEmpty()) {
+        // checked = statCheckedObjects;
+        // }
+        // }
         for (RepositoryNode node : checked) {
             saveProcess(node, paramName, Boolean.TRUE, addContextModel, contextVars, monitor);
         }
@@ -572,6 +586,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
                     }
                 }
+
                 if (!statAddedObjects.isEmpty()) {
                     if (pro != null) {
                         Element statsAndLog = (Element) pro.getStatsAndLog();
