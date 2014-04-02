@@ -25,6 +25,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
  */
 public class ImplicitContextLoadProjectSettingPage extends AbstractJobSettingsPage {
 
+    public ImplicitContextLoadProjectSettingPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     protected void checkSettingExisted() {
         if (pro.getEmfProject().getImplicitContextSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.

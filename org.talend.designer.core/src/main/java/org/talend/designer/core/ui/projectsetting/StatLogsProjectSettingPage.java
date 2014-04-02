@@ -24,6 +24,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
  */
 public class StatLogsProjectSettingPage extends AbstractJobSettingsPage {
 
+    public StatLogsProjectSettingPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     protected void checkSettingExisted() {
         if (pro.getEmfProject().getStatAndLogsSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.
@@ -65,5 +70,4 @@ public class StatLogsProjectSettingPage extends AbstractJobSettingsPage {
     protected String getDisplayName() {
         return "Stats & Logs";
     }
-
 }

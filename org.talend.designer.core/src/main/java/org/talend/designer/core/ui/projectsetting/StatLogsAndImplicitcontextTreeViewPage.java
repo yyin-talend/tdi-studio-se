@@ -130,6 +130,11 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     // private IDesignerCoreService coreService = CorePlugin.getDefault().getDesignerCoreService();
 
+    public StatLogsAndImplicitcontextTreeViewPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     /*
      * (non-Javadoc)
      * 

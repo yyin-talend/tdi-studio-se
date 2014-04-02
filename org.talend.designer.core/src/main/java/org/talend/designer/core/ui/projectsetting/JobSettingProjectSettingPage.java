@@ -186,4 +186,15 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        retoreDefaultSettings();
+    }
+
+    private void retoreDefaultSettings() {
+        statBtn.setSelection(true);
+        implicitBtn.setSelection(true);
+    }
 }
