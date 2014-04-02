@@ -130,7 +130,7 @@
 		   	   	   
 	   			<%	
 	   			} else {
-	   				if (includeParallelComps) {
+	   				if (includeParallelComps && !isOneOfReloadLookupMode) {
 	   			%>
 	   			
 	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
