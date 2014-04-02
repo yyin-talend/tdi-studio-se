@@ -78,7 +78,7 @@ imports="
 		
 		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
+            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
             if(timestamp_<%=cid%> != null) {
                 <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
             } else {
@@ -89,7 +89,7 @@ imports="
 	    
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
 %>
-	        Object value = rs_<%=cid %>.getObject(column_index_<%=cid%>);
+	        Object value = rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 	        if(value != null) {
 <%
 	            String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);

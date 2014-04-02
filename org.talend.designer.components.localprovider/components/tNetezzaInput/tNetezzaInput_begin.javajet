@@ -53,8 +53,8 @@ imports="
 				dbType = "Time";
 			}
 %>
-			if(rs_<%=cid %>.get<%=dbType%>(column_index_<%=cid%>) != null) {
-				<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.get<%=dbType%>(column_index_<%=cid%>).getTime());
+			if(rs_<%=cid %>.get<%=dbType%>(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>) != null) {
+				<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.get<%=dbType%>(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>).getTime());
 			} else {
 				<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			}			 

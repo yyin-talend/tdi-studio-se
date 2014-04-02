@@ -122,7 +122,7 @@ imports="
 			String columnType = column.getType();
 			if(columnType != null && ("CLOB").equals(columnType)) {
 %>
-				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(column_index_<%=cid%>);
+				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 				java.io.BufferedReader br_<%=cid%> = null;
 				if(reader_<%=cid%> != null) {
 					br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);                 	                        
@@ -139,7 +139,7 @@ imports="
 <%
 			} else {
 %>
-			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
+			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 			        if(tmpContent_<%=cid%> != null) {
 			            <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
 			        } else {
@@ -151,7 +151,7 @@ imports="
 	    
 	   	public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(column_index_<%=cid%>);
+			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 			if(tmpBytes_<%=cid%> != null) {
 				<%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
 			} else {
@@ -178,7 +178,7 @@ imports="
 				} 
 				
 %>
-				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(column_index_<%=cid%>);
+				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 				if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
 <%
 				if (needConvert && "String".equals(convertToJavaType)) {
@@ -207,8 +207,8 @@ imports="
 <%
 			} else {
 %>
-				if(rs_<%=cid %>.getObject(column_index_<%=cid%>) != null) {
-					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(column_index_<%=cid%>);
+				if(rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>) != null) {
+					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 				} else {
 <%
 					if(column.isNullable()) {

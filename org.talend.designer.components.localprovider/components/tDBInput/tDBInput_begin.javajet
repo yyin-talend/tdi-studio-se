@@ -92,7 +92,7 @@
 		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 		
 %>
-            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
+            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
             if(timestamp_<%=cid%> != null) {
                 <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
             } else {
@@ -104,7 +104,7 @@
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
 	   		String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
 %>
-			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(column_index_<%=cid%>);
+			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 			if(value_<%=cid%> != null) {
 <%
 				if(("Integer").equals(javaType)) {
@@ -139,7 +139,7 @@
 	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
 %>
 			try {
-            	tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
+            	tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 			} catch (java.sql.SQLException e) {
 				if ("No data found".equals(e.getMessage())) {
 					tmpContent_<%=cid%> = "";
