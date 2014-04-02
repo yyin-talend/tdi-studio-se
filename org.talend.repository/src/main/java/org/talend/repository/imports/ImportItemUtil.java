@@ -53,6 +53,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
@@ -605,6 +606,9 @@ public class ImportItemUtil {
             final IProgressMonitor monitor) {
         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
         resolveItem(manager, itemRecord);
+        if (!itemRecord.isValid()) {
+            return;
+        }
 
         int num = 0;
         for (Object obj : itemRecord.getResourceSet().getResources()) {
@@ -1532,7 +1536,12 @@ public class ImportItemUtil {
             boolean byteArray = (item instanceof FileItem);
             IPath itemPath = getItemPath(itemRecord.getPath(), item);
             Set<IPath> paths = manager.getPaths();
+            // check the item file
             if (!paths.contains(itemPath)) {
+                itemRecord.addError(itemRecord.getItemName() + " " + Messages.getString("ImportItemUtil.MissingItemFile") + " - "
+                        + itemPath);
+                log.error(itemRecord.getItemName()
+                        + " " + Messages.getString("ImportItemUtil.MissingItemFile") + " - " + itemPath); //$NON-NLS-1$
                 return;
             }
             stream = manager.getStream(itemPath);
@@ -1560,8 +1569,27 @@ public class ImportItemUtil {
                 Resource rfResource = createResource(itemRecord, itemPath, true);
                 rfResource.load(stream, null);
             }
-            resetItemReference(itemRecord, resource);
-            // EcoreUtil.resolveAll(itemRecord.getResourceSet());
+
+            Iterator<EObject> itRef = item.eCrossReferences().iterator();
+            IPath parentPath = itemRecord.getPath().removeLastSegments(1);
+            while (itRef.hasNext()) {
+                EObject object = itRef.next();
+                String linkedFile = EcoreUtil.getURI(object).toFileString();
+                IPath linkedPath = parentPath.append(linkedFile);
+                if (!paths.contains(linkedPath)) {
+                    if (linkedFile != null && !linkedFile.equals(itemPath.lastSegment())
+                            && linkedFile.endsWith(itemPath.getFileExtension())) {
+                        if (object.eIsProxy()) {
+                            // if original href of the item point to some missing item file
+                            // and if we can get the original item file from the name, recover it, but add a warning
+                            ((EObjectImpl) object).eSetProxyURI(URI.createFileURI(itemPath.lastSegment()));
+                            log.warn(itemRecord.getItemName()
+                                    + " " + Messages.getString("ImportItemUtil.NotHrefCurrentItemFile") + " - " + itemRecord.getPath()); //$NON-NLS-1$
+                        }
+                    }
+                }
+                EcoreUtil.resolve(object, resource);
+            }
         } catch (IOException e) {
             // ignore
         } finally {
