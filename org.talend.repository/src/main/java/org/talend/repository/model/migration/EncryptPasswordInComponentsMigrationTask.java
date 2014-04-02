@@ -100,6 +100,11 @@ public class EncryptPasswordInComponentsMigrationTask extends AbstractItemMigrat
                 for (Object paramObjectType : nodeType.getElementParameter()) {
                     ElementParameterType param = (ElementParameterType) paramObjectType;
                     IElementParameter paramFromEmf = fNode.getElementParameter(param.getName());
+                    if (paramFromEmf == null) {
+                        // means some parameters existing in the job for this component, but not on emf component
+                        // might be some deprecated / removed parameter.
+                        continue;
+                    }
                     EParameterFieldType paramFromComponent = paramFromEmf.getFieldType();
                     if (EParameterFieldType.PASSWORD == paramFromComponent && param.getValue() != null) {
                         boolean encrypted = true;
