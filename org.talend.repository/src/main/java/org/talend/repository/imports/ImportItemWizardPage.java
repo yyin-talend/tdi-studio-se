@@ -62,6 +62,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -812,19 +813,19 @@ class ImportItemWizardPage extends WizardPage {
                     && itemRecord.getExistingItemWithSameId() instanceof RepositoryViewObject) {
                 RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
                 if (itemRecord.getProperty() != null && reObject != null) {
-                	 if (itemRecord.getProperty().getId().equals(reObject.getId())
-                             && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
-                             && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
-                         for (String error : itemRecord.getErrors()) {
-                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
-                         }
-                     } else if (itemRecord.getProperty().getId().equals(reObject.getId())
-                             && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
-                             && !itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
-                         for (String error : itemRecord.getErrors()) {
-                             errors.add("'" + itemRecord.getItemName() + "' " + Messages.getString("ImportItemWizardPage.ErrorsMessage", reObject.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$
-                         }
-                     }else {
+                    if (itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
+                            && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
+                        for (String error : itemRecord.getErrors()) {
+                            errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    } else if (itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
+                            && !itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
+                        for (String error : itemRecord.getErrors()) {
+                            errors.add("'" + itemRecord.getItemName() + "' " + Messages.getString("ImportItemWizardPage.ErrorsMessage", reObject.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    } else {
                         // TDI-21399,TDI-21401
                         // if item is locked, cannot overwrite
                         ERepositoryStatus status = reObject.getRepositoryStatus();
@@ -1043,6 +1044,23 @@ class ImportItemWizardPage extends WizardPage {
 
         } catch (InterruptedException e) {
             //
+        } finally {
+            // Check Error Items
+            final List<String> errors = new ArrayList<String>();
+            for (ItemRecord itemRecord : checkedItemRecords) {
+                errors.addAll(itemRecord.getErrors());
+            }
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!errors.isEmpty()) {
+                        ShowErrorsDuringImportItemsDialog dialog = new ShowErrorsDuringImportItemsDialog(Display.getCurrent()
+                                .getActiveShell(), errors);
+                        dialog.open();
+                    }
+                }
+            });
         }
         ResourcesManager curManager = this.manager;
         if (curManager instanceof ProviderManager) {
