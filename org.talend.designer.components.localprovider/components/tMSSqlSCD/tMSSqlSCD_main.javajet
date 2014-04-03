@@ -104,7 +104,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         while(searchingResult_<%=cid%>.next()) {
             lookUpValue_<%=cid%> = new SCDStruct_<%=cid%>();
             <%
-            int index = 1;
+            int index = sourceKeys.size() + 1;
             for(Column searchingColumn : searchingColumns) {
               if(!isOptimizeCode){
                 String generatedType = searchingColumn.getJavaType();
