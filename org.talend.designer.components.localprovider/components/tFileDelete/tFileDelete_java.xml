@@ -90,7 +90,7 @@
 		<DEFAULT>*Note "CURRENT_STATUS" including:
 "File (or path) deleted."
 "No file (or path) deleted."
-"File (or path) does not exists or is invalid."</DEFAULT>
+"File (or path) does not exist or is invalid."</DEFAULT>
 	</PARAMETER>
   </PARAMETERS>
    <CODEGENERATION/>

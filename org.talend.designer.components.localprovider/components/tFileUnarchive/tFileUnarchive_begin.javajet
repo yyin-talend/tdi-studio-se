@@ -25,8 +25,8 @@
 	
 	String decryptMethod = ElementParameterParser.getValue(node, "__DECRYPT_METHOD__");
 
-	log4jFileUtil.logParameters(node);
 	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
 %>      
 		com.talend.compress.zip.Util util_<%=cid %> = new com.talend.compress.zip.Util(<%=extractPath%>);
         

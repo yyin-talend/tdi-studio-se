@@ -21,8 +21,8 @@ boolean either = ("true").equals(ElementParameterParser.getValue(node, "__FOLDER
 
 final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
-log4jFileUtil.logParameters(node);
 log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.logParameters(node);
 %>
 class DeleteFolder<%=cid%>{
 	 /**
@@ -109,15 +109,15 @@ if(either){
 	    	}
 		}
     }else{
-		globalMap.put("<%=cid %>_CURRENT_STATUS", "File or path does not exists or is invalid.");
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "File or path does not exist or is invalid.");
 <%
 		if(("true").equals(failon)){
 %>
-    		throw new RuntimeException("File or path does not exists or is invalid.");
+    		throw new RuntimeException("File or path does not exist or is invalid.");
 <%
 		} else if(isLog4jEnabled) {
 %>
-    		log.error("<%=cid%> - File or directory : "+ path_<%=cid%>.getAbsolutePath() + " does not exists or is invalid.");
+    		log.error("<%=cid%> - File or directory : "+ path_<%=cid%>.getAbsolutePath() + " does not exist or is invalid.");
 <%
 		}
 %>
@@ -151,15 +151,15 @@ if(either){
 %>
     	}
 	}else{
-		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path does not exists or is invalid.");
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path does not exist or is invalid.");
 <%
 		if(("true").equals(failon)){
 %>
-    		throw new RuntimeException("Path does not exists or is invalid.");
+    		throw new RuntimeException("Path does not exist or is invalid.");
 <%
 		} else if(isLog4jEnabled) {
 %>
-			log.error("<%=cid%> - "+ file<%=cid%>.getAbsolutePath() + " does not exists or is invalid or is not a directory.");
+			log.error("<%=cid%> - "+ file<%=cid%>.getAbsolutePath() + " does not exist or is invalid or is not a directory.");
 <%
 		}
 %>
@@ -190,15 +190,15 @@ if(either){
 %>
     	}
     }else{
-    	globalMap.put("<%=cid %>_CURRENT_STATUS", "File does not exists or is invalid.");
+    	globalMap.put("<%=cid %>_CURRENT_STATUS", "File does not exist or is invalid.");
 <%
 		if(("true").equals(failon)){
 %>
-    		throw new RuntimeException("File does not exists or is invalid.");
+    		throw new RuntimeException("File does not exist or is invalid.");
 <%
 		} else if(isLog4jEnabled) {
 %>
-			log.error("<%=cid%> - "+ file_<%=cid%>.getAbsolutePath() + " does not exists or is invalid or is not a file.");
+			log.error("<%=cid%> - "+ file_<%=cid%>.getAbsolutePath() + " does not exist or is invalid or is not a file.");
 <%
 		}
 %>

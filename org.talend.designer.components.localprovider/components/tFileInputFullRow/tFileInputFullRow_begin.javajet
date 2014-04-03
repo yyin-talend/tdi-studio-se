@@ -55,8 +55,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
 		
 		final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-    	log4jFileUtil.logParameters(node);
     	log4jFileUtil.componentStartInfo(node);
+    	log4jFileUtil.logParameters(node);
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
 

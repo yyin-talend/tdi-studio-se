@@ -31,8 +31,8 @@
 	String zip64Mode = ElementParameterParser.getValue(node, "__ZIP64_MODE__");
 	String encryptMethod = ElementParameterParser.getValue(node, "__ENCRYPT_METHOD__");
 
-	log4jFileUtil.logParameters(node);
 	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
 	%>
 
 

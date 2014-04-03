@@ -33,8 +33,8 @@
 	
 	final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
-	log4jFileUtil.logParameters(node);
 	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
 	
 	if (isCopyADir){ // copy a directory
 %>     
@@ -101,11 +101,11 @@
 						desFolder.mkdirs();
 					} 
         		}else{
-        			System.err.println("Path name \""+rootFolder.getPath()+"\"  does not denote a directory, or if an I/O error occurs.");
+        			System.err.println("Path name \""+rootFolder.getPath()+"\" does not denote a directory, or if an I/O error occurs.");
 <%
 					if(isLog4jEnabled) {
 %>
-					log.error("<%=cid%> - Path name \""+rootFolder.getPath()+"\"  does not denote a directory, or if an I/O error occurs.");
+					log.error("<%=cid%> - Path name \""+rootFolder.getPath()+"\" does not denote a directory, or if an I/O error occurs.");
 <%
 					}
 %>
