@@ -134,7 +134,6 @@ import org.talend.core.ui.ICreateXtextProcessService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
-import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.utils.AccessingEmfJob;
@@ -188,6 +187,8 @@ import org.talend.repository.ui.views.IJobSettingsView;
 @SuppressWarnings("restriction")
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
+
+    protected static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -354,8 +355,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         Map<String, Object> settings = brandingService.getBrandingConfiguration().getJobEditorSettings();
-        if (settings.containsKey(IBrandingConfiguration.DISPLAY_CODE_VIEW)) {
-            useCodeView = (Boolean) settings.get(IBrandingConfiguration.DISPLAY_CODE_VIEW);
+        if (settings.containsKey(DISPLAY_CODE_VIEW)) {
+            useCodeView = (Boolean) settings.get(DISPLAY_CODE_VIEW);
         }
     }
 
