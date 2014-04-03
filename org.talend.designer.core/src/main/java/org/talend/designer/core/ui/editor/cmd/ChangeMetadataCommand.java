@@ -188,7 +188,7 @@ public class ChangeMetadataCommand extends Command {
     private void initializeContainer() {
         outputdataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                 IODataComponent input = null;
                 if (newInputMetadata == null) {
                     input = new IODataComponent(connec);
@@ -204,9 +204,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-            if (connec.isActivate()
-                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || isinputContainerOutput(connec) || ((connec
-                            .getLineStyle().equals(EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
+            if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || isinputContainerOutput(connec)
+                    || ((connec.getLineStyle().equals(EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1)))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isMultiSchema())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
@@ -218,7 +217,7 @@ public class ChangeMetadataCommand extends Command {
         if (inputNode != null) {
             inputdataContainer = new IODataComponentContainer();
             for (Connection connec : (List<Connection>) inputNode.getOutgoingConnections()) {
-                if (connec.isActivate() && (connec.getTarget().equals(node))) {
+                if (connec.getTarget().equals(node)) {
                     if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isMultiSchema())
                             || (connec.getMetaName().equals(newInputMetadata.getTableName()))) {
                         IODataComponent output = new IODataComponent(connec, newInputMetadata);
