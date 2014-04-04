@@ -14,7 +14,6 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +86,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         POJO("Autonomous Job"), //$NON-NLS-1$
         WSWAR("Axis WebService (WAR)"), //$NON-NLS-1$
         WSZIP("Axis WebService (ZIP)"), //$NON-NLS-1$
-        JBOSSESB("JBoss ESB"), //$NON-NLS-1$
-        PETALSESB("Petals ESB"), //$NON-NLS-1$
+        JBOSSESB("JBoss ESB (Deprecated)"), //$NON-NLS-1$
+        PETALSESB("Petals ESB (Deprecated)"), //$NON-NLS-1$
         OSGI("OSGI Bundle For ESB");//$NON-NLS-1$
 
         public final String label;
@@ -234,7 +233,18 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @return
      */
     protected List<JobExportType> extractExportJobTypes() {
-        return Arrays.asList(JobExportType.values());
+        // Feature TDI-29084:put the Deprecated build type at last
+        List<JobExportType> deprecateTypeList = new ArrayList<JobExportType>();
+        List<JobExportType> typeList = new ArrayList<JobExportType>();
+        for (JobExportType type : JobExportType.values()) {
+            if (!type.label.endsWith("(Deprecated)")) {
+                typeList.add(type);
+            } else {
+                deprecateTypeList.add(type);
+            }
+        }
+        typeList.addAll(deprecateTypeList);
+        return typeList;
     }
 
     @Override
