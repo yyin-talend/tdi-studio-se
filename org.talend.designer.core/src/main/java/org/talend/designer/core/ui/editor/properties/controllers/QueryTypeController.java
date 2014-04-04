@@ -58,6 +58,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
+import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -278,6 +279,10 @@ public class QueryTypeController extends AbstractRepositoryController {
                             }
                             if (item != null && item instanceof ConnectionItem) {
                                 repositoryConnection = ((ConnectionItem) item).getConnection();
+                            } else {
+                                initConnectionParameters();
+                                repositoryConnection = TracesConnectionUtils.createConnection(connParameters);
+
                             }
                         }
                         break;
