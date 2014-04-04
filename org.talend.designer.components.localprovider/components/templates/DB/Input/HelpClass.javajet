@@ -17,9 +17,17 @@ imports="
 	    protected String dbuser;
 		protected String dbpwd ;
 		protected boolean isLog4jEnabled;
+		protected boolean isDynamic;
 	    
 	    public void beforeComponentProcess(INode node){
 	    	cid = node.getUniqueName();
+			List<IMetadataTable> metadatas = node.getMetadataList();
+			if ((metadatas != null) && (metadatas.size()>0)) {
+				IMetadataTable metadata = metadatas.get(0);
+				if (metadata != null) {
+					isDynamic = metadata.isDynamicSchema();
+				}
+			}
 	    	isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	    	if(isLog4jEnabled){
 %>
