@@ -52,13 +52,13 @@ imports="
 		public void generateStringCharAndCharacterSet(String firstConnName, IMetadataColumn column, int currentColNo,
 					String trimMethod, String typeToGenerate, boolean whetherTrimAllCol, boolean whetherTrimCol) {
 %>
-			if(rs_<%=cid %>.getString(column_index_<%=cid%>)!=null&&(rs_<%=cid %>.getString(column_index_<%=cid%>)).length()>0){
-				<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(column_index_<%=cid%>).charAt(0);
+			if(rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>)!=null&&(rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>)).length()>0){
+				<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>).charAt(0);
 			}else{			  	
 <%
 				if(typeToGenerate.equals("Character")){
 %>
-					if((rs_<%=cid %>.getString(column_index_<%=cid%>))==null){
+					if((rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>))==null){
 			  			<%=firstConnName%>.<%=column.getLabel()%>=null;
 			  		}else{
 			  			<%=firstConnName%>.<%=column.getLabel()%>='\0';
@@ -67,7 +67,7 @@ imports="
 				} else {
 %>
 			  		
-			  		if((rs_<%=cid %>.getString(column_index_<%=cid%>)).equals("")){
+			  		if((rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>)).equals("")){
 			  			<%=firstConnName%>.<%=column.getLabel()%> = '\0';
 			  		}else{
 			  			throw new RuntimeException(

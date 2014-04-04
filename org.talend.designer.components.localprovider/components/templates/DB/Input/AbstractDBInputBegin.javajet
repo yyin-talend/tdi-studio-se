@@ -165,7 +165,9 @@ imports="
 		    }
 		    %>
 		    String tmpContent_<%=cid%> = null;
-		    int column_index_<%=cid%> =1;
+		    <%if(isDynamic){%>
+		    	int column_index_<%=cid%> =1;
+		    <%}%>
 		    while (rs_<%=cid %>.next()) {
 		        nb_line_<%=cid%>++;
 		        <%
@@ -194,35 +196,39 @@ imports="
 		                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 		                String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate); 	
 		                if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-		                    if(!("Dynamic").equals(typeToGenerate) && isDynamic && dynamic_index < currentColNo) {
-		                    %>
-		                        column_index_<%=cid%> = <%=currentColNo-1%> + dcg_<%=cid%>.getColumnCount(); 
-		                    <%}else{%>
-		                        column_index_<%=cid%> = <%=currentColNo%>;
-		                    <%}%>
-		                    if(colQtyInRs_<%=cid%> < column_index_<%=cid%>) {
-		                        <%=firstConnName%>.<%=column.getLabel()%> = <%=defVal%>; 			
-		                    } else {
+							if(isDynamic){
+								if(!("Dynamic").equals(typeToGenerate) && dynamic_index < currentColNo) {
+								%>
+									column_index_<%=cid%> = <%=currentColNo-1%> + dcg_<%=cid%>.getColumnCount(); 
+								<%}else{%>
+									column_index_<%=cid%> = <%=currentColNo%>;
+								<%}%>
+							<%
+							}
+							%>
+							if(colQtyInRs_<%=cid%> < <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>) {
+								<%=firstConnName%>.<%=column.getLabel()%> = <%=defVal%>;
+							} else {
 <%
-		                        typeToGenerate = dbInputBeginUtil.mappingType(typeToGenerate);
-		  
-		                        if(("Char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
+								typeToGenerate = dbInputBeginUtil.mappingType(typeToGenerate);
+
+								if(("Char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
 %>
-		                 			<%dbInputBeginUtil.generateStringCharAndCharacterSet(firstConnName, column,currentColNo, trimMethod, typeToGenerate, whetherTrimAllCol, whetherTrimCol);%>			
+									<%dbInputBeginUtil.generateStringCharAndCharacterSet(firstConnName, column,currentColNo, trimMethod, typeToGenerate, whetherTrimAllCol, whetherTrimCol);%>			
 <%
-		                        } else if(("Timestamp").equals(typeToGenerate)) {
-		                        	if("vertica_id".equalsIgnoreCase(dbms) && "DATE".equalsIgnoreCase(column.getType())){
+								} else if(("Timestamp").equals(typeToGenerate)) {
+									if("vertica_id".equalsIgnoreCase(dbms) && "DATE".equalsIgnoreCase(column.getType())){
 %>
-									<%dbInputBeginUtil.generateOthersResultSet(firstConnName, column,  currentColNo,  "Date");%>
+										<%dbInputBeginUtil.generateOthersResultSet(firstConnName, column,  currentColNo,  "Date");%>
 <%
 									}else{
 %>
-									<%dbInputBeginUtil.generateTimestampResultSet(firstConnName, column, currentColNo);%>
+										<%dbInputBeginUtil.generateTimestampResultSet(firstConnName, column, currentColNo);%>
 <%
 									}
 		                         } else if (("List").equals(typeToGenerate)) {
 %>
-		                            <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(column_index_<%=cid%>);
+		                            <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
  <%
 		                        } else if(("String").equals(typeToGenerate)) {
 %>
@@ -230,7 +236,7 @@ imports="
 <%
 								} else if("Geometry".equals(typeToGenerate) && type.indexOf("ORACLE") >= 0) {
 %>
-                                    oracle.spatial.geometry.JGeometry jGeom = oracle.spatial.geometry.JGeometry.load((oracle.sql.STRUCT) rs_<%=cid %>.getObject(column_index_<%=cid%>));
+                                    oracle.spatial.geometry.JGeometry jGeom = oracle.spatial.geometry.JGeometry.load((oracle.sql.STRUCT) rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>));
                                     oracle.spatial.util.WKT wkt = new oracle.spatial.util.WKT();
                                     String wktValue = new String(wkt.fromJGeometry(jGeom));
 
@@ -278,7 +284,7 @@ imports="
 									}
 								} else if(typeToGenerate.equals("Geometry")) {
 %>
-                                	org.postgis.Geometry o = org.postgis.PGgeometry.geomFromString(rs_<%=cid %>.getObject(column_index_<%=cid%>).toString());
+                                	org.postgis.Geometry o = org.postgis.PGgeometry.geomFromString(rs_<%=cid %>.getObject(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>).toString());
                                 	StringBuffer sb = new StringBuffer();
                                 	o.outerWKT(sb, false);
                                 	<%=firstConnName%>.<%=column.getLabel()%> = new Geometry(sb.toString());

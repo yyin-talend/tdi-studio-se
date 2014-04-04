@@ -73,7 +73,7 @@ imports="
 	     */
 		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			<%=firstConnName%>.<%=column.getLabel()%> = mssqlGTU_<%=cid%>.getDate(rsmd_<%=cid %>, rs_<%=cid %>, column_index_<%=cid%>);
+			<%=firstConnName%>.<%=column.getLabel()%> = mssqlGTU_<%=cid%>.getDate(rsmd_<%=cid %>, rs_<%=cid %>, <%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 			
 <%
 	    }
@@ -91,12 +91,12 @@ imports="
 <%
 			}else{
 %>
-           		tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
+           		tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>);
 <%
 			}
 %>
             if(tmpContent_<%=cid%> != null) {
-            	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(column_index_<%=cid%>).toUpperCase(java.util.Locale.ENGLISH))) {
+            	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%if(isDynamic){%>column_index_<%=cid%><%}else{%><%=currentColNo%><%}%>).toUpperCase(java.util.Locale.ENGLISH))) {
             		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(tmpContent_<%=cid%>);
             	} else {
                 	<%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
