@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -68,6 +68,7 @@ import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterComma
 import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
+import org.talend.designer.core.ui.editor.update.cmd.UpdateNodePathCommand;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
@@ -555,6 +556,9 @@ public final class UpdateManagerUtils {
             // command = new Command() { // have update in checking.
             // };
             // break;
+            case MAP_PATH:
+                command = new UpdateNodePathCommand(result);
+                break;
             default:
                 break;
             }

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -89,6 +89,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                         case JOBLET_SCHEMA:
                         case JOBLET_RENAMED:
                         case RELOAD:
+                        case MAP_PATH:
                             image = getImageFromNode(category.getNode());
                             break;
                         case JOB_PROPERTY_MAPREDUCE:
