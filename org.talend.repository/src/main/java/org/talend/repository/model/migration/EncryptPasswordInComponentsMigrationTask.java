@@ -96,6 +96,9 @@ public class EncryptPasswordInComponentsMigrationTask extends AbstractItemMigrat
                 NodeType nodeType = (NodeType) nodeObjectType;
                 IComponent component = ComponentsFactoryProvider.getInstance().get(nodeType.getComponentName(),
                         category.getName());
+                if (component == null) {
+                    continue;
+                }
                 FakeNode fNode = new FakeNode(component);
                 for (Object paramObjectType : nodeType.getElementParameter()) {
                     ElementParameterType param = (ElementParameterType) paramObjectType;
