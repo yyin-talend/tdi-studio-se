@@ -1082,7 +1082,17 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
             if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                initTraceParamters();
+                IElementParameter elementParameter = getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName());
+                List values = null;
+                if (elementParameter != null) {
+                    Object value = elementParameter.getValue();
+                    if (value instanceof List) {
+                        values = (List) value;
+                    }
+                }
+                if (values == null || values.isEmpty()) {
+                    initTraceParamters();
+                }
             }
         }
 
