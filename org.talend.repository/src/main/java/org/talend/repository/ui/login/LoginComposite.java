@@ -68,6 +68,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -153,7 +154,7 @@ public class LoginComposite extends Composite {
 
     private static final int HORIZONTAL_FOUR_SPACE = 20;
 
-    private static final int LEFTSPACE = 80;
+    private int LEFTSPACE = 80;
 
     /**
      * Colors used for Remote Object background when enabled.
@@ -299,6 +300,8 @@ public class LoginComposite extends Composite {
 
     Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NONE);// Arial courier
 
+    private List<FormData> columnFormDatas;
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -330,21 +333,36 @@ public class LoginComposite extends Composite {
         createLayout.marginHeight = 0;
         createLayout.marginWidth = 0;
         formBody.setLayout(createLayout);
+        columnFormDatas = new ArrayList<FormData>();
 
+        Composite rightPartComposite = null;
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             createTosRepositoryArea(formBody);
             // createSeparator(formBody);
             createTosActionArea(formBody);
             createTosProjectArea(formBody);
+            rightPartComposite = repositoryComposite;
         } else {
             createTisRepositoryArea(formBody);
             createSeparator(formBody);
             createTisActionArea(formBody);
             createTisProjectArea(formBody);
             createTisBlankArea(formBody);
+            rightPartComposite = tisRepositoryComposite;
         }
         createTosWelcomArea(formBody);
         // createRestartArea(formBody);
+
+        // resize the width of column 1
+        rightPartComposite.pack();
+        // the width of column 1 should not larger than 7/21 of the whole right part width
+        int size = (int) (rightPartComposite.getSize().x * (7.0 / 21));
+        if (size < LEFTSPACE) {
+            LEFTSPACE = size;
+        }
+        for (FormData iFormData : columnFormDatas) {
+            iFormData.right = new FormAttachment(0, LEFTSPACE);
+        }
 
         readConnectionData();
         recordFirstConnection();
@@ -375,6 +393,15 @@ public class LoginComposite extends Composite {
         displayPasswordComposite();
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             initConnection();
+        }
+    }
+
+    private void comfortColumnWidth(Control ctrl, FormData fromData) {
+        columnFormDatas.add(fromData);
+        ctrl.pack();
+        int width = ctrl.getSize().x + HORIZONTAL_TWO_SPACE;
+        if (LEFTSPACE < width) {
+            LEFTSPACE = width;
         }
     }
 
@@ -541,9 +568,10 @@ public class LoginComposite extends Composite {
         Label repositoryLabel = toolkit.createLabel(repositoryComposite, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
         repositoryLabel.setBackground(repositoryComposite.getBackground());
         FormData formData2 = new FormData();
+        comfortColumnWidth(repositoryLabel, formData2);
         formData2.top = new FormAttachment(0, 17);
         formData2.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        formData2.right = new FormAttachment(0, LEFTSPACE);
+        // formData2.right = new FormAttachment(0, LEFTSPACE);
         formData2.bottom = new FormAttachment(100, -HORIZONTAL_SPACE);
         repositoryLabel.setLayoutData(formData2);
         repositoryLabel.setVisible(false);
@@ -604,9 +632,10 @@ public class LoginComposite extends Composite {
         Label userLabel = toolkit.createLabel(userEmailComposite, Messages.getString("LoginComposite.emailTitle")); //$NON-NLS-1$
         userLabel.setBackground(userEmailComposite.getBackground());
         FormData formData = new FormData();
+        comfortColumnWidth(repositoryLabel, formData);
         formData.top = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        formData.right = new FormAttachment(0, LEFTSPACE);
+        // formData.right = new FormAttachment(0, LEFTSPACE);
         formData.bottom = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         userLabel.setLayoutData(formData);
         userLabel.setVisible(false);
@@ -681,8 +710,9 @@ public class LoginComposite extends Composite {
         manageProjectLabel1 = toolkit.createLabel(tosActionComposite, Messages.getString("LoginComposite.actionTitle")); //$NON-NLS-1$
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
         data = new FormData();
+        comfortColumnWidth(manageProjectLabel1, data);
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE);
+        // data.right = new FormAttachment(0, LEFTSPACE);
         data.bottom = new FormAttachment(manageProjectsButton, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
 
@@ -725,8 +755,9 @@ public class LoginComposite extends Composite {
         manageProjectLabel1 = toolkit.createLabel(tosActionComposite, Messages.getString("LoginComposite.actionTitle")); //$NON-NLS-1$
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
         data = new FormData();
+        comfortColumnWidth(manageProjectLabel1, data);
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE);
+        // data.right = new FormAttachment(0, LEFTSPACE);
         data.bottom = new FormAttachment(manageProjectsButton, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
         manageProjectLabel1.setVisible(false);
@@ -871,13 +902,14 @@ public class LoginComposite extends Composite {
         projectViewer.setLabelProvider(new ProjectLabelProvider());
 
         FormData data = new FormData();
+        comfortColumnWidth(tosProjectLabel, data);
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             data.top = new FormAttachment(0, 12);
         } else {
             data.top = new FormAttachment(0, 10);
         }
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE);
+        // data.right = new FormAttachment(0, LEFTSPACE);
         tosProjectLabel.setLayoutData(data);
 
         // project
@@ -1120,9 +1152,10 @@ public class LoginComposite extends Composite {
         connectionLabel.setBackground(tisRepositoryComposite.getBackground());
         connectionLabel.setText("Connection"); //$NON-NLS-1$
         formData = new FormData();
+        comfortColumnWidth(connectionLabel, formData);
         formData.top = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        formData.right = new FormAttachment(0, LEFTSPACE);
+        // formData.right = new FormAttachment(0, LEFTSPACE);
         connectionLabel.setLayoutData(formData);
 
         connectionsViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
@@ -1139,9 +1172,10 @@ public class LoginComposite extends Composite {
         emailLabel.setBackground(tisRepositoryComposite.getBackground());//
         emailLabel.setText(Messages.getString("LoginComposite.emailTitle")); //$NON-NLS-1$
         formData = new FormData();
+        comfortColumnWidth(emailLabel, formData);
         formData.top = new FormAttachment(connectionLabel, HORIZONTAL_TWO_SPACE);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        formData.right = new FormAttachment(0, LEFTSPACE);
+        // formData.right = new FormAttachment(0, LEFTSPACE);
         emailLabel.setLayoutData(formData);
 
         user = toolkit.createText(group, null, SWT.BORDER);
@@ -1164,9 +1198,10 @@ public class LoginComposite extends Composite {
         passwordLabel.setBackground(passwordComposite.getBackground());
         passwordLabel.setText(Messages.getString("LoginComposite.passwordTitle")); //$NON-NLS-1$
         formData = new FormData();
+        comfortColumnWidth(passwordLabel, formData);
         formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);//
-        formData.right = new FormAttachment(0, LEFTSPACE);// - 5
+        // formData.right = new FormAttachment(0, LEFTSPACE);// - 5
         // formData.bottom = new FormAttachment(100, -1);
         passwordLabel.setLayoutData(formData);
 
@@ -1191,9 +1226,10 @@ public class LoginComposite extends Composite {
 
         svnBranchLabel.setText("SVN Branch"); //$NON-NLS-1$
         data = new FormData();
+        comfortColumnWidth(svnBranchLabel, data);
         data.top = new FormAttachment(fillProjectsBtn, HORIZONTAL_SPACE, SWT.BOTTOM);
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE);
+        // data.right = new FormAttachment(0, LEFTSPACE);
         svnBranchLabel.setLayoutData(data);
 
         // if (branchesViewer != null && !branchesViewer.getControl().isVisible()) {
