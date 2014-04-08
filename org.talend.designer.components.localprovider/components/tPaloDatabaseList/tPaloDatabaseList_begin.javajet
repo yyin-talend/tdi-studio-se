@@ -8,11 +8,15 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS")); 
+	log4jFileUtil.logParameters(node); 
 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -41,13 +45,24 @@ if(useExistingConnection){
 	// Use Existing
 	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
 	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+	<%if(isLog4jEnabled){%>
+		if(pConn_<%=cid %>!=null) {
+			log.info("<%=cid%> - Uses an existing connection.");
+		}
+	<%}%>
 <%
 }else{
 %>
 	// Initialize jpalo
 	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
 	// Open the connection
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "'.");
+	<%}%>
 	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+	<%}%>
 <%
 }
 %>
@@ -82,6 +97,9 @@ if (conns!=null) {
 <%
 if (outputConnName != null || bIterate){
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Listing databases from server.");
+<%}%>
 	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 	for(int j_<%=cid %>=0;j_<%=cid %>< pDBs_<%=cid %>.getNumberOfDatabases();j_<%=cid %>++){
 		org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(j_<%=cid %>);
@@ -95,6 +113,16 @@ if (outputConnName != null || bIterate){
 			<%=outputConnName%>.database_cubes=pDB_<%=cid %>.getNumberOfCubes();
 			<%=outputConnName%>.database_status=pDB_<%=cid %>.getStatus();
 			<%=outputConnName%>.database_type=pDB_<%=cid %>.getType();
+			<%if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append("database_id is :" + <%=outputConnName%>.database_id + " | ");
+				log4jSb_<%=cid%>.append("database_name is :" + <%=outputConnName%>.database_name + " | ");
+				log4jSb_<%=cid%>.append("database_dimensions is :" + <%=outputConnName%>.database_dimensions + " | ");
+				log4jSb_<%=cid%>.append("database_cells is :" + <%=outputConnName%>.database_cubes + " | ");
+				log4jSb_<%=cid%>.append("database_filled_cells is :" + <%=outputConnName%>.database_status + " | ");
+				log4jSb_<%=cid%>.append("database_status is :" + <%=outputConnName%>.database_type + " | ");
+				log.trace("<%=cid%> - Content of the database info " + NB_DATABASES<%=cid%> + ": " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
 <%
 		}
 		if(bIterate){

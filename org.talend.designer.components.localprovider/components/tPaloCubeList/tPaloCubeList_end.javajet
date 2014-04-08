@@ -12,6 +12,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -52,9 +53,20 @@ if (outputConnName != null || bIterate){
 	if(!useExistingConnection)	{
 %>
 		if(pConn_<%=cid %> != null) {
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the database.");
+			<%}%>
 			pConn_<%=cid %>.logout();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the database closed.");
+			<%}%>
 		}
 <%
 	}
 %>
 globalMap.put("<%=cid%>_NB_CUBES", NB_CUBES<%=cid%>);
+
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - List cubes count " + NB_CUBES<%=cid%> + " .");
+		log.info("<%=cid%> - Done.");
+	<%}%>

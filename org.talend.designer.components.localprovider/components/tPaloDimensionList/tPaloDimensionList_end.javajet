@@ -6,13 +6,13 @@
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
-	org.talend.core.model.process.ElementParameterParser
 	"
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 	String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
     String sCubeName = ElementParameterParser.getValue(node,"__CUBE__");
@@ -56,6 +56,9 @@ if (outputConnName != null || bIterate){
 	if(useRetriveFromCube){
 %>
 	else {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'." );
+			<%}%>
 		    throw new RuntimeException ("Cube '" + <%=sCubeName%> + 
 		                              "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 		}
@@ -67,9 +70,20 @@ if (outputConnName != null || bIterate){
 	if(!useExistingConnection)	{
 %>
 		if(pConn_<%=cid %> != null) {
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the database.");
+			<%}%>
 			pConn_<%=cid %>.logout();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the database closed.");
+			<%}%>
 		}
 <%
 	}
 %>
 //globalMap.put("<%=cid%>_NB_RULES", NB_RULES<%=cid%>);
+
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - List dimensions count " + NB_DIMENSIONS<%=cid%> + " .");
+		log.info("<%=cid%> - Done.");
+	<%}%>

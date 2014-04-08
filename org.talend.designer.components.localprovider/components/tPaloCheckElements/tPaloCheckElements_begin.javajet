@@ -8,11 +8,15 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
+	log4jFileUtil.logParameters(node);
 
 	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
@@ -33,35 +37,44 @@
 
 %>
 
-org.talend.jpalo.palo p_<%=cid %> = null;
-org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
+	org.talend.jpalo.palo p_<%=cid %> = null;
+	org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
 
 <%
-if(useExistingConnection){
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String p = "p_" + connection;
-	String pConn = "pConn_" + connection;
+	if(useExistingConnection){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String p = "p_" + connection;
+		String pConn = "pConn_" + connection;
 
 %>
-	// Use Existing
-	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
-	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+		// Use Existing
+		p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
+		pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+		<%if(isLog4jEnabled){%>
+			if(pConn_<%=cid %>!=null) {
+				log.info("<%=cid%> - Uses an existing connection.");  
+			}
+		<%}%>
 <%
-}else{
+	}else{
 %>
-	// Initialize jpalo
-	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
-	// Open the connection
-	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+		// Initialize jpalo
+		p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
+		// Open the connection
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "'.");
+		<%}%>
+		pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+		<%}%>
 <%
-}
+	}
 %>
 
-org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
-org.talend.jpalo.palodatabase pDB_<%=cid %>= pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
-
- 
-org.talend.jpalo.palocube pCB_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jpalo.palocubes.CUBE_NORMAL).getCube(<%=sCubeName%>);
+	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+	org.talend.jpalo.palodatabase pDB_<%=cid %>= pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
+	org.talend.jpalo.palocube pCB_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jpalo.palocubes.CUBE_NORMAL).getCube(<%=sCubeName%>);
 
 <%
 	String strInputConnectionName="";
@@ -96,7 +109,7 @@ org.talend.jpalo.palocube pCB_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jpal
 		}
 	}	
 %>
-int iNbOfCheckedRows_<%=cid %> = 0;
-boolean bRejectRow_<%=cid %> = false;
-StringBuilder sbErrorText_<%=cid %> = new StringBuilder();
-int iErrorCounter_<%=cid %> = 0;
+	int iNbOfCheckedRows_<%=cid %> = 0;
+	boolean bRejectRow_<%=cid %> = false;
+	StringBuilder sbErrorText_<%=cid %> = new StringBuilder();
+	int iErrorCounter_<%=cid %> = 0;

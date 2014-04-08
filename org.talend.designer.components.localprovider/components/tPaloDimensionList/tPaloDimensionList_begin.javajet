@@ -8,11 +8,15 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node); 
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
+	log4jFileUtil.logParameters(node); 
 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean useRetriveFromCube = "true".equals(ElementParameterParser.getValue(node,"__RETRIEVE_DIMENSIONS_FROM_CUBE__"));
@@ -45,13 +49,24 @@ if(useExistingConnection){
 	// Use Existing
 	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
 	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+	<%if(isLog4jEnabled){%>
+		if(pConn_<%=cid %>!=null) {
+			log.info("<%=cid%> - Uses an existing connection.");
+		}
+	<%}%>
 <%
 }else{
 %>
 	// Initialize jpalo
 	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
 	// Open the connection
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "'.");
+	<%}%>
 	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+	<%}%>
 <%
 }
 %>
@@ -87,6 +102,9 @@ if(useExistingConnection){
 org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
 if(pDB_<%=cid %> == null){
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
+	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 }
 
@@ -105,6 +123,9 @@ org.talend.jpalo.palodimension pDIM_<%=cid %> = null;
 <%
 if (outputConnName != null || bIterate){
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Listing dimensions from server.");
+<%}%>
 	for(int i_<%=cid %>=0;i_<%=cid %><4;i_<%=cid %>++){
 		org.talend.jpalo.palodimensions pDIMs_<%=cid %>=null;
 <%
@@ -137,8 +158,19 @@ if (outputConnName != null || bIterate){
 			<%=outputConnName%>.dimension_elements=pDIM_<%=cid %>.getNumberOfElements();
 			<%=outputConnName%>.dimension_max_level=pDIM_<%=cid %>.getMaximumLevel();
 			<%=outputConnName%>.dimension_max_indent=pDIM_<%=cid %>.getMaximumIndent();
-		
 			<%=outputConnName%>.dimension_type=pDIM_<%=cid %>.getDimensionType();
+			<%if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append("dimension_id is :" + <%=outputConnName%>.dimension_id + " | ");
+				log4jSb_<%=cid%>.append("dimension_name is :" + <%=outputConnName%>.dimension_name + " | ");
+				log4jSb_<%=cid%>.append("dimension_attribut_cube is :" + <%=outputConnName%>.dimension_attribut_cube + " | ");
+				log4jSb_<%=cid%>.append("dimension_rights_cube is :" + <%=outputConnName%>.dimension_rights_cube + " | ");
+				log4jSb_<%=cid%>.append("dimension_elements is :" + <%=outputConnName%>.dimension_elements + " | ");
+				log4jSb_<%=cid%>.append("dimension_max_level is :" + <%=outputConnName%>.dimension_max_level + " | ");
+				log4jSb_<%=cid%>.append("dimension_max_indent is :" + <%=outputConnName%>.dimension_max_indent + " | ");
+				log4jSb_<%=cid%>.append("dimension_type is :" + <%=outputConnName%>.dimension_type);
+				log.trace("<%=cid%> - Content of the dimension info " + NB_DIMENSIONS<%=cid%> + ": " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
 <%
 		}
 		if(bIterate){

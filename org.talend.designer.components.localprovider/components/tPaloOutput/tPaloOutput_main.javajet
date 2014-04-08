@@ -14,6 +14,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -30,8 +31,8 @@
 %>
 			nb_line_<%=cid %>=nb_line_<%=cid %> + 1;
 <%
-	    		for (int i = 0; i < sizeColumns; i++) {
-	    			IMetadataColumn column = columns.get(i);
+    		for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
@@ -44,20 +45,36 @@
 <%
 					}
 %>
-
-				
-				strArrTalendQuery[<%=iArrPos++ %>]=String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+					strArrTalendQuery[<%=iArrPos++ %>]=String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
+					if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append(strArrTalendQuery[<%=iArrPos++ %>] );
+		                <%if(i < sizeColumns-1){%>
+		                	log4jSb_<%=cid%>.append("|");
+	    	            <%}
+					}
 				}
-	     		}
+     		}
 %>
 			org.talend.palo.paloIXData.setData(strArrTalendQuery,<%=conn.getName() %>.<%=measureColumn %>,database_<%=cid %>,cube_<%=cid %>);
 			nb_commit_count_<%=cid %>=nb_commit_count_<%=cid %> + 1;
 			if(nb_commit_count_<%=cid %> >= <%=commitsize %>){
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Committing cube .");
+				<%}%>
 				plDb_<%=cid %>.commitCube(cube_<%=cid %>);
+				<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Commit has succeeded.");
+				<%}%>
 				nb_commit_count_<%=cid %> =0;
+			}
+			<%
+			if(isLog4jEnabled){
+			%>
+				log.trace("<%=cid%> - Content of the record : " + nb_line_<%=cid%> + ": "  + log4jSb_<%=cid%> + " .");
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%		
 			}			
-<%
 		}
 	}
 %>

@@ -5,26 +5,22 @@
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	
 	"
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
-
 	String sCommitSize= ElementParameterParser.getValue(node,"__COMMITSIZE__");
 	String sMeasureColumn= ElementParameterParser.getValue(node,"__MEASURE_COLUMN__");
 	String sSplashMode= ElementParameterParser.getValue(node,"__SPLASH_MODE__");
-
 	boolean bUseEventprocessor = "true".equals(ElementParameterParser.getValue(node,"__EVENTPROCESSOR__"));
 	boolean bAddValues = "true".equals(ElementParameterParser.getValue(node,"__ADDVALUES__"));
-
 	boolean bDieOnError = "true".equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-
-
-
 	String strInputConnectionName="";
 	List< ? extends IConnection> conns = node.getIncomingConnections();
  	if(conns!=null){
@@ -42,10 +38,16 @@
 		<%
 			if(bDieOnError){
 		%>
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - " + plE_<%=cid %>.getMessage());
+			<%}%>
 				throw(plE_<%=cid %>);
 		<%
 			}else{
 		%>
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + plE_<%=cid %>.getMessage());
+			<%}%>
 				System.err.print(plE_<%=cid %>.getMessage());
 		<%
 			}
@@ -56,9 +58,18 @@
 	if(!useExistingConnection){
 %>
 		if(pConn_<%=cid %> != null){
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the database.");
+			<%}%>
 			pConn_<%=cid %>.logout();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the database closed.");
+			<%}%>
 		}
 <%
 	}
 %>
 
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Done.");
+	<%}%>

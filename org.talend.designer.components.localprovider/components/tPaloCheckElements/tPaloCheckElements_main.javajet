@@ -15,12 +15,10 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
-
 	String sCommitSize= ElementParameterParser.getValue(node,"__COMMITSIZE__");
 	String sMeasureColumn= ElementParameterParser.getValue(node,"__MEASURE_COLUMN__");
-
-
 	String strInputConnectionName="";
 	List< ? extends IConnection> conns = node.getIncomingConnections();
  	if(conns!=null){
@@ -46,13 +44,13 @@
 	if(rejectConns != null && rejectConns.size() > 0) {
 		IConnection rejectConn = rejectConns.get(0);
 		rejectConnName = rejectConn.getName();
-    	}
+	}
 
-    	List<IMetadataColumn> rejectColumnList = null;
-    	IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-    	if(metadataTable != null) {
+	List<IMetadataColumn> rejectColumnList = null;
+	IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+	if(metadataTable != null) {
 		rejectColumnList = metadataTable.getListColumns();      
-    	}
+	}
 
 %>
 	bRejectRow_<%=cid %> = false;
@@ -89,6 +87,9 @@
 
 					if(ElementParameterParser.getObjectValue(node, "__ERROR_HANDLING__").equals("DIE_ON_MISSING_ELEMENT")){
 					%>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + pDIMs_<%=cid %>.getDimension(<%=iCount%>).getName() +" does not contain "+<%=strInputConnectionName%>.<%=strElement%>);
+						<%}%>
  						throw(new org.talend.jpalo.paloexception(pDIMs_<%=cid %>.getDimension(<%=iCount%>).getName()+" does not contain "+<%=strInputConnectionName%>.<%=strElement%>));
 					<%
 					}
@@ -114,52 +115,63 @@
 %>
 				if(!bRejectRow_<%=cid %>){
 					<%=strOutputConnectionName %> = new <%=strOutputConnectionName %>Struct();
-
 <%
-				List<IMetadataColumn> columns = metadata.getListColumns();
-				int sizeColumns = columns.size();
-		    		for (int i = 0; i < sizeColumns; i++) {
-		    			IMetadataColumn column = columns.get(i);
+					List<IMetadataColumn> columns = metadata.getListColumns();
+					int sizeColumns = columns.size();
+			    		for (int i = 0; i < sizeColumns; i++) {
+			    			IMetadataColumn column = columns.get(i);
 					%>
-					<%=strOutputConnectionName%>.<%=column.getLabel()%>=<%=strInputConnectionName%>.<%=column.getLabel()%>;
-					<%
-				}
-			}
+							<%if(isLog4jEnabled){%>
+								log4jSb_<%=cid%>.append(<%=strInputConnectionName%>.<%=column.getLabel()%> );
+				                <%if(i < sizeColumns-1){%>
+				                	log4jSb_<%=cid%>.append("|");
+			    	            <%}
+							}%>
+							<%=strOutputConnectionName%>.<%=column.getLabel()%>=<%=strInputConnectionName%>.<%=column.getLabel()%>;
+							<%
+						}
+					}
 %>
 				}else{
 					<%=strOutputConnectionName %> = null;
 				}
 <%
 
+			}
 		}
-	}
-
-	if(strInputConnectionName.length()>0 && rejectConnName.length()>0){
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
+		if(isLog4jEnabled){
 %>
-				if(bRejectRow_<%=cid %>){
-					<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+			log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%> + " .");
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+<%		
+		}
+
+		if(strInputConnectionName.length()>0 && rejectConnName.length()>0){
+			List<IMetadataTable> metadatas = node.getMetadataList();
+			if ((metadatas!=null)&&(metadatas.size()>0)) {
+				IMetadataTable metadata = metadatas.get(0);
+				if (metadata!=null) {
+%>
+					if(bRejectRow_<%=cid %>){
+						<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-				List<IMetadataColumn> columns = metadata.getListColumns();
-				int sizeColumns = columns.size();
-		    		for (int i = 0; i < sizeColumns; i++) {
-		    			IMetadataColumn column = columns.get(i);
-					%>
-					<%=rejectConnName%>.<%=column.getLabel()%>=<%=strInputConnectionName%>.<%=column.getLabel()%>;
-					<%
+						List<IMetadataColumn> columns = metadata.getListColumns();
+						int sizeColumns = columns.size();
+			    		for (int i = 0; i < sizeColumns; i++) {
+			    			IMetadataColumn column = columns.get(i);
+%>
+							<%=rejectConnName%>.<%=column.getLabel()%>=<%=strInputConnectionName%>.<%=column.getLabel()%>;
+<%
+						}
+%>
+						<%=rejectConnName%>.errorMessage=sbErrorText_<%=cid %>.toString();
+<%
 				}
 %>
-				<%=rejectConnName%>.errorMessage=sbErrorText_<%=cid %>.toString();
+					}else{
+						<%=rejectConnName %> = null;
+					}
 <%
 			}
-%>
-				}else{
-					<%=rejectConnName %> = null;
-				}
-<%
 		}
-	}
 %>

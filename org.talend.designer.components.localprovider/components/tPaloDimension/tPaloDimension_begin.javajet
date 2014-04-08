@@ -5,12 +5,16 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node); 
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
+ 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 
@@ -55,13 +59,24 @@ if(useExistingConnection){
 	// Use Existing
 	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
 	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+	<%if(isLog4jEnabled){%>
+		if(pConn_<%=cid %>!=null) {
+			log.info("<%=cid%> - Uses an existing connection.");
+		}
+	<%}%>
 <%
 }else{
 %>
 	// Initialize jpalo
 	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
 	// Open the connection
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "' .");
+	<%}%>
 	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+	<%}%>
 <%
 }
 %>
@@ -69,7 +84,9 @@ if(useExistingConnection){
 org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %>= pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>); 
 if(pDB_<%=cid %> == null){
-
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
+	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 	
 }
@@ -85,12 +102,26 @@ if(("NONE").equals(sDimensionAction)){
 <%
 }else if(("CREATE").equals(sDimensionAction)){
 %>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Creating dimension '" + <%=sDimensionName%> + "' .");
+	<%}%>
 	pDIM_<%=cid %> = pDIMs_<%=cid %>.createDimension(<%=sDimensionName%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Create dimension '" + <%=sDimensionName%> + "' has succeeded.");
+	<%}%>
 <%
 }else if(("CREATE_IF_NOT_EXISTS").equals(sDimensionAction)){
 %>
 	pDIM_<%=cid %> = pDIMs_<%=cid %>.getDimension(<%=sDimensionName%>);
-	if(null==pDIM_<%=cid %>) pDIM_<%=cid %> = pDIMs_<%=cid %>.createDimension(<%=sDimensionName%>);
+	if(null==pDIM_<%=cid %>){
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Creating dimension '" + <%=sDimensionName%> + "' .");
+		<%}%>
+		pDIM_<%=cid %> = pDIMs_<%=cid %>.createDimension(<%=sDimensionName%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Create dimension '" + <%=sDimensionName%> + "' has succeeded.");
+		<%}%>
+	}
 <%
 }else if (("DELETE").equals(sDimensionAction)){
 %>
@@ -109,11 +140,19 @@ if(("NONE").equals(sDimensionAction)){
 		//Loop through Cubes, delete one by one
 		for(String strCubeName_<%=cid %> : strCubeNames_<%=cid %>) 
 		    CUBES_<%=cid %>.deleteCube(strCubeName_<%=cid %>);
-		
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Deleting dimension '" + <%=sDimensionName%> + "' .");
+		<%}%>
 		pDIMs_<%=cid %>.deleteDimension(<%=sDimensionName%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Delete dimension '" + <%=sDimensionName%> + "' has succeeded.");
+		<%}%>
 		pDIM_<%=cid %> = pDIMs_<%=cid %>.getDimension(<%=sDimensionName%>);
 	}
 	else {
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - Dimension '" + <%=sDimensionName%> + "' not found in database '" + <%=sDatabaseName%> + "' ." );
+		<%}%>
 		 throw new RuntimeException ("Dimension '" + <%=sDimensionName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 	}
 <%
@@ -129,8 +168,13 @@ if(("NONE").equals(sDimensionAction)){
 		for(org.talend.jpalo.palocube pCUBE_<%=cid %> : pCUBEs_<%=cid %>.getCubes()) strCubeNames_<%=cid %>.add(pCUBE_<%=cid %>.getName());
 		for(String strCubeName_<%=cid %> : strCubeNames_<%=cid %>) 
 		CUBES_<%=cid %> .deleteCube(strCubeName_<%=cid %>);
-		
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Deleting dimension '" + <%=sDimensionName%> + "' .");
+		<%}%>
 		pDIMs_<%=cid %>.deleteDimension(<%=sDimensionName%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Delete dimension '" + <%=sDimensionName%> + "' has succeeded.");
+		<%}%>
 		
 	
 	}
@@ -138,7 +182,13 @@ if(("NONE").equals(sDimensionAction)){
 <%
 	if(("DELETE_IF_EXISTS_AND_CREATE").equals(sDimensionAction)){
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Creating dimension '" + <%=sDimensionName%> + "' .");
+		<%}%>
  		pDIM_<%=cid %> = pDIMs_<%=cid %>.createDimension(<%=sDimensionName%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Create dimension '" + <%=sDimensionName%> + "' has succeeded.");
+		<%}%>
 <%
 	}
 }

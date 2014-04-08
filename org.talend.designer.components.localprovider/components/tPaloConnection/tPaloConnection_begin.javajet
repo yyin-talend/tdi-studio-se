@@ -5,11 +5,15 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node); 
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
+	log4jFileUtil.logParameters(node); 
 
     String sServer = ElementParameterParser.getValue(node, "__SERVER__");
     String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -26,7 +30,15 @@
 org.talend.jpalo.palo p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
 
 // Open the connection
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "'.");
+<%}%>
 org.talend.jpalo.paloconnection pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+<%}%>
 
 globalMap.put("p_<%=cid %>", p_<%=cid %>);
 globalMap.put("pConn_<%=cid %>", pConn_<%=cid %>);
+
+<%log4jFileUtil.componentFinishInfo(node);%>

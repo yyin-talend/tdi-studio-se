@@ -7,56 +7,63 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node); 
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASS"));
+	log4jFileUtil.logParameters(node); 
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-
-
     String sServer = ElementParameterParser.getValue(node, "__SERVER__");
     String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
     String sUsername = ElementParameterParser.getValue(node, "__USERNAME__");
     String sPassword = ElementParameterParser.getValue(node, "__PASS__");
-
     String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
     String sCubeName = ElementParameterParser.getValue(node,"__CUBE__");
     //String sCubeType = ElementParameterParser.getValue(node,"__CUBE_TYPE__");
     String sCubeType = "CUBE_NORMAL";
-
     List<Map<String, String>> tCubeRules = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CUBE_RULES__");
-    
-
     String sDeploypalolibs = ElementParameterParser.getValue(node, "__DEPLOY_PALO_LIBS__");
     boolean bDeploypalolibs=false;
     if(sDeploypalolibs.equals("true"))bDeploypalolibs=true;
-
 %>
 
-org.talend.jpalo.palo p_<%=cid %> = null;
-org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
+	org.talend.jpalo.palo p_<%=cid %> = null;
+	org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
 
 <%
-if(useExistingConnection){
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String p = "p_" + connection;
-	String pConn = "pConn_" + connection;
+	if(useExistingConnection){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String p = "p_" + connection;
+		String pConn = "pConn_" + connection;
 
 %>
-	// Use Existing
-	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
-	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+		// Use Existing
+		p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
+		pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+		<%if(isLog4jEnabled){%>
+			if(pConn_<%=cid %>!=null) {
+				log.info("<%=cid%> - Uses an existing connection.");
+			}
+		<%}%>
 <%
-}else{
+	}else{
 %>
-	// Initialize jpalo
-	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
-	// Open the connection
-	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+		// Initialize jpalo
+		p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
+		// Open the connection
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "' .");
+		<%}%>
+		pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
+		<%}%>
 <%
-}
+	}
 %>
 
 
@@ -64,6 +71,9 @@ org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
 org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
 
 if(pDB_<%=cid %> == null){
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - Database '" + <%=sDatabaseName%> + "' not found.");
+	<%}%>
 	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
 }
 
@@ -72,6 +82,9 @@ org.talend.jpalo.palocubes pCBs_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jp
 org.talend.jpalo.palocube pCB_<%=cid %> = pCBs_<%=cid %>.getCube(<%=sCubeName%>);
 
 if(pCB_<%=cid %> == null){
+	<%if(isLog4jEnabled){%>
+		log.fatal("<%=cid%> - Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "' ." );
+	<%}%>
 	 throw new RuntimeException ("Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
 }
 
@@ -92,8 +105,17 @@ for(int i=0; i<iNbOfCubeRules; i++){
 		if(null==strRuleExtern_ID || strRuleExtern_ID.length()<3 || strRuleExtern_ID.equals("\"\"")){
 %>
 		try{
+    		<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Creating rule '" + <%=strRuleDefinition%> + "' .");
+			<%}%>
 			pRLs_<%=cid %>.addRule(<%=strRuleDefinition%>, true, "tPaloRule_"+ pRLs_<%=cid %>.getNumberOfRules(),  <%=strRuleComment%>, <%=bRuleActivate%>);
-		}catch(PaloAPIException e){
+    		<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Create rule '" + <%=strRuleDefinition%> + "' has succeeded.");
+			<%}%>
+		}catch(Exception e){
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - Data manipulation failed: " + e.getLocalizedMessage());
+			<%}%>
 			System.err.println ("data manipulation failed: " + e.getLocalizedMessage());
 		}
 
@@ -102,12 +124,24 @@ for(int i=0; i<iNbOfCubeRules; i++){
 %>
 			// Check if Rule exists
 			if(null==pRLs_<%=cid %>.getRule(<%=strRuleExtern_ID%>))
+	    		<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Creating rule '" + <%=strRuleDefinition%> + "' .");
+				<%}%>
 				pRLs_<%=cid %>.addRule(<%=strRuleDefinition%>, true, <%=strRuleExtern_ID%>,  <%=strRuleComment%>, <%=bRuleActivate%>);
+	    		<%if(isLog4jEnabled){%>
+					log.info("<%=cid%> - Create rule '" + <%=strRuleDefinition%> + "' has succeeded.");
+				<%}%>
 <%
 		}
 	}else if(("RULE_DELETE").equals(strRuleAction)){
 %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Deleting rule '" + <%=strRuleExtern_ID%> + "' .");
+		<%}%>
 		pRLs_<%=cid %>.deleteRule(<%=strRuleExtern_ID%>);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Delete rule '" + <%=strRuleExtern_ID%> + "' has succeeded.");
+		<%}%>
 <%
 	}else if(("RULE_UPDATE").equals(strRuleAction)){
 %>
@@ -116,7 +150,13 @@ for(int i=0; i<iNbOfCubeRules; i++){
 			pRL_<%=cid%>.setDefinition(<%=strRuleDefinition%>);
 			pRL_<%=cid%>.setComment(<%=strRuleComment%>);
 			pRL_<%=cid%>.setActivated(<%=bRuleActivate%>);
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Updating rule '" + <%=strRuleExtern_ID%> + "' .");
+			<%}%>
 			pRL_<%=cid%>.modifyRule();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Update rule '" + <%=strRuleExtern_ID%> + "' has succeeded.");
+			<%}%>
 		}
 <%
 	}
@@ -124,9 +164,16 @@ for(int i=0; i<iNbOfCubeRules; i++){
 	if(!useExistingConnection){
 %>
 		if(pConn_<%=cid %> != null){
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the database.");
+			<%}%>
 			pConn_<%=cid %>.logout();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the database closed.");
+			<%}%>
 		}
 <%
 	}
 %>
 
+	<%log4jFileUtil.componentFinishInfo(node);%>

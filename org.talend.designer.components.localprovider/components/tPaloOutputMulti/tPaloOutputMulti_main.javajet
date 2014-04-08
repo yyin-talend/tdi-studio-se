@@ -1,7 +1,6 @@
 <%@ jet
 	imports="
 	java.util.List
-
 	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.process.ElementParameterParser
@@ -9,24 +8,21 @@
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	
 	"
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
-
 	String sCommitSize= ElementParameterParser.getValue(node,"__COMMITSIZE__");
 	String sMeasureColumn= ElementParameterParser.getValue(node,"__MEASURE_COLUMN__");
-
 	String sSplashMode= ElementParameterParser.getValue(node,"__SPLASH_MODE__");
-
 	boolean bUseEventprocessor = "true".equals(ElementParameterParser.getValue(node,"__EVENTPROCESSOR__"));
 	boolean bAddValues = "true".equals(ElementParameterParser.getValue(node,"__ADDVALUES__"));
 	boolean bDieOnError = "true".equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
-
-
 	String strInputConnectionName="";
 	List< ? extends IConnection> conns = node.getIncomingConnections();
  	if(conns!=null){
@@ -40,21 +36,21 @@
 	if(rejectConns != null && rejectConns.size() > 0) {
 		IConnection rejectConn = rejectConns.get(0);
 		rejectConnName = rejectConn.getName();
-    	}
-    	List<IMetadataColumn> rejectColumnList = null;
-    	IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-    	if(metadataTable != null) {
+	}
+	List<IMetadataColumn> rejectColumnList = null;
+	IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+	if(metadataTable != null) {
 		rejectColumnList = metadataTable.getListColumns();      
-    	}
+	}
 
  	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-    		for(IConnection conn : outgoingConns) {
-	        if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	for(IConnection conn : outgoingConns) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             %>       
-            <%=conn.getName() %> = null;            
-            <%      
-        }
-    }
+        	<%=conn.getName() %> = null;            
+    <%      
+		}
+	}
 
 
 	if(strInputConnectionName.length()>0){
@@ -65,40 +61,58 @@
 				List<IMetadataColumn> columns = metadata.getListColumns();
 				int sizeColumns = columns.size();
 				if(sizeColumns > 1) 
-				    sizeColumns = sizeColumns-1;
+			    sizeColumns = sizeColumns-1;
 				StringBuilder sbX=new StringBuilder();
-		    		for (int i = 0; i < sizeColumns; i++) {
-		    			IMetadataColumn column = columns.get(i);
-		      		//if(!column.getLabel().equals(sMeasureColumn)){
+	    		for (int i = 0; i < sizeColumns; i++) {
+	    			IMetadataColumn column = columns.get(i);
+	      			//if(!column.getLabel().equals(sMeasureColumn)){
 					%>
 					strArrToAdd_<%=cid %>[<%=i%>] = String.valueOf(<%=strInputConnectionName%>.<%=column.getLabel()%>);
 					<%
+					if(isLog4jEnabled){%>
+						log4jSb_<%=cid%>.append(strArrToAdd_<%=cid %>[<%=i%>] );
+		                <%if(i < sizeColumns-1){%>
+		                	log4jSb_<%=cid%>.append("|");
+	    	            <%}
+	    			}
 					//}
 				}
 %>
-			plDT_<%=cid %>.addToValueList(strArrToAdd_<%=cid %>, <%=strInputConnectionName%>.<%=sMeasureColumn%>);
-			iNbOfProcessedRows_<%=cid %>++;
+				plDT_<%=cid %>.addToValueList(strArrToAdd_<%=cid %>, <%=strInputConnectionName%>.<%=sMeasureColumn%>);
+				iNbOfProcessedRows_<%=cid %>++;
 
-			if(iNbOfProcessedRows_<%=cid %>>=<%=sCommitSize%>){
-	            		try{
-					plDT_<%=cid %>.setData(pCB_<%=cid %>, org.talend.jpalo.palodata.<%=sSplashMode%>, <%=bAddValues%>,  <%=bUseEventprocessor%> );
-				}catch(java.lang.Exception plE_<%=cid %>){
-					<%
-					if(bDieOnError){
-					%>
-						throw(plE_<%=cid %>);
-					<%
-					}else{
-					%>
-						System.err.print(plE_<%=cid %>.getMessage());
-					<%
+				if(iNbOfProcessedRows_<%=cid %>>=<%=sCommitSize%>){
+            		try{
+						plDT_<%=cid %>.setData(pCB_<%=cid %>, org.talend.jpalo.palodata.<%=sSplashMode%>, <%=bAddValues%>,  <%=bUseEventprocessor%> );
+					}catch(java.lang.Exception plE_<%=cid %>){
+						<%
+						if(bDieOnError){
+						%>
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - " + plE_<%=cid %>.getMessage());
+							<%}%>
+							throw(plE_<%=cid %>);
+						<%
+						}else{
+						%>
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid%> - " + plE_<%=cid %>.getMessage());
+							<%}%>
+							System.err.print(plE_<%=cid %>.getMessage());
+						<%
+						}
+						%>
 					}
-					%>
+					plDT_<%=cid %>.cleanDataSetList();
+					iNbOfProcessedRows_<%=cid %>=0;
 				}
-				plDT_<%=cid %>.cleanDataSetList();
-				iNbOfProcessedRows_<%=cid %>=0;
-			}
-<%
+				<%
+				if(isLog4jEnabled){
+				%>
+					log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%> + " .");
+					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+				<%		
+				}		
 			}
 		}
 	}

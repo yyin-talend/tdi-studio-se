@@ -12,6 +12,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 
 	String sDimensionName = ElementParameterParser.getValue(node,"__DIMENSION__");
@@ -118,8 +119,17 @@
 	if(!useExistingConnection){
 %>
 		if(pConn_<%=cid %> != null){
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Closing the connection to the database.");
+			<%}%>
 			pConn_<%=cid %>.logout();
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Connection to the database closed.");
+			<%}%>
 		}
 <%
 	}
 %>
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Done.");
+<%}%>
