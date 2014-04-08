@@ -8,6 +8,8 @@
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IDataConnection
+		org.talend.designer.mapper.external.data.ExternalMapperData
+		org.talend.designer.mapper.external.data.ExternalMapperTable
 	"
 %>
 
@@ -22,6 +24,9 @@
         	String connectionName = connection.getName();
 			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
 			boolean memoryStorage = true;
+			
+			boolean isOneOfReloadLookupMode = false;
+			
 			if(validTarget != null) {
 				IHashConfiguration hashConfiguration = null;				
 				boolean bSortOnDisk = "true".equals(ElementParameterParser.getValue(node, "__SORT_ON_DISK__")); 
@@ -29,6 +34,19 @@
 			    if (validTarget instanceof IHashableInputConnections){
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
 					hashConfiguration = target.getHashConfiguration(connection.getName());
+					
+					if("tMap".equals(validTarget.getComponent().getName())) {
+    					ExternalMapperData externalData = (ExternalMapperData) (validTarget.getExternalData());
+        				List<ExternalMapperTable> inputTables = externalData.getInputTables();
+    					for (ExternalMapperTable inputTable : inputTables) {
+                			if (inputTable.getName().equals(connection.getName())) {
+                				boolean isReloadLookupMode = org.talend.designer.mapper.model.table.LOOKUP_MODE.RELOAD.name().equals(inputTable.getLookupMode());
+    							boolean isCacheOrReloadLookupMode = org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(inputTable.getLookupMode());
+    							isOneOfReloadLookupMode = isReloadLookupMode || isCacheOrReloadLookupMode;
+                				break;
+                			}
+            			}
+					}
 				} 
 				memoryStorage = !(hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk);
 			}
@@ -41,7 +59,7 @@
 %>
 tHash_Lookup_<%=connectionName%>.endPut();
 <%
-			if (includeParallelComps && memoryStorage) {
+			if (includeParallelComps && memoryStorage && !isOneOfReloadLookupMode) {
 %>
 java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>> mapsList_<%=cid%> = 
 	(java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>>)globalMap.get("THREAD_MAPS_"+jobName);
