@@ -10,12 +10,15 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
 	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
 %>
 java.io.File file_<%=cid %> = new java.io.File(<%=filename %>); 
 <%
@@ -24,7 +27,13 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 //create directory only if not exists
  java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();  
  	if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {  
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Creating directory '" + parentFile_<%=cid%>.getCanonicalPath());
+		<%}%>
  	   parentFile_<%=cid%>.mkdirs();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Create directory '"+ parentFile_<%=cid%>.getCanonicalPath() + "' has succeeded.");
+		<%}%>
  	} 
 <%
 }

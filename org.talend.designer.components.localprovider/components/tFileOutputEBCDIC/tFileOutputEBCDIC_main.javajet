@@ -10,9 +10,11 @@
         org.talend.core.model.process.ElementParameterParser
 	" 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     String cid = node.getUniqueName();	
     String incomingName = (String)codeGenArgument.getIncomingName();
 	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
@@ -32,12 +34,16 @@ if(!customSetOriginalLength){//------11111
 <%
 			for (IMetadataColumn column: preMetadatas.get(0).getListColumns()) {
 %>
-			record_<%=cid %>.add(<%=conn.getName() %>.<%=column.getLabel() %>) ;
+				record_<%=cid %>.add(<%=conn.getName() %>.<%=column.getLabel() %>) ;
+				<%if(isLog4jEnabled){%>
+					log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %> + "|");
+				<%}%>
 <%
 			}
 %>
         	rwriter_<%=cid %>.writeRecord(record_<%=cid %>);	
-        	nb_line_<%=cid %>++;		
+        	nb_line_<%=cid %>++;
+		
 <%
 				}
 			}
@@ -145,14 +151,21 @@ DB Type of the column:<%=column.getLabel()%> should be X, 3, 9, B, T
 <%
 							}
 %>
+							<%if(isLog4jEnabled){%>
+								log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=inColumn.getLabel()%> + "|");
+							<%}%>
 							fOut_<%=cid%>.flush();
 
 <%
 						} //-----77777
 					}//------66666
+%>
+       				nb_line_<%=cid %>++;	
+<%
 				}//------5555
 			}//------4444
 		}//------3333
 	}//------2222
 }//------1111
 %>
+	<%log4jFileUtil.debugWriteData(node);%>

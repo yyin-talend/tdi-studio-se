@@ -19,6 +19,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
@@ -166,73 +167,76 @@ try{
 			Integer precision = column.getPrecision();
 			if(precision==null) precision = 0;
 			if(outputMetadataTable.getListColumns().size() <= schemaOptNum){
-			if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+				if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
-//////////////////////////////////////////////////
-the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
-//////////////////////////////////////////////////
+					//////////////////////////////////////////////////
+					the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
+					//////////////////////////////////////////////////
 <%
-				continue;
-			}
+					continue;
+				}
 %>
-			byte[] bb_<%=outConn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
-			bbRecord_<%=cid %>.get(bb_<%=outConn.getName() %>_<%=column.getLabel()%>);
+				byte[] bb_<%=outConn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
+				bbRecord_<%=cid %>.get(bb_<%=outConn.getName() %>_<%=column.getLabel()%>);
 <%
-			if(orgainType.equals("X")){
-					boolean trimStr = false;
-					if(trimSelects!=null){
-						for(Map<String, String> mapTrim : trimSelects){
-							if(column.getLabel().equals(mapTrim.get("SCHEMA_COLUMN")) && "true".equals(mapTrim.get("TRIM"))){
-								trimStr = true;
-								break;
+				if(orgainType.equals("X")){
+						boolean trimStr = false;
+						if(trimSelects!=null){
+							for(Map<String, String> mapTrim : trimSelects){
+								if(column.getLabel().equals(mapTrim.get("SCHEMA_COLUMN")) && "true".equals(mapTrim.get("TRIM"))){
+									trimStr = true;
+									break;
+								}
 							}
 						}
-					}
 %>				
-				<%=outConn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && (trimStr)))?".trim()":"" %>;
+					<%=outConn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && (trimStr)))?".trim()":"" %>;
 <%
-			}else if(orgainType.equals("1")) {
+				}else if(orgainType.equals("1")) {
 %>
-				<%=outConn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=outConn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
+					<%=outConn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=outConn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
 <%
-			}else if(orgainType.equals("2")) {
+				}else if(orgainType.equals("2")) {
 %>
-				<%=outConn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=outConn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
+					<%=outConn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=outConn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
 <%
-			}else if(orgainType.equals("3") || orgainType.equals("9")) {
-				String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
-				boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
-				if(orgainType.equals("3")){
+				}else if(orgainType.equals("3") || orgainType.equals("9")) {
+					String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+					boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+					if(orgainType.equals("3")){
 %>
-					<%=outConn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=precision %>,<%=isImpliedDecimal %>);
+						<%=outConn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=precision %>,<%=isImpliedDecimal %>);
+<%
+					}else {
+%>
+						<%=outConn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+<%
+					}
+				}else if(orgainType.equals("B")) {
+%>
+					<%=outConn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=outConn.getName() %>_<%=column.getLabel()%>),0);
+<%
+				}else if (orgainType.equals("T")) {
+%>
+					<%=outConn.getName() %>.<%=column.getLabel()%> = bb_<%=outConn.getName() %>_<%=column.getLabel()%>;
 <%
 				}else {
 %>
-					<%=outConn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+					//////////////////////////////////////////////////
+					DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
+					//////////////////////////////////////////////////
 <%
 				}
-			}else if(orgainType.equals("B")) {
-%>
-				<%=outConn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=outConn.getName() %>_<%=column.getLabel()%>),0);
-<%
-			}else if (orgainType.equals("T")) {
-%>
-				<%=outConn.getName() %>.<%=column.getLabel()%> = bb_<%=outConn.getName() %>_<%=column.getLabel()%>;
-<%
-			}else {
-%>
-//////////////////////////////////////////////////
-DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
-//////////////////////////////////////////////////
-<%
-			}
 			}else{
 				if(valueN%schemaOptNum==0){
 %>
-			extractEBCDICFieldUtil_<%=cid%>.putValue_unOirginal_<%=valueN/schemaOptNum%>(<%=outConn.getName() %>,bbRecord_<%=cid %>);
+					extractEBCDICFieldUtil_<%=cid%>.putValue_unOirginal_<%=valueN/schemaOptNum%>(<%=outConn.getName() %>,bbRecord_<%=cid %>);
 <%
 				}
 			}
+			if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append(<%=outConn.getName() %>.<%=column.getLabel()%> + "|");
+			<%}
 	}//----- for end
 	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
@@ -242,10 +246,22 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 %>
 	bbRecord_<%=cid %>.clear();
 	nb_line_<%=cid%>++;
+<%
+	if(isLog4jEnabled){
+%>
+		log.debug("<%=cid%> - Extracting the record " + nb_line_<%=cid %> + " to the file.");
+		log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
+		log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+<%
+	}
+%>
 }catch(java.lang.Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
 %>
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - " + ex_<%=cid %>.getMessage());
+		<%}%>
 		throw(ex_<%=cid %>);
 <%
 	}else{
@@ -274,6 +290,9 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 <%
 		} else if(("").equals(rejectConnName)){
 %>
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid%> - " + ex_<%=cid %>.getMessage());
+			<%}%>
 		    System.err.println(ex_<%=cid %>.getMessage());
 		    <%=firstConnName %> = null;
 <%
