@@ -19,6 +19,8 @@ import java.util.List;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.Item;
@@ -118,10 +120,12 @@ public class ChangeMysqlVersionForProjectSetting extends AbstractMigrationTask i
 
     private boolean updateJarValue(ElementParameterType param) {
         if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(param.getValue())//$NON-NLS-1$ 
-                || "mysql-connector-java-5.1.22-bin.jar".equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$
+                || EDatabaseVersion4Drivers.getDriversStr(EDatabaseTypeName.MYSQL.getDisplayName(),
+                        EDatabaseVersion4Drivers.MYSQL_5.getVersionValue()).equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$
             param.setValue("MYSQL_5"); //$NON-NLS-1$
             return true;
-        } else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(param.getValue())) {//$NON-NLS-1$
+        } else if (EDatabaseVersion4Drivers.getDriversStr(EDatabaseTypeName.MYSQL.getDisplayName(),
+                EDatabaseVersion4Drivers.MYSQL_4.getVersionValue()).equalsIgnoreCase(param.getValue())) {//$NON-NLS-1$
             param.setValue("MYSQL_4"); //$NON-NLS-1$
             return true;
         }
