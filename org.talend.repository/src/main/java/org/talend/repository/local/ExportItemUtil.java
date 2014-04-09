@@ -344,9 +344,11 @@ public class ExportItemUtil {
                     IPath tdmPropsPath = getProjectPath().append(FileConstants.TDM_PROPS_PATH);
                     IPath propsSourcePath = workspacePath.append(tdmPropsPath);
                     IPath propsTargetPath = new Path(destinationDirectory.getAbsolutePath()).append(tdmPropsPath);
-                    FilesUtils.copyFile(new File(propsSourcePath.toPortableString()),
-                            new File(propsTargetPath.toPortableString()));
-                    toExport.put(propsTargetPath.toFile(), tdmPropsPath);
+                    File source = new File(propsSourcePath.toPortableString());
+                    if (source.exists()) {
+                        FilesUtils.copyFile(source, new File(propsTargetPath.toPortableString()));
+                        toExport.put(propsTargetPath.toFile(), tdmPropsPath);
+                    }
 
                 }
                 // tdm simple files
