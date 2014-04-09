@@ -98,7 +98,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				<%
 			}else{
-				if(!("CLEAR").equals(tableAction)){
+				if(!("CLEAR").equals(tableAction) && !("NONE").equals(tableAction)){
 					createProjection(createProjection,stmtStructure);
 				}
 			}
