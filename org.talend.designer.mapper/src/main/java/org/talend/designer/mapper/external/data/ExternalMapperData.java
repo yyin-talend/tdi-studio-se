@@ -13,13 +13,19 @@
 package org.talend.designer.mapper.external.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.node.IExternalMapEntry;
 import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.designer.abstractmap.managers.MapDataDelegateHelper;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -124,28 +130,37 @@ public class ExternalMapperData implements IExternalData {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final ExternalMapperData other = (ExternalMapperData) obj;
         if (this.inputTables == null) {
-            if (other.inputTables != null)
+            if (other.inputTables != null) {
                 return false;
-        } else if (!this.inputTables.equals(other.inputTables))
+            }
+        } else if (!this.inputTables.equals(other.inputTables)) {
             return false;
+        }
         if (this.outputTables == null) {
-            if (other.outputTables != null)
+            if (other.outputTables != null) {
                 return false;
-        } else if (!this.outputTables.equals(other.outputTables))
+            }
+        } else if (!this.outputTables.equals(other.outputTables)) {
             return false;
+        }
         if (this.varsTables == null) {
-            if (other.varsTables != null)
+            if (other.varsTables != null) {
                 return false;
-        } else if (!this.varsTables.equals(other.varsTables))
+            }
+        } else if (!this.varsTables.equals(other.varsTables)) {
             return false;
+        }
         return true;
     }
 
@@ -171,4 +186,44 @@ public class ExternalMapperData implements IExternalData {
         return joinedTableNames;
     }
 
+    public Map<String, Set<String>> getLinkedTableColumnsMapping() {
+        Map<String, Set<String>> tableColumnsMapping = new HashMap<String, Set<String>>();
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+        List<ExternalMapperTable> tablesHasFilter = new ArrayList<ExternalMapperTable>();
+        tablesHasFilter.addAll(inputTables);
+        tablesHasFilter.addAll(outputTables);
+        for (ExternalMapperTable table : tablesHasFilter) {
+            TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(table
+                    .getExpressionFilter());
+            for (TableEntryLocation tableEntryLocation : tableEntryLocations) {
+                if (!tableColumnsMapping.containsKey(tableEntryLocation.tableName)) {
+                    Set<String> columns = new HashSet<String>();
+                    columns.add(tableEntryLocation.columnName);
+                    tableColumnsMapping.put(tableEntryLocation.tableName, columns);
+                } else {
+                    tableColumnsMapping.get(tableEntryLocation.tableName).add(tableEntryLocation.columnName);
+                }
+            }
+        }
+        List<ExternalMapperTable> tablesHasColumnExpression = new ArrayList<ExternalMapperTable>();
+        tablesHasColumnExpression.addAll(varsTables);
+        tablesHasColumnExpression.addAll(outputTables);
+        for (ExternalMapperTable table : tablesHasColumnExpression) {
+            List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+            for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                TableEntryLocation[] tableEntryLocations = dataMapExpressionParser
+                        .parseTableEntryLocations(entry.getExpression());
+                for (TableEntryLocation tableEntryLocation : tableEntryLocations) {
+                    if (!tableColumnsMapping.containsKey(tableEntryLocation.tableName)) {
+                        Set<String> columns = new HashSet<String>();
+                        columns.add(tableEntryLocation.columnName);
+                        tableColumnsMapping.put(tableEntryLocation.tableName, columns);
+                    } else {
+                        tableColumnsMapping.get(tableEntryLocation.tableName).add(tableEntryLocation.columnName);
+                    }
+                }
+            }
+        }
+        return tableColumnsMapping;
+    }
 }
