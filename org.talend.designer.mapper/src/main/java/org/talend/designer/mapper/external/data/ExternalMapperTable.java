@@ -18,6 +18,9 @@ import java.util.List;
 
 import org.talend.core.model.process.node.IExternalMapEntry;
 import org.talend.core.model.process.node.IExternalMapTable;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -381,60 +384,83 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final ExternalMapperTable other = (ExternalMapperTable) obj;
-        if (this.activateExpressionFilter != other.activateExpressionFilter)
+        if (this.activateExpressionFilter != other.activateExpressionFilter) {
             return false;
+        }
         if (this.constraintTableEntries == null) {
-            if (other.constraintTableEntries != null)
+            if (other.constraintTableEntries != null) {
                 return false;
-        } else if (!this.constraintTableEntries.equals(other.constraintTableEntries))
+            }
+        } else if (!this.constraintTableEntries.equals(other.constraintTableEntries)) {
             return false;
+        }
         if (this.expressionFilter == null) {
-            if (other.expressionFilter != null)
+            if (other.expressionFilter != null) {
                 return false;
-        } else if (!this.expressionFilter.equals(other.expressionFilter))
+            }
+        } else if (!this.expressionFilter.equals(other.expressionFilter)) {
             return false;
-        if (this.innerJoin != other.innerJoin)
+        }
+        if (this.innerJoin != other.innerJoin) {
             return false;
+        }
         if (this.matchingMode == null) {
-            if (other.matchingMode != null)
+            if (other.matchingMode != null) {
                 return false;
-        } else if (!this.matchingMode.equals(other.matchingMode))
+            }
+        } else if (!this.matchingMode.equals(other.matchingMode)) {
             return false;
+        }
         if (this.lookupMode == null) {
-            if (other.lookupMode != null)
+            if (other.lookupMode != null) {
                 return false;
-        } else if (!this.lookupMode.equals(other.lookupMode))
+            }
+        } else if (!this.lookupMode.equals(other.lookupMode)) {
             return false;
+        }
         if (this.metadataTableEntries == null) {
-            if (other.metadataTableEntries != null)
+            if (other.metadataTableEntries != null) {
                 return false;
-        } else if (!this.metadataTableEntries.equals(other.metadataTableEntries))
+            }
+        } else if (!this.metadataTableEntries.equals(other.metadataTableEntries)) {
             return false;
-        if (this.minimized != other.minimized)
+        }
+        if (this.minimized != other.minimized) {
             return false;
+        }
         if (this.name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!this.name.equals(other.name))
+            }
+        } else if (!this.name.equals(other.name)) {
             return false;
-        if (this.reject != other.reject)
+        }
+        if (this.reject != other.reject) {
             return false;
-        if (this.rejectInnerJoin != other.rejectInnerJoin)
+        }
+        if (this.rejectInnerJoin != other.rejectInnerJoin) {
             return false;
-        if (this.persistent != other.persistent)
+        }
+        if (this.persistent != other.persistent) {
             return false;
+        }
         if (this.sizeState == null) {
-            if (other.sizeState != null)
+            if (other.sizeState != null) {
                 return false;
-        } else if (!this.sizeState.equals(other.sizeState))
+            }
+        } else if (!this.sizeState.equals(other.sizeState)) {
             return false;
+        }
         if (this.activateCondensedTool != other.activateCondensedTool) {
             return false;
         }
@@ -505,6 +531,17 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
 
     public void setActivateCondensedTool(boolean activateCondensedTool) {
         this.activateCondensedTool = activateCondensedTool;
+    }
+
+    public boolean isSelfFilter() {
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(this.expressionFilter);
+        for (TableEntryLocation tableEntryLocation : tableEntryLocations) {
+            if (!this.name.equals(tableEntryLocation.tableName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
