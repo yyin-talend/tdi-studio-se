@@ -31,7 +31,9 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -132,6 +134,8 @@ public class ExportItemWizardPage extends WizardPage {
     private Button exportDependencies;
 
     Set initcheckedNodes = new HashSet();
+
+    Set uncheckedNodes = new HashSet();
 
     Collection<IRepositoryViewObject> implicitDependences = new ArrayList<IRepositoryViewObject>();
 
@@ -413,6 +417,63 @@ public class ExportItemWizardPage extends WizardPage {
             }
 
         });
+
+        exportItemsTreeViewer.addCheckStateListener(new ICheckStateListener() {
+
+            @Override
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                if (event.getChecked()) {
+                    initcheckedNodes.add(event.getElement());
+                    // remove children and parent from uncheckednodes
+                    TreeItem treeItem = getTreeItem(exportItemsTreeViewer.getTree().getItems(), event.getElement());
+                    Set subItems = collectSubData(treeItem);
+                    Set parent = collectParentData(treeItem);
+                    uncheckedNodes.removeAll(subItems);
+                    uncheckedNodes.removeAll(parent);
+                } else {
+                    uncheckedNodes.add(event.getElement());
+                    // remove children from initcheckedNodes
+                    TreeItem treeItem = getTreeItem(exportItemsTreeViewer.getTree().getItems(), event.getElement());
+                    Set subItems = collectSubData(treeItem);
+                    initcheckedNodes.removeAll(subItems);
+                }
+            }
+
+        });
+    }
+
+    private Set collectParentData(TreeItem treeItem) {
+        Set parentItems = new HashSet();
+        if (treeItem != null) {
+            parentItems.add(treeItem.getData());
+            parentItems.addAll(collectParentData(treeItem.getParentItem()));
+        }
+        return parentItems;
+    }
+
+    private Set collectSubData(TreeItem treeItem) {
+        Set subItems = new HashSet();
+        if (treeItem != null) {
+            subItems.add(treeItem.getData());
+            for (TreeItem subItem : treeItem.getItems()) {
+                subItems.addAll(collectSubData(subItem));
+            }
+        }
+
+        return subItems;
+    }
+
+    private TreeItem getTreeItem(TreeItem[] treeItems, Object objectToFind) {
+        for (TreeItem currentChild : treeItems) {
+            if (objectToFind.equals(currentChild.getData())) {
+                return currentChild;
+            }
+            TreeItem toReturn = getTreeItem(currentChild.getItems(), objectToFind);
+            if (toReturn != null) {
+                return toReturn;
+            }
+        }
+        return null;
     }
 
     private void createTreeViewer(Composite itemComposite) {
@@ -711,14 +772,12 @@ public class ExportItemWizardPage extends WizardPage {
                 checkedDependency.clear();
                 implicitDependences.clear();
                 CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-                // exportItemsTreeViewer.expandAll();
-                // exportItemsTreeViewer.collapseAll();
                 Set allNode = new HashSet();
-                // exportItemsTreeViewer.expandToLevel(3);
                 if (exportDependencies.getSelection()) {
                     refreshExportDependNodes();
                     exportDependenciesSelected();
                     allNode.addAll(checkedDependency);
+                    allNode.addAll(implicitDependences);
                 } else {
                     allNode.addAll(initcheckedNodes);
                 }
@@ -730,6 +789,11 @@ public class ExportItemWizardPage extends WizardPage {
                     checkElement(obj, toselect);
                 }
                 exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                if (!exportDependencies.getSelection()) {
+                    for (Object unchecked : uncheckedNodes) {
+                        exportItemsTreeViewer.setChecked(unchecked, false);
+                    }
+                }
             }
         });
     }
