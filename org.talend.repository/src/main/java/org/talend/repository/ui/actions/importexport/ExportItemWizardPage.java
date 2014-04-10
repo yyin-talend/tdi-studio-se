@@ -135,6 +135,8 @@ public class ExportItemWizardPage extends WizardPage {
 
     Set initcheckedNodes = new HashSet();
 
+    Set uncheckedNodes = new HashSet();
+
     Collection<IRepositoryViewObject> implicitDependences = new ArrayList<IRepositoryViewObject>();
 
     Set checkedDependency = new HashSet();
@@ -419,14 +421,58 @@ public class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
-                // if (event.getChecked()) {
-                // initcheckedNodes.add(event.getElement());
-                // } else {
-                // initcheckedNodes.remove(event.getElement());
-                // }
+                if (event.getChecked()) {
+                    initcheckedNodes.add(event.getElement());
+                    // remove children and parent from uncheckednodes
+                    TreeItem treeItem = getTreeItem(exportItemsTreeViewer.getTree().getItems(), event.getElement());
+                    Set subItems = collectSubData(treeItem);
+                    Set parent = collectParentData(treeItem);
+                    uncheckedNodes.removeAll(subItems);
+                    uncheckedNodes.removeAll(parent);
+                } else {
+                    uncheckedNodes.add(event.getElement());
+                    // remove children from initcheckedNodes
+                    TreeItem treeItem = getTreeItem(exportItemsTreeViewer.getTree().getItems(), event.getElement());
+                    Set subItems = collectSubData(treeItem);
+                    initcheckedNodes.removeAll(subItems);
+                }
             }
 
         });
+    }
+
+    private Set collectParentData(TreeItem treeItem) {
+        Set parentItems = new HashSet();
+        if (treeItem != null) {
+            parentItems.add(treeItem.getData());
+            parentItems.addAll(collectParentData(treeItem.getParentItem()));
+        }
+        return parentItems;
+    }
+
+    private Set collectSubData(TreeItem treeItem) {
+        Set subItems = new HashSet();
+        if (treeItem != null) {
+            subItems.add(treeItem.getData());
+            for (TreeItem subItem : treeItem.getItems()) {
+                subItems.addAll(collectSubData(subItem));
+            }
+        }
+
+        return subItems;
+    }
+
+    private TreeItem getTreeItem(TreeItem[] treeItems, Object objectToFind) {
+        for (TreeItem currentChild : treeItems) {
+            if (objectToFind.equals(currentChild.getData())) {
+                return currentChild;
+            }
+            TreeItem toReturn = getTreeItem(currentChild.getItems(), objectToFind);
+            if (toReturn != null) {
+                return toReturn;
+            }
+        }
+        return null;
     }
 
     private void createTreeViewer(Composite itemComposite) {
@@ -730,6 +776,7 @@ public class ExportItemWizardPage extends WizardPage {
                     refreshExportDependNodes();
                     exportDependenciesSelected();
                     allNode.addAll(checkedDependency);
+                    allNode.addAll(implicitDependences);
                 } else {
                     allNode.addAll(initcheckedNodes);
                 }
@@ -741,6 +788,11 @@ public class ExportItemWizardPage extends WizardPage {
                     checkElement(obj, toselect);
                 }
                 exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                if (!exportDependencies.getSelection()) {
+                    for (Object unchecked : uncheckedNodes) {
+                        exportItemsTreeViewer.setChecked(unchecked, false);
+                    }
+                }
             }
         });
     }
