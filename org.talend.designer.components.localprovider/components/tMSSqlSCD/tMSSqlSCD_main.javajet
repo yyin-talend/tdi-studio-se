@@ -156,9 +156,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%
                 }
               }else{
-		    	  if((index-1)%schemaOptNum==0){
+		    	  if((index-sourceKeys.size()-1)%schemaOptNum==0){
 %>
-			 mssqlSCD_Util_<%=cid%>.getSearchResult_<%=(index-1)/schemaOptNum%>(searchingResult_<%=cid%>,lookUpValue_<%=cid%>,tmpValue_<%=cid%>,mssqlGTU_<%=cid%>);
+			 mssqlSCD_Util_<%=cid%>.getSearchResult_<%=(index-sourceKeys.size()-1)/schemaOptNum%>(searchingResult_<%=cid%>,lookUpValue_<%=cid%>,tmpValue_<%=cid%>,mssqlGTU_<%=cid%>);
 <%
 				  }
               }

@@ -128,11 +128,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 <%
 			}
 			List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
-			int index = 1;
+			int index = sourceKeys.size()+1;
 		    for(Column searchingColumn : searchingColumns) {
-		    	if((index-1)%schemaOptNum==0){
+		    	if((index-sourceKeys.size()-1)%schemaOptNum==0){
 %>
-			public void getSearchResult_<%=(index-1)/schemaOptNum%>(java.sql.ResultSet searchingResult_<%=cid%>,SCDStruct_<%=cid%> lookUpValue_<%=cid%>,String tmpValue_<%=cid%>,org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%>)throws Exception{
+			public void getSearchResult_<%=(index-sourceKeys.size()-1)/schemaOptNum%>(java.sql.ResultSet searchingResult_<%=cid%>,SCDStruct_<%=cid%> lookUpValue_<%=cid%>,String tmpValue_<%=cid%>,org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%>)throws Exception{
 <%
 				}
 		        String generatedType = searchingColumn.getJavaType();
@@ -183,14 +183,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             }
 <%
 		        }
-				if(index % schemaOptNum==0){
+				if((index-sourceKeys.size())% schemaOptNum==0){
 %>
 			}
 <%
 				}
 		        index++;
 		    }
-			if((index-1)>0&&((index-1)%schemaOptNum)>0){
+			if((index-sourceKeys.size()-1)>0&&((index-sourceKeys.size()-1)%schemaOptNum)>0){
 %>
 			}
 <%
