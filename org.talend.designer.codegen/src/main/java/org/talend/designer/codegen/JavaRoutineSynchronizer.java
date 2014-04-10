@@ -53,7 +53,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
-import org.talend.core.ui.branding.AbstractBrandingService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -159,10 +158,10 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                 String version = VersionUtils.getVersion();
                 if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
                     IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-                    if (service instanceof AbstractBrandingService) {
-                        String routineHeader = ((AbstractBrandingService) service).getRoutineLicenseHeader(version);
-                        routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
-                    }
+                    // if (service instanceof AbstractBrandingService) {
+                    String routineHeader = ((IBrandingService) service).getRoutineLicenseHeader(version);
+                    routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                    // }
                 }// end
                 String label = routineItem.getProperty().getLabel();
                 if (!label.equals(ITalendSynchronizer.TEMPLATE) && routineContent != null) {
