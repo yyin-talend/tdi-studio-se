@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
@@ -323,10 +325,8 @@ public class JavaProcessUtil {
                 IContextParameter param = selectedContext.getContextParameter(var);
                 if (param != null) {
                     // add only the file name without path
-                    String paramvalue = param.getValue();
-                    int a = paramvalue.lastIndexOf("\\"); //$NON-NLS-1$
-                    String filename = paramvalue.substring(a + 1, paramvalue.length());
-                    return new ModuleNeeded(null, filename, null, true);
+                    ModuleNeeded module = getModuleNeededForContextParam(param);
+                    return module;
                 }
             }
         }
@@ -406,15 +406,16 @@ public class JavaProcessUtil {
                     boolean isContextMode = ContextParameterUtils.containContextVariables(text);
                     if (isContextMode) {
                         List<IContext> listContext = process.getContextManager().getListContext();
+                        String var = ContextParameterUtils.getVariableFromCode(text);
                         for (IContext context : listContext) {
                             List<IContextParameter> contextParameterList = context.getContextParameterList();
                             for (IContextParameter contextPara : contextParameterList) {
-                                String var = ContextParameterUtils.getVariableFromCode(text);
-                                if (var.equals(contextPara.getName())) {
-                                    String values = context.getContextParameter(contextPara.getName()).getValue();
-                                    values = values.substring(values.lastIndexOf("\\") + 1); //$NON-NLS-1$
-                                    ModuleNeeded module = new ModuleNeeded(null, values, null, true);
-                                    modulesNeeded.add(module);
+                                String paramName = contextPara.getName();
+                                if (var.equals(paramName)) {
+                                    ModuleNeeded module = getModuleNeededForContextParam(contextPara);
+                                    if (module != null && !modulesNeeded.contains(module)) {
+                                        modulesNeeded.add(module);
+                                    }
                                 }
                             }
                         }
@@ -438,6 +439,19 @@ public class JavaProcessUtil {
         }
     }
 
+    private static ModuleNeeded getModuleNeededForContextParam(IContextParameter contextParam) {
+        if (contextParam != null) {
+            String values = contextParam.getValue();
+            if (StringUtils.isNotBlank(values)) {
+                IPath path = new Path(values); // if it's path
+                String fileName = path.lastSegment();// get the file name only.
+                ModuleNeeded module = new ModuleNeeded(null, fileName, null, true);
+                return module;
+            }
+        }
+        return null;
+    }
+    
     /**
      * 
      * DOC hcyi Comment method "getContextOriginalValue".
