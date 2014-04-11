@@ -839,7 +839,9 @@ public class CodeGenerator implements ICodeGenerator {
                     INode targetNode = connection.getTarget();
                     if ((targetNode != null) && (subProcess != null)) {
                         subTreeArgument.setInputSubtreeConnection(connection);
+                        code.append(CamelConnectionTagGenerator.getInstance().generateStartTag(node, connection));
                         code.append(generateComponentsCode(subProcess, targetNode, part, connection.getName(), typeGen));
+                        code.append(CamelConnectionTagGenerator.getInstance().generateEndTag(node, connection));
                     }
                 }
             }
