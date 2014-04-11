@@ -201,6 +201,6 @@ try{
 	try{
 		file_<%=cid %>.delete();
 	}catch(Exception e_<%=cid%>){
-	
+        <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }

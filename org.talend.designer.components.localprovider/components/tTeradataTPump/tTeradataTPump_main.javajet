@@ -9,6 +9,7 @@ imports="
     java.lang.StringBuilder
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -230,6 +231,6 @@ if(returnCodeDie) {
 	try{
 		file_<%=cid %>.delete();
 	}catch(Exception e_<%=cid%>){
-	
+        <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
