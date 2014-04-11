@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class SetParallelizationCommand extends Command {
 
     private static final String HASH_KEYS = "HASH_KEYS";
 
-    private boolean isExistParallel = false;
+    private Map<INode, Boolean> existParallelMap = new HashMap<INode, Boolean>();
 
     public SetParallelizationCommand(INode node) {
         this.node = node;
@@ -49,11 +50,31 @@ public class SetParallelizationCommand extends Command {
 
     @Override
     public void execute() {
+        existParallelMap.clear();
+        initParallelNodeMap();
         setParallelization(this.node);
-        if (!isExistParallel) {
+        if (!isExistParalInSubjob(existParallelMap, node.getProcessStartNode(false))) {
             MessageDialog.openInformation(new Shell(), Messages.getString("Node.setPartitioning"),
                     Messages.getString("Node.nothingDoForPartitioning"));
         }
+    }
+
+    private void initParallelNodeMap() {
+        List<? extends INode> nodes = this.node.getProcess().getGraphicalNodes();
+        for (INode node : nodes) {
+            if (node.isSubProcessStart()) {
+                // by default for subjob the parallel does not exist
+                existParallelMap.put(node, false);
+            }
+        }
+    }
+
+    private boolean isExistParalInSubjob(Map<INode, Boolean> existParallelMap, INode node) {
+        INode subJobStartNode = node.getSubProcessStartNode(false);
+        if (existParallelMap.containsKey(subJobStartNode)) {
+            return existParallelMap.get(subJobStartNode);
+        }
+        return false;
     }
 
     private boolean isComponentCanParlization(IConnection parConnection, Node needToPar) {
@@ -111,7 +132,7 @@ public class SetParallelizationCommand extends Command {
                             } else if (value instanceof Integer) {
                                 Integer index = (Integer) value;
                                 if (nodeElemForList.getListItemsDisplayName().length > index) {
-                                    columnKeyValues.add((String) nodeElemForList.getListItemsDisplayName()[index]);
+                                    columnKeyValues.add(nodeElemForList.getListItemsDisplayName()[index]);
                                 }
                             }
                         }
@@ -135,91 +156,41 @@ public class SetParallelizationCommand extends Command {
                 for (IConnection con : node.getOutgoingConnections()) {
                     EConnectionType lineStyle = con.getLineStyle();
                     if (lineStyle.hasConnectionCategory(IConnectionCategory.DATA)) {
-                        // if (con.isActivate()) {
-                        boolean isEndRow = con.getTarget().getOutgoingConnections().size() == 0;
-                        boolean isStartRow = node.isStart();
-                        if (ParallelExecutionUtils.isPartitionKeysExist(con)) {
-                            ParallelExecutionUtils.reSetParKeyValuesForCon(con);
-                        }
-                        if (!isEndRow && isComponentCanParlization(con, (Node) con.getTarget())) {
-                            // For those component support tPartitioner,but its keys not same as previous
-                            // tPartitioner,need do Repartitioner automatic
-                            if (isExistParallel && !isStartRow && isComponentNeedRepartion(con, (Node) con.getTarget())) {
-                                con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                con.setPropertyValue(EParameterName.REPARTITIONER.getName(), Boolean.TRUE);
+                        if (!lineStyle.equals(EConnectionType.FLOW_MERGE)) {
+                            boolean isEndRow = con.getTarget().getOutgoingConnections().size() == 0;
+                            boolean isStartRow = node.isStart();
 
-                                // set the keys for hash keys
-                                ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) con.getTarget());
-                                setParallelization(con.getTarget());
-
-                            } else {
-                                // when pervious con is par/repar/none,keep current is none
-                                if (isExistParallel
-                                        && (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
-                                                || ParallelExecutionUtils.existPreviousNone((Node) con.getSource()) || ParallelExecutionUtils
-                                                    .existPreviousRepar((Node) con.getSource()))) {
-                                    con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                    con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
-                                    con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                    con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
-                                    setParallelization(con.getTarget());
+                            if (ParallelExecutionUtils.isPartitionKeysExist(con)) {
+                                ParallelExecutionUtils.reSetParKeyValuesForCon(con);
+                            }
+                            if (!isEndRow && isComponentCanParlization(con, (Node) con.getTarget())) {
+                                // For those component support tPartitioner,but its keys not same as previous
+                                // tPartitioner,need do Repartitioner automatic
+                                if (isExistParalInSubjob(existParallelMap, node) && !isStartRow
+                                        && isComponentNeedRepartion(con, (Node) con.getTarget())) {
+                                    setRepartioner(con);
                                 } else {
-                                    // add flag here is judge for if has did parallelization
-                                    isExistParallel = true;
-                                    INode nextPartionerNode = null;
-                                    IElementParameter deparElem = con.getElementParameter(EParameterName.DEPARTITIONER.getName());
-                                    deparElem.setValue(Boolean.FALSE);
-                                    con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
-                                    con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
-                                    con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
-
-                                    if (isStartRow && lineStyle.equals(EConnectionType.FLOW_MERGE)) {
-                                        con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
-                                        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.TRUE);
-                                        isExistParallel = false;
+                                    // when pervious con is par/repar/none,keep current is none
+                                    if (isExistParalInSubjob(existParallelMap, node)
+                                            && (ParallelExecutionUtils.existPreviousPar((Node) con.getSource())
+                                                    || ParallelExecutionUtils.existPreviousNone((Node) con.getSource()) || ParallelExecutionUtils
+                                                        .existPreviousRepar((Node) con.getSource()))) {
+                                        setNone(con);
                                     } else {
-                                        nextPartionerNode = ParallelExecutionUtils.getNextPartionerTargetNode(con);
-
-                                        // set the keys from target node keys
-                                        if (nextPartionerNode != null) {
-                                            // TDI-26555:in case the target partitioner key not in the main flow.such as
-                                            // in lookup row,need to go next connection for partitioning
-                                            if (ParallelExecutionUtils.isConClumnsContainsPartionKey(con,
-                                                    (Node) nextPartionerNode)) {
-                                                if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) nextPartionerNode)
-                                                        .size() > 0) {
-                                                    ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) nextPartionerNode);
-                                                } else {
-                                                    ParallelExecutionUtils.setHashKeysForCon(con);
-                                                }
-                                            } else {
-                                                if (isStartRow) {
-                                                    con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
-                                                    isExistParallel = false;
-                                                }
-                                            }
-                                        } else {
-                                            ParallelExecutionUtils.setHashKeysForCon(con);
-                                        }
+                                        setPartioner(con, lineStyle, isStartRow);
                                     }
-                                    if (con.getTarget() != null) {
-                                        setParallelization(con.getTarget());
-                                    }
+                                }
+                            } else {
+                                if (!con.getSource().isStart()) {
+                                    setDepartioner(con);
                                 }
                             }
                         } else {
-                            if (!con.getSource().isStart()) {
-                                if (isExistParallel && !ParallelExecutionUtils.existPreviousDepar((Node) con.getSource())) {
-                                    setDeparallelization(con.getTarget());
-                                }
-                            }
+                            setParallelization(con.getTarget());
                         }
-                        // }
                     } else {
-                        node = con.getTarget();
-                        setParallelization(node);
+                        // in case the con here is not data flow,such as onSubjobOk,we skip to next target
+                        setParallelization(con.getTarget());
                     }
                 }
             } else {
@@ -228,6 +199,81 @@ public class SetParallelizationCommand extends Command {
                 }
             }
         }
+    }
+
+    private void setPartioner(IConnection con, EConnectionType lineStyle, boolean isStartRow) {
+        // add flag here is judge for did parallelization or not
+        INode subjobStartNode = con.getTarget().getSubProcessStartNode(false);
+        if (existParallelMap.containsKey(subjobStartNode)) {
+            existParallelMap.put(subjobStartNode, true);
+
+        }
+        INode nextPartionerNode = null;
+        con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
+        con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.TRUE);
+
+        if (isStartRow && lineStyle.equals(EConnectionType.FLOW_MERGE)) {
+            con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
+            con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.TRUE);
+            existParallelMap.put(subjobStartNode, false);
+        } else {
+            nextPartionerNode = ParallelExecutionUtils.getNextPartionerTargetNode(con);
+
+            // set the keys from target node keys
+            if (nextPartionerNode != null) {
+                // TDI-26555:in case the target partitioner key not in the main flow.such as
+                // in lookup row,need to go next connection for partitioning
+                if (ParallelExecutionUtils.isConClumnsContainsPartionKey(con, (Node) nextPartionerNode)) {
+                    if (ParallelExecutionUtils.getColumnListFromTargetNode((Node) nextPartionerNode).size() > 0) {
+                        ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) nextPartionerNode);
+                    } else {
+                        ParallelExecutionUtils.setHashKeysForCon(con);
+                    }
+                } else {
+                    if (isStartRow) {
+                        con.setPropertyValue(EParameterName.PARTITIONER.getName(), Boolean.FALSE);
+                        existParallelMap.put(subjobStartNode, false);
+                    }
+                }
+            } else {
+                ParallelExecutionUtils.setHashKeysForCon(con);
+            }
+        }
+        if (con.getTarget() != null) {
+            setParallelization(con.getTarget());
+        }
+    }
+
+    private void setDepartioner(IConnection con) {
+        // TDI-29137: Need consider the other subjobs when do parallelization
+        INode subJobStart = con.getSource().getSubProcessStartNode(false);
+        boolean existNextPar = ParallelExecutionUtils.isExistParallelCon((Node) subJobStart);
+        boolean existPreDepar = ParallelExecutionUtils.existPreviousDepar((Node) con.getSource());
+        boolean canSetDepar = isExistParalInSubjob(existParallelMap, subJobStart) && existNextPar && !existPreDepar;
+        if (canSetDepar) {
+            setDeparallelization(con.getTarget());
+        }
+    }
+
+    private void setRepartioner(IConnection con) {
+        con.getElementParameter(EParameterName.NONE.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.setPropertyValue(EParameterName.REPARTITIONER.getName(), Boolean.TRUE);
+
+        // set the keys for hash keys
+        ParallelExecutionUtils.setHashKeysFromTarget(con, (Node) con.getTarget());
+        setParallelization(con.getTarget());
+    }
+
+    private void setNone(IConnection con) {
+        con.getElementParameter(EParameterName.REPARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.PARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.getElementParameter(EParameterName.DEPARTITIONER.getName()).setValue(Boolean.FALSE);
+        con.setPropertyValue(EParameterName.NONE.getName(), Boolean.TRUE);
+        setParallelization(con.getTarget());
     }
 
     private void setDeparallelization(INode node) {

@@ -449,6 +449,20 @@ public class ParallelExecutionUtils {
         return existPartitioningCon;
     }
 
+    public static boolean isExistParallelCon(Node startNode) {
+        boolean existPartitioningCon = false;
+        for (IConnection con : startNode.getOutgoingConnections()) {
+            if ((con.getElementParameter(EParameterName.PARTITIONER.getName()) != null && con
+                    .getElementParameter(EParameterName.PARTITIONER.getName()).getValue().equals(true))) {
+                existPartitioningCon = true;
+                break;
+            } else {
+                existPartitioningCon = isExistParallelCon((Node) con.getTarget());
+            }
+        }
+        return existPartitioningCon;
+    }
+
     public static void setDBType(IMetadataTable metaTable, String dbmsid) {
         List<IMetadataColumn> listColumns = metaTable.getListColumns();
         for (IMetadataColumn column : listColumns) {
