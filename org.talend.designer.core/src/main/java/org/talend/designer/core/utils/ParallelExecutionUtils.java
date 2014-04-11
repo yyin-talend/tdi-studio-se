@@ -458,6 +458,9 @@ public class ParallelExecutionUtils {
                 break;
             } else {
                 existPartitioningCon = isExistParallelCon((Node) con.getTarget());
+                if (existPartitioningCon) {
+                    break;
+                }
             }
         }
         return existPartitioningCon;
