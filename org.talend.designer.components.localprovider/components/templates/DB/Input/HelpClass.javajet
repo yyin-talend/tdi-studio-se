@@ -20,6 +20,7 @@ imports="
 	    
 	    public void beforeComponentProcess(INode node){
 	    	cid = node.getUniqueName();
+			List<IMetadataTable> metadatas = node.getMetadataList();
 			if ((metadatas != null) && (metadatas.size()>0)) {
 				IMetadataTable metadata = metadatas.get(0);
 				if (metadata != null) {

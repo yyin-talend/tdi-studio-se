@@ -19,6 +19,7 @@ imports="
 	
 	
 		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
 	    	cid = node.getUniqueName();
 %>
 			org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%> = org.talend.designer.components.util.mssql.MSSqlUtilFactory.getMSSqlGenerateTimestampUtil();
