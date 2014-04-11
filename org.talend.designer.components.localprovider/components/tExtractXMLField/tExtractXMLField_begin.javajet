@@ -29,7 +29,7 @@ imports="
 
 	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
-	
+	boolean ignore_NS_Str = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NS__"));
 	IConnection inConn = null;
 	List< ? extends IConnection> inConns = node.getIncomingConnections();
 	List<IMetadataColumn> inColumns = null;
@@ -306,7 +306,7 @@ if (outConn!=null) {
 %>
 			public void putExtractValue_<%=extractColNo/schemaOptNum%>(<%=NodeUtil.getPrivateConnClassName(outConn)%>Struct <%=firstConnName%>,<%if(inConn!=null){%><%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=inConn.getName()%>,<%}%>
 				String xmlStr_<%=cid%>,org.dom4j.tree.AbstractNode temp_<%=cid %>,NameSpaceTool_<%=cid%> nsTool_<%=cid%>,String loopQuery_<%=cid %>,java.util.HashMap xmlNameSpaceMap_<%=cid%>,org.dom4j.Node node_<%=cid %>,
-					String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%>)throws java.lang.Exception {
+					String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%><%if(ignore_NS_Str){%>,org.jaxen.NamespaceContext namespaceContext_<%=cid%><%}%>)throws java.lang.Exception {
 				
 					boolean resultIsNode_<%=cid%> = true;
 <%
@@ -314,6 +314,9 @@ if (outConn!=null) {
 %>
 				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+				<%if(ignore_NS_Str){%>
+					xTmp<%=i%>_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
+				<%}%>
 			    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
 			    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
 			    	resultIsNode_<%=cid%> = false;
@@ -500,3 +503,49 @@ if (outConn!=null) {
 }
 
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
+<%
+	if(ignore_NS_Str){
+%>
+	class XML_NS_RMV_<%=cid %>{	
+
+		public void removeNamespace(org.dom4j.Document reader,
+				org.dom4j.Document writer) {
+			org.dom4j.Element elemReader = reader.getRootElement();
+			org.dom4j.Element elemTo = writer.addElement(elemReader
+					.getName());
+			if(elemReader!=null && elemReader.getText()!=null && !"".equals(elemReader.getText())){
+				elemTo.setText(elemReader.getText());
+			}
+			for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) elemReader
+					.attributes()) {
+				elemTo.addAttribute(attri.getName(),attri.getText());
+			}
+			removeSubNamespace(elemReader, elemTo);
+		}
+
+		public void removeSubNamespace(org.dom4j.Element elemFrom,
+				org.dom4j.Element elemTo) {
+			for (org.dom4j.Element subFrom : (List<org.dom4j.Element>) elemFrom
+					.elements()) {
+				org.dom4j.Element tmpElemTo = elemTo.addElement(subFrom
+						.getName());
+				if(subFrom!=null && subFrom.getText()!=null && !"".equals(subFrom.getText())){
+					tmpElemTo.setText(subFrom.getText());
+				}
+				for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) subFrom
+						.attributes()) {
+					tmpElemTo.addAttribute(attri.getName(),attri.getText());
+				}
+				removeSubNamespace(subFrom, tmpElemTo);
+			}
+		}
+	}
+	XML_NS_RMV_<%=cid %> XML_ns_rmv_<%=cid %> = new XML_NS_RMV_<%=cid %>();
+	org.jaxen.NamespaceContext namespaceContext_<%=cid%> = new org.jaxen.NamespaceContext() {
+		public String translateNamespacePrefixToUri(String prefix) { 
+			return "";//ignore prefix in xpath when evaluate
+		}
+	};
+<%
+	}
+%>

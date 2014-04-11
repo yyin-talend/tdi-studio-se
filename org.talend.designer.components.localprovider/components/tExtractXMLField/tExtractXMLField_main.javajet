@@ -23,6 +23,7 @@ String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+boolean ignore_NS_Str = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NS__"));
 
 String strXMLField = ElementParameterParser.getValue(node, "__USE_XML_FIELD__");
 boolean useXMLField = (strXMLField!=null&&!("").equals(strXMLField))?("true").equals(strXMLField):false;
@@ -130,6 +131,10 @@ if (outConn!=null) {
 %>
 	NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
     org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
+	<%if(ignore_NS_Str){%>
+		org.dom4j.Document doc_tmp_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
+		XML_ns_rmv_<%=cid %>.removeNamespace(reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>)),doc_tmp_<%=cid %>);
+	<%}%>
     org.dom4j.Document doc_<%=cid%> = null;
     java.util.HashMap xmlNameSpaceMap_<%=cid%> = null;
     org.dom4j.XPath x_<%=cid%> = null;
@@ -154,7 +159,11 @@ if (outConn!=null) {
     boolean isStructError_<%=cid %>= true;
         
     try{
-	    doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
+		<%if(!ignore_NS_Str){%>
+	    	doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
+	    <%}else{%>
+			doc_<%=cid%>= doc_tmp_<%=cid %>;
+		<%}%>
 	    nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 	    xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
 
@@ -162,6 +171,9 @@ if (outConn!=null) {
       
     	x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     
+		<%if(ignore_NS_Str){%>
+			x_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
+		<%}%> 
     	nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);
     	
     	isStructError_<%=cid %> = false;
@@ -283,7 +295,7 @@ if(outConns!=null){
 				if(query!=null && query.trim().length()>0){  // if S_0_0
 					if(extractColNo%schemaOptNum==0){
 %>
-			xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,nsTool_<%=cid%>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>);
+			xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,nsTool_<%=cid%>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%><%if(ignore_NS_Str){%>,namespaceContext_<%=cid%><%}%>);
 <%
 					}
 					extractColNo++;
@@ -293,6 +305,9 @@ if(outConns!=null){
 %>
 				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+				<%if(ignore_NS_Str){%>
+					xTmp<%=i%>_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
+				<%}%>
 			    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
 			    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
 			    	resultIsNode_<%=cid%> = false;

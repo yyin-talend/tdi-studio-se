@@ -144,7 +144,14 @@
             REQUIRED="true" SHOW="false">
        	<DEFAULT>100</DEFAULT>
    	</PARAMETER>
+   	
   </PARAMETERS>
+  
+    <ADVANCED_PARAMETERS>
+	    <PARAMETER NAME="IGNORE_NS" FIELD="CHECK" REQUIRED="false" NUM_ROW="10">
+	        <DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+    </ADVANCED_PARAMETERS>
 
     <CODEGENERATION>
     <IMPORTS>
