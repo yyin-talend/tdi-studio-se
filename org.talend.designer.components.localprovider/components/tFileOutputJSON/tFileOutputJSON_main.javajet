@@ -65,5 +65,9 @@ for (IConnection conn : conns) {
 }
 %>
 
-jsonSet<%=cid%>.add(jsonRow<%=cid%>);
+if(!isFirst_<%=cid%>){
+	out<%=cid%>.append(",");
+}
+isFirst_<%=cid%> = false;
+out<%=cid%>.append(jsonRow<%=cid%>.toJSONString());
 nb_line_<%=cid %>++;

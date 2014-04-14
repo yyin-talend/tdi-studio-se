@@ -4,6 +4,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable 
     java.util.List
+    org.talend.core.model.process.ElementParameterParser
 		"
 %>
 
@@ -12,6 +13,22 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
+String datablockname = ElementParameterParser.getValue(node, "__DATABLOCKNAME__");
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+boolean create = "true".equals(ElementParameterParser.getValue(node, "__CREATE__"));
 %>
 int nb_line_<%=cid %> = 0;
-org.json.simple.JSONArray jsonSet<%=cid%> = new org.json.simple.JSONArray();
+java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
+java.io.File dir_<%=cid%> = file_<%=cid%>.getParentFile();
+<%
+if(create){
+%>
+	if(dir_<%=cid%>!=null && !dir_<%=cid%>.exists()){
+		dir_<%=cid%>.mkdirs();
+	}
+<%
+}
+%>
+java.io.PrintWriter out<%=cid%> = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.FileWriter(<%=filename%>)));
+out<%=cid%>.append("{\"" + <%=datablockname%> + "\":[");
+boolean isFirst_<%=cid%> = true;
