@@ -317,6 +317,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(isDynamic) {
 						Column dynamicColumn = getColumn(getDynamicColumn());
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+						if(isEnableDebug) {
+						%>
+							routines.system.DynamicUtils.debugDynamicSql(query_<%=cid%>,<%=incomingConnName%>.<%=dynamicColumn.getName()%>, <%=counter%>,insertSQLSplits_<%=cid%>);
+						<%
+						}
 						if("Dynamic".equals(typeToGenerate)) {
 						%>
 							DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
@@ -398,6 +403,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 				if(isDynamic) {
 					Column dynamicColumn = getColumn(getDynamicColumn());
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+						if(isEnableDebug) {
+						%>
+						routines.system.DynamicUtils.debugDynamicSql(query_<%=cid%>,<%=incomingConnName%>.<%=dynamicColumn.getName()%>, <%=counter%>,insertSQLSplits_<%=cid%>);
+						<%
+						}
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
 						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
