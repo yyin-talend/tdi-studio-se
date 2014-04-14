@@ -310,6 +310,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                     repositoryConnection = ((ConnectionItem) item).getConnection();
                 }
             }
+        } else {
+            initConnectionParameters();
+            repositoryConnection = TracesConnectionUtils.createConnection(connParameters);
         }
 
         QueryGuessCommand cmd = null;

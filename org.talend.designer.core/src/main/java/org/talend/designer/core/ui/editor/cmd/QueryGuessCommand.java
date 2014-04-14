@@ -366,7 +366,9 @@ public class QueryGuessCommand extends Command {
         }
 
         String newQuery = null;
-        fillCorrectMetadataTable();
+        if (!fillCorrectMetadataTable()) {
+            return TalendQuoteUtils.addQuotes("");
+        }
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
 
         if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK)
@@ -395,7 +397,7 @@ public class QueryGuessCommand extends Command {
     /**
      * DOC PLV Comment method "getCorrectMetadataTable".
      */
-    private void fillCorrectMetadataTable() {
+    private boolean fillCorrectMetadataTable() {
         try {
             List<MetadataTable> tables = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(ConvertionHelper
                     .convert(conn));
@@ -416,12 +418,14 @@ public class QueryGuessCommand extends Command {
                     }
                     newOutputMetadataTable = ConvertionHelper.convert(table);
                     newOutputMetadataTable.setListColumns(columnTemps);
-                    break;
+                    return true;
                 }
             }
         } catch (Exception e) {
             // do nothing
+            return false;
         }
+        return false;
     }
 
     // Added TDQ-5616 yyin 20121206
