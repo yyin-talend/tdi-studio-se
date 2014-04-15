@@ -59,6 +59,8 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
+import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
+import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.linking.TableToTablesLinker;
@@ -2277,6 +2279,7 @@ public class WebServiceUI implements AbstractWebService {
                     }
                     inputMetadataTable.setListColumns(llist);
                     columnInPutTableView.getTableViewerCreator().getTableViewer().refresh();
+                    synchronizeInputLinks(tabTotabLinkForin, llist);
                 }
             }
         });
@@ -3175,6 +3178,7 @@ public class WebServiceUI implements AbstractWebService {
                         temOutputMetadata = outputMetaCopy.clone();
                         expressoutPutTableView.getTableViewerCreator().getTableViewer().refresh();
                     }
+                    synchronizeOutputLinks(tabTotabLinkForout, outputMetaCopy.getListColumns());
                 } else if (openCode == MetadataDialog.CANCEL) {
                     outputMetaCopy = temOutputMetadata.clone();
                     return;
@@ -3854,5 +3858,65 @@ public class WebServiceUI implements AbstractWebService {
         }
         expressinPutTableView.getTableViewerCreator().getTableViewer().refresh();
         rowoutPutTableView.getTableViewerCreator().getTableViewer().refresh();
+    }
+
+    private void synchronizeInputLinks(TableToTablesLinker<Object, Object> tabTotabLink,
+            List<org.talend.core.model.metadata.IMetadataColumn> llist) {
+        try {
+            List<LinkDescriptor<TableItem, Object, Table, Object>> links = tabTotabLink.getLinksManager().getLinks();
+            boolean isExistColumn = false;
+            for (LinkDescriptor<TableItem, Object, Table, Object> link : links) {
+                IExtremityLink extremity = link.getExtremity1();
+                IMetadataColumn c = null;
+                if (extremity.getDataItem() instanceof IMetadataColumn) {
+                    c = (IMetadataColumn) extremity.getDataItem();
+                }
+                if (c != null) {
+                    for (IMetadataColumn column : llist) {
+                        if (c.getLabel().equals(column.getLabel())) {
+                            extremity.setDataItem(column);
+                            isExistColumn = true;
+                        }
+                    }
+                }
+            }
+            if (!isExistColumn) {
+                tabTotabLink.clearLinks();
+                for (InputMappingData inputData : inputMappingList) {
+                    inputData.setInputColumnValue("");
+                }
+                expressinPutTableView.getExtendedTableViewer().getTableViewerCreator().refresh();
+            }
+        } catch (Exception e) {
+            tabTotabLink.clearLinks();
+        }
+    }
+
+    private void synchronizeOutputLinks(TableToTablesLinker<Object, Object> tabTotabLink,
+            List<org.talend.core.model.metadata.IMetadataColumn> llist) {
+        try {
+            List<LinkDescriptor<TableItem, Object, Table, Object>> links = tabTotabLink.getLinksManager().getLinks();
+            boolean isExistColumn = false;
+            for (LinkDescriptor<TableItem, Object, Table, Object> link : links) {
+                IExtremityLink extremity = link.getExtremity2();
+                IMetadataColumn c = null;
+                if (extremity.getDataItem() instanceof OutPutMappingData) {
+                    c = ((OutPutMappingData) extremity.getDataItem()).getMetadataColumn();
+                }
+                if (c != null) {
+                    for (IMetadataColumn column : llist) {
+                        if (c.getLabel().equals(column.getLabel())) {
+                            ((OutPutMappingData) extremity.getDataItem()).setMetadataColumn(column);
+                            isExistColumn = true;
+                        }
+                    }
+                }
+            }
+            if (!isExistColumn) {
+                tabTotabLink.clearLinks();
+            }
+        } catch (Exception e) {
+            tabTotabLink.clearLinks();
+        }
     }
 }
