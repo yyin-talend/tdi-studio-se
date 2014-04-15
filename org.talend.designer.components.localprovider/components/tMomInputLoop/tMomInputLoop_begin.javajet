@@ -92,9 +92,7 @@ try {
 		javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
 		replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
 		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-		javax.jms.MessageProducer producer_<%=cid%> = null;
 
-		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 		globalMap.put("session_<%=cid %>",session_<%=cid %>);
 		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 		
@@ -287,13 +285,9 @@ try {
 			
 		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
 		
-		// BS
-		javax.jms.MessageProducer producer_<%=cid%> = null;
-
 		<%	//put session to global map
 		if( ("ActiveMQ").equals(serverType)) {
 		%>
-    		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 		globalMap.put("session_<%=cid %>",session_<%=cid %>);
 		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
                 <%

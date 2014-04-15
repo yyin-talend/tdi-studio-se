@@ -16,8 +16,6 @@ class="MomConnection"
 	String cid = node.getUniqueName();
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
-	String to = ElementParameterParser.getValue(node, "__TO__");
-	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
 	
 	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
 	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
@@ -32,13 +30,7 @@ class="MomConnection"
 	String strHost = null;
 	String strPort = null;
 
-	IMetadataTable metadata=null;
-	List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			metadata = metadatas.get(0);
-		}
 %>
-	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 
 	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
 
