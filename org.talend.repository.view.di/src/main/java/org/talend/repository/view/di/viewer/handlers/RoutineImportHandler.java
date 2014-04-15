@@ -34,7 +34,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
-import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 import org.talend.repository.items.importexport.ui.managers.ProviderManager;
 import org.talend.repository.items.importexport.ui.managers.ZipFileManager;
@@ -77,7 +77,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
-    public void afterImportingItemRecords(IProgressMonitor monitor, ResourcesManager resManager, ItemRecord selectedItemRecord) {
+    public void afterImportingItems(IProgressMonitor monitor, ResourcesManager resManager, ImportItem selectedItemRecord) {
         // deploy routines Jar
 
         final Item item = selectedItemRecord.getItem();
@@ -95,7 +95,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
 
         }
 
-        super.afterImportingItemRecords(monitor, resManager, selectedItemRecord);
+        super.afterImportingItems(monitor, resManager, selectedItemRecord);
     }
 
     private void deployJarToDestForArchive(final ResourcesManager manager, Set<String> extRoutines) {

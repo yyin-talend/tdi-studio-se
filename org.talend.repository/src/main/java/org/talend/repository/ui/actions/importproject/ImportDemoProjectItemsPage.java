@@ -64,7 +64,7 @@ import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
-import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPage1 implements ICheckStateListener {
@@ -82,6 +82,8 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     // private final ImportNodesBuilder nodesBuilder = new ImportNodesBuilder();
 
     private final static String DEFAUTL_DEMO_ICON = "icons/java.png";
+
+    private final ImportExportHandlersManager importManager = new ImportExportHandlersManager();
 
     /**
      * ImportDemoProjectPage constructor.
@@ -252,7 +254,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         String relatedImagePath = null;
         Bundle bundle = null;
         if (node != null) {
-            relatedImagePath = node.getIconUrl();//$NON-NLS-1$;
+            relatedImagePath = node.getIconUrl();// ;
             bundle = Platform.getBundle(node.getPluginId());
         }
         try {
@@ -264,6 +266,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                 pluginPath = new Path(url.getFile()).toOSString();
             }
         } catch (IOException e1) {
+            // nothing to do
         }
 
         return new Image(null, pluginPath);
@@ -326,14 +329,16 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
-                for (ResourcesManager resManager : finalCheckManagers) {
-                    List<ItemRecord> projectRecords = ImportExportHandlersManager.getInstance().populateImportingItems(
-                            resManager, true, monitorWrap);
-                    // clearOverWriteErrorMessages(projectRecords, overwrite);
-                    ImportExportHandlersManager.getInstance().importItemRecords(monitorWrap, resManager, projectRecords, true,
-                            projectRecords.toArray(new ItemRecord[0]), null);
+                try {
+                    for (ResourcesManager resManager : finalCheckManagers) {
+                        List<ImportItem> projectRecords = importManager.populateImportingItems(resManager, true, monitorWrap);
+                        // clearOverWriteErrorMessages(projectRecords, overwrite);
+                        importManager.importItemRecords(monitorWrap, resManager, projectRecords, true,
+                                projectRecords.toArray(new ImportItem[0]), null);
+                    }
+                } catch (Exception e) {
+                    throw new InvocationTargetException(e);
                 }
-
                 monitorWrap.done();
                 if (monitor.isCanceled()) {
                     MessageDialog.openInformation(getShell(),
@@ -454,13 +459,17 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
 
     private String populateExistItemRecords(final List<ResourcesManager> manager) {
         String messageInfo = ""; //$NON-NLS-1$
-        final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
+        final Collection<ImportItem> items = new ArrayList<ImportItem>();
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                for (ResourcesManager rm : manager) {
-                    items.addAll(ImportExportHandlersManager.getInstance().populateImportingItems(rm, true, monitor));
+                try {
+                    for (ResourcesManager rm : manager) {
+                        items.addAll(importManager.populateImportingItems(rm, true, monitor));
+                    }
+                } catch (Exception e) {
+                    throw new InvocationTargetException(e);
                 }
             }
 
@@ -471,7 +480,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
             // ignore me
         }
 
-        for (ItemRecord itemRecord : items) {
+        for (ImportItem itemRecord : items) {
             if (itemRecord.getExistingItemWithSameId() != null
                     && itemRecord.getExistingItemWithSameId() instanceof RepositoryViewObject) {
                 RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
@@ -491,17 +500,18 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
         return messageInfo;
     }
 
-    private void clearOverWriteErrorMessages(List<ItemRecord> projectRecords, boolean overwrite) {
+    private void clearOverWriteErrorMessages(List<ImportItem> projectRecords, boolean overwrite) {
         if (overwrite) {
             String overWriteErrorMessage = Messages.getString("RepositoryUtil.nameUsed").trim();
-            List<ItemRecord> overWriteRecords = new ArrayList<ItemRecord>();
-            for (ItemRecord itemRecord : projectRecords) {
-                for (String errorMessage : itemRecord.getErrors())
+            List<ImportItem> overWriteRecords = new ArrayList<ImportItem>();
+            for (ImportItem itemRecord : projectRecords) {
+                for (String errorMessage : itemRecord.getErrors()) {
                     if (errorMessage.equals(overWriteErrorMessage)) {
                         overWriteRecords.add(itemRecord);
                     }
+                }
             }
-            for (ItemRecord overRecord : overWriteRecords) {
+            for (ImportItem overRecord : overWriteRecords) {
                 overRecord.getErrors().clear();
             }
         }

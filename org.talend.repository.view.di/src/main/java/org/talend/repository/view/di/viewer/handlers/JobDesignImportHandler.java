@@ -26,7 +26,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.repository.items.importexport.handlers.HandlerUtil;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
-import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
@@ -56,20 +56,19 @@ public class JobDesignImportHandler extends ImportRepTypeHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#processImportingItem(org.talend
+     * @see org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#beforeCreatingItem(org.talend
      * .repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
-    protected void beforeCreatingItem(ItemRecord selectedItemRecord) {
-        Item tmpItem = selectedItemRecord.getItem();
+    protected void beforeCreatingItem(ImportItem importItem) {
+        Item tmpItem = importItem.getItem();
         if (tmpItem instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) tmpItem;
             ParametersType paType = processItem.getProcess().getParameters();
             boolean statsPSettingRemoved = false;
 
             // for commanline import project setting
-            if (selectedItemRecord.isRemoveProjectStatslog()) {
+            if (importItem.isRemoveProjectStatslog()) {
                 if (paType != null) {
                     String paramName = "STATANDLOG_USE_PROJECT_SETTINGS"; //$NON-NLS-1$
                     EList listParamType = paType.getElementParameter();
@@ -125,15 +124,14 @@ public class JobDesignImportHandler extends ImportRepTypeHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#copyReferenceFiles(org.talend
+     * @see org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#copyReferenceFiles(org.talend
      * .repository.items.importexport.ui.wizard.imports.managers.ResourcesManager,
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
-    protected boolean copyReferenceFiles(ResourcesManager resManager, ItemRecord selectedItemRecord) throws IOException {
-        HandlerUtil.copyScreenshotFile(resManager, selectedItemRecord);
-        return super.copyReferenceFiles(resManager, selectedItemRecord);
+    protected boolean copyReferenceFiles(ResourcesManager resManager, ImportItem importItem) throws IOException {
+        HandlerUtil.copyScreenshotFile(resManager, importItem);
+        return super.copyReferenceFiles(resManager, importItem);
     }
 
 }
