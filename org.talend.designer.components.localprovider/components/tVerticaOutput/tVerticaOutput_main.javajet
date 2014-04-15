@@ -144,7 +144,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						} else {
 						%>
 							java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
-							<%if("VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){%>
+							<%if("VERTICA_7_0".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){%>
 							com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
 							vcs_<%=cid%>.start();
 							vcs_<%=cid%>.addStream(bais_<%=cid%>);
@@ -160,7 +160,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 							}
 							stmtBuilder_<%=cid%> = new StringBuilder();
 							<%
-							if("VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){
+							if("VERTICA_7_0".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){
 							%>
 								copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
 							<%
@@ -191,7 +191,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}
 		}
 		public void commitEvery(INode node){
-			if(!"true".equals(useExistingConn) && (!("VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)) || !"COPY".equals(dataAction))) {
+			if(!"true".equals(useExistingConn) && (!("VERTICA_7_0".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)) || !"COPY".equals(dataAction))) {
 				if(manualCommit) {
 					%>
 					commitCounter_<%=cid%>++;
