@@ -1197,17 +1197,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (project != null) {
             childProjectName = project.getTechnicalLabel().toLowerCase(); // hywang modify for 7932
         }
-        if (!rootName.equals(process.getProperty().getLabel())) {
-            allJobScripts.addAll(getJobScripts(childProjectName, process.getProperty().getLabel(), process.getProperty()
-                    .getVersion(), isOptionChoosed(ExportChoice.needJobScript)));
-            addContextScripts(process, process.getProperty().getLabel(), process.getProperty().getVersion(), resource,
-                    isOptionChoosed(ExportChoice.needContext));
-            addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
-            addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies)
-                    && isOptionChoosed(ExportChoice.needJobItem), resource);
-            addSourceCode(allResources, process, isOptionChoosed(ExportChoice.needSourceCode), resource);
-            addDependenciesSourceCode(allResources, resource, isOptionChoosed(ExportChoice.needSourceCode));
-        }
+        allJobScripts.addAll(getJobScripts(childProjectName, process.getProperty().getLabel(),
+                process.getProperty().getVersion(), isOptionChoosed(ExportChoice.needJobScript)));
+        addContextScripts(process, process.getProperty().getLabel(), process.getProperty().getVersion(), resource,
+                isOptionChoosed(ExportChoice.needContext));
+        addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
+        addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies)
+                && isOptionChoosed(ExportChoice.needJobItem), resource);
+        addSourceCode(allResources, process, isOptionChoosed(ExportChoice.needSourceCode), resource);
+        addDependenciesSourceCode(allResources, resource, isOptionChoosed(ExportChoice.needSourceCode));
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (list.contains(subjobInfo)) {
