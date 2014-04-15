@@ -25,6 +25,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.eclipse.core.resources.IProject;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.general.Project;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.utils.ZipFileUtils;
 
 /**
@@ -180,7 +185,12 @@ public class JarBuilder {
      */
     private void exportJar(File root, Collection<File> list, Manifest manifest) throws IOException {
         if (jarFile.exists()) {
-            String tempFolderPath = jarFile.getParent() + File.separatorChar + TEMP;
+            StringBuffer tempFolderBuffer = new StringBuffer(jarFile.getParent());
+            String tempFolderPath = tempFolderBuffer.append(File.separatorChar).toString();
+            // TDI-29008:should create the temp folder use timestamp when export several jobs at the same time,the
+            // the jar contains classes will not affected by other jobs
+            File tempFolder = getExportJarTempFolder();
+            tempFolderPath = tempFolderPath + tempFolder.getName();
             ZipFileUtils.unZip(jarFile, tempFolderPath);
             for (File subf : list) {
                 String desFileName = subf.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
@@ -232,5 +242,44 @@ public class JarBuilder {
                 }
             }
         }
+    }
+
+    private File getExportJarTempFolder() {
+        File tempFolder = null;
+        try {
+            tempFolder = File.createTempFile(TEMP, null);
+            if (tempFolder.exists() && tempFolder.isFile()) {
+                tempFolder.delete();
+            }
+            tempFolder.mkdirs(); // use the same tmp file to make the tmp folder.
+
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+            tempFolder = new File(getTmpFolder());
+        }
+
+        return tempFolder;
+    }
+
+    private String getTmpFolder() {
+        String tmpFold = getTmpFolderPath();
+        File f = new File(tmpFold);
+        if (!f.exists()) {
+            f.mkdir();
+        }
+        return tmpFold;
+    }
+
+    private String getTmpFolderPath() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        String tmpFolder;
+        try {
+            IProject physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder(TEMP).getLocation().toPortableString();
+        } catch (Exception e) {
+            tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        }
+        tmpFolder = tmpFolder + "/talendExporter"; //$NON-NLS-1$
+        return tmpFolder;
     }
 }
