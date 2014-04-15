@@ -63,7 +63,7 @@
 
     <PARAMETER
       NAME="CODE"
-      FIELD="TEXT"
+      FIELD="PASSWORD"
       NUM_ROW="5"
       REQUIRED="true"
     >
