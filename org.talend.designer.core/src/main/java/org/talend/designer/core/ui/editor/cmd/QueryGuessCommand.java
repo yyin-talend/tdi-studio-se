@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,14 +25,10 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQRuleService;
 import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
@@ -47,9 +42,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.ConnectionHelper;
-import org.talend.cwm.relational.TdColumn;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -366,7 +359,6 @@ public class QueryGuessCommand extends Command {
         }
 
         String newQuery = null;
-        fillCorrectMetadataTable();
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
 
         if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK)
@@ -390,40 +382,6 @@ public class QueryGuessCommand extends Command {
         }// ~
 
         return TalendTextUtils.addSQLQuotes(newQuery);
-    }
-
-    /**
-     * DOC PLV Comment method "getCorrectMetadataTable".
-     */
-    private boolean fillCorrectMetadataTable() {
-        try {
-            List<MetadataTable> tables = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(ConvertionHelper
-                    .convert(conn));
-            String correctTable = "";
-            if (node != null) {
-                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
-                if (param != null && param.isShow(node.getElementParameters())) {
-                    correctTable = TalendQuoteUtils.removeQuotesIfExist((String) param.getValue());
-                }
-            }
-            for (MetadataTable table : tables) {
-                if (table.getName().equals(correctTable)) {
-                    List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
-                            ConvertionHelper.convert(conn), correctTable, false);
-                    List<IMetadataColumn> columnTemps = new ArrayList<IMetadataColumn>();
-                    for (TdColumn column : columns) {
-                        columnTemps.add(ConvertionHelper.convertToIMetaDataColumn(column));
-                    }
-                    newOutputMetadataTable = ConvertionHelper.convert(table);
-                    newOutputMetadataTable.setListColumns(columnTemps);
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            // do nothing
-            return false;
-        }
-        return false;
     }
 
     // Added TDQ-5616 yyin 20121206
