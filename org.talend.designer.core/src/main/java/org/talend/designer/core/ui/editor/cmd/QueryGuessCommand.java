@@ -366,9 +366,7 @@ public class QueryGuessCommand extends Command {
         }
 
         String newQuery = null;
-        if (!fillCorrectMetadataTable()) {
-            return TalendQuoteUtils.addQuotes("");
-        }
+        fillCorrectMetadataTable();
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
 
         if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK)
