@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.connections;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
@@ -34,6 +35,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.TraceData;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -225,10 +227,15 @@ public class ConnectionTraceFigure extends Figure {
             // }
             // }
             // StringTokenizer st = new StringTokenizer(lineInfo, FIELD_SEP);
+            List<Map<String, Object>> columnsCheckInfo = null;
             if (data.getData() != null) {
+                columnsCheckInfo = TracesConnectionUtils.getTraceConnectionFilterValues(connection);
                 Iterator<String> iterator = data.getData().keySet().iterator();
                 while (iterator.hasNext()) {
                     String columnLabel = iterator.next();
+                    if (columnsCheckInfo != null && !isColumnChecked(columnsCheckInfo, columnLabel)) {
+                        continue;
+                    }
                     // String str = st.nextToken();
                     // int valueStart = str.indexOf(FIELD_EQUAL);
                     // if (valueStart != -1) {
@@ -301,6 +308,9 @@ public class ConnectionTraceFigure extends Figure {
                 Iterator<String> iterator = data.getData().keySet().iterator();
                 while (iterator.hasNext()) {
                     String columnLabel = iterator.next();
+                    if (columnsCheckInfo != null && !isColumnChecked(columnsCheckInfo, columnLabel)) {
+                        continue;
+                    }
                     // int valueStart = str.indexOf(FIELD_EQUAL);
                     // if (valueStart != -1) {
                     String formatedVariable = "<font color='#000000'>  <b>" + columnLabel //$NON-NLS-1$
@@ -412,6 +422,30 @@ public class ConnectionTraceFigure extends Figure {
         }
         contents = new ArrayList(getChildren());
         refreshCollapseStatus();
+    }
+
+    /**
+     * judge the column checked or not DOC cmeng Comment method "isColumnChecked".
+     * 
+     * @param columnsCheckInfo
+     * @param columnLabel
+     * @return 1. columnLabel exists in columnsCheckInfo <br>
+     * <li>true : columnLabel is checked<br> <li>false : columnLabel is not checked<br>
+     * 2. columnLabel not exists in columnsCheckInfo <br> <li>true
+     */
+    private boolean isColumnChecked(List<Map<String, Object>> columnsCheckInfo, String columnLabel) {
+        Map<String, Object> foundLine = null;
+        for (Map<String, Object> line : columnsCheckInfo) {
+            Object column = line.get(IConnection.TRACE_SCHEMA_COLUMN);
+            if (columnLabel.equals(column)) {// found
+                foundLine = line;
+                break;
+            }
+        }
+        if (foundLine != null) {
+            return Boolean.valueOf(foundLine.get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString());
+        }
+        return true;
     }
 
     /**
