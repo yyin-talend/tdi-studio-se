@@ -26,7 +26,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.repository.items.importexport.handlers.HandlerUtil;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
-import org.talend.repository.items.importexport.handlers.model.ItemRecord;
+import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
 
 /**
@@ -61,7 +61,7 @@ public class JobDesignImportHandler extends ImportRepTypeHandler {
      * .repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
-    protected void beforeCreatingItem(ItemRecord selectedItemRecord) {
+    protected void beforeCreatingItem(ImportItem selectedItemRecord) {
         Item tmpItem = selectedItemRecord.getItem();
         if (tmpItem instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) tmpItem;
@@ -131,7 +131,7 @@ public class JobDesignImportHandler extends ImportRepTypeHandler {
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
      */
     @Override
-    protected boolean copyReferenceFiles(ResourcesManager resManager, ItemRecord selectedItemRecord) throws IOException {
+    protected boolean copyReferenceFiles(ResourcesManager resManager, ImportItem selectedItemRecord) throws IOException {
         HandlerUtil.copyScreenshotFile(resManager, selectedItemRecord);
         return super.copyReferenceFiles(resManager, selectedItemRecord);
     }
