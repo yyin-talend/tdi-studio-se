@@ -187,7 +187,7 @@ if (!isParallelize) {
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
 	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
-	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>) 
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>((<%=table%>)<%if(convertToUppercase){%>.toUpperCase()<%}%>) 
 	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || (dbschema_<%=cid%>.trim().length() ==0 && dbUser_<%=cid%>.equalsIgnoreCase(schema_<%=cid%>)))) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
