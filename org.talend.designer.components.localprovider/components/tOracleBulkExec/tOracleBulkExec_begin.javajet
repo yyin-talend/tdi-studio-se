@@ -715,7 +715,7 @@ class LogUtil_<%=cid%>{
 int lastTableLine_<%=cid%> = 0;//Line Number of the last table name
 while ((tempLine_<%=cid %> = lr_<%=cid %>.readLine() )!= null) {
 	countLines_<%=cid %>++;
-	if(tempLine_<%=cid %>.toUpperCase().indexOf(<%=table%>.toUpperCase())>-1){
+	if(tempLine_<%=cid %>.toUpperCase().indexOf((<%=table%>).toUpperCase())>-1){
 		lastTableLine_<%=cid%> = countLines_<%=cid %>;
 	}
 }
