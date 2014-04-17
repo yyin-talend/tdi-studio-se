@@ -237,7 +237,8 @@
 		public Map<String, String> hint(INode node){
 			return null;
 		}
-
+        protected void changeSQL(){
+        }
 		public void preparedStatInsert(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt,IMetadataColumn talendDynCol,boolean isDynamic){
 			List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 			if(conns_dynamic!=null && conns_dynamic.size()>0){
@@ -252,6 +253,7 @@
 				<%
 				}
 			}
+			changeSQL();
 			%>
 			<%@ include file="../../_hintInsert.javajet" %>	    
 			<%

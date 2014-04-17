@@ -99,6 +99,34 @@ skeleton="../templates/db_output_bulk.skeleton"
 		<%
 		}
 
+        public void changeSQL(){
+			if(convertToUppercase){
+				if(("INSERT").equals(dataAction)) {
+                    %>
+                    insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+                    <%
+                } else if (("UPDATE").equals(dataAction)) {
+                    %>
+                    update_<%=cid%> = update_<%=cid%>.toUpperCase();
+                    <%
+                } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
+                    %>
+                    checkExist_<%=cid%> = checkExist_<%=cid%>.toUpperCase();
+                    insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+                    update_<%=cid%> = update_<%=cid%>.toUpperCase();
+                    <%
+                } else if (("UPDATE_OR_INSERT").equals(dataAction)) {
+                    %>
+                    update_<%=cid%> = update_<%=cid%>.toUpperCase();
+                    insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+                    <%
+                } else if (("DELETE").equals(dataAction)) {
+                    %>
+                    delete_<%=cid%> = delete_<%=cid%>.toUpperCase();
+                    <%
+                }
+			}
+        }
 		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType,String dynamic) {
 			String dbType = column.getColumn().getType();
 			if( null == dbType) {

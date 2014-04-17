@@ -5,6 +5,7 @@
 Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 String dbms=ElementParameterParser.getValue(node, "__MAPPING__");
 boolean isLog4jEnabled_tableAction = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 	manager = getManager(dbmsId, cid);
@@ -38,7 +39,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>")<%if(convertToUppercase){%>.toUpperCase()<%}%>);
 <%
 				}
 			} else {
@@ -73,7 +74,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>")<%if(convertToUppercase){%>.toUpperCase()<%}%>);
 <%
 				}
 			} else {
@@ -251,7 +252,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>")<%if(convertToUppercase){%>.toUpperCase()<%}%>);
 <%
 				}
 			} else {
@@ -297,7 +298,7 @@ if (!isParallelize) {
 					IConnection conn = conns_dynamic.get(0);
 					String query=manager.getCreateTableSQL(stmtStructure);
 %>
-					stmtCreate_<%=cid%>.execute(("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute((("<%=query%>").replace("{TALEND_DYNAMIC_COLUMN}",DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbms==null?"":dbms.toLowerCase()%>"))+")<%=ending%>")<%if(convertToUppercase){%>.toUpperCase()<%}%>);
 <%
 				}
 			} else {
