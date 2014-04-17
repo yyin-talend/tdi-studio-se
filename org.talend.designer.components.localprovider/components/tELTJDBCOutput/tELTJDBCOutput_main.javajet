@@ -60,13 +60,11 @@ imports="
         String driverClass = null;
         String jdbcUrl  = null;
         String dbuser = null;
-        String dbpwd = null;
 	    boolean useExistingConn = false;
         if(previousNode != null) {
 			driverClass = ElementParameterParser.getValue(previousNode, "__DRIVER_CLASS__");
 			jdbcUrl = ElementParameterParser.getValue(previousNode, "__URL__");
 			dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
-			dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 	    	useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         }
 
@@ -86,7 +84,14 @@ if(useExistingConn) {
     %>
     java.lang.Class.forName(<%=driverClass %>);
     String connectionString_<%=cid %> = <%=jdbcUrl %>; 
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+	        
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
+   	
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, decryptedPassword_<%=cid%>);
     <%
 }
 %>

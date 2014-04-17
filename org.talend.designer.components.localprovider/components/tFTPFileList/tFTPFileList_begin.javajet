@@ -16,19 +16,19 @@ INode node = (INode)codeGenArgument.getArgument();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String user = ElementParameterParser.getValue(node, "__USERNAME__");
-String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+
 String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 boolean dirFull = ("true").equals(ElementParameterParser.getValue(node, "__DIR_FULL__"));
 String cid = node.getUniqueName();
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
 String privateKey = ElementParameterParser.getValue(node, "__PRIVATEKEY__");
-String passPhrase = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node, "__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");    
+
 String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");  
 List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
@@ -52,6 +52,9 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 log4jFileUtil.componentStartInfo(node);
 log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("PASSWORD","PRIVATEKEY","PASSPHRASE","PROXY_PASSWORD"));
 log4jFileUtil.logParameters(node); 
+
+String passwordFieldName = "";
+
 %>
 	java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
 
@@ -77,7 +80,17 @@ if (useProxy) {
 	props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
 	props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
 	props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
-	props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
+	
+<%
+passwordFieldName = "__PROXY_PASSWORD__";
+if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+%> 
+	String decryptedProxyPassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+<%} else {%>
+ 	String decryptedProxyPassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+<%}%>
+
+	props_<%=cid%>.put("java.net.socks.password", decryptedProxyPassword_<%=cid%>);        
 <%
 }
 
@@ -86,7 +99,17 @@ if (sftp) {// *** sftp *** //
 	if (("false").equals(useExistingConn)) {
 	%>
 		class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-			String passphrase_<%=cid %> = <%=passPhrase %>;
+		
+            <%
+            passwordFieldName = "__PASSPHRASE__";
+            if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+            %> 
+          		String decryptedPassphrase_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+            <%} else {%>
+          		String decryptedPassphrase_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+            <%}%>
+            
+			String passphrase_<%=cid %> = decryptedPassphrase_<%=cid%>;
 
 			public String getPassphrase() { return passphrase_<%=cid %>; }
 
@@ -102,7 +125,13 @@ if (sftp) {// *** sftp *** //
 
 			public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
 			boolean[] echo) {
-				String[] password_<%=cid%> = {<%=pass%>};
+			<%
+			passwordFieldName = "__PASSWORD__";
+			%> 
+    	
+    		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    		
+				String[] password_<%=cid%> = {decryptedPassword_<%=cid%>};
 				return password_<%=cid%>;
 			}
 		}; 
@@ -122,7 +151,14 @@ if (sftp) {// *** sftp *** //
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - SFTP authentication using a password.");
 	  		<%}%> 
-      		session_<%=cid%>.setPassword(<%=pass%>); 
+	  		
+	  		<%
+			passwordFieldName = "__PASSWORD__";
+			%> 
+    	
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	  		
+      		session_<%=cid%>.setPassword(decryptedPassword_<%=cid%>); 
 		<%}%>
 		session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
 		<%if (!useProxy) {%>
@@ -228,7 +264,14 @@ if (sftp) {// *** sftp *** //
 		<%}%>
 	    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 	    ftp_<%=cid %>.connect();  
-	    ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
+	    
+	    <%
+		passwordFieldName = "__PASSWORD__";
+		%> 
+    	
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		
+	    ftp_<%=cid %>.login(<%=user %>, decryptedPassword_<%=cid%>); 
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Connection to '" + <%=host %> + "' has succeeded.");
 		<%}%>  

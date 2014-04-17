@@ -37,6 +37,8 @@ String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSER
 
 boolean useKerberos = ("true").equals(ElementParameterParser.getValue(node,"__USE_KERBEROS__"));
 String kerberosConfiguration = ElementParameterParser.getValue(node,"__KERBEROS_CONFIGURATION__");
+
+String passwordFieldName = "";
 %>
 <%if(useKerberos){%>final<%}%> org.talend.soap.SOAPUtil soapUtil_<%=cid%> = new org.talend.soap.SOAPUtil();
 <%		
@@ -44,22 +46,53 @@ if(needSSLtoTrustServer){
 %>   
 System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
 System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
-System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
+
+    <%
+    passwordFieldName = "__SSL_TRUSTSERVER_PASSWORD__";
+    %>
+    
+    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+    	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%} else {%>
+    	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+    <%}%>
+
+System.setProperty("javax.net.ssl.trustStorePassword", decryptedPwd_<%=cid%>);
 <% 
 }
+%>
+
+<%
+passwordFieldName = "__AUTH_PASSWORD__";
+%>
+
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+<%
 if(needAuth&&!useNTLM){
 %>
-soapUtil_<%=cid%>.setBasicAuth(<%=username%>,<%=password%>);
+soapUtil_<%=cid%>.setBasicAuth(<%=username%>,decryptedPassword_<%=cid%>);
 <%
 }
 if(needAuth&&useNTLM){
 %>
-soapUtil_<%=cid%>.setNTLMAuth(<%=domain%>,<%=username%>,<%=password%>);
+soapUtil_<%=cid%>.setNTLMAuth(<%=domain%>,<%=username%>,decryptedPassword_<%=cid%>);
 <%
 }
 if(useProxy){
 %>
-soapUtil_<%=cid%>.setProxy(<%=proxyHost%>,<%=proxyPort%>,<%=proxyUser%>,<%=proxyPassword%>);
+
+    <%
+    passwordFieldName = "__PROXY_PASSWORD__";
+    %>
+    
+    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+    	final String decryptedProxyPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%} else {%>
+    	final String decryptedProxyPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+    <%}%>
+
+soapUtil_<%=cid%>.setProxy(<%=proxyHost%>,<%=proxyPort%>,<%=proxyUser%>,decryptedProxyPwd_<%=cid%>);
 <%
 }
 %>

@@ -38,7 +38,14 @@ config<%=cid%>.setReplyTimeout(60 * 1000);
  if ("true".equals(needAuth)) {
  %>
 	config<%=cid%>.setBasicUserName(<%=authUsername%>);
-	config<%=cid%>.setBasicPassword(<%=authPassword%>);
+	
+    <%
+    String passwordFieldName = "__AUTH_PASSWORD__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	
+	
+	config<%=cid%>.setBasicPassword(decryptedPassword_<%=cid%>);
  <%
 }
 %>

@@ -14,7 +14,7 @@
 	String gpgBin = ElementParameterParser.getValue(node, "__GPGBIN__");		
 	String inputFile  = ElementParameterParser.getValue(node, "__INPUT_FILE__");
 	String outputFile  = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
-	String password  = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+
 	boolean noTTY  = "true".equals(ElementParameterParser.getValue(node, "__NOTTY__"));
 	
 	//"cmd /c " + gpgBin + " --yes -q  -d --passphrase " + password + " -o " + outputFile + " " + inputFile;
@@ -22,6 +22,13 @@
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
 %>
+
+   <%
+   String passwordFieldName = "__PASSPHRASE__";
+   %>
+    
+   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	
 			String[] cmdArray_<%=cid %> = new String[]{
 											<%=gpgBin %>,
 											<%if(noTTY){%>
@@ -31,7 +38,7 @@
 											"-q",
 											"-d",
 											"--passphrase",
-											<%=password %>,
+											decryptedPassword_<%=cid%>,
 											"-o",
 											<%=outputFile %>,
 											<%=inputFile %>

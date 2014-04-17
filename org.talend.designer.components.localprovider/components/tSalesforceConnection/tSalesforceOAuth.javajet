@@ -10,7 +10,21 @@
 	String accessToken_<%=cid%> = null;
 	oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
 	oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
-	oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
+	
+	<%
+	passwordFieldName = "__OAUTH_CLIENT_SECRET__";
+	if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+	%>
+		String decryptedQauthClientPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+	<%
+	} else {
+	%>
+		String decryptedQauthClientPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+	<%
+	}
+	%>
+	
+	oauthClient_<%=cid%>.setClientSecret(decryptedQauthClientPwd_<%=cid%>);
 	String refreshToken_<%=cid%> = null;
 	<%
 	String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");

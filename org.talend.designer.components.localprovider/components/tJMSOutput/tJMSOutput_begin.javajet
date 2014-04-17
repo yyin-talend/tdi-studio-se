@@ -19,7 +19,7 @@ String connFacName=ElementParameterParser.getValue(node, "__CONN_FACTORY_NAME__"
 String url=ElementParameterParser.getValue(node, "__SERVER_URL__");
 String userIdentity=ElementParameterParser.getValue(node, "__USER_IDENTITY__");
 String user=ElementParameterParser.getValue(node, "__USER__");
-String pass=ElementParameterParser.getValue(node, "__PASS__");
+
 String to=ElementParameterParser.getValue(node, "__TO__");
 String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
 String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
@@ -48,7 +48,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	javax.naming.Context context_<%=cid%> = new javax.naming.InitialContext(props_<%=cid%>);
 	javax.jms.ConnectionFactory factory_<%=cid%> = (javax.jms.ConnectionFactory) context_<%=cid%>.lookup(<%=connFacName%>);
 	
-	javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%if("true".equals(userIdentity)){%><%=user %>, <%=pass %><%}%>);
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+        
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	
+	javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%if("true".equals(userIdentity)){%><%=user %>, decryptedPassword_<%=cid%><%}%>);
 	connection_<%=cid %>.start();
 
 	javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);

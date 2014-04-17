@@ -18,7 +18,7 @@ imports="
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
+
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
 	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
 	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
@@ -34,6 +34,8 @@ imports="
 	
 	log4jFileUtil.logParameters(node);
    	log4jFileUtil.componentStartInfo(node);
+	
+	String passwordFieldName = "";
 	
 	boolean bulkConnection = false; //for tSalesforceOAuth.javajet
 	
@@ -82,7 +84,14 @@ imports="
 			<%
 			}else{
 			%>
-		        boolean result_<%=cid%> = sforceManagement_<%=cid%>.login(<%=endpoint %>,<%=username %>, <%=password %>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+			
+    			<%
+    			passwordFieldName = "__PASS__";
+    			%>
+    
+    			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			
+		        boolean result_<%=cid%> = sforceManagement_<%=cid%>.login(<%=endpoint %>,<%=username %>,decryptedPassword_<%=cid%>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
 		        if(!result_<%=cid%>){
 					throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 				}

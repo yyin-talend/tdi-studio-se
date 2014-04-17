@@ -21,7 +21,7 @@
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
 	    }
 	    
 	    public void afterUseExistConnection(INode node) {
@@ -97,7 +97,15 @@
 				if(needUserAndPassword) {
 				%>
 					String dbUser_<%=cid %> = <%=dbuser%>;
-					String dbPwd_<%=cid %> = <%=dbpwd%>;
+	        
+            		<%
+            		String passwordFieldName = "__PASS__";
+            		%>
+            		
+            		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+        		   	
+        	        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+	        
 					<%log4jCodeGenerateUtil.connect_begin();
 					newConnection();
 				} else {

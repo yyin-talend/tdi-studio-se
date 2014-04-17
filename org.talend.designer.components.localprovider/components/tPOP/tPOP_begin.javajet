@@ -14,7 +14,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String username = ElementParameterParser.getValue(node, "__USERNAME__");
-String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
 String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
@@ -33,7 +33,14 @@ log4jFileUtil.logParameters(node);
 	String server_<%=cid %> = <%=host %>;
 	String mbox_<%=cid%> = "INBOX";
 	String user_<%=cid %> = <%=username %>;
-	String password_<%=cid %> = <%=password %>;
+	
+    <%
+    String passwordFieldName = "__PASSWORD__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+	String password_<%=cid %> = decryptedPassword_<%=cid%>;
 	int port_<%=cid %> = <%=port %>;
 	int nb_email_<%=cid %> = 0;
 	javax.mail.Folder folder_<%=cid %>;

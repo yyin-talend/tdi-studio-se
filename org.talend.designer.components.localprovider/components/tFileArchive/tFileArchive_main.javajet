@@ -24,7 +24,6 @@
 	boolean overwrite = ("true").equals(ElementParameterParser.getValue(node, "__OVERWRITE__"));
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	boolean isEncrypted = ("true").equals(ElementParameterParser.getValue(node, "__ENCRYPT_FILES__"));
-	String password = ElementParameterParser.getValue(node,"__PASSWORD__");
 	
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 	
@@ -77,7 +76,14 @@
    zip_<%=cid%>.setEncoding(<%=encoding%>);
    zip_<%=cid%>.setZip64Mode("<%=zip64Mode%>");
    zip_<%=cid%>.setEncrypted(<%=isEncrypted%>);
-   zip_<%=cid%>.setPassword(<%=password%>);
+	        
+   <%
+   String passwordFieldName = "__PASSWORD__";
+   %>
+    
+   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    
+   zip_<%=cid%>.setPassword(decryptedPassword_<%=cid%>);
    zip_<%=cid%>.setUseAesEncryption(<%="AES256".equals(encryptMethod)%>);
   
    zip_<%=cid%>.doZip();

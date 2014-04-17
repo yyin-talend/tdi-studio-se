@@ -20,7 +20,7 @@ String cid = node.getUniqueName();
 String axHost = ElementParameterParser.getValue(node, "__HOST__");
 String axDomain = ElementParameterParser.getValue(node, "__DOMAIN__");
 String axUser = ElementParameterParser.getValue(node, "__USER__");
-String axPwd = ElementParameterParser.getValue(node, "__PASS__");
+
 String axTable = ElementParameterParser.getValue(node, "__TABLE__");
 String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 	   dbquery = dbquery.replaceAll("\n"," ");
@@ -50,12 +50,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	VariantTool vTool = new VariantTool();
         %>
         int nb_line_<%=cid%> = 0;
+        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>        
+        
         <%
         if("DCOM".equals(connectionType)){
         %>
             //connect to com server
             org.jinterop.dcom.common.JISystem.setAutoRegisteration(true);
-            org.jinterop.dcom.core.JISession session_<%=cid%> = org.jinterop.dcom.core.JISession.createSession(<%=axDomain%>, <%=axUser%>, <%=axPwd%>);
+            org.jinterop.dcom.core.JISession session_<%=cid%> = org.jinterop.dcom.core.JISession.createSession(<%=axDomain%>, <%=axUser%>, decryptedPassword_<%=cid%>);
             org.jinterop.dcom.core.JIClsid clsid_<%=cid%> = org.jinterop.dcom.core.JIClsid.valueOf("71421B8A-81A8-4373-BD8D-E0D83B0B3DAB");
             org.jinterop.dcom.core.JIComServer comServer_<%=cid%> = new org.jinterop.dcom.core.JIComServer(clsid_<%=cid%>, <%=axHost%>, session_<%=cid%>);
 
@@ -167,7 +174,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		    //logon ax server
 		    org.talend.net.Object cred_<%=cid%> = org.talend.net.Object.createInstance(
                 "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", "System.Net.NetworkCredential",
-                new java.lang.Object[] { <%=axUser%>, <%=axPwd%>, <%=axDomain%> });
+                new java.lang.Object[] { <%=axUser%>, decryptedPassword_<%=cid%>, <%=axDomain%> });
 		    
 		    netBC_<%=cid%>.invoke("LogonAs", new Object[]{<%=axUser%>,<%=axDomain%>,cred_<%=cid%>,<%=company%>,<%=language%>,<%=aosServer%>+"@"+<%=axHost%>+":"+<%=port%>,<%=configurationFile%>});
 

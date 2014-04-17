@@ -21,7 +21,14 @@ imports="
 			          
 	java.util.Map state_<%=cid%> = new java.util.HashMap();
 	state_<%=cid%>.put("javax.security.auth.login.name", <%=username%>);
-	state_<%=cid%>.put("javax.security.auth.login.password", <%=password%>.toCharArray());
+	
+    <%
+    String passwordFieldName = "__PASSWORD__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	
+	
+	state_<%=cid%>.put("javax.security.auth.login.password", decryptedPassword_<%=cid%>.toCharArray());
 			      
 	java.util.Map option_<%=cid%> = new java.util.HashMap();
 	//option_<%=cid%>.put("debug", "true");

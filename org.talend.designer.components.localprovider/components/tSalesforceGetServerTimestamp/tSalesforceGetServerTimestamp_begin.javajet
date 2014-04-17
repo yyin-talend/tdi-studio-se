@@ -28,6 +28,8 @@ imports="
 	
    	log4jFileUtil.logParameters(node);
    	log4jFileUtil.componentStartInfo(node);
+   	
+   	String passwordFieldName = "";
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -43,7 +45,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		if (outgoingConns != null && outgoingConns.size() > 0){
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
-			String password = ElementParameterParser.getValue(node, "__PASS__");
+
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -88,16 +90,33 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%
 				}else{
 					if(useProxy){
+						passwordFieldName = "__PROXY_PASSWORD__";
+        				if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+                		%>
+                		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                		<%
+                		} else {
+                		%>
+                		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+                		<%
+                		}
 					%>
 					    java.util.Properties props_<%=cid%> = System.getProperties();
 					    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
 					    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
 					    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-					    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
+					    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
 					<%
 					}
 					%>
-					boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+					
+					<%
+        			passwordFieldName = "__PASS__";
+        			%>
+        
+        			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			
+					boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, decryptedPassword_<%=cid%>,<%=timeout%>,<%=needCompression%>);
 					if(!result_<%=cid%>){
 						throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 					}

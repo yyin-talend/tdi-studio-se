@@ -184,7 +184,7 @@ String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
-String password = ElementParameterParser.getValue(node, "__PASS__");
+
 %> 
 if (<%= logLevel %> > 0) {
 	java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
@@ -202,7 +202,14 @@ java.sql.Connection conn_<%=cid%> = null;
 	 } else {
 	 %>
 		java.lang.Class.forName("com.paraccel.Driver").newInstance();
-		conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
+	        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+		conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, decryptedPassword_<%=cid%>);
 	<%
 	}
 	%>

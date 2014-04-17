@@ -28,7 +28,7 @@ String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbschema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");
 String user = ElementParameterParser.getValue(node, "__USER__");
-String pas = ElementParameterParser.getValue(node, "__PASS__");
+
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
@@ -67,7 +67,15 @@ Manager manager = null;
 %>
 	    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
     	String dbUser_<%=cid %> = <%=user%>;    
-    	String dbPwd_<%=cid %> = <%=pas%>;
+	        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+	        
     	String schema_<%=cid%> = <%=dbschema%>;    
     	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     	<%

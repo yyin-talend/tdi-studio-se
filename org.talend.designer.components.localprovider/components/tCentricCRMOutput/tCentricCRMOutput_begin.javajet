@@ -14,7 +14,6 @@ imports="
 	String url = ElementParameterParser.getValue(node, "__CENTRIC-URL__");
 	String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
 	String userid = ElementParameterParser.getValue(node, "__CLIENT__");
-	String password = ElementParameterParser.getValue(node, "__CODE__");
 	String server = ElementParameterParser.getValue(node, "__SERVER-ID__");
 	String action=ElementParameterParser.getValue(node, "__ACTION__");
 %>
@@ -29,7 +28,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        org.aspcfs.utils.CRMConnection crm<%=cid%> = new org.aspcfs.utils.CRMConnection();
        crm<%=cid%>.setUrl(<%=url%>);
        crm<%=cid%>.setId(<%=server%>);
-       crm<%=cid%>.setCode(<%=password%>);
+       
+       <%
+       String passwordFieldName = "__CODE__";
+       %>
+        
+       <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>		       
+       
+       crm<%=cid%>.setCode(decryptedPassword_<%=cid%>);
        crm<%=cid%>.setClientId(<%=userid%>);
        crm<%=cid%>.setAutoCommit(false);
        org.aspcfs.apps.transfer.DataRecord <%=modulename%><%=cid%> = new org.aspcfs.apps.transfer.DataRecord();

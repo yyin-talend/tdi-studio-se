@@ -34,7 +34,7 @@ if(("false").equals(useExistingConn)){
 	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
-	String passwd =ElementParameterParser.getValue(node, "__PASS__");
+
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 %>
@@ -45,7 +45,14 @@ if(("false").equals(useExistingConn)){
     if(("true").equals(authen)){
 %>
     env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
-    env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
+    
+	<%
+    String passwordFieldName = "__PASS__";
+    %>
+        
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, decryptedPassword_<%=cid%>);
 <%
     }
 %>
@@ -85,7 +92,18 @@ if(("false").equals(useExistingConn)){
 				talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
 				if(storepwd !=null && storepwd.length() !=0 ){%>
-				talend.ssl.AdvancedSocketFactory.setCertStorePassword(<%=storepwd %>);
+				
+                    <%
+                    String passwordFieldName = "__STORECAPWD__";
+                    %>
+            
+                    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+                    	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                    <%} else {%>
+                    	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+                    <%}%>				
+    				
+				talend.ssl.AdvancedSocketFactory.setCertStorePassword(decryptedPwd_<%=cid%>);
 <%
 				}
 			}

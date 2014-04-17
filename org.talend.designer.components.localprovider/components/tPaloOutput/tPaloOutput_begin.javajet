@@ -28,7 +28,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	   	String server = ElementParameterParser.getValue(node,"__SERVER__");
     	String port = ElementParameterParser.getValue(node, "__SERVERPORT__");
     	String username = ElementParameterParser.getValue(node, "__USERNAME__");
-    	String password = ElementParameterParser.getValue(node, "__USERPASSWORD__");
+
     	String database = ElementParameterParser.getValue(node, "__DATABASE__");
     	String cube = ElementParameterParser.getValue(node, "__CUBE__");
 		String measureColumn = ElementParameterParser.getValue(node, "__MEASURE_COLUMN__");
@@ -47,7 +47,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String server_<%=cid %> = <%= server%>;
 		String port_<%=cid %> = <%= port%>;
 		String username_<%=cid %> = <%= username%>;
-		String password_<%=cid %> = <%= password%>;
+	        
+		<%
+		String passwordFieldName = "__USERPASSWORD__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+        String password_<%=cid %> = decryptedPassword_<%=cid%>;
+	        		
 		String database_<%=cid %> = <%= database%>;
 		String cube_<%=cid %> = <%= cube%>;
 		int nb_columns_<%=cid %> = <%= sizeColumns%>-1;

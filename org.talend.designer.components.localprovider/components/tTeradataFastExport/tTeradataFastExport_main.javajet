@@ -17,7 +17,7 @@ String cid = node.getUniqueName();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser= ElementParameterParser.getValue(node, "__USER__");
-String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
 String table= ElementParameterParser.getValue(node, "__TABLE__");
 String logDB = ElementParameterParser.getValue(node, "__LOG_DB__");
 String logTable = ElementParameterParser.getValue(node, "__LOG_TABLE__");
@@ -79,7 +79,14 @@ try{
 	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
 	StringBuilder script_<%=cid%> = new StringBuilder();
 	fw_<%=cid %>.write(".LOGTABLE "+<%=logDB%>+"."+<%=logTable%>+";" + "<%=lineSeparator%>");
-	fw_<%=cid %>.write(".LOGON "+<%if(needHost) {%><%=host%>+"/"<%} else {%> "" <%}%>+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
+	        
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+   	
+	fw_<%=cid %>.write(".LOGON "+<%if(needHost) {%><%=host%>+"/"<%} else {%> "" <%}%>+<%=dbuser%>+","+decryptedPassword_<%=cid%>+";"+ "<%=lineSeparator%>");
 	
 	<%//Layout---------------------------------------------------------------%>
 	fw_<%=cid %>.write(".BEGIN EXPORT SESSIONS 8;"+"<%=lineSeparator%>");

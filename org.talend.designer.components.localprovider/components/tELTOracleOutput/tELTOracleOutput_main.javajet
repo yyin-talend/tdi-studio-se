@@ -62,7 +62,6 @@ imports="
         String dbport = null;
         String dbname = null;
         String dbuser = null;
-        String dbpwd = null;
 	    String connectionType = null;
 	    boolean useExistingConn = false;
 	    String dbproperties = null;
@@ -71,7 +70,6 @@ imports="
 	        dbport = ElementParameterParser.getValue(previousNode, "__PORT__");
 	        dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
 	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
-	        dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 	    	connectionType = ElementParameterParser.getValue(previousNode, "__CONNECTION_TYPE__");
 	    	useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
 	    	dbproperties = ElementParameterParser.getValue(previousNode, "__PROPERTIES__");
@@ -109,7 +107,15 @@ if(useExistingConn) {
     }
     %>
     String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
+
+    String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>

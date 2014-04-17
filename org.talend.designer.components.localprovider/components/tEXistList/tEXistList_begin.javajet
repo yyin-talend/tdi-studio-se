@@ -16,7 +16,6 @@
 	String driver = ElementParameterParser.getValue(node, "__DRIVER__");
 	String collection = ElementParameterParser.getValue(node, "__COLLECTION__");
 	String user = ElementParameterParser.getValue(node, "__USERNAME__");
-	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 	String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
@@ -33,7 +32,14 @@
 	    org.xmldb.api.base.Database database_<%=cid%> = (org.xmldb.api.base.Database) cl_<%=cid%>.newInstance();
 	    database_<%=cid%>.setProperty("create-database", "true");
 	    org.xmldb.api.DatabaseManager.registerDatabase(database_<%=cid%>);
-	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,<%=pass%>);
+	        
+		<%
+		String passwordFieldName = "__PASSWORD__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+	    org.xmldb.api.base.Collection col_<%=cid%> = org.xmldb.api.DatabaseManager.getCollection(<%=uri%> + <%=collection%>,<%=user%>,decryptedPassword_<%=cid%>);
 <%
 	}
 %>

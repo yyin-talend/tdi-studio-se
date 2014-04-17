@@ -3,7 +3,7 @@
 
 <%
 	String accessKey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
-	String secretKey = ElementParameterParser.getValue(node, "__SECRET_KEY__");
+
 	boolean configClient = "true".equals(ElementParameterParser.getValue(node, "__CONFIG_CLIENT__"));
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	List<Map<String,String>> clientConfiguration = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CLIENT_CONFIGURATION__");
@@ -15,7 +15,14 @@ if(("true").equals(useExistingConn)) {
 <%
 }else{
 %>
-	com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,<%=secretKey%>);
+
+    <%
+    String passwordFieldName = "__SECRET_KEY__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+	com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 <%
 	if(configClient && clientConfiguration.size()>0){
 %>

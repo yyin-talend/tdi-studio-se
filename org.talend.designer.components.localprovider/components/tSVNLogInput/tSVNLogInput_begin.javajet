@@ -52,7 +52,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String passwd = ElementParameterParser.getValue(node,"__PASSWORD__");
         %>
         String username<%=cid%> = <%=user%>;
-		String password<%=cid%> = <%=passwd%>;
+        
+        <%
+        String passwordFieldName = "__PASSWORD__";
+        %>
+        
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>        
+        
+		String password<%=cid%> = decryptedPassword_<%=cid%>;
         org.tmatesoft.svn.core.auth.ISVNAuthenticationManager authManager<%=cid%> = 
         org.tmatesoft.svn.core.wc.SVNWCUtil.createDefaultAuthenticationManager(username<%=cid%>, password<%=cid%>);
         repository<%=cid%>.setAuthenticationManager(authManager<%=cid%>);

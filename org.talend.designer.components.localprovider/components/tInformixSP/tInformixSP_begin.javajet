@@ -17,7 +17,7 @@ String dbport = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
-String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
+
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
@@ -44,7 +44,14 @@ if (useExistingConnection) {
 <%
 	}
 %>
-	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+	        
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+   	
+	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=dbuser%>, decryptedPassword_<%=cid%>);
 	<%
 }
 

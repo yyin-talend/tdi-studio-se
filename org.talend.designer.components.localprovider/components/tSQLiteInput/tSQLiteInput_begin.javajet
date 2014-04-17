@@ -31,7 +31,7 @@ imports="
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
 %>
 			    String driverClass_<%=cid%> = "<%=this.getDirverClassName(node) %>";
 			    java.lang.Class.forName(driverClass_<%=cid%>);

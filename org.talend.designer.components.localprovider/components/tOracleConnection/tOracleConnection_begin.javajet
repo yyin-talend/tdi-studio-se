@@ -154,4 +154,4 @@ imports="
 	}
 %>
 	globalMap.put("username_" + "<%=cid%>",<%=dbuser%>);
-	globalMap.put("password_" + "<%=cid%>",<%=dbpass%>);
+	globalMap.put("password_" + "<%=cid%>",dbPwd_<%=cid%>);

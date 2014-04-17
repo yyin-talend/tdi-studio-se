@@ -27,7 +27,7 @@ String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String user = ElementParameterParser.getValue(node, "__USER__");
-String pas = ElementParameterParser.getValue(node, "__PASS__");
+
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 boolean ros = ("true").equals(ElementParameterParser.getValue(node, "__ROS__"));
 boolean exitOnNoRows = ("true").equals(ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__"));
@@ -66,7 +66,14 @@ java.sql.Connection conn_<%=cid%> = null;
 		}
 		%>
 		String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
-		conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+	        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+		conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, decryptedPassword_<%=cid%>);
 		dbschema_<%=cid%> = <%=dbschema%>;
 	<%
 	}

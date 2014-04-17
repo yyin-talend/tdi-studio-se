@@ -24,7 +24,7 @@
     String sServer = ElementParameterParser.getValue(node, "__SERVER__");
     String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
     String sUsername = ElementParameterParser.getValue(node, "__USERNAME__");
-    String sPassword = ElementParameterParser.getValue(node, "__PASS__");
+
 
     String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
     
@@ -62,7 +62,14 @@ if(useExistingConnection){
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Connection attempt to '" + <%=sServer%> + "' with the username '" + <%=sUsername%> + "'.");
 	<%}%>
-	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+	        
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+   	
+	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, decryptedPassword_<%=cid%>, <%=sServer%>, <%=sServerport%>);
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Connection to '" + <%=sServer%> + "' has succeeded.");
 	<%}%>

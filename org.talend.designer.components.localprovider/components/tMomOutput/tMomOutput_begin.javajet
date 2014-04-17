@@ -33,7 +33,7 @@ class="MomInput"
 	List<Map<String,String>> additionalOpts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADDITIONAL_OPTIONS__");
 
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
 		
 	String strHost = null;
 	String strPort = null;
@@ -188,7 +188,14 @@ class="MomInput"
 		<%
 		} else { 
 		%>
-			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
+		
+			<%
+			String passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+				
+			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
 		<%
 		} 
 		%>
@@ -253,7 +260,14 @@ class="MomInput"
 		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
 		%>
 			props_<%=cid%>.put("userID",<%=dbuser%>);
-			props_<%=cid%>.put("password",<%=dbpwd%>);
+			
+			<%
+			String passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
+			
+			props_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
 		<%
 		}
 		%>

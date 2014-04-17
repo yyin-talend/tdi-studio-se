@@ -17,7 +17,7 @@ imports="
 	String conn = "xtentisWS_" + connection;
 	String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
 	String username = ElementParameterParser.getValue(node, "__USERNAME__");
-	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+
 	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
 	String entity = ElementParameterParser.getValue(node, "__ENTITY__");
 	String keyField = ElementParameterParser.getValue(node, "__KEYFIELD__");
@@ -40,7 +40,14 @@ int nb_line_<%=cid %> = 0;
 	<%}else{%>
 	stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
 	<%}%>
-	stub_<%=cid %>.setPassword(<%=password %>);
+	
+    <%
+    String passwordFieldName = "__PASSWORD__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	
+	stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
 <%}else{%>
 	org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
 <%}%>

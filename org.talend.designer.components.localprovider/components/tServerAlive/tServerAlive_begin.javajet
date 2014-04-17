@@ -43,7 +43,14 @@ if(("PING").equals(protocol)) {
             properties_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);
             properties_<%=cid%>.put("socksProxyPort",<%=proxyPort%>);
             properties_<%=cid%>.put("java.net.socks.username", <%=userName%>);
-            properties_<%=cid%>.put("java.net.socks.password", <%=password%>);
+            
+            <%
+            String passwordFieldName = "__PROXY_PASS__";
+            %>
+            
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>            
+            
+            properties_<%=cid%>.put("java.net.socks.password", decryptedPassword_<%=cid%>);
             <%
         }
         %>

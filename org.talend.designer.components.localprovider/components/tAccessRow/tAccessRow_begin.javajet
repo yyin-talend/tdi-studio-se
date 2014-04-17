@@ -5,13 +5,6 @@ imports="
 			org.talend.designer.codegen.config.CodeGeneratorArgument
 		" 
 %>
-<%@ jet 
-imports="
-			org.talend.core.model.process.INode 
-			org.talend.core.model.process.ElementParameterParser 
-			org.talend.designer.codegen.config.CodeGeneratorArgument
-		" 
-%>
 <%@ include file="../templates/DB/Row/HelpClass.javajet"%>
 <%
 
@@ -50,7 +43,15 @@ imports="
 				java.lang.Class.forName(driverClass_<%=cid%>);
 				<%this.setURL(node);%>
 				String dbUser_<%=cid %> = <%=dbuser%>;
-				String dbPwd_<%=cid %> = <%=dbpwd%>;
+	        
+        		<%
+        		String passwordFieldName = "__PASS__";
+        		%>
+        		
+        		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    		   	
+    	        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+	        
 				<%
 				log4jCodeGenerateUtil.debugConnectionParams(node);
 				log4jCodeGenerateUtil.connect_begin();

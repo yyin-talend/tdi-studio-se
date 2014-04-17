@@ -15,7 +15,6 @@ imports="
 	if ("HTTP_CLIENT".equals(clientMode)) {
 		String url = ElementParameterParser.getValue(node, "__BONITA_URL__");
 		String authUserName = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-		String authPasswd = ElementParameterParser.getValue(node, "__AUTH_PASSWD__");
 		String process_name = ElementParameterParser.getValue(node, "__PROCESS_NAME__");
 		String process_version = ElementParameterParser.getValue(node, "__PROCESS_VERSION__");
 		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
@@ -34,13 +33,19 @@ imports="
 	    httpConn_<%=cid %>.setInstanceFollowRedirects(false);
 	    httpConn_<%=cid %>.setRequestMethod("POST");
 	    httpConn_<%=cid %>.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-	    httpConn_<%=cid %>.setRequestProperty("Authorization", "Basic " + new String(org.apache.commons.codec.binary.Base64.encodeBase64((<%=authUserName%>+ ":"+ <%=authPasswd%>).getBytes(utf8Charset)),utf8Charset));
+	        
+		<%
+		String passwordFieldName = "__AUTH_PASSWD__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		   	
+	    httpConn_<%=cid %>.setRequestProperty("Authorization", "Basic " + new String(org.apache.commons.codec.binary.Base64.encodeBase64((<%=authUserName%>+ ":"+ decryptedPassword_<%=cid%>).getBytes(utf8Charset)),utf8Charset));
 	<%
 	} else { // JAVA CLIENT
 	
 		String processID = ElementParameterParser.getValue(node, "__PROCESS_ID__");
 		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
-		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 		String use_process_id = ElementParameterParser.getValue(node, "__USE_PROCESS_ID__");
 	
@@ -76,8 +81,14 @@ imports="
 		
 		String processInstanceUUID_<%=cid%> = null;
 		java.util.Map<String, Object> parameters_<%=cid%>=new java.util.HashMap<String, Object>();
+	        
+		<%
+		String passwordFieldName = "__PASSWORD__";
+		%>
 		
-		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, decryptedPassword_<%=cid%>));
 		resourceMap.put("loginContext_<%=cid%>", loginContext_<%=cid%>); 
 		loginContext_<%=cid%>.login();
 		<%

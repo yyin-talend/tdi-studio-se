@@ -145,7 +145,12 @@
 	}else{
 		version = ElementParameterParser.getValue(node, "__DB_VERSION__");
 	}
+	
+    String passwordFieldName = "__PASSWORD__";
 	%>
+    
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	
 	<%if("sapjco.jar".equals(version)){%>
 		com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 		<%if(useExistingConn){%>	    
@@ -157,7 +162,7 @@
 				//Create a client connection to a dedicated R/3 system
 				client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 							            				 <%=userid %>,   	// userid
-							            				 <%=password %>,    // password
+							            				 decryptedPassword_<%=cid%>,    // password
 							            				 <%=language %>,    // language
 							            				 <%=hostname %>,    // host name
 							            				 <%=systemnumber %> );      // system number
@@ -165,7 +170,7 @@
 				//Create a client connection to Message Server 
 				client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 					            				 <%=userid %>,   	// userid
-					            				 <%=password %>,    // password
+					            				 decryptedPassword_<%=cid%>,    // password
 					            				 <%=language %>,    // language
 					            				 <%=hostname %>,    // host name
 					            				 <%=systemId %>,    // system ID,defined in sapmsg.ini
@@ -241,14 +246,14 @@
 					<%if("ApplicationServer".equals(serverType)){%>
 						destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
 																							<%=userid%>,
-																							<%=password%>,
+																							decryptedPassword_<%=cid%>,
 																							<%=language%>,
 																							<%=hostname%>,
 																							<%=systemnumber%>);
 					<%}else{%>			
 						destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
 																							<%=userid%>,
-																							<%=password%>,
+																							decryptedPassword_<%=cid%>,
 																							<%=language%>,
 																							<%=hostname%>,
 																							<%=systemId %>,

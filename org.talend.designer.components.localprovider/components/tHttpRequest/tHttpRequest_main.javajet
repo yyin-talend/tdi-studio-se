@@ -46,7 +46,7 @@ String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__")
 List<Map<String, String>> headerParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
 boolean bNeedAuthentication = "true".equals(ElementParameterParser.getValue(node, "__NEED_AUTHENTICATION__"));
 String sUser = ElementParameterParser.getValue(node, "__USR__");
-String sPwd = ElementParameterParser.getValue(node, "__PWD__");
+
 boolean createDirs = "true".equals(ElementParameterParser.getValue(node, "__CREATE_DIRS__"));
 boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
@@ -55,7 +55,14 @@ java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
 <%if (bNeedAuthentication){%>
   java.net.Authenticator.setDefault(new java.net.Authenticator() {
 	  protected java.net.PasswordAuthentication getPasswordAuthentication() {
-	  	return new java.net.PasswordAuthentication(<%=sUser%>, <%=sPwd%>.toCharArray());
+	  
+        <%
+        String passwordFieldName = "__PWD__";
+        %>
+        
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>		  
+       
+	  	return new java.net.PasswordAuthentication(<%=sUser%>, decryptedPassword_<%=cid%>.toCharArray());
   }});
 <%}%>
 	<%if(isLog4jEnabled){%>

@@ -12,9 +12,16 @@
 	
     String cid = node.getUniqueName();
     String accessKey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
-    String secretKey = ElementParameterParser.getValue(node, "__SECRET_KEY__");
+
 %>
-	org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,<%=secretKey%>);
+
+   <%
+   String passwordFieldName = "__SECRET_KEY__";
+   %>
+
+   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   
+	org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = 
 		new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
 	service_<%=cid%>.getAccountOwner();

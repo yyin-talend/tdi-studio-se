@@ -18,7 +18,7 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process
 
 String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 String username = ElementParameterParser.getValue(node, "__USER__");
-String password = ElementParameterParser.getValue(node, "__PASS__");
+
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 boolean httpTraceMessage = ("true").equals(ElementParameterParser.getValue(node,"__HTTP_TRACEMESSAGE__"));
@@ -35,6 +35,8 @@ String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
 
 log4jFileUtil.logParameters(node);
 log4jFileUtil.componentStartInfo(node);
+
+String passwordFieldName = "";
 
 String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 boolean useOAuth = "OAUTH".equals(loginType);
@@ -55,12 +57,30 @@ if(bulkConnection){
 	<%
 	}else{
 		if(useProxy){
+			passwordFieldName = "__PROXY_PASSWORD__";
+			
+			if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+    		%>
+    		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    		<%
+    		} else {
+    		%>
+    		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+    		<%
+    		}
 		%>
-			sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+			sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,decryptedPwd_<%=cid%>);
 		<%
 		}
 		%>
-		sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+		
+		<%
+		passwordFieldName = "__PASS__";
+		%>
+
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		
+		sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=apiVersion%>);
 	<%
 	}
 	%>
@@ -88,16 +108,34 @@ if(bulkConnection){
 	<%
 	}else{
 		if(useProxy){
+			passwordFieldName = "__PROXY_PASSWORD__";
+			
+			if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+    		%>
+    		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    		<%
+    		} else {
+    		%>
+    		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+    		<%
+    		}
 		%>
 		    java.util.Properties props_<%=cid%> = System.getProperties();
 		    props_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);  
 		    props_<%=cid%>.put("socksProxyPort",<%=proxyPort%>);
 		    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername%>);
-		    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword%>); 
+		    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
 		<%
 		}
 		%>
-		boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+		
+		<%
+		passwordFieldName = "__PASS__";
+		%>
+
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		
+		boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, decryptedPassword_<%=cid%>,<%=timeout%>,<%=needCompression%>);
 		if(!result_<%=cid%>){
 			throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 		}

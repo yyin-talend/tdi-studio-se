@@ -29,7 +29,7 @@ imports="
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 	String apiVersion = ElementParameterParser.getValue(node, "__API_VERSION__");
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
+
 	
 	String sObject = ElementParameterParser.getValue(node, "__MODULENAME__");
 	String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
@@ -62,6 +62,8 @@ imports="
 	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
 	
 	boolean bulkConnection = true; //for tSalesforceOAuth.javajet
+	
+	String passwordFieldName = "";
 	
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
@@ -96,12 +98,30 @@ imports="
 		<%
 		}else{
 			if(useProxy){
+				passwordFieldName = "__PROXY_PASSWORD__";
+				
+				if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+        		%>
+        		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+        		<%
+        		} else {
+        		%>
+        		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+        		<%
+        		}
 			%>
-				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,decryptedPwd_<%=cid%>);
 			<%
 			}
 			%>
-			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+			
+			<%
+			passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			
+			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=apiVersion%>);
 		<%
 		}
 		if(isLog4jEnabled){%>

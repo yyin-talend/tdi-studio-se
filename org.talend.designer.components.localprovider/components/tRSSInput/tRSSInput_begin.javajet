@@ -30,7 +30,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        	String host=ElementParameterParser.getValue(node,"__PROXY_HOST__");
        	String port=ElementParameterParser.getValue(node,"__PROXY_PORT__");
        	String username=ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-       	String password=ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
   	
 %>
     int nb_line_<%=cid%> = 0;
@@ -44,7 +43,14 @@ if(useProxy){
     props.put("socksProxyHost",<%=host %>);  
     props.put("socksProxyPort",<%=port %>);
     props.put("java.net.socks.username", <%=username %>);
-    props.put("java.net.socks.password", <%=password %>); 
+    
+    <%
+    String passwordFieldName = "__PROXY_PASSWORD__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+    props.put("java.net.socks.password", decryptedPassword_<%=cid%>); 
   
     
 <%

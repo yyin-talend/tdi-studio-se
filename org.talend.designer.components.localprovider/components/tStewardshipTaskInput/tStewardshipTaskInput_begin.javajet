@@ -51,7 +51,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				int nb_line_<%=cid%> = 0;	
                 java.net.Authenticator.setDefault(new java.net.Authenticator() {
                     protected java.net.PasswordAuthentication getPasswordAuthentication() {
-                    	return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
+                    
+                        <%
+                        String passwordFieldName = "__PASSWORD__";
+                        %>
+                        
+                        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+                                
+                    	return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
                 }});
 				
 				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");

@@ -124,7 +124,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 		java.lang.Class.forName(driverClass_<%=cid%>);
 		String url_<%=cid%> = "jdbc:netezza://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
-		String dbPwd_<%=cid %> = <%=dbpass%>;
+	        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+	        		
 		String tableName_<%=cid%> = <%=dbtable%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		<%

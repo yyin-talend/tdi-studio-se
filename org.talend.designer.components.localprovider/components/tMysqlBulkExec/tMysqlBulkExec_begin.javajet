@@ -45,7 +45,7 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
-String password = ElementParameterParser.getValue(node, "__PASS__");
+
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -77,7 +77,14 @@ java.sql.Connection conn_<%=cid%> = null;
 		    <%
 		}
 		%>
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=userName%>, <%=password%>);
+	        
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=userName%>, decryptedPassword_<%=cid%>);
 	<%
 	}
 	%>

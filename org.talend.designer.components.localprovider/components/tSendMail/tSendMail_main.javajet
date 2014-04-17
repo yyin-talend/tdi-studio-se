@@ -135,7 +135,14 @@ log4jFileUtil.logParameters(node);
 			props_<%=cid %>.put("mail.smtp.auth", "true");
 			javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new javax.mail.Authenticator(){         
 				protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-				return new javax.mail.PasswordAuthentication(<%=authUsername %>, <%=authPassword %>); 
+				
+                <%
+                String passwordFieldName = "__AUTH_PASSWORD__";
+                %>
+                
+                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>				
+				
+				return new javax.mail.PasswordAuthentication(<%=authUsername %>, decryptedPassword_<%=cid%>); 
 				}         
 			});   
 		<%}%>

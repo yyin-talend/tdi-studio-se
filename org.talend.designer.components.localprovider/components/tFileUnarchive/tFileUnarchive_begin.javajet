@@ -21,7 +21,6 @@
 	boolean isArchiveValid = ("true").equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
 	boolean isPasswordNeeded = ("true").equals(ElementParameterParser.getValue(node, "__CHECKPASSWORD__"));
 	boolean needPrintout = ("true").equals(ElementParameterParser.getValue(node, "__PRINTOUT__"));
-	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 	String decryptMethod = ElementParameterParser.getValue(node, "__DECRYPT_METHOD__");
 
@@ -151,7 +150,14 @@
 		//the others all use the ZIP to decompression
 		com.talend.compress.zip.Unzip unzip_<%=cid%> = new com.talend.compress.zip.Unzip(zipFileURL_<%=cid %>, outputPath_<%=cid %>);
 		unzip_<%=cid%>.setNeedPassword(<%=isPasswordNeeded%>);
-		unzip_<%=cid%>.setPassword(<%=password%>);
+	        
+		<%
+		String passwordFieldName = "__PASSWORD__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	   	
+		unzip_<%=cid%>.setPassword(decryptedPassword_<%=cid%>);
 		unzip_<%=cid%>.setCheckArchive(<%=isArchiveValid%>);
 		unzip_<%=cid%>.setVerbose(<%=needPrintout%>);
 		unzip_<%=cid%>.setExtractPath(<%=extractPath%>);

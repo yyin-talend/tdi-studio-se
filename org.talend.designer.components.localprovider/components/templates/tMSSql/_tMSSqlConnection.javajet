@@ -30,7 +30,15 @@ if(useExistingConnection) {
     }
     url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+    String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
     <%
     log4jCodeGenerateUtil.debugConnectionParams(node);
     log4jCodeGenerateUtil.connect(node);

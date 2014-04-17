@@ -47,7 +47,7 @@ if(columnList != null && columnList.size() > 0) {
         String dbhost = ElementParameterParser.getValue(node, "__HOST__");    
         String dbport = ElementParameterParser.getValue(node, "__PORT__");  
         String dbuser= ElementParameterParser.getValue(node, "__USER__");   
-        String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
         String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
         %>
         java.lang.Class.forName("org.gjt.mm.mysql.Driver");
@@ -59,7 +59,15 @@ if(columnList != null && columnList.size() > 0) {
             url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + dbProperties_<%=cid%>;
         }
         String dbUser_<%=cid %> = <%=dbuser%>;
-        String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+        <%
+        String passwordFieldName = "__PASS__";
+        %>
+
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
         java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
         <%
     }

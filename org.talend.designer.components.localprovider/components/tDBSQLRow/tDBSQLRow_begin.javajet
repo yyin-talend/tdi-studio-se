@@ -20,7 +20,15 @@ imports="
 		%>
 			String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 			String dbUser_<%=cid %> = <%=dbuser%>;
-			String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+			<%
+			String passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+			String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
 			String driverClass_<%=cid%> = "<%=this.getDirverClassName(node) %>";
 			String dbProperties_<%=cid%> = <%=dbproperties%>;
 			<%

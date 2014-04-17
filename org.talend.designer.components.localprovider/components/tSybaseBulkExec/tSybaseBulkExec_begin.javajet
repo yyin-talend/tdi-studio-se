@@ -27,7 +27,7 @@ String server = ElementParameterParser.getValue(node, "__SERVERNAME__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String database = ElementParameterParser.getValue(node, "__DBNAME__");
 String user = ElementParameterParser.getValue(node, "__USER__");
-String pwd = ElementParameterParser.getValue(node, "__PASS__");
+
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
 String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATOR__");
@@ -83,7 +83,15 @@ if(useExistingConnection) {
     %>
     String db_<%=cid%> = <%=database%>;
     String user_<%=cid%> = <%=user%>;
-    String pass_<%=cid%> = <%=pwd%>;
+	        
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+   	
+    String pass_<%=cid %> = decryptedPassword_<%=cid%>;
+	            
     String host_<%=cid%> = <%=host%>;
 <%	if(!"NONE".equals(tableAction) || ("UPDATE").equals(dataAction)){%>
     	String port_<%=cid%> = <%=port%>;
