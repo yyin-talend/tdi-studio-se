@@ -743,6 +743,10 @@ public class SQLBuilderRepositoryNodeManager {
             schema = parameters.getUserName();
         }
 
+        if (EDatabaseTypeName.EXASOL.getProduct().equals(productName)) {
+            schema = parameters.getDbName();
+        }
+
         boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\"")) //$NON-NLS-1$ //$NON-NLS-2$
                 || (schema.trim().equals("")); //$NON-NLS-1$
         // from 616 till line 622 modified by hyWang
