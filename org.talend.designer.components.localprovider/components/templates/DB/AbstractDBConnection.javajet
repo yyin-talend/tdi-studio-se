@@ -41,8 +41,9 @@ imports="
 <%
 	} else {
 		boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
+		String alias = null;
 		if(specify_alias){
-			String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+			alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
 
 	if ((null == globalMap.get(KEY_DB_DATASOURCES)) || "".equals(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>)) {
@@ -55,6 +56,9 @@ imports="
 <%
 		if(specify_alias){
 %>
+	}else{
+  		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+  		conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 	}
 <%
 		}
