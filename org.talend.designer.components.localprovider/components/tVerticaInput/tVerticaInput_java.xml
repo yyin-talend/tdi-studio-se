@@ -59,6 +59,7 @@
 			<ITEM NAME="VERTICA_6_0" VALUE="VERTICA_6_0" />
 			<ITEM NAME="VERTICA_6_1_X" VALUE="VERTICA_6_1_X" />
 			<ITEM NAME="VERTICA_7_0_X" VALUE="VERTICA_7_0_X" />
+			<!-- NAME should be come from value attribute of EDatabaseVersion4Drivers-->
 		</ITEMS>
 	</PARAMETER>
 
