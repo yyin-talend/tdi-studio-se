@@ -58,6 +58,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.repository.RepositoryViewObject;
@@ -337,7 +338,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                                 projectRecords.toArray(new ImportItem[0]), null);
                     }
                 } catch (Exception e) {
-                    throw new InvocationTargetException(e);
+                    ExceptionHandler.process(e);
                 }
                 monitorWrap.done();
                 if (monitor.isCanceled()) {
@@ -469,7 +470,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                         items.addAll(importManager.populateImportingItems(rm, true, monitor));
                     }
                 } catch (Exception e) {
-                    throw new InvocationTargetException(e);
+                    ExceptionHandler.process(e);
                 }
             }
 
