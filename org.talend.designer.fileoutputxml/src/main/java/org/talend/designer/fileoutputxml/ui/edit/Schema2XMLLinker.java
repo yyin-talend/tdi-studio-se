@@ -54,7 +54,6 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
@@ -267,7 +266,8 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
             if (treeNode.getColumn() != null) {
                 TableItem tableItem = null;
                 for (TableItem curTableItem : getSource().getItems()) {
-                    if (curTableItem.getText().equals(treeNode.getColumnLabel())) {
+                    String columnLabel = treeNode.getColumn().getLabel();
+                    if (curTableItem.getText().equals(columnLabel)) {
                         tableItem = curTableItem;
                         break;
                     }
