@@ -12,16 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.gef.commands.Command;
-import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -38,8 +30,6 @@ public class ChangeActivateStatusSubjobCommand extends Command {
     private boolean value;
 
     private boolean oneComponent;
-
-    private Map<String, Object> componentListChanged = new HashMap<String, Object>();
 
     /**
      * Gives the node where the status will be set or removed.
@@ -95,29 +85,6 @@ public class ChangeActivateStatusSubjobCommand extends Command {
         Process process = (Process) node.getProcess();
         process.setActivateSubjob(node, value, oneComponent);
 
-        // for COMPONENT_LIST type param , if deactive change this param
-        if (!value) {
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-            for (INode gNode : graphicalNodes) {
-                if (gNode == this.node) {
-                    continue;
-                }
-                List<? extends IElementParameter> elementParameters = gNode.getElementParameters();
-                for (IElementParameter param : elementParameters) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                        Object value = param.getValue();
-                        if (node.getUniqueName().equals(value)) {
-                            param.setValue("");
-                            gNode.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                            String key = gNode.getUniqueName() + "-" + param.getName();
-                            componentListChanged.put(key, value);
-                        }
-                    }
-                }
-            }
-        }
-
         process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
@@ -127,35 +94,12 @@ public class ChangeActivateStatusSubjobCommand extends Command {
         Process process = (Process) node.getProcess();
         process.setActivateSubjob(node, !value, oneComponent);
 
-        // for COMPONENT_LIST type param
-        if (!componentListChanged.isEmpty()) {
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-            for (INode gNode : graphicalNodes) {
-                if (gNode == this.node) {
-                    continue;
-                }
-                List<? extends IElementParameter> elementParameters = gNode.getElementParameters();
-                for (IElementParameter param : elementParameters) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                        String key = gNode.getUniqueName() + "-" + param.getName();
-                        Object object = componentListChanged.get(key);
-                        if (object != null) {
-                            param.setValue(object);
-                            gNode.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                        }
-                    }
-                }
-            }
-        }
-
         process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
     }
 
     public void redo() {
-        componentListChanged.clear();
         this.execute();
     }
 }

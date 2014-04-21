@@ -23,10 +23,8 @@ import java.util.Set;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -61,8 +59,6 @@ public class ChangeActivateStatusElementCommand extends Command {
     private int deactiveNum = 0;
 
     private List<Connection> outputs = null;
-
-    private Map<String, Object> componentListChanged = new HashMap<String, Object>();
 
     /**
      * Gives the node where the status will be set or removed.
@@ -160,26 +156,6 @@ public class ChangeActivateStatusElementCommand extends Command {
 
         dummyMiddleElement(false);
 
-        // for COMPONENT_LIST type param if deavtive
-        if (!value) {
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-            for (INode node : graphicalNodes) {
-                List<? extends IElementParameter> elementParameters = node.getElementParameters();
-                for (IElementParameter param : elementParameters) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                        Object value = param.getValue();
-                        if (uniqueNameList.contains(value)) {
-                            param.setValue("");
-                            node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                            String key = node.getUniqueName() + "-" + param.getName();
-                            componentListChanged.put(key, value);
-                        }
-                    }
-                }
-            }
-        }
-
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
@@ -249,25 +225,6 @@ public class ChangeActivateStatusElementCommand extends Command {
         }
         process.setActivate(false);
 
-        // for COMPONENT_LIST type param
-        if (!componentListChanged.isEmpty()) {
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-            for (INode node : graphicalNodes) {
-                List<? extends IElementParameter> elementParameters = node.getElementParameters();
-                for (IElementParameter param : elementParameters) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                        String key = node.getUniqueName() + "-" + param.getName();
-                        Object object = componentListChanged.get(key);
-                        if (object != null) {
-                            param.setValue(object);
-                            node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                        }
-                    }
-                }
-            }
-        }
-
         dummyMiddleElement(true);
         for (Node node : nodeList) {
             if (isSameSchemaInputOutput(node)) {
@@ -297,7 +254,6 @@ public class ChangeActivateStatusElementCommand extends Command {
 
     @Override
     public void redo() {
-        componentListChanged.clear();
         this.execute();
     }
 
