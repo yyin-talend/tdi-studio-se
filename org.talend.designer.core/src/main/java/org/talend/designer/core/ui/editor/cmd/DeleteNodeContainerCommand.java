@@ -13,24 +13,19 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -50,8 +45,6 @@ public class DeleteNodeContainerCommand extends Command {
     private List<INode> nodeList;
 
     private List<String> joinTableNames = new ArrayList<String>();
-
-    private Map<String, Object> componentListChanged = new HashMap<String, Object>();
 
     public DeleteNodeContainerCommand(IProcess2 process, List<INode> nodeList) {
         this.process = process;
@@ -152,24 +145,6 @@ public class DeleteNodeContainerCommand extends Command {
             }
         }
 
-        // for COMPONENT_LIST type param
-        List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-        for (INode node : graphicalNodes) {
-            List<? extends IElementParameter> elementParameters = node.getElementParameters();
-            for (IElementParameter param : elementParameters) {
-                EParameterFieldType fieldType = param.getFieldType();
-                if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                    Object value = param.getValue();
-                    if (uniqueNameList.contains(value)) {
-                        param.setValue("");
-                        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                        String key = node.getUniqueName() + "-" + param.getName();
-                        componentListChanged.put(key, value);
-                    }
-                }
-            }
-        }
-
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
@@ -179,25 +154,6 @@ public class DeleteNodeContainerCommand extends Command {
     @SuppressWarnings("unchecked")
     public void undo() {
         process.setActivate(false);
-
-        // for COMPONENT_LIST type param
-        if (!componentListChanged.isEmpty()) {
-            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-            for (INode node : graphicalNodes) {
-                List<? extends IElementParameter> elementParameters = node.getElementParameters();
-                for (IElementParameter param : elementParameters) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    if (EParameterFieldType.COMPONENT_LIST == fieldType) {
-                        String key = node.getUniqueName() + "-" + param.getName();
-                        Object object = componentListChanged.get(key);
-                        if (object != null) {
-                            param.setValue(object);
-                            node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                        }
-                    }
-                }
-            }
-        }
 
         for (INode node : nodeList) {
             if (node.getJobletNode() != null) {
@@ -288,7 +244,6 @@ public class DeleteNodeContainerCommand extends Command {
 
     @Override
     public void redo() {
-        componentListChanged.clear();
         this.execute();
     }
 }

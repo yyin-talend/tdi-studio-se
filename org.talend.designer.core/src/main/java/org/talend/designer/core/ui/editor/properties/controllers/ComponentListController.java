@@ -46,12 +46,14 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -305,33 +307,33 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             param.setListItemsValue(componentValueList);
 
             Object value = param.getValue();
-            if (value != null && !"".equals(value) && !componentUniqueNames.contains(value)) {
-                // String newValue = null;
-                // if ((componentUniqueNames.size() > 0)) {
-                //                    if (value == null || value.equals("")) { //$NON-NLS-1$
-                // elem.setPropertyValue(getParameterName(param), componentValueList[0]);
-                // if (elem instanceof Node) {
-                // Node node = (Node) elem;
-                // node.checkAndRefreshNode();
-                // ((IProcess2) node.getProcess()).setProcessModified(true);
-                // } else if (elem instanceof Connection) {
-                // ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
-                // }
-                // } else {
-                // newValue = componentValueList[0];
-                //
-                // }
-                // } else { // removed the old value.
-                //                    newValue = "";//$NON-NLS-1$
-                // }
-                //                if (!("".equals(newValue)) && newValue != null) { //$NON-NLS-1$
-                IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                if (part instanceof AbstractMultiPageTalendEditor) {
-                    AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
-                    CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
-                    cmdStack.execute(new PropertyChangeCommand(elem, getParameterName(param), ""));
+            if (!componentUniqueNames.contains(value)) {
+                String newValue = null;
+                if ((componentUniqueNames.size() > 0)) {
+                    if (value == null || value.equals("")) { //$NON-NLS-1$
+                        elem.setPropertyValue(getParameterName(param), componentValueList[0]);
+                        if (elem instanceof Node) {
+                            Node node = (Node) elem;
+                            node.checkAndRefreshNode();
+                            ((IProcess2) node.getProcess()).setProcessModified(true);
+                        } else if (elem instanceof Connection) {
+                            ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
+                        }
+                    } else {
+                        newValue = componentValueList[0];
+
+                    }
+                } else { // removed the old value.
+                    newValue = "";//$NON-NLS-1$
                 }
-                // }
+                if (!("".equals(newValue)) && newValue != null) { //$NON-NLS-1$
+                    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+                    if (part instanceof AbstractMultiPageTalendEditor) {
+                        AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
+                        CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
+                        cmdStack.execute(new PropertyChangeCommand(elem, getParameterName(param), ""));
+                    }
+                }
             }
 
         }
@@ -375,11 +377,10 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         } else {
             combo.setItems(curComponentNameList);
             if (!listContainValue) {
-                // if (curComponentNameList.length > 0) {
-                // elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
-                // combo.setText(curComponentNameList[0]);
-                // }
-                elem.setPropertyValue(getParameterName(param), "");
+                if (curComponentNameList.length > 0) {
+                    elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
+                    combo.setText(curComponentNameList[0]);
+                }
             } else {
                 combo.setText(curComponentNameList[numValue]);
             }
