@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -2434,6 +2435,18 @@ public class WebServiceUI implements AbstractWebService {
                 TableItem[] items = expressTableForIn.getSelection();
                 for (TableItem item : items) {
                     InputMappingData info = (InputMappingData) item.getData();
+                    List<LinkDescriptor<TableItem, Object, Table, Object>> links = tabTotabLinkForin.getLinksManager().getLinks();
+                    List<LinkDescriptor<TableItem, Object, Table, Object>> removeLinks = new ArrayList<LinkDescriptor<TableItem, Object, Table, Object>>();
+                    for (LinkDescriptor<TableItem, Object, Table, Object> link : links) {
+                        InputMappingData dataItem = (InputMappingData) link.getExtremity2().getDataItem();
+                        if (info == dataItem) {
+                            removeLinks.add(link);
+                        }
+                    }
+                    for (LinkDescriptor<TableItem, Object, Table, Object> link : removeLinks) {
+                        tabTotabLinkForin.getLinksManager().removeLink(link);
+                    }
+                    tabTotabLinkForin.getBackgroundRefresher().refreshBackground();
                     // if (info.getInputColumnValue() != null && !"".equals(info.getInputColumnValue())) {
                     // // info.getInputColumnValue().
                     // info.setInputColumnValue(null);
@@ -3864,8 +3877,9 @@ public class WebServiceUI implements AbstractWebService {
             List<org.talend.core.model.metadata.IMetadataColumn> llist) {
         try {
             List<LinkDescriptor<TableItem, Object, Table, Object>> links = tabTotabLink.getLinksManager().getLinks();
-            boolean isExistColumn = false;
+            List<LinkDescriptor<TableItem, Object, Table, Object>> removeLinks = new ArrayList<LinkDescriptor<TableItem, Object, Table, Object>>();
             for (LinkDescriptor<TableItem, Object, Table, Object> link : links) {
+                boolean isExistColumn = false;
                 IExtremityLink extremity = link.getExtremity1();
                 IMetadataColumn c = null;
                 if (extremity.getDataItem() instanceof IMetadataColumn) {
@@ -3876,17 +3890,26 @@ public class WebServiceUI implements AbstractWebService {
                         if (c.getLabel().equals(column.getLabel())) {
                             extremity.setDataItem(column);
                             isExistColumn = true;
+                            break;
+                        }
+                    }
+                    if (!isExistColumn) {
+                        removeLinks.add(link);
+                        for (InputMappingData inputData : inputMappingList) {
+                            InputMappingData dataItem = (InputMappingData) link.getExtremity2().getDataItem();
+                            if (inputData == dataItem) {
+                                inputData.setInputColumnValue(StringUtils.remove(inputData.getInputColumnValue(),
+                                        "input." + c.getLabel()).trim());
+                            }
                         }
                     }
                 }
             }
-            if (!isExistColumn) {
-                tabTotabLink.clearLinks();
-                for (InputMappingData inputData : inputMappingList) {
-                    inputData.setInputColumnValue("");
-                }
-                expressinPutTableView.getExtendedTableViewer().getTableViewerCreator().refresh();
+            for (LinkDescriptor<TableItem, Object, Table, Object> link : removeLinks) {
+                tabTotabLink.getLinksManager().removeLink(link);
             }
+            expressinPutTableView.getExtendedTableViewer().getTableViewerCreator().refresh();
+            tabTotabLink.getBackgroundRefresher().refreshBackground();
         } catch (Exception e) {
             tabTotabLink.clearLinks();
         }
@@ -3896,8 +3919,9 @@ public class WebServiceUI implements AbstractWebService {
             List<org.talend.core.model.metadata.IMetadataColumn> llist) {
         try {
             List<LinkDescriptor<TableItem, Object, Table, Object>> links = tabTotabLink.getLinksManager().getLinks();
-            boolean isExistColumn = false;
+            List<LinkDescriptor<TableItem, Object, Table, Object>> removeLinks = new ArrayList<LinkDescriptor<TableItem, Object, Table, Object>>();
             for (LinkDescriptor<TableItem, Object, Table, Object> link : links) {
+                boolean isExistColumn = false;
                 IExtremityLink extremity = link.getExtremity2();
                 IMetadataColumn c = null;
                 if (extremity.getDataItem() instanceof OutPutMappingData) {
@@ -3908,13 +3932,15 @@ public class WebServiceUI implements AbstractWebService {
                         if (c.getLabel().equals(column.getLabel())) {
                             ((OutPutMappingData) extremity.getDataItem()).setMetadataColumn(column);
                             isExistColumn = true;
+                            break;
                         }
                     }
                 }
             }
-            if (!isExistColumn) {
-                tabTotabLink.clearLinks();
+            for (LinkDescriptor<TableItem, Object, Table, Object> link : removeLinks) {
+                tabTotabLink.getLinksManager().removeLink(link);
             }
+            tabTotabLink.getBackgroundRefresher().refreshBackground();
         } catch (Exception e) {
             tabTotabLink.clearLinks();
         }
