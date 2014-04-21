@@ -729,8 +729,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                                 }
                                             }
                                         }
-                                    } else if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
-                                            && ((INode) elem).getComponent().getName().equals("tWebService")
+                                    }
+                                    // TDI-29176:support tBRMS drag here ,same as tWebService,but for tBRMS's input
+                                    // schema,it is invisible which design in the component
+                                    else if (item != null
+                                            && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                            && (((INode) elem).getComponent().getName().equals("tWebService") || ((INode) elem)
+                                                    .getComponent().getName().equals("tBRMS"))
                                             && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 2) {
                                         final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                                         if (tables != null && !tables.isEmpty()) {
