@@ -41,12 +41,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         String talendType = column.getTalendType();
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, column.isNullable());
                         JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
+                        boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+                        String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
                         String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>
             		    if(map_<%=cid%>.containsKey("<%=column.getLabel()%>")){
             		        Object obj_<%=cid%> = map_<%=cid%>.get("<%=column.getLabel()%>");
             		        if(obj_<%=cid%> == null){
-            		            <%=conn.getName()%>.<%=columnName%> = null;
+            		            <%
+            		            if(isPrimitive){
+            		            %> 
+                		            <%=conn.getName()%>.<%=columnName%> = <%=defaultValue %>;
+            		            <%
+            		            }else{
+            		            %>
+            		                <%=conn.getName()%>.<%=columnName%> = null;
+            		            <%
+            		            }
+            		            %>
             		        }else{
             		            columnValue_<%=cid%> = obj_<%=cid%>.toString();
 <%
