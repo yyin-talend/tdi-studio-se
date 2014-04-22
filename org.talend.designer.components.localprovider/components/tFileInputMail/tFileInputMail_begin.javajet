@@ -228,9 +228,9 @@ try{
 <%
 			    // fixed bug TDI-8586,to deal with attachments download
 %>                
-                if ((disposition<%=cid%> != null) && mpart<%=cid%>.getFileName()!=null
-                        && ((disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT)) ||
-                        (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))) {
+                if (mpart<%=cid%>.getFileName()!=null
+                    && ((disposition<%=cid%> != null && (disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT) || disposition<%=cid%>.equals(javax.mail.Part.INLINE)))
+					||  disposition<%=cid%>==null)) {	<%// TDI-29179 %>
                     attachfileName<%=cid%> = mpart<%=cid%>.getFileName();
                     
                     if (attachfileName<%=cid%>.indexOf("=?") != -1){
