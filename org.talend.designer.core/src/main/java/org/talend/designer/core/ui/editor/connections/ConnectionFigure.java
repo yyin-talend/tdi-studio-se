@@ -250,6 +250,9 @@ public class ConnectionFigure extends PolylineConnection {
     }
 
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {
+        if (connectionProperty == null) {
+            return;
+        }
         this.connectionProperty = connectionProperty;
         setLineStyle(connectionProperty.getLineStyle());
         Color color = ColorUtils.getCacheColor(connectionProperty.getRGB());
