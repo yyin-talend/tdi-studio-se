@@ -80,6 +80,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 			<%
 			}
 		}
+		public void checkExist(Manager manager,String updateWhereStmt){
+        %>
+            String checkExist_<%=cid%> = "SELECT COUNT(*) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt%>";
+        <%
+        }
 	}
 	dbOutputBeginUtil = new DBOutputMainUtil();
 %>

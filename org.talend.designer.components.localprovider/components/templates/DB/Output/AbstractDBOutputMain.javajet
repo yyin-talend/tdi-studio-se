@@ -107,9 +107,7 @@ if(isDynamic) {
 				pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 			<%
 			} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
-			%>
-				String checkExist_<%=cid%> = "SELECT COUNT(1) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt.toString()%>";
-				<%
+				dbOutputBeginUtil.checkExist(manager,updateWhereStmt.toString());
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
