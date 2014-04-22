@@ -54,35 +54,50 @@ if(("EXPORT").equals(action)) {
     }else{
         char_type = "-w";
     }
-    StringBuilder command =  new StringBuilder();
-    command.append(bcp_utility.replaceAll("\"",""));
-    command.append(" ");
-    command.append(query_statement.replaceAll("\"","\\\\\""));
-    command.append(" queryout ");
-    command.append(output_file_name.replaceAll("\"","\\\\\""));
-    command.append(" ");
-    command.append(char_type);
-    if(!("").equals(server)&&!("\"\"").equals(server)&&!(server==null)){
-        command.append(" -S");
-        command.append(server.replaceAll("\"",""));
-    }
-    if((("").equals(dbuser)||("\"\"").equals(dbuser)||dbuser==null)&&(("").equals(dbpwd)||dbpwd==null||("\"\"").equals(dbpwd))){
-        command.append(" -T");
-    }else{
-        command.append(" -U");
-        command.append(dbuser.replaceAll("\"",""));
-        command.append(" -P");
-        command.append(dbpwd.replaceAll("\"",""));
-    }
-    command.append(" -t");
-    command.append(field_separator.replaceAll("\"",""));
-    command.append(" -r");
-    command.append(row_terminated_export.replaceAll("\"",""));
-
+    
     %>
     
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    
+    StringBuffer command_<%=cid%> = new StringBuffer();
+    command_<%=cid%>.append(<%=bcp_utility%>)
+    	.append(" \"")
+    	.append(<%=query_statement%>)
+    	.append("\" queryout \"")
+    	.append(<%=output_file_name%>)
+    	.append("\" ")
+    	.append("<%=char_type%>")
+    <%
+    if(!("").equals(server)&&!("\"\"").equals(server)&&!(server==null)){
+    %>
+    	.append(" -S")
+    	.append(<%=server%>)
+    <%
+    }
+    if((("").equals(dbuser)||("\"\"").equals(dbuser)||dbuser==null)&&(("").equals(dbpwd)||dbpwd==null||("\"\"").equals(dbpwd))){
+    %>
+    	.append(" -T")
+    <%
+    }else{
+    %>
+    	.append(" -U")
+    	.append(<%=dbuser%>)
+    	.append(" -P")
+    	.append(decryptedPassword_<%=cid%>)
+    <%
+    }
+    %>
+    	.append(" -t")
+    	.append(<%=field_separator%>)
+    	.append(" -r")
+    	.append(<%=row_terminated_export%>);
+    
     Runtime runtime_<%=cid%> = Runtime.getRuntime();
-    final Process ps<%=cid %> = runtime_<%=cid%>.exec("<%=command.toString()%>");
+    final Process ps<%=cid %> = runtime_<%=cid%>.exec(command_<%=cid%>.toString());
     Thread normal_<%=cid%> = new Thread() {
         public void run() {
             try {

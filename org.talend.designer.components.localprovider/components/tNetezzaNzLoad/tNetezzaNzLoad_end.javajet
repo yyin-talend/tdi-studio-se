@@ -27,7 +27,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpass = ElementParameterParser.getValue(node, "__PASS__");
 	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
 	String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
 	String dataFile = ElementParameterParser.getValue(node, "__DATA_FILE__");
