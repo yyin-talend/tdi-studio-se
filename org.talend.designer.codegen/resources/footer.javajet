@@ -759,18 +759,37 @@ if (execStat) {
     }
 
     private final String[][] escapeChars = {
-        {"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
-        {"\\f","\f"},{"\\b","\b"},{"\\t","\t"},
-        {"\\\\","\\"}
+        {"\\\\","\\"},{"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
+        {"\\f","\f"},{"\\b","\b"},{"\\t","\t"}        
         };
     private String replaceEscapeChars (String keyValue) {
-        if(keyValue==null || ("").equals(keyValue.trim())) {
-            return keyValue;
-        }
-        for(String[] strArray: escapeChars) {
-            keyValue = keyValue.replace(strArray[0], strArray[1]);
-        }
-        return keyValue;
+
+		if (keyValue == null || ("").equals(keyValue.trim())) {
+			return keyValue;
+		}
+		
+		StringBuilder result = new StringBuilder();
+		int currIndex = 0;
+		while (currIndex < keyValue.length()) {
+			int index = -1;
+			// judege if the left string includes escape chars
+			for (String[] strArray : escapeChars) {
+				index = keyValue.indexOf(strArray[0],currIndex);
+				if (index>=0) {
+					
+					result.append(keyValue.substring(currIndex, index + strArray[0].length()).replace(strArray[0], strArray[1]));
+					currIndex = index + strArray[0].length();
+					break;
+				}
+			}
+			// if the left string doesn't include escape chars, append the left into the result
+			if (index < 0) { 
+				result.append(keyValue.substring(currIndex));
+				currIndex = currIndex + keyValue.length();
+			}
+		}
+		
+		return result.toString();
     }
 
     public Integer getErrorCode() {
