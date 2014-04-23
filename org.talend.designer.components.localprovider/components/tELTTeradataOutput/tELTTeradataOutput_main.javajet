@@ -49,13 +49,11 @@ imports="
         String dbhost = null;
         String dbname = null;
         String dbuser = null;
-        String dbpwd = null;
         boolean useExistingConn = false;
         if(previousNode != null) {
 	        dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
 	        dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
 	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
-	        dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 	        useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         }
 
@@ -93,7 +91,14 @@ if(useExistingConn) {
     java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
     String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+ "/DATABASE=" + <%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
+    
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+    
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>      
+    
+    String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 	<%
    		log4jCodeGenerateUtil.debugConnectionParams(previousNode,"com.teradata.jdbc.TeraDriver");	
 	%>	 

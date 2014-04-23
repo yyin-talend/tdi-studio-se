@@ -27,7 +27,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpass = ElementParameterParser.getValue(node, "__PASS__");
 	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
 	String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
 	String dataFile = ElementParameterParser.getValue(node, "__DATA_FILE__");
@@ -123,7 +122,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 		java.lang.Class.forName("org.netezza.Driver");
 		String url_<%=cid%> = "jdbc:netezza://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
-		String dbPwd_<%=cid %> = <%=dbpass%>;
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 		String tableName_<%=cid%> = <%=dbtable%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		<%
@@ -355,7 +358,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	parametersList.add("\"-u\"");
 	parametersList.add(dbuser);
 	parametersList.add("\"-pw\"");
-	parametersList.add(dbpass);
+	parametersList.add("decryptedPwd_" + cid);
 	parametersList.add("\"-db\"");
 	parametersList.add(dbname);
 	parametersList.add("\"-t\"");
@@ -390,6 +393,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 	final StringBuilder nzloadOutput_<%=cid%> = new StringBuilder(200);
 	//final 
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+    	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%} else {%>
+    	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+    <%}%>
 	
 	Thread nzloadThread_<%=cid%> = new Thread() {
 		public void run() {

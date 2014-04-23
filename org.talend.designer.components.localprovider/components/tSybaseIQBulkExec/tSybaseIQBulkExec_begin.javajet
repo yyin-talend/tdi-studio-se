@@ -26,7 +26,7 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
-String password = ElementParameterParser.getValue(node, "__PASS__");
+
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 
 String lines_separator = ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") ;
@@ -95,7 +95,11 @@ if(useExistingConn) {
 %>
    
     java.lang.Class.forName(dirverName);
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid%>, <%=password %>);
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid%>, decryptedPassword_<%=cid%>);
 <%
 }
 %>

@@ -19,9 +19,6 @@ imports="
 	
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	
-	String password = ElementParameterParser.getValue(node, "__PASS__");
-			
-	
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       
@@ -42,7 +39,14 @@ imports="
         java.lang.Class.forName("<%=javaDbDriver %>");        
         String url_<%=cid %> = "jdbc:interbase://" + <%=host%> + "/" + <%=dbname%>;        
         String userName_<%=cid%> = <%=username%>;        
-        String password_<%=cid%> = <%=password%>;        
+        
+        <%
+        String passwordFieldName = "__PASS__";
+        %>
+        
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>          
+        
+        String password_<%=cid%> = decryptedPassword_<%=cid%>;        
         java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
         <%
     }

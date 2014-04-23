@@ -16,7 +16,6 @@ imports="
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       
@@ -95,7 +94,14 @@ if(("true").equals(useExistingConn)) {
 %>
 
 		String dbUser_<%=cid %> = <%=dbuser%>;
-		String dbPwd_<%=cid %> = <%=dbpwd%>;
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+		String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
 <%
 		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>

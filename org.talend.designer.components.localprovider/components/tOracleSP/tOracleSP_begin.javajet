@@ -17,7 +17,7 @@ imports="
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
+
 	String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 	boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 	List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
@@ -61,11 +61,15 @@ if (useExistingConnection) {
 	    <%
 	}
 	%>
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
 	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, decryptedPassword_<%=cid%>);
 <%
 	} else {
 %>
@@ -73,7 +77,7 @@ if (useExistingConnection) {
 	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
 	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
 	atnParamsPrope_<%=cid%>.put("user",<%=dbuser%>);
-	atnParamsPrope_<%=cid%>.put("password",<%=dbpwd%>);
+	atnParamsPrope_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
 	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%

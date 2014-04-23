@@ -17,7 +17,7 @@ String driverJar = ElementParameterParser.getValue(node, "__DRIVER_JAR__");
 String driverClass = ElementParameterParser.getValue(node, "__DRIVER_CLASS__");
 String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
-String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
+
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
@@ -65,7 +65,11 @@ if(("true").equals(useExistingConn)){
 	%>
 			java.lang.Class.forName(<%=driverClass %>);
 			String connectionString_<%=cid %> = <%=jdbcUrl %>;
-			connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+    		<%
+    		String passwordFieldName = "__PASS__";
+    		%>
+    		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, decryptedPassword_<%=cid%>);
 	<%
 	if(specify_alias){
 	%>

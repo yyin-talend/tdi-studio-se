@@ -17,7 +17,6 @@ imports="
 	String dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
@@ -50,7 +49,14 @@ imports="
 		}
 %>
 	String dbUser_<%=cid %> = <%=dbuser%>;
-	String dbPwd_<%=cid %> = <%=dbpwd%>;
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+	String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
 	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
 	}

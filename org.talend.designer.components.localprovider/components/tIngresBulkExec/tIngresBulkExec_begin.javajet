@@ -31,7 +31,7 @@
 	String vnode = ElementParameterParser.getValue(node, "__VNODE__");
 	String database = ElementParameterParser.getValue(node, "__DBNAME__");
 	String user = ElementParameterParser.getValue(node, "__USER__");
-	String pwd = ElementParameterParser.getValue(node, "__PASS__");
+
 	String table = ElementParameterParser.getValue(node, "__TABLE__");
 	String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
 	boolean deleteWorkingFiles = ("true").equals(ElementParameterParser.getValue(node,"__DELETE_WORKING_FILES__"));

@@ -34,8 +34,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	
-	String password = ElementParameterParser.getValue(node, "__PASS__");	
-	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
@@ -130,7 +128,14 @@ java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 }%>
 
 String userName_<%=cid %> = <%=username%>;
-String password_<%=cid %> = <%=password%>;  
+
+<%
+String passwordFieldName = "__PASS__";
+%>
+
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>  
+
+String password_<%=cid %> = decryptedPassword_<%=cid%>;  
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>

@@ -16,7 +16,6 @@ imports="
 	String dbschema= ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	%>
         String dbProperties_<%=cid%> = <%=dbproperties%>;
@@ -27,7 +26,14 @@ imports="
             url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ";" + <%=dbproperties%>;
         }
         String dbUser_<%=cid %> = <%=dbuser%>;
-        String dbPwd_<%=cid %> = <%=dbpwd%>;
+        <%
+        String passwordFieldName = "__PASS__";
+        %>
+
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
         java.lang.Class.forName("com.exasol.jdbc.EXADriver");
         java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 

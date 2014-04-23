@@ -43,7 +43,7 @@ imports="
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
 	 		boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
 	 		if(specify_alias){
 				String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
@@ -58,7 +58,11 @@ imports="
 					java.lang.Class.forName(<%=this.getDirverClassName(node) %>);
 					<%this.setURL(node);%>
 					String dbUser_<%=cid %> = <%=dbuser%>;
-					String dbPwd_<%=cid %> = <%=dbpwd%>;
+					<%
+					String passwordFieldName = "__PASS__";
+					%>
+					<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+					String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
 			if(specify_alias){

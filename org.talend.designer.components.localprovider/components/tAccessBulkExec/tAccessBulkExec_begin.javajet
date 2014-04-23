@@ -22,7 +22,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String table = ElementParameterParser.getValue(node, "__TABLE__");
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
 	String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 	boolean includeHeader = "true".equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
@@ -59,7 +58,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 		%>
 		String userName_<%=cid %> = <%=username%>;
-		String password_<%=cid %> = <%=password%>;  
+		
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		
+		String password_<%=cid %> = decryptedPassword_<%=cid%>;
+		
 	<%
 		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 	%>

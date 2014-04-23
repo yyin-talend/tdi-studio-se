@@ -39,7 +39,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
-    String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
@@ -73,7 +73,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 
         java.lang.Class.forName("com.paraccel.Driver");
         String connectionString_<%=cid%> = "jdbc:paraccel://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-        java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+        java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, decryptedPassword_<%=cid%>);
         <%        
     }
     %>

@@ -27,7 +27,7 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__"); 
 String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
-String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
@@ -137,7 +137,11 @@ if(useExistingConnection) {
 	}
 	%>
     username_<%=cid%> = <%=dbuser%>;
-    password_<%=cid%> = <%=dbpass%>;
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    password_<%=cid%> = decryptedPassword_<%=cid%>;
         
     <%
 	String rac_url = ElementParameterParser.getValue(node, "__RAC_URL__");

@@ -78,7 +78,7 @@ class Transfer{
 		String port = ElementParameterParser.getValue(node,"__PORT__");
 		String dbname = ElementParameterParser.getValue(node,"__DBNAME__");
 		String user = ElementParameterParser.getValue(node,"__USER__");
-		String pass = ElementParameterParser.getValue(node,"__PASS__");
+
 		String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
 
 		if(("MSSQL").equals(dbType)){
@@ -160,6 +160,10 @@ if (metadata != null) {
 	dbquery = dbquery.replaceAll("\r", " ");
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	%>
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		mondrian.olap.Connection connection_<%=cid%> = mondrian.olap.DriverManager.getConnection(
 		"Provider=mondrian;" +
 		"Jdbc='" + <%=transfer.url(node)%> + "';" +
@@ -171,7 +175,7 @@ if (metadata != null) {
 	}
 	if (!("\"\"").equals(dbpwd)) {
 		%> +
-		"JdbcPassword=" + <%=dbpwd%> + ";"<%
+		"JdbcPassword=" + decryptedPassword_<%=cid%> + ";"<%
 	}
 	if("mondrian_2.jar".equals(mondrainVersion)){%>
 		, null, true);

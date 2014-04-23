@@ -25,7 +25,7 @@ imports="
     	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
 	
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
@@ -95,7 +95,11 @@ if(!("INSERT").equals(dataAction))
 %> 
 
 String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
+<%
+String passwordFieldName = "__PASS__";
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 
 <%
   	log4jCodeGenerateUtil.debugConnectionParams(node,"com.teradata.jdbc.TeraDriver");	

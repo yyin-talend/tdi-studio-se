@@ -25,7 +25,7 @@ imports="
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String enableStream = ElementParameterParser.getValue(node, "__ENABLE_STREAM__");
 	String dbms=ElementParameterParser.getValue(node, "__MAPPING__");

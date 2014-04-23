@@ -21,7 +21,7 @@ String operatorDataConnector= ElementParameterParser.getValue(node, "__OPERATOR_
 String layoutName= ElementParameterParser.getValue(node, "__LAYOUT_NAME__");
 String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser= ElementParameterParser.getValue(node, "__USER__");
-String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
 String table= ElementParameterParser.getValue(node, "__TABLE__");
 
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
@@ -194,7 +194,11 @@ fw_<%=cid %>.write("/* 89 */  <%=lineSeparator%>");
 fw_<%=cid %>.write("/* 90 */  		ATTRIBUTES<%=lineSeparator%>");
 fw_<%=cid %>.write("/* 91 */  		(<%=lineSeparator%>");
 fw_<%=cid %>.write("/* 92 */  			UserName = '" + <%=dbuser%> + "', <%=lineSeparator%>");
-fw_<%=cid %>.write("/* 93 */  			UserPassword = '" + <%=dbpwd%> + "', <%=lineSeparator%>");
+<%
+String passwordFieldName = "__PASS__";
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+fw_<%=cid %>.write("/* 93 */  			UserPassword = '" + decryptedPassword_<%=cid%> + "', <%=lineSeparator%>");
 fw_<%=cid %>.write("/* 94 */  			LogTable = '" + tableFullName_<%=cid%> + "_log',<%=lineSeparator%>"); 
 fw_<%=cid %>.write("/* 95 */  			TargetTable = '" + tableFullName_<%=cid%> + "', <%=lineSeparator%>");
 fw_<%=cid %>.write("/* 96 */  			TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");

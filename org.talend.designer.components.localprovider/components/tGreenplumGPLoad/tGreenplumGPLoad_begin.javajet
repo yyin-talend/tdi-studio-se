@@ -28,7 +28,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
-	String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+
 	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
 	String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
 	String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
@@ -142,7 +142,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 		java.lang.Class.forName("org.postgresql.Driver");    
 		String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
-		String dbPwd_<%=cid %> = <%=dbpass%>;
+		<%
+		String passwordFieldName = "__PASS__";
+		%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 		java.sql.Connection conn_<%=cid%> = null;
 		<%
 	   		log4jCodeGenerateUtil.debugConnectionParams(node,"org.postgresql.Driver");	

@@ -17,7 +17,7 @@ String cid = node.getUniqueName();
 String dbhost= ElementParameterParser.getValue(node, "__HOST__");
 String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser= ElementParameterParser.getValue(node, "__USER__");
-String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
 String table= ElementParameterParser.getValue(node, "__TABLE__");
 
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
@@ -77,7 +77,11 @@ if(!specifyLogTable) {
 <%
 }
 %>
-fw_<%=cid %>.write(".LOGON "+<%if(dbhost!=null && !"\"\"".equals(dbhost)){%><%=dbhost%>+"/"+<%}%><%=dbuser%>+","+<%=dbpwd%>+";"+"<%=lineSeparator%>");
+<%
+String passwordFieldName = "__PASS__";
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+fw_<%=cid %>.write(".LOGON "+<%if(dbhost!=null && !"\"\"".equals(dbhost)){%><%=dbhost%>+"/"+<%}%><%=dbuser%>+","+decryptedPassword_<%=cid%>+";"+"<%=lineSeparator%>");
 
 <%//Layout---------------------------------------------------------------%>
 fw_<%=cid %>.write(".BEGIN LOAD "+ <%=beginLoad %> + ";"+"<%=lineSeparator%>");

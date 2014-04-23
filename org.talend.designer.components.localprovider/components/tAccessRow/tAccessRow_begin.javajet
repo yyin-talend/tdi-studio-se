@@ -17,8 +17,6 @@ imports="
 	
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	
-	String password = ElementParameterParser.getValue(node, "__PASS__");
-	
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     
     String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
@@ -54,7 +52,14 @@ java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 <%
 }%>
 	String userName_<%=cid %> = <%=username%>;
-	String password_<%=cid %> = <%=password%>;
+	
+	<%
+	String passwordFieldName = "__PASS__";
+	%>
+	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>  	
+	
+	String password_<%=cid %> = decryptedPassword_<%=cid%>;
 
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {

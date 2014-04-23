@@ -55,12 +55,16 @@
 			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+
 %>
 			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 			<%this.setURL(node);%>
 	        String userName_<%=cid%> = <%=dbuser%>;
-	        String password_<%=cid%> = <%=dbpwd%>;
+	        <%
+	        String passwordFieldName = "__PASS__";
+	        %>
+	        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	        String password_<%=cid%> = decryptedPassword_<%=cid%>;
 			String dbProperties_<%=cid%> = <%=dbproperties%>;
 			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
 				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
