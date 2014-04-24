@@ -684,8 +684,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
             IMetadataTable originaleMetadataTable = getMetadataTableFromXml(node);
             // check if the outputMetadata is readonly
             IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
+
+            // when several schema_type button ,need get the right one which is opening
+            IElementParameter schemaParam = param.getChildParameters().get("SCHEMA_TYPE");
             // need setRepository here
-            IElementParameter schemaParam = node.getElementParameter("SCHEMA_TYPE"); //$NON-NLS-1$
             if (schemaParam != null && EmfComponent.REPOSITORY.equals(schemaParam.getValue())) {
                 if (originaleOutputTable != null && originaleOutputTable instanceof MetadataTable) {
                     ((MetadataTable) originaleOutputTable).setRepository(true);

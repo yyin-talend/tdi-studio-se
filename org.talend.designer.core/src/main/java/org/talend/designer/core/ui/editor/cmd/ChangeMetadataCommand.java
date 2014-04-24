@@ -522,8 +522,12 @@ public class ChangeMetadataCommand extends Command {
             if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_IGNORE_USED)) {
                 String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                 if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
-                    outputWasRepository = true;
-                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    // for one node has several schema_type,set mode for the current one
+                    if ((node.getElementParameter("SCHEMA_TYPE").getContext()
+                            .equals(currentOutputMetadata.getAttachedConnector()))) {
+                        outputWasRepository = true;
+                        node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    }
                 }
             }
             MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
