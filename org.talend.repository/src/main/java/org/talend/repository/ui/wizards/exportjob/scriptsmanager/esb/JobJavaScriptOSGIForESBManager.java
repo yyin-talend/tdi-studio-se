@@ -789,6 +789,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
                 if (null != restRequestComponent) {
+                    importPackages.add("org.apache.cxf.management.counters");
+
                     if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) { //$NON-NLS-1$
                         String authType = EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent); //$NON-NLS-1$
                         if ("BASIC".equals(authType)) { //$NON-NLS-1$
@@ -849,7 +851,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, requireBundle);
             }
 
-            StringBuilder importPackage = new StringBuilder("routines.system.api,org.apache.cxf.management.counters,"); //$NON-NLS-1$
+            StringBuilder importPackage = new StringBuilder("routines.system.api,"); //$NON-NLS-1$
             for (String ip : importPackages) {
                 importPackage.append(ip).append(',');
             }
