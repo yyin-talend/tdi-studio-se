@@ -34,6 +34,11 @@ public class GeneralProjectSettingPage extends ProjectSettingPage {
 
     private Text descriptionText;
 
+    public GeneralProjectSettingPage() {
+        super();
+        this.noDefaultAndApplyButton();
+    }
+
     /*
      * (non-Javadoc)
      * 
