@@ -485,6 +485,7 @@ if(isIncludeHeader){
 %>
 		needDel_<%=cid %> = true;
 <%		}%>
+		nb_line_<%=cid%> ++;
 	}
 <%
 }
@@ -677,6 +678,7 @@ if(isIncludeHeader){
 		<%		
 			}
 		%>
+		nb_line_<%=cid %>++; 
 		<%
 			if(!firstCellYAbsolute) {
 		%>
