@@ -160,16 +160,20 @@
                     factory_<%=cid%> = cf_<%=cid%>;
 <%
                     if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SECURITY__"))) {
+                    	String passwordFieldName = "__PASSWORD__";
+%>
+                        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+<%
                         if ("BASIC".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
 %>
                             cf_<%=cid%>.setUsername(<%=ElementParameterParser.getValue(node, "__USERNAME__")%>);
-                            cf_<%=cid%>.setPassword(<%=ElementParameterParser.getValue(node, "__PASSWORD__")%>);
+                            cf_<%=cid%>.setPassword(decryptedPassword_<%=cid%>);
 <%
                         } else if ("SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
 %>
                             if (null != stsProperties) {
                                 org.apache.cxf.ws.security.trust.STSClient stsClient = org.talend.esb.security.saml.SAMLUtils.createStsClient(
-                                    cf_<%=cid%>.getBus(), stsProperties, <%=ElementParameterParser.getValue(node, "__USERNAME__")%>, <%=ElementParameterParser.getValue(node, "__PASSWORD__")%>, null);
+                                    cf_<%=cid%>.getBus(), stsProperties, <%=ElementParameterParser.getValue(node, "__USERNAME__")%>, decryptedPassword_<%=cid%>, null);
                                 <% if ("true".equals(ElementParameterParser.getValue(node, "__USE_AUTHORIZATION__"))) { %>
                                     org.talend.esb.security.saml.SAMLUtils.applyAuthorization(stsClient, <%=ElementParameterParser.getValue(node, "__ROLE_NAME__")%>);
                                 <% } %>
@@ -409,7 +413,6 @@
 					
 					//Username and password, http://jira.talendforge.org/browse/TESB-4073
 					String username = ElementParameterParser.getValue(node, "__WMQ_USERNAME__");
-					String password = ElementParameterParser.getValue(node, "__WMQ_PASSWORD__");
 					String useAuth = ElementParameterParser.getValue(node, "__WMQ_AUTH__");
 					
 					if(wmqPort.startsWith("\"")){
@@ -447,7 +450,15 @@
 					org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter connectionFactoryAdapter<%=node.getUniqueName()%> 
 							= new org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter();
        				connectionFactoryAdapter<%=node.getUniqueName()%>.setUsername(<%=username%>);
-      				connectionFactoryAdapter<%=node.getUniqueName()%>.setPassword(<%=password%>);
+       				
+                    <%
+                    String cid = node.getUniqueName();
+                    String passwordFieldName = "__WMQ_PASSWORD__";
+                    %>
+                    
+                    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+                           				
+      				connectionFactoryAdapter<%=node.getUniqueName()%>.setPassword(decryptedPassword_<%=cid%>);
        				connectionFactoryAdapter<%=node.getUniqueName()%>.setTargetConnectionFactory(jmsConnectionFactory);
        
 					camelContext.addComponent(<%=name%>,
