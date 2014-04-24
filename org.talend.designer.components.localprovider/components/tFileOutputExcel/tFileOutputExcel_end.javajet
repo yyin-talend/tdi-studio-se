@@ -114,7 +114,7 @@
 	<%if(!useStream && !isAppend && isDeleteEmptyFile){
 		if(isIncludeHeader){
 	%>
-		if(nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
+		if(nb_line_<%=cid %> ==0 && needDel_<%=cid %>){
 	<%	}else{%>
 		if(nb_line_<%=cid %> == 0){
 	<%	}%>
@@ -203,7 +203,7 @@
 	<%if(!useStream && !isAppend && isDeleteEmptyFile){
 		if(isIncludeHeader){
 	%>
-		if(nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
+		if(nb_line_<%=cid %> ==0 && needDel_<%=cid %>){
 	<%	}else{%>
 		if(nb_line_<%=cid %> == 0){
 	<%	}%>
