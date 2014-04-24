@@ -25,6 +25,7 @@
    <extension
          point="org.talend.core.repository.repository_node_provider">
       <repositoryNode
+            key="repository.metadataJSON"
             alias="JSON"
             class="org.talend.repository.json.node.JSONExtendNode"
             folder="metadata/json"
