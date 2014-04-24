@@ -413,11 +413,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 <%
 if(isIncludeHeader){
-	if(isDeleteEmptyFile){
-%>
-	boolean needDel_<%=cid %> = false;
-<%
-	}
 	if(firstCellYAbsolute){
 %>
 		if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
@@ -481,10 +476,7 @@ if(isIncludeHeader){
 		fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
 <%
 	}
-		if(isDeleteEmptyFile){
 %>
-		needDel_<%=cid %> = true;
-<%		}%>
 		nb_line_<%=cid %>++;
 	}
 <%
@@ -644,11 +636,6 @@ if(isIncludeHeader){
 		}//TD1
 		
 		if(isIncludeHeader){
-			if(isDeleteEmptyFile){
-		%>
-		boolean needDel_<%=cid %> = false;
-		<%
-			}
 			
 			if(!firstCellYAbsolute) {
 		%>
@@ -671,11 +658,6 @@ if(isIncludeHeader){
 		%>
 		xlsxTool_<%=cid%>.addCellValue("<%=column.getLabel()%>");
 		<%
-			}
-			if(isDeleteEmptyFile){
-		%>
-		needDel_<%=cid %> = true;
-		<%		
 			}
 		%>
 		nb_line_<%=cid %>++;

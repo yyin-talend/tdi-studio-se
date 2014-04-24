@@ -111,15 +111,14 @@
 	%>
 		writeableWorkbook_<%=cid %>.write();
 		writeableWorkbook_<%=cid %>.close();
+		<%if(isIncludeHeader){%>
+			nb_line_<%=cid %> = nb_line_<%=cid %> -1;
+		<%}%>
 		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 		
 	<%if(!useStream && isDeleteEmptyFile){
-		if(isIncludeHeader){
 	%>
-		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
-	<%	}else{%>
 		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
-	<%	}%>
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - Creating directory '" + file_<%=cid %>.getCanonicalPath() + "'.");
 			<%}%>
@@ -208,15 +207,14 @@
 	<%
 		}
 	%>
+		<%if(isIncludeHeader){%>
+			nb_line_<%=cid %> = nb_line_<%=cid %> -1;
+		<%}%>
 		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 		
 	<%if(!useStream && isDeleteEmptyFile){
-		if(isIncludeHeader){
 	%>
-		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
-	<%	}else{%>
 		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
-	<%	}%>
 			<%if(isLog4jEnabled){%>
 				log.info("<%=cid%> - Creating directory '" + file_<%=cid %>.getCanonicalPath() + "'.");
 			<%}%>
