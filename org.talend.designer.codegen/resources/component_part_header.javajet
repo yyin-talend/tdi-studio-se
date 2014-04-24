@@ -21,6 +21,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean containsTPartitioner = node.getProcess().getNodesOfType("tPartitioner").size() > 0 ? true : false;
 	String startNodeCid=node.getDesignSubjobStartNode().getUniqueName();
 	ECodePart codePart = codeGenArgument.getCodePart();
 	boolean trace = codeGenArgument.isTrace();
@@ -150,10 +151,14 @@
 		%>
 			if (execStat) {
 				if(resourceMap.get("inIterateVComp") == null){
-				    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=con.getUniqueName() %> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
-					concurrentHashMap_<%=con.getUniqueName() %>.putIfAbsent("<%=con.getUniqueName() %>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
-					java.util.concurrent.atomic.AtomicInteger stats_<%=con.getUniqueName() %> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=con.getUniqueName() %>.get("<%=con.getUniqueName() %>" + iterateLoop);
-					runStat.updateStatOnConnection("<%=con.getUniqueName() %>" + iterateId, stats_<%=con.getUniqueName() %>.incrementAndGet()<=1?0:1, 0);
+					<%if(containsTPartitioner){%>
+					    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=con.getUniqueName() %> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
+						concurrentHashMap_<%=con.getUniqueName() %>.putIfAbsent("<%=con.getUniqueName() %>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
+						java.util.concurrent.atomic.AtomicInteger stats_<%=con.getUniqueName() %> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=con.getUniqueName() %>.get("<%=con.getUniqueName() %>" + iterateLoop);
+						runStat.updateStatOnConnection("<%=con.getUniqueName() %>" + iterateId, stats_<%=con.getUniqueName() %>.incrementAndGet()<=1?0:1, 0);
+					<%}else{%>
+						runStat.updateStatOnConnection("<%=con.getUniqueName() %>" + iterateId, 0, 0);
+					<%}%>
 				}
 			} 
 
@@ -204,10 +209,14 @@
 					<%
 					for(String connName : needToStartConnNames){
 					%>
-						java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=connName%> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
-						concurrentHashMap_<%=connName%>.putIfAbsent("<%=connName%>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
-						java.util.concurrent.atomic.AtomicInteger stats_<%=connName%> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=connName%>.get("<%=connName%>" + iterateLoop);
-						runStat.updateStatOnConnection("<%=connName%>" + iterateId, stats_<%=connName%>.incrementAndGet()<=1?0:1, 0);
+						<%if(containsTPartitioner){%>
+							java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=connName%> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
+							concurrentHashMap_<%=connName%>.putIfAbsent("<%=connName%>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
+							java.util.concurrent.atomic.AtomicInteger stats_<%=connName%> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=connName%>.get("<%=connName%>" + iterateLoop);
+							runStat.updateStatOnConnection("<%=connName%>" + iterateId, stats_<%=connName%>.incrementAndGet()<=1?0:1, 0);
+						<%}else{%>
+							runStat.updateStatOnConnection("<%=connName%>" + iterateId, 0, 0);
+						<%}%>
 					<%	
 					}
 					%>

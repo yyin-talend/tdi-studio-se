@@ -26,7 +26,7 @@
     Vector v = (Vector) codeGenArgument.getArgument();
     IProcess process = (IProcess)v.get(0);
     List<INode> rootNodes = (List<INode>)v.get(1);
-
+	boolean containsTPartitioner = process.getNodesOfType("tPartitioner").size() > 0 ? true : false;
     boolean stats = codeGenArgument.isStatistics();
     boolean trace = codeGenArgument.isTrace();
     boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
@@ -389,9 +389,10 @@ if(execStat) {
 %>
 
 <%= ElementParameterParser.getValue(process, "__HEADER_CODE__")%>
-
-    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
-    globalMap.put("concurrentHashMap", concurrentHashMap);
+	<%if(containsTPartitioner){%>
+	    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
+	    globalMap.put("concurrentHashMap", concurrentHashMap);
+	<%}%>
 
     long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     long endUsedMemory = 0;
