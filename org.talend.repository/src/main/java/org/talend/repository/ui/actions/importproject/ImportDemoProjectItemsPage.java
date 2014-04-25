@@ -13,6 +13,7 @@
 package org.talend.repository.ui.actions.importproject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -51,12 +52,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
-import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -67,6 +65,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
 import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
+import org.talend.repository.items.importexport.ui.managers.FileResourcesUnityManager;
+import org.talend.repository.items.importexport.ui.managers.ResourcesManagerFactory;
 
 public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPage1 implements ICheckStateListener {
 
@@ -369,7 +369,6 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     private List<ResourcesManager> getResourceManagers(List<DemoProjectBean> checkedProjectBean) {
         List<ResourcesManager> resManagers = new ArrayList<ResourcesManager>();
         try {
-
             for (DemoProjectBean pro : checkedProjectBean) {
                 ResourcesManager resManager = null;
 
@@ -378,39 +377,22 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                 demoURL = FileLocator.toFileURL(demoURL);
                 String filePath = new Path(demoURL.getFile()).toOSString();
                 File srcFile = new File(filePath);
-                Object path2Object = srcFile;
-                if (ArchiveFileManipulations.isTarFile(filePath)) {
-                    TarFile sourceTarFile = getSpecifiedTarSourceFile(srcFile);
-                    if (sourceTarFile == null) {
-                        continue;
-                    }
-                    TarLeveledStructureProvider provider = new TarLeveledStructureProvider(sourceTarFile);
-                    resManager = org.talend.repository.items.importexport.ui.managers.ResourcesManagerFactory.getInstance()
-                            .createResourcesManager(provider);
-                    path2Object = provider.getRoot();
-
-                } else if (ArchiveFileManipulations.isZipFile(filePath)) {
-                    ZipFile sourceFile = getSpecifiedZipSourceFile(srcFile);
-                    if (sourceFile == null) {
-                        continue;
-                    }
-                    ZipLeveledStructureProvider provider = new ZipLeveledStructureProvider(sourceFile);
-                    resManager = org.talend.repository.items.importexport.ui.managers.ResourcesManagerFactory.getInstance()
-                            .createResourcesManager(provider);
-                    path2Object = provider.getRoot();
-
-                } else if (srcFile.isDirectory()) {
-                    resManager = org.talend.repository.items.importexport.ui.managers.ResourcesManagerFactory.getInstance()
-                            .createResourcesManager();
-                }
-                resManager.collectPath2Object(path2Object);
+                // TUP-1924:use UnityManager here ,same with import normal items.
+                FileResourcesUnityManager fileUnityManager = ResourcesManagerFactory.getInstance()
+                        .createFileUnityManager(srcFile);
+                resManager = fileUnityManager.doUnify();
                 if (resManager != null) {
                     resManagers.add(resManager);
                 }
             }
+        } catch (ZipException e) {
+            displayErrorDialog(Messages.getString("ImportItemsWizardPage_ZipImport_badFormat")); //$NON-NLS-1$ 
+        } catch (TarException e) {
+            displayErrorDialog(Messages.getString("ImportItemsWizardPage_TarImport_badFormat")); //$NON-NLS-1$ 
+        } catch (FileNotFoundException e) {
+            ExceptionHandler.process(e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return resManagers;
     }
