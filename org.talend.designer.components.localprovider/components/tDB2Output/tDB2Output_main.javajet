@@ -225,15 +225,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 	    pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
 	    <%			
 	} else if (("DELETE").equals(dataAction)) {
-	    %>
-	    String delete_<%=cid%> = "DELETE  FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
-	    pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
-	    <%
-	    if(convertToUppercase){
-        %>
-            delete_<%=cid%> = delete_<%=cid%>.toUpperCase();
-        <%
-        }
+	%>
+		String delete_<%=cid%> = "DELETE  FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>";
+		<%
+		if(convertToUppercase){
+		%>
+			delete_<%=cid%> = delete_<%=cid%>.toUpperCase();
+		<%
+		}
+		%>
+		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
+	<%
 	}
     if(isEnableDebug) {
         %>
