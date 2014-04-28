@@ -69,6 +69,7 @@ if (inputConnName != null){
 			}
 %>
 			<%=cid%>_sf.writeLine(<%=cid%>_spR);
+			nb_line_<%=cid%>++;
 			<%if(isLog4jEnabled){%>
 				log4jSb_<%=cid%>.append(<%=cid%>_spR.getValuesAsString());
 				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " .");
