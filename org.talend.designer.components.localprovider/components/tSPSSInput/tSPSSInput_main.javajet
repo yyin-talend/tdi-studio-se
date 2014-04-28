@@ -8,6 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.process.ElementParameterParser
     java.util.List
 "
 %>
@@ -15,6 +16,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String cid = node.getUniqueName();
 
 String outputConnName = null;
@@ -57,6 +59,11 @@ if(outConn!=null){
 <%
 			}
 			i++;
+%>
+			<%if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append(<%=outputConnName%>.<%=outputCol.getLabel()%> + "|");
+			<%}%>
+<%
 		}
 %>
 		//System.out.println(<%=cid%>_sr.getValuesAsString());

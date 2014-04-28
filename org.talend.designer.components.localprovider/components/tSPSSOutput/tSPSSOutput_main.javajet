@@ -16,6 +16,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String cid = node.getUniqueName();
 String writeType = ElementParameterParser.getValue(node, "__WRITE_TYPE__");
 
@@ -67,8 +68,12 @@ if (inputConnName != null){
 
 			}
 %>
-			<%=cid%>_sf.writeLine(<%=cid%>_spR); 
-			nb_line_<%=cid%>++;
+			<%=cid%>_sf.writeLine(<%=cid%>_spR);
+			<%if(isLog4jEnabled){%>
+				log4jSb_<%=cid%>.append(<%=cid%>_spR.getValuesAsString());
+				log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid %> + " .");
+				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ":" + log4jSb_<%=cid%> + ".");
+			<%}%> 
 <%
 		}
 	}

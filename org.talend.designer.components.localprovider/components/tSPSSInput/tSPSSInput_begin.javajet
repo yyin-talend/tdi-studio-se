@@ -8,10 +8,13 @@ imports="
     java.util.List
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.logParameters(node); 
 String cid = node.getUniqueName();
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String withtranslation = ElementParameterParser.getValue(node, "__TRANSLATELABELS__");
@@ -43,6 +46,9 @@ if (outputConnName != null){
 	}
 %>
 	org.talend.jspss.spssrecord <%=cid%>_sr;
+    <%if(isLog4jEnabled){%>
+    	log.info("<%=cid%> - Retrieving records from data");
+    <%}%>
 	while(!<%=cid%>_sf.isEOF()){
 <%
 }
