@@ -2,6 +2,7 @@
 	imports="
 		org.talend.core.model.process.INode  
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
 	" 
 %>
 
@@ -9,7 +10,26 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
 }
-stmt2_<%=cid%>.close();
+}catch(Exception e_<%=cid%>){
+    <%if(dieOnError){%>
+        throw(e_<%=cid%>);
+    <%}else{%>
+        System.err.println(e_<%=cid%>.getMessage());
+    <%}%>
+}finally{
+    try{
+        if(stmt2_<%=cid%>!=null){
+            stmt2_<%=cid%>.close();
+        }
+    }catch(Exception e2_<%=cid%>){
+        <%if(dieOnError){%>
+            throw(e2_<%=cid%>);
+        <%}else{%>
+            System.err.println(e2_<%=cid%>.getMessage());
+        <%}%>
+    }
+}
 globalMap.put("<%=cid%>_NB_COLUMN", nb_column_<%=cid%>);
