@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -264,6 +265,11 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             String version) {
         String jobName = processItem.getProperty().getLabel();
         addContextScripts(processItem, jobName, version, contextResource, needContext);
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
+        for (JobInfo subjobInfo : subjobInfos) {
+            addContextScripts(subjobInfo.getProcessItem(), subjobInfo.getJobName(), subjobInfo.getJobVersion(), contextResource,
+                    needContext);
+        }
     }
 
     /**
