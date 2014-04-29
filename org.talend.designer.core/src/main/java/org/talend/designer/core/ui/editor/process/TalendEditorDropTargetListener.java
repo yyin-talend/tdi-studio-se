@@ -1213,11 +1213,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             final String name = "SOURCE_LIB"; //$NON-NLS-1$
                             IElementParameter libParam = node.getElementParameter(name);
                             if (libParam != null) {
-                                Command libSettingCmd = new PropertyChangeCommand(node, name,
-                                        TalendTextUtils.addQuotes(databaseConnection.getSID()));
+                                Object propValue;
+                                if (connection.isContextMode()
+                                        && ContextParameterUtils.isContainContextParam(databaseConnection.getSID())) {
+                                    propValue = databaseConnection.getSID();
+                                } else {
+                                    propValue = TalendTextUtils.addQuotes(databaseConnection.getSID());
+                                }
+                                Command libSettingCmd = new PropertyChangeCommand(node, name, propValue);
                                 list.add(libSettingCmd);
                             }
-
                         }
                     }
                 }

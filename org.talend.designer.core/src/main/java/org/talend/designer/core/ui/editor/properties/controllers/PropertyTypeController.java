@@ -57,6 +57,7 @@ import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.RepositoryComponentManager;
@@ -830,11 +831,16 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         final String name = "SOURCE_LIB"; //$NON-NLS-1$
                         IElementParameter libParam = node.getElementParameter(name);
                         if (libParam != null) {
-                            Command libSettingCmd = new PropertyChangeCommand(node, name,
-                                    TalendTextUtils.addQuotes(databaseConnection.getSID()));
+                            Object propValue;
+                            if (connection.isContextMode()
+                                    && ContextParameterUtils.isContainContextParam(databaseConnection.getSID())) {
+                                propValue = databaseConnection.getSID();
+                            } else {
+                                propValue = TalendTextUtils.addQuotes(databaseConnection.getSID());
+                            }
+                            Command libSettingCmd = new PropertyChangeCommand(node, name, propValue);
                             cc.add(libSettingCmd);
                         }
-
                     }
                 }
             }
