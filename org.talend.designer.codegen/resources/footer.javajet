@@ -389,10 +389,10 @@ if(execStat) {
 %>
 
 <%= ElementParameterParser.getValue(process, "__HEADER_CODE__")%>
-	<%if(containsTPartitioner){%>
+	<%//if(containsTPartitioner){//as tMatchGroupIn and tFuzzyUniqRow use this concurrentHashMap, so generate always%>
 	    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
 	    globalMap.put("concurrentHashMap", concurrentHashMap);
-	<%}%>
+	<%//}%>
 
     long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     long endUsedMemory = 0;
