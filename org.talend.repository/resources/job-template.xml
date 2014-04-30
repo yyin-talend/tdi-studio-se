@@ -3,23 +3,23 @@
 
 	<!-- Talend Job OSGi blueprint descriptor -->
 
-#if ($job.useSAM)
+#if ($useSAM)
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
-#if ($job.useSAML)
+#if ($useSAML)
 #[[
-	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts"
+	<cm:property-placeholder persistent-id="org.talend.esb.client.sts"
 		placeholder-prefix="$sts{" update-strategy="none"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
 ]]#
 #end
 
-	<bean id="job" class="${job.className}" destroy-method="destroy">
-#if ($job.useSAM)
+	<bean id="job" class="${className}" destroy-method="destroy">
+#if ($useSAM)
 		<property name="eventFeature" ref="eventFeature" />
 #end
-#if ($job.useSAML)
+#if ($useSAML)
 #[[
 		<property name="stsProps">
 			<map>
@@ -38,10 +38,10 @@
 		</property>
 ]]#
 #end
-#if (!$job.dataSources.isEmpty())
+#if (!$dataSources.isEmpty())
 		<property name="dataSources">
 			<map>
-#foreach ($alias in $job.dataSources)
+#foreach ($alias in $dataSources)
 				<entry key="${alias}">
 					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
 				</entry>
@@ -54,17 +54,18 @@
 	<service ref="job">
 		<interfaces>
 			<value>routines.system.api.TalendJob</value>
-#if ($job.isESBJob)
+#if ($isESBJob)
 			<value>routines.system.api.TalendESBJob</value>
-#if ($job.isESBJobFactory)
+#if ($isESBJobFactory)
 			<value>routines.system.api.TalendESBJobFactory</value>
 #end
 #end
 		</interfaces>
 		<service-properties>
-			<entry key="name" value="${job.name}" />
+			<entry key="name" value="${name}" />
+            <entry key="version" value="${version}" />
 			<entry key="type" value="job" />
-#if ($job.isESBJobFactory)
+#if ($isESBJobFactory)
 			<entry key="multithreading" value="true" />
 #end
 		</service-properties>

@@ -455,6 +455,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // job name and class name
         jobInfo.put("name", EmfModelUtils.getComponentsByName(processItem, "tRouteInput").isEmpty() ? name : className); //$NON-NLS-1$
+        jobInfo.put("version", processItem.getProperty().getVersion()); //$NON-NLS-1$
         jobInfo.put("className", className); //$NON-NLS-1$
 
         // additional Talend job interfaces (ESB related)
@@ -624,11 +625,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private static final String TEMPLATE_BLUEPRINT_JOB = "/resources/job-template.xml"; //$NON-NLS-1$
 
     private void createJobBundleBlueprintConfig(ProcessItem processItem, File targetFile, IProcess process) throws IOException {
-        // velocity template context
-        Map<String, Object> contextParams = new HashMap<String, Object>();
-        contextParams.put("job", collectJobInfo(processItem, process)); //$NON-NLS-1$
-
-        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", contextParams, targetFile, //$NON-NLS-1$
+        TemplateProcessor.processTemplate("JOB_BLUEPRINT_CONFIG", collectJobInfo(processItem, process), targetFile, //$NON-NLS-1$
                 getTemplateReader(TEMPLATE_BLUEPRINT_JOB));
     }
 
