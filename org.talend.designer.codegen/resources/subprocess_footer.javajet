@@ -222,7 +222,9 @@
 				<%
 				if(isLog4jEnabled){
 				%>
-					log.error(currentComponent + " " + e.getMessage());
+				    if(!(e instanceof TalendException)){
+					   log.error(currentComponent + " " + e.getMessage());
+					}
 				<%
 				}
 				%>
