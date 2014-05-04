@@ -13,7 +13,7 @@ imports="
 	java.util.LinkedList
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -348,16 +348,12 @@ if(incomingConnName != null && columnList != null){
         {
             <%
             if (("true").equals(dieOnError)) {
+                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
                 throw(e);
                 <%
             } else {
-				if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + e.getMessage());
-				<%}
+				log4jCodeGenerateUtil.logError(node,"error");
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -412,16 +408,12 @@ if(incomingConnName != null && columnList != null){
         {
             <%
             if (("true").equals(dieOnError)) {
+                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
                 throw(e);
                 <%
             } else {
-				if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + e.getMessage());
-				<%}
+				log4jCodeGenerateUtil.logError(node,"error");
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -491,16 +483,12 @@ if(incomingConnName != null && columnList != null){
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
+	               log4jCodeGenerateUtil.logError(node,"fatal");
 	                %>
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + e.getMessage());
-					<%}%>
 	                throw(e);
 	                <%
 	            } else {
-					if(isLog4jEnabled){%>
-						log.error("<%=cid%> - " + e.getMessage());
-					<%}
+					log4jCodeGenerateUtil.logError(node,"error");
 	                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 	                    for(IMetadataColumn column : columnList) {
 	                        %>
@@ -536,16 +524,12 @@ if(incomingConnName != null && columnList != null){
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
+	               log4jCodeGenerateUtil.logError(node,"fatal");
 	                %>
-					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - " + e.getMessage());
-					<%}%>
 	                throw(e);
 	                <%
 	            } else {
-					if(isLog4jEnabled){%>
-						log.error("<%=cid%> - " + e.getMessage());
-					<%}
+					log4jCodeGenerateUtil.logError(node,"error");
 	                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 	                    for(IMetadataColumn column : columnList) {
 	                        %>
@@ -604,16 +588,12 @@ if(incomingConnName != null && columnList != null){
 	{
         <%
         if (("true").equals(dieOnError)) {
+            log4jCodeGenerateUtil.logError(node,"fatal");
             %>
-			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + e.getMessage());
-			<%}%>
             throw(e);
             <%
         } else {
-			if(isLog4jEnabled){%>
-				log.error("<%=cid%> - " + e.getMessage());
-			<%}
+			log4jCodeGenerateUtil.logError(node,"error");
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                 for(IMetadataColumn column : columnList) {
                     %>
@@ -652,16 +632,12 @@ if(incomingConnName != null && columnList != null){
 		{
             <%
             if (("true").equals(dieOnError)) {
+                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
                 throw(e);
                 <%
             } else {
-				if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + e.getMessage());
-				<%}
+				log4jCodeGenerateUtil.logError(node,"error");
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -706,16 +682,12 @@ if(incomingConnName != null && columnList != null){
 		{
             <%
             if (("true").equals(dieOnError)) {
+                log4jCodeGenerateUtil.logError(node,"fatal");
                 %>
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
                 throw(e);
                 <%
             } else {
-				if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + e.getMessage());
-				<%}
+				log4jCodeGenerateUtil.logError(node,"error");
                 if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                     for(IMetadataColumn column : columnList) {
                         %>
@@ -746,7 +718,7 @@ if(incomingConnName != null && columnList != null){
                 	log4jSb_<%=cid%>.append("|");
                 <%}
             }%>
-			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>);
+			log.debug("<%=cid%> - Writing the record " + nb_line_<%=cid%> + " " + log4jSb_<%=cid%>+".");
 			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 	<%}
 	if(outgoingConns != null && outgoingConns.size() > 0) {

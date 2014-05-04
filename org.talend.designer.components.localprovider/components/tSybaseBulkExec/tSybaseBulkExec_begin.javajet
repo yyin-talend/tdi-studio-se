@@ -13,7 +13,7 @@
 	"
     skeleton="../templates/db_output_bulk.skeleton"
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -43,6 +43,8 @@ String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 boolean convertToUppercase = false; // not active this function
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 int deletedCount_<%=cid%>=0;
 String dbschema_<%=cid%>= <%=dbschema%>; 
@@ -59,6 +61,7 @@ if(("UPDATE").equals(dataAction)) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
+        	<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         <%
@@ -74,24 +77,23 @@ if(useExistingConnection) {
     String host_<%=cid%> = (String)globalMap.get("host_<%=connection%>");
     String port_<%=cid%> = (String)globalMap.get("port_<%=connection%>");
     String db_<%=cid%> = (String)globalMap.get("db_<%=connection%>");
-    String user_<%=cid%> = (String)globalMap.get("user_<%=connection%>");
-    String pass_<%=cid%> = (String)globalMap.get("pass_<%=connection%>");
+    String dbUser_<%=cid%> = (String)globalMap.get("user_<%=connection%>");
+    String dbPwd_<%=cid%> = (String)globalMap.get("pass_<%=connection%>");
     dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");		
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	<%
+	log4jCodeGenerateUtil.useExistConnection(node);
 } else {       
     %>
     String db_<%=cid%> = <%=database%>;
-    String user_<%=cid%> = <%=user%>;
-	        
+    String dbUser_<%=cid%> = <%=user%>;
 	<%
 	String passwordFieldName = "__PASS__";
 	%>
 	
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-   	
-    String pass_<%=cid %> = decryptedPassword_<%=cid%>;
-	            
+
+    String dbPwd_<%=cid%> = decryptedPassword_<%=cid%>;
     String host_<%=cid%> = <%=host%>;
 <%	if(!"NONE".equals(tableAction) || ("UPDATE").equals(dataAction)){%>
     	String port_<%=cid%> = <%=port%>;
@@ -105,9 +107,18 @@ if(useExistingConnection) {
 <%
 		}
 %>
-   	 	java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    	java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, user_<%=cid%>, pass_<%=cid%>);
-<%  }
+   	 	String driverClass_<%=cid%> = "com.sybase.jdbc3.jdbc.SybDriver";
+   	 	java.lang.Class.forName(driverClass_<%=cid%>);
+    	java.sql.Connection conn_<%=cid %> = null;
+    	
+		<%
+		List<String> ignoreParamList = new ArrayList<String>();
+		ignoreParamList.add("ENCODING");
+		ignoreParamList.add("SYBASE_ENCODING");
+		log4jCodeGenerateUtil.setIgnoredParamsList(ignoreParamList);
+		log4jCodeGenerateUtil.debugConnectionParams(node);
+		log4jCodeGenerateUtil.connect(node);
+	}
 }
 %>
 if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
@@ -160,7 +171,7 @@ if(headRow_<%=cid%> != null && headRow_<%=cid%>.trim().length() > 0) {
 
 command_<%=cid %>.append(" -t " + <%=fieldTerminator%>);
 command_<%=cid %>.append(" -r " + <%=rowTerminator%>);
-command_<%=cid %>.append(" -c -U " + user_<%=cid%> + " -P " + pass_<%=cid%>);
+command_<%=cid %>.append(" -c -U " + dbUser_<%=cid%> + " -P " + dbPwd_<%=cid%>);
 <%if(useInterfaceFile){%>
 command_<%=cid %>.append(" -I " + <%=interfacefilename%>);
 <%}
@@ -175,6 +186,11 @@ if(encoding_<%=cid%> != null && encoding_<%=cid%>.trim().length() > 0) {
 }
 
 <%
+if(isLog4jEnabled){
+%>
+	log.info("<%=cid%> - Executing command:'" + command_<%=cid %> + "'.");
+<%
+}
 if(("INSERT").equals(dataAction)) {
     %>
     Runtime runtime_<%=cid%> = Runtime.getRuntime();
@@ -184,8 +200,14 @@ if(("INSERT").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         %>
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+        <%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Creating temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
+		<%}%>
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.close();            
+        <%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Create temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has succeeded.");
+		<%}%>
         Runtime runtime_<%=cid%> = Runtime.getRuntime();
         final Process ps_<%=cid %> = runtime_<%=cid%>.exec(command_<%=cid %>.toString());       
         <%        
@@ -216,6 +238,7 @@ Thread normal_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 			ioe.printStackTrace();
 		}
 	}
@@ -245,6 +268,7 @@ Thread error_<%=cid%> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 			ioe.printStackTrace();
 		}
 	}
@@ -254,4 +278,10 @@ error_<%=cid%>.start();
 ps_<%=cid %>.waitFor();
 normal_<%=cid%>.interrupt();
 error_<%=cid%>.interrupt();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Excute command: '" + command_<%=cid %> + "' has finished.");
+<%
+}
+log4jCodeGenerateUtil.infoComponentEnd(node);
+%>
 

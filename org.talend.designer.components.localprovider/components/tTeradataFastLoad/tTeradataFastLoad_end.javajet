@@ -87,6 +87,6 @@ globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
 			
 <%if(isLog4jEnabled){%>
 	log.info("<%=cid%> - Loaded records count:" + nb_line_inserted_<%=cid%> + "." );
-	log.info("<%=cid%> - Has finished");
+	log.info("<%=cid%> - Done");
 <%}%>
 

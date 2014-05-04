@@ -13,6 +13,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton" 
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -23,6 +24,7 @@ String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__"));
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 int deletedCount_<%=cid%>=0;
 String tableName_<%=cid%> = null;
@@ -169,18 +171,23 @@ java.sql.Connection conn_<%=cid%> = null;
 	%>
 	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	 <%
+	 	log4jCodeGenerateUtil.useExistConnection(node);
 	 } else {
 	 %>
-		java.lang.Class.forName("org.postgresql.Driver").newInstance();
-	        
+	 	String driverClass_<%=cid%> = "org.postgresql.Driver";
+		java.lang.Class.forName(driverClass_<%=cid%>).newInstance();
+		String url_<%=cid%> = "jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>;
+		String dbUser_<%=cid%> = <%=userName%>;
 		<%
 		String passwordFieldName = "__PASS__";
 		%>
 		
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 	   	
-		conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, decryptedPassword_<%=cid%>);
+		String dbPwd_<%=cid%> = decryptedPassword_<%=cid%>;
 	<%
+		log4jCodeGenerateUtil.debugConnectionParams(node);
+		log4jCodeGenerateUtil.connect(node);
 	}
 	%>
 
@@ -199,7 +206,7 @@ if((columnList != null && columnList.size() > 0) || "CLEAR".equals(tableAction) 
 <%    
 }
 
-
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(("UPDATE").equals(dataAction)) {
 
     if(columnList != null && columnList.size() > 0) {    
@@ -212,15 +219,22 @@ if(("UPDATE").equals(dataAction)) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
+        	<%log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - For bulk update, Schema must have a key at least.");%>
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         
         tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId() ;        
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Creating temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
+		<%}%>
+
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.close();
-        
+        <%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Create temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has succeeded.");
+		<%}%>
         
         <%if(standardConformingString) {
    		%>
@@ -230,21 +244,37 @@ if(("UPDATE").equals(dataAction)) {
    		<%}%>        
         
         java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Bulk SQL:"+bulkSQL_<%=cid%>+".");
+			log.info("<%=cid%> - Bulk inserting data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
+		<%}%>
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
         stmtTmpBulk_<%=cid%>.close();
         
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
+		<%}%>
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
         tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid + Thread.currentThread().getId();
         
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-        
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Updating <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> from <%=manager.getLProtectedChar()%>"+tmpTableName_<%=cid%>+"<%=manager.getRProtectedChar()%>.");
+		<%}%>
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+		<%log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Update has finished.");%>
         stmtUpdateBulk_<%=cid%>.close();
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
         
         java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Droping temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>.");
+		<%}%>
         stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         stmtTmpDrop_<%=cid%>.close();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Drop temp table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%>+ "<%=manager.getRProtectedChar()%> has succeeded.");
+		<%}%>
         <%
     }
 } else if(("INSERT").equals(dataAction)) {
@@ -258,16 +288,20 @@ if(("UPDATE").equals(dataAction)) {
     
     java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
     //stmt.execute("SET client_encoding to 'UNICODE'");
+	<%if(isLog4jEnabled){%>
+		log.debug("<%=cid%> - Bulk SQL:"+bulkSQL_<%=cid%>+".");
+		log.info("<%=cid%> - Inserting records in table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>.");
+	<%}%>
     stmtBulk_<%=cid %>.execute(bulkSQL_<%=cid%>);
     stmtBulk_<%=cid %>.close();    
-    <%
-}
-%>
-<%
-	if(!useExistingConnection) {
-%>
-conn_<%=cid %>.close();
-<%
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Insert records in table <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
+	<%
 	}
+}
+	if(!useExistingConnection) {
+		log4jCodeGenerateUtil.close(node);
+	}
+	log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 

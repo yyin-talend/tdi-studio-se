@@ -13,16 +13,16 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+log4jCodeGenerateUtil.infoComponentStart(node);
 String action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
 String file = ElementParameterParser.getValue(node, "__DATA__");
-
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -73,6 +73,7 @@ Manager manager = null;
 	String dbServer_<%=cid%> = (String)globalMap.get("dbserver_<%=connection%>");
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
 <%
+		log4jCodeGenerateUtil.useExistConnection(node);
 	} else {
 
 		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
@@ -85,7 +86,8 @@ Manager manager = null;
 <%
 		}
 %>
-	java.lang.Class.forName("com.informix.jdbc.IfxDriver");
+	String driverClass_<%=cid%> = "com.informix.jdbc.IfxDriver";
+	java.lang.Class.forName(driverClass_<%=cid%>);
 	String dbschema_<%=cid%> = <%=dbSchema%>;
 	String dbName_<%=cid%> = <%=dbname%>;
 	String dbServer_<%=cid%> = <%=dbserver%>;
@@ -98,11 +100,10 @@ Manager manager = null;
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 
 	String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
-
-	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-	
-
+	java.sql.Connection conn_<%=cid%> = null;
 <%
+		log4jCodeGenerateUtil.debugConnectionParams(node);
+		log4jCodeGenerateUtil.connect(node);
 	}
 %>
 		String tableName_<%=cid%> = null;
@@ -205,8 +206,24 @@ if(columnList != null && columnList.size() > 0) {
 	
 	//------------------get dbload directory
 	java.io.File dbLoadDirectory_<%=cid%> = new java.io.File (<%=informixDir%>+"/bin");
-	dbLoadDirectory_<%=cid%>.exists();
-				
+	boolean dbloadExist_<%=cid%> = dbLoadDirectory_<%=cid%>.exists();
+	if(!dbloadExist_<%=cid%>){
+		<%
+		if(isLog4jEnabled){
+		%>
+			log.fatal("<%=cid%> - '"+dbLoadDirectory_<%=cid%>+"' is not exist.");
+		<%
+		}
+		%>
+		throw new RuntimeException(dbLoadDirectory_<%=cid%>+"' is not exist!");
+	}
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Executing '"+command_<%=cid %>.toString()+"'.");
+	<%
+	}
+	%>
  	Runtime runtime_<%=cid%> = Runtime.getRuntime();
 <%
 	if ("Windows".equalsIgnoreCase(executionPlatform)) {
@@ -249,6 +266,7 @@ Thread normal_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 			ioe.printStackTrace();
 		}
 	}
@@ -278,6 +296,7 @@ Thread error_<%=cid%> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 			ioe.printStackTrace();
 		}
 	}
@@ -287,6 +306,13 @@ error_<%=cid%>.start();
 ps_<%=cid %>.waitFor();
 normal_<%=cid%>.interrupt();
 error_<%=cid%>.interrupt();
+    <%
+    if(isLog4jEnabled){
+    %>
+        log.info("<%=cid%> - Execute '"+command_<%=cid %>.toString()+"' has finished。");
+    <%
+    }
+    %>
 
 
 

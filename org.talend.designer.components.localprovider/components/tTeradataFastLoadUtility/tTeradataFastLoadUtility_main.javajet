@@ -165,9 +165,7 @@ Thread normal_<%=cid %> = new Thread() {
     	         reader.close();
     	    }
         }catch(java.io.IOException ioe) {
-			<%if(isLog4jEnabled){%>
-				log.error("<%=cid%> - " + ioe.getMessage());
-			<%}%>
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
     		ioe.printStackTrace();
     	}
     }
@@ -187,9 +185,7 @@ Thread error_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
-			<%if(isLog4jEnabled){%>
-				log.error("<%=cid%> - " + ioe.getMessage());
-			<%}%>
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 		   ioe.printStackTrace();
 		}
 	}
@@ -201,9 +197,6 @@ process_<%=cid %>.waitFor();
 normal_<%=cid %>.interrupt();
 
 error_<%=cid %>.interrupt();
-<%if(isLog4jEnabled){%>
-	log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has succeeded.");
-<%}%>
 
 globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
 
@@ -212,7 +205,7 @@ if(returnCodeDie) {
 %>
 	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
 		<%if(isLog4jEnabled){%>
-			log.fatal("<%=cid%> - Fastload returned exit code "+process_<%=cid %>.exitValue());
+			log.fatal("<%=cid%> - Fastload returned exit code "+process_<%=cid %>.exitValue()+".");
 		<%}%>
 		throw new RuntimeException("Fastload returned exit code "+process_<%=cid %>.exitValue());
 	}
@@ -221,7 +214,7 @@ if(returnCodeDie) {
 %>
 
 <%if(isLog4jEnabled){%>
-   	log.info("<%=cid%> - Has finished.");
+    log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has finished.");
 <%}%>
 }finally{
 	try{
@@ -230,3 +223,4 @@ if(returnCodeDie) {
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
+<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

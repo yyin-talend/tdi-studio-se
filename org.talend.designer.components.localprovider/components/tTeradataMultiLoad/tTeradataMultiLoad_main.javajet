@@ -36,7 +36,8 @@ String logTable= ElementParameterParser.getValue(node, "__LOG_TABLE_TABLE__");
 
 String defineCharset = ElementParameterParser.getValue(node, "__DEFINE_CHARSET__");
 String charset = ElementParameterParser.getValue(node, "__CHARSET__");
-
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jCodeGenerateUtil.infoComponentStart(node);
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
@@ -170,6 +171,9 @@ String sb_<%=cid%>= new String("mload -c "+<%=charset%>+" < \""+<%=scriptPath%>+
 <%}} else {%>	
 String sb_<%=cid%>= new String("mload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}%>
+<%if(isLog4jEnabled){%>
+    log.info("<%=cid%> - Executing command '" + sb_<%=cid%> + "'.");
+<%}%>
 <%if(("Windows").equals(execution)){%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(new String[]{"cmd","/c",sb_<%=cid%>}); 
 <%}else{%>
@@ -188,6 +192,7 @@ Thread normal_<%=cid %> = new Thread() {
     	         reader.close();
     	    }
         }catch(java.io.IOException ioe) {
+            <%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
     		ioe.printStackTrace();
     	}
     }
@@ -207,6 +212,7 @@ Thread error_<%=cid %> = new Thread() {
 				reader.close();
 			}
 		} catch(java.io.IOException ioe) {
+			<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 		   ioe.printStackTrace();
 		}
 	}
@@ -225,11 +231,17 @@ globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
 if(returnCodeDie) {
 %>
 	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
+        <%if(isLog4jEnabled){%>
+            log.fatal("<%=cid%> - "+"Multiload returned exit code "+process_<%=cid %>.exitValue()+".");
+        <%}%>
 		throw new RuntimeException("Multiload returned exit code "+process_<%=cid %>.exitValue());
 	}
 <%	
 }
 %>
+<%if(isLog4jEnabled){%>
+    log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has finished.");
+<%}%>
 }finally{
 	try{
 		file_<%=cid %>.delete();
@@ -237,3 +249,4 @@ if(returnCodeDie) {
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
+<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

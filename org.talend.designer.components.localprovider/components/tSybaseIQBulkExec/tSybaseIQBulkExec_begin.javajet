@@ -13,6 +13,7 @@ imports="
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -26,6 +27,7 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 
@@ -38,6 +40,7 @@ String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
 
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+log4jCodeGenerateUtil.infoComponentStart(node);
 
 List<IMetadataColumn> columnList = getColumnList(node);
 
@@ -51,6 +54,7 @@ if(useExistingConn) {
 	String dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
 	String dbUser_<%=cid%> = (String)globalMap.get("<%=user%>");
 <%
+	log4jCodeGenerateUtil.useExistConnection(node);
 }else{
 %>
 	String dbschema_<%=cid%> = <%=dbschema%>; 
@@ -70,7 +74,7 @@ if(useExistingConn) {
 <%
 		}
 %>
-		 String dirverName = "com.sybase.jdbc3.jdbc.SybDriver";
+		 String driverClass_<%=cid%> = "com.sybase.jdbc3.jdbc.SybDriver";
 <%	
 	} else {//sybase IQ 15
 		if ("DSN".equals(ElementParameterParser.getValue(node,"__DATA_SOURCE__"))) {
@@ -89,21 +93,24 @@ if(useExistingConn) {
 <%
 		}
 %>
-		String dirverName = "ianywhere.ml.jdbcodbc.IDriver";
+		String driverClass_<%=cid%> = "ianywhere.ml.jdbcodbc.IDriver";
 <%
 	}//end sybase IQ 15
 %>
    
-    java.lang.Class.forName(dirverName);
+    java.lang.Class.forName(driverClass_<%=cid%>);
 	        
 	<%
 	String passwordFieldName = "__PASS__";
 	%>
 	
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-   	
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, decryptedPassword_<%=cid%>);
+	String dbPwd_<%=cid%> = decryptedPassword_<%=cid%>;
+	java.sql.Connection conn_<%=cid %> = null;
+    
 <%
+	log4jCodeGenerateUtil.debugConnectionParams(node);
+	log4jCodeGenerateUtil.connect(node);
 }
 %>
 
@@ -203,16 +210,24 @@ if(columnList != null && columnList.size() > 0) {
 	strSQL =strSQL + " skip 1 ";
 <%
 	}
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Bulk load SQL:"+strSQL+".");
+		log.info("<%=cid%> - Bulk loading data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%>." );
+	<%
+	}
 %>
     
     stmt_<%=cid %>.execute(strSQL);
 
 <%
+    log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Bulk load has finished.");
 if(!useExistingConn){
 %>
     if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-        conn_<%=cid%>.close();
+        <%log4jCodeGenerateUtil.close(node);%>
     }
 <%
 }
+log4jCodeGenerateUtil.infoComponentEnd(node);
 %>

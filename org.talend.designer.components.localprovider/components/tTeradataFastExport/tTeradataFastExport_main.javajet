@@ -145,7 +145,7 @@ try{
 	String[] sb_<%=cid%> = {"sh","-c",sb__<%=cid%>};
 	<%}%>
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Execting '" + sb__<%=cid%> + "'.");
+		log.info("<%=cid%> - Executing command '" + sb__<%=cid%> + "'.");
 	<%}%>
 	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>);
 	
@@ -163,9 +163,7 @@ try{
 	    	         reader.close();
 	    	    }
 	        }catch(java.io.IOException ioe) {
-				<%if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + ioe.getMessage());
-				<%}%>
+				<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 	    		ioe.printStackTrace();
 	    	}
 	    }
@@ -185,9 +183,7 @@ try{
 					reader.close();
 				}
 			} catch(java.io.IOException ioe) {
-				<%if(isLog4jEnabled){%>
-					log.error("<%=cid%> - " + ioe.getMessage());
-				<%}%>
+				<%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
 			   ioe.printStackTrace();
 			}
 		}
@@ -201,8 +197,7 @@ try{
 	error_<%=cid %>.interrupt();
 	
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - Excute '" + sb__<%=cid%> + "' has succeeded.");
-	   	log.info("<%=cid%> - Has finished.");
+		log.info("<%=cid%> - Excute '" + sb__<%=cid%> + "' has finished.");
 	<%}%>
 }finally{
 	try{
@@ -211,3 +206,4 @@ try{
         <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
 	}
 }
+<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

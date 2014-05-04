@@ -279,7 +279,7 @@ imports="
 				<%
 				}
 				%>
-				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%>);
+				log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid%> + ": " + log4jSb_<%=cid%> + ".");
 				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
 				<%
 			}

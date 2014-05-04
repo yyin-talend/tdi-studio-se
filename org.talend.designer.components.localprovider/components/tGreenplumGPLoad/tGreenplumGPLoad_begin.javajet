@@ -116,7 +116,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		String missConfigurationMsg_<%=cid%> = "<%=missConfigurationMsg%>";
 		if (missConfiguration_<%=cid%>) {
 			<%if(isLog4jEnabled){%>
-				log.fatal("<%=cid%> - " + missConfigurationMsg_<%=cid%>);
+				log.fatal("<%=cid%> - " + missConfigurationMsg_<%=cid%>+".");
 			<%}%>
 			throw new java.lang.Exception(missConfigurationMsg_<%=cid%>);
 		}
@@ -155,15 +155,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		java.sql.Connection conn_<%=cid%> = null;
 		<%
 	   		log4jCodeGenerateUtil.debugConnectionParams(node);	
-		%>	
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + url_<%=cid%> + "' with the username '" + dbUser_<%=cid%> + "'.");
-		<%}%>
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to '" + url_<%=cid%> + "' has succeeded." );
-		<%}%>
-		<%
+			log4jCodeGenerateUtil.connect();
 		
         if(("DROP_CREATE").equals(tableAction)) {
             %>
@@ -188,12 +180,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>){
 					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated.");
 					<%}%>
-					throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+					throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated.");
 				}else{
 					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated.");
 					<%}%>
 					 e.printStackTrace();
 				}
@@ -214,12 +206,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>){
 					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated");
+						log.fatal("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated.");
 					<%}%>
-					 throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated");
+					 throw new RuntimeException ("Table '" + tableName4Load_<%=cid%>  + "' already exists. process terminated.");
 				}else{
 					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated");
+						log.error("<%=cid%> - Table '" + tableName4Load_<%=cid%> + "' already exists. process terminated.");
 					<%}%>
 					 e.printStackTrace();
 				}
@@ -265,12 +257,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}catch(java.sql.SQLException e){
 						if(<%=dieOnError%>){
 							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated ");
+								log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
 							<%}%>
-							 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
+							 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
 						}else{
 							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated ");
+								log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
 							<%}%>
 							 e.printStackTrace();
 						}
@@ -294,12 +286,12 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }catch(java.sql.SQLException e){
                     	if(<%=dieOnError%>){
 							<%if(isLog4jEnabled){%>
-								log.fatal("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+								log.fatal("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 							<%}%>
-							 throw new RuntimeException ("Failure to drop table '" + tableName4Load_<%=cid%>  + "'. process terminated  ");
+							 throw new RuntimeException ("Failure to drop table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
                     	}else{
 							<%if(isLog4jEnabled){%>
-								log.error("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+								log.error("<%=cid%> - Failure to drop table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 							<%}%>
 							 e.printStackTrace();
                     	}
@@ -318,12 +310,12 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch(java.sql.SQLException e){
                 	if(<%=dieOnError%>){
 						<%if(isLog4jEnabled){%>
-							log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+							log.fatal("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 						<%}%>
-						 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated");
+						 throw new RuntimeException ("Failure to create table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
                 	}else{
 						<%if(isLog4jEnabled){%>
-							log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+							log.error("<%=cid%> - Failure to create table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 						<%}%>
 						 e.printStackTrace();
                 	}
@@ -362,21 +354,19 @@ skeleton="../templates/db_output_bulk.skeleton"
             }catch(java.sql.SQLException e){
             	if(<%=dieOnError%>){
 					<%if(isLog4jEnabled){%>
-						log.fatal("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated");
+						log.fatal("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 					<%}%>
-					 throw new RuntimeException ("Failure to clear table '" + tableName4Load_<%=cid%>  + "'. process terminated");
+					 throw new RuntimeException ("Failure to clear table '" + tableName4Load_<%=cid%>  + "'. process terminated.");
             	}else{
 					<%if(isLog4jEnabled){%>
-						log.error("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated ");
+						log.error("<%=cid%> - Failure to clear table '" + tableName4Load_<%=cid%> + "'. process terminated.");
 					<%}%>
 					 e.printStackTrace();
             	}
             }
             <%
         }
-        %>
-        conn_<%=cid%>.close();
-        <%
+        log4jCodeGenerateUtil.close(node);
     }
 %>
 
@@ -518,9 +508,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 			}
 			catch (java.lang.Exception e) {
-				<%if(isLog4jEnabled){%>
-					log.fatal("<%=cid%> - " + e.getMessage());
-				<%}%>
+				<%log4jCodeGenerateUtil.logError(node,"fatal");%>
 				globalMap.put("<%=cid%>_GPLOAD_ERROR",e.getMessage());
 				throw new RuntimeException(e.getMessage(),e.getCause());
 			}
@@ -533,6 +521,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	// we don't need output stream the data file already exists and the
 	// component is used in startable mode.
 	//-----------------------------------------------------------------
+	if(isLog4jEnabled){%>
+		StringBuffer command_<%=cid%> = new StringBuffer(<%=gploadExePath%>);
+		<%
+		for (int i=0; i < parametersList.size(); i++) {
+		%>
+			command_<%=cid%>.append(<%=parametersList.get(i)%> +" ");
+		<%
+		}
+		%>
+	<%}
 	if (hasInputRow) {
 		if (useNamedPiped) {
 		%>
@@ -551,15 +549,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} else { // no input connections
 %>
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Loading data into database.");
+			log.info("<%=cid%> - Executing '"+command_<%=cid %>.toString()+"'.");
 		<%}%>
 	gploadThread_<%=cid%>.start();
 	gploadThread_<%=cid%>.join(0);
 	globalMap.put("<%=cid%>_GPLOAD_OUTPUT", gploadOutput_<%=cid%>.toString());
 	globalMap.put("<%=cid%>_NB_LINE", insertedCount_<%=cid%>);
 		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Execute '"+command_<%=cid %>.toString()+"' has finished.");
 			log.info("<%=cid%> - Loaded records count:" + insertedCount_<%=cid%> + ".");
-			log.info("<%=cid%> - Has finished.");
 		<%}%>
 <%
 	}
