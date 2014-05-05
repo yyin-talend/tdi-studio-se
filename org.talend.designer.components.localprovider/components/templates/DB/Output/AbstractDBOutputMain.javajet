@@ -4,8 +4,6 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 String table = ElementParameterParser.getValue(node,"__TABLE__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
@@ -15,9 +13,6 @@ List<Map<String, String>> addCols =
 		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
 List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
-String batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 boolean showSavePoint = dbOutputBeginUtil.showSavePoint(node);
@@ -53,6 +48,11 @@ for(IConnection conn : outgoingConns) {
 dbOutputBeginUtil.beforeComponentProcess(node);
 dbOutputBeginUtil.setDBVersion(node,manager);//Oracle,Mysql
 log4jCodeGenerateUtil = dbOutputBeginUtil.log4jCodeGenerateUtil;
+String dataAction = dbOutputBeginUtil.dataAction;
+String dieOnError = dbOutputBeginUtil.dieOnError;
+String commitEvery = dbOutputBeginUtil.commitEvery;
+boolean useBatchSize = dbOutputBeginUtil.useBatchSize;
+String batchSize = dbOutputBeginUtil.batchSize;
 boolean isDynamic = false;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
