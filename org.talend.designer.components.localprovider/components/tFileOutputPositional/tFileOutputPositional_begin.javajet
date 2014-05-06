@@ -371,7 +371,7 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
-				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
+				  void setValue_<%=i/100%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
 <%
                 }
                 if("id_Dynamic".equals(column.getTalendType())){
