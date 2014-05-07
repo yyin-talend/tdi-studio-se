@@ -37,6 +37,7 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tAmazonMysqlConnection"
+	  REQUIRED="true"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

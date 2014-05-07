@@ -54,7 +54,7 @@
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
-	  FILTER="tIngresConnection"
+	  REQUIRED="true" FILTER="tIngresConnection"
 	  NUM_ROW="2"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	>

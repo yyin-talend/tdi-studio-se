@@ -45,7 +45,7 @@ COMPATIBILITY="ALL"
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tEXistConnection"
+      REQUIRED="true" FILTER="tEXistConnection"
       NUM_ROW="1"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />

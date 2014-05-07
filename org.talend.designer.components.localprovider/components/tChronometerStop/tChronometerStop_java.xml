@@ -58,6 +58,7 @@
       NAME="STARTER"
       FIELD="COMPONENT_LIST"
       FILTER="tChronometerStart"
+	  REQUIRED="true"
       NUM_ROW="2"
       SHOW_IF="SINCE_STARTER == 'true'"
       GROUP="SINCE"

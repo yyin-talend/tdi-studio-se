@@ -218,6 +218,7 @@
       NAME="CONNECTION_ACCESS"
       FIELD="COMPONENT_LIST"
       FILTER="tAccessConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='ACCESS') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -240,6 +241,7 @@
       NAME="CONNECTION_AS400"
       FIELD="COMPONENT_LIST"
       FILTER="tAS400Connection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='AS400') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -250,6 +252,7 @@
       NAME="CONNECTION_DB2"
       FIELD="COMPONENT_LIST"
       FILTER="tDB2Connection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='DB2') and (USE_EXISTING_CONNECTION == 'true')"
      />
@@ -260,6 +263,7 @@
       NAME="CONNECTION_FIREBIRD"
       FIELD="COMPONENT_LIST"
       FILTER="tFirebirdConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='FIREBIRD') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -318,6 +322,7 @@
       NAME="CONNECTION_INFORMIX"
       FIELD="COMPONENT_LIST"
       FILTER="tInformixConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='INFORMIX') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -338,6 +343,7 @@
       NAME="CONNECTION_INGRES"
       FIELD="COMPONENT_LIST"
       FILTER="tIngresConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='INGRES') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -348,6 +354,7 @@
       NAME="CONNECTION_INTERBASE"
       FIELD="COMPONENT_LIST"
       FILTER="tInterbaseConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='INTERBASE') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -393,6 +400,7 @@
       NAME="CONNECTION_MSSQL"
       FIELD="COMPONENT_LIST"
       FILTER="tMSSqlConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='MSSQL') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -412,6 +420,7 @@
       NAME="CONNECTION_MYSQL"
       FIELD="COMPONENT_LIST"
       FILTER="tMysqlConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='MYSQL') and (USE_EXISTING_CONNECTION == 'true')"
     ></PARAMETER>
@@ -434,6 +443,7 @@
       NAME="CONNECTION_NETEZZA"
       FIELD="COMPONENT_LIST"
       FILTER="tNetezzaConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='NETEZZA') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -444,6 +454,7 @@
       NAME="CONNECTION_ORACLE"
       FIELD="COMPONENT_LIST"
       FILTER="tOracleConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='DBORACLE') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -479,6 +490,7 @@
       NAME="CONNECTION_POSTGRE"
       FIELD="COMPONENT_LIST"
       FILTER="tPostgresqlConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='POSTGRE') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -502,6 +514,7 @@
       NAME="CONNECTION_POSTGREPLUS"
       FIELD="COMPONENT_LIST"
       FILTER="tPostgresPlusConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='POSTGREPLUS') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -512,6 +525,7 @@
       NAME="CONNECTION_SQLITE"
       FIELD="COMPONENT_LIST"
       FILTER="tSQLiteConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='SQLITE') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -526,6 +540,7 @@
       NAME="CONNECTION_SYBASE"
       FIELD="COMPONENT_LIST"
       FILTER="tSybaseConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='SYBASE') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -536,6 +551,7 @@
       NAME="CONNECTION_TERADATA"
       FIELD="COMPONENT_LIST"
       FILTER="tTeradataConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='TERADATA') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -553,6 +569,7 @@
       NAME="CONNECTION_GREENPLUM"
       FIELD="COMPONENT_LIST"
       FILTER="tGreenplumConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='GREENPLUM') and (USE_EXISTING_CONNECTION == 'true')"
     />
@@ -584,6 +601,7 @@
       NAME="CONNECTION_VERTICA"
       FIELD="COMPONENT_LIST"
       FILTER="tVerticaConnection"
+	  REQUIRED="true"
       NUM_ROW="30"
       SHOW_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'true')"
     />

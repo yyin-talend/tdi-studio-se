@@ -46,7 +46,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tSCPConnection"
+      REQUIRED="true" FILTER="tSCPConnection"
       NUM_ROW="1"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     /> 

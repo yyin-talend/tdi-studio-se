@@ -49,6 +49,7 @@
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
 	  FILTER="tAS400Connection"
+	  REQUIRED="true"
 	  NUM_ROW="20"
 	  DYNAMIC_SETTINGS="true"
 	/>

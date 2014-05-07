@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tVectorWiseConnection"
+      REQUIRED="true" FILTER="tVectorWiseConnection"
       NUM_ROW="1"
       DYNAMIC_SETTINGS="true"
     />

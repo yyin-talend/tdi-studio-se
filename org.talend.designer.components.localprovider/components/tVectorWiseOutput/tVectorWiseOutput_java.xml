@@ -58,7 +58,7 @@
 	<PARAMETER
 	  NAME="CONNECTION"
 	  FIELD="COMPONENT_LIST"
-	  FILTER="tVectorWiseConnection"
+	  REQUIRED="true" FILTER="tVectorWiseConnection"
 	  NUM_ROW="2"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	>

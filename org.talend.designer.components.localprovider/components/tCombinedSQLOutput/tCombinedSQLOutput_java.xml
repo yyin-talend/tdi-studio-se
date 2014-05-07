@@ -64,6 +64,7 @@
 			NAME="CONNECTION_AS400" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tAS400Connection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='AS400'" 
 		/>
@@ -73,6 +74,7 @@
 			NAME="CONNECTION_DB2" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tDB2Connection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='DB2'" 
 		/>
@@ -82,6 +84,7 @@
 			NAME="CONNECTION_FIREBIRD" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tFirebirdConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='FIREBIRD'" 
 		/>
@@ -91,6 +94,7 @@
 			NAME="CONNECTION_GREENPLUM" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tGreenplumConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='GREENPLUM'" 
 		/>
@@ -100,6 +104,7 @@
 			NAME="CONNECTION_HIVE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tHiveConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='HIVE'" 
 		/>
@@ -109,6 +114,7 @@
 			NAME="CONNECTION_INGRES" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tIngresConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='INGRES'" 
 		/>
@@ -118,6 +124,7 @@
 			NAME="CONNECTION_INTERBASE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tInterbaseConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='INTERBASE'" 
 		/>
@@ -127,6 +134,7 @@
 			NAME="CONNECTION_MSSQL" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tMSSqlConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='MSSQL'" 
 		/>		
@@ -136,6 +144,7 @@
 			NAME="CONNECTION_MYSQL" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tMysqlConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='MYSQL'" 
 		/>		
@@ -145,6 +154,7 @@
 			NAME="CONNECTION_DBORACLE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tOracleConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='DBORACLE'" 
 		/>		
@@ -154,6 +164,7 @@
 			NAME="CONNECTION_PARACCEL" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tParAccelConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='PARACCEL'" 
 		/>		
@@ -163,6 +174,7 @@
 			NAME="CONNECTION_POSTGREPLUS" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tPostgresPlusConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='POSTGREPLUS'" 
 		/>		
@@ -172,6 +184,7 @@
 			NAME="CONNECTION_POSTGRE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tPostgresqlConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='POSTGRE'" 
 		/>
@@ -181,6 +194,7 @@
 			NAME="CONNECTION_SQLITE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tSQLiteConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='SQLITE'" 
 		/>		
@@ -190,6 +204,7 @@
 			NAME="CONNECTION_SYBASE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tSybaseConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='SYBASE'" 
 		/>		
@@ -199,6 +214,7 @@
 			NAME="CONNECTION_TERADATA" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tTeradataConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='TERADATA'" 
 		/>		
@@ -208,6 +224,7 @@
 			NAME="CONNECTION_VERTICA" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tVerticaConnection|tJDBCConnection$" 
+			REQUIRED="true"
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='VERTICA'" 
 		/>	

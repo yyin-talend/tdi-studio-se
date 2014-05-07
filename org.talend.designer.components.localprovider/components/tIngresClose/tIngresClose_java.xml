@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tIngresConnection"
+      REQUIRED="true" FILTER="tIngresConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

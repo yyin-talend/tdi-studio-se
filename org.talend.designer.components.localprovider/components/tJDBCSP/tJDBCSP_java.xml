@@ -55,7 +55,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tJDBCConnection"
+      REQUIRED="true" FILTER="tJDBCConnection"
       NUM_ROW="15"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
