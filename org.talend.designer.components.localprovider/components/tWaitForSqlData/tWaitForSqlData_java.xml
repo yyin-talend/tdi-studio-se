@@ -57,7 +57,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      REQUIRED="true" FILTER="REGEXP:^(.)*(Connection)(.)*$"
+      FILTER="REGEXP:^(.)*(Connection)(.)*$"
       NUM_ROW="3"
       REQUIRED="true"
     />

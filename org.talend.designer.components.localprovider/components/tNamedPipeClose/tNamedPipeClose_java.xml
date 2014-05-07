@@ -47,7 +47,7 @@
 		<PARAMETER
 			NAME="PIPE"
 			FIELD="COMPONENT_LIST"
-			REQUIRED="true" FILTER="tNamedPipeOpen"
+			FILTER="tNamedPipeOpen"
 			NUM_ROW="10"
 			REQUIRED="true"
 			DYNAMIC_SETTINGS="true"
