@@ -14,7 +14,6 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -84,17 +83,20 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * type of job exports.
      * */
     public static enum JobExportType {
-        POJO("Autonomous Job"), //$NON-NLS-1$
-        WSWAR("Axis WebService (WAR)"), //$NON-NLS-1$
-        WSZIP("Axis WebService (ZIP)"), //$NON-NLS-1$
-        JBOSSESB("JBoss ESB"), //$NON-NLS-1$
-        PETALSESB("Petals ESB"), //$NON-NLS-1$
-        OSGI("OSGI Bundle For ESB");//$NON-NLS-1$
+        POJO(Messages.getString("JavaJobScriptsExportWSWizardPage.POJO"), false), //$NON-NLS-1$
+        WSWAR(Messages.getString("JavaJobScriptsExportWSWizardPage.WSWAR"), false), //$NON-NLS-1$
+        WSZIP(Messages.getString("JavaJobScriptsExportWSWizardPage.WSZIP"), false), //$NON-NLS-1$
+        JBOSSESB(Messages.getString("JavaJobScriptsExportWSWizardPage.JBOSSESB"), true), //$NON-NLS-1$
+        PETALSESB(Messages.getString("JavaJobScriptsExportWSWizardPage.PETALSESB"), true), //$NON-NLS-1$
+        OSGI(Messages.getString("JavaJobScriptsExportWSWizardPage.OSGI"), false);//$NON-NLS-1$
 
         public final String label;
 
-        private JobExportType(String label) {
+        public final boolean deprecate;
+
+        private JobExportType(String label, boolean deprecate) {
             this.label = label;
+            this.deprecate = deprecate;
         }
 
         /**
@@ -234,7 +236,18 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @return
      */
     protected List<JobExportType> extractExportJobTypes() {
-        return Arrays.asList(JobExportType.values());
+        // Feature TDI-29084:put the Deprecated build type at last
+        List<JobExportType> deprecateTypeList = new ArrayList<JobExportType>();
+        List<JobExportType> typeList = new ArrayList<JobExportType>();
+        for (JobExportType type : JobExportType.values()) {
+            if (!type.deprecate) {
+                typeList.add(type);
+            } else {
+                deprecateTypeList.add(type);
+            }
+        }
+        typeList.addAll(deprecateTypeList);
+        return typeList;
     }
 
     @Override
