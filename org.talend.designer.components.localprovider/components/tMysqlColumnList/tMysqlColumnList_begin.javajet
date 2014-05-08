@@ -46,11 +46,11 @@ while (rs_<%=cid %>.next()) {
 	
 	String columKey_<%=cid %> = rs_<%=cid %>.getString(5);
 	
-	String characterMaximumLength_<%=cid %> = rs_<%=cid %>.getString(6);
+	int characterMaximumLength_<%=cid %> = rs_<%=cid %>.getInt(6);
 	
-	String numericPrecision_<%=cid %> = rs_<%=cid %>.getString(7);
+	int numericPrecision_<%=cid %> = rs_<%=cid %>.getInt(7);
 	
-	String numericScale_<%=cid %> = rs_<%=cid %>.getString(8);
+	int numericScale_<%=cid %> = rs_<%=cid %>.getInt(8);
 
 	nb_column_<%=cid %>++;
         
