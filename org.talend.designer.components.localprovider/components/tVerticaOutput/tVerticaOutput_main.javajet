@@ -204,13 +204,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 								if (!"COPY".equals(dataAction)) {
 									if (useBatchSize) {//manual commit and batch mode
 									%>
+										boolean isCountResult_<%=cid%> = false;
 										if(batchSizeCounter_<%=cid%> > 0){
 											<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+											isCountResult_<%=cid%> = true;
 											batchSizeCounter_<%=cid%> = 0;
 										}
 									<%
 									}else{//manual commit
 										log4jCodeGenerateUtil.executeBatch(node,1);
+									}
+									if (useBatchSize){
+									%>
+									 	if(isCountResult_<%=cid%>){
+									<%
 									}
 									if (("INSERT").equals(dataAction)) {
 									%>
@@ -223,6 +230,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 									}else if (("DELETE").equals(dataAction)) {
 									%>
 										deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+									<%
+									}
+									if (useBatchSize){
+									%>
+										}
 									<%
 									}
 								} else {
