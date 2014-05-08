@@ -349,7 +349,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 		if (batchSizeCounter_<%=cid%> != 0) {
 							int countSum_<%=cid%> = 0;
 							for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : 1);
 							}                	
 	            	    	<%if (("INSERT").equals(dataAction)) {
 	            	    	%>
@@ -428,7 +428,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	if(pstmt_<%=cid %> != null){
 			int countSum_<%=cid%> = 0;
 			for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : <%=("INSERT").equals(dataAction)? "1" : "countEach_" +cid%>);
 			}       	
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
