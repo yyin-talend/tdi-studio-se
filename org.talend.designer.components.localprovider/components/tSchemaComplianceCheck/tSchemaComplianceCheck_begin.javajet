@@ -35,34 +35,6 @@
 		}
 	}
 
-	String inConnName = null;
-	
-	class FindConnStartConn{
-		IConnection findStartConn(IConnection conn){
-			INode node = conn.getSource();
-			if(node.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(node))){
-				return conn;
-			}
-			List<? extends IConnection> listInConns = node.getIncomingConnections();
-			IConnection inConnTemp = null;
-			if(listInConns != null && listInConns.size() > 0) {
-				inConnTemp = listInConns.get(0);
-				if(inConnTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-					return findStartConn(inConnTemp);
-				}
-			}
-			return null;
-		}
-	}
-
-	if(inConn != null){
-		FindConnStartConn finder = new FindConnStartConn();
-		IConnection startConn = finder.findStartConn(inConn);
-		if(startConn!=null){
-			inConnName = startConn.getName();
-		}
-	}
-	
 	/* get the schema of itself (maybe no output flow)*/
 	List<IMetadataColumn> listColumsToTest = node.getMetadataList().get(0).getListColumns();
 
@@ -498,7 +470,7 @@
 		int iInColIndex = listInColumns.indexOf(inColumn);
 		if(iInColIndex % 100 == 0){ //CONDITION_00170 START
 %>
-		void setRowValue_<%=(iInColIndex/100) %>(<%=inConnName!=null?inConnName:sInConnName %>Struct <%=sInConnName %>) {
+		void setRowValue_<%=(iInColIndex/100) %>(<%=NodeUtil.getPrivateConnClassName(inConn) %>Struct <%=sInConnName %>) {
 <%
 		} //CONDITION_00170 STOP
 		// when using another schema, it's size may less than listInColumns
