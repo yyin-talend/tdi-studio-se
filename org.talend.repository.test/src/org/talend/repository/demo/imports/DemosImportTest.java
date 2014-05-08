@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQItemService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -111,7 +113,18 @@ public abstract class DemosImportTest {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         originalProject = repositoryContext.getProject();
+        // initilize the DQ sturcture for the original default project
+        initDQStructure();
         repositoryContext.setProject(tempDemoProject);
+    }
+
+    protected void initDQStructure() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
+            ITDQItemService tdqService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
+            if (tdqService != null) {
+                tdqService.createDQStructor();
+            }
+        }
     }
 
     protected void createTempDemoProject(String demoName) throws CoreException, PersistenceException {

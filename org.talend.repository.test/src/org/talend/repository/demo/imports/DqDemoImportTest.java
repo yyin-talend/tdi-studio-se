@@ -22,8 +22,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.ITDQItemService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -51,7 +49,7 @@ public class DqDemoImportTest extends DemosImportTest {
         Assert.assertNotNull(currentDemo);
         initTestPaths();
         initTempPro();
-        // For DQ,has special structure to create before test
+        // For DQ,has special structure to create for temp project before test
         initDQStructure();
         dqResManager = DemoImportTestUtil.getResourceManager(currentDemo);
         Assert.assertNotNull(dqResManager);
@@ -60,18 +58,6 @@ public class DqDemoImportTest extends DemosImportTest {
         Assert.assertTrue(projectRecords.size() > 0);
         importManager.importItemRecords(new NullProgressMonitor(), dqResManager, projectRecords, true,
                 projectRecords.toArray(new ImportItem[0]), null);
-    }
-
-    private void initDQStructure() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
-            ITDQItemService tdqService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
-            if (tdqService != null) {
-                tdqService.createDQStructor();
-            }
-        }
-        // if (DQStructureManager.getInstance().isNeedCreateStructure()) {
-        // DQStructureManager.getInstance().createDQStructure();
-        // }
     }
 
     @After
