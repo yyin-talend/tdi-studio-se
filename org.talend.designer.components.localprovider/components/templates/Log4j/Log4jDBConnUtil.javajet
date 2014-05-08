@@ -242,10 +242,14 @@ imports="
 				pstmt_<%=cid %>.executeBatch();
 			<%
 			}else if(batchType==2){
+				boolean isMysqlBatchInsert = false;
+				if (node.getUniqueName().contains("tMysqlOutput") && ("INSERT").equals(dataAction)) {
+					isMysqlBatchInsert = true;
+				}
 			%>
 				int countSum_<%=cid%> = 0;
 				for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-					countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : <%=isMysqlBatchInsert? "1" : "countEach_"+cid %>);
 				}
 			<%
 			}
