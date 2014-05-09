@@ -301,7 +301,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 						if (batchSizeCounter_<%=cid%> != 0) {
 							int countSum_<%=cid%> = 0;
 							for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : 1); 
 							}
 							<%if (("INSERT").equals(dataAction)) {
 							%>
@@ -371,7 +371,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			int countSum_<%=cid%> = 0;
 			<%log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - Executing the "+dataAction+" batch.");%>
 			for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : <%=("INSERT").equals(dataAction)? "1" : "countEach_" +cid%>);
 			}
 			<%log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - The "+dataAction+" batch execution has succeeded.");%>
 			<%if (("INSERT").equals(dataAction)) {

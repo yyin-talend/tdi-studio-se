@@ -243,7 +243,7 @@ imports="
 			<%
 			}else if(batchType==2){
 				boolean isMysqlBatchInsert = false;
-				if (node.getUniqueName().contains("tMysqlOutput") && ("INSERT").equals(dataAction)) {
+				if ((node.getUniqueName().contains("tMysqlOutput")||node.getUniqueName().contains("tAmazonMysqlOutput")) && ("INSERT").equals(dataAction)) {
 					isMysqlBatchInsert = true;
 				}
 			%>
