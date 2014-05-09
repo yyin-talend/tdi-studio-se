@@ -1109,38 +1109,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 			%>
 				updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
 				updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
-			} catch(java.lang.Exception e_<%=cid%>) {
-				whetherReject_<%=cid%> = true;
-				<%
-				if (("true").equals(dieOnError)) {
-					log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
-				%>
-					throw(e_<%=cid%>);
-				<%
-				} else {
-					log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
-					if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
-					%>
-						<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-						<%
-						for(IMetadataColumn column : columnList) {
-						%>
-							<%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-						<%
-						}
-						%>
-						rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
-						<%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
-						<%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-					<%
-					} else {
-					%>
-						System.err.println(e_<%=cid%>.getMessage());
-					<%
-					}
-				}
-				%>
-			}
 			if(updateFlag_<%=cid%> == 0) {
 				<%
 				if(isEnableDebug) {
@@ -1149,12 +1117,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%
 				}
 				int counter = 1;
-				//start issue0010403 date type
-				if (rejectConnName != null) {
-				%>
-				try {
-				<%
-				}//end issue0010403 date type
 				for(Column column : colStruct) {
 					if(column.isInsertable()) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -1190,14 +1152,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%
 				}
 				log4jCodeGenerateUtil.defineDataOperationPrefix(node,"Inserting");
-				//start issue0010403 date type
-				if (rejectConnName == null) {
-				%>
-				try {
-				<%
-				}//end issue0010403 date type
 				%>
 					insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
+			}
 				} catch(java.lang.Exception e_<%=cid%>) {
 					whetherReject_<%=cid%> = true;
 					<%
@@ -1230,7 +1187,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 					%>
 				}
-			}
 			nb_line_<%=cid%>++;
 		<%
 		} else if (("DELETE").equals(dataAction)) {
