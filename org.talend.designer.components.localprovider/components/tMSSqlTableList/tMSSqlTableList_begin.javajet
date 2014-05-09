@@ -5,7 +5,7 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -19,9 +19,11 @@ imports="
     String dbSchema = "dbschema_" + connection;
     
     String whereClause = ElementParameterParser.getValue(node,"__WHERE_CLAUSE__");
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-
+<%log4jCodeGenerateUtil.useExistConnection(node);%>
 String dbSchema_<%=cid%> = (String)globalMap.get("<%=dbSchema %>");
 
 String whereClause_<%=cid %> = <%=whereClause %>;
@@ -46,6 +48,13 @@ if(whereClause_<%=cid %> != null && whereClause_<%=cid %>.length() > 0){
 	query_<%=cid %> = query_<%=cid %> + " ORDER BY table_name ASC";
 
 }
+<%
+if(isLog4jEnabled){
+%>
+    log.info("<%=cid%> - Query:'"+query_<%=cid %>+"'.");
+<%
+}
+%>
 
 int nb_table_<%=cid%> = 0;
 
@@ -59,4 +68,12 @@ while (rs_<%=cid %>.next()) {
 
 	nb_table_<%=cid %>++;
         
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.debug("<%=cid%> - Retrieving the table "+nb_table_<%=cid %>+".");
+		log.trace("<%=cid%> - Name of table "+nb_table_<%=cid%>+":"+currentTableName_<%=cid %>+".");
+	<%
+	}
+	%>
 	globalMap.put("<%=cid %>_CURRENT_TABLE", currentTableName_<%=cid %>);

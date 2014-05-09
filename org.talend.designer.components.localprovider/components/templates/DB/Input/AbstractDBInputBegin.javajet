@@ -83,7 +83,9 @@ imports="
 		    <%dbInputBeginUtil.createStatement(node);%>
 		    
 		    String dbquery_<%=cid%> = <%=dbInputBeginUtil.getQueryString(node)%>;
-			<%log4jCodeGenerateUtil.query(node);%>		    
+			<%if(isLog4jEnabled){%>
+                log.info("<%=cid%> - Executing the query: '"+dbquery_<%=cid%>+"'.");
+			<%}%>
 		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
 		    java.sql.ResultSet rs_<%=cid %> = null;
 		try{

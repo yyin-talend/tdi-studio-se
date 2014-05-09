@@ -11,7 +11,7 @@ imports="
 	java.util.ArrayList
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%	
 abstract class  Manager {
     protected String dbName;
@@ -20,6 +20,7 @@ abstract class  Manager {
     protected String cid;
     protected INode node;
     protected boolean temporary;
+    protected DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil;
     protected abstract String getDriver();
     public abstract String getConnectionURL();
     protected abstract String getDBMSId();
@@ -35,11 +36,18 @@ abstract class  Manager {
         this(dbName, userName, cid);
         this.tableName = tableName;
     }
+    public String difineConnParam(){
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("String driverClass_"+cid+"=\"" + getDriver()+ "\";\r\n");
+        javaCode.append("String url_"+cid+"=" + getConnectionURL()+ ";\r\n");
+        javaCode.append("String dbUser_"+cid+"=" + userName + ";\r\n");
+        return javaCode.toString();
+    }
     public String getConnection() {
         StringBuilder javaCode = new StringBuilder();
         javaCode.append(retrieveTable());
         javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
-        
+        log4jCodeGenerateUtil.connect_begin();
         String passwordFieldName = "__PASS__";
         if(ElementParameterParser.canEncrypt(node, passwordFieldName)) {
         	javaCode.append("final String decryptedPassword_" + cid + "= routines.system.PasswordEncryptUtil.decryptPassword(" + ElementParameterParser.getEncryptedValue(node, passwordFieldName) + ");\r\n");
@@ -47,7 +55,7 @@ abstract class  Manager {
         	javaCode.append("final String decryptedPassword_" + cid + "= " + ElementParameterParser.getValue(node, passwordFieldName) + ";\r\n");
         }
         
-        javaCode.append("java.sql.Connection conn_" + cid + "= java.sql.DriverManager.getConnection(" + getConnectionURL() + "," + userName + ", decryptedPassword_" + cid + ");\r\n");
+        javaCode.append("java.sql.Connection conn_" + cid + "= java.sql.DriverManager.getConnection(url_" + cid + ",dbUser_" + cid + ", decryptedPassword_" + cid + ");\r\n");
         return javaCode.toString();
     }
     public String closeConnection() {
@@ -213,6 +221,7 @@ abstract class  Manager {
     
     public void setNode(INode node){
     	this.node = node;
+    	log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil(node);
     }
 	public String generateCode4TabelExist() {
 	    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
@@ -1046,6 +1055,7 @@ class OracleManager extends Manager {
         	{
         	 javaCode.append(retrieveTable());
         	 javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+        	 log4jCodeGenerateUtil.connect_begin_noUser();
           	 javaCode.append("java.sql.Connection conn_" + cid + "= java.sql.DriverManager.getConnection(" + getConnectionURL() + ");\r\n");
         	}
           else {
@@ -1923,6 +1933,7 @@ class ManagerFactory {
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 List<IMetadataColumn> columnList = null;
+log4jCodeGenerateUtil.infoComponentStart(node);
 List<IMetadataTable> metadatas = node.getMetadataList();
 if(metadatas != null && metadatas.size() > 0) {
     IMetadataTable metadata = metadatas.get(0);
@@ -1936,6 +1947,7 @@ if(columnList != null && columnList.size() > 0) {
     manager.setNode(node);
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
     String cid = node.getUniqueName();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     boolean tableNameCaseSensitive=false;
     if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)||"GREENPLUM".equalsIgnoreCase(dbType)){
     	tableNameCaseSensitive=true;
@@ -1952,12 +1964,33 @@ if(columnList != null && columnList.size() > 0) {
     }
     %>
     try{
+        <%
+        boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+        if(!useExistingConnection) {
+        %>
+            <%=manager.difineConnParam()%>
+            <%
+            log4jCodeGenerateUtil.debugConnectionParams(node);
+            //log4jCodeGenerateUtil.connect_begin();
+        }
+        %>
         <%=manager.getConnection()%>
         <%
+        if(useExistingConnection) {
+            log4jCodeGenerateUtil.useExistConnection(node);
+        }else{
+            log4jCodeGenerateUtil.connect_end();
+        }
         if(("CREATE_TABLE").equals(tableAction)) {
             %>
             java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+            <%if(isLog4jEnabled){%>
+                log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+            <%}%>
             stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");
+            <%if(isLog4jEnabled){%>
+                log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+            <%}%>
             <%=createProjectionStr%>
             <%
         } else {
@@ -2063,7 +2096,13 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+                    <%if(isLog4jEnabled){%>
+                        log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+                    <%}%>
                     stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");                
+                    <%if(isLog4jEnabled){%>
+                        log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+                    <%}%>
 		            <%=createProjectionStr%>
                 }
                 <%
@@ -2071,22 +2110,38 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+                    <%if(isLog4jEnabled){%>
+                        log.info("<%=cid%> - Droping table '" + tableName_<%=cid%> + "'.");
+                    <%}%>
                     stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+                    <%if(isLog4jEnabled){%>
+                        log.info("<%=cid%> - Drop table '" + tableName_<%=cid%> + "' has succeeded.");
+                    <%}%>
                 }
                 java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");            
+                <%if(isLog4jEnabled){%>
+                    log.info("<%=cid%> - Creating table '" + tableName_<%=cid%> + "'.");
+                <%}%>
+                stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>"); 
+                <%if(isLog4jEnabled){%>
+                    log.info("<%=cid%> - Create table '" + tableName_<%=cid%> + "' has succeeded.");
+                <%}%>
 	            <%=createProjectionStr%>
                 <%
             }
         }
+        log4jCodeGenerateUtil.close_begin();
         %>
         <%=manager.closeConnection()%>
+        <%log4jCodeGenerateUtil.close_end();%>
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(java.lang.Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
+        <%log4jCodeGenerateUtil.logError(node,"fatal");%>
         throw new RuntimeException("Creating table failed", e);
     }
 <%
 }
+log4jCodeGenerateUtil.infoComponentEnd(node);
 %>
 

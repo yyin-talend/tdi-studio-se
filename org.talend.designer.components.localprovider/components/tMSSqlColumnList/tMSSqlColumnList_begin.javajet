@@ -5,7 +5,7 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -21,8 +21,11 @@ imports="
     String dbSchema = "dbschema_" + connection;
     
     String table = ElementParameterParser.getValue(node,"__TABLE_NAME__");
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%	log4jCodeGenerateUtil.useExistConnection(node);%>
 
 	String db_<%=cid%> = (String)globalMap.get("<%=db %>");
 
@@ -58,6 +61,13 @@ imports="
 	
 	java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 	
+	<%
+	if(isLog4jEnabled){
+	%>
+		log.info("<%=cid%> - Query:'"+query_<%=cid %>+"'.");
+	<%
+	}
+	%>
 	java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery(query_<%=cid %>);
 	
 	
@@ -91,6 +101,25 @@ imports="
 	
 		nb_column_<%=cid %>++;
 	        
+		<%
+		if(isLog4jEnabled){
+		%>
+			log.debug("<%=cid%> - Retrieving the column "+nb_column_<%=cid%>+".");
+			StringBuffer logSB_<%=cid%> = new StringBuffer("<%=cid%> - Name of column "+nb_column_<%=cid%>+":"+currentColumnName_<%=cid %>+" | ");
+			logSB_<%=cid%>.append("Default value of column "+nb_column_<%=cid%>+":"+columnDefault_<%=cid %>+" | ")
+			.append("Is nullable of column "+nb_column_<%=cid%>+":"+isNullable_<%=cid %>+" | ")
+			.append("Data type of column "+nb_column_<%=cid%>+":"+dataType_<%=cid %>+" | ")
+			.append("Character maximum length of column "+nb_column_<%=cid%>+":"+characterMaximumLength_<%=cid %>+" | ")
+			.append("Character octet length of column "+nb_column_<%=cid%>+":"+characterOctetLength_<%=cid %>+" | ")
+			.append("Numeric precision of column "+nb_column_<%=cid%>+":"+numericPrecision_<%=cid %>+" | ")
+			.append("Numeric precision radix of column "+nb_column_<%=cid%>+":"+numericPrecisionRadix_<%=cid %>+" | ")
+			.append("Numeric scale of column "+nb_column_<%=cid%>+":"+numericScale_<%=cid %>+" | ")
+			.append("Datetime precision of column "+nb_column_<%=cid%>+":"+dateTimePrecision_<%=cid %>+" | ")
+			.append("Column key of column "+nb_column_<%=cid%>+":"+columKey_<%=cid %>+" |");
+			log.trace(logSB_<%=cid%>.toString());
+		<%
+		}
+		%>
 		globalMap.put("<%=cid %>_COLUMN_NAME", currentColumnName_<%=cid %>);
 		
 		globalMap.put("<%=cid %>_COLUMN_DEFAULT", columnDefault_<%=cid %>);

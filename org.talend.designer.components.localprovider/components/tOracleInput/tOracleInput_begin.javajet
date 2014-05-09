@@ -316,6 +316,7 @@ imports="
 						<%=firstConnName%>.<%=column.getLabel()%> = null;
 <%
 					} else {
+						log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - Null value in non-Nullable column!");
 %>    
 						throw new RuntimeException("Null value in non-Nullable column");
 <%    
@@ -361,6 +362,7 @@ imports="
 						<%=firstConnName%>.<%=column.getLabel()%> = null;
 <%
 				} else {
+				        log4jCodeGenerateUtil.logInfo(node,"fatal",cid+" - Null value in non-Nullable column!");
 %>    
  	                	throw new RuntimeException("Null value in non-Nullable column");
 <%    

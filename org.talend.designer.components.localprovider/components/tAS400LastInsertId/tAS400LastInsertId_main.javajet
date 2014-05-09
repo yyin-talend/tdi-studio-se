@@ -5,6 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.EConnectionType
     java.util.List
@@ -17,6 +18,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 String incomingConnName = null;
 Set<String> incomingColumns = new HashSet<String>();
 List<? extends IConnection> incomingConns = node.getIncomingConnections();
@@ -66,6 +68,9 @@ if ( previousNode != null && ("INSERT").equals(dataAction)) {
 	                java.sql.ResultSet rs_<%=cid %> = pstmt_<%=previousCID %>.getGeneratedKeys();
 	                if(rs_<%=cid %>.next()) {
 	                    <%=outgoingConn.getName() %>.last_insert_id = rs_<%=cid %>.getInt(1);
+	                    <%if(isLog4jEnabled){%>
+                            log.trace("<%=cid%> - Last insert id:"+<%=outgoingConn.getName() %>.last_insert_id);
+                        <%}%>
 	                }
 	                nb_line_<%=cid%>++;
 	                <%

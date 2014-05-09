@@ -5,7 +5,7 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 " 
 %>
-
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -21,12 +21,15 @@ imports="
     String schema = "dbschema_" + connection;
     
     String tableName = ElementParameterParser.getValue(node,"__TABLE_NAME__");
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    log4jCodeGenerateUtil.infoComponentStart(node);
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     java.sql.Statement stmt2_<%=cid%> = null;
     int nb_column_<%=cid%> = 0;
     try{
 <%	
+    log4jCodeGenerateUtil.useExistConnection(node);
 	INode connectionNode = null; 
 	for (INode processNode : node.getProcess().getGeneratingNodes()) { 
 		if(connection.equals(processNode.getUniqueName())) { 
@@ -82,7 +85,13 @@ if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
 int column_count_<%=cid%> = 0;
 
 stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
-
+<%
+if(isLog4jEnabled){
+%>
+    log.info("<%=cid%> - Query:'"+"SELECT * from " + tableName_<%=cid%> + " where 1<>1'.");
+<%
+}
+%>
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT * from " + tableName_<%=cid%> + " where 1<>1");
 
 java.sql.ResultSetMetaData rsMetaData_<%=cid %> = rs_<%=cid %>.getMetaData();
@@ -98,6 +107,20 @@ for(int i_<%=cid %> = 1; i_<%=cid %> <= column_count_<%=cid %>; i_<%=cid %>++) {
 	int currentColumnScale_<%=cid%> = rsMetaData_<%=cid %>.getScale(i_<%=cid %>);
 	nb_column_<%=cid %>++;
         
+    <%
+    if(isLog4jEnabled){
+    %>
+        log.debug("<%=cid%> - Retrieving the column "+i_<%=cid %>+".");
+        StringBuffer logSB_<%=cid%> = new StringBuffer("<%=cid%> - ");
+        logSB_<%=cid%>.append("Name of column "+i_<%=cid %>+":"+currentColumnName_<%=cid %>+" | ")
+        .append("Type of column "+i_<%=cid %>+":"+currentColumnType_<%=cid %>+" | ")
+        .append("Type name of column "+i_<%=cid %>+":"+currentColumnTypeName_<%=cid %>+" | ")
+        .append("Precision of column "+i_<%=cid %>+":"+currentColumnPrecision_<%=cid %>+" | ")
+        .append("Scale of column "+i_<%=cid %>+":"+currentColumnPrecision_<%=cid %>+" | ");
+        log.trace(logSB_<%=cid%>.toString());
+    <%
+    }
+    %>
 	globalMap.put("<%=cid %>_CURRENT_COLUMN", currentColumnName_<%=cid %>);
 	globalMap.put("<%=cid %>_CURRENT_COLUMN_TYPE", currentColumnType_<%=cid%>);
 	globalMap.put("<%=cid %>_CURRENT_COLUMN_TYPE_NAME", currentColumnTypeName_<%=cid%>);
