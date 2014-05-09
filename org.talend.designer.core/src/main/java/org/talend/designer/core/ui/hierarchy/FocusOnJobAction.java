@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.hierarchy;
 
-import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.CorePlugin;
@@ -20,6 +19,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.IJobHierarchyViewPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -32,9 +32,12 @@ public class FocusOnJobAction extends Action {
     private IJobHierarchyViewPart fViewPart;
 
     public FocusOnJobAction(IJobHierarchyViewPart part) {
-        super(TypeHierarchyMessages.FocusOnTypeAction_label);
-        setDescription(TypeHierarchyMessages.FocusOnTypeAction_description);
-        setToolTipText(TypeHierarchyMessages.FocusOnTypeAction_tooltip);
+        // super(TypeHierarchyMessages.FocusOnTypeAction_label);
+        super(Messages.getString("FocusOnJobAction.FocusOnTypeAction_label")); //$NON-NLS-1$
+        // setDescription(TypeHierarchyMessages.FocusOnTypeAction_description);
+        setDescription(Messages.getString("FocusOnJobAction.FocusOnTypeAction_description")); //$NON-NLS-1$
+        // setToolTipText(TypeHierarchyMessages.FocusOnTypeAction_tooltip);
+        setToolTipText(Messages.getString("FocusOnJobAction.FocusOnTypeAction_tooltip")); //$NON-NLS-1$
 
         fViewPart = part;
     }

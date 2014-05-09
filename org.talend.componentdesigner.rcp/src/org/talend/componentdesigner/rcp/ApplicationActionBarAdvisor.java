@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.componentdesigner.rcp;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -28,10 +30,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
-import org.eclipse.ui.internal.WorkbenchMessages;
-import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.dialogs.ShowViewDialog;
-import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.talend.componentdesigner.rcp.i18n.Messages;
@@ -146,7 +145,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
                 return;
             }
 
-            final ShowViewDialog dialog = new ShowViewDialog(window, WorkbenchPlugin.getDefault().getViewRegistry());
+            final ShowViewDialog dialog = new ShowViewDialog(window, PlatformUI.getWorkbench().getViewRegistry());
             dialog.open();
 
             if (dialog.getReturnCode() == Window.CANCEL) {
@@ -158,8 +157,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
                 try {
                     page.showView(descriptors[i].getId());
                 } catch (PartInitException e) {
-                    StatusUtil.handleStatus(e.getStatus(), WorkbenchMessages.ShowView_errorTitle + ": " + e.getMessage(), //$NON-NLS-1$
-                            StatusManager.SHOW);
+                    // StatusUtil.handleStatus(e.getStatus(),
+                    //                            Messages.getString("ApplicationActionBarAdvisor.ShowView_errorTitle") + ": " + e.getMessage(), //$NON-NLS-1$
+                    // StatusManager.SHOW);
+                    IStatus istatus = e.getStatus();
+                    StatusManager
+                            .getManager()
+                            .handle(new Status(
+                                    istatus.getSeverity(),
+                                    istatus.getPlugin(),
+                                    istatus.getCode(),
+                                    Messages.getString("ApplicationActionBarAdvisor.ShowView_errorTitle") + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
+                                    istatus.getException()), StatusManager.SHOW);
                 }
             }
         }

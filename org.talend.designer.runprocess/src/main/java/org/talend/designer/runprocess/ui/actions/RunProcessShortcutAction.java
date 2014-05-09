@@ -40,7 +40,6 @@ public class RunProcessShortcutAction extends RunProcessAction {
         MultiPageEditorContributor.setShowAndRunProcessAction(this);
     }
 
-    @SuppressWarnings("restriction")
     public void run() {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();

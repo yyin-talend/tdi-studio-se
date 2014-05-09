@@ -46,7 +46,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -197,16 +196,18 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      * @param menuManager
      */
     private void initMenu(IMenuManager menu) {
-        MenuManager groupByMenu = new MenuManager(MarkerMessages.ProblemView_GroupByMenu);
-        groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_Type, Group.TYPE, this));
+        // MenuManager groupByMenu = new MenuManager(MarkerMessages.ProblemView_GroupByMenu);
+        MenuManager groupByMenu = new MenuManager(Messages.getString("MarkerMessages.ProblemView_GroupByMenu")); //$NON-NLS-1$
+        // groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_Type, Group.TYPE, this));
+        groupByMenu.add(new GroupingAction(Messages.getString("MarkerMessages.ProblemView_Type"), Group.TYPE, this)); //$NON-NLS-1$
 
         groupByMenu.add(new GroupingAction(Messages.getString("ProblemsView.severity"), Group.SEVERITY, this)); //$NON-NLS-1$
 
-        groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_None, Group.NONE, this));
+        // groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_None, Group.NONE, this));
+        groupByMenu.add(new GroupingAction(Messages.getString("MarkerMessages.ProblemView_None"), Group.NONE, this)); //$NON-NLS-1$
         menu.add(groupByMenu);
     }
 
-    @SuppressWarnings("unchecked")
     private void selectInDesigner(BasicJobInfo jobInfo, String nodeName) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 

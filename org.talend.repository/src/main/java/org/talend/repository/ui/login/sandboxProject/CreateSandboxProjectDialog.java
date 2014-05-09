@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,7 +39,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -396,7 +396,6 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         return null;
     }
 
-    @SuppressWarnings("restriction")
     @Override
     protected void okPressed() {
 
@@ -501,7 +500,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             }
         };
         try {
-            final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+            // final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+            final ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
             dialog.run(true, false, runnable);
 
         } catch (InvocationTargetException e) {

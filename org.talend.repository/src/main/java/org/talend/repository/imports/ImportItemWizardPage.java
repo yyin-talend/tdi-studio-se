@@ -27,6 +27,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -67,12 +68,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.WorkbenchImages;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
@@ -175,13 +173,13 @@ class ImportItemWizardPage extends WizardPage {
 
     private List<ItemRecord> totalItemRecords = new ArrayList<ItemRecord>();
 
-    @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
 
         super(pageName);
         this.rNode = rNode;
         setDescription(Messages.getString("ImportItemWizardPage.ImportDescription")); //$NON-NLS-1$
-        setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_IMPORT_WIZ));
+        // setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_IMPORT_WIZ));
+        setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor("IMG_WIZBAN_IMPORT_WIZ")); //$NON-NLS-1$
     }
 
     @Override
@@ -428,7 +426,8 @@ class ImportItemWizardPage extends WizardPage {
         buttonsComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
         Button selectAll = new Button(buttonsComposite, SWT.PUSH);
-        selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        // selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        selectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_selectAll")); //$NON-NLS-1$
         selectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -449,7 +448,8 @@ class ImportItemWizardPage extends WizardPage {
         setButtonLayoutData(selectAll);
 
         Button deselectAll = new Button(buttonsComposite, SWT.PUSH);
-        deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        // deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        deselectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_deselectAll")); //$NON-NLS-1$
         deselectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -463,7 +463,8 @@ class ImportItemWizardPage extends WizardPage {
         setButtonLayoutData(deselectAll);
 
         Button refresh = new Button(buttonsComposite, SWT.PUSH);
-        refresh.setText(DataTransferMessages.DataTransfer_refresh);
+        // refresh.setText(DataTransferMessages.DataTransfer_refresh);
+        refresh.setText(Messages.getString("DataTransferMessages.DataTransfer_refresh")); //$NON-NLS-1$
         refresh.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -489,14 +490,16 @@ class ImportItemWizardPage extends WizardPage {
         projectGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         itemFromDirectoryRadio = new Button(projectGroup, SWT.RADIO);
-        itemFromDirectoryRadio.setText(DataTransferMessages.WizardProjectsImportPage_RootSelectTitle);
+        // itemFromDirectoryRadio.setText(DataTransferMessages.WizardProjectsImportPage_RootSelectTitle);
+        itemFromDirectoryRadio.setText(Messages.getString("DataTransferMessages.WizardProjectsImportPage_RootSelectTitle")); //$NON-NLS-1$
 
         this.directoryPathField = new Text(projectGroup, SWT.BORDER);
 
         this.directoryPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 
         browseDirectoriesButton = new Button(projectGroup, SWT.PUSH);
-        browseDirectoriesButton.setText(DataTransferMessages.DataTransfer_browse);
+        // browseDirectoriesButton.setText(DataTransferMessages.DataTransfer_browse);
+        browseDirectoriesButton.setText(Messages.getString("DataTransferMessages.DataTransfer_browse")); //$NON-NLS-1$
         setButtonLayoutData(browseDirectoriesButton);
 
         nothing = new Label(projectGroup, SWT.NONE);
@@ -504,7 +507,8 @@ class ImportItemWizardPage extends WizardPage {
 
         // new project from archive radio button
         itemFromArchiveRadio = new Button(projectGroup, SWT.RADIO);
-        itemFromArchiveRadio.setText(DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle);
+        // itemFromArchiveRadio.setText(DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle);
+        itemFromArchiveRadio.setText(Messages.getString("DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle")); //$NON-NLS-1$
 
         // project location entry field
         archivePathField = new Text(projectGroup, SWT.BORDER);
@@ -519,7 +523,8 @@ class ImportItemWizardPage extends WizardPage {
         // buttonCom.setLayout(buttonlayout);
         // buttonCom.setLayoutData(new GridData());
         browseArchivesButton = new Button(projectGroup, SWT.PUSH);
-        browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
+        // browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
+        browseArchivesButton.setText(Messages.getString("DataTransferMessages.DataTransfer_browse")); //$NON-NLS-1$
         setButtonLayoutData(browseArchivesButton);
         if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
             selectExchangeButton = new Button(projectGroup, SWT.PUSH);
@@ -641,7 +646,8 @@ class ImportItemWizardPage extends WizardPage {
     protected void handleLocationDirectoryButtonPressed() {
 
         DirectoryDialog dialog = new DirectoryDialog(directoryPathField.getShell());
-        dialog.setMessage(DataTransferMessages.WizardProjectsImportPage_SelectDialogTitle);
+        // dialog.setMessage(DataTransferMessages.WizardProjectsImportPage_SelectDialogTitle);
+        dialog.setMessage(Messages.getString("DataTransferMessages.WizardProjectsImportPage_SelectDialogTitle")); //$NON-NLS-1$
 
         String dirName = directoryPathField.getText().trim();
         if (dirName.length() == 0) {
@@ -649,7 +655,8 @@ class ImportItemWizardPage extends WizardPage {
         }
 
         if (dirName.length() == 0) {
-            dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            // dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
         } else {
             File path = new File(dirName);
             if (path.exists()) {
@@ -673,7 +680,8 @@ class ImportItemWizardPage extends WizardPage {
 
         FileDialog dialog = new FileDialog(archivePathField.getShell());
         dialog.setFilterExtensions(FILE_IMPORT_MASK);
-        dialog.setText(DataTransferMessages.WizardProjectsImportPage_SelectArchiveDialogTitle);
+        // dialog.setText(DataTransferMessages.WizardProjectsImportPage_SelectArchiveDialogTitle);
+        dialog.setText(Messages.getString(".WizardProjectsImportPage_SelectArchiveDialogTitle")); //$NON-NLS-1$
 
         String fileName = archivePathField.getText().trim();
         if (fileName.length() == 0) {
@@ -681,7 +689,7 @@ class ImportItemWizardPage extends WizardPage {
         }
 
         if (fileName.length() == 0) {
-            dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
         } else {
             File path = new File(fileName);
             if (path.exists()) {
@@ -739,7 +747,8 @@ class ImportItemWizardPage extends WizardPage {
                 @Override
                 public void run(IProgressMonitor monitor) {
 
-                    monitor.beginTask(DataTransferMessages.WizardProjectsImportPage_SearchingMessage, 100);
+                    // monitor.beginTask(DataTransferMessages.WizardProjectsImportPage_SearchingMessage, 100);
+                    monitor.beginTask(Messages.getString("DataTransferMessages.WizardProjectsImportPage_SearchingMessage"), 100); //$NON-NLS-1$
                     File directory = new File(path);
                     monitor.worked(10);
                     if (!dirSelected && ArchiveFileManipulations.isTarFile(path)) {
@@ -885,9 +894,11 @@ class ImportItemWizardPage extends WizardPage {
         try {
             return new ZipFile(fileName);
         } catch (ZipException e) {
-            displayErrorDialog(DataTransferMessages.ZipImport_badFormat);
+            // displayErrorDialog(DataTransferMessages.ZipImport_badFormat);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipImport_badFormat")); //$NON-NLS-1$
         } catch (IOException e) {
-            displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+            // displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipImport_couldNotRead")); //$NON-NLS-1$
         }
 
         archivePathField.setFocus();
@@ -899,7 +910,8 @@ class ImportItemWizardPage extends WizardPage {
     }
 
     protected String getErrorDialogTitle() {
-        return IDEWorkbenchMessages.WizardExportPage_internalErrorTitle;
+        // return IDEWorkbenchMessages.WizardExportPage_internalErrorTitle;
+        return Messages.getString("IDEWorkbenchMessages.WizardExportPage_internalErrorTitle"); //$NON-NLS-1$
     }
 
     protected TarFile getSpecifiedTarSourceFile() {
@@ -914,9 +926,11 @@ class ImportItemWizardPage extends WizardPage {
         try {
             return new TarFile(fileName);
         } catch (TarException e) {
-            displayErrorDialog(DataTransferMessages.TarImport_badFormat);
+            // displayErrorDialog(DataTransferMessages.TarImport_badFormat);
+            displayErrorDialog(Messages.getString("DataTransferMessages.TarImport_badFormat")); //$NON-NLS-1$
         } catch (IOException e) {
-            displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+            // displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipImport_couldNotRead")); //$NON-NLS-1$
         }
 
         archivePathField.setFocus();

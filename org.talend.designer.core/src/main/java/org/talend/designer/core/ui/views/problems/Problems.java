@@ -35,7 +35,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -44,7 +43,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
@@ -147,8 +145,11 @@ public class Problems {
 
     public static String getSummary() {
         int[] counts = problemList.getMarkerCounts();
-        return MessageFormat.format(MarkerMessages.problem_statusSummaryBreakdown, new Object[] { new Integer(counts[0]),
-                new Integer(counts[1]), new Integer(counts[2]) });
+        // return MessageFormat.format(MarkerMessages.problem_statusSummaryBreakdown, new Object[] { new
+        // Integer(counts[0]),
+        // new Integer(counts[1]), new Integer(counts[2]) });
+        return MessageFormat.format(Messages.getString("MarkerMessages.problem_statusSummaryBreakdown"), new Object[] { //$NON-NLS-1$
+                new Integer(counts[0]), new Integer(counts[1]), new Integer(counts[2]) });
     }
 
     private static void buildHierarchy() {

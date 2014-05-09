@@ -77,7 +77,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -184,7 +183,6 @@ import org.talend.repository.ui.views.IJobSettingsView;
 /**
  * DOC qzhang class global comment. Detailled comment
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
 
@@ -1517,7 +1515,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow != null) {
 
-            WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
+            // WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
+            IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
             if (page != null) {
                 if (editorInput instanceof RepositoryEditorInput) {
                     RepositoryEditorInput curEditorInput = (RepositoryEditorInput) editorInput;

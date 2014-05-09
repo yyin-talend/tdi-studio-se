@@ -33,11 +33,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.ide.StatusUtil;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.ILeveledImportStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.TarEntry;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
@@ -49,9 +47,11 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.Project;
+import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.migration.ChangeProjectTechinicalNameMigrationTask;
 
 /**
@@ -127,7 +127,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
                             projectName = path.segment(path.segmentCount() - 2);
                         }
                     } else {
-                        description = IDEWorkbenchPlugin.getPluginWorkspace().loadProjectDescription(stream);
+                        // description = IDEWorkbenchPlugin.getPluginWorkspace().loadProjectDescription(stream);
+                        description = ResourcesPlugin.getWorkspace().loadProjectDescription(stream);
                         stream.close();
                         projectName = description.getName();
                     }
@@ -141,9 +142,11 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
                     // name as the project name
                     if (isDefaultLocation(path)) {
                         projectName = path.segment(path.segmentCount() - 2);
-                        description = IDEWorkbenchPlugin.getPluginWorkspace().newProjectDescription(projectName);
+                        // description = IDEWorkbenchPlugin.getPluginWorkspace().newProjectDescription(projectName);
+                        description = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
                     } else {
-                        description = IDEWorkbenchPlugin.getPluginWorkspace().loadProjectDescription(path);
+                        // description = IDEWorkbenchPlugin.getPluginWorkspace().loadProjectDescription(path);
+                        description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
                         projectName = description.getName();
                     }
 
@@ -192,7 +195,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
 
             String path = projectSystemFile == null ? structureProvider.getLabel(parent) : projectSystemFile.getParent();
 
-            return NLS.bind(DataTransferMessages.WizardProjectsImportPage_projectLabel, projectName, path);
+            // return NLS.bind(DataTransferMessages.WizardProjectsImportPage_projectLabel, projectName, path);
+            return NLS.bind(Messages.getString("DataTransferMessages.WizardProjectsImportPage_projectLabel"), projectName, path); //$NON-NLS-1$
         }
 
         /**
@@ -270,9 +274,11 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
 
                 }
             } catch (TarException e) {
-                displayErrorDialog(DataTransferMessages.TarImport_badFormat);
+                // displayErrorDialog(DataTransferMessages.TarImport_badFormat);
+                displayErrorDialog(Messages.getString("DataTransferMessages.TarImport_badFormat")); //$NON-NLS-1$
             } catch (IOException e) {
-                displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+                // displayErrorDialog(DataTransferMessages.ZipImport_couldNotRead);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipImport_couldNotRead")); //$NON-NLS-1$
             }
         } else if (ArchiveFileManipulations.isZipFile(sourcePath)) {
             try {
@@ -296,7 +302,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
                     }
                 }
             } catch (IOException e) {
-                displayErrorDialog(DataTransferMessages.ZipImport_badFormat);
+                // displayErrorDialog(DataTransferMessages.ZipImport_badFormat);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipImport_badFormat")); //$NON-NLS-1$
             }
         } else if (directory.isDirectory()) {
             collectProjectFilesFromDirectory(files, directory, null);
@@ -346,6 +353,29 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         return true;
     }
 
+    /**
+     * This method must not be called outside the workbench.
+     * 
+     * Utility method for creating status.
+     * 
+     * @param severity
+     * @param message
+     * @return {@link IStatus}
+     */
+    private static IStatus newStatus(int severity, String message, Throwable exception) {
+
+        String statusMessage = message;
+        if (message == null || message.trim().length() == 0) {
+            if (exception.getMessage() == null) {
+                statusMessage = exception.toString();
+            } else {
+                statusMessage = exception.getMessage();
+            }
+        }
+
+        return new Status(severity, IDEWorkbenchPlugin.IDE_WORKBENCH, severity, statusMessage, exception);
+    }
+
     private boolean collectProjectFilesFromDirectory(Collection files, File directory, Set directoriesVisited) {
 
         File[] contents = directory.listFiles();
@@ -359,8 +389,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
             try {
                 directoriesVisited.add(directory.getCanonicalPath());
             } catch (IOException exception) {
-                StatusManager.getManager()
-                        .handle(StatusUtil.newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
+                // StatusManager.getManager()
+                // .handle(StatusUtil.newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
+                StatusManager.getManager().handle(newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
             }
         }
 
@@ -384,8 +415,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
                             continue;
                         }
                     } catch (IOException exception) {
-                        StatusManager.getManager().handle(
-                                StatusUtil.newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
+                        // StatusManager.getManager().handle(
+                        // StatusUtil.newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
+                        StatusManager.getManager().handle(newStatus(IStatus.ERROR, exception.getLocalizedMessage(), exception));
                     }
                     collectProjectFilesFromDirectory(files, contents[i], directoriesVisited);
                 }

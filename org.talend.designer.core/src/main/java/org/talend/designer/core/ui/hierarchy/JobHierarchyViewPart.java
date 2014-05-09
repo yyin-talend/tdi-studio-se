@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.internal.ui.actions.CompositeActionGroup;
-import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
 import org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -207,7 +206,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         // }
         // viewMenu.add(new Separator());
 
-        IMenuManager layoutSubMenu = new MenuManager(TypeHierarchyMessages.TypeHierarchyViewPart_layout_submenu);
+        // IMenuManager layoutSubMenu = new MenuManager(TypeHierarchyMessages.TypeHierarchyViewPart_layout_submenu);
+        IMenuManager layoutSubMenu = new MenuManager(Messages.getString("FocusOnJobAction.TypeHierarchyViewPart_layout_submenu")); //$NON-NLS-1$
         viewMenu.add(layoutSubMenu);
         for (int i = 0; i < fToggleOrientationActions.length; i++) {
             layoutSubMenu.add(fToggleOrientationActions[i]);

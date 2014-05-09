@@ -22,9 +22,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.ISelection;
@@ -84,8 +83,24 @@ import org.talend.repository.model.RepositoryNode;
  */
 public class JobLaunchShortcut implements ILaunchShortcut {
 
+    public class IInternalDebugUIConstants {
+
+        /**
+         * String preference controlling whether editors are saved before launching. Valid values are either "always",
+         * "never", or "prompt". If "always" or "never", launching will save editors (or not) automatically. If
+         * "prompt", the user will be prompted each time.
+         * 
+         * @since 3.0
+         */
+        public static final String PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH = IDebugUIConstants.PLUGIN_ID
+                + ".save_dirty_editors_before_launch"; //$NON-NLS-1$
+
+    }
+
     public JobLaunchShortcut() {
-        DebugUIPlugin.getDefault().getPreferenceStore().putValue(IInternalDebugUIConstants.PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH,
+        // DebugUIPlugin.getDefault().getPreferenceStore().putValue(IInternalDebugUIConstants.PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH,
+        // MessageDialogWithToggle.NEVER);
+        DebugUITools.getPreferenceStore().putValue(IInternalDebugUIConstants.PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH,
                 MessageDialogWithToggle.NEVER);
     }
 

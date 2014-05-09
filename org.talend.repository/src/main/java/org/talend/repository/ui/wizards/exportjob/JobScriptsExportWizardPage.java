@@ -69,7 +69,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -273,7 +272,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
         setDescription(Messages.getString("JobScriptsExportWizardPage.ExportJob")); //$NON-NLS-1$
-        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        // setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        setTitle(Messages.getString("DataTransferMessages.ArchiveExport_exportTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -1194,20 +1194,22 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected boolean ensureTargetFileIsValid(File targetFile) {
         if (targetFile.exists() && targetFile.isDirectory()) {
-            displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            // displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_mustBeFile")); //$NON-NLS-1$
             giveFocusToDestination();
             return false;
         }
 
         if (targetFile.exists()) {
             if (targetFile.canWrite()) {
-                if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                // if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                if (!queryYesNoQuestion(Messages.getString("DataTransferMessages.ZipExport_alreadyExists"))) { //$NON-NLS-1$
                     // displayErrorDialog("Please enter another destination zip file.");
                     giveFocusToDestination();
                     return false;
                 }
             } else {
-                displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_alreadyExistsError")); //$NON-NLS-1$
                 giveFocusToDestination();
                 return false;
             }
@@ -1425,7 +1427,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     @Override
     protected String getDestinationLabel() {
-        return DataTransferMessages.ArchiveExport_destinationLabel;
+        // return DataTransferMessages.ArchiveExport_destinationLabel;
+        return Messages.getString("DataTransferMessages.ArchiveExport_destinationLabel"); //$NON-NLS-1$
     }
 
     protected Map<ExportChoice, Object> getExportChoiceMap() {

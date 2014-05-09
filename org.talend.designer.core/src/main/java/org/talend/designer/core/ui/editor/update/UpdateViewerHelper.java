@@ -17,13 +17,13 @@ import java.util.List;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.IUpdateItemType;
 import org.talend.core.model.update.UpdateManagerHelper;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -322,9 +322,11 @@ public class UpdateViewerHelper {
             }
         }
         if (num == inputElements.size()) {
-            updateDialog.setSelectButtonLabel(WorkbenchMessages.SelectionDialog_deselectLabel);
+            // updateDialog.setSelectButtonLabel(WorkbenchMessages.SelectionDialog_deselectLabel);
+            updateDialog.setSelectButtonLabel(Messages.getString("WorkbenchMessages.SelectionDialog_deselectLabel")); //$NON-NLS-1$
         } else {
-            updateDialog.setSelectButtonLabel(WorkbenchMessages.SelectionDialog_selectLabel);
+            // updateDialog.setSelectButtonLabel(WorkbenchMessages.SelectionDialog_selectLabel);
+            updateDialog.setSelectButtonLabel(Messages.getString("WorkbenchMessages.SelectionDialog_selectLabel")); //$NON-NLS-1$
         }
 
     }

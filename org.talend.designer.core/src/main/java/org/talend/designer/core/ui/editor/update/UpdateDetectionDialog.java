@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
@@ -262,8 +261,11 @@ public class UpdateDetectionDialog extends SelectionDialog {
         });
         if (!isOnlySimpleShow() && canDeselect) {
             // "select all" button
-            selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.SelectionDialog_selectLabel,
-                    false);
+            // selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID,
+            // WorkbenchMessages.SelectionDialog_selectLabel,
+            // false);
+            selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID,
+                    Messages.getString("WorkbenchMessages.SelectionDialog_selectLabel"), false); //$NON-NLS-1$
             // init label;
             if (getViewerHelper() != null) {
                 getViewerHelper().refreshSelectButton();
@@ -276,7 +278,10 @@ public class UpdateDetectionDialog extends SelectionDialog {
                     if (getViewerHelper() != null) {
                         boolean state = false;
 
-                        if (!isJobReadOnly && WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
+                        // if (!isJobReadOnly &&
+                        // WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
+                        if (!isJobReadOnly && Messages.getString("WorkbenchMessages.SelectionDialog_selectLabel").equals( //$NON-NLS-1$
+                                selectButton.getText())) {
                             state = true;
                         }
                         getViewerHelper().selectAll(state);

@@ -38,12 +38,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.ide.DialogUtil;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileExportOperation;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
-import org.eclipse.ui.internal.wizards.datatransfer.IDataTransferHelpContextIds;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardArchiveFileResourceExportPage1;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -54,6 +50,7 @@ import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.i18n.Messages;
 
 /**
  * 
@@ -64,17 +61,30 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
     private ResourceTreeAndListGroup resourceGroup;
 
-    private final static String SELECT_TYPES_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectTypes;
+    // private final static String SELECT_TYPES_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectTypes;
+    private final static String SELECT_TYPES_TITLE = Messages.getString("IDEWorkbenchMessages.WizardTransferPage_selectTypes"); //$NON-NLS-1$
 
-    private final static String SELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectAll;
+    // private final static String SELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectAll;
+    private final static String SELECT_ALL_TITLE = Messages.getString("IDEWorkbenchMessages.WizardTransferPage_selectAll"); //$NON-NLS-1$
 
-    private final static String DESELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_deselectAll;
+    // private final static String DESELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_deselectAll;
+    private final static String DESELECT_ALL_TITLE = Messages.getString("IDEWorkbenchMessages.WizardTransferPage_deselectAll"); //$NON-NLS-1$
+
+    /**
+     * Constants from org.eclipse.ui.internal.wizards.datatransfer.IDataTransferHelpContextIds;
+     */
+    public class IDataTransferHelpContextIds {
+
+        public static final String ZIP_FILE_EXPORT_WIZARD_PAGE = PlatformUI.PLUGIN_ID + "." + "zip_file_export_wizard_page"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
     public TalendWizardArchiveFileResourceExportPage1(IStructuredSelection selection) {
         super(selection);
         initialResourceSelection = selection;
-        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
-        setDescription(DataTransferMessages.ArchiveExport_description);
+        // setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        setTitle(Messages.getString("DataTransferMessages.ArchiveExport_exportTitle")); //$NON-NLS-1$
+        // setDescription(DataTransferMessages.ArchiveExport_description);
+        setDescription(Messages.getString("DataTransferMessages.ArchiveExport_description")); //$NON-NLS-1$
     }
 
     public void createControl(Composite parent) {
@@ -124,10 +134,9 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
             }
         }
 
-        resourceGroup = new ResourceTreeAndListGroup(parent, input,
-                getResourceProvider(IResource.FOLDER | IResource.PROJECT),
+        resourceGroup = new ResourceTreeAndListGroup(parent, input, getResourceProvider(IResource.FOLDER | IResource.PROJECT),
                 WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE),
-                WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE, DialogUtil.inRegularFontMode(parent));
+                WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE, inRegularFontMode(parent));
 
         ICheckStateListener listener = new ICheckStateListener() {
 
@@ -138,6 +147,32 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
         resourceGroup.addCheckStateListener(listener);
 
+    }
+
+    /**
+     * Return the number of rows available in the current display using the current font.
+     * 
+     * @param parent The Composite whose Font will be queried.
+     * @return int The result of the display size divided by the font size.
+     */
+    public static int availableRows(Composite parent) {
+
+        int fontHeight = (parent.getFont().getFontData())[0].getHeight();
+        int displayHeight = parent.getDisplay().getClientArea().height;
+
+        return displayHeight / fontHeight;
+    }
+
+    /**
+     * Return whether or not the font in the parent is the size of a regular font. Typically used to know if a font is
+     * smaller than the High Contrast Font. This method is used to make layout decisions based on screen space.
+     * 
+     * @param parent The Composite whose Font will be queried.
+     * @return boolean. True if there are more than 50 lines of possible text in the display.
+     */
+    public static boolean inRegularFontMode(Composite parent) {
+
+        return availableRows(parent) > 50;
     }
 
     protected Iterator getSelectedResourcesIterator() {

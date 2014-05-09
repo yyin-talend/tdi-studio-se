@@ -29,9 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.dialogs.DialogUtil;
 import org.eclipse.ui.internal.dialogs.ExportPage;
 import org.eclipse.ui.internal.dialogs.WizardActivityFilter;
 import org.eclipse.ui.internal.dialogs.WizardCollectionElement;
@@ -41,6 +39,7 @@ import org.eclipse.ui.model.AdaptableList;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC guanglong.du class global comment. Detailled comment
@@ -67,7 +66,10 @@ public class TalendExportPage extends ExportPage {
 
     protected Composite createTreeViewer(Composite parent) {
         IWizardCategory root = WorkbenchPlugin.getDefault().getExportWizardRegistry().getRootCategory();
-        exportTree = new TalendCategorizedWizardSelectionTree(root, WorkbenchMessages.ExportWizard_selectDestination);
+        // exportTree = new TalendCategorizedWizardSelectionTree(root,
+        // WorkbenchMessages.ExportWizard_selectDestination);
+        exportTree = new TalendCategorizedWizardSelectionTree(root,
+                Messages.getString("WorkbenchMessages.ExportWizard_selectDestination")); //$NON-NLS-1$
         Composite exportComp = exportTree.createControl(parent);
         exportTree.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -91,7 +93,8 @@ public class TalendExportPage extends ExportPage {
     }
 
     protected void updateMessage() {
-        setMessage(WorkbenchMessages.ImportExportPage_chooseExportDestination);
+        // setMessage(WorkbenchMessages.ImportExportPage_chooseExportDestination);
+        setMessage(Messages.getString("WorkbenchMessages.ImportExportPage_chooseExportDestination")); //$NON-NLS-1$
         super.updateMessage();
     }
 
@@ -214,7 +217,8 @@ public class TalendExportPage extends ExportPage {
         private void layoutTopControl(Control control) {
             GridData data = new GridData(GridData.FILL_BOTH);
 
-            int availableRows = DialogUtil.availableRows(control.getParent());
+            // int availableRows = DialogUtil.availableRows(control.getParent());
+            int availableRows = TalendExportPage.availableRows(control.getParent());
 
             // Only give a height hint if the dialog is going to be too small
             if (availableRows > 50) {
@@ -226,6 +230,20 @@ public class TalendExportPage extends ExportPage {
             control.setLayoutData(data);
         }
 
+    }
+
+    /**
+     * Return the number of rows available in the current display using the current font.
+     * 
+     * @param parent The Composite whose Font will be queried.
+     * @return int The result of the display size divided by the font size.
+     */
+    public static int availableRows(Composite parent) {
+
+        int fontHeight = (parent.getFont().getFontData())[0].getHeight();
+        int displayHeight = parent.getDisplay().getClientArea().height;
+
+        return displayHeight / fontHeight;
     }
 
     /**

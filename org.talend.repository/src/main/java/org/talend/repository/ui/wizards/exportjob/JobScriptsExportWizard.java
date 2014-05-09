@@ -23,12 +23,12 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 
@@ -112,7 +112,9 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      */
     protected void populateUIMessage() {
         setWindowTitle(Messages.getString("JobScriptsExportWizard.buildJob")); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        //        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        setDefaultPageImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(IDEWorkbenchPlugin.IDE_WORKBENCH,
+                "$nl$/icons/full/wizban/exportzip_wiz.png")); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }
 

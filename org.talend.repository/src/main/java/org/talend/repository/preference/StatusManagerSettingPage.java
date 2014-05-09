@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -57,7 +58,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -934,7 +934,6 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
     }
 
-    @SuppressWarnings("restriction")
     private void updateItemsVersion() {
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
@@ -980,7 +979,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             }
         };
 
-        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
+        // final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
+        final ProgressMonitorDialog dialog = new ProgressMonitorDialog(null);
         try {
             dialog.run(false, false, runnable);
         } catch (InvocationTargetException e) {

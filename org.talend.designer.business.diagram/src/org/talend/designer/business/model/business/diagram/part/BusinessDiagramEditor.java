@@ -37,7 +37,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
-import org.eclipse.ui.internal.WorkbenchPage;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -437,7 +436,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow != null) {
 
-            WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
+            IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
             if (page != null) {
                 RepositoryEditorInput repEditorInput = (RepositoryEditorInput) editorInput
                         .getAdapter(RepositoryEditorInput.class);

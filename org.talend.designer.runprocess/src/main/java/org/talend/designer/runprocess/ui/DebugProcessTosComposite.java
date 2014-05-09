@@ -41,8 +41,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -1001,7 +999,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             ((org.talend.designer.core.ui.editor.process.Process) processContext.getProcess()).checkDifferenceWithRepository();
         }
 
-        final IPreferenceStore preferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
+        // final IPreferenceStore preferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
+        final IPreferenceStore preferenceStore = DebugUITools.getPreferenceStore();
         final boolean oldValueConsoleOnOut = preferenceStore.getBoolean(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT);
         final boolean oldValueConsoleOnErr = preferenceStore.getBoolean(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR);
 

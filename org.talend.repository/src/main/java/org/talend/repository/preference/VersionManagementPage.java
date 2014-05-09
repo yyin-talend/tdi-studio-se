@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -59,7 +60,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -1045,7 +1045,6 @@ public class VersionManagementPage extends ProjectSettingPage {
 
     }
 
-    @SuppressWarnings("restriction")
     private void updateItemsVersion() {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
@@ -1145,7 +1144,8 @@ public class VersionManagementPage extends ProjectSettingPage {
 
             }
         };
-        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
+        // final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
+        final ProgressMonitorDialog dialog = new ProgressMonitorDialog(null);
         try {
             dialog.run(false, false, iRunnableWithProgress);
         } catch (InvocationTargetException e) {

@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
@@ -1019,7 +1018,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 
-        optionsGroup.setText(IDEWorkbenchMessages.WizardExportPage_options);
+        // optionsGroup.setText(IDEWorkbenchMessages.WizardExportPage_options);
+        optionsGroup.setText(Messages.getString("IDEWorkbenchMessages.WizardExportPage_options")); //$NON-NLS-1$
         optionsGroup.setFont(parent.getFont());
 
         Font font = optionsGroup.getFont();

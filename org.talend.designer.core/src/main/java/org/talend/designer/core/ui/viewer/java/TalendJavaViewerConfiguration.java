@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.viewer.java;
 
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.text.ContentAssistPreference;
 import org.eclipse.jdt.internal.ui.text.java.ContentAssistProcessor;
 import org.eclipse.jdt.ui.text.IColorManager;
@@ -25,6 +24,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.talend.core.ui.CoreUIPlugin;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -43,7 +43,9 @@ public class TalendJavaViewerConfiguration extends JavaSourceViewerConfiguration
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
+     * @see
+     * org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer
+     * )
      */
     @Override
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
@@ -88,9 +90,12 @@ public class TalendJavaViewerConfiguration extends JavaSourceViewerConfiguration
      * @return
      */
     private IDialogSettings getSettings(String sectionName) {
-        IDialogSettings settings = JavaPlugin.getDefault().getDialogSettings().getSection(sectionName);
-        if (settings == null)
-            settings = JavaPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
+        // IDialogSettings settings = JavaPlugin.getDefault().getDialogSettings().getSection(sectionName);
+        IDialogSettings settings = CoreUIPlugin.getDefault().getDialogSettings().getSection(sectionName);
+        if (settings == null) {
+            // settings = JavaPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
+            settings = CoreUIPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
+        }
 
         return settings;
     }

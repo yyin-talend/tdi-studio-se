@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.core.CorePlugin;
@@ -145,7 +144,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     public GenerateDocAsHTMLWizardPage(IStructuredSelection selection) {
         this("generateDocAsHTMLPage1", selection); //$NON-NLS-1$
         setDescription(Messages.getString("GenerateDocAsHTMLWizardPage.generateDocAsHTML"));//$NON-NLS-1$
-        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        // setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        setTitle(Messages.getString("DataTransferMessages.ArchiveExport_exportTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -282,18 +282,21 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected boolean ensureTargetFileIsValid(File targetFile) {
         if (targetFile.exists() && targetFile.isDirectory()) {
-            displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            // displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_mustBeFile")); //$NON-NLS-1$
             giveFocusToDestination();
             return false;
         }
 
         if (targetFile.exists()) {
             if (targetFile.canWrite()) {
-                if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                // if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                if (!queryYesNoQuestion(Messages.getString("DataTransferMessages.ZipExport_alreadyExists"))) { //$NON-NLS-1$
                     return false;
                 }
             } else {
-                displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                // displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_alreadyExistsError")); //$NON-NLS-1$
                 giveFocusToDestination();
                 return false;
             }
@@ -445,7 +448,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      * @return java.lang.String
      */
     protected String getDestinationLabel() {
-        return DataTransferMessages.ArchiveExport_destinationLabel;
+        // return DataTransferMessages.ArchiveExport_destinationLabel;
+        return Messages.getString("DataTransferMessages.ArchiveExport_destinationLabel"); //$NON-NLS-1$
     }
 
     /**

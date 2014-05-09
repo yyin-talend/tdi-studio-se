@@ -45,7 +45,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.undo.CreateFileOperation;
 import org.eclipse.ui.ide.undo.DeleteResourcesOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -139,8 +138,11 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
                     continue;
                 }
 
+                // final DeleteResourcesOperation operation = new DeleteResourcesOperation(new IResource[] {
+                // libJavaFolder },
+                // IDEWorkbenchMessages.DeleteResourceAction_operationLabel, true);
                 final DeleteResourcesOperation operation = new DeleteResourcesOperation(new IResource[] { libJavaFolder },
-                        IDEWorkbenchMessages.DeleteResourceAction_operationLabel, true);
+                        Messages.getString("IDEWorkbenchMessages.DeleteResourceAction_operationLabel"), true); //$NON-NLS-1$
                 PlatformUI.getWorkbench().getOperationSupport().getOperationHistory()
                         .execute(operation, null, WorkspaceUndoUtil.getUIInfoAdapter(window.getShell()));
             }
@@ -169,8 +171,10 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
                     List<LinkTargetStore> links = map.get(project);
 
                     for (LinkTargetStore store : links) {
+                        // CreateFileOperation op = new CreateFileOperation(store.file, store.uri, null,
+                        // IDEWorkbenchMessages.WizardNewFileCreationPage_title);
                         CreateFileOperation op = new CreateFileOperation(store.file, store.uri, null,
-                                IDEWorkbenchMessages.WizardNewFileCreationPage_title);
+                                Messages.getString("IDEWorkbenchMessages.WizardNewFileCreationPage_title")); //$NON-NLS-1$
                         try {
                             PlatformUI.getWorkbench().getOperationSupport().getOperationHistory()
                                     .execute(op, monitor, WorkspaceUndoUtil.getUIInfoAdapter(window.getShell()));

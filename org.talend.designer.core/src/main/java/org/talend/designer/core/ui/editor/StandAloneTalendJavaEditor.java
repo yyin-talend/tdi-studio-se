@@ -24,7 +24,6 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -432,7 +431,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         propertyIsDirty = false;
         try {
             boolean noError = true;
-            String newName2 = newName + SuffixConstants.SUFFIX_STRING_java;
+            // String newName2 = newName + SuffixConstants.SUFFIX_STRING_java;
+            String newName2 = newName + ".java"; //$NON-NLS-1$
             if (item instanceof RoutineItem && !unit.getElementName().equals(newName2)) {
 
                 JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);

@@ -21,14 +21,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.ui.internal.intro.impl.html.IIntroHTMLConstants;
 import org.eclipse.ui.internal.intro.impl.model.IntroContentProvider;
 import org.eclipse.ui.internal.intro.impl.model.loader.ContentProviderManager;
 import org.eclipse.ui.internal.intro.impl.model.loader.IntroContentParser;
-import org.eclipse.ui.internal.intro.impl.model.util.ModelUtil;
 import org.eclipse.ui.intro.config.IIntroXHTMLContentProvider;
 import org.talend.commons.ui.html.TalendHtmlModelUtil;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.prefs.IIntroHTMLConstants;
 import org.talend.designer.components.exchange.ExchangeConstants;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.model.Category;
@@ -95,7 +94,8 @@ public class ExchangeManager {
                 NodeList nodes = dom.getElementsByTagNameNS("*", //$NON-NLS-1$
                         IntroContentProvider.TAG_CONTENT_PROVIDER);
                 // get the array version of the nodelist to work around DOM api design.
-                contentProviderElements = ModelUtil.getArray(nodes);
+                // contentProviderElements = ModelUtil.getArray(nodes);
+                contentProviderElements = TalendHtmlModelUtil.getArray(nodes);
             }
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -134,20 +134,24 @@ public class ExchangeManager {
     }
 
     private void refreshTabContent(Document dom, String ulToShow) {
-        Element elementById = ModelUtil.getElementById(dom, ContentConstants.DIV_MAIN, ModelUtil.TAG_DIV);
+        // Element elementById = ModelUtil.getElementById(dom, ContentConstants.DIV_MAIN, ModelUtil.TAG_DIV);
+        Element elementById = TalendHtmlModelUtil.getElementById(dom, ContentConstants.DIV_MAIN, TalendHtmlModelUtil.TAG_DIV);
         if (elementById != null) {
             NodeList elementsByTagName = elementById.getElementsByTagName("ul");
-            Node[] ulNodes = ModelUtil.getArray(elementsByTagName);
+            // Node[] ulNodes = ModelUtil.getArray(elementsByTagName);
+            Node[] ulNodes = TalendHtmlModelUtil.getArray(elementsByTagName);
             List uls = Arrays.asList(ContentConstants.availableUls);
             for (Node ul : ulNodes) {
                 String ulId = ((Element) ul).getAttribute(IIntroHTMLConstants.ATTRIBUTE_ID);
                 if (ulToShow != null && ulToShow.equals(ulId)) {
                     ((Element) ul).setAttribute("class", "ulblock");
                     // reset tabs
-                    Element menueUL = ModelUtil.getElementById(dom, ContentConstants.UL_MENU, "ul");
+                    // Element menueUL = ModelUtil.getElementById(dom, ContentConstants.UL_MENU, "ul");
+                    Element menueUL = TalendHtmlModelUtil.getElementById(dom, ContentConstants.UL_MENU, "ul");
                     if (menueUL != null) {
                         NodeList menues = menueUL.getElementsByTagName("li");
-                        Node[] menueNodes = ModelUtil.getArray(menues);
+                        // Node[] menueNodes = ModelUtil.getArray(menues);
+                        Node[] menueNodes = TalendHtmlModelUtil.getArray(menues);
 
                         if (ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS.equals(ulToShow)
                                 || ContentConstants.UL_EXTENSION_DETAILS.equals(ulToShow)) {
@@ -275,7 +279,8 @@ public class ExchangeManager {
 
                 Properties att = new Properties();
                 att.setProperty(IIntroHTMLConstants.ATTRIBUTE_ID, provider.getId());
-                Element contentDiv = ModelUtil.createElement(dom, ModelUtil.TAG_DIV, att);
+                // Element contentDiv = ModelUtil.createElement(dom, ModelUtil.TAG_DIV, att);
+                Element contentDiv = TalendHtmlModelUtil.createElement(dom, TalendHtmlModelUtil.TAG_DIV, att);
                 providerClass.createContent(provider.getId(), contentDiv);
                 contentProviderElement.getParentNode().replaceChild(contentDiv, contentProviderElement);
 
@@ -291,8 +296,8 @@ public class ExchangeManager {
 
     private void reinjectDynamicContent(Document dom, Element contentProviderElement) {
 
-        Element contentProviderDiv = ModelUtil.getElementById(dom,
-                contentProviderElement.getAttribute(IIntroHTMLConstants.ATTRIBUTE_ID), ModelUtil.TAG_DIV);
+        Element contentProviderDiv = TalendHtmlModelUtil.getElementById(dom,
+                contentProviderElement.getAttribute(IIntroHTMLConstants.ATTRIBUTE_ID), TalendHtmlModelUtil.TAG_DIV);
         if (contentProviderDiv != null) {
             contentProviderDiv.getParentNode().replaceChild(contentProviderElement, contentProviderDiv);
         }

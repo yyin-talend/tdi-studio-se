@@ -34,9 +34,9 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -3362,7 +3362,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
             getUpdateManager().updateAll();
-            ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+            // ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+            // .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
+            IEclipsePreferences projectPreferences = (IEclipsePreferences) Log4jPrefsSettingManager.getInstance()
                     .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
             projectPreferences.addPreferenceChangeListener(preferenceEventListener);
         }
@@ -3374,7 +3376,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.removeCommandStackEventListener(commandStackEventListener);
 
-            ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+            // ProjectPreferences projectPreferences = (ProjectPreferences) Log4jPrefsSettingManager.getInstance()
+            // .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
+            IEclipsePreferences projectPreferences = (IEclipsePreferences) Log4jPrefsSettingManager.getInstance()
                     .getLog4jPreferences(Log4jPrefsConstants.LOG4J_ENABLE_NODE, false);
             projectPreferences.removePreferenceChangeListener(preferenceEventListener);
         }

@@ -15,11 +15,10 @@ package org.talend.repository.ui.wizards.newproject.copyfromeclipse;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.WorkbenchImages;
-import org.eclipse.ui.internal.WorkbenchMessages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.ImportExportPage;
 import org.eclipse.ui.internal.dialogs.ImportExportWizard;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC guanglong.du class global comment. Detailled comment
@@ -52,8 +51,12 @@ public class TalendImportExportWizard extends ImportExportWizard {
     public void init(IWorkbench aWorkbench, IStructuredSelection currentSelection) {
         this.workbench = aWorkbench;
         this.selection = currentSelection;
-        ImageDescriptor wizardBannerImage = WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ);
-        setWindowTitle(WorkbenchMessages.ExportWizard_title);
+        // ImageDescriptor wizardBannerImage =
+        // WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ);
+        ImageDescriptor wizardBannerImage = PlatformUI.getWorkbench().getSharedImages()
+                .getImageDescriptor("IMG_WIZBAN_EXPORT_WIZ"); //$NON-NLS-1$
+        // setWindowTitle(WorkbenchMessages.ExportWizard_title);
+        setWindowTitle(Messages.getString("WorkbenchMessages.ExportWizard_title")); //$NON-NLS-1$
         if (wizardBannerImage != null) {
             setDefaultPageImageDescriptor(wizardBannerImage);
         }

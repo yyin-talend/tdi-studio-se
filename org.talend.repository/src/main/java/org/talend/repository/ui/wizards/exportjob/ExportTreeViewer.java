@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.i18n.Messages;
@@ -332,7 +331,8 @@ public class ExportTreeViewer {
         Button hide = new Button(buttonComposite, SWT.PUSH);
         hide.setVisible(false);
         Button selectAll = new Button(buttonComposite, SWT.PUSH);
-        selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        // selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        selectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_selectAll")); //$NON-NLS-1$
         selectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -343,7 +343,8 @@ public class ExportTreeViewer {
         });
 
         Button deselectAll = new Button(buttonComposite, SWT.PUSH);
-        deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        // deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        deselectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_deselectAll")); //$NON-NLS-1$
         deselectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override

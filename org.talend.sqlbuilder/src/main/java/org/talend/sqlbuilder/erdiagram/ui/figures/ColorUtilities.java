@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
+import org.eclipse.ui.editors.text.EditorsUI;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
@@ -55,7 +55,8 @@ public class ColorUtilities {
     }
 
     public static Color getColor(RGB rgb) {
-        return EditorsPlugin.getDefault().getSharedTextColors().getColor(rgb);
+        // return EditorsPlugin.getDefault().getSharedTextColors().getColor(rgb);
+        return EditorsUI.getSharedTextColors().getColor(rgb);
     }
 
     /**

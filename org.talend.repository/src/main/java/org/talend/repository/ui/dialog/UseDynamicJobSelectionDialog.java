@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.i18n.Messages;
@@ -263,7 +262,8 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonComposite);
 
         Button selectAll = new Button(buttonComposite, SWT.PUSH);
-        selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        // selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        selectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_selectAll")); //$NON-NLS-1$
         selectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -276,7 +276,8 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         setButtonLayoutData(selectAll);
 
         Button deselectAll = new Button(buttonComposite, SWT.PUSH);
-        deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        // deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        deselectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_deselectAll")); //$NON-NLS-1$
         deselectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override

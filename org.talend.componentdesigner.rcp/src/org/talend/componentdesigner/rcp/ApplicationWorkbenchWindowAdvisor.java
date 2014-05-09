@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -24,8 +23,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.internal.ide.IDEInternalPreferences;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.rcp.i18n.Messages;
@@ -39,6 +36,15 @@ import org.talend.componentdesigner.ui.ProjectSelectionDialog;
  */
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+
+    /**
+     * constant from org.eclipse.ui.internal.ide.IDEInternalPreferences;
+     */
+    public class IDEInternalPreferences {
+
+        // (boolean) Prompt for exit confirmation when last window closed.
+        public static final String EXIT_PROMPT_ON_CLOSE_LAST_WINDOW = "EXIT_PROMPT_ON_CLOSE_LAST_WINDOW"; //$NON-NLS-1$
+    }
 
     public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         super(configurer);
@@ -83,7 +89,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         ComponentDesigenerPlugin.getDefault().checkProject();
     }
 
-    @SuppressWarnings("restriction")
     public boolean preWindowShellClose() {
         if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 1) {
             return true;
@@ -96,17 +101,22 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         if (promptOnExit) {
             String message;
 
-            String productName = null;
-
-            if (productName == null) {
-                message = IDEWorkbenchMessages.PromptOnExitDialog_message0;
-            } else {
-                message = NLS.bind(IDEWorkbenchMessages.PromptOnExitDialog_message1, productName);
-            }
+            // String productName = null;
+            //
+            // if (productName == null) {
+            // // message = IDEWorkbenchMessages.PromptOnExitDialog_message0;
+            // message = Messages.getString("ApplicationWorkbenchWindowAdvisor.PromptOnExitDialog_message0");
+            // }
+            // else {
+            // // message = NLS.bind(IDEWorkbenchMessages.PromptOnExitDialog_message1, productName);
+            // message = Messages.getString("ApplicationWorkbenchWindowAdvisor.PromptOnExitDialog_message1",
+            // new Object[] { productName });
+            // }
+            message = Messages.getString("ApplicationWorkbenchWindowAdvisor.PromptOnExitDialog_message0"); //$NON-NLS-1$
 
             MessageDialogWithToggle dlg = MessageDialogWithToggle.openOkCancelConfirm(getWindowConfigurer().getWindow()
-                    .getShell(), IDEWorkbenchMessages.PromptOnExitDialog_shellTitle, message,
-                    IDEWorkbenchMessages.PromptOnExitDialog_choice, false, null, null);
+                    .getShell(), Messages.getString("ApplicationWorkbenchWindowAdvisor.PromptOnExitDialog_shellTitle"), message, //$NON-NLS-1$
+                    Messages.getString("ApplicationWorkbenchWindowAdvisor.PromptOnExitDialog_choice"), false, null, null); //$NON-NLS-1$
             if (dlg.getReturnCode() != IDialogConstants.OK_ID) {
                 return false;
             }

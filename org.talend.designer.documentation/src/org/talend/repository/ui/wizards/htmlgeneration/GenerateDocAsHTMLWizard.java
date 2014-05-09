@@ -11,6 +11,7 @@
 //
 // ============================================================================
 package org.talend.repository.ui.wizards.htmlgeneration;
+
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
@@ -22,8 +23,8 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -71,7 +72,9 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
         }
 
         setWindowTitle(Messages.getString("GenerateDocAsHTMLWizard.GenerateDocumentation")); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        //        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        setDefaultPageImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(IDEWorkbenchPlugin.IDE_WORKBENCH,
+                "$nl$/icons/full/wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }
 

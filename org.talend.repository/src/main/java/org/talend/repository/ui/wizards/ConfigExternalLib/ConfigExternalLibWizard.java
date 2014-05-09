@@ -15,10 +15,11 @@ package org.talend.repository.ui.wizards.ConfigExternalLib;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -65,8 +66,9 @@ public class ConfigExternalLibWizard extends Wizard {
      */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         this.selection = currentSelection;
-
-        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        //        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        setDefaultPageImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(IDEWorkbenchPlugin.IDE_WORKBENCH,
+                "$nl$/icons/full/wizban/exportzip_wiz.png")); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }
 

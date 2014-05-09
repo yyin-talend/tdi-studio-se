@@ -13,8 +13,8 @@
 package org.talend.designer.core.ui.views.problems;
 
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Problem;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -88,8 +88,10 @@ public class ProblemCategory extends Problem {
     public String getDescription() {
         int size = getChildren().length;
         if (size == 1) {
-            return NLS.bind(MarkerMessages.Category_One_Item_Label, new Object[] { name });
+            // return NLS.bind(MarkerMessages.Category_One_Item_Label, new Object[] { name });
+            return NLS.bind(Messages.getString("MarkerMessages.Category_One_Item_Label"), new Object[] { name }); //$NON-NLS-1$
         }
-        return NLS.bind(MarkerMessages.Category_Label, new Object[] { name, String.valueOf(size) });
+        // return NLS.bind(MarkerMessages.Category_Label, new Object[] { name, String.valueOf(size) });
+        return NLS.bind(Messages.getString("MarkerMessages.Category_Label"), new Object[] { name, String.valueOf(size) }); //$NON-NLS-1$
     }
 }

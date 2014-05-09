@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jdt.internal.ui.workingsets.WorkingSetMessages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -196,13 +195,17 @@ public class JobVMArgumentsComposite {
     }
 
     protected void createButtons(Composite box) {
-        addButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_new_label);
+        // addButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_new_label);
+        addButton = createPushButton(box, Messages.getString("WorkingSetConfigurationDialog_new_label")); //$NON-NLS-1$
         addButton.setEnabled(false);
-        removeButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_remove_label);
+        // removeButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_remove_label);
+        removeButton = createPushButton(box, Messages.getString("WorkingSetConfigurationDialog_remove_label")); //$NON-NLS-1$
         removeButton.setEnabled(false);
-        upButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_up_label);
+        // upButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_up_label);
+        upButton = createPushButton(box, Messages.getString("WorkingSetConfigurationDialog_up_label")); //$NON-NLS-1$
         upButton.setEnabled(false);
-        downButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_down_label);
+        // downButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_down_label);
+        downButton = createPushButton(box, Messages.getString("WorkingSetConfigurationDialog_down_label")); //$NON-NLS-1$
         downButton.setEnabled(false);
     }
 

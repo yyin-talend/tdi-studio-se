@@ -68,7 +68,6 @@ import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.internal.ui.palette.editparts.ToolEntryEditPart;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.ToolEntry;
@@ -344,7 +343,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             } else if (entry instanceof ToolEntry) {
                 ToolEntry paletteEntry = (ToolEntry) entry;
                 if (paletteEntry.getLabel().equals(componentName)) {
-                    ToolEntryEditPart part = getToolEntryEditPart(paletteViewer, paletteEntry);
+                    EditPart part = getToolEntryEditPart(paletteViewer, paletteEntry);
                     expandPaletteDrawer(paletteViewer, paletteEntry);
                     // paletteViewer.setSelection(new StructuredSelection(part));
                     // paletteViewer.setFocus(part);
@@ -381,8 +380,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
     }
 
-    private ToolEntryEditPart getToolEntryEditPart(PaletteViewer paletteViewer, ToolEntry entry) {
-        return (ToolEntryEditPart) paletteViewer.getEditPartRegistry().get(entry);
+    private EditPart getToolEntryEditPart(PaletteViewer paletteViewer, ToolEntry entry) {
+        return (EditPart) paletteViewer.getEditPartRegistry().get(entry);
     }
 
     public void savePaletteState() {

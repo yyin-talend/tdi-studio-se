@@ -27,7 +27,6 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -229,14 +228,17 @@ public class EditPropertiesAction extends AContextualAction {
             // update for fix [TESB-6784]
             IPackageFragment routinesPkg = getPackageFragment(root, node);
 
-            ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
+            // ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName +
+            // SuffixConstants.SUFFIX_STRING_java);
+            ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + ".java"); //$NON-NLS-1$
             if (unit == null) {
                 return;
             }
             String newName = node.getObject().getProperty().getLabel();
 
             JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
-            processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
+            // processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
+            processor.setNewElementName(newName + ".java"); //$NON-NLS-1$
             RenameRefactoring ref = new RenameRefactoring(processor);
             final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
                     CheckConditionsOperation.ALL_CONDITIONS);
@@ -277,7 +279,8 @@ public class EditPropertiesAction extends AContextualAction {
                 return;
             }
 
-            ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName + SuffixConstants.SUFFIX_STRING_java);
+            // ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName + SuffixConstants.SUFFIX_STRING_java);
+            ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName + ".java"); //$NON-NLS-1$
             if (newUnit == null) {
                 return;
             }

@@ -28,6 +28,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -218,14 +219,27 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         ILaunchConfiguration configuration = getLastLaunch();
 
         if (configuration == null) {
+            // MessageDialog
+            // .openInformation(
+            // DebugUIPlugin.getShell(),
+            //                            Messages.getString("TalendLaunchToolbarAction.information"), Messages.getString("TalendLaunchToolbarAction.noAvailableItem")); //$NON-NLS-1$ //$NON-NLS-2$
             MessageDialog
                     .openInformation(
-                            DebugUIPlugin.getShell(),
+                            getShell(),
                             Messages.getString("TalendLaunchToolbarAction.information"), Messages.getString("TalendLaunchToolbarAction.noAvailableItem")); //$NON-NLS-1$ //$NON-NLS-2$
+
             // DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), new StructuredSelection(),
             // getLaunchGroupIdentifier());
         } else {
             DebugUITools.launch(configuration, getMode());
+        }
+    }
+
+    private Shell getShell() {
+        if (window == null) {
+            return new Shell();
+        } else {
+            return window.getShell();
         }
     }
 

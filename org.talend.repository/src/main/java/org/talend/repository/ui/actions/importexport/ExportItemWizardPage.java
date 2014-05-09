@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -60,11 +62,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.WorkbenchImages;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 import org.eclipse.ui.navigator.INavigatorContentService;
 import org.talend.commons.CommonsPlugin;
@@ -148,7 +146,8 @@ public class ExportItemWizardPage extends WizardPage {
         this.selection = selection;
         this.baseViewId = baseViewId;
         setDescription(Messages.getString("ExportItemWizardPage.description")); //$NON-NLS-1$
-        setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ));
+        // setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ));
+        setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor("IMG_WIZBAN_EXPORT_WIZ")); //$NON-NLS-1$
 
         TimeMeasure.display = CommonsPlugin.isDebugMode();
         TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
@@ -552,7 +551,8 @@ public class ExportItemWizardPage extends WizardPage {
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonComposite);
 
         Button selectAll = new Button(buttonComposite, SWT.PUSH);
-        selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        // selectAll.setText(DataTransferMessages.DataTransfer_selectAll);
+        selectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_selectAll")); //$NON-NLS-1$
         selectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -565,7 +565,8 @@ public class ExportItemWizardPage extends WizardPage {
         setButtonLayoutData(selectAll);
 
         Button deselectAll = new Button(buttonComposite, SWT.PUSH);
-        deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        // deselectAll.setText(DataTransferMessages.DataTransfer_deselectAll);
+        deselectAll.setText(Messages.getString("DataTransferMessages.DataTransfer_deselectAll")); //$NON-NLS-1$
         deselectAll.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -613,7 +614,8 @@ public class ExportItemWizardPage extends WizardPage {
         projectGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         itemFromDirectoryRadio = new Button(projectGroup, SWT.RADIO);
-        itemFromDirectoryRadio.setText(DataTransferMessages.WizardProjectsImportPage_RootSelectTitle);
+        // itemFromDirectoryRadio.setText(DataTransferMessages.WizardProjectsImportPage_RootSelectTitle);
+        itemFromDirectoryRadio.setText(Messages.getString("DataTransferMessages.WizardProjectsImportPage_RootSelectTitle")); //$NON-NLS-1$
 
         this.directoryPathField = new Text(projectGroup, SWT.BORDER);
 
@@ -625,12 +627,14 @@ public class ExportItemWizardPage extends WizardPage {
         }
 
         browseDirectoriesButton = new Button(projectGroup, SWT.PUSH);
-        browseDirectoriesButton.setText(DataTransferMessages.DataTransfer_browse);
+        // browseDirectoriesButton.setText(DataTransferMessages.DataTransfer_browse);
+        browseDirectoriesButton.setText(Messages.getString("DataTransferMessages.DataTransfer_browse")); //$NON-NLS-1$
         setButtonLayoutData(browseDirectoriesButton);
 
         // new project from archive radio button
         itemFromArchiveRadio = new Button(projectGroup, SWT.RADIO);
-        itemFromArchiveRadio.setText(DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle);
+        // itemFromArchiveRadio.setText(DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle);
+        itemFromArchiveRadio.setText(Messages.getString("DataTransferMessages.WizardProjectsImportPage_ArchiveSelectTitle")); //$NON-NLS-1$
 
         // project location entry field
         archivePathField = new Text(projectGroup, SWT.BORDER);
@@ -666,7 +670,8 @@ public class ExportItemWizardPage extends WizardPage {
 
         // browse button
         browseArchivesButton = new Button(projectGroup, SWT.PUSH);
-        browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
+        // browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
+        browseArchivesButton.setText(Messages.getString("DataTransferMessages.DataTransfer_browse")); //$NON-NLS-1$
         setButtonLayoutData(browseArchivesButton);
 
         itemFromDirectoryRadio.setSelection(true);
@@ -868,7 +873,8 @@ public class ExportItemWizardPage extends WizardPage {
             }
 
         };
-        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+        // final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+        final ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
         try {
             dialog.run(true, true, runnable);
         } catch (InvocationTargetException e) {
@@ -890,11 +896,11 @@ public class ExportItemWizardPage extends WizardPage {
         }
     }
 
-    @SuppressWarnings("restriction")
     protected void handleLocationDirectoryButtonPressed() {
 
         DirectoryDialog dialog = new DirectoryDialog(directoryPathField.getShell());
-        dialog.setMessage(DataTransferMessages.FileExport_selectDestinationTitle);
+        // dialog.setMessage(DataTransferMessages.FileExport_selectDestinationTitle);
+        dialog.setMessage(Messages.getString("DataTransferMessages.FileExport_selectDestinationTitle")); //$NON-NLS-1$
 
         String dirName = directoryPathField.getText().trim();
         if (dirName.length() == 0) {
@@ -902,7 +908,8 @@ public class ExportItemWizardPage extends WizardPage {
         }
 
         if (dirName.length() == 0) {
-            dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            // dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
         } else {
             File path = new File(dirName);
             if (path.exists()) {
@@ -924,12 +931,12 @@ public class ExportItemWizardPage extends WizardPage {
     /**
      * The browse button has been selected. Select the location.
      */
-    @SuppressWarnings("restriction")
     protected void handleLocationArchiveButtonPressed() {
 
         FileDialog dialog = new FileDialog(archivePathField.getShell(), SWT.SAVE);
         dialog.setFilterExtensions(FILE_EXPORT_MASK);
-        dialog.setText(DataTransferMessages.ArchiveExport_selectDestinationTitle);
+        // dialog.setText(DataTransferMessages.ArchiveExport_selectDestinationTitle);
+        dialog.setText(Messages.getString("DataTransferMessages.ArchiveExport_selectDestinationTitle")); //$NON-NLS-1$
 
         String fileName = archivePathField.getText().trim();
         if (fileName.length() == 0) {
@@ -937,7 +944,8 @@ public class ExportItemWizardPage extends WizardPage {
         }
 
         if (fileName.length() == 0) {
-            dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            // dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
+            dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
         } else {
             File path = new File(fileName);
             if (path.exists()) {

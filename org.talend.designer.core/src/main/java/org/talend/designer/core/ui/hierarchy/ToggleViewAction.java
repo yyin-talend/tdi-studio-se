@@ -14,8 +14,8 @@ package org.talend.designer.core.ui.hierarchy;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.internal.ui.JavaPluginImages;
-import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
 import org.eclipse.jface.action.Action;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.IJobHierarchyViewPart;
 
 /**
@@ -30,19 +30,28 @@ public class ToggleViewAction extends Action {
     public ToggleViewAction(IJobHierarchyViewPart v, int viewerIndex) {
         super("", AS_RADIO_BUTTON); //$NON-NLS-1$
         if (viewerIndex == IJobHierarchyViewPart.HIERARCHY_MODE_SUPERTYPES) {
-            setText(TypeHierarchyMessages.ToggleViewAction_supertypes_label);
-            setDescription(TypeHierarchyMessages.ToggleViewAction_supertypes_description);
-            setToolTipText(TypeHierarchyMessages.ToggleViewAction_supertypes_tooltip);
+            // setText(TypeHierarchyMessages.ToggleViewAction_supertypes_label);
+            setText(Messages.getString("ToggleViewAction_supertypes_label")); //$NON-NLS-1$
+            // setDescription(TypeHierarchyMessages.ToggleViewAction_supertypes_description);
+            setDescription(Messages.getString("ToggleViewAction_supertypes_description")); //$NON-NLS-1$
+            // setToolTipText(TypeHierarchyMessages.ToggleViewAction_supertypes_tooltip);
+            setToolTipText(Messages.getString("ToggleViewAction_supertypes_tooltip")); //$NON-NLS-1$
             JavaPluginImages.setLocalImageDescriptors(this, "super_co.gif"); //$NON-NLS-1$
         } else if (viewerIndex == IJobHierarchyViewPart.HIERARCHY_MODE_SUBTYPES) {
-            setText(TypeHierarchyMessages.ToggleViewAction_subtypes_label);
-            setDescription(TypeHierarchyMessages.ToggleViewAction_subtypes_description);
-            setToolTipText(TypeHierarchyMessages.ToggleViewAction_subtypes_tooltip);
+            // setText(TypeHierarchyMessages.ToggleViewAction_subtypes_label);
+            setText(Messages.getString("ToggleViewAction_subtypes_label")); //$NON-NLS-1$
+            // setDescription(TypeHierarchyMessages.ToggleViewAction_subtypes_description);
+            setDescription(Messages.getString("ToggleViewAction_subtypes_description")); //$NON-NLS-1$
+            // setToolTipText(TypeHierarchyMessages.ToggleViewAction_subtypes_tooltip);
+            setToolTipText(Messages.getString("ToggleViewAction_subtypes_tooltip")); //$NON-NLS-1$
             JavaPluginImages.setLocalImageDescriptors(this, "sub_co.gif"); //$NON-NLS-1$
         } else if (viewerIndex == IJobHierarchyViewPart.HIERARCHY_MODE_CLASSIC) {
-            setText(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_label);
-            setDescription(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_description);
-            setToolTipText(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_tooltip);
+            // setText(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_label);
+            setText(Messages.getString("ToggleViewAction_vajhierarchy_label")); //$NON-NLS-1$
+            // setDescription(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_description);
+            setDescription(Messages.getString("ToggleViewAction_vajhierarchy_description")); //$NON-NLS-1$
+            // setToolTipText(TypeHierarchyMessages.ToggleViewAction_vajhierarchy_tooltip);
+            setToolTipText(Messages.getString("ToggleViewAction_vajhierarchy_tooltip")); //$NON-NLS-1$
             JavaPluginImages.setLocalImageDescriptors(this, "hierarchy_co.gif"); //$NON-NLS-1$
         } else {
             Assert.isTrue(false);

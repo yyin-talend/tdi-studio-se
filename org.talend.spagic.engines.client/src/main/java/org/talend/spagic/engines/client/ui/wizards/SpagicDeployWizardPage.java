@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -301,18 +300,21 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      */
     protected boolean ensureTargetFileIsValid(File targetFile) {
         if (targetFile.exists() && targetFile.isDirectory()) {
-            displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            // displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_mustBeFile")); //$NON-NLS-1$
             giveFocusToDestination();
             return false;
         }
 
         if (targetFile.exists()) {
             if (targetFile.canWrite()) {
-                if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                // if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                if (!queryYesNoQuestion(Messages.getString("DataTransferMessages.ZipExport_alreadyExists"))) { //$NON-NLS-1$
                     return false;
                 }
             } else {
-                displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                // displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_alreadyExistsError")); //$NON-NLS-1$
                 giveFocusToDestination();
                 return false;
             }

@@ -18,7 +18,6 @@ import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchShortcutExtension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -27,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.talend.repository.ui.views.IJobSettingsView;
 
 /**
@@ -54,7 +54,8 @@ public class TalendLaunchShortcutAction extends Action {
      * @see IAction#run()
      */
     public void run() {
-        IWorkbenchWindow wb = DebugUIPlugin.getActiveWorkbenchWindow();
+        // IWorkbenchWindow wb = DebugUIPlugin.getActiveWorkbenchWindow();
+        IWorkbenchWindow wb = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (wb != null) {
             IWorkbenchPage page = wb.getActivePage();
             if (page != null) {
@@ -81,7 +82,8 @@ public class TalendLaunchShortcutAction extends Action {
      * static.
      */
     private void updateEnablement() {
-        IWorkbenchWindow wb = DebugUIPlugin.getActiveWorkbenchWindow();
+        // IWorkbenchWindow wb = DebugUIPlugin.getActiveWorkbenchWindow();
+        IWorkbenchWindow wb = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         boolean enabled = false;
         if (wb != null) {
             IWorkbenchPage page = wb.getActivePage();

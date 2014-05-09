@@ -23,9 +23,9 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.sbi.engines.client.i18n.Messages;
 
 /**
@@ -81,7 +81,9 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
         }
 
         setWindowTitle(Messages.getString("PublishOnSpagoExportWizard.publishJob")); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        //        setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
+        setDefaultPageImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(IDEWorkbenchPlugin.IDE_WORKBENCH,
+                "$nl$/icons/full/wizban/exportzip_wiz.png")); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }
 

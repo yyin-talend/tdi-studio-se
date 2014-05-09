@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -43,12 +42,12 @@ import org.talend.designer.core.utils.DesignerUtilities;
  */
 public class OpenJobHierarchyAction extends SelectionAction {
 
-    private JavaEditor fEditor;
+    // private JavaEditor fEditor;
 
     /**
      * Creates a new <code>OpenJobHierarchyAction</code>. The action requires that the selection provided by the site's
      * selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
+     * org.eclipse.jface.viewers.IStructuredSelection</code>.
      * 
      * @param site the site providing context information for this action
      */

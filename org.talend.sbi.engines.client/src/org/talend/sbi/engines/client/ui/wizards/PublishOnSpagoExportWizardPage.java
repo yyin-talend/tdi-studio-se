@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -162,7 +161,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
     public PublishOnSpagoExportWizardPage(IStructuredSelection selection) {
         this("publishOnSpagoExportPage1", selection); //$NON-NLS-1$
         setDescription(Messages.getString("PublishOnSpagoExportWizardPage.publishJob")); //$NON-NLS-1$
-        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        // setTitle(DataTransferMessages.ArchiveExport_exportTitle);
+        setTitle(Messages.getString("DataTransferMessages.ArchiveExport_exportTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -298,14 +298,16 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected boolean ensureTargetFileIsValid(File targetFile) {
         if (targetFile.exists() && targetFile.isDirectory()) {
-            displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            // displayErrorDialog(DataTransferMessages.ZipExport_mustBeFile);
+            displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_mustBeFile")); //$NON-NLS-1$
             giveFocusToDestination();
             return false;
         }
 
         if (targetFile.exists()) {
             if (!targetFile.canWrite()) {
-                displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                // displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
+                displayErrorDialog(Messages.getString("DataTransferMessages.ZipExport_alreadyExistsError")); //$NON-NLS-1$
                 giveFocusToDestination();
                 return false;
             }
@@ -540,7 +542,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      * @return java.lang.String
      */
     protected String getDestinationLabel() {
-        return DataTransferMessages.ArchiveExport_destinationLabel;
+        // return DataTransferMessages.ArchiveExport_destinationLabel;
+        return Messages.getString("DataTransferMessages.ArchiveExport_destinationLabel"); //$NON-NLS-1$
     }
 
     /**

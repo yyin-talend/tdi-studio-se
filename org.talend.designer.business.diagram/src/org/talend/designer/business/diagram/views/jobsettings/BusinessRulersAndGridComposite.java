@@ -15,15 +15,14 @@ package org.talend.designer.business.diagram.views.jobsettings;
 import java.text.ParseException;
 
 import org.eclipse.gmf.runtime.common.core.util.StringStatics;
-import org.eclipse.gmf.runtime.diagram.ui.internal.properties.WorkspaceViewerProperties;
 import org.eclipse.gmf.runtime.diagram.ui.l10n.DiagramUIMessages;
 import org.eclipse.gmf.runtime.diagram.ui.parts.DiagramEditor;
 import org.eclipse.gmf.runtime.diagram.ui.parts.DiagramGraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.parts.IDiagramWorkbenchPart;
 import org.eclipse.gmf.runtime.diagram.ui.preferences.IPreferenceConstants;
 import org.eclipse.gmf.runtime.diagram.ui.properties.internal.l10n.DiagramUIPropertiesImages;
-import org.eclipse.gmf.runtime.diagram.ui.properties.internal.l10n.DiagramUIPropertiesMessages;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.appearance.ColorPalettePopup;
+import org.eclipse.gmf.runtime.diagram.ui.properties.sections.grid.RulerGridPropertySection;
 import org.eclipse.gmf.runtime.diagram.ui.properties.views.TextChangeHelper;
 import org.eclipse.gmf.runtime.draw2d.ui.figures.FigureUtilities;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -58,6 +57,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 
 import com.ibm.icu.text.NumberFormat;
@@ -90,51 +90,75 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
     private Button lineColorButton;
 
     // Labels
-    private static final String GRID_ON_LABEL = DiagramUIPropertiesMessages.Grid_On_Label_Text;
+    // private static final String GRID_ON_LABEL = DiagramUIPropertiesMessages.Grid_On_Label_Text;
+    private static final String GRID_ON_LABEL = Messages.getString("BusinessRulersAndGridComposite.Grid_On_Label_Text"); //$NON-NLS-1$
 
-    private static final String GRID_LEVEL_LABEL = DiagramUIPropertiesMessages.Grid_Level_Label_Text;
+    // private static final String GRID_LEVEL_LABEL = DiagramUIPropertiesMessages.Grid_Level_Label_Text;
+    private static final String GRID_LEVEL_LABEL = Messages.getString("BusinessRulersAndGridComposite.Grid_Level_Label_Text"); //$NON-NLS-1$
 
-    private static final String SNAP_TO_GRID_LABEL = DiagramUIPropertiesMessages.Snap_To_Grid_Label_Text;
+    // private static final String SNAP_TO_GRID_LABEL = DiagramUIPropertiesMessages.Snap_To_Grid_Label_Text;
+    private static final String SNAP_TO_GRID_LABEL = Messages.getString("BusinessRulersAndGridComposite.Snap_To_Grid_Label_Text"); //$NON-NLS-1$
 
-    private static final String SNAP_TO_GEOMETRY_LABEL = DiagramUIPropertiesMessages.Snap_To_Geometry_Label_Text;
+    // private static final String SNAP_TO_GEOMETRY_LABEL = DiagramUIPropertiesMessages.Snap_To_Geometry_Label_Text;
+    private static final String SNAP_TO_GEOMETRY_LABEL = Messages
+            .getString("BusinessRulersAndGridComposite.Snap_To_Geometry_Label_Text"); //$NON-NLS-1$
 
-    private static final String RULER_ON_LABEL = DiagramUIPropertiesMessages.Ruler_On_Label_Text;
+    // private static final String RULER_ON_LABEL = DiagramUIPropertiesMessages.Ruler_On_Label_Text;
+    private static final String RULER_ON_LABEL = Messages.getString("BusinessRulersAndGridComposite.Ruler_On_Label_Text"); //$NON-NLS-1$
 
-    private static final String RULER_UNITS_LABEL = DiagramUIPropertiesMessages.Ruler_Units_Label_Text;
+    // private static final String RULER_UNITS_LABEL = DiagramUIPropertiesMessages.Ruler_Units_Label_Text;
+    private static final String RULER_UNITS_LABEL = Messages.getString("BusinessRulersAndGridComposite.Ruler_Units_Label_Text"); //$NON-NLS-1$
 
-    private static final String GRID_SPACING_LABEL = DiagramUIPropertiesMessages.Grid_Spacing_Label_Text;
+    // private static final String GRID_SPACING_LABEL = DiagramUIPropertiesMessages.Grid_Spacing_Label_Text;
+    private static final String GRID_SPACING_LABEL = Messages.getString("BusinessRulersAndGridComposite.Grid_Spacing_Label_Text"); //$NON-NLS-1$
 
-    private static final String VISIBILITY_LABEL = DiagramUIPropertiesMessages.Display_Group_Label_Text;
+    // private static final String VISIBILITY_LABEL = DiagramUIPropertiesMessages.Display_Group_Label_Text;
+    private static final String VISIBILITY_LABEL = Messages.getString("BusinessRulersAndGridComposite.Display_Group_Label_Text"); //$NON-NLS-1$
 
-    private static final String MEASUREMENT_LABEL = DiagramUIPropertiesMessages.Measurement_Group_Label_Text;
+    // private static final String MEASUREMENT_LABEL = DiagramUIPropertiesMessages.Measurement_Group_Label_Text;
+    private static final String MEASUREMENT_LABEL = Messages
+            .getString("BusinessRulersAndGridComposite.Measurement_Group_Label_Text"); //$NON-NLS-1$
 
-    private static final String GRIDLINE_LABEL = DiagramUIPropertiesMessages.Gridline_Group_Label_Text;
+    // private static final String GRIDLINE_LABEL = DiagramUIPropertiesMessages.Gridline_Group_Label_Text;
+    private static final String GRIDLINE_LABEL = Messages.getString("BusinessRulersAndGridComposite.Gridline_Group_Label_Text"); //$NON-NLS-1$
 
-    private static final String LINE_COLOR_LABEL = DiagramUIPropertiesMessages.Line_Color_Label_Text;
+    // private static final String LINE_COLOR_LABEL = DiagramUIPropertiesMessages.Line_Color_Label_Text;
+    private static final String LINE_COLOR_LABEL = Messages.getString("BusinessRulersAndGridComposite.Line_Color_Label_Text"); //$NON-NLS-1$
 
-    private static final String LINE_STYLE_LABEL = DiagramUIPropertiesMessages.Line_Style_Label_Text;
+    // private static final String LINE_STYLE_LABEL = DiagramUIPropertiesMessages.Line_Style_Label_Text;
+    private static final String LINE_STYLE_LABEL = Messages.getString("BusinessRulersAndGridComposite.Line_Style_Label_Text"); //$NON-NLS-1$
 
-    private static final String RESTORE_LABEL = DiagramUIPropertiesMessages.Restore_Defaults_Label_Text;
+    // private static final String RESTORE_LABEL = DiagramUIPropertiesMessages.Restore_Defaults_Label_Text;
+    private static final String RESTORE_LABEL = Messages.getString("BusinessRulersAndGridComposite.Restore_Defaults_Label_Text"); //$NON-NLS-1$
 
     // Unit labels
-    private static final String INCHES_LABEL = DiagramUIPropertiesMessages.Inches_Label_Text;
+    // private static final String INCHES_LABEL = DiagramUIPropertiesMessages.Inches_Label_Text;
+    private static final String INCHES_LABEL = Messages.getString("BusinessRulersAndGridComposite.Inches_Label_Text"); //$NON-NLS-1$
 
-    private static final String CENTIMETERS_LABEL = DiagramUIPropertiesMessages.Centimeters_Label_Text;
+    // private static final String CENTIMETERS_LABEL = DiagramUIPropertiesMessages.Centimeters_Label_Text;
+    private static final String CENTIMETERS_LABEL = Messages.getString("BusinessRulersAndGridComposite.Centimeters_Label_Text"); //$NON-NLS-1$
 
-    private static final String PIXEL_LABEL = DiagramUIPropertiesMessages.Pixel_Label_Text;
+    // private static final String PIXEL_LABEL = DiagramUIPropertiesMessages.Pixel_Label_Text;
+    private static final String PIXEL_LABEL = Messages.getString("BusinessRulersAndGridComposite.Pixel_Label_Text"); //$NON-NLS-1$
 
     // Line Style labels
-    private static final String SOLID_LABEL = DiagramUIPropertiesMessages.Solid_Label_Text;
+    // private static final String SOLID_LABEL = DiagramUIPropertiesMessages.Solid_Label_Text;
+    private static final String SOLID_LABEL = Messages.getString("BusinessRulersAndGridComposite.Solid_Label_Text"); //$NON-NLS-1$
 
-    private static final String DASH_LABEL = DiagramUIPropertiesMessages.Dash_Label_Text;
+    // private static final String DASH_LABEL = DiagramUIPropertiesMessages.Dash_Label_Text;
+    private static final String DASH_LABEL = Messages.getString("BusinessRulersAndGridComposite.Dash_Label_Text"); //$NON-NLS-1$
 
-    private static final String DOT_LABEL = DiagramUIPropertiesMessages.Dot_Label_Text;
+    // private static final String DOT_LABEL = DiagramUIPropertiesMessages.Dot_Label_Text;
+    private static final String DOT_LABEL = Messages.getString("BusinessRulersAndGridComposite.Dot_Label_Text"); //$NON-NLS-1$
 
-    private static final String DASH_DOT_LABEL = DiagramUIPropertiesMessages.Dash_Dot_Label_Text;
+    // private static final String DASH_DOT_LABEL = DiagramUIPropertiesMessages.Dash_Dot_Label_Text;
+    private static final String DASH_DOT_LABEL = Messages.getString("BusinessRulersAndGridComposite.Dash_Dot_Label_Text"); //$NON-NLS-1$
 
-    private static final String DASH_DOT_DOT_LABEL = DiagramUIPropertiesMessages.Dash_Dot_Dot_Label_Text;
+    // private static final String DASH_DOT_DOT_LABEL = DiagramUIPropertiesMessages.Dash_Dot_Dot_Label_Text;
+    private static final String DASH_DOT_DOT_LABEL = Messages.getString("BusinessRulersAndGridComposite.Dash_Dot_Dot_Label_Text"); //$NON-NLS-1$
 
-    private static final String SPACED_DOT_LABEL = DiagramUIPropertiesMessages.Spaced_Dot_Label_Text;
+    // private static final String SPACED_DOT_LABEL = DiagramUIPropertiesMessages.Spaced_Dot_Label_Text;
+    private static final String SPACED_DOT_LABEL = Messages.getString("BusinessRulersAndGridComposite.Spaced_Dot_Label_Text"); //$NON-NLS-1$
 
     // Default color for the grid.
     private static final int LIGHT_GRAY_RGB = 12632256;
@@ -173,7 +197,8 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
     public BusinessRulersAndGridComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
             IRepositoryObject obj) {
         super(parent, style, widgetFactory, null);
-
+        // TabbedPropertySheetPage r = widgetFactory.;
+        RulerGridPropertySection rg;
         FormLayout layout = new FormLayout();
         setLayout(layout);
 
@@ -313,7 +338,7 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
                 IPreferenceStore preferenceStore = getPreferenceStore();
 
                 // The workspace properties will always exist because it is set
-                // 
+                //
                 IPreferenceStore wsPrefStore = getWorkspaceViewerProperties();
 
                 if (wsPrefStore.getBoolean(WorkspaceViewerProperties.GRIDORDER) == false) {
@@ -327,32 +352,32 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
                 }
                 if (wsPrefStore.getBoolean(WorkspaceViewerProperties.VIEWRULERS) != preferenceStore
                         .getBoolean(IPreferenceConstants.PREF_SHOW_RULERS)) {
-                    wsPrefStore.setValue(WorkspaceViewerProperties.VIEWRULERS, preferenceStore
-                            .getBoolean(IPreferenceConstants.PREF_SHOW_RULERS));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.VIEWRULERS,
+                            preferenceStore.getBoolean(IPreferenceConstants.PREF_SHOW_RULERS));
                 }
                 if (wsPrefStore.getBoolean(WorkspaceViewerProperties.VIEWGRID) != preferenceStore
                         .getBoolean(IPreferenceConstants.PREF_SHOW_GRID)) {
-                    wsPrefStore.setValue(WorkspaceViewerProperties.VIEWGRID, preferenceStore
-                            .getBoolean(IPreferenceConstants.PREF_SHOW_GRID));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.VIEWGRID,
+                            preferenceStore.getBoolean(IPreferenceConstants.PREF_SHOW_GRID));
                 }
                 if (wsPrefStore.getBoolean(WorkspaceViewerProperties.SNAPTOGRID) != preferenceStore
                         .getBoolean(IPreferenceConstants.PREF_SNAP_TO_GRID)) {
-                    wsPrefStore.setValue(WorkspaceViewerProperties.SNAPTOGRID, preferenceStore
-                            .getBoolean(IPreferenceConstants.PREF_SNAP_TO_GRID));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.SNAPTOGRID,
+                            preferenceStore.getBoolean(IPreferenceConstants.PREF_SNAP_TO_GRID));
                 }
                 if (wsPrefStore.getBoolean(WorkspaceViewerProperties.SNAPTOGEOMETRY) != preferenceStore
                         .getBoolean(IPreferenceConstants.PREF_SNAP_TO_GEOMETRY)) {
-                    wsPrefStore.setValue(WorkspaceViewerProperties.SNAPTOGEOMETRY, preferenceStore
-                            .getBoolean(IPreferenceConstants.PREF_SNAP_TO_GEOMETRY));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.SNAPTOGEOMETRY,
+                            preferenceStore.getBoolean(IPreferenceConstants.PREF_SNAP_TO_GEOMETRY));
                 }
                 if ((wsPrefStore.getInt(WorkspaceViewerProperties.RULERUNIT) != preferenceStore
                         .getInt(IPreferenceConstants.PREF_RULER_UNITS))
                         || (wsPrefStore.getDouble(WorkspaceViewerProperties.GRIDSPACING) != preferenceStore
                                 .getDouble(IPreferenceConstants.PREF_GRID_SPACING))) {
-                    wsPrefStore.setValue(WorkspaceViewerProperties.RULERUNIT, preferenceStore
-                            .getInt(IPreferenceConstants.PREF_RULER_UNITS));
-                    wsPrefStore.setValue(WorkspaceViewerProperties.GRIDSPACING, preferenceStore
-                            .getDouble(IPreferenceConstants.PREF_GRID_SPACING));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.RULERUNIT,
+                            preferenceStore.getInt(IPreferenceConstants.PREF_RULER_UNITS));
+                    wsPrefStore.setValue(WorkspaceViewerProperties.GRIDSPACING,
+                            preferenceStore.getDouble(IPreferenceConstants.PREF_GRID_SPACING));
                 }
 
                 // reset the input values
@@ -436,8 +461,8 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
         popup.open(new Point(location.x, location.y + r.height));
 
         if (popup.useDefaultColor()) {
-            Image overlyedImage = new ColorOverlayImageDescriptor(imageDescriptor.getImageData(), FigureUtilities
-                    .integerToRGB(new Integer(LIGHT_GRAY_RGB))).createImage();
+            Image overlyedImage = new ColorOverlayImageDescriptor(imageDescriptor.getImageData(),
+                    FigureUtilities.integerToRGB(new Integer(LIGHT_GRAY_RGB))).createImage();
             disposeImage(button.getImage());
             button.setImage(overlyedImage);
             return FigureUtilities.integerToRGB(new Integer(LIGHT_GRAY_RGB));
@@ -947,4 +972,36 @@ public class BusinessRulersAndGridComposite extends AbstractTabComposite {
         return (Double) number;
     }
 
+    /**
+     * copied from org.eclipse.gmf.runtime.diagram.ui.internal.properties.WorkspaceViewerProperties to remove internal
+     * API <br>
+     * DOC meng BusinessRulersAndGridComposite class global comment. Detailled comment
+     */
+    public class WorkspaceViewerProperties {
+
+        /**
+         * Viewer property identifiers. This values are used to access the workspace viewer preference store. Do not
+         * localize these strings.
+         */
+
+        // Ruler and grid properties
+        public static final String VIEWGRID = "rulergrid.viewgrid"; //$NON-NLS-1$
+
+        public static final String GRIDLINESTYLE = "rulergrid.gridlinestyle"; //$NON-NLS-1$
+
+        public static final String GRIDLINECOLOR = "rulergrid.gridlinecolor"; //$NON-NLS-1$
+
+        public static final String SNAPTOGEOMETRY = "rulergrid.snaptogeometry"; //$NON-NLS-1$
+
+        public static final String SNAPTOGRID = "rulergrid.snaptogrid"; //$NON-NLS-1$
+
+        public static final String GRIDORDER = "rulergrid.gridlevel"; //$NON-NLS-1$
+
+        public static final String GRIDSPACING = "rulergrid.gridspacing"; //$NON-NLS-1$
+
+        public static final String RULERUNIT = "rulergrid.rulerunit"; //$NON-NLS-1$
+
+        public static final String VIEWRULERS = "rulergrid.viewrulers"; //$NON-NLS-1$
+
+    }
 }
