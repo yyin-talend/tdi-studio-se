@@ -26,7 +26,6 @@ import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.WorkbenchPage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -135,9 +134,8 @@ public class ExportJobScriptAction extends AContextualAction {
         for (int i = 0; i < windows.length; i++) {
             IWorkbenchPage[] pages = windows[i].getPages();
             for (int j = 0; j < pages.length; j++) {
-                WorkbenchPage page = (WorkbenchPage) pages[j];
-
-                parts = page.getDirtyParts();
+                IWorkbenchPage page = pages[j];
+                parts = page.getDirtyEditors();
             }
         }
         if (parts != null && parts.length > 0) {
