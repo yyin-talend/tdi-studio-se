@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jboss
-Bundle-SymbolicName: org.talend.libraries.jboss
+Bundle-SymbolicName: org.talend.libraries.jboss;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/jboss-serialization.jar

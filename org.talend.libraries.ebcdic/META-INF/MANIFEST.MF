@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ebcdic
-Bundle-SymbolicName: org.talend.libraries.ebcdic
+Bundle-SymbolicName: org.talend.libraries.ebcdic;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ActivationPolicy: lazy
 
