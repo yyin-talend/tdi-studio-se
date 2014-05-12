@@ -148,7 +148,11 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
                 jsonXmlPath = tempJSONPath;
             }
             if (JSONFileOutputStep1Form.this.tempPath == null) {
-                JSONFileOutputStep1Form.this.tempPath = JSONUtil.changeJsonToXml(jsonXmlPath);
+                if (jsonXmlPath != null && !jsonXmlPath.equals("")) {
+                    JSONFileOutputStep1Form.this.tempPath = JSONUtil.changeJsonToXml(jsonXmlPath);
+                } else {
+                    JSONFileOutputStep1Form.this.tempPath = "";
+                }
             }
             File file = new File(JSONFileOutputStep1Form.this.tempPath);
             if (file.exists()) {
