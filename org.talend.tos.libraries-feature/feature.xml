@@ -183,12 +183,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.talend.libraries.jfreechart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.talend.libraries.mondrian"
          download-size="0"
          install-size="0"
@@ -207,12 +201,6 @@
 
    <plugin
          id="org.talend.libraries.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.microsoft"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
@@ -313,12 +301,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.talend.libraries.jasperreport"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.talend.libraries.guava"
          download-size="0"
          install-size="0"
@@ -344,12 +326,6 @@
 
    <plugin
          id="org.talend.libraries.zookeeper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.libraries.hibernate"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
