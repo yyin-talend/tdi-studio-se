@@ -15,9 +15,7 @@ package org.talend.repository.view.di.viewer.handlers;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
-import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
@@ -49,22 +47,26 @@ public class SqlTemplateImportHandler extends ImportRepTypeHandler {
     }
 
     /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#isSameName(org.talend.repository
-     * .items.importexport.ui.wizard.imports.models.ItemRecord, org.talend.core.model.repository.IRepositoryViewObject)
+     * commet it, because it have done check in ImportBasicHandler.isSameName.
      */
-    @Override
-    protected boolean isSameName(ImportItem itemRecord, IRepositoryViewObject repObject) {
-        boolean sameName = super.isSameName(itemRecord, repObject);
-        if (sameName) {
-            // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
-            if (!repObject.getPath().equals(itemRecord.getProperty().getItem().getState().getPath())) {
-                sameName = false; // not in same folder
-            }
-        }
-        return sameName;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#isSameName(org.talend.repository
+    // * .items.importexport.ui.wizard.imports.models.ItemRecord,
+    // org.talend.core.model.repository.IRepositoryViewObject)
+    // */
+    // @Override
+    // protected boolean isSameName(ImportItem itemRecord, IRepositoryViewObject repObject) {
+    // boolean sameName = super.isSameName(itemRecord, repObject);
+    // if (sameName) {
+    // // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
+    // if (!repObject.getPath().equals(itemRecord.getProperty().getItem().getState().getPath())) {
+    // sameName = false; // not in same folder
+    // }
+    // }
+    // return sameName;
+    // }
 
 }

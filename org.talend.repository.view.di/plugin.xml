@@ -476,6 +476,7 @@
       <repositoryNode
             folder="sqlPatterns"
             icon="icons/sqlTemplates.png"
+            isAllowMultiName="true"
             isResouce="true"
             key="repository.metadataSQLPatterns"
             label="%NavigatorContent.sqlTemplates"
