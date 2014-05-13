@@ -136,22 +136,22 @@ public class NodesSubTree {
 
             buildMRSubTree(node);
 
-            if (refNodes != null) {
-                for (INode refNode : refNodes) {
-                    this.nodes.add(refNode);
-                    for (IConnection connection : refNode.getOutgoingSortedConnections()) {
-                        if (connection.getTarget().isActivate()) {
-
-                            if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                                afterSubProcesses.add(connection.getTarget().getUniqueName());
-                            }
-                            if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
-                                beforeSubProcesses.add(connection.getTarget().getUniqueName());
-                            }
-                        }
-                    }
-                }
-            }
+            // if (refNodes != null) {
+            // for (INode refNode : refNodes) {
+            // this.nodes.add(refNode);
+            // for (IConnection connection : refNode.getOutgoingSortedConnections()) {
+            // if (connection.getTarget().isActivate()) {
+            //
+            // if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+            // afterSubProcesses.add(connection.getTarget().getUniqueName());
+            // }
+            // if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+            // beforeSubProcesses.add(connection.getTarget().getUniqueName());
+            // }
+            // }
+            // }
+            // }
+            // }
         }
     }
 
@@ -204,6 +204,11 @@ public class NodesSubTree {
         if (((AbstractNode) node).isThereLinkWithRef()) {
             this.isRefSubTree = true;
             this.refNodes = ((AbstractNode) node).getRefNodes();
+            if (refNodes != null) {
+                for (INode refNode : refNodes) {
+                    buildMRSubTree(refNode);
+                }
+            }
         }
         for (IConnection connection : node.getOutgoingSortedConnections()) {
             if (connection.getTarget().isActivate()) {
