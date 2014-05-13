@@ -126,6 +126,7 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.login.sandboxProject.CreateSandboxProjectDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
+import org.talend.repository.utils.StudioConfigUtils;
 import org.talend.utils.json.JSONException;
 import org.talend.utils.json.JSONObject;
 
@@ -1762,6 +1763,10 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                // To show that the studio does not fully support java 8 yet
+                if (!StudioConfigUtils.checkUnSupportJavaVersion(getShell())) {
+                    return;
+                }
                 setRepositoryContextInContext();
                 dialog.okPressed();
             }
