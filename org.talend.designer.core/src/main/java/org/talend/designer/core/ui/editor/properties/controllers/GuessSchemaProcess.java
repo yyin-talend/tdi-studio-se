@@ -51,6 +51,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.utils.sql.ConnectionUtils;
 
 /**
  * DOC hyWang class global comment. Detailled comment
@@ -237,7 +238,7 @@ public class GuessSchemaProcess {
             createStatament = "conn.createStatement()";
         }
         // the VERTICA
-        if (EDatabaseTypeName.VERTICA.getXmlName().equals(info.getDbType())) {
+        if (ConnectionUtils.isVertica(info.getUrl())) {
             createStatament = "conn.createStatement()";
         }
         codeStart = systemProperty
