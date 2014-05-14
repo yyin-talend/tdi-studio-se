@@ -666,7 +666,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.PASSWORD);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(48);
         param.setRequired(true);

@@ -2153,6 +2153,14 @@
                name="ChangeRecordMatchingCustomFunctionValueTask"
                version="5.4.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.EncryptPasswordInJobSettingsMigrationTask"
+              id="org.talend.repository.model.migration.EncryptPasswordInJobSettingsMigrationTask"
+              name="Encrypt passwords in new password fields of job settings implicit context load and stats logs"
+              version="5.5.0">
+        </projecttask>
    </extension>
    
    <extension
