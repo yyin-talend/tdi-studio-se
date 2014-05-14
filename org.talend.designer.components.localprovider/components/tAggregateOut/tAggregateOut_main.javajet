@@ -445,15 +445,15 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				
 					if(checkTypeOverflow || checkUlp) {
 						if(forceUseDoubleAvgSum) {
-						%>utilClass_<%=cid %>.checkedIADD( operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM%>, <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue(), <%= checkTypeOverflow %>, <%= checkUlp %>);
+						%>utilClass_<%=cid %>.checkedIADD( operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (double)<%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>.doubleValue(), <%= checkUlp %>);
 						<%
 						} else {
-						%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM%>, <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value(), <%= checkTypeOverflow %>, <%= checkUlp %>);
+						%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>.doubleValue(), <%= checkUlp %>);
 					<%
 						}
 					}
 					%>
-					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.<%=forceUseDoubleAvgSum?"double":primitiveTypeToGenerate%>Value();
+					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue();
 					<%
 				
 				} else {
