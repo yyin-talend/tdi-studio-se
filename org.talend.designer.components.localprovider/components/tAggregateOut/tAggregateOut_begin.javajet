@@ -644,7 +644,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            				&& !function.equals(MAX) 
            				&& !function.equals(FIRST) 
            				&& !function.equals(LAST) 
-           				|| outputJavaType == JavaTypesManager.CHARACTER) { 
+           				) { 
            				
            				%> = (<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(outputColumn.getTalendType(), false) %><%
            				
