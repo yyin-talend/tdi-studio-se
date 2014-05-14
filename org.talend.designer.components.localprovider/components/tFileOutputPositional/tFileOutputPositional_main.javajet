@@ -9,6 +9,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 		java.util.Map
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 	"
 %>
 <%
@@ -25,6 +27,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String separator = ElementParameterParser.getValue(
             node,
             "__ROWSEPARATOR__"
+        );
+
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
         );
 
         List<Map<String, String>> formats =
@@ -56,6 +63,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			List<IMetadataColumn> columns = metadata.getListColumns();
 			int sizeColumns = columns.size();
 			for (int i = 0; i < sizeColumns; i++) {
+				IMetadataColumn column = columns.get(i);
+				Map<String,String> format=formats.get(i);
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
     				positionUtil_<%=cid%>.setValue_<%=i/100%>(<%=conn.getName() %>,sb_<%=cid %>,tempStringM<%=cid %>,tempLengthM<%=cid %><% if(useByte){ %>,byteArray_<%=cid %>,arrays_<%=cid %><% }%>);
