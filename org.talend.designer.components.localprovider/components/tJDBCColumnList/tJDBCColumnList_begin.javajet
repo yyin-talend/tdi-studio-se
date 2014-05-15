@@ -23,6 +23,9 @@ imports="
     String tableName = ElementParameterParser.getValue(node,"__TABLE_NAME__");
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    java.sql.Statement stmt2_<%=cid%> = null;
+    int nb_column_<%=cid%> = 0;
+    try{
 <%	
 	INode connectionNode = null; 
 	for (INode processNode : node.getProcess().getGeneratingNodes()) { 
@@ -75,11 +78,10 @@ if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
 <%
 	}
 %>
-int nb_column_<%=cid%> = 0;
 
 int column_count_<%=cid%> = 0;
 
-java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
+stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT * from " + tableName_<%=cid%> + " where 1<>1");
 
