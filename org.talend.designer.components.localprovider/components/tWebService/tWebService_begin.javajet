@@ -26,17 +26,14 @@ String host = ElementParameterParser.getValue(node,"__NTLM_HOST__");
 
 boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
 String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
 boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
 String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
         
 String connTimeoutStr = ElementParameterParser.getValue(node,"__CONNECTION_TIMEOUT__");
 String connTimeoutSec = (connTimeoutStr!=null&&!("").equals(connTimeoutStr))?connTimeoutStr:"20";
@@ -69,7 +66,14 @@ if("".equals(tempPath))tempPath="\"\"";
 	config_<%=cid%>.setKeyStoreFile(System.getProperty("javax.net.ssl.keyStore"));
 	config_<%=cid%>.setKeyStoreType(System.getProperty("javax.net.ssl.keyStoreType"));
 	config_<%=cid%>.setKeyStorePwd(System.getProperty("javax.net.ssl.keyStorePassword"));
-<%		
+	
+<%
+passwordFieldName = "__AUTH_PASSWORD__";
+%>
+
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    	
+<%
 if (needSSLtoTrustServer) {
 %>   
     System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
@@ -87,12 +91,6 @@ if (needSSLtoTrustServer) {
     <%}%>	
 	
 	System.setProperty("javax.net.ssl.trustStorePassword", decryptedPwd_<%=cid%>);
-	
-    <%
-    passwordFieldName = "__AUTH_PASSWORD__";
-    %>
-    
-    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>		
 	
 <% 
 }if(needAuth&&!useNTLM){	
