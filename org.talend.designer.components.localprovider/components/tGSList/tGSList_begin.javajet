@@ -8,8 +8,8 @@ imports="
 	java.util.Map
 " 
 %>
-
-<%
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
@@ -21,18 +21,28 @@ imports="
 	String projectID=ElementParameterParser.getValue(node,"__PROJECT_ID__");
 	String delimiter=ElementParameterParser.getValue(node,"__DELIMITER__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-%>
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
+	log4jFileUtil.setIgnoredParamsList(java.util.Arrays.asList("BUCKETS"));
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
+	%>
 	int nb_line_<%=cid%> = 0;
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = null;
 	try {
-<%
+	<%
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-%>
+		%>
 		service_<%=cid%> = (org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=connection%>");
-<%
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Get an free connection from " + "<%=connection%>" + ".");
+		<%
+		}
 	}else{
-%>
+	%>
 
        <%
        String passwordFieldName = "__SECRET_KEY__";
@@ -44,90 +54,114 @@ imports="
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
 		service_<%=cid%>.getAccountOwner();
-<%		
+	<%		
 	}
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
 	boolean listInBucketList = "true".equals(ElementParameterParser.getValue(node,"__LIST_IN_BUCKET_LIST__"));
 	if(!listInBucketList){
 		String objects_prefix=ElementParameterParser.getValue(node,"__OBJECTS_PREFIX__");
 		if(isSpecifyprojectID){
-%>
-		org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets(<%=projectID%>);
-<%
+		%>
+			org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets(<%=projectID%>);
+		<%
 		}else{
-%>
-		org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets();
-<%
+		%>
+			org.jets3t.service.model.GSBucket[] buckets_<%=cid%>=service_<%=cid%>.listAllBuckets();
+		<%
 		}
-%>
+		%>
 		for (org.jets3t.service.model.GSBucket bucket_<%=cid%> : buckets_<%=cid%>) {
 			String currentBucketName_<%=cid%> = bucket_<%=cid%>.getName();
 			org.jets3t.service.model.GSObject[] objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,
 			<%if(objects_prefix!=null && objects_prefix.trim().length()>0){%><%=objects_prefix%><% }else{%> null <%}%>,
 			<%if(delimiter!=null && delimiter.trim().length()>0){%><%=delimiter%><% }else{%> null <%}%>
 			);
-<%
+	<%
 	} else if(buckets.size()>0){
-%>
-			java.util.List<java.util.Map<String,String>> list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
-<%
+	%>
+		java.util.List<java.util.Map<String,String>> list_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
+		<%
 		for(int i=0;i<buckets.size();i++){
 			Map<String, String> map=buckets.get(i);
 			String bucket_name =map.get("BUCKET_NAME");
 			String object_prefix =map.get("OBJECT_PREFIX");
 			String object_delimiter =map.get("OBJECT_DELIMITER");
-%>
+			%>
 			java.util.Map<String,String> map_<%=cid %>_<%=i %> = new java.util.HashMap<String,String>();
 			map_<%=cid %>_<%=i %>.put("BUCKET_NAME",<%=bucket_name%>);
-<%
+			<%
 			if(object_prefix!=null && object_prefix.trim().length()>0){
-%>
-			map_<%=cid %>_<%=i %>.put("OBJECT_PREFIX",<%=object_prefix%>);
-<%
+			%>
+				map_<%=cid %>_<%=i %>.put("OBJECT_PREFIX",<%=object_prefix%>);
+			<%
 			}
 			if(object_delimiter!=null && object_delimiter.trim().length()>0){
-%>
-			map_<%=cid %>_<%=i %>.put("OBJECT_DELIMITER",<%=object_delimiter%>);
-<%
+			%>
+				map_<%=cid %>_<%=i %>.put("OBJECT_DELIMITER",<%=object_delimiter%>);
+			<%
 			}
-%>
+			%>
 			list_<%=cid%>.add(map_<%=cid %>_<%=i %>);
-<%
+		<%
 		}
-%>
-			for (java.util.Map<String, String> map_<%=cid %>: list_<%=cid%>) {
-				String currentBucketName_<%=cid%>=map_<%=cid %>.get("BUCKET_NAME");
-				org.jets3t.service.model.GSObject[] objects_<%=cid%> =new org.jets3t.service.model.GSObject[0];
-				try {
-					objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,map_<%=cid %>.get("OBJECT_PREFIX"),map_<%=cid %>.get("OBJECT_DELIMITER"));
-				}catch(org.jets3t.service.ServiceException e_<%=cid%>){
-<%
-		if (("true").equals(dieOnError)) {
-%>
+		%>
+		for (java.util.Map<String, String> map_<%=cid %>: list_<%=cid%>) {
+			String currentBucketName_<%=cid%>=map_<%=cid %>.get("BUCKET_NAME");
+			org.jets3t.service.model.GSObject[] objects_<%=cid%> =new org.jets3t.service.model.GSObject[0];
+			try {
+				objects_<%=cid%> = service_<%=cid%>.listObjects(currentBucketName_<%=cid%>,map_<%=cid %>.get("OBJECT_PREFIX"),map_<%=cid %>.get("OBJECT_DELIMITER"));
+			}catch(org.jets3t.service.ServiceException e_<%=cid%>){
+				<%
+				if (("true").equals(dieOnError)) {
+					if(isLog4jEnabled){
+					%>
+						log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+					<%
+					}
+					%>
 					throw(e_<%=cid%>);
-<%
-		} else {
-%>
+				<%
+				} else {
+					if(isLog4jEnabled){
+					%>
+						log.error("<%=cid%> - Exception in component <%=cid%>:" + e_<%=cid%>.getMessage());
+					<%
+					}
+					%>
 					System.err.println("Exception in component <%=cid%>:");
 					System.err.println(e_<%=cid%>.getMessage());
 					if(e_<%=cid%>.getErrorCode()!=null){
+						<%
+						if(isLog4jEnabled){
+						%>
+							log.error("<%=cid%> - " + e_<%=cid%>.getErrorCode());
+						<%
+						}
+						%>
 						System.err.println(e_<%=cid%>.getErrorCode());
 					}
 					if(e_<%=cid%>.getErrorMessage()!=null){
+						<%
+						if(isLog4jEnabled){
+						%>
+							log.error("<%=cid%> - " + e_<%=cid%>.getErrorMessage());
+						<%
+						}
+						%>
 						System.err.println(e_<%=cid%>.getErrorMessage());
 					}
-<%
-		}
-%>
+				<%
 				}
-<%
+				%>
+			}
+	<%
 	}
 	if(!listInBucketList || buckets.size()>0){
-%>
-				for (org.jets3t.service.model.GSObject objectSummary_<%=cid%> : objects_<%=cid%>) {
-					nb_line_<%=cid%>++;
-					globalMap.put("<%=cid%>_CURRENT_BUCKET", currentBucketName_<%=cid%>);
-					globalMap.put("<%=cid%>_CURRENT_KEY", objectSummary_<%=cid%>.getKey());
-<%
+	%>
+		for (org.jets3t.service.model.GSObject objectSummary_<%=cid%> : objects_<%=cid%>) {
+			nb_line_<%=cid%>++;
+			globalMap.put("<%=cid%>_CURRENT_BUCKET", currentBucketName_<%=cid%>);
+			globalMap.put("<%=cid%>_CURRENT_KEY", objectSummary_<%=cid%>.getKey());
+	<%
 	}
-%>
+	%>

@@ -5,18 +5,24 @@
 	    org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
-
-<%
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
 
     String cid = node.getUniqueName();
 
    	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	
-%>
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
+	%>
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = 
 			(org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=connection%>");
 	if(service_<%=cid%> !=null){
 			service_<%=cid%>.shutdown();
 	}
+	<%
+	log4jFileUtil.componentFinishInfo(node);
+	%>

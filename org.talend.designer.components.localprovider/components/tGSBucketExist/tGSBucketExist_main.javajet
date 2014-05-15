@@ -5,8 +5,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
-
-<%
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
@@ -17,18 +17,27 @@
 	String bucketName=ElementParameterParser.getValue(node,"__BUCKET__");
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-%>
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
+	log4jFileUtil.componentStartInfo(node);
+	log4jFileUtil.logParameters(node);
+	%>
 	boolean bucketExist_<%=cid%>=false;
 	org.jets3t.service.impl.rest.httpclient.GoogleStorageService service_<%=cid%> = null;
 	try {
-<%
+	<%
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-%>
+		%>
 		service_<%=cid%> = (org.jets3t.service.impl.rest.httpclient.GoogleStorageService)globalMap.get("service_<%=connection%>");
-<%
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Get an free connection from " + "<%=connection%>" + ".");
+		<%
+		}
 	}else{
-%>
+	%>
 
        <%
        String passwordFieldName = "__SECRET_KEY__";
@@ -40,39 +49,66 @@
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
 		service_<%=cid%>.getAccountOwner();
-<%		
+	<%		
 	}
-%>
+	%>
 		if(service_<%=cid%>.getBucket(<%=bucketName%>)!=null){
 			bucketExist_<%=cid%>=true;
 		}
 	}catch(org.jets3t.service.ServiceException e_<%=cid%>) {
-<%
+		<%
 		if (("true").equals(dieOnError)) {
-%>
-		throw(e_<%=cid%>);
-<%
+			if(isLog4jEnabled){
+			%>
+				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+			<%
+			}
+			%>
+			throw(e_<%=cid%>);
+		<%
 		} else {
-%>
-		System.err.println("Exception in component <%=cid%>:");
-		System.err.println(e_<%=cid%>.getMessage());
-		if(e_<%=cid%>.getErrorCode()!=null){
-			System.err.println(e_<%=cid%>.getErrorCode());
-		}
-		if(e_<%=cid%>.getErrorMessage()!=null){
-			System.err.println(e_<%=cid%>.getErrorMessage());
-		}
-<%
+			if(isLog4jEnabled){
+			%>
+				log.error("<%=cid%> - Exception in component <%=cid%>:" + e_<%=cid%>.getMessage());
+			<%
+			}
+			%>
+			System.err.println("Exception in component <%=cid%>:");
+			System.err.println(e_<%=cid%>.getMessage());
+			if(e_<%=cid%>.getErrorCode()!=null){
+				<%
+				if(isLog4jEnabled){
+				%>
+					log.error("<%=cid%> - " + e_<%=cid%>.getErrorCode());
+				<%
+				}
+				%>
+				System.err.println(e_<%=cid%>.getErrorCode());
+			}
+			if(e_<%=cid%>.getErrorMessage()!=null){
+				<%
+				if(isLog4jEnabled){
+				%>
+					log.error("<%=cid%> - " + e_<%=cid%>.getErrorMessage());
+				<%
+				}
+				%>
+				System.err.println(e_<%=cid%>.getErrorMessage());
+			}
+		<%
 		}
 		if(!("true").equals(useExistingConn)) {
-%>
+		%>
 	}finally{
 		if(service_<%=cid%> !=null){
 			service_<%=cid%>.shutdown();
 		}
-<%
+		<%
 		}
-%>
+		%>
 	}
 	globalMap.put("<%=cid%>_BUCKET_NAME", <%=bucketName%>);
 	globalMap.put("<%=cid%>_BUCKET_EXIST", bucketExist_<%=cid%>);
+	<%
+	log4jFileUtil.componentFinishInfo(node);
+	%>
