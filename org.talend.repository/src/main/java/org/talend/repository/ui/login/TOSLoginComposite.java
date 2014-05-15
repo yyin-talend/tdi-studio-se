@@ -75,7 +75,6 @@ import org.talend.repository.ui.actions.importproject.SelectDeleteProjectDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.TableViewerContentProvider;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
-import org.talend.repository.utils.StudioConfigUtils;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -693,10 +692,6 @@ public class TOSLoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                // To show that the studio does not fully support java 8 yet
-                if (!StudioConfigUtils.checkUnSupportJavaVersion(getShell())) {
-                    return;
-                }
                 loginComposite.setRepositoryContextInContext();
                 if (!TOSLoginComposite.this.projectListViewer.getSelection().isEmpty()) {
                     String selection = TOSLoginComposite.this.projectListViewer.getList().getSelection()[0];
