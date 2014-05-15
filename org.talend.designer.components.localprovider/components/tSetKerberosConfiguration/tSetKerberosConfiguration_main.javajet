@@ -14,14 +14,17 @@ imports="
     String kdc = ElementParameterParser.getValue(node,"__KDC__");
     String realm = ElementParameterParser.getValue(node,"__REALM__");
     String username = ElementParameterParser.getValue(node,"__USERNAME__");
-    String password = ElementParameterParser.getValue(node,"__PASSWORD__");
 	%>
 	System.setProperty("java.security.krb5.kdc", <%=kdc%>);
 	System.setProperty("java.security.krb5.realm", <%=realm%>);
 			          
 	java.util.Map state_<%=cid%> = new java.util.HashMap();
 	state_<%=cid%>.put("javax.security.auth.login.name", <%=username%>);
-	state_<%=cid%>.put("javax.security.auth.login.password", <%=password%>.toCharArray());
+    <%
+    String passwordFieldName = "__PASSWORD__";
+    %>
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	
+	state_<%=cid%>.put("javax.security.auth.login.password", decryptedPassword_<%=cid%>.toCharArray());
 			      
 	java.util.Map option_<%=cid%> = new java.util.HashMap();
 	//option_<%=cid%>.put("debug", "true");

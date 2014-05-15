@@ -21,14 +21,17 @@
 	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
 	String status = ElementParameterParser.getValue(node,"__STATUS__");
 	String username = ElementParameterParser.getValue(node, "__USERNAME__");
-	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 			
 %>
 	int deleted_task_<%=cid%> = 0;	
         java.net.Authenticator.setDefault(new java.net.Authenticator() {
             protected java.net.PasswordAuthentication getPasswordAuthentication() {
-            	return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
+                <%
+                String passwordFieldName = "__PASSWORD__";
+                %>
+                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+            	return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
         }});
 		
 		java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");

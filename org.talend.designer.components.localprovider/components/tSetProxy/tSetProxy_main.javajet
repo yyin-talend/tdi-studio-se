@@ -16,7 +16,6 @@ imports="
    String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-   String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
    String nonProxyHosts = ElementParameterParser.getValue(node,"__NONPROXYHOSTS__");
 %>
            java.util.Properties props_<%=cid %> = System.getProperties();
@@ -31,13 +30,17 @@ imports="
             System.setProperty("http.nonProxyHosts", <%=nonProxyHosts %>);
             
             System.setProperty("http.proxyUser", <%=proxyUser %>);
-            System.setProperty("http.proxyPassword", <%=proxyPassword %>);
+            <%
+            String passwordFieldName = "__PROXY_PASSWORD__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+            System.setProperty("http.proxyPassword", decryptedPassword_<%=cid%>);
 			
 			java.net.Authenticator.setDefault(
 				new java.net.Authenticator() {
 					public java.net.PasswordAuthentication getPasswordAuthentication() {
 						return new java.net.PasswordAuthentication(
-						   <%=proxyUser %>, <%=proxyPassword %>.toCharArray());
+						   <%=proxyUser %>, decryptedPassword_<%=cid%>.toCharArray());
 					}
 				}
 			);
@@ -49,7 +52,11 @@ imports="
 			System.setProperty("socksProxyHost", <%=proxyHost %>);
             System.setProperty("socksProxyPort", <%=proxyPort %>);            
             System.setProperty("java.net.socks.username", <%=proxyUser %>);
-        	System.setProperty("java.net.socks.password", <%=proxyPassword %>);    
+            <%
+            String passwordFieldName = "__PROXY_PASSWORD__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>            
+        	System.setProperty("java.net.socks.password", decryptedPassword_<%=cid%>);    
 <%
 			}else if ("HTTPS_PROXY".equals(proxyType)) {
 %>		

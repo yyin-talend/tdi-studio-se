@@ -15,16 +15,19 @@ imports="
 	//String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
 
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
 	String usingExistingFile = ElementParameterParser.getValue(node, "__USE_EXISTING_FILE__");
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+	String passwordFieldName = "__PASS__";
+%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+<%
 	if("UPDATE_CREATE".equals(action) && "true".equals(usingExistingFile)){
 %>
 final String ob_url_<%=cid %> = <%=endpoint %>;
 final String login_<%=cid %> = <%=username %>;
-final String pwd_<%=cid %> = <%=password %>;
+final String pwd_<%=cid %> = decryptedPassword_<%=cid%>;
 final String method_<%=cid %> = "POST";
 final String file_<%=cid %> = <%=fileName %>;
 java.net.Authenticator.setDefault(new java.net.Authenticator() {
@@ -86,7 +89,7 @@ int nb_line_unauthorized_<%=cid %> = 0;
 int nb_line_failed_<%=cid %> = 0;
 final String ob_url_<%=cid %> = <%=endpoint %>;
 final String login_<%=cid %> = <%=username %>;
-final String pwd_<%=cid %> = <%=password %>;
+final String pwd_<%=cid %> = decryptedPassword_<%=cid%>;
 final String entity_<%=cid %> = "<%=entityName %>";
 java.net.Authenticator.setDefault(new java.net.Authenticator() {
 	protected java.net.PasswordAuthentication getPasswordAuthentication() {

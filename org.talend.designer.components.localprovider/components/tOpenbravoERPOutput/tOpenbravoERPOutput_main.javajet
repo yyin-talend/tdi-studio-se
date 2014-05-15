@@ -22,7 +22,6 @@ imports="
 	//String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String usingExistingFile = ElementParameterParser.getValue(node, "__USE_EXISTING_FILE__");
 	//String username = ElementParameterParser.getValue(node, "__USER__");
-	//String password = ElementParameterParser.getValue(node, "__PASS__");
 
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
 String conName = "";

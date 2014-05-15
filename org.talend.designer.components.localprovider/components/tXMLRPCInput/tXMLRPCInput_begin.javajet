@@ -24,7 +24,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<IMetadataColumn> listColumns = metadata.getListColumns(); 
         String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
         String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-		String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
         List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
         String  url=ElementParameterParser.getValue(node,"__SERVER-URL__");
         String  method=ElementParameterParser.getValue(node,"__METHOD__");
@@ -38,7 +37,11 @@ config<%=cid%>.setReplyTimeout(60 * 1000);
  if ("true".equals(needAuth)) {
  %>
 	config<%=cid%>.setBasicUserName(<%=authUsername%>);
-	config<%=cid%>.setBasicPassword(<%=authPassword%>);
+    <%
+    String passwordFieldName = "__AUTH_PASSWORD__";
+    %>
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	
+	config<%=cid%>.setBasicPassword(decryptedPassword_<%=cid%>);
  <%
 }
 %>

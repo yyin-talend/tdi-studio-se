@@ -14,7 +14,6 @@
 	String cid = node.getUniqueName();
 	
 	String accesskey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
-	String secretkey = ElementParameterParser.getValue(node, "__SECRET_KEY__");
 	String provider = ElementParameterParser.getValue(node, "__PROVIDER__");
 	String imageId = ElementParameterParser.getValue(node, "__IMAGE_ID__");
 	String region = ElementParameterParser.getValue(node, "__REGION__");
@@ -58,8 +57,11 @@
 <%
 	}
 %>
-
-	org.jclouds.compute.ComputeServiceContext context_<%=cid%> = new org.jclouds.compute.ComputeServiceContextFactory().createContext("<%=providerId%>", <%=accesskey%>, <%=secretkey%>);
+	<%
+	String passwordFieldName = "__SECRET_KEY__";
+	%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	org.jclouds.compute.ComputeServiceContext context_<%=cid%> = new org.jclouds.compute.ComputeServiceContextFactory().createContext("<%=providerId%>", <%=accesskey%>, decryptedPassword_<%=cid%>);
 	org.jclouds.compute.ComputeService client_<%=cid%> = context_<%=cid%>.getComputeService();
 	
 <%

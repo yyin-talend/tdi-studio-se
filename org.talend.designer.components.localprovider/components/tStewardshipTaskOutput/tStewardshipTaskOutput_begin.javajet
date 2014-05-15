@@ -18,7 +18,6 @@
     String host = ElementParameterParser.getValue(node, "__HOST__");
     String port = ElementParameterParser.getValue(node, "__PORT__");
     String username = ElementParameterParser.getValue(node, "__USERNAME__");
-    String password = ElementParameterParser.getValue(node, "__PASSWORD__");
     
 List<IMetadataTable> metadatas = node.getMetadataList();
 List<Map<String, String>> recordColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RECORD_COLUMN__");
@@ -36,7 +35,11 @@ org.talend.stewardship.TaskGenerator tasks_<%=cid%> = new org.talend.stewardship
 org.talend.stewardship.Task task_<%=cid%> = null;
 int port_<%=cid%> =  <%=port%>;
 String url_<%=cid%> = org.talend.datastewardship.server.task.creation.TaskLoadClientTools.getUrl(<%=host%>,String.valueOf(port_<%=cid%>));
-org.talend.datastewardship.server.task.creation.TaskLoadClient taskLoadClient_<%=cid%> = new org.talend.datastewardship.server.task.creation.TaskLoadClient(url_<%=cid%>,<%=username%>,<%=password%>);
+<%
+String passwordFieldName = "__PASSWORD__";
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+org.talend.datastewardship.server.task.creation.TaskLoadClient taskLoadClient_<%=cid%> = new org.talend.datastewardship.server.task.creation.TaskLoadClient(url_<%=cid%>,<%=username%>,decryptedPassword_<%=cid%>);
 org.talend.stewardship.Record record_<%=cid%> = null;
 boolean targetRecordExisted_<%=cid%> = false;
 <%//For TDI-26345

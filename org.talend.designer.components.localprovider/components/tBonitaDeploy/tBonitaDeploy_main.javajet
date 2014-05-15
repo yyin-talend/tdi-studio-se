@@ -13,7 +13,6 @@ imports="
 	
 	String businessArchive = ElementParameterParser.getValue(node, "__BUSINESS_ARCHIVE__");
 	String userName = ElementParameterParser.getValue(node, "__USERNAME__");
-	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 	
@@ -43,8 +42,12 @@ imports="
 	
 	String processDefinitionUUID_<%=cid%> = null;
 	try {
+		<%
+		String passwordFieldName = "__PASSWORD__";
+		%>
 		
-		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, decryptedPassword_<%=cid%>));
 		loginContext_<%=cid%>.login();
 		process_<%=cid%> = managementAPI_<%=cid%>.deploy(org.ow2.bonita.util.BusinessArchiveFactory.getBusinessArchive(new java.io.File(<%=businessArchive%>).toURI().toURL()));
 		processDefinitionUUID_<%=cid%> = process_<%=cid%>.getUUID().getValue();

@@ -21,10 +21,10 @@ INode node = (INode)codeGenArgument.getArgument();
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
    	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 
 String cid = node.getUniqueName();
+String passwordFieldName = "";
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -43,7 +43,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String sd = ElementParameterParser.getValue(node, "__START_DATE__");
 			String ed = ElementParameterParser.getValue(node, "__END_DATE__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
-			String password = ElementParameterParser.getValue(node, "__PASS__");
+
 			String module = ElementParameterParser.getValue(node, "__MODULENAME__");
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
 			module = (("CustomModule").equals(module)) ? customModulename : "\""+module+"\"";
@@ -59,7 +59,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				if(useOAuth){
 					String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 					String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
-					String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
 					%>
 					org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
 					org.talend.salesforce.oauth.Token token_<%=cid%>;
@@ -67,7 +66,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					String accessToken_<%=cid%> = null;
 					oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
 					oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
-					oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
+					
+					<%
+					passwordFieldName = "__OAUTH_CLIENT_SECRET__";
+					if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+					%>
+						String decryptedQauthClientPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+					<%
+					} else {
+					%>
+						String decryptedQauthClientPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+					<%
+					}
+					%>					
+					
+					oauthClient_<%=cid%>.setClientSecret(decryptedQauthClientPwd_<%=cid%>);
 					String refreshToken_<%=cid%> = null;
 					<%
 					String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
@@ -162,17 +175,31 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					<%
 					}else{
 						if(useProxy){
+							passwordFieldName = "__PROXY_PASSWORD__";
+            				if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+                    		%>
+                    		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                    		<%
+                    		} else {
+                    		%>
+                    		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+                    		<%
+                    		}
 						%>
 						    java.util.Properties props_<%=cid%> = System.getProperties();
 						    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
 						    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
 						    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
-						    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
+						    props_<%=cid%>.put("java.net.socks.password", decryptedPwd_<%=cid%>); 
 						    
 						<%
 						}
 						%>
-						boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+						<%
+            			passwordFieldName = "__PASS__";
+            			%>
+            			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+						boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=timeout%>,<%=needCompression%>);
 						if(!result_<%=cid%>){
 							throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 						}

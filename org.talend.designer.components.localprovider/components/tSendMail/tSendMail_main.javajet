@@ -13,7 +13,6 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
 String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 String message = ElementParameterParser.getValue(node, "__MESSAGE__").replaceAll("\r\n","\\\\n");
 String importance = ElementParameterParser.getValue(node, "__IMPORTANCE__");
 String priority = "Normal".equals(importance) ? "3" : (("High").equals(importance) ? "1" : "5");
@@ -127,7 +126,11 @@ try {
     props_<%=cid %>.put("mail.smtp.auth", "true");
     javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new javax.mail.Authenticator(){         
       protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-        return new javax.mail.PasswordAuthentication(<%=authUsername %>, <%=authPassword %>); 
+        <%
+        String passwordFieldName = "__AUTH_PASSWORD__";
+        %>
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>				
+		return new javax.mail.PasswordAuthentication(<%=authUsername %>, decryptedPassword_<%=cid%>); 
       }         
     });   
   <%}%>

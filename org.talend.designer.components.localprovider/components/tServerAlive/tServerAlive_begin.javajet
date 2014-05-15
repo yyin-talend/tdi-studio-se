@@ -37,13 +37,16 @@ if(("PING").equals(protocol)) {
             String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
             String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
             String userName = ElementParameterParser.getValue(node, "__PROXY_USER__");
-            String password = ElementParameterParser.getValue(node, "__PROXY_PASS__");
             %>
             java.util.Properties properties_<%=cid%> = System.getProperties();
             properties_<%=cid%>.put("socksProxyHost",<%=proxyHost%>);
             properties_<%=cid%>.put("socksProxyPort",<%=proxyPort%>);
             properties_<%=cid%>.put("java.net.socks.username", <%=userName%>);
-            properties_<%=cid%>.put("java.net.socks.password", <%=password%>);
+            <%
+            String passwordFieldName = "__PROXY_PASS__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>            
+            properties_<%=cid%>.put("java.net.socks.password", decryptedPassword_<%=cid%>);
             <%
         }
         %>

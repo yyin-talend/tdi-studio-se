@@ -29,7 +29,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    // getting useful parameters
 	    String alfrescoServerUrl = ElementParameterParser.getValue(node, "__ALFRESCO_SERVER_URL__");
 	    String alfrescoUserLogin = ElementParameterParser.getValue(node, "__ALFRESCO_USER_LOGIN__");
-	    String alfrescoUserPassword = ElementParameterParser.getValue(node, "__ALFRESCO_USER_PASSWORD__");
     	
         String restEncodingString = ElementParameterParser.getValue(node, "__REST_ENCODING__");
         
@@ -91,7 +90,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	      alfrescoRestClient_<%=cid%> = new fr.openwide.talendalfresco.rest.client.AlfrescoRestClient(<%=alfrescoServerUrl%>, <%=restEncodingString%>);
 	      alfrescoRestClient_<%=cid%>.setTimeout(5000);
 	      // default server : localhost
-          alfrescoRestClient_<%=cid%>.login(<%=alfrescoUserLogin%>, <%=alfrescoUserPassword%>);
+          <%
+          String passwordFieldName = "__ALFRESCO_USER_PASSWORD__";
+          %>
+          <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			      
+          alfrescoRestClient_<%=cid%>.login(<%=alfrescoUserLogin%>, decryptedPassword_<%=cid%>);
       } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
          throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
       }

@@ -35,7 +35,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-        String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
         boolean winAuth = ("true").equals(ElementParameterParser.getValue(node,"__WIN_AUTH__"));
         String domain = ElementParameterParser.getValue(node,"__DOMAIN__");
@@ -44,11 +43,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String proxuHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
         String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
         String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-        String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
         
         boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
         String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-        String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
         
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -56,6 +53,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
         String endpoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
         String method = ElementParameterParser.getValue(node,"__METHOD__");
+	    String passwordFieldName = "";
         if(method != null && !("\"runJob\"").equals(method.trim())) {
 %>
 /////////////////////////////////// 
@@ -78,33 +76,55 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
 		
 				System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
-				System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
+            	<%
+                passwordFieldName = "__SSL_TRUSTSERVER_PASSWORD__";
+                %>
+                <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+                	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                <%} else {%>
+                	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+                <%}%>					
+				System.setProperty("javax.net.ssl.trustStorePassword", decryptedPwd_<%=cid%>);
 			<% 
 			}
+			%>
+            <%
+            passwordFieldName = "__AUTH_PASSWORD__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>				
+			<%
 			if (needAuth&&!winAuth) {
 			%>        	   
-        		org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
+	        		org.talend.DynamicInvoker.setAuth(true, <%=username %>, decryptedPassword_<%=cid%>);
 			<%
   			}
   			if (needAuth&&winAuth){
   				String domain_username = "\""+TalendTextUtils.removeQuotes(domain)+"\\\\"+TalendTextUtils.removeQuotes(username)+"\"";
 				%>
-				org.talend.DynamicInvoker.setWINAuth(true, <%=domain_username %>, <%=password %>); 	  		
+				org.talend.DynamicInvoker.setWINAuth(true, <%=domain_username %>, decryptedPassword_<%=cid%>); 	  		
 			<%
   			}
 			if (useProxy) {
 			%>  
-				org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>);
+                <%
+                passwordFieldName = "__PROXY_PASSWORD__";
+                %>
+                <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+                	final String decryptedProxyPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                <%} else {%>
+                	final String decryptedProxyPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+                <%}%>				
+				org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, decryptedProxyPwd_<%=cid%>);
 				System.setProperty("http.proxyHost", <%=proxuHost %>);
 				System.setProperty("http.proxyPort", <%=proxyPort %>);
 				System.setProperty("http.proxyUser", <%=proxuUser %>);
-				System.setProperty("http.proxyPassword", <%=proxyPassword%>);
+				System.setProperty("http.proxyPassword", decryptedProxyPwd_<%=cid%>);
 					
 				java.net.Authenticator.setDefault(
 				new java.net.Authenticator() {
 					public java.net.PasswordAuthentication getPasswordAuthentication() {
 						return new java.net.PasswordAuthentication(
-						   <%=proxuUser %>, <%=proxyPassword %>.toCharArray());
+							   <%=proxuUser %>, decryptedProxyPwd_<%=cid%>.toCharArray());
 					}
 				}
 				);

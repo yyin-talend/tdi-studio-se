@@ -21,7 +21,7 @@ imports="
 	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 	String apiVersion = ElementParameterParser.getValue(node, "__API_VERSION__");
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
+
 	
 	String sObject = ElementParameterParser.getValue(node, "__MODULENAME__");
 	String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
@@ -45,7 +45,6 @@ imports="
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 	
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -53,11 +52,11 @@ imports="
 	String concurrencyMode = ElementParameterParser.getValue(node,"__CONCURRENCY_MODE__");
 	String awaitTime = ElementParameterParser.getValue(node,"__AWAIT_TIME__");
 	
+	String passwordFieldName = "";
 	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
 	boolean useOAuth = "OAUTH".equals(loginType);
 	if(!useExistingConn && useOAuth){
 		String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
-		String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");
 		%>
 		org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
 		org.talend.salesforce.oauth.Token token_<%=cid%>;
@@ -65,7 +64,21 @@ imports="
 		String accessToken_<%=cid%> = null;
 		oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
 		oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
-		oauthClient_<%=cid%>.setClientSecret(<%=oauthSecret%>);
+		
+		<%
+		passwordFieldName = "__OAUTH_CLIENT_SECRET__";
+		if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+		%>
+			String decryptedQauthClientPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+		<%
+		} else {
+		%>
+			String decryptedQauthClientPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+		<%
+		}
+		%>		
+	    
+		oauthClient_<%=cid%>.setClientSecret(decryptedQauthClientPwd_<%=cid%>);
 		String refreshToken_<%=cid%> = null;
 		<%
 		String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
@@ -149,12 +162,26 @@ imports="
 		<%
 		}else{
 			if(useProxy){
+				passwordFieldName = "__PROXY_PASSWORD__";
+				if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+        		%>
+        		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+        		<%
+        		} else {
+        		%>
+        		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+        		<%
+        		}
 			%>
-				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+				sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,decryptedPwd_<%=cid%>);
 			<%
 			}
 			%>
-			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+			<%
+			passwordFieldName = "__PASS__";
+			%>
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,decryptedPassword_<%=cid%>,<%=apiVersion%>);
 		<%
 		}
 	}

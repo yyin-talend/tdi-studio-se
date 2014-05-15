@@ -36,16 +36,6 @@ imports="
             node,
             "__PRIVATEKEY__"
         );
-
-        String password = ElementParameterParser.getValue(
-            node,
-            "__PASSWORD__"
-        );
-        
-        String passphrase = ElementParameterParser.getValue(
-            node,
-            "__PASSPHRASE__"
-        );
 %>
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Start to work.");
@@ -100,7 +90,11 @@ imports="
 			log.debug("<%=cid%> - Private key: '" + <%=privatekey%> + "'." );
 		<%}%>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
-            boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
+            <%
+            String passwordFieldName = "__PASSPHRASE__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	        
+			boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, decryptedPassword_<%=cid%>);
               if (isAuthenticated_<%=cid%> == false){
 					<%if(isLog4jEnabled){%>
 						log.fatal("<%=cid%> - Authentication failed.");
@@ -117,7 +111,11 @@ imports="
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Authentication using a password");
 		<%}%>
-        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
+            <%
+            String passwordFieldName = "__PASSWORD__";
+            %>
+            <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
+        	boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, decryptedPassword_<%=cid%>);
         	if (isAuthenticated_<%=cid%> == false){
 				<%if(isLog4jEnabled){%>
 					log.fatal("<%=cid%> - Authentication failed.");
@@ -143,8 +141,12 @@ imports="
         				throws java.lang.Exception {
         			// TODO Auto-generated method stub
         			String[] reply = new String[numPrompts];
+                        <%
+                        String passwordFieldName = "__PASSWORD__";
+                        %>
+                        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>	        			
         			for (int i = 0; i < reply.length; i++) {
-        				reply[i] = <%=password%>;
+	        				reply[i] = decryptedPassword_<%=cid%>;
         			}
         
         			return reply;

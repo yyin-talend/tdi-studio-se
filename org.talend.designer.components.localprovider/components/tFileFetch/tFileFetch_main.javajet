@@ -25,7 +25,6 @@ java.io.InputStream retIS_<%=cid%> = null;
 if ("http".equals(protocol) || "https".equals(protocol)) {
 	String uri = ElementParameterParser.getValue(node, "__URI__");
 	String username = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-	String password = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 	String cookieDir = ElementParameterParser.getValue(node, "__COOKIE_DIR__");
 	String cookiePolicy = ElementParameterParser.getValue(node,"__COOKIE_POLICY__");
@@ -33,7 +32,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
 	String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
-	String proxyPassword = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");
 	String proxyDomain = ElementParameterParser.getValue(node, "__PROXY_DOMAIN__");
 	boolean post = "true".equals(ElementParameterParser.getValue(node, "__POST__"));
 	boolean printResponse = "true".equals(ElementParameterParser.getValue(node, "__PRINT__"));
@@ -170,25 +168,38 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 
 	if (useProxy) {%> 
 		client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
+		<%
+		String passwordFieldName = "__PROXY_PASSWORD__";
+		%>
 		
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		<%if (useProxyNTLM) {%>
 			client_<%=cid %>.getState().setProxyCredentials(
 			new org.apache.commons.httpclient.auth.AuthScope( <%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null ),
 			new org.apache.commons.httpclient.NTCredentials( <%=proxyUser %>,
-			<%=proxyPassword %>, <%=proxyHost %>, <%=proxyDomain %> ));
+			decryptedPassword_<%=cid%>, <%=proxyHost %>, <%=proxyDomain %> ));
 		<%} else {%>
 			client_<%=cid %>.getState().setProxyCredentials(
 			new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
-			new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+			new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, decryptedPassword_<%=cid%>));
 		<%}
 	}
 
 	if (needAuth) {
+		if (ElementParameterParser.canEncrypt(node, "__AUTH_PASSWORD__")) {
+		%>
+		String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__AUTH_PASSWORD__")%>);
+		<%
+		} else {
+		%>
+		String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, "__AUTH_PASSWORD__")%>;
+		<%
+		}
 		if ((!useProxy) && useProxyNTLM && (!"".equals(proxyDomain))) {
 		%>
-			client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.NTCredentials(<%=username %>, <%=password %>, new java.net.URL(<%=uri%>).getHost(), <%=proxyDomain%>));
+			client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.NTCredentials(<%=username %>, decryptedPwd_<%=cid%>, new java.net.URL(<%=uri%>).getHost(), <%=proxyDomain%>));
 		<%} else {%>
-			client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>));
+			client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, decryptedPwd_<%=cid%>));
 		<%}
 	}
 
@@ -389,7 +400,6 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
 	//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
 	//And it can not work with the FTP proxy directly, only support the socks proxy.
@@ -399,7 +409,11 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		props.put("socksProxyPort", <%=proxyPort %>);
 		props.put("socksProxyHost", <%=proxyHost %>);
 		props.put("java.net.socks.username", <%=proxyUser %>);
-		props.put("java.net.socks.password", <%=proxyPassword %>);        
+		<%
+		String passwordFieldName = "__PROXY_PASSWORD__";
+		%>
+		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		props.put("java.net.socks.password", decryptedPassword_<%=cid%>);        
 	<% }%>
 	//open url stream
 	java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
@@ -473,12 +487,15 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	String srcurl = ElementParameterParser.getValue(node, "__SMB_URI__"); 
 	String domain = ElementParameterParser.getValue(node,"__SMB_DOMAIN__");
 	String username = ElementParameterParser.getValue(node,"__SMB_USERNAME__");
-	String password = ElementParameterParser.getValue(node,"__SMB_PASSWORD__");
 	%>     
 	String srcurl_<%=cid %> = <%=srcurl %>;
 	String fileName_<%=cid %> = <%=filename %>;
 	String username_<%=cid %> = <%=username %>;
-	String password_<%=cid %> = <%=password %>;
+	<%
+	String passwordFieldName = "__SMB_PASSWORD__";
+	%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	String password_<%=cid %> = decryptedPassword_<%=cid%>;
 
 	if (fileName_<%=cid %>.compareTo("") == 0) {
 		fileName_<%=cid %> = srcurl_<%=cid %>.substring(srcurl_<%=cid %>.lastIndexOf("/"));

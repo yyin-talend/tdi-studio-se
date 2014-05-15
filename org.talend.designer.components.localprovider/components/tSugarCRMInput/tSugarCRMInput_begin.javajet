@@ -23,7 +23,7 @@ imports="
 	String customModuleName = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
 	
 	String username = ElementParameterParser.getValue(node, "__USER__");
-	String password = ElementParameterParser.getValue(node, "__PASS__");
+
 	
 	String condition = ElementParameterParser.getValue(node, "__CONDITION__");
 %>
@@ -60,7 +60,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         <%}else{%>
         String modulename_<%=cid %> = "<%=modulename %>";
         <%}%>
-        org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","5.2.0");
+        <%
+        String passwordFieldName = "__PASS__";
+        %>
+        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>        
+        org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, decryptedPassword_<%=cid%>, <%=endpoint %>, "sugarcrm","5.2.0");
         sugarManagement_<%=cid %>.login();
         
         String[] filedArr_<%=cid %> = new String[]{

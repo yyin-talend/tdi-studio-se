@@ -26,17 +26,14 @@ String host = ElementParameterParser.getValue(node,"__NTLM_HOST__");
 
 boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
 String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
 boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
 String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
         
 String connTimeoutStr = ElementParameterParser.getValue(node,"__CONNECTION_TIMEOUT__");
 String connTimeoutSec = (connTimeoutStr!=null&&!("").equals(connTimeoutStr))?connTimeoutStr:"20";
@@ -47,6 +44,7 @@ String receiveTimeoutSec = (receiveTimeoutStr!=null&&!("").equals(receiveTimeout
 long receiveTimeout = (long)(Double.valueOf(receiveTimeoutSec) * 1000);
 
 String tempPath = ElementParameterParser.getValue(node,"__TMPPATH__");
+String passwordFieldName = "";
 if("".equals(tempPath))tempPath="\"\"";
 
 %>
@@ -66,25 +64,47 @@ if("".equals(tempPath))tempPath="\"\"";
 	config_<%=cid%>.setKeyStoreFile(System.getProperty("javax.net.ssl.keyStore"));
 	config_<%=cid%>.setKeyStoreType(System.getProperty("javax.net.ssl.keyStoreType"));
 	config_<%=cid%>.setKeyStorePwd(System.getProperty("javax.net.ssl.keyStorePassword"));
-<%		
+	
+<%
+passwordFieldName = "__AUTH_PASSWORD__";
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>		
+	
+<%
 if (needSSLtoTrustServer) {
 %>   
     System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
 
 	System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
-	System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
+    <%
+    passwordFieldName = "__SSL_TRUSTSERVER_PASSWORD__";
+    %>
+    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+    	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%} else {%>
+    	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+    <%}%>	
+	System.setProperty("javax.net.ssl.trustStorePassword", decryptedPwd_<%=cid%>);
 <% 
 }if(needAuth&&!useNTLM){	
 %>	
 	config_<%=cid%>.setUsername(<%=username%>);
-	config_<%=cid%>.setPassword(<%=password%>);
+	config_<%=cid%>.setPassword(decryptedPassword_<%=cid%>);
 <%
 }if(useProxy){
 %>
 	config_<%=cid%>.setProxyServer(<%=proxyHost %>);
 	config_<%=cid%>.setProxyPort(<%=proxyPort %>);
     config_<%=cid%>.setProxyUsername(<%=proxyUser %>);
-    config_<%=cid%>.setProxyPassword( <%=proxyPassword %>);
+    <%
+    passwordFieldName = "__PROXY_PASSWORD__";
+    %>
+    <%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+    	final String decryptedProxyPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+    <%} else {%>
+    	final String decryptedProxyPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+    <%}%>
+    config_<%=cid%>.setProxyPassword(decryptedProxyPwd_<%=cid%>);
 <%
 }if(useNTLM){
 %>
@@ -93,7 +113,7 @@ if (needSSLtoTrustServer) {
 	<%}%>
 	java.net.Authenticator.setDefault(new java.net.Authenticator() {
         public java.net.PasswordAuthentication getPasswordAuthentication() {
-            return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
+            return new java.net.PasswordAuthentication(<%=username%>, decryptedPassword_<%=cid%>.toCharArray());
         }
     });
 	

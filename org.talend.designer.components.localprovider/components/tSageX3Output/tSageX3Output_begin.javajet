@@ -25,7 +25,7 @@ imports="
             		
                 		String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
                         String user = ElementParameterParser.getValue(node, "__USER__");
-                        String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+
                         String language = ElementParameterParser.getValue(node, "__LANGUAGE__");
                         String poolAlias = ElementParameterParser.getValue(node, "__POOL_ALIAS__");
                         String requestConfig = ElementParameterParser.getValue(node, "__REQUEST_CONFIG__");
@@ -33,7 +33,11 @@ imports="
 %>
          		org.talend.sage.Client client_<%=cid %> = new org.talend.sage.Client();
                 client_<%=cid %>.ConnectService(<%=endpoint%>);
-                client_<%=cid %>.setContext(<%=language%>,<%=user%>,<%=password%>,<%=poolAlias%>,<%=requestConfig%>);
+                <%
+                String passwordFieldName = "__PASSWORD__";
+                %>
+                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+                client_<%=cid %>.setContext(<%=language%>,<%=user%>,decryptedPassword_<%=cid%>,<%=poolAlias%>,<%=requestConfig%>);
 <%
             		}//4
             	}//3
