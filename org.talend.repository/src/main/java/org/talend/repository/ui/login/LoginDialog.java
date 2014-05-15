@@ -63,6 +63,7 @@ import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
+import org.talend.repository.ui.wizards.register.TalendForgeDialog;
 
 /**
  * Login dialog. <br/>
@@ -331,7 +332,11 @@ public class LoginDialog extends TrayDialog {
 
                             @Override
                             public void run() {
-                                TalendForgeDialog tfDialog = new TalendForgeDialog(getShell(), project);
+                                String userEmail = null;
+                                if (project.getAuthor() != null) {
+                                    userEmail = project.getAuthor().getLogin();
+                                }
+                                TalendForgeDialog tfDialog = new TalendForgeDialog(getShell(), userEmail);
                                 tfDialog.setBlockOnOpen(true);
                                 tfDialog.open();
                             }
