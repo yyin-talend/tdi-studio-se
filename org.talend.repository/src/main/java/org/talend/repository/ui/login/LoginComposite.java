@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -77,7 +78,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
@@ -843,7 +843,8 @@ public class LoginComposite extends Composite {
 
                         @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                            monitorWrap = new EventLoopProgressMonitor(monitor);
+                            // monitorWrap = new EventLoopProgressMonitor(monitor);
+                            monitorWrap = SubMonitor.convert(monitor);
 
                             try {
                                 final List<DemoProjectBean> demoProjectsList = ImportProjectsUtilities.getAllDemoProjects();

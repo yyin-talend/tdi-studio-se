@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -79,8 +80,6 @@ import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.WorkbenchPage;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -248,17 +247,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 try {
                     // MOD by zshen for 15750 todo 39 if the Perspective is DataProfilingPerspective refuse the
                     // RepositoryView be display by automatic
-                    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId()
-                            .equalsIgnoreCase("org.talend.dataprofiler.DataProfilingPerspective")) {//$NON-NLS-1$
-                        part = ((WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage())
-                                .getViewFactory().createView(IRepositoryView.VIEW_ID).getView(true);
-                    } else {
-                        // bug 16594
-                        String perId = page.getPerspective().getId();
-                        if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                            part = page.showView(IRepositoryView.VIEW_ID);
-                        }
+                    //                    if (page.getPerspective().getId().equalsIgnoreCase("org.talend.dataprofiler.DataProfilingPerspective")) {//$NON-NLS-1$
+                    // part = ((WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage())
+                    // .getViewFactory().createView(IRepositoryView.VIEW_ID).getView(true);
+                    // } else {
+                    // bug 16594
+                    String perId = page.getPerspective().getId();
+                    if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                        part = page.showView(IRepositoryView.VIEW_ID);
                     }
+                    // }
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
@@ -1088,7 +1086,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
                 timer.start();
                 if (needInitialize) {
-                    monitorWrap = new EventLoopProgressMonitor(monitor);
+                    // monitorWrap = new EventLoopProgressMonitor(monitor);
+                    monitorWrap = SubMonitor.convert(monitor);
                     try {
                         final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         factory.initialize();

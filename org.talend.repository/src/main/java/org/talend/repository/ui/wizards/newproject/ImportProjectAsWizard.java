@@ -18,10 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -116,7 +116,8 @@ public class ImportProjectAsWizard extends Wizard {
 
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitorWrap = new EventLoopProgressMonitor(monitor);
+                    // monitorWrap = new EventLoopProgressMonitor(monitor);
+                    monitorWrap = SubMonitor.convert(monitor);
 
                     try {
 

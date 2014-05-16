@@ -24,7 +24,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.talend.core.ui.CoreUIPlugin;
+import org.talend.designer.core.DesignerPlugin;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -91,10 +91,10 @@ public class TalendJavaViewerConfiguration extends JavaSourceViewerConfiguration
      */
     private IDialogSettings getSettings(String sectionName) {
         // IDialogSettings settings = JavaPlugin.getDefault().getDialogSettings().getSection(sectionName);
-        IDialogSettings settings = CoreUIPlugin.getDefault().getDialogSettings().getSection(sectionName);
+        IDialogSettings settings = DesignerPlugin.getDefault().getDialogSettings().getSection(sectionName);
         if (settings == null) {
             // settings = JavaPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
-            settings = CoreUIPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
+            settings = DesignerPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
         }
 
         return settings;
