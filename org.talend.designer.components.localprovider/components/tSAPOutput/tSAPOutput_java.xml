@@ -124,6 +124,35 @@
 			<ITEM NAME="SAP_PARAMETER_NAME" FIELD="String" />		
 		</ITEMS>
 	</PARAMETER>
+
+	<PARAMETER 
+	  NAME="NOTE" 
+	  FIELD="LABEL" 
+	  NUM_ROW="91" 
+	  GROUP="DATASOURCE" 
+	  SHOW_IF="(USE_EXISTING_CONNECTION=='false') AND (DB_VERSION=='sapjco3.jar')" 
+	> 
+	    <DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT> 
+	</PARAMETER> 
+	<PARAMETER 
+	  NAME="SPECIFY_DATASOURCE_ALIAS" 
+	  FIELD="CHECK" 
+	  NUM_ROW="92" 
+	  REQUIRED="true" 
+	  GROUP="DATASOURCE" 
+	  SHOW_IF="(USE_EXISTING_CONNECTION=='false') AND (DB_VERSION=='sapjco3.jar')" 
+	> 
+	</PARAMETER> 
+	    <PARAMETER 
+	            NAME="SAP_DATASOURCE_ALIAS" 
+	        FIELD="TEXT" 
+	        NUM_ROW="100" 
+	        REQUIRED="true" 
+	        GROUP="DATASOURCE" 
+	        SHOW_IF="(USE_EXISTING_CONNECTION=='false') AND (SPECIFY_DATASOURCE_ALIAS=='true') AND (DB_VERSION=='sapjco3.jar')" 
+	    > 
+	<DEFAULT>""</DEFAULT> 
+	</PARAMETER>	
 	
   </PARAMETERS>
   <ADVANCED_PARAMETERS>
