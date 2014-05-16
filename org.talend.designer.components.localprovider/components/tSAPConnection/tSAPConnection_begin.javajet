@@ -14,7 +14,6 @@
 	String version = ElementParameterParser.getValue(node, "__DB_VERSION__");
     String client = ElementParameterParser.getValue(node, "__CLIENT__");
     String userid = ElementParameterParser.getValue(node, "__USERID__");
-    String password = ElementParameterParser.getValue(node, "__PASSWORD__");
     String language = ElementParameterParser.getValue(node, "__LANGUAGE__");
     String hostname = ElementParameterParser.getValue(node, "__HOSTNAME__");
     String systemnumber = ElementParameterParser.getValue(node, "__SYSTEMNUMBER__");
@@ -23,14 +22,19 @@
     String systemId = ElementParameterParser.getValue(node,"__SYSTEMID__");
     String groupName = ElementParameterParser.getValue(node,"__GROUPNAME__");
     boolean useFtpHttp = ("true").equals(ElementParameterParser.getValue(node,"__FTP_HTTP_FUNCTION__"));
+    
+    String passwordFieldName = "__PASSWORD__";
 %>
+    
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    
 <%if("sapjco.jar".equals(version)){%>
 	com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
 	<%if("ApplicationServer".equals(serverType)){%>
 		//Create a client connection to a dedicated R/3 system
 		client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 				            				 <%=userid %>,   	// userid
-				            				 <%=password %>,    // password
+				            				 decryptedPassword_<%=cid%>,    // password
 				            				 <%=language %>,    // language
 				            				 <%=hostname %>,    // host name
 				            				 <%=systemnumber %> );      // system number
@@ -38,7 +42,7 @@
 		//Create a client connection to Message Server 
 		client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 				            				 <%=userid %>,   	// userid
-				            				 <%=password %>,    // password
+				            				 decryptedPassword_<%=cid%>,    // password
 				            				 <%=language %>,    // language
 				            				 <%=hostname %>,    // host name
 				            				 <%=systemId %>,    // system ID,defined in sapmsg.ini
@@ -56,14 +60,14 @@
 	<%if("ApplicationServer".equals(serverType)){%>
 		destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
 																			<%=userid%>,
-																			<%=password%>,
+																			decryptedPassword_<%=cid%>,
 																			<%=language%>,
 																			<%=hostname%>,
 																			<%=systemnumber%>);
 	<%}else{%>			
 		destinationData_<%=cid%> = new org.talend.sap.TalendDestinationData(<%=client%>,
 																			<%=userid%>,
-																			<%=password%>,
+																			decryptedPassword_<%=cid%>,
 																			<%=language%>,
 																			<%=hostname%>,
 																			<%=systemId %>,
