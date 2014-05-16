@@ -41,11 +41,9 @@
 		org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
+		service_<%=cid%>.getAccountOwner();
 <%		
 	}
-%>
-		service_<%=cid%>.getAccountOwner();
-<%
 	List<Map<String, String>> buckets = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__BUCKETS__");
 	boolean queryDelObjInListBuckets = "true".equals(ElementParameterParser.getValue(node,"__DEL_IN_LIST_BUCKETS__"));
 	if(!queryDelObjInListBuckets){

@@ -40,11 +40,9 @@
 		org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
+		service_<%=cid%>.getAccountOwner();
 <%		
 	}
-%>
-		service_<%=cid%>.getAccountOwner();
-<%
 		if(!isSpecialConfig){
 %>
 		service_<%=cid%>.createBucket(<%=bucketName%>);

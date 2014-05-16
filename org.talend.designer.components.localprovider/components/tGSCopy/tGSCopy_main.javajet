@@ -41,10 +41,10 @@
 	   <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 		org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
+		service_<%=cid%>.getAccountOwner();
 <%		
 	}
 %>
-		service_<%=cid%>.getAccountOwner();
 		String targetFolder_<%=cid%>=<%=targetFolder%>;
 		if(targetFolder_<%=cid%>.length()>0 && !targetFolder_<%=cid%>.endsWith("/")){
 			targetFolder_<%=cid%>=targetFolder_<%=cid%>+"/";

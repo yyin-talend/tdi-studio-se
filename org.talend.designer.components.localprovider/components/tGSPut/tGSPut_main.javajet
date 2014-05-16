@@ -45,10 +45,10 @@
 		org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
+		service_<%=cid%>.getAccountOwner();
 <%		
 	}
 %>
-		service_<%=cid%>.getAccountOwner();
 		org.talend.gs.util.GSObjectUtil gsUtil_<%=cid%>=new  org.talend.gs.util.GSObjectUtil();
 		gsUtil_<%=cid%>.initMimeTypes();
 		java.io.File dataDir_<%=cid%>=new java.io.File(<%=localdir%>);
