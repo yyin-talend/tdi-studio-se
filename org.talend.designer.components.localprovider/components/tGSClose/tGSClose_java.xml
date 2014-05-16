@@ -37,7 +37,7 @@
     	<PARAMETER
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
-	      FILTER="tGSConnection"
+	      REQUIRED="true" FILTER="tGSConnection"
 	      NUM_ROW="10"
     	/>
   	</PARAMETERS>

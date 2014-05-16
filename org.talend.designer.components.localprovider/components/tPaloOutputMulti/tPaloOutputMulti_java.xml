@@ -49,7 +49,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tPaloConnection"
+      REQUIRED="true" FILTER="tPaloConnection"
       NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />

@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tJDBCConnection"
+      REQUIRED="true" FILTER="tJDBCConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

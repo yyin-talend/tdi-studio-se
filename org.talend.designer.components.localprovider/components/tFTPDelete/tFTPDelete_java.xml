@@ -51,7 +51,7 @@ COMPATIBILITY="ALL"
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tFTPConnection"
+      REQUIRED="true" FILTER="tFTPConnection"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />

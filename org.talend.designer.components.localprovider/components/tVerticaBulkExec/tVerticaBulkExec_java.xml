@@ -73,7 +73,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tVerticaConnection"
+      REQUIRED="true" FILTER="tVerticaConnection"
       NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"

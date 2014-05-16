@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tNetezzaConnection"
+      REQUIRED="true" FILTER="tNetezzaConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

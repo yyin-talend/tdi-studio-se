@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tTeradataConnection"
+      REQUIRED="true" FILTER="tTeradataConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

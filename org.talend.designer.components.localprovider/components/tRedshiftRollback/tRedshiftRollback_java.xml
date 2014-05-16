@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tRedshiftConnection"
+      REQUIRED="true" FILTER="tRedshiftConnection"
       NUM_ROW="1"
       DYNAMIC_SETTINGS="true"
     />
