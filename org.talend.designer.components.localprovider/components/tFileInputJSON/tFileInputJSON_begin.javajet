@@ -14,9 +14,13 @@ imports="
 	org.talend.core.model.utils.NodeUtil
 " 
 %>
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.logParameters(node); 
 
 String cid = node.getUniqueName();
 
@@ -52,15 +56,24 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 	              jsonResultList.add(resultArray);
 	              if(recordMaxSize != -1 && recordMaxSize != resultArray.size()){
 		             //just give an error, don't stop
+					<%if(isLog4jEnabled){%>
+						log.warn("<%=cid%> - The Json resource datas maybe have some problems, please make sure the data structure with the same fields.");
+					<%}%>
 		              System.err.println("The Json resource datas maybe have some problems, please make sure the data structure with the same fields.");
 	               }
 	               recordMaxSize = Math.max(recordMaxSize, resultArray.size());
                }else{
+					<%if(isLog4jEnabled){%>
+						log.warn("<%=cid%> - Can't find any data with JSONPath " + query);
+					<%}%>
 	               System.err.println("Can't find any data with JSONPath " + query);
 	               //add null to take a place in List(buffer)
 	               jsonResultList.add(null); 
                }
           }catch(java.lang.Exception e){
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e.getMessage());
+				<%}%>
               e.printStackTrace();
           }
           return recordMaxSize;
@@ -120,6 +133,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                         String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
                                         if(defaultValue == null) {
 %>
+											<%if(isLog4jEnabled){%>
+												log.fatal("<%=cid%> Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
+											<%}%>
 			                                throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
                                         } else {
@@ -130,6 +146,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                         }
 %>
 		                             }
+									<%if(isLog4jEnabled){%>
+										log4jSb_<%=cid%>.append(<%=firstConnName %>.<%=column.getLabel() %> + "|");
+									<%}%>
 <%
 
                                 }
@@ -164,6 +183,9 @@ int recordMaxSize_<%=cid%> = -1;
 javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
 javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
 if (jsEngine_<%=cid%> == null) {
+	<%if(isLog4jEnabled){%>
+		log.warn("<%=cid%> - No script engine found for JavaScript");
+	<%}%>
     System.err.println("No script engine found for JavaScript");
 } else {
     java.net.URL jsonjsUrl_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js");
@@ -191,12 +213,21 @@ if (jsEngine_<%=cid%> == null) {
 	<%}%>
 		jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
 		if(jsonText_<%=cid%> == null) {
+			<%if(isLog4jEnabled){%>
+				log.fatal("<%=cid%> - Fail to parse the json file : " + <%if(!isUseUrl) {%> <%=filename %> <%} else {%> <%=urlpath %> <%}%>);
+			<%}%>
 			throw new RuntimeException("fail to parse the json file : " + <%if(!isUseUrl) {%> <%=filename %> <%} else {%> <%=urlpath %> <%}%>);
 		}
 	} catch(java.lang.Exception e_<%=cid%>) {
 	<%if (dieOnError) {%>
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+		<%}%>
 		throw e_<%=cid%>;
 	<%} else {%>
+		<%if(isLog4jEnabled){%>
+			log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+		<%}%>
  		System.err.println(e_<%=cid%>.getMessage());
 	<%}%>
 	} finally {
@@ -211,19 +242,21 @@ if (jsEngine_<%=cid%> == null) {
 		javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
 
 <%
-    	for(Map<String,String> path:mapping){
-    		String column = path.get("SCHEMA_COLUMN");
-    		String query = path.get("QUERY");
+	for(Map<String,String> path:mapping){
+		String column = path.get("SCHEMA_COLUMN");
+		String query = path.get("QUERY");
 %>
 
-		recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
+recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
 
 <%
-		}
+	}
 %>
 	}
 }
-
+    <%if(isLog4jEnabled){%>
+    	log.info("<%=cid%> - Retrieving records from data.");
+    <%}%>
 	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < recordMaxSize_<%=cid%>; nbResultArray_<%=cid%>++){
 	
 		nb_line_<%=cid%>++;
@@ -279,9 +312,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                         if (dieOnError) {
 %>
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - " + e.getMessage());
+							<%}%>
                             throw(e);
 <%
                         } else {
+							if(isLog4jEnabled){%>
+								log.error("<%=cid%> - " + e.getMessage());
+							<%}
                             if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 %>
                                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -522,10 +561,16 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 <%
 			if (dieOnError) {
 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+				<%}%>
             	throw(e_<%=cid%>);
 <%			
 			}else{
 %>
+				<%if(isLog4jEnabled){%>
+					log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+				<%}%>
 	            System.err.println(e_<%=cid%>.getMessage());
 <%
 			}
@@ -584,10 +629,16 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 <%
             if (dieOnError) {
 %>
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+				<%}%>
                 throw(e_<%=cid%>);
 <%
             }else{
 %>
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+					<%}%>
                     System.err.println( e_<%=cid%>.getMessage());
                     isValidFile_<%=cid %> = false;
 <% 
@@ -815,6 +866,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
                                             }
 <%
+									if(isLog4jEnabled){%>
+										log4jSb_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %> + "|");
+									<%}
                                 } //S_if_1_2
                             } // S_if_1_1
                         } // S_for_1_0
@@ -833,9 +887,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                     if (dieOnError) {
 %>
+						<%if(isLog4jEnabled){%>
+							log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+						<%}%>
                         throw(e_<%=cid%>);
 <%
                     } else {
+						if(isLog4jEnabled){%>
+							log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+						<%}
                         if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
     
 %>

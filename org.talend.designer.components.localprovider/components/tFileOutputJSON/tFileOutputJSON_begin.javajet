@@ -7,10 +7,13 @@ imports="
     org.talend.core.model.process.ElementParameterParser
 		"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jFileUtil.componentStartInfo(node); 
+log4jFileUtil.logParameters(node); 
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 String datablockname = ElementParameterParser.getValue(node, "__DATABLOCKNAME__");

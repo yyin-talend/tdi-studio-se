@@ -5,14 +5,20 @@
 		org.talend.core.model.process.ElementParameterParser
 	"
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 boolean readByXPath = "true".equals(ElementParameterParser.getValue(node, "__READBYXPATH__"));
 
 String cid = node.getUniqueName();
 %>
+		<%if(isLog4jEnabled){%>
+			log.debug("<%=cid%> - Retrieving the record " + nb_line_<%=cid %> + ".");
+			log.trace("<%=cid%> - Content of the record " + nb_line_<%=cid %> + ": " + log4jSb_<%=cid%>  + " .");
+			log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+		<%}%>
 <%
         if(readByXPath){
 %>
@@ -22,3 +28,7 @@ String cid = node.getUniqueName();
 %>
 	}
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+<%
+	log4jFileUtil.retrievedDataNumberInfo(node);
+	log4jFileUtil.componentFinishInfo(node);
+%>

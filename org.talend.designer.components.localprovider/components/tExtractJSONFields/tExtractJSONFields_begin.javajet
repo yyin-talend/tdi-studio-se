@@ -11,12 +11,16 @@ imports="
     java.util.List
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+    
 "
 %>
-
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	log4jFileUtil.componentStartInfo(node); 
+	log4jFileUtil.logParameters(node); 
 	String cid = node.getUniqueName();
 	
 	List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING__");
@@ -164,47 +168,48 @@ boolean isGetWholeJson_<%=cid %> = false;
         		de.odysseus.staxon.json.JsonXMLOutputFactory jxof = null;
            		
            		public String getOriginalJSONString(String xmlString,String additionRoot,String encoding,boolean isGetWholeJson, boolean isArray) throws Exception {
-           			try {
-           				if(isArray){
-           					xmlString = "<list>" + xmlString + "</list>";
-           				}
-						bais = new ByteArrayInputStream(xmlString.getBytes(encoding));
-            			baos = new java.io.ByteArrayOutputStream();
-            			config = new de.odysseus.staxon.json.JsonXMLConfigBuilder().multiplePI(false).autoArray(true).build();
-            			jxof = new de.odysseus.staxon.json.JsonXMLOutputFactory(config);
-            			javax.xml.stream.XMLEventReader xmlEventReader = javax.xml.stream.XMLInputFactory.newInstance().createXMLEventReader(bais,encoding);
-            			javax.xml.stream.XMLEventWriter xmLEventWriter = jxof.createXMLEventWriter(baos);
-						xmLEventWriter.add(xmlEventReader);
-						xmlEventReader.close();
-						xmLEventWriter.close();
-						net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(baos.toString());
-						if(isArray){
-							json = json.getJSONObject("list");
-						}
-						net.sf.json.JSONObject originalJsonObject = null;
-						if (!json.isNullObject()) {
-							if (additionRoot == null) {
-								originalJSONString = json.toString();
-							} else {
-								if (isGetWholeJson) {
-                                    originalJsonObject = json.getJSONObject(additionRoot);
-                                    if (!originalJsonObject.isNullObject()) {
-                                        originalJSONString = originalJsonObject.toString();
-                                    } 
-                                }else {
-                                        originalJSONString = json.toString();
-                                }
+
+    					try {
+	           				if(isArray){
+    	       					xmlString = "<list>" + xmlString + "</list>";
+        	   				}
+    						bais = new ByteArrayInputStream(xmlString.getBytes(encoding));
+                			baos = new java.io.ByteArrayOutputStream();
+                			config = new de.odysseus.staxon.json.JsonXMLConfigBuilder().multiplePI(false).autoArray(true).build();
+                			jxof = new de.odysseus.staxon.json.JsonXMLOutputFactory(config);
+            				javax.xml.stream.XMLEventReader xmlEventReader = javax.xml.stream.XMLInputFactory.newInstance().createXMLEventReader(bais,encoding);
+                			javax.xml.stream.XMLEventWriter xmLEventWriter = jxof.createXMLEventWriter(baos);
+    						xmLEventWriter.add(xmlEventReader);
+    						xmlEventReader.close();
+    						xmLEventWriter.close();
+    						net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(baos.toString());
+							if(isArray){
+								json = json.getJSONObject("list");
 							}
-						}
-					} finally {
-				        baos.close();
-				        if(bais!=null){
-				            bais.close();
-				        }
-					}
+    						net.sf.json.JSONObject originalJsonObject = null;
+							if (!json.isNullObject()) {
+								if (additionRoot == null) {
+									originalJSONString = json.toString();
+								} else {
+									if (isGetWholeJson) {
+                                        originalJsonObject = json.getJSONObject(additionRoot);
+                                        if (!originalJsonObject.isNullObject()) {
+                                            originalJSONString = originalJsonObject.toString();
+                                        } 
+                                    }else {
+                                            originalJSONString = json.toString();
+                                    }
+								}
+							}
+    					} finally {
+    				        baos.close();
+    				        if(bais!=null){
+    				            bais.close();
+    				        }
+    					}
 					
 					return originalJSONString;
-           		}
+				}
            		public String getOriginalJSONString(String xmlString,String additionRoot,String encoding,boolean isGetWholeJson) throws Exception {
     					return getOriginalJSONString(xmlString, additionRoot, encoding, isGetWholeJson, false);
 				}
@@ -320,31 +325,31 @@ if (outConn!=null) {
 				<%
                 if(!isArrayCheck){
                 %>
-	                Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
-	                if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
-	                    node_<%=cid%> = temp_<%=cid%>;
-	                    str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
-	                }else{
-                    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-                    	<%
-  		                if(("true").equals(nodeCheck)){
-						%>
-							if(node_<%=cid %>==null){
-	 							str_<%=cid %> = null;
-							}else{
-								str_<%=cid %> = originalJSONString_<%=cid %>.getOriginalJSONString(node_<%=cid %>.asXML(),cjs_<%=cid %>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid %>);
-							}
-							isGetWholeJson_<%=cid%> = false;
-						<%
-                    	}else{
-						%>
-                        	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
-						<%
-                    	}
-                    	%>
-                	}
-                <%
+                Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+                if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+                    node_<%=cid%> = temp_<%=cid%>;
+                    str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
                 }else{
+                    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+<%
+                    if(("true").equals(nodeCheck)){
+%>
+						if(node_<%=cid %>==null){
+	 						str_<%=cid %> = null;
+						}else{
+							str_<%=cid %> = originalJSONString_<%=cid %>.getOriginalJSONString(node_<%=cid %>.asXML(),cjs_<%=cid %>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid %>);
+						}
+						isGetWholeJson_<%=cid%> = false;
+<%
+                    }else{
+%>
+                        str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+<%
+                    }
+%>
+                }
+<%
+}else{
                 	if(("true").equals(nodeCheck)){
 					%>
 						String xmlStrTemp<%=i%>_<%=cid%> = "";
@@ -385,67 +390,67 @@ if (outConn!=null) {
                             }
                             
                             if(("true").equals(nodeCheck)){
-							%>
-                                <%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
-								<%
+%>
+                                    <%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
                                 continue;
                             }
                             if(!isArrayCheck){
-	                            if(javaType == JavaTypesManager.STRING){
-									if(column.isNullable()){
-									%>
-	                                    if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
-	                                        <%=firstConnName %>.<%=column.getLabel() %> =null;
-	                                    }else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
-	                                        <%=firstConnName %>.<%=column.getLabel() %> ="";
-	                                    }else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
-	                                        <%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault()%>;
-	                                    }else{
-									<%
-									}else{ // column.isNullable()
-									%>
-										if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
-											<%=firstConnName %>.<%=column.getLabel() %> ="";
-										}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
-											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
-										}else{
-									<%
-									}
-	                            }else{ // other type
-									if(column.isNullable()){
-									%>	
-	                                	if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
-	                                    	<%=firstConnName %>.<%=column.getLabel() %> = null;
-	                                	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
-	                                    	<%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
-	                                	}else{
-									<%
-									}else{ // column.isNullable()
-									%>
+                            if(javaType == JavaTypesManager.STRING){
+								if(column.isNullable()){
+%>
+                                    if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+                                        <%=firstConnName %>.<%=column.getLabel() %> =null;
+                                    }else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+                                        <%=firstConnName %>.<%=column.getLabel() %> ="";
+                                    }else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+                                        <%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault()%>;
+                                    }else{
+<%
+								}else{ // column.isNullable()
+%>
+									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=firstConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+									}else{
+<%
+								}
+                            }else{ // other type
+								if(column.isNullable()){
+%>	
+                                	if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+                                    	<%=firstConnName %>.<%=column.getLabel() %> = null;
+                                	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+                                    	<%=firstConnName %>.<%=column.getLabel() %> = <%=isNotSetDefault?null:column.getDefault()%>;
+                                	}else{
+<%
+								}else{ // column.isNullable()
+%>
 										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
 											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
 										}else{
-									<%
-									}
+<%
 								}
-								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-								%>
-									<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
-								<%
+							}
+							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+								<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
+<%
+							} else {
+								if (javaType == JavaTypesManager.DATE) {
+%>
+									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
+<%
 								} else {
-									if (javaType == JavaTypesManager.DATE) {
-									%>
-										<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
-									<%
-									} else {
-									%>
-										<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
-									<%
-									}
+%>
+									<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
+<%
 								}
-								%>
-										}
-							<%
+							}
+%>
+									}
+<%
 							}else{
 							%>
 								if(xmlListTemp<%=i%>_<%=cid%>.isEmpty()){
