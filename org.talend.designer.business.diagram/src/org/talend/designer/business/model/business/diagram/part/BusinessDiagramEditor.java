@@ -63,6 +63,7 @@ import org.talend.designer.business.model.business.diagram.edit.parts.BusinessPr
 import org.talend.designer.business.model.business.diagram.providers.BusinessDiagramActionProvider;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -175,7 +176,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     @Override
     public void doSave(IProgressMonitor progressMonitor) {
         if (repositoryEditorInput != null) {
-            BusinessProcessItem businessProcessItem = (BusinessProcessItem) repositoryEditorInput.getItem();
+            final BusinessProcessItem businessProcessItem = (BusinessProcessItem) repositoryEditorInput.getItem();
             IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             try {
@@ -200,12 +201,17 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             diagramResourceManager.updateFromResource(businessProcessItem, repositoryEditorInput.getFile());
             // remove the function of sve SVG file because the imported business model can't save SVG file.
             // saveSVG(businessProcessItem);
-            try {
-                ProxyRepositoryFactory.getInstance().save(businessProcessItem);
-            } catch (PersistenceException e) {
-                // e.printStackTrace();
-                ExceptionHandler.process(e);
-            }
+            final IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+            RepositoryWorkUnit rwu = new RepositoryWorkUnit("save Business") {
+
+                @Override
+                protected void run() throws LoginException, PersistenceException {
+                    ProxyRepositoryFactory.getInstance().save(businessProcessItem);
+                }
+            };
+            rwu.setAvoidUnloadResources(true);
+            rwu.setAvoidSvnUpdate(true);
+            factory.executeRepositoryWorkUnit(rwu);
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
 
