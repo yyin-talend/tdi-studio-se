@@ -70,6 +70,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.general.Project;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.utils.TalendCacheUtils;
@@ -800,14 +801,18 @@ public class ComponentsFactory implements IComponentsFactory {
         componentList = null;
         skeletonList = null;
         customComponentList = null;
-
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+            IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (jobletService != null) {
+                jobletService.clearJobletComponent();
+            }
+        }
     }
 
     @Override
     public void resetCache() {
-        componentList = null;
-        skeletonList = null;
-        customComponentList = null;
+    	reset();
         if (!CommonsPlugin.isHeadless()) {
             CoreImageProvider.clearComponentIconImages();
         }
