@@ -60,10 +60,13 @@
 			<value>routines.system.api.TalendESBJobFactory</value>
 #end
 #end
+#if ($isTalendStepTemplate)
+			<value>routines.system.api.TalendStepTemplateFactory</value>
+#end
 		</interfaces>
 		<service-properties>
 			<entry key="name" value="${name}" />
-            <entry key="version" value="${version}" />
+			<entry key="version" value="${version}" />
 			<entry key="type" value="job" />
 #if ($isESBJobFactory)
 			<entry key="multithreading" value="true" />

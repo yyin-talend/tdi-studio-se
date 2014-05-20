@@ -412,6 +412,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tRouteInput");
     }
 
+    private static boolean isTalendStepTemplate(ProcessItem processItem) {
+        return null != EmfModelUtils.getComponentByName(processItem, "tIPaasInput", "tIPaasOutput");
+    }
+
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
     }
@@ -462,6 +466,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean isESBJob = isTalendESBJob(processItem);
         jobInfo.put("isESBJob", isESBJob); //$NON-NLS-1$
         jobInfo.put("isESBJobFactory", isESBJob && isTalendESBJobFactory(processItem)); //$NON-NLS-1$
+        jobInfo.put("isTalendStepTemplate", isTalendStepTemplate(processItem)); //$NON-NLS-1$
 
         // job components use SAM / use SAML
         boolean useSAM = false;
@@ -1086,7 +1091,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     @Override
-    protected Set<ModuleNeeded> getExcludedModuleNeededs() {
+    public Set<ModuleNeeded> getExcludedModuleNeededs() {
         Set<ModuleNeeded> excludedModuleNeededs = super.getExcludedModuleNeededs();
 
         excludedModuleNeededs.addAll(getRequireBundleModuleNeededs());
