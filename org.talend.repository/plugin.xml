@@ -298,7 +298,7 @@
                label="%exportProjectsAction.title"
                style="push"
                toolbarPath="Default"
-               tooltip="%exportProjectsAction.toolTip"/>
+               tooltip="%exportProjectsAction.toolTipText"/>
          <action
                class="org.talend.repository.ui.actions.toolbar.UpdateModificationsAction"
                icon="icons/updateSettings.png"
