@@ -12,11 +12,13 @@ imports="
 		java.util.LinkedList
 "
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 
 	String dbtable = null;
@@ -74,25 +76,30 @@ imports="
 
 
 <%
+log4jCodeGenerateUtil.infoComponentStart(previousNode);
 if(useExistingConn) {
     String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
     String conn = "conn_" + connection;
     %>
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    java.sql.Connection conn_<%=previousNode.getUniqueName()%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
+    log4jCodeGenerateUtil.useExistConnection(previousNode);
 } else {
     %>
-    java.lang.Class.forName(<%=driverClass %>);
-    String connectionString_<%=cid %> = <%=jdbcUrl %>; 
-	        
+    String driverClass_<%=previousNode.getUniqueName()%> = <%=driverClass %>;
+    java.lang.Class.forName(driverClass_<%=previousNode.getUniqueName()%>);
+    String url_<%=previousNode.getUniqueName() %> = <%=jdbcUrl %>; 
+    String dbUser_<%=previousNode.getUniqueName() %> = <%=dbuser%>;	        
 	<%
 	String passwordFieldName = "__PASS__";
 	%>
 	
 	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
-   	
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, decryptedPassword_<%=cid%>);
+   	String dbPwd_<%=previousNode.getUniqueName() %> = decryptedPassword_<%=cid%>;
+    java.sql.Connection conn_<%=previousNode.getUniqueName()%> = null;
     <%
+	log4jCodeGenerateUtil.debugConnectionParams(previousNode);
+   	log4jCodeGenerateUtil.connect(previousNode);
 }
 %>
 
@@ -254,7 +261,7 @@ for(Column colStmt:stmtStructure){
 	if(("INSERT").equals(dataAction)){
 %>	
 	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query+")";
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+	pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(insertQuery);
 
 <%
 	}else if (("UPDATE").equals(dataAction)){
@@ -268,7 +275,7 @@ for(Column colStmt:stmtStructure){
 		}
 %>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+	pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(updateQuery);
 
 <%		
 	}else if (("DELETE").equals(dataAction)){
@@ -283,7 +290,7 @@ for(Column colStmt:stmtStructure){
 	}
 	%>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
+	pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(deleteQuery);
 
 	<%		
 	}
@@ -296,12 +303,22 @@ int nb_line_deleted_<%=cid%> = 0;
 	
 }
 
+log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Start to work.");
+log4jCodeGenerateUtil.dbConnectionParamsForELT(node);
+log4jCodeGenerateUtil.logParameters(node);
+log4jCodeGenerateUtil.dbConnectionParamsForELT(previousNode);
 if(dbtable != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
 
 System.out.println("Inserting with : \n" + insertQuery + "\n");
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Executing the SQL query :'" + insertQuery + "'." );
+<%}%>
 nb_line_inserted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - The SQL query :'" + insertQuery + "' has been executed successfully.");
+<%}%>
 System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	<%
@@ -309,13 +326,25 @@ System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	%>
 System.out.println("Updating with : \n" + updateQuery +"\n");
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Executing the SQL query :'" + updateQuery + "'.");
+<%}%>
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - The SQL query :'" + updateQuery + "' has been executed successfully.");
+<%}%>
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
 	}else if (("DELETE").equals(dataAction)){
 		%>
 	System.out.println("Deleting with : \n" + deleteQuery +"\n");
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Executing the SQL query :'" + deleteQuery +"'.");
+		<%}%>
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - The SQL query :'" + deleteQuery + "' has been executed successfully.");
+		<%}%>
 	System.out.println("--> " + nb_line_deleted_<%=cid%> + " rows deleted. \n");
 		<%
 	}
@@ -329,14 +358,20 @@ pstmt_<%=cid %>.close();
 <%
 if(!useExistingConn) {
     %>
-    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-        conn_<%=cid%> .close();
+    if(conn_<%=previousNode.getUniqueName()%> != null && !conn_<%=previousNode.getUniqueName()%>.isClosed()) {
+		<%log4jCodeGenerateUtil.close(previousNode);%>
     }
     <%
 }
+log4jCodeGenerateUtil.infoComponentEnd(previousNode);
 %>
 nb_line_<%=cid%> = nb_line_update_<%=cid%> + nb_line_inserted_<%=cid%> + nb_line_deleted_<%=cid%>;
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
+
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Processed records count: " + nb_line_<%=cid%> + ". Inserted records count: " + nb_line_inserted_<%=cid%> + ". Updated records count: " + nb_line_update_<%=cid%> + ". Deleted records count: " + nb_line_deleted_<%=cid%> + ".");
+		log.info("<%=cid%> - Done.");
+	<%}%>

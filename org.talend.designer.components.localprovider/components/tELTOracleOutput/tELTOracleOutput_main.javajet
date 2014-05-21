@@ -15,11 +15,13 @@ imports="
 		java.util.LinkedList
 "
 %>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
 
 	String dbtable = null;
@@ -81,32 +83,35 @@ imports="
 
 
 <%
+log4jCodeGenerateUtil.infoComponentStart(previousNode);
 if(useExistingConn) {
     String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
     String conn = "conn_" + connection;
     %>
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    java.sql.Connection conn_<%=previousNode.getUniqueName()%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
+	log4jCodeGenerateUtil.useExistConnection(previousNode);
 } else {
     %>
-    java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
+    String driverClass_<%=previousNode.getUniqueName()%> = "oracle.jdbc.driver.OracleDriver";
+    java.lang.Class.forName(driverClass_<%=previousNode.getUniqueName()%>);
     <%
     if(connectionType == null || ("ORACLE_SID").equals(connectionType)) {
         %>
-        String url_<%=cid%> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+        String url_<%=previousNode.getUniqueName()%> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
         <%
     } else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
         %>
-        String url_<%=cid%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+        String url_<%=previousNode.getUniqueName()%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
         <%
     } else if("ORACLE_RAC".equals(connectionType)) {
     	String rac_url = ElementParameterParser.getValue(previousNode, "__RAC_URL__");
         %>
-        String url_<%=cid%> = <%=rac_url%>;
+        String url_<%=previousNode.getUniqueName()%> = <%=rac_url%>;
         <%
     }
     %>
-    String dbUser_<%=cid %> = <%=dbuser%>;
+    String dbUser_<%=previousNode.getUniqueName() %> = <%=dbuser%>;
 
     <%
     String passwordFieldName = "__PASS__";
@@ -114,12 +119,14 @@ if(useExistingConn) {
 
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
 
-    String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+    String dbPwd_<%=previousNode.getUniqueName() %> = decryptedPassword_<%=cid%>;
 
 <%
+	log4jCodeGenerateUtil.debugConnectionParams(previousNode);
+	log4jCodeGenerateUtil.connect_begin();
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	java.sql.Connection conn_<%=previousNode.getUniqueName()%> = java.sql.DriverManager.getConnection(url_<%=previousNode.getUniqueName() %>,dbUser_<%=previousNode.getUniqueName()%>,dbPwd_<%=previousNode.getUniqueName()%>);
 <%
 	} else {
 %>
@@ -129,9 +136,10 @@ if(useExistingConn) {
 	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
 	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
 	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
-	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+	java.sql.Connection conn_<%=previousNode.getUniqueName()%> = java.sql.DriverManager.getConnection(url_<%=previousNode.getUniqueName()%>, atnParamsPrope_<%=cid%>);
 <%
 	}
+	log4jCodeGenerateUtil.connect_end();
 %>
 
 <%
@@ -382,7 +390,7 @@ if (useHintOptions) {
 <%
 		}
 %>   
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+	pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(insertQuery);
 
 <%
 	}else if (("UPDATE").equals(dataAction)){
@@ -404,7 +412,7 @@ if (useHintOptions) {
 <%		
 		}
 %>
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+	pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(updateQuery);
 
 <%		
 	}else if (("DELETE").equals(dataAction)){
@@ -423,7 +431,7 @@ String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+selec
     deleteQuery =deleteStringBuffer_<%=cid%>.toString();  
   <%
   }%>
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
+pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(deleteQuery);
 
 	<%		
 	}else if ("MERGE".equals(dataAction)) {	
@@ -529,7 +537,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 			<%}
 			}
 			%>	
- 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(mergeQuery);
+ 			pstmt_<%=cid %> = conn_<%=previousNode.getUniqueName()%>.prepareStatement(mergeQuery);
 	<%
 	}
 	%>
@@ -541,12 +549,23 @@ int nb_line_merged_<%=cid%> = 0;
 	<%
 	
 }
+
+log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Start to work.");
+log4jCodeGenerateUtil.dbConnectionParamsForELT(node);
+log4jCodeGenerateUtil.logParameters(node);
+log4jCodeGenerateUtil.dbConnectionParamsForELT(previousNode);
 if(dbtable != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
 
 System.out.println("Inserting with : \n" + insertQuery + "\n");
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Executing the SQL query :'" + insertQuery + "'." );
+<%}%>
 nb_line_inserted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - The SQL query :'" + insertQuery + "' has been executed successfully.");
+<%}%>
 System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	<%
@@ -554,19 +573,37 @@ System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	%>
 System.out.println("Updating with : \n" + updateQuery +"\n");
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Executing the SQL query :'" + updateQuery + "'.");
+<%}%>
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - The SQL query :'" + updateQuery + "' has been executed successfully.");
+<%}%>
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
 	}else if (("DELETE").equals(dataAction)){
 		%>
 	System.out.println("Deleting with : \n" + deleteQuery +"\n");
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Executing the SQL query :'" + deleteQuery +"'.");
+		<%}%>
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - The SQL query :'" + deleteQuery + "' has been executed successfully.");
+		<%}%>
 	System.out.println("--> " + nb_line_deleted_<%=cid%> + " rows deleted. \n");
 		<%
 	}else if (("MERGE").equals(dataAction)){
 	%>	
 	System.out.println("Merge with : \n" + mergeQuery +"\n");
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Executing the SQL query :'" + mergeQuery +"'.");
+		<%}%>
 	    nb_line_merged_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - The SQL query :'" + mergeQuery + "' has been executed successfully.");
+		<%}%>
 	System.out.println("--> " + nb_line_merged_<%=cid%> + " rows merged. \n");
 	<%
 	}
@@ -580,11 +617,12 @@ pstmt_<%=cid %>.close();
 <%
 if(!useExistingConn) {
     %>
-    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-        conn_<%=cid%> .close();
+    if(conn_<%=previousNode.getUniqueName()%> != null && !conn_<%=previousNode.getUniqueName()%>.isClosed()) {
+		<%log4jCodeGenerateUtil.close(previousNode);%>
     }
     <%
 }
+log4jCodeGenerateUtil.infoComponentEnd(previousNode);
 %>
 nb_line_<%=cid%> = nb_line_update_<%=cid%> + nb_line_inserted_<%=cid%> + nb_line_deleted_<%=cid%> + nb_line_merged_<%=cid%>;
 
@@ -593,3 +631,7 @@ globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_MERGED",nb_line_merged_<%=cid%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Processed records count: " + nb_line_<%=cid%> + ". Inserted records count: " + nb_line_inserted_<%=cid%> + ". Updated records count: " + nb_line_update_<%=cid%> + ". Deleted records count: " + nb_line_deleted_<%=cid%> + "."+ ". Merged records count: " + nb_line_merged_<%=cid%> + ".");
+		log.info("<%=cid%> - Done.");
+	<%}%>

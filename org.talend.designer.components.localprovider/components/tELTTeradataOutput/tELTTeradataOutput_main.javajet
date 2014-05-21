@@ -74,6 +74,7 @@ if(metadatas !=null && metadatas.size()>0){
 %>
 java.sql.Connection conn_<%=previousNode.getUniqueName()%> = null;
 <%
+log4jCodeGenerateUtil.infoComponentStart(previousNode);
 if(useExistingConn) {
     String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
     String conn = "conn_" + connection;
@@ -227,6 +228,10 @@ int nb_line_deleted_<%=cid%> = 0;
 	
 }
 
+log4jCodeGenerateUtil.logInfo(node,"info",cid+" - Start to work.");
+log4jCodeGenerateUtil.dbConnectionParamsForELT(node);
+log4jCodeGenerateUtil.logParameters(node);
+log4jCodeGenerateUtil.dbConnectionParamsForELT(previousNode);
 if(dbtable != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
@@ -281,6 +286,7 @@ if(!useExistingConn) {
     }
     <%
 }
+log4jCodeGenerateUtil.infoComponentEnd(previousNode);
 %>
 nb_line_<%=cid%> = nb_line_update_<%=cid%> + nb_line_inserted_<%=cid%> + nb_line_deleted_<%=cid%>;
 
