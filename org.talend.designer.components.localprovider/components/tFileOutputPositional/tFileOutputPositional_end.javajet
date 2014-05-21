@@ -13,7 +13,6 @@
 	String cid = node.getUniqueName();
 	
     boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
-	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 	
 	boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 

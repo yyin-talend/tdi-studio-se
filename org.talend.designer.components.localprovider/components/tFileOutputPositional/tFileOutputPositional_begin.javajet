@@ -21,22 +21,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
-
- List<? extends IConnection> listInConns = node.getIncomingConnections();
-    String sInConnName = null;
-    IConnection inConn = null;
-    List<IMetadataColumn> listInColumns = null;
-    
-    if (listInConns != null && listInConns.size() > 0) {
-      IConnection inConnTemp = listInConns.get(0);
-      sInConnName = inConnTemp.getName();
-      if (inConnTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-      	inConn = inConnTemp;
-        listInColumns = inConnTemp.getMetadataTable().getListColumns();
-      }
-	}
-   
-   String inConnName = null;
    
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -90,7 +74,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}else{
     		writerClass = "java.io.BufferedWriter";
     	}
-		boolean hasDynamic = metadata.isDynamicSchema();
 		String dynamic = ElementParameterParser.getValue(node, "__DYNAMIC__");
 		boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
         String dyn = dynamic+"_DYNAMIC";
@@ -101,30 +84,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			dynamic_<%=cid %>.clearColumnValues();
 <%
 		}
-    class FindConnStartConn{
-		IConnection findStartConn(IConnection conn){
-			INode node = conn.getSource();
-			if(node.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(node))){
-				return conn;
-			}
-			List<? extends IConnection> listInConns = node.getIncomingConnections();
-			IConnection inConnTemp = null;
-			if (listInConns != null && listInConns.size() > 0) {
-              inConnTemp = listInConns.get(0);
-              if (inConnTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-                return findStartConn(inConnTemp);
-              }
-        	}
-        	return null;
-		}
-	}
-	if(inConn != null){
-		FindConnStartConn finder = new FindConnStartConn();
-    	IConnection startConn = finder.findStartConn(inConn);
-    	if(startConn!=null){
-    		inConnName = startConn.getName();
-    	}
-	}
 %>
 		int nb_line_<%=cid%> = 0;
 		
@@ -371,7 +330,7 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
-				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
+				  void setValue_<%=i/100%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
 <%
                 }
                 if("id_Dynamic".equals(column.getTalendType())){
@@ -711,8 +670,6 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
     		int tempLengthB<%=cid %>=0;
 <%
     		for (int i = 0; i < sizeColumns; i++) {
-    			IMetadataColumn column = columns.get(i);
-    			Map<String, String> format=formats.get(i);
     			if(i%100==0){
 %>
             positionUtil_<%=cid%>.writeHeader_<%=i/100%>(tempStringB<%=cid %>,tempLengthB<%=cid %>,out<%=cid %><% if(useByte){ %>,byteArray_<%=cid %>,arrays_<%=cid %><% }%>);
