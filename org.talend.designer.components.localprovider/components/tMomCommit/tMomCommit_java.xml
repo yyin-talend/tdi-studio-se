@@ -34,7 +34,7 @@
 
   <PARAMETERS>
     <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST" NUM_ROW="10"
-        FILTER="REGEXP:^tMomOutput|tMomConnection|tMomInput$" />
+        REQUIRED="true" FILTER="REGEXP:^tMomOutput|tMomConnection|tMomInput$" />
 
     <PARAMETER NAME="SERVER" FIELD="CLOSED_LIST" NUM_ROW="20">
       <ITEMS DEFAULT="WEBSPHERE">

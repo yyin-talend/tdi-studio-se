@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tAmazonMysqlConnection"
+      REQUIRED="true" FILTER="tAmazonMysqlConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

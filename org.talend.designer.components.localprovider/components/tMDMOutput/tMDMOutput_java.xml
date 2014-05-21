@@ -98,7 +98,7 @@
 	   <PARAMETER
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
-	      FILTER="tMDMConnection"
+	      REQUIRED="true" FILTER="tMDMConnection"
 	      NUM_ROW="17"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	      GROUP="CONNECTION_GRP"

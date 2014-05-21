@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tSCPConnection"
+      REQUIRED="true" FILTER="tSCPConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

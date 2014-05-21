@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tParAccelConnection"
+      REQUIRED="true" FILTER="tParAccelConnection"
       NUM_ROW="1"
       DYNAMIC_SETTINGS="true"
     />

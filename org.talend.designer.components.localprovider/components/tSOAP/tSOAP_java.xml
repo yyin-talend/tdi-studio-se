@@ -126,7 +126,7 @@
 	    <PARAMETER
 	      NAME="KERBEROS_CONFIGURATION"
 	      FIELD="COMPONENT_LIST"
-	      FILTER="tSetKerberosConfiguration"
+	      REQUIRED="true" FILTER="tSetKerberosConfiguration"
 	      NUM_ROW="10"
 	      SHOW_IF="USE_KERBEROS == 'true'"
 	    />

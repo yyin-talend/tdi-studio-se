@@ -36,7 +36,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tVerticaConnection"
+      REQUIRED="true" FILTER="tVerticaConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

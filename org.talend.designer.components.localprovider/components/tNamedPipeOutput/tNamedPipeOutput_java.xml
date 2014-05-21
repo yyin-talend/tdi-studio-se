@@ -47,7 +47,7 @@
 		<PARAMETER
 			NAME="PIPE"
 			FIELD="COMPONENT_LIST"
-			FILTER="tNamedPipeOpen"
+			REQUIRED="true" FILTER="tNamedPipeOpen"
 			NUM_ROW="10"
 			SHOW_IF="USE_EXISTING_PIPE == 'true'"
 			DYNAMIC_SETTINGS="true"

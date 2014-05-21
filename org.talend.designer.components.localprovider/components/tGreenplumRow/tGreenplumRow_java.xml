@@ -55,7 +55,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tGreenplumConnection"
+      REQUIRED="true" FILTER="tGreenplumConnection"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"

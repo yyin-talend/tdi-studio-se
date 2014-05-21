@@ -56,7 +56,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tFirebirdConnection"
+      REQUIRED="true" FILTER="tFirebirdConnection"
       NUM_ROW="11"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"/>

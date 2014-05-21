@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tLDAPConnection"
+      REQUIRED="true" FILTER="tLDAPConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />

@@ -37,7 +37,7 @@
 		<PARAMETER 
 			NAME="CONNECTION" 
 			FIELD="COMPONENT_LIST"
-			FILTER="tMSSqlConnection" 
+			REQUIRED="true" FILTER="tMSSqlConnection" 
 			NUM_ROW="5"
 			DYNAMIC_SETTINGS="true"
 		/>
