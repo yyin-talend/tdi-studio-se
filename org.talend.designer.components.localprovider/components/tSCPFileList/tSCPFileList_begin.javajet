@@ -57,6 +57,11 @@ imports="
 		String conn= "conn_" + connection;
 	%>
 		ch.ethz.ssh2.Connection conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
+		<%if(isLog4jEnabled){%>
+			if(conn_<%=cid %>!=null) {
+				log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + conn_<%=cid %>.getHostname() + ". Connection port: " + conn_<%=cid %>.getPort() + "."); 
+			}
+		<%}%>
 	<%}else{%>
 	    String hostname_<%=cid%> = <%=host%>;
 	    String username_<%=cid%> = <%=user%>;
@@ -73,7 +78,7 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' as '" + username_<%=cid%> + "'.");
+			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' with the username '" + username_<%=cid%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>

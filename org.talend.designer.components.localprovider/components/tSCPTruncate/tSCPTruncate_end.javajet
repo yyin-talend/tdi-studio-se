@@ -18,11 +18,11 @@ imports="
 %>
         /* Close the connection */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Closing the connection to the database.");
+			log.info("<%=cid%> - Closing the connection 'conn_<%=cid%>' to the server.");
 		<%}%>
         conn_<%=cid%>.close();
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection to the server closed.");
+			log.info("<%=cid%> - Connection 'conn_<%=cid%>' to the server closed.");
 		<%}%>
 <%      
     }%>

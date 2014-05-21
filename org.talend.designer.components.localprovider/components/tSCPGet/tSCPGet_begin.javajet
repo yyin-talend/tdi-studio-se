@@ -75,7 +75,7 @@ imports="
 %>
               /* Now connect */
 		<%if(isLog4jEnabled){%>
-			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' as '" + <%=user%> + "'.");
+			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' with the username '" + <%=user%> + "'.");
 		<%}%>
         conn_<%=cid%>.connect();
 		<%if(isLog4jEnabled){%>
