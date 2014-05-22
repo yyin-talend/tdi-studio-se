@@ -642,13 +642,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
 
         Connection hcConnection = ((ConnectionItem) hadoopClusterItem).getConnection();
+        Connection connection = ((ConnectionItem) subItem).getConnection();
         if (hadoopClusterService.hasDiffsFromClusterToProcess(((ConnectionItem) hadoopClusterItem).getConnection(), process)) {
             boolean confirmUpdate = MessageDialog.openConfirm(editor.getSite().getShell(),
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.title"), //$NON-NLS-1$
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
             if (confirmUpdate) {
                 propertyParam.setValue(EmfComponent.REPOSITORY);
-                ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, hcConnection,
+                ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, connection,
                         propertyRepTypeParamName, hadoopClusterId);
                 execCommandStack(command);
             }
@@ -1267,7 +1268,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                                .isHL7PluginLoaded())) {
+                            .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1311,7 +1312,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                                .isBRMSPluginLoaded())) {
+                            .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
