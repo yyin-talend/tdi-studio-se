@@ -809,7 +809,8 @@ public class PropertyChangeCommand extends Command {
         if (!node.isMapReduce()) {
             return;
         }
-        if (!propName.equals("MAP_ONLY") && !propName.equals(EParameterName.GROUPBYS.getName())) {
+        if (!propName.equals("MAP_ONLY") && !propName.equals("REPLICATED_JOIN")
+                && !propName.equals(EParameterName.GROUPBYS.getName())) {
             return;
         }
 
