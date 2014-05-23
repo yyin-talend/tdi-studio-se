@@ -12,7 +12,7 @@
             value="FFFFFF"/>
       <property
             name="startupMessageRect"
-            value="12,209,415,12"/>
+            value="12,202,415,23"/>
       <property
             name="startupProgressRect"
             value="12,223,411,14"/>
