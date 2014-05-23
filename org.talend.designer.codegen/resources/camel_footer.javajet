@@ -266,6 +266,7 @@
 					
 					//Username and password, http://jira.talendforge.org/browse/TESB-4073
 					String username = ElementParameterParser.getValue(node, "__WMQ_USERNAME__");
+					String password = ElementParameterParser.getValue(node, "__WMQ_PASSWORD__");
 					String useAuth = ElementParameterParser.getValue(node, "__WMQ_AUTH__");
 					
 					if(wmqPort.startsWith("\"")){
@@ -303,12 +304,7 @@
 					org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter connectionFactoryAdapter<%=node.getUniqueName()%> 
 							= new org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter();
        				connectionFactoryAdapter<%=node.getUniqueName()%>.setUsername(<%=username%>);
-                    <%
-                    String cid = node.getUniqueName();
-                    String passwordFieldName = "__WMQ_PASSWORD__";
-                    %>
-                    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-      				connectionFactoryAdapter<%=node.getUniqueName()%>.setPassword(decryptedPassword_<%=cid%>);
+      				connectionFactoryAdapter<%=node.getUniqueName()%>.setPassword(<%=password%>);
        				connectionFactoryAdapter<%=node.getUniqueName()%>.setTargetConnectionFactory(jmsConnectionFactory);
        
 					camelContext.addComponent(<%=name%>,
