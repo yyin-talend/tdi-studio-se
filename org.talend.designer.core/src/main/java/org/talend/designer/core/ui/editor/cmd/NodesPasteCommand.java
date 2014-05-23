@@ -502,6 +502,12 @@ public class NodesPasteCommand extends Command {
                                 if (param.getParentParameter() != null) {
                                     String parentName = param.getParentParameter().getName();
                                     pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
+                                } else if (param.getName().equals("SOURCE_GENERATED_TDM_STRUCT_PATH")
+                                        || param.getName().equals("TARGET_GENERATED_TDM_STRUCT_PATH")
+                                        || param.getName().equals("SOURCE_TDM_STRUCT_INCARNATION")
+                                        || param.getName().equals("TARGET_TDM_STRUCT_INCARNATION")) {
+                                    elementParameter.setReadOnly(param.getOriginalityReadOnly());
+                                    elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
                                 } else {
                                     pastedNode.setPropertyValue(param.getName(), param.getValue());
 
@@ -902,4 +908,5 @@ public class NodesPasteCommand extends Command {
     public void setNodeMap(Map<IGraphicalNode, IGraphicalNode> nodeMap) {
         this.nodeMap = nodeMap;
     }
+
 }
