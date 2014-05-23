@@ -7,8 +7,8 @@ imports="
 	java.util.Map
 " 
 %>
-
-<%
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+	<%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
 	
@@ -17,29 +17,55 @@ imports="
     String key = ElementParameterParser.getValue(node,"__KEY__");
     String file = ElementParameterParser.getValue(node,"__FILE__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-%>
-<%@ include file="../tS3Connection/S3Client.javajet" %>
+	%>
+	<%@ include file="../tS3Connection/S3Client.javajet" %>
 	try{
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Uploading an object with key:" + <%=key%>);
+		<%
+		}
+		%>
 		conn_<%=cid%>.putObject(<%=bucket%>, <%=key%>, new java.io.File(<%=file%>));
+		<%
+		if(isLog4jEnabled){
+		%>	
+			log.info("<%=cid%> - Upload the object successfully.");
+		<%
+		}
+		%>
 	}catch(java.lang.Exception e_<%=cid%>){
-<%
+		<%
 		if (("true").equals(dieOnError)) {
-%>
-		throw(e_<%=cid%>);
-<%
+			if(isLog4jEnabled){
+			%>
+				log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+			<%
+			}
+			%>
+			throw(e_<%=cid%>);
+		<%
 		} else {
-%>
-		System.err.println(e_<%=cid%>.getMessage());
-<%
+			if(isLog4jEnabled){
+			%>
+				log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+			<%
+			}
+			%>
+			System.err.println(e_<%=cid%>.getMessage());
+		<%
 		}
 		if(!("true").equals(useExistingConn)) {
-%>
+		%>
 	}finally{
 		if(conn_<%=cid%> !=null){
 			conn_<%=cid%>.shutdown();
 		}
-<%
+		<%
 		}
-%>
+		%>
 	}
-               
+	<%
+	log4jFileUtil.componentFinishInfo(node);
+	%>        
