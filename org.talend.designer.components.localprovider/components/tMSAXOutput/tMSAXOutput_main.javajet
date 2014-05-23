@@ -516,39 +516,7 @@ if(incomingConnName != null && columnList != null){
                 updatedCount_<%=cid%>++;
             }
             nb_line_<%=cid%>++;
-        }catch(java.lang.Exception e)
-        {
-            whetherReject_<%=cid%> = true;
-<%
-            if (("true").equals(dieOnError)) {
-%>
-                throw(e);
-<%
-            } else {
-                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
-%>
-                <%=rejectConnName %> = new <%=rejectConnName %>Struct();
-<%
-                    for(IMetadataColumn column : columnList) {
-%>
-                <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-<%
-                    }
-%>
-				nb_line_rejected_<%=cid%>++;
-                <%=rejectConnName%>.errorCode = ((java.sql.SQLException)e).getSQLState();
-                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-<%
-                } else {
-%>
-                    System.err.print(e.getMessage());
-<%
-                }
-            }
-%>
-        }
         if(updateFlag_<%=cid%> == 0) {
-            try{
 <%
 			for(Column column : insertValueList){
 %>
@@ -566,6 +534,7 @@ if(incomingConnName != null && columnList != null){
 		        	dynRec_<%=cid%>.invoke("Insert");
 		        <%}%>
         		insertedCount_<%=cid%>++;
+        }
             }catch(java.lang.Exception e){
                 whetherReject_<%=cid%> = true;
 <%
@@ -593,7 +562,6 @@ if(incomingConnName != null && columnList != null){
                 }
 %>
             }
-        }
         nb_line_<%=cid%>++;
 <%
 	}else if (("DELETE").equals(dataAction)){
