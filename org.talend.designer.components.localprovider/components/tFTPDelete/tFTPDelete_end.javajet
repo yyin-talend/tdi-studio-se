@@ -59,6 +59,9 @@
 					<%}%>  
 				}catch(java.net.SocketException se_<%=cid%>){
 					//ignore failure
+					<%if(isLog4jEnabled){%>
+						log.warn("<%=cid%> - " + se_<%=cid%>.getMessage());
+					<%}%>
 				}
 <%
 			}else{

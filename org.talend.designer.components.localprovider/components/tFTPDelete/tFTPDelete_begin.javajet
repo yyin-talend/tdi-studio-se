@@ -30,6 +30,7 @@ String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 
 String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");  
 String fileOrDir = ElementParameterParser.getValue(node, "__FILE_OR_DIRECTORY__");
+String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String conn= "conn_" + connection;
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
@@ -118,7 +119,7 @@ int nb_file_<%=cid%> = 0;
 			<%if (("PUBLICKEY").equals(authMethod)) {%>
 				<%if(isLog4jEnabled){%>
 					log.info("<%=cid%> - SFTP authentication using a public key.");
-					log.debug("Private key: '" + <%=privateKey %> + "'.");
+					log.debug("<%=cid%> - Private key: '" + <%=privateKey%> + "'.");
 	  			<%}%>
       			jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
     		<%}%>
@@ -148,7 +149,7 @@ int nb_file_<%=cid%> = 0;
 			  	}
 			<%}%>
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" + <%=user%> + "'.");
+				log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" + <%=user%> + "'.");
 			<%}%>
 		    session_<%=cid%>.connect();
 		    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
@@ -179,9 +180,13 @@ int nb_file_<%=cid%> = 0;
 		    	list<%=cid %>.add(map<%=cid %><%=i %>);       
   		<%}%>  
 
-	    <%if(isLog4jEnabled){%>
-	    	log.info("<%=cid%> - Deleting file from server.");
-	    <%}%>
+		<%if(isLog4jEnabled){%>
+			<%if("FILE".equals(targetType)){%>
+				log.info("<%=cid%> - Deleting file from server.");
+			<%}else{%>
+				log.info("<%=cid%> - Deleting directory from server.");
+			<%}%>
+		<%}%>
 		for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) {
 
 <%
@@ -190,12 +195,12 @@ int nb_file_<%=cid%> = 0;
 		com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 
 		<%if (("true").equals(useExistingConn)) {%>
+    		ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
 			<%if(isLog4jEnabled){%>
 				if(ftp_<%=cid %>!=null) {
 					log.info("<%=cid%> - Uses an existing connection. Connection hostname: " + ftp_<%=cid %>.getRemoteHost() + ". Connection port: " + ftp_<%=cid %>.getRemotePort() + "."); 
 				}
 			<%}%>
-    		ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
 		  	<%if(!moveToCurrentDir){%>
 		  		String rootDir_<%=cid %> = ftp_<%=cid %>.pwd();
 		  	<%}%>
@@ -213,8 +218,7 @@ int nb_file_<%=cid%> = 0;
 		    <%}%>
 		    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Authentication using a password.");
-				log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' as '" +<%=user %>+ "'.");
+				log.info("<%=cid%> - Connection attempt to '" + <%=host %> + "' with the username '" +<%=user %>+ "'.");
 			<%}%>
 		    ftp_<%=cid %>.connect();  
 		    
