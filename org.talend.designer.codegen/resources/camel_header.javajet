@@ -955,10 +955,13 @@ if (isProvider) {
 				}
 			}
 			
-			String passwordFieldName = "__PASSWORD__";
+			if((useSecurity || useRegistry) && !isProvider) {
+				String passwordFieldName = "__PASSWORD__";
 %>
-			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-			
+				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+<%
+			}
+%>
 				// CXF endpoint for <%=cid%>
 				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=isUsePropagateSamlAP%>, <%=securityToken%>
 <%
