@@ -544,7 +544,9 @@ if(incomingConnName != null && columnList != null){
 <%
                 } else {
                     if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+%>
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct(); 
+<%
                         for(IMetadataColumn column : columnList) {
 %>
                     <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
