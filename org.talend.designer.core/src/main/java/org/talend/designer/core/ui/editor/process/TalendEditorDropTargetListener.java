@@ -642,13 +642,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
 
         Connection hcConnection = ((ConnectionItem) hadoopClusterItem).getConnection();
+        Connection connection = ((ConnectionItem) subItem).getConnection();
         if (hadoopClusterService.hasDiffsFromClusterToProcess(((ConnectionItem) hadoopClusterItem).getConnection(), process)) {
             boolean confirmUpdate = MessageDialog.openConfirm(editor.getSite().getShell(),
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.title"), //$NON-NLS-1$
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
             if (confirmUpdate) {
                 propertyParam.setValue(EmfComponent.REPOSITORY);
-                ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, hcConnection,
+                ChangeValuesFromRepository command = new ChangeValuesFromRepository(process, connection,
                         propertyRepTypeParamName, hadoopClusterId);
                 execCommandStack(command);
             }
