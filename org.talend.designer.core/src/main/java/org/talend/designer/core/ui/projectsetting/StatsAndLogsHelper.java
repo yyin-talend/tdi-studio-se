@@ -561,7 +561,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setName(EParameterName.PASS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.PASS.getName())));
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.PASSWORD);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
         param.setRequired(true);

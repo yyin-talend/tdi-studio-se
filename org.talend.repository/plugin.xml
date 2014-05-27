@@ -2161,6 +2161,14 @@
               name="Encrypt passwords in new password fields of job settings implicit context load and stats logs"
               version="5.5.0">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="5.4.1"
+              class="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
+              id="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
+              name="Encrypt passwords in new password fields of project settings implicit context load and stats logs"
+              version="5.5.1">
+        </projecttask>
    </extension>
    
    <extension
