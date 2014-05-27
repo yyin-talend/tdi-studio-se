@@ -2167,7 +2167,7 @@
               class="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
               id="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
               name="Encrypt passwords in new password fields of project settings implicit context load and stats logs"
-              version="5.5.1">
+              version="5.4.3">
         </projecttask>
    </extension>
    
