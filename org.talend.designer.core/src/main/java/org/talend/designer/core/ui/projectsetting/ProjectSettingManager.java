@@ -625,7 +625,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PASS)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.PASSWORD);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setRequired(true);
