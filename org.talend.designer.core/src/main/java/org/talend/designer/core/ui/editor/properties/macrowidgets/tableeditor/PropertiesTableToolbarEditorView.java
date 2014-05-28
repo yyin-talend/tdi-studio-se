@@ -356,6 +356,14 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
+                PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
+                        .getExtendedControlModel();
+                IElement element = tableEditorModel.getElement();
+                String componentName = null;
+                if (element != null && element instanceof INode) {
+                    componentName = ((INode) element).getComponent().getName();
+                }
+        
                 Object data = SimpleClipboard.getInstance().getData();
                 if (data == null || !(data instanceof List)) {
                     return false;
@@ -369,7 +377,12 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 }
                 @SuppressWarnings("rawtypes")
                 int sourceColumnNumber = ((HashMap) dataList.get(0)).size();
-                int colNum = getExtendedTableViewer().getTableViewerCreator().getTable().getColumnCount() - 1;
+                int colNum = 0;
+                if (componentName != null && componentName.equals("tFilterRow")) {
+                    colNum = getExtendedTableViewer().getTableViewerCreator().getTable().getColumnCount() - 1;
+                } else {
+                    colNum = getExtendedTableViewer().getTableViewerCreator().getTable().getColumnCount();
+                }
                 if (data != null) {
                     if (colNum == sourceColumnNumber) {
                         sameNumberOfParamAssSourceTable = true;
@@ -377,7 +390,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                         sameNumberOfParamAssSourceTable = false;
                     }
                 }
-
+        
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts())
                         && sameNumberOfParamAssSourceTable;
             }
