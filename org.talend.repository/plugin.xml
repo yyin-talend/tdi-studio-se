@@ -2177,6 +2177,13 @@
               name="UpdateDbVersionForVerticaMigrationTask"
               version="5.5.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeTMatchGroupGIDTypeTask"
+              id="org.talend.repository.model.migration.ChangeTMatchGroupGIDTypeTask"
+              name="Add the gid use string parameter if not have, value=false"
+              version="5.6.0">
+        </projecttask>
    </extension>
    
    <extension
