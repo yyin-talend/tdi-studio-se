@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
@@ -103,21 +102,26 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         layouData.top = new FormAttachment(0, 10);
         layouData.bottom = new FormAttachment(0, 30);
         perfBtn.setLayoutData(layouData);
-        if (ProcessManager.getProcessContext() != null && ProcessManager.getProcessContext().getProcess() != null) {
-            perfBtn.setVisible(!ProcessManager.getProcessContext().getProcess().getComponentsType()
-                    .equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName()));
-        }
+        /*- DEL - begin -- bug:TDI-29539 -- by cmeng 20140528 ----------*/
+        // if (ProcessManager.getProcessContext() != null && ProcessManager.getProcessContext().getProcess() != null) {
+        // perfBtn.setVisible(!ProcessManager.getProcessContext().getProcess().getComponentsType()
+        // .equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName()));
+        // }
+        /*- DEL - end   -- bug:TDI-29539 -- by cmeng 20140528 ----------*/
         perfBtn.setText(Messages.getString("ProcessComposite.stat"));
         perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
 
         perfBtn.setEnabled(false);
         saveJobBeforeRunButton = new Button(panel, SWT.CHECK);
         FormData layouDatac = new FormData();
-        if (perfBtn.isVisible()) {
-            layouDatac.left = new FormAttachment(perfBtn, 0, SWT.RIGHT);
-        } else {
-            layouDatac.left = new FormAttachment(0, 10);
-        }
+        /*- MOD - begin -- bug:TDI-29539 -- by cmeng 20140528 ----------*/
+        // if (perfBtn.isVisible()) {
+        // layouDatac.left = new FormAttachment(perfBtn, 0, SWT.RIGHT);
+        // } else {
+        // layouDatac.left = new FormAttachment(0, 10);
+        // }
+        layouDatac.left = new FormAttachment(perfBtn, 0, SWT.RIGHT);
+        /*- MOD - end   -- bug:TDI-29539 -- by cmeng 20140528 ----------*/
         layouDatac.right = new FormAttachment(0, 300);
         layouDatac.top = new FormAttachment(0, 10);
         layouDatac.bottom = new FormAttachment(0, 30);
