@@ -910,7 +910,6 @@ if (isProvider) {
 
 			String securityType = ElementParameterParser.getValue(node, "__SECURITY_TYPE__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
-			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String roleName = "\"\"";
 			String alias = ElementParameterParser.getValue(node, "__ALIASNAME__").trim();
 			boolean isProvider = node.getIncomingConnections().size()>0?false:true;
@@ -957,13 +956,21 @@ if (isProvider) {
 					roleName = "\"\"";
 				}
 			}
+			
+			if((useSecurity || useRegistry) && !isProvider) {
+			
+				String passwordFieldName = "__PASSWORD__";
 %>
+				<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+<%
+			}
+%>			
 				// CXF endpoint for <%=cid%>
 				org.apache.camel.component.cxf.CxfEndpoint <%=endpointVar%> = getCxfEndpoint(<%=uriRef%>, <%=isProvider%>, <%=isUseAuthorization%>, <%=isUsePropagateSamlAP%>, <%=securityToken%>
 <%
 				if((useSecurity || useRegistry) && !isProvider){
 %>
-							,<%=username%>,<%=password%>, <%=roleName%>, <%=alias%>
+							,<%=username%>,decryptedPassword_<%=cid%>, <%=roleName%>, <%=alias%>
 <%
 				}
 %>
@@ -1057,8 +1064,10 @@ if (isProvider) {
 			if("".trim().equals(directory)){
 				directory = null;
 			}
+			String passwordFieldName = "__PASSWORD__";
 %>
-			org.apache.camel.component.file.remote.RemoteFileEndpoint<?> <%=ftpEndpointVar%> = getFtpEndpoint(<%=uriRef%>, <%=ftpServer%>, <%=userName%>, <%=password%>, <%=directory%>);
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			org.apache.camel.component.file.remote.RemoteFileEndpoint<?> <%=ftpEndpointVar%> = getFtpEndpoint(<%=uriRef%>, <%=ftpServer%>, <%=userName%>, decryptedPassword_<%=cid%>, <%=directory%>);
 <%
 
 	}else if("cMail".equals(nodeComponentName)){
@@ -1071,15 +1080,15 @@ if (isProvider) {
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 
 			String userName = ElementParameterParser.getValue(node, "__USERNAME__");
-			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String subject = ElementParameterParser.getValue(node, "__SUBJECT__");
 			String from = ElementParameterParser.getValue(node, "__FROM__");
 			String to = ElementParameterParser.getValue(node, "__TO__");
 			String cc = ElementParameterParser.getValue(node, "__CC__");
 			String bcc = ElementParameterParser.getValue(node, "__BCC__");
-
+			String passwordFieldName = "__PASSWORD__";
 %>
-			org.apache.camel.component.mail.MailEndpoint <%=mailEndpointVar%> = getMailEndpoint(<%=uriRef%>, <%=userName%>, <%=password%>, <%=subject%>, <%=from%>, <%=to%>, <%=cc%>, <%=bcc%>);
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+			org.apache.camel.component.mail.MailEndpoint <%=mailEndpointVar%> = getMailEndpoint(<%=uriRef%>, <%=userName%>, decryptedPassword_<%=cid%>, <%=subject%>, <%=from%>, <%=to%>, <%=cc%>, <%=bcc%>);
 <%	}else if("cAggregate".equals(nodeComponentName)){
 				boolean usePersistence = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENCE__"));
 				String repository = ElementParameterParser.getValue(node, "__REPOSITORY__");
