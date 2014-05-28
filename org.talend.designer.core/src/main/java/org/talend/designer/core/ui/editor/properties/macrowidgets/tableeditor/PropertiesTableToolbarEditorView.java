@@ -442,10 +442,14 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                         List<HashMap<String, String>> parameterValue = (List<HashMap<String, String>>) model.getElemParameter()
                                 .getValue();
                         for (HashMap<String, String> parameterValueMap : parameterValue) {
-                            if (parameterValueMap.get("PROPERTY").equals(itemMap.get("PROPERTY"))
-                                    && parameterValueMap.get("VALUE").equals(itemMap.get("VALUE"))) {
-                                if (parameterValueMap.get("BUILDIN") != null && parameterValueMap.get("BUILDIN").equals("TRUE")) {
-                                    return true;
+                            if (parameterValueMap != null && itemMap != null && parameterValueMap.get("PROPERTY") != null
+                                    && itemMap.get("PROPERTY") != null) {
+                                if (parameterValueMap.get("PROPERTY").equals(itemMap.get("PROPERTY"))
+                                        && parameterValueMap.get("VALUE").equals(itemMap.get("VALUE"))) {
+                                    if (parameterValueMap.get("BUILDIN") != null
+                                            && parameterValueMap.get("BUILDIN").equals("TRUE")) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
