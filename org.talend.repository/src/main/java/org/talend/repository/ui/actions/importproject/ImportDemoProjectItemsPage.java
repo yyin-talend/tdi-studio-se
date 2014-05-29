@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -58,6 +57,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExpo
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.TalendPropertiesUtil;
@@ -329,8 +329,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                // monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap = SubMonitor.convert(monitor);
+                monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
                     for (ResourcesManager resManager : finalCheckManagers) {
                         List<ImportItem> projectRecords = importManager.populateImportingItems(resManager, true, monitorWrap);

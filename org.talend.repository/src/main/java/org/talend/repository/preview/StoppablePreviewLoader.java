@@ -16,11 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -109,8 +109,7 @@ public abstract class StoppablePreviewLoader<R> {
 
                         public void run() {
 
-                            // monitorWrap = new EventLoopProgressMonitor(monitor);
-                            monitorWrap = SubMonitor.convert(monitor);
+                            monitorWrap = new EventLoopProgressMonitor(monitor);
 
                             monitorWrap.beginTask("Loading preview...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 

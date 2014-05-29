@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
@@ -39,6 +38,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.context.RepositoryContext;
@@ -191,8 +191,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                // monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap = SubMonitor.convert(monitor);
+                monitorWrap = new EventLoopProgressMonitor(monitor);
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 List<IRepositoryViewObject> repositoryObjects = getAllRepositoryMetadata();
 

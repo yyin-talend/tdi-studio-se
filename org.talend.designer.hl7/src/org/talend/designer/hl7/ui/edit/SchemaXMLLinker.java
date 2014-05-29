@@ -25,7 +25,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.drawing.link.ExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
@@ -179,8 +179,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
 
                 } else {
                     List<TreeItem> allItems = TreeUtils.collectAllItems(root);
-                    // monitorWrap = new EventLoopProgressMonitor(monitor);
-                    monitorWrap = SubMonitor.convert(monitor);
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
 
                     String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$
                     int totalWork = allItems.size();

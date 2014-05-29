@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -88,6 +87,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EnvironmentUtils;
@@ -843,8 +843,7 @@ public class LoginComposite extends Composite {
 
                         @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                            // monitorWrap = new EventLoopProgressMonitor(monitor);
-                            monitorWrap = SubMonitor.convert(monitor);
+                            monitorWrap = new EventLoopProgressMonitor(monitor);
 
                             try {
                                 final List<DemoProjectBean> demoProjectsList = ImportProjectsUtilities.getAllDemoProjects();

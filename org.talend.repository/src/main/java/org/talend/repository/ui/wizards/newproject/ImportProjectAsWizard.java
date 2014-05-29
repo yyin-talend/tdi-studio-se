@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
@@ -29,6 +28,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.prefs.IDEWorkbenchPlugin;
 import org.talend.repository.RepositoryPlugin;
@@ -116,8 +116,7 @@ public class ImportProjectAsWizard extends Wizard {
 
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    // monitorWrap = new EventLoopProgressMonitor(monitor);
-                    monitorWrap = SubMonitor.convert(monitor);
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
 
                     try {
 

@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -44,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IConnection;
@@ -495,8 +495,7 @@ public class RunProcessContext {
                     @Override
                     public void run(final IProgressMonitor monitor) {
 
-                        // final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
-                        final IProgressMonitor progressMonitor = SubMonitor.convert(monitor);
+                        final IProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
                         progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         try {
