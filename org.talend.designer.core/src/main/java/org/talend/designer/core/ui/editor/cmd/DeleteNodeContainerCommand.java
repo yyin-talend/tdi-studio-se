@@ -184,6 +184,7 @@ public class DeleteNodeContainerCommand extends Command {
                         prevNode.addOutput(connection);
                     }
                     connection.reconnect();
+                    connection.updateAllId();
                     boolean builtInPrevNode = prevNode.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
                             | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME) && !builtInPrevNode) {
