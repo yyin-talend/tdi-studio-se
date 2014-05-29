@@ -109,7 +109,7 @@ public class HadoopJarSetupController extends AbstractElementPropertySectionCont
             }
         }
         if (versionType == null) {
-            versionType = ECustomVersionType.HDFS;
+            versionType = ECustomVersionType.MAP_REDUCE;
         }
     }
 

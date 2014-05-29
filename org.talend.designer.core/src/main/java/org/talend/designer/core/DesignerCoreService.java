@@ -336,6 +336,18 @@ public class DesignerCoreService implements IDesignerCoreService {
         return new DataNode(salesforceComponent, componentName);
     }
 
+    @Override
+    public INode getRefrenceNode(String componentName, String paletteType) {
+        if (componentName == null) {
+            return null;
+        }
+
+        IComponentsFactory compFac = CorePlugin.getDefault().getRepositoryService().getComponentsFactory();
+        IComponent salesforceComponent = compFac.get(componentName, paletteType);
+
+        return new DataNode(salesforceComponent, componentName);
+    }
+
     /*
      * (non-Javadoc)
      * 
