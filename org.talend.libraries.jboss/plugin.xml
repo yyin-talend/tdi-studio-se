@@ -9,5 +9,12 @@
               name="jboss-serialization.jar"
               required="true">
       </libraryNeeded>
+      <libraryNeeded
+            context="plugin:org.talend.libraries.jboss"
+            language="java"
+            message="Needed for JBoss"
+            name="trove.jar"
+            required="true">
+      </libraryNeeded>
    </extension>
 </plugin>
