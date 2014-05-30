@@ -2171,11 +2171,11 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.4.1"
+              breaks="5.4.2"
               class="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
               id="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
               name="UpdateDbVersionForVerticaMigrationTask"
-              version="5.5.0">
+              version="5.4.3">
         </projecttask>
    </extension>
    
