@@ -1,0 +1,864 @@
+<%@ jet %>
+	<%
+	class ComparatorHelper{
+		String className;
+		List<IMetadataColumn> columns;
+		String structName;
+		Map<String, Boolean> criterias;
+		List<String> orders;
+		boolean unorder = false;
+		Map<String, Boolean> sortTypes; // false means sort by alpha
+		boolean genObjectCompare = false;
+		
+		public void init(String className, List<IMetadataColumn> columns, String structName){
+			this.className = className;
+			this.columns = columns;
+			this.structName = structName;
+			orders = new java.util.ArrayList<String>();
+			criterias = new java.util.HashMap<String, Boolean>();
+			sortTypes = new java.util.HashMap<String, Boolean>();
+			for(IMetadataColumn column : columns){
+				orders.add(column.getLabel());
+				criterias.put(column.getLabel(), true);
+				sortTypes.put(column.getLabel(), true);
+			}
+		}
+		public void setGenObjectCompare(Boolean genObjectCompare){
+			this.genObjectCompare = genObjectCompare;
+		}
+		//true is asc
+		//false is desc
+		public void setCriterias(Map<String,Boolean> criterias){
+			this.criterias = criterias;
+		}
+		
+		public void setOrders(List<String> orders){
+			this.orders = orders;
+			int index = 0;
+			for(String order : orders){
+				for(int i = 0; i < columns.size(); i++){
+					if(order.equals(columns.get(i).getLabel())){
+						if(i < index){
+							unorder = true;
+						}else{
+							index = i;
+						}
+						break;
+					}
+				}
+				if(unorder){
+					break;
+				}
+			}
+		}
+		
+		public void setSortTypes(Map<String, Boolean> sortTypes){
+			this.sortTypes = sortTypes;
+		}
+		
+		private void greater(String columnName){
+			if(unorder){
+				addGreater(columnName);
+			}else{
+				genGreater(columnName);
+			}
+		}
+		private void lesser(String columnName){
+			if(unorder){
+				addLesser(columnName);
+			}else{
+				genLesser(columnName);
+			}			
+		}
+		private void addGreater(String columnName){
+		%>
+			compareColumns.put("<%=columnName%>", 1);
+		<%
+		}
+		private void addLesser(String columnName){
+		%>
+			compareColumns.put("<%=columnName%>", -1);
+		<%	
+		}
+		private void genGreater(String columnName){
+			if(criterias.get(columnName)){
+			%>
+				return 1;
+			<%	
+			}else{
+			%>
+				return -1;
+			<%
+			}
+		}
+		private void genLesser(String columnName){
+			if(criterias.get(columnName)){
+			%>
+				return -1;
+			<%	
+			}else{
+			%>
+				return 1;
+			<%
+			}
+		}
+		
+		private void skipColumn(IMetadataColumn column){
+			boolean nullable = !JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable());
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			String columnName = column.getLabel();
+			if(nullable){
+				if(typeToGenerate.equals("byte[]")){
+				%>
+					int length1_<%=columnName%> = readInt(b1, pos1);
+					pos1 += 4;
+					int length2_<%=columnName%> = readInt(b2, pos2);
+					pos2 += 4;
+				<%
+				}else{
+	       		%>
+	        		boolean null1_<%=columnName%> = b1[pos1] == -1;
+	        		pos1 += 1;
+	        		boolean null2_<%=columnName%> = b2[pos2] == -1;
+	        		pos2 += 1;
+	        	<%
+	        	}
+				%>
+				if(null1_<%=columnName%> && !null2_<%=columnName%>){
+				}else if(!null1_<%=columnName%> && null2_<%=columnName%>){
+				}else if(null1_<%=columnName%> && null2_<%=columnName%>){
+				}else{	
+			<%}%>		
+            	<%
+				if(typeToGenerate.equalsIgnoreCase("Boolean")){
+	        	%>
+	        		pos1 += 1;
+	        		pos2 += 1;
+	        	<%
+	        	}else if(typeToGenerate.equalsIgnoreCase("Byte")){
+	            %>
+	        		pos1 += 1;
+	        		pos2 += 1;
+	            <%
+	            }else if(typeToGenerate.equals("byte[]")){
+	            %>
+	            	pos1 += length1_<%=columnName%>;
+	            	pos2 += length2_<%=columnName%>;
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Char") || typeToGenerate.equalsIgnoreCase("Character")){
+	            %>
+	            	pos1 += 2;
+	            	pos2 += 2;
+	            <%
+	            }else if(typeToGenerate.equals("java.util.Date")){
+	            %>
+	                pos1 += 8;
+	                pos2 += 8;
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Double")){
+	            %>
+	                pos1 += 8;
+	                pos2 += 8;
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Float")){
+	            %>
+	                pos1 += 4;
+	                pos2 += 4;
+	            <%
+	            }else if(typeToGenerate.equals("BigDecimal")){
+	            %>
+	                pos1 += (short)((b1[pos1] << 8) | (b1[pos1+1] & 0xff));
+	                pos1 += 4; 
+	                pos2 += (short)((b2[pos2] << 8) | (b2[pos2+1] & 0xff));
+	                pos2 += 4; 
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Integer") || typeToGenerate.equalsIgnoreCase("int")){
+	            %>
+	                pos1 += 4;
+	                pos2 += 4;
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Long")){
+	            %>
+	                pos1 += 8;
+	                pos2 += 8;
+	            <%
+	            }else if(typeToGenerate.equals("Object")){
+	            %>
+	            	Don't support Object type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Short")){
+	            %>
+	            	pos1 += 2;
+	            	pos2 += 2;
+	            <%
+	            }else if(typeToGenerate.equals("String")){
+	            %>
+	            	pos1 += 4;
+	            	pos1 += readInt(b1, pos1);
+	            	pos2 += 4;
+	            	pos2 += readInt(b2, pos2);
+	            <%
+	            }else if(typeToGenerate.equals("List")){
+	            %>
+	            	Don't support List type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Doucument")){
+	            %>
+	            	Don't support Document type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Dynamic")){
+	            %>
+	            	Don't support Dynamic type: column--<%=columnName%>
+	            <%
+	            }
+				%>
+            <%if(nullable){%>
+        		}        
+        	<%
+        	}
+		}
+		
+		private void compareColumn(IMetadataColumn column){
+			boolean nullable = !JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable());
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+			String columnName = column.getLabel();
+			if(nullable){
+				if(typeToGenerate.equals("byte[]")){
+				%>
+					int length1_<%=columnName%> = readInt(b1, pos1);
+					pos1 += 4;
+					int length2_<%=columnName%> = readInt(b2, pos2);
+					pos2 += 4;
+					boolean null1_<%=columnName%> = length1_<%=columnName%> == -1;
+					boolean null2_<%=columnName%> = length2_<%=columnName%> == -1;
+				<%
+				}else{
+	       		%>
+	        		boolean null1_<%=columnName%> = b1[pos1] == -1;
+	        		pos1 += 1;
+	        		boolean null2_<%=columnName%> = b2[pos2] == -1;
+	        		pos2 += 1;
+	        	<%
+	        	}
+				%>
+				if(null1_<%=columnName%> && !null2_<%=columnName%>){
+					<%lesser(columnName);%>
+				}else if(!null1_<%=columnName%> && null2_<%=columnName%>){
+					<%greater(columnName);%>
+				}else if(null1_<%=columnName%> && null2_<%=columnName%>){
+					//ignore
+				}else{	
+			<%}%>		
+            	<%
+				if(typeToGenerate.equalsIgnoreCase("Boolean")){
+	        	%>
+	        		if(b1[pos1] > 0 && b2[pos2] ==0){
+	        			<%greater(columnName);%>
+	        		}else if(b1[pos1] == 0 && b2[pos2] > 0){
+	        			<%lesser(columnName);%>
+	        		}
+	        		pos1 += 1;
+	        		pos2 += 1;
+	        	<%
+	        	}else if(typeToGenerate.equalsIgnoreCase("Byte")){
+	            %>
+	                if(b1[pos1] > b2[pos2]){
+	        			<%greater(columnName);%>
+	        		}else if(b1[pos1] < b2[pos2]){
+	        			<%lesser(columnName);%>
+	        		}
+	        		pos1 += 1;
+	        		pos2 += 1;
+	            <%
+	            }else if(typeToGenerate.equals("byte[]")){
+	            %>
+	            	int n_<%=columnName%> = Math.min(length1_<%=columnName%>, length2_<%=columnName%>);
+	            	for(int i = 0; i < n_<%=columnName%>; i++){
+	            		if(b1[pos1+i] > b2[pos2+i]){
+	            			<%greater(columnName);%>
+	            		}else if(b1[pos1+i] < b2[pos2+i]){
+	            			<%lesser(columnName);%>
+	            		}
+	            	}
+	            	pos1 += length1_<%=columnName%>;
+	            	pos2 += length2_<%=columnName%>;
+	            	if(length1_<%=columnName%> > length2_<%=columnName%>){
+	            		<%greater(columnName);%>
+	            	}else if(length1_<%=columnName%> < length2_<%=columnName%>){
+	            		<%lesser(columnName);%>
+	            	}
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Char") || typeToGenerate.equalsIgnoreCase("Character")){
+	            %>
+	            	if((char)((b1[pos1] << 8) | (b1[pos1+1] & 0xff)) - (char)((b2[pos2] << 8) | (b2[pos2+1] & 0xff)) != 0){
+	            		if((char)((b1[pos1] << 8) | (b1[pos1+1] & 0xff)) - (char)((b2[pos2] << 8) | (b2[pos2+1] & 0xff)) > 0){
+							<%greater(columnName);%>            			
+	            		}else{
+	            			<%lesser(columnName);%>
+	            		}
+	            	}
+	            	pos1 += 2;
+	            	pos2 += 2;
+	            <%
+	            }else if(typeToGenerate.equals("java.util.Date")){
+	        	%>
+	            	long v1_<%=columnName%> = readLong(b1, pos1);
+	                pos1 += 8;
+	            	long v2_<%=columnName%> = readLong(b2, pos2);
+	                pos2 += 8;
+	                <%
+	            	if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = FormatterUtils.format_Date(new java.util.Date(v1_<%=columnName%>), <%=pattern%>).compareTo(FormatterUtils.format_Date(new java.util.Date(v2_<%=columnName%>), <%=pattern%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	            	%>
+		                if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Double")){
+	            %>
+	                double v1_<%=columnName%> = readDouble(b1, pos1);
+	                pos1 += 8;
+	                double v2_<%=columnName%> = readDouble(b2, pos2);
+	                pos2 += 8;
+	                <%
+	            	if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(v1_<%=columnName%>).compareTo(String.valueOf(v2_<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	            	%>
+		                if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Float")){
+	            %>
+	            	float v1_<%=columnName%> = readFloat(b1, pos1);
+	                pos1 += 4;
+	                float v2_<%=columnName%> = readFloat(b2, pos2);
+	                pos2 += 4;
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(v1_<%=columnName%>).compareTo(String.valueOf(v2_<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("BigDecimal")){
+	            %>
+	                byte[] bs1_<%=columnName%> = new byte[(short)((b1[pos1] << 8) | (b1[pos1+1] & 0xff))];
+	                pos1 += 2; 
+	                for(int i = 0; i < bs1_<%=columnName%>.length; i++){
+	                	bs1_<%=columnName%>[i] = b1[pos1+i];
+	                }
+	                pos1 += bs1_<%=columnName%>.length;
+	                int scale1_<%=columnName%> = (short)((b1[pos1] << 8) | (b1[pos1+1] & 0xff));
+	                pos1 += 2;
+	                java.math.BigDecimal bd1_<%=columnName%> = new java.math.BigDecimal(new java.math.BigInteger(bs1_<%=columnName%>), scale1_<%=columnName%>);
+	                
+	                byte[] bs2_<%=columnName%> = new byte[(short)((b2[pos2] << 8) | (b2[pos2+1] & 0xff))];
+	                pos2 += 2; 
+	                for(int i = 0; i < bs2_<%=columnName%>.length; i++){
+	                	bs2_<%=columnName%>[i] = b2[pos2+i];
+	                }
+	                pos2 += bs2_<%=columnName%>.length;
+	                int scale2_<%=columnName%> = (short)((b2[pos2] << 8) | (b2[pos2+1] & 0xff));
+	                pos2 += 2;
+	                java.math.BigDecimal bd2_<%=columnName%> = new java.math.BigDecimal(new java.math.BigInteger(bs2_<%=columnName%>), scale2_<%=columnName%>);
+	                
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(bd1_<%=columnName%>).compareTo(String.valueOf(bd2_<%=columnName%>));
+	            	<%	
+	            	}else{
+	                %>
+		                int cmp_<%=columnName%> = bd1_<%=columnName%>.compareTo(bd2_<%=columnName%>);
+		            <%}%>
+	        		if(cmp_<%=columnName%> > 0){
+	        			<%greater(columnName);%>
+	        		}else if(cmp_<%=columnName%> < 0){
+	        			<%lesser(columnName);%>
+	        		}
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Integer") || typeToGenerate.equalsIgnoreCase("int")){
+	            %>
+	            	int v1_<%=columnName%> = readInt(b1, pos1);
+	                pos1 += 4;
+	            	int v2_<%=columnName%> = readInt(b2, pos2);
+	                pos2 += 4;
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(v1_<%=columnName%>).compareTo(String.valueOf(v2_<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Long")){
+	            %>
+	           		long v1_<%=columnName%> = readLong(b1, pos1);
+	                pos1 += 8;
+	            	long v2_<%=columnName%> = readLong(b2, pos2);
+	                pos2 += 8;
+	               	<%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(v1_<%=columnName%>).compareTo(String.valueOf(v2_<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("Object")){
+	            %>
+	            	Don't support Object type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Short")){
+	            %>
+	            	short v1_<%=columnName%> = (short)((b1[pos1] << 8) | (b1[pos1+1] & 0xff));
+	            	short v2_<%=columnName%> = (short)((b2[pos2] << 8) | (b2[pos2+1] & 0xff));
+	            	pos1 += 2;
+	            	pos2 += 2;
+	            	<%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(v1_<%=columnName%>).compareTo(String.valueOf(v2_<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		            	if(v1_<%=columnName%> > v2_<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(v1_<%=columnName%> < v2_<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("String")){
+	            %>
+	            	int len1_<%=columnName%> = readInt(b1, pos1);
+	            	pos1 += 4;
+	            	byte[] bs1_<%=columnName%> = new byte[len1_<%=columnName%>];
+	            	for(int i = 0; i < bs1_<%=columnName%>.length; i++){
+	            		bs1_<%=columnName%>[i] = b1[pos1 + i];
+	            	}
+	            	pos1 += bs1_<%=columnName%>.length;
+	            	String v1_<%=columnName%> = new String(bs1_<%=columnName%>, "UTF-8");
+	            	
+	            	int len2_<%=columnName%> = readInt(b2, pos2);
+	            	pos2 += 4;
+	            	byte[] bs2_<%=columnName%> = new byte[len2_<%=columnName%>];
+	            	for(int i = 0; i < bs2_<%=columnName%>.length; i++){
+	            		bs2_<%=columnName%>[i] = b2[pos2 + i];
+	            	}
+	            	pos2 += bs2_<%=columnName%>.length;
+	            	String v2_<%=columnName%> = new String(bs2_<%=columnName%>, "UTF-8");
+	            	
+	            	int comp_<%=columnName%> = v1_<%=columnName%>.compareTo(v2_<%=columnName%>);
+	            	if(comp_<%=columnName%> != 0){
+	            		if(comp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else{
+	            			<%lesser(columnName);%>
+	            		}
+	            		
+	            	}
+	            <%
+	            }else if(typeToGenerate.equals("List")){
+	            %>
+	            	Don't support List type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Doucument")){
+	            %>
+	            	Don't support Document type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Dynamic")){
+	            %>
+	            	Don't support Dynamic type: column--<%=columnName%>
+	            <%
+	            }            	
+            	%>
+            <%if(nullable){%>
+        		}        
+        	<%
+        	}
+		}
+		
+		public void compareColumns(){
+			if(columns != null){
+				if(unorder){
+				%>
+					java.util.Map<String, Integer> compareColumns = new java.util.HashMap<String, Integer>();	
+				<%
+				}
+	            for(IMetadataColumn column : columns){
+	            	String columnName = column.getLabel();
+                	if(orders.contains(columnName)){
+                	%>
+                    	<%compareColumn(column);%>
+                	<%
+                	}else{
+                	%>
+                		<%skipColumn(column);%>
+                	<%	
+	               	}
+				}
+				if(unorder){
+					for(String columnName : orders){
+					%>
+						if(compareColumns.get("<%=columnName%>") == null){
+						}else if(compareColumns.get("<%=columnName%>") > 0){
+							<%genGreater(columnName);%>
+						}else if(compareColumns.get("<%=columnName%>") < 0){
+							<%genLesser(columnName);%>
+						}
+					<%	
+					}
+				}
+			}
+		}
+		
+		public void compareAfterColumns(){
+		}
+		
+		public void generateCode(){
+		%>
+			public static class <%=className%> extends WritableComparator{
+				int pos1;
+				int pos2;
+				int comp = 0;
+				
+				protected <%=className%>(){
+					super(<%=structName%>.class, false);
+				}
+				
+				public int compare(byte b1[], int s1, int l1, byte b2[], int s2, int l2){
+					try{
+						pos1 = s1;
+						pos2 = s2;
+						
+						<%compareColumns();%>
+						
+						<%compareAfterColumns();%>
+						
+						return comp;
+						
+					}catch(Exception e){
+						throw new RuntimeException(e);
+					}					
+				}
+				<%if(genObjectCompare){%>
+					public int compare(WritableComparable w1, WritableComparable w2){
+						<%=structName%> k1 = (<%=structName%>)w1;
+						<%=structName%> k2 = (<%=structName%>)w2;
+						
+						<%
+						for(IMetadataColumn column : columns){
+			            	String columnName = column.getLabel();
+		                	compareObjectColumn(column);
+						}
+						%>
+						
+						return 0;
+					}
+				<%}%>
+			}
+		<%
+		}
+		
+		private void compareObjectColumn(IMetadataColumn column){
+			boolean nullable = !JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable());
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+			String columnName = column.getLabel();
+			if(nullable){
+			%>
+				if(k1.<%=columnName%> == null && k2.<%=columnName%> != null){
+					<%lesser(columnName);%>
+				}else if(k1.<%=columnName%> != null && k2.<%=columnName%> == null){
+					<%greater(columnName);%>
+				}else if(k1.<%=columnName%> == null && k2.<%=columnName%> == null){
+					//ignore
+				}else{	
+			<%}%>		
+            	<%
+				if(typeToGenerate.equalsIgnoreCase("Boolean")){
+	        	%>
+	        		if(k1.<%=columnName%> != k2.<%=columnName%>){
+	        			if(k1.<%=columnName%>){
+		        			<%greater(columnName);%>
+	        			}else{
+		        			<%lesser(columnName);%>
+	        			}
+	        		}
+	        	<%
+	        	}else if(typeToGenerate.equalsIgnoreCase("Byte")){
+	            %>
+	                if(k1.<%=columnName%> > k2.<%=columnName%>){
+	        			<%greater(columnName);%>
+	        		}else if(k1.<%=columnName%> < k2.<%=columnName%>){
+	        			<%lesser(columnName);%>
+	        		}
+	            <%
+	            }else if(typeToGenerate.equals("byte[]")){
+	            %>
+	            	String s1_<%=columnName%> = new String(k1.<%=columnName%>);
+	            	String s2_<%=columnName%> = new String(k2.<%=columnName%>);
+	            	if(!s1_<%=columnName%>.equals(s2_<%=columnName%>)){
+						if(s1_<%=columnName%>.compareTo(s2_<%=columnName%>) > 0){
+	            			<%greater(columnName);%>
+						}else{
+	            			<%lesser(columnName);%>
+						}
+	            	}
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Char") || typeToGenerate.equalsIgnoreCase("Character")){
+	            %>
+	            	if(k1.<%=columnName%> - k2.<%=columnName%> != 0){
+	            		if(k1.<%=columnName%> - k2.<%=columnName%> > 0){
+							<%greater(columnName);%>            			
+	            		}else{
+	            			<%lesser(columnName);%>
+	            		}
+	            	}
+	            <%
+	            }else if(typeToGenerate.equals("java.util.Date")){
+	        	%>
+	                <%
+	            	if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = FormatterUtils.format_Date(k1.<%=columnName%>, <%=pattern%>).compareTo(FormatterUtils.format_Date(k2.<%=columnName%>, <%=pattern%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	            	%>
+	            		if(!k1.<%=columnName%>.equals(k2.<%=columnName%>)){
+			                if(k1.<%=columnName%>.compareTo(k2.<%=columnName%>) > 0){
+			                	<%greater(columnName);%>
+			                }else{
+			                	<%lesser(columnName);%>
+			                }
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Double")){
+	            %>
+	                <%
+	            	if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	            	%>
+		                if(k1.<%=columnName%> > k2.<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(k1.<%=columnName%> < k2.<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Float")){
+	            %>
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(k1.<%=columnName%> > k2.<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(k1.<%=columnName%> < k2.<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("BigDecimal")){
+	            %>
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            	<%	
+	            	}else{
+	                %>
+		                int cmp_<%=columnName%> = k1.<%=columnName%>.compareTo(k2.<%=columnName%>);
+		            <%}%>
+	        		if(cmp_<%=columnName%> > 0){
+	        			<%greater(columnName);%>
+	        		}else if(cmp_<%=columnName%> < 0){
+	        			<%lesser(columnName);%>
+	        		}
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Integer") || typeToGenerate.equalsIgnoreCase("int")){
+	            %>
+	                <%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(k1.<%=columnName%> > k2.<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(k1.<%=columnName%> < k2.<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equalsIgnoreCase("Long")){
+	            %>
+	               	<%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		                if(k1.<%=columnName%> > k2.<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(k1.<%=columnName%> < k2.<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("Object")){
+	            %>
+	            	Don't support Object type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equalsIgnoreCase("Short")){
+	            %>
+	            	<%
+	                if(!sortTypes.get(columnName)){
+	            	%>
+	            		int cmp_<%=columnName%> = String.valueOf(k1.<%=columnName%>).compareTo(String.valueOf(k2.<%=columnName%>));
+	            		if(cmp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else if(cmp_<%=columnName%> < 0){
+	            			<%lesser(columnName);%>
+	            		}
+	            	<%	
+	            	}else{
+	                %>
+		            	if(k1.<%=columnName%> > k2.<%=columnName%>){
+		                	<%greater(columnName);%>
+		                }else if(k1.<%=columnName%> < k2.<%=columnName%>){
+		                	<%lesser(columnName);%>
+		                }
+	            	<%
+	            	}
+	            }else if(typeToGenerate.equals("String")){
+	            %>
+	            	int comp_<%=columnName%> = k1.<%=columnName%>.compareTo(k2.<%=columnName%>);
+	            	if(comp_<%=columnName%> != 0){
+	            		if(comp_<%=columnName%> > 0){
+	            			<%greater(columnName);%>
+	            		}else{
+	            			<%lesser(columnName);%>
+	            		}
+	            		
+	            	}
+	            <%
+	            }else if(typeToGenerate.equals("List")){
+	            %>
+	            	Don't support List type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Doucument")){
+	            %>
+	            	Don't support Document type: column--<%=columnName%>
+	            <%
+	            }else if(typeToGenerate.equals("Dynamic")){
+	            %>
+	            	Don't support Dynamic type: column--<%=columnName%>
+	            <%
+	            }            	
+            	%>
+            <%if(nullable){%>
+        		}        
+        	<%
+        	}
+		}
+	}
+	%>

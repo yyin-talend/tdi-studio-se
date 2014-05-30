@@ -1,0 +1,464 @@
+	<%
+	//need to define MapperHelper before MapperGenerator, so use this trick
+	class ReducerHelperBase{
+		public void reduce(){
+		}
+		
+		public void prepare(){
+		}
+		
+		public void configure(){
+		}
+		
+		public void close(){
+		}
+	}
+	
+	class ReducerGenerator{
+		ReducerHelperBase reducer;
+		
+		String cid = null;
+		String reducerClass = null;
+
+		Object inKey = null;
+		Object inKeyClass = null;
+
+		Object inValue = null;
+		Object inValueClass = null;
+
+		Object outKey = null;
+		Object outKeyClass = null;
+
+		Object outValue = null;
+		Object outValueClass = null;
+		
+		public ReducerGenerator(ReducerHelperBase reducer){
+			this.reducer = reducer; 
+		}
+		
+		public void init(String cid, Object inKey, Object inValue, Object outKey, Object outValue){
+			this.cid = cid;
+			this.inKey = (inKey == null ? "key_"+cid : inKey);
+			this.inValue = (inValue == null ? "values_"+cid : inValue);
+			this.outKey = (outKey == null ? "outputKey_"+cid : outKey);
+			this.outValue = (outValue == null ? "outputValue_"+cid : outValue);
+			this.reducerClass = buildClassName(cid, "r");
+			this.inKeyClass = buildClassName(inKey, "row");
+			this.inValueClass = buildClassName(inValue, "row");
+			this.outKeyClass = buildClassName(outKey, "row");
+			this.outValueClass = buildClassName(outValue, "row");
+		}
+		
+		protected String buildClassName(String name, String type){
+			if(type.equals("m")){
+				return name + "Mapper";
+			}else if(type.equals("r")){
+				return name + "Reducer";
+			}else if(type.equals("c")){
+				return name + "Combiner";
+			}else if(type.equals("row")){
+				return name + "Struct";
+			}else{
+				return null;
+			}
+		}
+		
+		protected Object buildClassName(Object name, String type){
+			if(type.equals("row")){
+				if(name instanceof java.util.Map){
+					java.util.Map<String, String> classes = new java.util.HashMap<String, String>();
+					java.util.Map<String, String> names = (java.util.Map<String, String>)name;
+					for(String key : names.keySet()){
+						classes.put(key, buildClassName(names.get(key), "row"));
+					}
+					return classes;
+				}else if(name instanceof String){
+					return buildClassName(name.toString(), "row");
+				}else if(name == null){
+					return "NullWritable";
+				}
+			}
+			return null;
+		}
+		
+		public String getInKeyClass(String name){
+			if(inKeyClass instanceof java.util.Map){
+				return ((java.util.Map<String, String>)inKeyClass).get(name);
+			}
+			return getInKeyClass();
+		}
+		
+		public String getInKeyClass(){
+			if(inKeyClass instanceof String){
+				return inKeyClass.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getInKey(String name){
+			if(inKey instanceof java.util.Map){
+				return ((java.util.Map<String, String>)inKey).get(name);
+			}
+			return getInKey();
+		}
+		
+		public String getInKey(){
+			if(inKey instanceof String){
+				return inKey.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getOutKeyClass(String name){
+			if(outKeyClass instanceof java.util.Map){
+				return ((java.util.Map<String, String>)outKeyClass).get(name);
+			}
+			return getOutKeyClass();
+		}
+		
+		public String getOutKeyClass(){
+			if(outKeyClass instanceof String){
+				return outKeyClass.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getOutKey(String name){
+			if(outKey instanceof java.util.Map){
+				return ((java.util.Map<String, String>)outKey).get(name);
+			}
+			return getOutKey();
+		}
+		
+		public String getOutKey(){
+			if(outKey instanceof String){
+				return outKey.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getInValueClass(String name){
+			if(inValueClass instanceof java.util.Map){
+				return ((java.util.Map<String, String>)inValueClass).get(name);
+			}
+			return getInValueClass();
+		}
+		
+		public String getInValueClass(){
+			if(inValueClass instanceof String){
+				return inValueClass.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getInValue(String name){
+			if(inValue instanceof java.util.Map){
+				return ((java.util.Map<String, String>)inValue).get(name);
+			}
+			return getInValue();
+		}
+		
+		public String getInValue(){
+			if(inValue instanceof String){
+				return inValue.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getOutValueClass(String name){
+			if(outValueClass instanceof java.util.Map){
+				return ((java.util.Map<String, String>)outValueClass).get(name);
+			}
+			return getOutValueClass();
+		}
+		
+		public String getOutValueClass(){
+			if(outValueClass instanceof String){
+				return outValueClass.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public String getOutValue(String name){
+			if(outValue instanceof java.util.Map){
+				return ((java.util.Map<String, String>)outValue).get(name);
+			}
+			return getOutValue();
+		}
+		
+		public String getOutValue(){
+			if(outValue instanceof String){
+				return outValue.toString();
+			}else{
+				System.err.println("not single, wrong call");
+				return null;
+			}
+		}
+		
+		public void output(String outKey, String outValue){
+			outKey = (outKey == null ? "outputKey_"+cid : outKey);
+			%>
+			output_<%=cid%>.collect(<%=outKey%>, <%=outValue%>);
+		<%
+		}
+		public void generate(){
+		%>
+			public static class <%=reducerClass%> extends MapReduceBase 
+				implements Reducer<<%=inKeyClass%>, <%=inValueClass%>, <%=outKeyClass%>, <%=outValueClass%>>{
+				ContextProperties context;
+				<%=outKeyClass%> <%=outKey%> = null;
+				<%=outValueClass%> <%=outValue%> = null;
+				<%reducer.prepare();%>
+				
+				public void configure(JobConf job_<%=cid%>){
+					context = new ContextProperties(job_<%=cid%>);
+					<%if("NullWritable".equals(outKeyClass)){%>
+						<%=outKey%> = NullWritable.get();
+					<%}else{%>
+						<%=outKey%> = new <%=outKeyClass%>(); 
+					<%}%>
+					<%=outValue%> = new <%=outValueClass%>();
+					<%reducer.configure();%>
+  				}
+				
+				public void reduce(<%=inKeyClass%> key_<%=cid%>, Iterator<<%=inValueClass%>> values_<%=cid%>, 
+					OutputCollector<<%=outKeyClass%>, <%=outValueClass%>> output_<%=cid%>, Reporter reporter_<%=cid%>) throws IOException{
+					<%reducer.reduce();%>
+				}
+					
+				public void close() throws IOException{
+					<%reducer.close();%>
+  				}
+    		}
+    	<%
+		}
+		public void generateConf(){
+		%>
+			ChainReducer.setReducer(job, <%=reducerClass%>.class, <%=inKeyClass%>.class,
+        		<%=inValueClass%>.class, <%=outKeyClass%>.class, <%=outValueClass%>.class, true, new JobConf(false));
+		<%
+		}
+	} 
+	
+	class MOReducerGenerator extends ReducerGenerator{
+		public MOReducerGenerator(ReducerHelperBase reducer){
+			super(reducer); 
+		}
+		
+		public void output(String outKey, String outValue){
+			outKey = (outKey == null ? "outputKey_"+cid : outKey);
+			%>
+			mos_<%=cid%>.getCollector("<%=outValue%>", reporter_<%=cid%>).collect(<%=outKey%>, <%=outValue%>);
+		<%
+		}
+		public void generate(){
+		%>
+			public static class <%=reducerClass%> extends MapReduceBase 
+				implements Reducer<<%=inKeyClass%>, <%=inValueClass%>, <%=outKeyClass%>, WritableComparable>{
+				ContextProperties context;
+				public MultipleOutputs mos_<%=cid%>;
+				<%=outKeyClass%> <%=outKey%> = null;
+				<%
+				if(outValueClass instanceof java.util.Map){
+					for(String key : ((java.util.Map<String, String>)outValueClass).keySet()){
+					%>
+						<%=((java.util.Map)outValueClass).get(key)%> <%=((java.util.Map)outValue).get(key)%> = null;	
+					<%	
+					}
+				}
+				%>
+				<%reducer.prepare();%>
+				
+				public void configure(JobConf job_<%=cid%>){
+					context = new ContextProperties(job_<%=cid%>);
+					mos_<%=cid%> = new MultipleOutputs(job_<%=cid%>);
+					<%if("NullWritable".equals(outKeyClass)){%>
+						<%=outKey%> = NullWritable.get();
+					<%}else{%>
+						<%=outKey%> = new <%=outKeyClass%>(); 
+					<%}%>
+					<%
+					if(outValueClass instanceof java.util.Map){
+						for(String key : ((java.util.Map<String, String>)outValueClass).keySet()){
+						%>
+							<%=((java.util.Map)outValue).get(key)%> = new <%=((java.util.Map)outValueClass).get(key)%>();	
+						<%	
+						}
+					}
+					%>
+					<%reducer.configure();%>
+  				}
+				
+				public void reduce(<%=inKeyClass%> key_<%=cid%>, Iterator<<%=inValueClass%>> values_<%=cid%>, 
+					OutputCollector<<%=outKeyClass%>, WritableComparable> output_<%=cid%>, Reporter reporter_<%=cid%>) throws IOException{
+					<%reducer.reduce();%>
+				}
+					
+				public void close() throws IOException{
+					mos_<%=cid%>.close();
+					<%reducer.close();%>
+  				}
+    		}
+    	<%
+		}
+		public void generateConf(){
+		%>
+			ChainReducer.setReducer(job, <%=reducerClass%>.class, <%=inKeyClass%>.class,
+        		<%=inValueClass%>.class, <%=outKeyClass%>.class, WritableComparable.class, true, new JobConf(false));
+        	MultipleOutputs.setWorkDir(job, genTempFolderForComponent("MultipleOutputs_<%=cid%>"));
+			<%
+        	java.util.Map<String, String> values = (java.util.Map<String, String>)outValue;
+        	for(String key : values.keySet()){
+        	%>
+				MultipleOutputs.setKeyValue(job, "<%=values.get(key)%>", <%=outKeyClass%>.class, <%=getOutValueClass(key)%>.class);
+        	<%
+        	}
+		}
+	}
+	
+	class CombinerGenerator extends ReducerGenerator{
+		public CombinerGenerator(ReducerHelperBase reducer){
+			super(reducer); 
+		}
+		public void init(String cid, Object inKey, Object inValue, Object outKey, Object outValue){
+			super.init(cid, inKey, inValue, outKey, outValue);
+			this.reducerClass = buildClassName(cid, "c");
+		}
+		public void generateConf(){
+		%>
+			job.setCombinerClass(<%=reducerClass%>.class);
+		<%			
+		}
+	}
+	
+	final String R_TYPE_BASE = "base";
+	final String R_TYPE_MO = "mo";
+	final String R_TYPE_COMBINER = "combiner";
+	
+	class ReducerHelper extends ReducerHelperBase{
+		
+		ReducerGenerator reducerGen;
+		
+		String cid = null;
+
+		public void setType(String type){
+			if(type.equals(R_TYPE_BASE)){
+				reducerGen = new ReducerGenerator(this);
+			}else if(type.equals(R_TYPE_MO)){
+				reducerGen = new MOReducerGenerator(this);
+			}else if(type.equals(R_TYPE_COMBINER)){
+				reducerGen = new CombinerGenerator(this);
+			}
+		}
+
+		public void init(String cid, String inKey, String inValue, String outKey, Object outValue){
+			if(reducerGen == null){
+				reducerGen = new ReducerGenerator(this);
+			}
+			reducerGen.init(cid, inKey, inValue, outKey, outValue);
+			this.cid = reducerGen.cid;
+		}
+		
+		public String getInKeyClass(String name){
+			return reducerGen.getInKeyClass(name);
+		}
+		
+		public String getInKeyClass(){
+			return reducerGen.getInKeyClass();
+		}
+		
+		public String getInKey(String name){
+			return reducerGen.getInKey(name);
+		}
+		
+		public String getInKey(){
+			return reducerGen.getInKey();
+		}
+		
+		public String getOutKeyClass(String name){
+			return reducerGen.getOutKeyClass(name);
+		}
+		
+		public String getOutKeyClass(){
+			return reducerGen.getOutKeyClass();
+		}
+		
+		public String getOutKey(String name){
+			return reducerGen.getOutKey(name);
+		}
+		
+		public String getOutKey(){
+			return reducerGen.getOutKey();
+		}
+		
+		public String getInValueClass(String name){
+			return reducerGen.getInValueClass(name);
+		}
+		
+		public String getInValueClass(){
+			return reducerGen.getInValueClass();
+		}
+		
+		public String getInValue(String name){
+			return reducerGen.getInValue(name);
+		}
+		
+		public String getInValue(){
+			return reducerGen.getInValue();
+		}
+		
+		public String getOutValueClass(String name){
+			return reducerGen.getOutValueClass(name);
+		}
+		
+		public String getOutValueClass(){
+			return reducerGen.getOutValueClass();
+		}
+		
+		public String getOutValue(String name){
+			return reducerGen.getOutValue(name);
+		}
+		
+		public String getOutValue(){
+			return reducerGen.getOutValue();
+		}
+		
+		public void output(String outKey, String outValue){
+			reducerGen.output(outKey, outValue);
+		}
+		
+		public void generate(){
+			reducerGen.generate();
+		}
+		
+		public void generateConf(){
+			reducerGen.generateConf();
+		}
+		
+		public void reduce(){
+		}
+		
+		public void prepare(){
+		}
+		
+		public void configure(){
+		}
+		
+		public void close(){
+		}
+	}
+	%>
