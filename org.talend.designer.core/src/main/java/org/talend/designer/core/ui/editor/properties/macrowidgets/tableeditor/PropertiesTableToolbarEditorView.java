@@ -360,7 +360,8 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                         .getExtendedControlModel();
         
                 Object data = SimpleClipboard.getInstance().getData();
-                if (data == null || !(data instanceof List) || tableEditorModel.getElemParameter() == null) {
+                if (data == null || !(data instanceof List) || tableEditorModel.getElemParameter() == null
+                        || tableEditorModel.getElemParameter().getListItemsDisplayCodeName() == null) {
                     return false;
                 }
                 @SuppressWarnings("rawtypes")
