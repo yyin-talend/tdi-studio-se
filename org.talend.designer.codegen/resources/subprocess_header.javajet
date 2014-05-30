@@ -29,6 +29,7 @@
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	boolean stat = codeGenArgument.isStatistics();
+	boolean containsTPartitioner = subTree.getRootNode().getProcess().getNodesOfType("tPartitioner").size() > 0 ? true : false;
 %>
 
 <%
@@ -1032,7 +1033,9 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 			}
 			boolean isRunning = false;
 			String iterateId = "";
-			int iterateLoop = 0;
+			<%if(containsTPartitioner){%>
+				int iterateLoop = 0;
+			<%}%>
 			
 			public void run() {
 				java.util.Map threadRunResultMap = new java.util.HashMap();
@@ -1064,7 +1067,9 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	<%
 	}
 	%>
-	int iterateLoop = 0;
+	<%if(containsTPartitioner){%>
+		int iterateLoop = 0;
+	<%}%>
 	String currentComponent = "";
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 					

@@ -25,6 +25,7 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean containsTPartitioner = node.getProcess().getNodesOfType("tPartitioner").size() > 0 ? true : false;
 boolean isRunJob = "tRunJob".equals(node.getComponent().getName());
 IProcess process = node.getProcess();
  
@@ -52,7 +53,9 @@ boolean parallelIterate = false;
 for (IConnection iterateConn : iterateConnSet) { //1
 %>
 	NB_ITERATE_<%=iterateNodeName %>++;
-	iterateLoop++;
+	<%if(containsTPartitioner){%>
+		iterateLoop++;
+	<%}%>
 	<%	
 	parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 	if (parallelIterate) {//2
@@ -91,7 +94,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 				private java.util.Map<String, Object> globalMap = null;
 				boolean isRunning = false;
 				String iterateId = "";
-				int iterateLoop = 0;
+				<%if(containsTPartitioner){%>
+					int iterateLoop = 0;
+				<%}%>
 				<%
 				if(!subTree.isMergeSubTree()) {
 					List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
@@ -159,7 +164,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 					<%}%>
 						}
 					iterateId = "." + threadID;
-					iterateLoop++;
+					<%if(containsTPartitioner){%>
+						iterateLoop++;
+					<%}%>
 					<%if(isRunJob) {%>
 						//bug21906 copy context to local for mutilthread
 						context.synchronizeContext();
