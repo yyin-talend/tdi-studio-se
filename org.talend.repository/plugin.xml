@@ -2175,7 +2175,7 @@
               class="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
               id="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
               name="UpdateDbVersionForVerticaMigrationTask"
-              version="5.5.0">
+              version="5.4.3">
         </projecttask>
    </extension>
    
