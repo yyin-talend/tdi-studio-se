@@ -21,7 +21,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 
 /**
  * ftang class global comment. Detailled comment <br/>
@@ -34,7 +33,7 @@ public class JobVersionUtils {
      * 
      * @return
      */
-    public static String getCurrentVersion(RepositoryNode repositoryNode) {
+    public static String getCurrentVersion(IRepositoryNode repositoryNode) {
         try {
             // alert for bug TDI-20132
             if (repositoryNode.getObject() != null
@@ -46,7 +45,7 @@ public class JobVersionUtils {
                 for (IRepositoryNode node : nodeChildren) {
                     if (node.getObject() != null
                             && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
-                        String currentVersion = getCurrentVersion((RepositoryNode) node);
+                        String currentVersion = getCurrentVersion(node);
                         if (currentVersion != null && !"".equals(currentVersion)) {
                             return currentVersion;
                         }
@@ -69,12 +68,12 @@ public class JobVersionUtils {
      * 
      * @return
      */
-    public static String getCurrentID(RepositoryNode repositoryNode) {
+    public static String getCurrentID(IRepositoryNode repositoryNode) {
         List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
         if (nodeChildren != null) {
             for (IRepositoryNode node : nodeChildren) {
                 if (node.getObject() != null && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
-                    String currentID = getCurrentID((RepositoryNode) node);
+                    String currentID = getCurrentID(node);
                     if (currentID != null && !"".equals(currentID)) {
                         return currentID;
                     }
@@ -94,7 +93,7 @@ public class JobVersionUtils {
      * 
      * @return
      */
-    public static String[] getAllVersions(RepositoryNode repositoryNode) {
+    public static String[] getAllVersions(IRepositoryNode repositoryNode) {
         List<String> versionList = new ArrayList<String>();
         String nodeID = "";
         if (repositoryNode.getObject() != null
