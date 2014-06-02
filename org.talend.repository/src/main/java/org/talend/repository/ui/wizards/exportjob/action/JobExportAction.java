@@ -51,9 +51,9 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -64,7 +64,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  */
 public class JobExportAction implements IRunnableWithProgress {
 
-    private List<RepositoryNode> nodes;
+    private List<? extends IRepositoryNode> nodes;
 
     private String jobVersion;
 
@@ -78,13 +78,13 @@ public class JobExportAction implements IRunnableWithProgress {
 
     private boolean isBuildSuccessful;
 
-    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
             String directoryName, String type) {
         this(nodes, jobVersion, bundleVersion, manager, directoryName);
         this.type = type;
     }
 
-    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
             String directoryName) {
         super();
         this.nodes = nodes;
@@ -94,12 +94,12 @@ public class JobExportAction implements IRunnableWithProgress {
         this.directoryName = directoryName;
     }
 
-    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName,
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName,
             String type) {
         this(nodes, jobVersion, jobVersion, manager, directoryName, type);
     }
 
-    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName) {
+    public JobExportAction(List<? extends IRepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName) {
         this(nodes, jobVersion, jobVersion, manager, directoryName);
     }
 
@@ -127,20 +127,17 @@ public class JobExportAction implements IRunnableWithProgress {
         return isBuildSuccessful;
     }
 
-    private List<ExportFileResource> getProcesses(List<RepositoryNode> nodes, String path) {
+    private static List<ExportFileResource> getProcesses(Collection<? extends IRepositoryNode> nodes, String path) {
         List<ExportFileResource> value = new ArrayList<ExportFileResource>();
-        for (final RepositoryNode node : nodes) {
+        for (IRepositoryNode node : nodes) {
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
-                List<RepositoryNode> children = new ArrayList<RepositoryNode>(
-                        (Collection<? extends RepositoryNode>) node.getChildren());
-                value.addAll(getProcesses(children, node.getProperties(EProperties.LABEL).toString() + "/")); //$NON-NLS-1$
+                value.addAll(getProcesses(node.getChildren(), node.getProperties(EProperties.LABEL).toString() + '/'));
             }
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                 IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, path + processItem.getProperty().getLabel());
-                    processItem.getProcess().getNode();
                     resource.setNode(node);
                     value.add(resource);
                 }
@@ -149,7 +146,7 @@ public class JobExportAction implements IRunnableWithProgress {
         return value;
     }
 
-    private boolean exportJobScript(List<RepositoryNode> nodes, String version, String bundleVersion, IProgressMonitor monitor) {
+    private boolean exportJobScript(List<? extends IRepositoryNode> nodes, String version, String bundleVersion, IProgressMonitor monitor) {
         manager.setJobVersion(version);
         manager.setBundleVersion(bundleVersion);
 
