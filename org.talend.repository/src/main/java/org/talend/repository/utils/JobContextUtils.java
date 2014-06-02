@@ -1,7 +1,7 @@
 package org.talend.repository.utils;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
@@ -16,18 +16,12 @@ public class JobContextUtils {
 		Map<String, Map<String, String>> contextValues = new HashMap<String, Map<String, String>>();
 		ProcessType process = processItem.getProcess();
 		if (process != null) {
-			EList context = process.getContext();
+			EList<?> context = process.getContext();
 			if (context != null) {
-				Iterator iterator = context.iterator();
-				while (iterator.hasNext()) {
-					Object next = iterator.next();
-					if (!(next instanceof ContextType)) {
-						continue;
-					}
+				for (Object next : context) {
 					ContextType ct = (ContextType) next;
-					String name = ct.getName();
 					HashMap<String, String> contextParams = new HashMap<String, String>();
-					contextValues.put(name, contextParams);
+					contextValues.put(ct.getName(), contextParams);
 					EList<ContextParameterType> params = ct.getContextParameter();
 					for (ContextParameterType param : params) {
 						contextParams.put(param.getName(), param.getValue());
@@ -37,4 +31,26 @@ public class JobContextUtils {
 		}
 		return contextValues;
 	}
+
+    public static Map<String, String> getDefaultContextMap(ProcessItem processItem) {
+        ProcessType process = processItem.getProcess();
+        if (process != null) {
+            String defaultContext = process.getDefaultContext();
+            EList<?> context = process.getContext();
+            if (context != null) {
+                for (Object next : context) {
+                    ContextType ct = (ContextType) next;
+                    if (ct.getName().equals(defaultContext)) {
+                        Map<String, String> contextParams = new HashMap<String, String>();
+                        EList<ContextParameterType> params = ct.getContextParameter();
+                        for (ContextParameterType param : params) {
+                            contextParams.put(param.getName(), param.getValue());
+                        }
+                        return contextParams;
+                    }
+                }
+            }
+        }
+        return Collections.emptyMap();
+    }
 }
