@@ -1361,6 +1361,83 @@ for (INode node : graphicalNodes) {
 
 		//sb.append("+\"");
 		uri = sb.toString();
+	} else if ("cMQTT".equals(componentName)) {
+		String resourceUri = "mqtt:";
+		String name = ElementParameterParser.getValue(node, "__NAME__");
+		String host = ElementParameterParser.getValue(node, "__HOST__");
+		String topicName = ElementParameterParser.getValue(node, "__TOPIC_NAME__");
+		String port = ElementParameterParser.getValue(node, "__PORT__");
+		boolean useSSL = ("true").equals(ElementParameterParser.getValue(node,"__SSL__"));
+		
+		String connectAttempts = ElementParameterParser.getValue(node, "__CONNECT_ATTEMPTS__");
+		String reconnectAttempts = ElementParameterParser.getValue(node, "__RECONNECT_ATTEMPTS__");
+		String reconnectDelay = ElementParameterParser.getValue(node, "__RECONNECT_DELAY__");
+		String qos = ElementParameterParser.getValue(node, "__QOS__");
+		String connectWaitInSeconds = ElementParameterParser.getValue(node, "__CONNECT_WAIT_IN_SECONDS__");
+		String disconnectWaitInSeconds = ElementParameterParser.getValue(node, "__DISCONNECT_WAIT_IN_SECONDS__");
+		String sendWaitInSeconds = ElementParameterParser.getValue(node, "__SEND_WAIT_IN_SECONDS__");
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("\"" + resourceUri + "\"");
+		
+		if (null == name || name.isEmpty() || name.equals("\"\"")) {
+			sb.append("+" + componentName);
+		} else {
+			sb.append("+" + name);
+		}
+		sb.append("+\"?\"");
+		
+		if (useSSL)
+			sb.append("+\"host=ssl://" + "\"+");
+		else
+			sb.append("+\"host=tcp://" + "\"+");
+			
+		if (null != host && !host.isEmpty() && !host.equals("\"\"")) {
+			sb.append(host + "+\":\"");
+		} else {
+			sb.append("\"127.0.0.1:" + "\"");
+		}
+		
+		if (null != port && !port.isEmpty() && !port.equals("\"\"")) {
+			sb.append("+" + port);
+		} else {
+			sb.append("+\"1883" + "\"");
+		}
+		
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+		if(conns.size()>0) {
+			if (!resourceUri.contains("publishTopicName") && null != topicName && !topicName.isEmpty()) {
+				sb.append("+\"&publishTopicName=" + "\"+" + topicName);
+			}
+		} else {
+			if (!resourceUri.contains("subscribeTopicName") && null != topicName && !topicName.isEmpty()) {
+				sb.append("+\"&subscribeTopicName=" + "\"+" + topicName);
+			}
+		}
+
+		if (null != connectAttempts && !connectAttempts.isEmpty() && !connectAttempts.equals("\"\"")) {
+			sb.append("+\"&connectAttemptsMax=" + "\"+" + connectAttempts);
+		}
+		if (null != reconnectAttempts && !reconnectAttempts.isEmpty() && !reconnectAttempts.equals("\"\"")) {
+			sb.append("+\"&reconnectAttemptsMax=" + "\"+" + reconnectAttempts);
+		}
+		if (null != reconnectDelay && !reconnectDelay.isEmpty() && !reconnectDelay.equals("\"\"")) {
+			sb.append("+\"&reconnectDelay=" + "\"+" + reconnectDelay);
+		}
+		if (null != qos && !qos.isEmpty() && !qos.equals("\"\"")) {
+			sb.append("+\"&qualityOfService=" + "\"+\"" + qos + "\"");
+		}
+		if (null != connectWaitInSeconds && !connectWaitInSeconds.isEmpty() && !connectWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&connectWaitInSeconds=" + "\"+" + connectWaitInSeconds);
+		}
+		if (null != disconnectWaitInSeconds && !disconnectWaitInSeconds.isEmpty() && !disconnectWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&disconnectWaitInSeconds=" + "\"+" + disconnectWaitInSeconds);
+		}
+		if (null != sendWaitInSeconds && !sendWaitInSeconds.isEmpty() && !sendWaitInSeconds.equals("\"\"")) {
+			sb.append("+\"&sendWaitInSeconds=" + "\"+" + sendWaitInSeconds);
+		}
+
+		uri = sb.toString();
 	} else if ("cHttp".equals(componentName)) {
 
 		String isServer = ElementParameterParser.getValue(node, "__SERVER__");
