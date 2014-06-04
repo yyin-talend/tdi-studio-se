@@ -468,6 +468,21 @@
 %>
 					}
 <%
+				}else if("AMQP".equals(mqType)){
+					String amqpUri = ElementParameterParser.getValue(node, "__AMQP_BROKER_URI__").trim();
+%>				
+				{	
+					org.apache.activemq.camel.component.ActiveMQComponent activeMQComponent = org.apache.activemq.camel.component.ActiveMQComponent.activeMQComponent();
+					try{
+						javax.jms.ConnectionFactory jmsConnectionFactory = org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl.createFromURL(<%=amqpUri%>);
+						activeMQComponent.setConnectionFactory(jmsConnectionFactory);
+					}catch(Exception e){
+						throw new RuntimeException(e);
+					}
+					
+					camelContext.addComponent(<%=name%>,activeMQComponent);
+				}
+<%
 				}else if("Other".equals(mqType)){
 %>
 					{
@@ -480,7 +495,26 @@
 				}
 			
 			}
-
+			List<? extends INode> amqpNodes = process.getNodesOfType("cAMQP");
+			for(INode node : amqpNodes) {
+				String amqpUri = ElementParameterParser.getValue(node, "__BROKER_URI__").trim();
+				String name = node.getUniqueName().replace("_", "");
+				name = "\"" + name + "\"";
+				%>				
+				{	
+					org.apache.activemq.camel.component.ActiveMQComponent activeMQComponent = org.apache.activemq.camel.component.ActiveMQComponent.activeMQComponent();
+					try{
+						javax.jms.ConnectionFactory jmsConnectionFactory = org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl.createFromURL(<%=amqpUri%>);
+						activeMQComponent.setConnectionFactory(jmsConnectionFactory);
+					}catch(Exception e){
+						throw new RuntimeException(e);
+					}
+					
+					camelContext.addComponent(<%=name%>,activeMQComponent);
+				}
+<%				
+			}
+			
 			//http://jira.talendforge.org/browse/TESB-4087: Change CamelContext name
 %>
 			//using Route name as CamelContext ID
