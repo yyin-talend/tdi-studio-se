@@ -422,7 +422,6 @@ class DB2Manager extends Manager {
             javaCode.append("String dbUser_" + cid + " = (String)globalMap.get(\"username_" + connection + "\");\r\n"); 
         } else {
             javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
-            javaCode.append("String dbUser_" + cid + " = " + userName + ";\r\n");            
         }
         javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
         javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
