@@ -30,17 +30,19 @@ if (isUseSharedConnection) {
 
 if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseSharedConnection){
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-	if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType) && !isCommitRollback) ){
+	if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType)) ){
 		// if no commmit or rollback component exists and set transacted - commit session
-		if(transacted){
+		if(!isCommitRollback && transacted){
 		%>
 			session_<%=cid%>.commit();
 		<%	
 		}
-        if (!isUseSharedConnection) {
+		%>
+		producer_<%=cid %>.close();
+		<%
+        if (!isCommitRollback && !isUseSharedConnection) {
 		%> // if no commmit or rollback component exists - close session
  			System.out.println("Closing connection");
-			producer_<%=cid %>.close();
             session_<%=cid %>.close();
             connection_<%=cid %>.close();
 		<%	
