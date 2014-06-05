@@ -41,11 +41,9 @@ imports="
 		org.jets3t.service.security.GSCredentials credentials_<%=cid%> = new org.jets3t.service.security.GSCredentials(<%=accessKey%>,<%=secretKey%>);
 	
 		service_<%=cid%> = new org.jets3t.service.impl.rest.httpclient.GoogleStorageService(credentials_<%=cid%>);
+		service_<%=cid%>.getAccountOwner();
 <%		
 	}
-%>
-		service_<%=cid%>.getAccountOwner();
-<%
 	boolean getList = "true".equals(ElementParameterParser.getValue(node,"__GETLIST__"));
 	boolean useKeysList = "true".equals(ElementParameterParser.getValue(node,"__USE_KEYS_LIST__"));
 	if(!getList && !useKeysList){
