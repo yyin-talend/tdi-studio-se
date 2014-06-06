@@ -89,7 +89,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 		public void actionOnTable(INode node,List<Column> stmtStructure){
 			boolean createProjection = "true".equals(ElementParameterParser.getValue(node,"__CREATE_PROJECTION__"))&&
-				"false".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+				!"true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 			if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
 				%>
 				if(!whetherExist_<%=cid%>) {
