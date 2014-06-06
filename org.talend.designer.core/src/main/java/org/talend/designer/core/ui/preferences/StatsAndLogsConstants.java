@@ -100,11 +100,14 @@ public class StatsAndLogsConstants {
             "OCLE", "OCLE", "OCLE_OCI", POSTGRESPLUS, POSTGRESQL, //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
-    public static final String[] ORACLE_VERSION_DISPLAY = new String[] { "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public static final String[] ORACLE_VERSION_DISPLAY = new String[] {
+            "Oracle 12", "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public static final String[] ORACLE_VERSION_CODE = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public static final String[] ORACLE_VERSION_CODE = new String[] {
+            "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public static final String[] ORACLE_VERSION_DRIVER = new String[] { "ojdbc6.jar", "ojdbc14.jar", "ojdbc14-9i.jar", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final String[] ORACLE_VERSION_DRIVER = new String[] {
+            "ojdbc7.jar", "ojdbc6.jar", "ojdbc14.jar", "ojdbc14-9i.jar", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "ojdbc12.jar" }; //$NON-NLS-1$
 
     // for bug 11487
@@ -115,14 +118,14 @@ public class StatsAndLogsConstants {
     public static final String[] MYSQL_VERSION_DRIVER = new String[] {
             "mysql-connector-java-5.1.30-bin.jar", "mysql-connector-java-3.1.14-bin.jar" };//$NON-NLS-1$ 
 
-    public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8", "MySQL 5",
-            "MySQL 4", "Access 2003", "Access 2007", "Prior to v9", "v9 +" };
+    public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 12", "Oracle 11", "Oracle 10", "Oracle 9",
+            "Oracle 8", "MySQL 5", "MySQL 4", "Access 2003", "Access 2007", "Prior to v9", "v9 +" };
 
-    public static final String[] DB_VERSION_CODE = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
-            "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
+    public static final String[] DB_VERSION_CODE = new String[] { "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8",
+            "MYSQL_5", "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
 
-    public static final String[] DB_VERSION_DRIVER = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
-            "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
+    public static final String[] DB_VERSION_DRIVER = new String[] { "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9",
+            "ORACLE_8", "MYSQL_5", "MYSQL_4", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X" };
 
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$
 
