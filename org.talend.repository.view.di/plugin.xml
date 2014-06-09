@@ -513,7 +513,7 @@
       <importItemsProvider
             id="org.talend.repository.view.di.importProvider.routine"
             name="Routine importer"
-            priority="NORMAL">
+            priority="HIGH">
          <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler">
             <parameter
