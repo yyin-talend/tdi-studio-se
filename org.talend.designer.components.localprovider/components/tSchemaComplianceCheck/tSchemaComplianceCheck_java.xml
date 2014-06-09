@@ -90,7 +90,7 @@
           <DEFAULT>     If exceed, either trim the field when above option checked or reject the row.</DEFAULT>
         </PARAMETER>
 		<PARAMETER NAME="INFO" FIELD="LABEL" REQUIRED="true" NUM_ROW="51" COLOR="0;0;0">
-          <DEFAULT>The errCode value is a summation of all error code:
+          <DEFAULT>If only one column has error, the errCode value is a summation of all error code; else the errCode is 16:
 (1) Type discrepancy (include wrong date pattern): 2
 (2) Empty or NULL: 4
 (3) Length/Precision Error: 8</DEFAULT>
