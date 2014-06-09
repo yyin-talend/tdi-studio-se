@@ -1128,6 +1128,8 @@ for (INode node : graphicalNodes) {
 		fragments.append("\"" + type + "://\"");
 		fragments.append("+\"");
 		fragments.append("ftpServer");
+		fragments.append(".");
+		fragments.append(cid);
 		fragments.append("\"");
 
 /*		if (username.trim().length() > 0) {
