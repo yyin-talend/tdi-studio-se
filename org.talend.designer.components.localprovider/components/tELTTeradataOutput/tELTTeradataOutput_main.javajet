@@ -100,7 +100,9 @@ if(useExistingConn) {
     
     String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 	<%
-   		log4jCodeGenerateUtil.debugConnectionParams(previousNode,"com.teradata.jdbc.TeraDriver");	
+		if(previousNode!=null){
+   			log4jCodeGenerateUtil.debugConnectionParams(previousNode,"com.teradata.jdbc.TeraDriver");	
+   		}
 	%>	 
 	<%if(isLog4jEnabled){%>
 		log.info("<%=cid%> - Connection attempt to '" + url_<%=cid %> + "' with the username '" + dbUser_<%=cid%> + "'.");
