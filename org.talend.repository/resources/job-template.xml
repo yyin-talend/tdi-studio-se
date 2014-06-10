@@ -10,7 +10,7 @@
 #if ($useSAML)
 #[[
 	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts"
-		placeholder-prefix="$sts{" update-strategy="none"
+		placeholder-prefix="$sts{"
 		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
 ]]#
 #end
@@ -21,7 +21,7 @@
 #end
 #if ($useSAML)
 #[[
-		<property name="stsProps">
+		<property name="stsProperties">
 			<map>
 				<entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}"/>
 				<entry key="sts.namespace" value="$sts{sts.namespace}"/>
