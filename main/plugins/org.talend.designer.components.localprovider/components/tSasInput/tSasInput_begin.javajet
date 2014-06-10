@@ -30,6 +30,8 @@ imports="
 		public void createConnection(INode node) {
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	boolean enableLibrefs = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_LIBREFS__"));
+    		List<Map<String, String>> sasProps = (List<Map<String,String>>)Element
 			dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 			dbuser = ElementParameterParser.getValue(node, "__USER__");
 
@@ -44,8 +46,22 @@ imports="
 			String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
 			java.util.Properties property_<%=cid %> = new java.util.Properties();
 			
+			<%if(enableLibrefs){%>
+				String librefs_<%=cid%> = <%=dbname%>;
+				property_<%=cid%>.setProperty("librefs", librefs_<%=cid%>);
+			<%}%>
 			property_<%=cid %>.setProperty("username", dbUser_<%=cid %>);
 			property_<%=cid %>.setProperty("password", dbPwd_<%=cid %>);
+			<%
+			if(sasProps!=null && sasProps.size()>0){
+				for(int i = 0; i < sasProps.size(); i++){
+					Map<String, String> sasProp = sasProps.get(i);
+					%>
+					property_<%=cid%>.setProperty(String.valueOf(<%=sasProp.get("KEY")%>), String.valueOf(<%=sasProp.get("VALUE")%>));
+				<%
+				}
+			}
+			%>
 			<%this.setURL(node);%>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, property_<%=cid %>);
 <%
