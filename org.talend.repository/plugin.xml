@@ -2178,8 +2178,10 @@
               version="5.4.3">
         </projecttask>
         <projecttask
-              beforeLogon="false"
+              beforeLogon="false"              
+              breaks="5.6.0"
               class="org.talend.repository.model.migration.ChangeTMatchGroupGIDTypeTask"
+              description="Add the gid use string parameter if not have, value=false"
               id="org.talend.repository.model.migration.ChangeTMatchGroupGIDTypeTask"
               name="Add the gid use string parameter if not have, value=false"
               version="5.6.0">
