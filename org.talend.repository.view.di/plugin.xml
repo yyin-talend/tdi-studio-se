@@ -535,6 +535,14 @@
             </parameter>
          </importItemsHandler>
       </importItemsProvider>
+      <importResourcesProvider
+            description="Routine resources importer"
+            id="org.talend.repository.view.di.importResourcesProvider.routine"
+            priority="NORMAL">
+         <importResoucesHandler
+               class="org.talend.repository.view.di.viewer.handlers.RoutineImportHandler">
+         </importResoucesHandler>
+      </importResourcesProvider>
    </extension>
    <extension
          point="org.talend.core.runtime.itemRelationship">
