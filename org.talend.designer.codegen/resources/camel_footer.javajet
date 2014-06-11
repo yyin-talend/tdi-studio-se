@@ -172,7 +172,7 @@
                         } else if ("SAML".equals(ElementParameterParser.getValue(node, "__SECURITY_TYPE__"))) {
 %>
                             if (null != stsProperties) {
-                                java.util.Map<String, Object> securityProps = new java.util.HashMap<String, Object>(stsProperties);
+                                java.util.Map<String, String> securityProps = new java.util.HashMap<String, String>(stsProperties);
                                 securityProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME, <%=ElementParameterParser.getValue(node, "__USERNAME__")%>);
                                 securityProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD, decryptedPassword_<%=cid%>);
                                 org.apache.cxf.ws.security.trust.STSClient stsClient =

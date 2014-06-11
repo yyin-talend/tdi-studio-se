@@ -607,9 +607,9 @@ if(hasCXFRegistryProvider){
 
 if (hasCXFSamlTokenProvider || hasCXFRegistryProvider) {
 %>
-private Map<String, String> securityProps;
+private Map<String, Object> securityProps;
 
-public void setSecurityProps(Map<String, String> securityProps) {
+public void setSecurityProps(Map<String, Object> securityProps) {
 	this.securityProps = securityProps;
 }
 <%
