@@ -15,6 +15,8 @@ package org.talend.designer.core.model.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -66,6 +68,8 @@ public final class Expression {
     private static final String GREAT_THAN = ">"; //$NON-NLS-1$
 
     private static final String LESS_THAN = "<"; //$NON-NLS-1$
+
+    private static final Pattern isShowFuncPattern = Pattern.compile("isShow\\[(\\w+)\\]"); //$NON-NLS-1$
 
     private Expression(String expressionString) {
         this.expressionString = expressionString;
@@ -256,6 +260,24 @@ public final class Expression {
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateInExpression(simpleExpression, listParam);
         }
+
+        List<String> paraNames = getParaNamesFromIsShowFunc(simpleExpression);
+        if (paraNames.size() > 0) {
+            // Here only be one isShow() function since it has been already split.
+            String paraName = paraNames.get(0);
+            try {
+                checkIsShowLoop(paraName, simpleExpression, listParam, currentParam, null);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return false;
+            }
+            for (IElementParameter param : listParam) {
+                if (paraName != null && paraName.equals(param.getName())) {
+                    return param.isShow(param.getShowIf(), param.getNotShowIf(), listParam);
+                }
+            }
+        }
+
         if (test == null) {
             throwUnsupportedExpression(simpleExpression, currentParam);
             return false;
@@ -593,6 +615,49 @@ public final class Expression {
             }
         }
         return showParameter;
+    }
+
+    private static List<String> getParaNamesFromIsShowFunc(String expr) {
+        List<String> paraNames = new ArrayList<String>();
+        if (expr == null) {
+            return paraNames;
+        }
+        Matcher matcher = isShowFuncPattern.matcher(expr);
+        while (matcher.find()) {
+            String paraName = matcher.group(1);
+            if (!paraNames.contains(paraName)) {
+                paraNames.add(paraName);
+            }
+        }
+
+        return paraNames;
+    }
+
+    private static void checkIsShowLoop(String testParamName, String expression, List<? extends IElementParameter> listParam,
+            IElementParameter currentParam, List<String> testedParaNames) throws Exception {
+        List<String> paraNames = testedParaNames;
+        if (paraNames == null) {
+            paraNames = new ArrayList<String>();
+        }
+        String currentParaName = currentParam.getName();
+        if (!paraNames.contains(currentParaName)) {
+            paraNames.add(currentParaName);
+        }
+        if (paraNames.contains(testParamName)) {
+            throw new Exception("Expression \"" + expression + "\" of parameter \"" + currentParam.getName()
+                    + "\" bring an endless loop by parameter \"" + testParamName + "\" in the element \""
+                    + currentParam.getElement().getElementName() + "\". Please check and amend it!");
+        } else {
+            paraNames.add(testParamName);
+            for (IElementParameter param : listParam) {
+                if (testParamName != null && testParamName.equals(param.getName())) {
+                    List<String> paramNames = getParaNamesFromIsShowFunc(param.getShowIf());
+                    for (String paramName : paramNames) {
+                        checkIsShowLoop(paramName, expression, listParam, currentParam, paraNames);
+                    }
+                }
+            }
+        }
     }
 
     private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam,

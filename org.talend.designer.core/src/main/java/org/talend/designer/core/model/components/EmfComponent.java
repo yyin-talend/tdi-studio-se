@@ -98,6 +98,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.manager.ImportModuleManager;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -106,6 +107,7 @@ import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.DEFAULTType;
 import org.talend.designer.core.model.utils.emf.component.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.component.FORMATType;
+import org.talend.designer.core.model.utils.emf.component.IMPORTSType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.component.INSTALLType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
@@ -123,6 +125,7 @@ import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYT
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -2887,28 +2890,13 @@ public class EmfComponent extends AbstractComponent {
         }
         List<String> moduleNames = new ArrayList<String>();
         if (!isAlreadyLoad) {
-            if (compType.getCODEGENERATION().getIMPORTS() != null) {
-                EList emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
-                for (int i = 0; i < emfImportList.size(); i++) {
-                    IMPORTType importType = (IMPORTType) emfImportList.get(i);
-                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
-                    if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
-                    } else {
-                        importType.setMESSAGE(msg);
-                    }
-
-                    List<String> list = getInstallURL(importType);
-                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
-                            importType.isREQUIRED(), list, importType.getREQUIREDIF());
-                    initBundleID(importType, componentImportNeeds);
-                    moduleNames.add(importType.getMODULE());
-                    componentImportNeeds.setMrRequired(importType.isMRREQUIRED());
-                    componentImportNeeds.setShow(importType.isSHOW());
-                    componentImportNeeds.setModuleLocaion(importType.getUrlPath());
-                    componentImportNeedsList.add(componentImportNeeds);
+            IMPORTSType imports = compType.getCODEGENERATION().getIMPORTS();
+            if (imports != null) {
+                List<IMPORTType> importTypes = ImportModuleManager.getInstance().getImportTypes(imports);
+                for (IMPORTType importType : importTypes) {
+                    ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
                 }
-                info.getImportType().addAll(emfImportList);
+                info.getImportType().addAll(importTypes);
                 List<String> componentList = info.getComponentNames();
                 for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
                     for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
@@ -2961,23 +2949,7 @@ public class EmfComponent extends AbstractComponent {
                 EList emfImportList = info.getImportType();
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
-                    //                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
-                    // if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                    //                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
-                    // }
-                    String msg = importType.getMESSAGE();
-                    if (msg == null) {
-                        msg = Messages.getString("modules.required");
-                    }
-                    List<String> list = getInstallURL(importType);
-                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
-                            importType.isREQUIRED(), list, importType.getREQUIREDIF());
-                    initBundleID(importType, componentImportNeeds);
-                    moduleNames.add(importType.getMODULE());
-                    componentImportNeeds.setMrRequired(importType.isMRREQUIRED());
-                    componentImportNeeds.setShow(importType.isSHOW());
-                    componentImportNeeds.setModuleLocaion(importType.getUrlPath());
-                    componentImportNeedsList.add(componentImportNeeds);
+                    ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
                 }
                 for (String name : info.getComponentNames()) {
                     IComponent component = ComponentsFactoryProvider.getInstance().get(name);
