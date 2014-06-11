@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.repository.items.importexport.handlers.imports.IImportResourcesHandler;
 import org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler;
 import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
@@ -43,7 +45,9 @@ import org.talend.repository.model.RepositoryConstants;
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class RoutineImportHandler extends ImportRepTypeHandler {
+public class RoutineImportHandler extends ImportRepTypeHandler implements IImportResourcesHandler {
+
+    private static Set<URL> jarsToDeploy = new HashSet<URL>();
 
     /**
      * DOC ggu RoutineImportHandler constructor comment.
@@ -70,8 +74,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#afterImportingItemRecords(org
+     * @see org.talend.repository.items.importexport.handlers.imports.ImportRepTypeHandler#afterImportingItemRecords(org
      * .eclipse.core.runtime.IProgressMonitor,
      * org.talend.repository.items.importexport.ui.wizard.imports.managers.ResourcesManager,
      * org.talend.repository.items.importexport.ui.wizard.imports.models.ItemRecord)
@@ -103,9 +106,7 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
             return;
         }
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
-            ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
-                    ILibrariesService.class);
-            IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  
+            IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$ //$NON-NLS-2$  
 
             File dirFile = tmpDir.toFile();
             for (IPath path : manager.getPaths()) {
@@ -127,11 +128,8 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
                             fos.write(b, 0, length);
                         }
                         fos.close();
-                        //
-                        libService.deployLibrary(temFile.toURI().toURL());
 
-                        temFile.delete();
-
+                        jarsToDeploy.add(temFile.toURI().toURL());
                     } catch (MalformedURLException e) {
                         ExceptionHandler.process(e);
                     } catch (IOException e) {
@@ -139,7 +137,6 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
                     }
                 }
             }
-            dirFile.delete();
         }
     }
 
@@ -149,22 +146,80 @@ public class RoutineImportHandler extends ImportRepTypeHandler {
             return;
         }
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibrariesService.class)) {
-            ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
-                    ILibrariesService.class);
             for (Object element : manager.getPaths()) {
                 String value = element.toString();
                 file = new File(value);
                 if (extRoutines.contains(file.getName())) {
                     try {
-                        libService.deployLibrary(file.toURL());
+                        jarsToDeploy.add(file.toURL());
                     } catch (MalformedURLException e) {
-                        ExceptionHandler.process(e);
-                    } catch (IOException e) {
                         ExceptionHandler.process(e);
                     }
                 }
-
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.IImportResourcesHandler#prePopulate(org.eclipse.core
+     * .runtime.IProgressMonitor, org.talend.repository.items.importexport.manager.ResourcesManager)
+     */
+    @Override
+    public void prePopulate(IProgressMonitor monitor, ResourcesManager resManager) {
+        // do nothing.
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.IImportResourcesHandler#postPopulate(org.eclipse.core
+     * .runtime.IProgressMonitor, org.talend.repository.items.importexport.manager.ResourcesManager,
+     * org.talend.repository.items.importexport.handlers.model.ImportItem[])
+     */
+    @Override
+    public void postPopulate(IProgressMonitor monitor, ResourcesManager resManager, ImportItem[] populatedItemRecords) {
+        // do nothing.
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.IImportResourcesHandler#preImport(org.eclipse.core.
+     * runtime.IProgressMonitor, org.talend.repository.items.importexport.manager.ResourcesManager,
+     * org.talend.repository.items.importexport.handlers.model.ImportItem[],
+     * org.talend.repository.items.importexport.handlers.model.ImportItem[])
+     */
+    @Override
+    public void preImport(IProgressMonitor monitor, ResourcesManager resManager, ImportItem[] checkedItemRecords,
+            ImportItem[] allImportItemRecords) {
+        jarsToDeploy.clear();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.items.importexport.handlers.imports.IImportResourcesHandler#postImport(org.eclipse.core
+     * .runtime.IProgressMonitor, org.talend.repository.items.importexport.manager.ResourcesManager,
+     * org.talend.repository.items.importexport.handlers.model.ImportItem[])
+     */
+    @Override
+    public void postImport(IProgressMonitor monitor, ResourcesManager resManager, ImportItem[] importedItemRecords) {
+        if (jarsToDeploy.size() > 0) {
+            ILibrariesService libService = (ILibrariesService) GlobalServiceRegister.getDefault().getService(
+                    ILibrariesService.class);
+            try {
+                libService.deployLibrarys(jarsToDeploy.toArray(new URL[0]));
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        jarsToDeploy.clear();
     }
 }
