@@ -406,32 +406,6 @@ public void setStsProperties(Map<String, String> stsProperties) {
 		this.stsProperties = stsProperties;
 }
 
-
-class WSPasswordCallbackHandler implements javax.security.auth.callback.CallbackHandler {
-
-	private final String user;
-	private final String pass;
-
-	public WSPasswordCallbackHandler(String username, String password) {
-		user = username;
-		pass = password;
-	}
-
-	public void handle(javax.security.auth.callback.Callback[] callbacks) throws java.io.IOException,
-	javax.security.auth.callback.UnsupportedCallbackException {
-		for (javax.security.auth.callback.Callback callback : callbacks) {
-			if (callback instanceof org.apache.ws.security.WSPasswordCallback) {
-				org.apache.ws.security.WSPasswordCallback pc = (org.apache.ws.security.WSPasswordCallback) callback;
-				if (user.equals(pc.getIdentifier())) {
-					pc.setPassword(pass);
-					break;
-				}
-			}
-		}
-	}
-
-}
-
 <%
 }
 
@@ -533,11 +507,11 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 				clientProps.put(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME, token[4]);
 				clientProps
 				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-						new WSPasswordCallbackHandler(token[4], token[2]));
+						new org.talend.esb.security.PasswordCallbackHandler(token[4], token[2]));
 			}else {
 				clientProps
 				.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-						new WSPasswordCallbackHandler(
+						new org.talend.esb.security.PasswordCallbackHandler(
 								clientProperties
 								.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
 								clientProperties
@@ -781,11 +755,11 @@ if(hasCXFSamlTokenConsumer){
 			clientProps.put(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME, token[4]);
 			clientProps
 			.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-					new WSPasswordCallbackHandler(token[4], token[2]));
+					new org.talend.esb.security.PasswordCallbackHandler(token[4], token[2]));
 		}else {
 			clientProps
 			.put(org.apache.cxf.ws.security.SecurityConstants.CALLBACK_HANDLER,
-					new WSPasswordCallbackHandler(
+					new org.talend.esb.security.PasswordCallbackHandler(
 							clientProperties
 							.get(org.apache.cxf.ws.security.SecurityConstants.SIGNATURE_USERNAME),
 							clientProperties
