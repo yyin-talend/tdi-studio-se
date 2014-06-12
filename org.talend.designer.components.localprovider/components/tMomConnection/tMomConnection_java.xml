@@ -97,7 +97,7 @@
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
-      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.10.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.10.0.jar" REQUIRED_IF="SERVER == 'ACTIVEMQ'" />
+      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.7.0.jar" REQUIRED_IF="SERVER == 'ACTIVEMQ'" />
       <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" />
       <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />
       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" UrlPath="platform:/base/plugins/org.apache.log4j_1.2.15.v201012070815.jar" REQUIRED="false" />

@@ -392,7 +392,7 @@
       <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'WEBSPHERE')" />
       <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'WEBSPHERE')" />
       <IMPORT NAME="WEBSPHERE CONNECTOR" MODULE="websphere-connector-1_5.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'WEBSPHERE')" />
-      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.10.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.10.0.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'ACTIVEMQ')" />
+      <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.7.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache/lib/activemq-all-5.7.0.jar" REQUIRED_IF="(USE_CONNECTION=='false' AND SERVER == 'ACTIVEMQ')" />
       <IMPORT NAME="JBOSS MESSAGING CLIENT" MODULE="jboss-messaging-client.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-messaging-client.jar" REQUIRED="true" />
       <IMPORT NAME="JBOSS AOP" MODULE="jboss-aop.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-aop.jar" REQUIRED="true" />
       <IMPORT NAME="JBOSS COMMON" MODULE="jboss-common-core.jar" UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-common-core.jar" REQUIRED="true" />
