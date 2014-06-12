@@ -394,7 +394,7 @@
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setExpiryTimeout(<%=amq_pool_expiry_timeout%>L);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setIdleTimeout(<%=amq_pool_idle_timeout%>);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaxConnections(<%=amq_pool_max_connections%>);
-				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaximumActive(<%=amq_pool_max_active%>);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaximumActiveSessionPerConnection(<%=amq_pool_max_active%>);
 				camelContext.addComponent(<%=name%>,
 					org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(pooledConnectionFactory_<%=node.getUniqueName()%>));	
 <%
