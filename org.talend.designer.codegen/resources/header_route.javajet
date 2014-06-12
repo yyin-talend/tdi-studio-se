@@ -1082,7 +1082,7 @@ for (INode node : graphicalNodes) {
 		String specifyService = ElementParameterParser.getValue(node, "__SPECIFY_SERVICE__");
 		if("true".equals(specifyService)){
 			sb.append("+\"&serviceName=\"+").append(ElementParameterParser.getValue(node, "__SERVICE_NAME__").trim());
-			sb.append("+\"&portName=\"+").append(ElementParameterParser.getValue(node, "__PORT_NAME__").trim());
+			sb.append("+\"&endpointName=\"+").append(ElementParameterParser.getValue(node, "__PORT_NAME__").trim());
 		}
 
 		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ADVARGUMENTS__");
