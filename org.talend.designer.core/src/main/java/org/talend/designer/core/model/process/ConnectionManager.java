@@ -490,13 +490,16 @@ public class ConnectionManager {
         }
 
         // TDI-25765 : avoid any connection for components not accepting PIG
-        if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && "PIGCOMBINE".equals(connectorName)) {
-            if (!newTarget.getComponent().getName().startsWith("tPig")) {
+        if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
+                && ("PIGCOMBINE".equals(connectorName) || "SPARKCOMBINE".equals(connectorName))) {
+            if (!(newTarget.getComponent().getName().startsWith("tPig") || newTarget.getComponent().getName()
+                    .startsWith("tSpark"))) {
                 return false;
             }
         }
         if (newTarget.getComponent() != null && newTarget.getComponent().getName().startsWith("tPig")) {
-            if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !"PIGCOMBINE".equals(connectorName)) {
+            if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
+                    && !("PIGCOMBINE".equals(connectorName) || "SPARKCOMBINE".equals(connectorName))) {
                 return false;
             }
         }
