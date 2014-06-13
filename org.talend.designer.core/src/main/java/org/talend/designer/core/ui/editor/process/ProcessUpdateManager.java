@@ -836,9 +836,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             sameValues = false;
                                         }
                                     }
-
                                 }
-
+                                if (!sameValues) {
+                                    break;
+                                }
                             }
                         }
                         if (onlySimpleShow || !sameValues) {
