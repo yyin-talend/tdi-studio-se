@@ -44,12 +44,17 @@
 							org.apache.commons.io.FileUtils.writeStringToFile(file_<%=cid%>, content_<%=cid%>.toString(), <%=encoding%>);
 						} else if(content_<%=cid%> instanceof byte[]) {
 							org.apache.commons.io.FileUtils.writeByteArrayToFile(file_<%=cid%>, (byte[])content_<%=cid%>);
-						} else if(content_<%=cid%> instanceof java.io.FileInputStream) {
-							java.io.FileInputStream fis_<%=cid%> = (java.io.FileInputStream)content_<%=cid%>;
+						} else if(content_<%=cid%> instanceof java.io.InputStream) {
+							java.io.InputStream fis_<%=cid%> = (java.io.InputStream) content_<%=cid%>;
 							java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%>);
-							int c_<%=cid%>;
-							while((c_<%=cid%> = fis_<%=cid%>.read())!=-1) {
-								fos_<%=cid%>.write(c_<%=cid%>);
+							byte[] buffer_<%=cid%> = new byte[65536];
+							int nb_<%=cid%> = 0;
+							while (true) {
+							      nb_<%=cid%> = fis_<%=cid%>.read(buffer_<%=cid%>);
+							      if (nb_<%=cid%> == -1) {
+							      	 break;
+							      }		 
+							      fos_<%=cid%>.write(buffer_<%=cid%>, 0, nb_<%=cid%>);
 							}
 							fis_<%=cid%>.close();
 							fos_<%=cid%>.close();
