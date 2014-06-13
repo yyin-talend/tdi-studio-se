@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
@@ -185,6 +187,18 @@ public class UpdateMainParameterCommand extends Command {
                                                                         param.getListItemsValue()[i]);
                                                             }
                                                         }
+                                                    } else if (EParameterName.HADOOP_ADVANCED_PROPERTIES.getName().equals(
+                                                            param.getName())) {
+                                                        List<Map> list = (ArrayList) param.getValue();
+                                                        for (Map map : list) {
+                                                            if (map.get("BUILDIN") != null && map.get("BUILDIN").equals("TRUE")) {
+                                                                if (objectValue instanceof List) {
+                                                                    ((List) objectValue).add(map);
+                                                                }
+                                                            }
+                                                        }
+                                                        process.setPropertyValue(param.getName(), objectValue);
+
                                                     } else {
                                                         process.setPropertyValue(param.getName(), objectValue);
                                                     }
