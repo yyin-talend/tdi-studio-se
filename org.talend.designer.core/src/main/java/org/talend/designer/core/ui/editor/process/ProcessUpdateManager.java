@@ -504,6 +504,30 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return result;
     }
 
+    private List<Map<String, Object>> collectHadoopPropertiesList(List jobHadoopPropertyList) {
+        List<Map<String, Object>> filterBuildInList = new ArrayList<Map<String, Object>>();
+        for (Object map : jobHadoopPropertyList) {
+            if (map instanceof HashMap) {
+                HashMap<String, Object> oldMap = (HashMap<String, Object>) map;
+                filterBuildInList.add((Map<String, Object>) oldMap.clone());
+            }
+        }
+        Iterator<Map<String, Object>> propertyIter = filterBuildInList.iterator();
+        while (propertyIter.hasNext()) {
+            Map<String, Object> oldMap = propertyIter.next();
+            if (oldMap != null && oldMap.size() > 0) {
+                for (Map.Entry<String, Object> entry : oldMap.entrySet()) {
+                    if ("BUILDIN".equals(entry.getKey())) {
+                        if (Boolean.valueOf((String) entry.getValue())) {
+                            propertyIter.remove();
+                        }
+                    }
+                }
+            }
+        }
+        return filterBuildInList;
+    }
+
     private static boolean isOpenedProcess(Process curProcess) {
         IEditorReference[] reference = RepositoryUpdateManager.getEditors();
         List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
@@ -783,13 +807,39 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                     } else {
                                         // check the value
-                                        if (!param.getValue().equals(repValue)) {
+                                        if (param.getName().equals("HADOOP_ADVANCED_PROPERTIES")) {
+                                            if (param.getValue() instanceof List && repValue instanceof List) {
+                                                // TDI-29719: since the feature TDI-27468 added.we must check for the
+                                                // property/value for the list
+                                                List repoHadoopPros = (List) repValue;
+                                                List<Map<String, Object>> jobHadoopPros = (List<Map<String, Object>>) param
+                                                        .getValue();
+                                                List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(jobHadoopPros);
+                                                if (repoHadoopPros.size() != filterBuildInList.size()) {
+                                                    sameValues = false;
+                                                } else {
+                                                    for (int i = 0; i < filterBuildInList.size(); i++) {
+                                                        Map<String, Object> oldMap = filterBuildInList.get(i);
+                                                        Map<String, Object> objectMap = (Map<String, Object>) repoHadoopPros
+                                                                .get(i);
+                                                        if (oldMap.get("PROPERTY").equals(objectMap.get("PROPERTY"))
+                                                                && oldMap.get("VALUE").equals(objectMap.get("VALUE"))) { //$NON-NLS-1$
+                                                            sameValues = true;
+                                                        } else {
+                                                            sameValues = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else if (!param.getValue().equals(repValue)) {
                                             sameValues = false;
                                         }
                                     }
-
                                 }
-
+                                if (!sameValues) {
+                                    break;
+                                }
                             }
                         }
                         if (onlySimpleShow || !sameValues) {
@@ -1767,26 +1817,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             // TUP-2028: for hadoop properties,since in the repository mode it can add
                                             // property manually or drag from repository at the same list,so when check
                                             // repositroy update,need to filter the build-in property
-                                            List<Map<String, Object>> filterBuildInList = new ArrayList<Map<String, Object>>();
-                                            for (Object map : oldList) {
-                                                if (map instanceof HashMap) {
-                                                    HashMap<String, Object> oldMap = (HashMap<String, Object>) map;
-                                                    filterBuildInList.add((Map<String, Object>) oldMap.clone());
-                                                }
-                                            }
-                                            Iterator<Map<String, Object>> propertyIter = filterBuildInList.iterator();
-                                            while (propertyIter.hasNext()) {
-                                                Map<String, Object> oldMap = propertyIter.next();
-                                                if (oldMap != null && oldMap.size() > 0) {
-                                                    for (Map.Entry<String, Object> entry : oldMap.entrySet()) {
-                                                        if ("BUILDIN".equals(entry.getKey())) {
-                                                            if (Boolean.valueOf((String) entry.getValue())) {
-                                                                propertyIter.remove();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(oldList);
                                             if (filterBuildInList.size() != objectList.size()) {
                                                 sameValues = false;
                                             } else {
