@@ -60,6 +60,7 @@
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="20"
 		REPOSITORY_VALUE="DB_VERSION">
 		<ITEMS DEFAULT="ORACLE_11-6">
+			<ITEM NAME="ORACLE_12" VALUE="ORACLE_12" />
 			<ITEM NAME="ORACLE_11-6" VALUE="ORACLE_11-6" />
 			<ITEM NAME="ORACLE_11" VALUE="ORACLE_11" />
 			<ITEM NAME="ORACLE_10" VALUE="ORACLE_10" />
@@ -281,13 +282,14 @@
 
    <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="TNS" MODULE="tns.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/tns.jar" REQUIRED="true" />
+       <IMPORT NAME="TNS" MODULE="tns.jar" REQUIRED="true" />
        <IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" UrlPath="platform:/plugin/org.talend.libraries.custom/lib/talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" />
-       <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')" />
-       <IMPORT NAME="ORACLE_11"  MODULE="ojdbc6.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') " />
-       <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_10') " />
-       <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc14-9i.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_9') " />
-       <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" BundleID="" UrlPath="platform:/plugin/org.talend.libraries.jdbc.oracle/lib/ojdbc12.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_8') " />
+       <IMPORT NAME="ORACLE_12"  MODULE="ojdbc7.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_12')" />
+       <IMPORT NAME="ORACLE_11-6"  MODULE="ojdbc6.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')" />
+       <IMPORT NAME="ORACLE_11"  MODULE="ojdbc6.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') " />
+       <IMPORT NAME="ORACLE_10"  MODULE="ojdbc14.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_10') " />
+       <IMPORT NAME="ORACLE_9"  MODULE="ojdbc14-9i.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_9') " />
+       <IMPORT NAME="ORACLE_8"  MODULE="ojdbc12.jar" BundleID="" REQUIRED_IF="(DB_VERSION == 'ORACLE_8') " />
     </IMPORTS>
    </CODEGENERATION>
 

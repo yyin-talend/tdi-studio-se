@@ -61,7 +61,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 		public String getDirverClassName(INode node){
 			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
-			if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) ){
+			if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) || "ORACLE_12".equals(dbVersion) ){
 				return "oracle.jdbc.OracleDriver";
 			}else {
 				return "oracle.jdbc.driver.OracleDriver";
