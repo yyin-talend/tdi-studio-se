@@ -32,9 +32,11 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
 boolean bulkConnection = ("true").equals(ElementParameterParser.getValue(node,"__BULK_CONNECTION__"));
 String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
 String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
-
-log4jFileUtil.logParameters(node);
+%>
+System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+<%
 log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.logParameters(node);
 
 String passwordFieldName = "";
 

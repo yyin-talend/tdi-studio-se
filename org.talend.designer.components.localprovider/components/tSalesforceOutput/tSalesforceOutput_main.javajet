@@ -313,6 +313,7 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 			<%
 			}else{//batch start
 			%>
+				nb_success_<%=cid %>++;
 				<%if(isLog4jEnabled){%>
 					log.debug("<%=cid%> - <%=action%> record " + nb_line_<%=cid%> + " to batch");
 				<%}%> 	
@@ -321,7 +322,6 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.delete(<%=conn.getName() 
 					IConnection connSuccess = connsSuccess.get(0);
 					if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 					%>
-						nb_success_<%=cid %>++;
 						<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
 						<%
 						for (IMetadataColumn column: metadata.getListColumns()) {

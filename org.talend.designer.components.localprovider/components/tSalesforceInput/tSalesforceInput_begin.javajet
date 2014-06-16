@@ -32,8 +32,8 @@ imports="
 
    	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
    	
-   	log4jFileUtil.logParameters(node);
    	log4jFileUtil.componentStartInfo(node);
+   	log4jFileUtil.logParameters(node);
    	
    	String passwordFieldName = "";
 	%>

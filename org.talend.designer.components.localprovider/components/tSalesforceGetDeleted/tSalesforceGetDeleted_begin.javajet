@@ -29,8 +29,8 @@ INode node = (INode)codeGenArgument.getArgument();
 
 	String cid = node.getUniqueName();
 	
-   	log4jFileUtil.logParameters(node);
    	log4jFileUtil.componentStartInfo(node);
+   	log4jFileUtil.logParameters(node);
    	
    	String passwordFieldName = "";
 %>
@@ -74,6 +74,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			}
 			%>
+        	System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
@@ -176,7 +177,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     			String soqlBase_<%=cid%> = "SELECT " + "<%=fieldlist%>" + " FROM " + <%=module%> + " WHERE ";
 				for(com.salesforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
 					count_<%=cid%>++;
-					nb_line_<%=cid%> ++;
 					
 					soql_<%=cid%>.append("Id='"+dr_<%=cid%>.getId().getID()+"'");
 					soql_<%=cid%>.append(" or ");
@@ -192,7 +192,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 						boolean bContinue_<%=cid %> = true;
 						while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
-							
+							nb_line_<%=cid%>++;
 		        		    for(int i_<%=cid%> = 0; i_<%=cid%> < qr_<%=cid %>.getRecords().length; i_<%=cid%>++){
 			        			org.apache.axiom.om.OMElement[] fields_<%=cid %> = qr_<%=cid %>.getRecords()[i_<%=cid%>].getExtraElement();
 			

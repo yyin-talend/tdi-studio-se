@@ -26,8 +26,8 @@ imports="
 
 	String cid = node.getUniqueName();
 	
-   	log4jFileUtil.logParameters(node);
    	log4jFileUtil.componentStartInfo(node);
+   	log4jFileUtil.logParameters(node);
    	
    	String passwordFieldName = "";
 %>
@@ -64,6 +64,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			}		
 			%>
+        	System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
 				if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){

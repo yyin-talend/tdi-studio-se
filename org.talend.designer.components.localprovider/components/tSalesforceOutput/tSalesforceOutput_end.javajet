@@ -11,7 +11,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	IProcess process = node.getProcess();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));	
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));
+	String action = ElementParameterParser.getValue(node, "__ACTION__");	
 %> 
  	
  	sforceManagement_<%=cid%>.logout(); 
@@ -21,7 +22,7 @@ imports="
 	globalMap.put("<%=cid%>_NB_REJECT",nb_reject_<%=cid%>);
 	
 	<%if(isLog4jEnabled){%>
-		log.info("<%=cid%> - " + nb_success_<%=cid%> + " records successful.");
+		log.info("<%=cid%> - " + nb_success_<%=cid%> + " records <%=action%> successful.");
 		log.info("<%=cid%> - Has rejected " + nb_reject_<%=cid%> + " records.");
 		log.info("<%=cid%> - Done.");
 	<%}%>             
