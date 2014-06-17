@@ -447,43 +447,18 @@ private void addRegistry(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint,
 			if(usePropagateSamlAP && (token[4] == null)){
 				usePropagateSamlAP = false ;
 			}
-			org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
-					bus);
-			stsClient.setServiceQName(new javax.xml.namespace.QName(
-					stsProperties.get("sts.namespace"), stsProperties
-					.get("sts.service.name")));
-
-			Map<String, Object> stsProps = new HashMap<String, Object>();
-
-			for (Map.Entry<String, String> entry : stsProperties.entrySet()) {
-				if (org.apache.cxf.ws.security.SecurityConstants.ALL_PROPERTIES
-						.contains(entry.getKey())) {
-					stsProps.put(entry.getKey(), entry.getValue());
-				}
-			}
-
+            Map<String, String> stsProps = new HashMap<String, String>(stsProperties);
+			final org.apache.cxf.ws.security.trust.STSClient stsClient;
 			if(usePropagateSamlAP) {
-				stsClient.setWsdlLocation(stsProperties.get("sts.x509.wsdl.location"));
-				stsClient.setEndpointQName(new javax.xml.namespace.QName(
-						stsProperties.get("sts.namespace"), stsProperties
-						.get("sts.x509.endpoint.name")));
-				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME,
-						token[4]);
+                stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME, token[4]);
+                stsClient= org.talend.esb.security.saml.STSClientUtils.createSTSX509Client(bus, stsProps);
 			}else {
-				stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
-				stsClient.setEndpointQName(new javax.xml.namespace.QName(
-						stsProperties.get("sts.namespace"), stsProperties
-						.get("sts.endpoint.name")));
-				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
-						token[1]);
-				stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
-						token[2]);
+                stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME, token[1]);
+                stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD, token[2]);
+                stsClient= org.talend.esb.security.saml.STSClientUtils.createSTSClient(bus, stsProps);
 			}
-			stsClient.setProperties(stsProps);
 			if (token[3]/*Role*/ != null && !("".equals(token[3]))) {
-				ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
-				roleCallbackHandler.setClaimValue(token[3]);
-				stsClient.setClaimsCallbackHandler(roleCallbackHandler);
+                org.talend.esb.security.saml.STSClientUtils.applyAuthorization(stsClient, token[3]);
 			}
 
 			Map<String, Object> clientProps = new HashMap<String, Object>();
@@ -641,55 +616,7 @@ public void registerPolicies(org.apache.cxf.Bus bus) {
 	}
 }
 
-<%if(hasCXFSamlTokenAuthorizationConsumer || hasCXFRegistryConsumer){%>
-class ClaimValueCallbackHandler implements javax.security.auth.callback.CallbackHandler {
-
-	private String claimValue;
-
-	public void handle(javax.security.auth.callback.Callback[] callbacks)
-		throws java.io.IOException, javax.security.auth.callback.UnsupportedCallbackException {
-		for (int i = 0; i < callbacks.length; i++) {
-			if (callbacks[i] instanceof org.apache.cxf.ws.security.trust.claims.ClaimsCallback) {
-				org.apache.cxf.ws.security.trust.claims.ClaimsCallback callback = (org.apache.cxf.ws.security.trust.claims.ClaimsCallback) callbacks[i];
-				callback.setClaims(createClaims());
-
-			} else {
-				throw new javax.security.auth.callback.UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
-			}
-		}
-	}
-
-	/**
-	 * Create a Claims Element for a "role"
-	 */
-	private org.w3c.dom.Element createClaims() {
-		org.w3c.dom.Document doc = org.apache.cxf.helpers.DOMUtils.createDocument();
-		org.w3c.dom.Element claimsElement =
-			doc.createElementNS("http://docs.oasis-open.org/ws-sx/ws-trust/200512", "Claims");
-		claimsElement.setAttributeNS(null, "Dialect", "http://schemas.xmlsoap.org/ws/2005/05/identity");
-
-		org.w3c.dom.Element claimValueElement =
-			doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "ClaimValue");
-		claimValueElement.setAttributeNS(null, "Uri", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role");
-		org.w3c.dom.Element value = doc.createElementNS("http://schemas.xmlsoap.org/ws/2005/05/identity", "Value");
-		value.setTextContent(claimValue);
-		claimValueElement.appendChild(value);
-
-		claimsElement.appendChild(claimValueElement);
-
-		return claimsElement;
-	}
-
-	public String getClaimValue() {
-		return claimValue;
-	}
-
-	public void setClaimValue(String claimValue) {
-		this.claimValue = claimValue;
-	}
-
-}
-<%}
+<%
 if(hasCXFSamlTokenConsumer || hasCXFSamlTokenProvider){
 %>
 
@@ -699,45 +626,19 @@ private void addSAMLToken(org.apache.camel.component.cxf.CxfEndpoint cxfEndpoint
 if(hasCXFSamlTokenConsumer){
 %>
 	if (!isProvider) {
-		org.apache.cxf.ws.security.trust.STSClient stsClient = new org.apache.cxf.ws.security.trust.STSClient(
-				bus);
-		stsClient.setServiceQName(new javax.xml.namespace.QName(
-				stsProperties.get("sts.namespace"), stsProperties
-				.get("sts.service.name")));
-
-
-		Map<String, Object> stsProps = new HashMap<String, Object>();
-
-		for (Map.Entry<String, String> entry : stsProperties.entrySet()) {
-			if (org.apache.cxf.ws.security.SecurityConstants.ALL_PROPERTIES
-					.contains(entry.getKey())) {
-				stsProps.put(entry.getKey(), entry.getValue());
-			}
-		}
-
-		if(usePropagateSamlAP) {
-			stsClient.setWsdlLocation(stsProperties.get("sts.x509.wsdl.location"));
-			stsClient.setEndpointQName(new javax.xml.namespace.QName(
-					stsProperties.get("sts.namespace"), stsProperties
-					.get("sts.x509.endpoint.name")));
-			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME,
-					token[4]);
-		}else {
-			stsClient.setWsdlLocation(stsProperties.get("sts.wsdl.location"));
-			stsClient.setEndpointQName(new javax.xml.namespace.QName(
-					stsProperties.get("sts.namespace"), stsProperties
-					.get("sts.endpoint.name")));
-			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME,
-					token[1]);
-			stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD,
-					token[2]);
-		}
-		stsClient.setProperties(stsProps);
+        Map<String, String> stsProps = new HashMap<String, String>(stsProperties);
+        final org.apache.cxf.ws.security.trust.STSClient stsClient;
+        if(usePropagateSamlAP) {
+            stsProps.put(org.apache.cxf.ws.security.SecurityConstants.STS_TOKEN_USERNAME, token[4]);
+            stsClient= org.talend.esb.security.saml.STSClientUtils.createSTSX509Client(bus, stsProps);
+        }else {
+            stsProps.put(org.apache.cxf.ws.security.SecurityConstants.USERNAME, token[1]);
+            stsProps.put(org.apache.cxf.ws.security.SecurityConstants.PASSWORD, token[2]);
+            stsClient= org.talend.esb.security.saml.STSClientUtils.createSTSClient(bus, stsProps);
+        }
 <%if(hasCXFSamlTokenAuthorizationConsumer){%>
 		if (token[3] != null && !("".equals(token[3]))) {
-			ClaimValueCallbackHandler roleCallbackHandler = new ClaimValueCallbackHandler();
-			roleCallbackHandler.setClaimValue(token[3]);
-			stsClient.setClaimsCallbackHandler(roleCallbackHandler);
+			org.talend.esb.security.saml.STSClientUtils.applyAuthorization(stsClient, token[3]);
 		}
 <%}%>
 		Map<String, Object> clientProps = new HashMap<String, Object>();
