@@ -32,6 +32,7 @@
 		protected boolean useStatement;
 		protected Manager manager;
 		protected DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil;
+		protected boolean isSharedStatement = false;
 
 		public void beforeComponentProcess(INode node){
 			cid = node.getUniqueName();
@@ -75,6 +76,9 @@
 		}
 
 		public void setURL(INode node) {
+		}
+		public void setIsSharedStatement(boolean isSharedStatement){
+			this.isSharedStatement=isSharedStatement;
 		}
 
 		public void createConnection(INode node) {
@@ -261,13 +265,13 @@
 			%>
 			<%@ include file="../../_hintInsert.javajet" %>	    
 			<%
-			if(!(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+			if(!isSharedStatement || !(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 			%>
 				pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 			<%
 			}
 			//to fixed: bug8422
-			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+			if(isSharedStatement && (cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 			%>
 				pstmt_<%=cid %> = null;         
 				// [%connection%][psmt][tableName]
@@ -289,7 +293,7 @@
 			String insert_<%=cid%> = "INSERT INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 			<%@ include file="../../_hintInsert.javajet" %>
 			<%
-			if(!(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+			if(!isSharedStatement || !(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 			%>
 				<%
 				if(useStatement){
@@ -302,7 +306,7 @@
 			<%
 				}
 			}
-			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+			if(isSharedStatement && (cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 			%>
 				java.sql.PreparedStatement pstmt_<%=cid %> = null;
 				// [%connection%][psmt][tableName]

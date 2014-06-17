@@ -166,5 +166,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	}
 	dbOutputBeginUtil = new DBOutputBeginUtil();
+	dbOutputBeginUtil.setIsSharedStatement(true);
 %>
 <%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>
