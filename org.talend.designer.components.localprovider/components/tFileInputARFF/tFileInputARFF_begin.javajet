@@ -12,6 +12,8 @@ imports="
 " 
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%> 
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -22,6 +24,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = node.getUniqueName();      
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+    	
+        log4jFileUtil.componentStartInfo(node);
+        log4jFileUtil.logParameters(node);
 %>		
 		int nb_line_<%=cid%> = 0;
 		int totalLine<%=cid %> = 0;
@@ -31,6 +36,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			bufferedReader_<%=cid%>=new java.io.BufferedReader(new java.io.FileReader(filename<%=cid%>));
 			weka.core.Instances data<%=cid%> = new weka.core.Instances(bufferedReader_<%=cid%>);
         	data<%=cid%>.setClassIndex(data<%=cid%>.numAttributes()-1);
+        	
+        	<%log4jFileUtil.startRetriveDataInfo();%>
+        	
         	//read line
         	for(int lineNo=0;lineNo<data<%=cid%>.numInstances();lineNo++){
            	//read column
@@ -59,7 +67,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                      <%=conn.getName()%>.<%=column.getLabel()%> = (<%=JavaTypesManager.getJavaTypeFromId(column.getTalendType()).getPrimitiveClass()%>)data<%=cid%>.instance(lineNo).value(<%=colNo%>);
 <%               }
                  colNo++;
-             }       
+             }
+             
+             log4jFileUtil.collectRetriveData(conn.getName(),metadata);
+             log4jFileUtil.debugRetriveData(node,false);
+             
          }
         } 
      }

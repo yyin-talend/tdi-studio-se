@@ -6,6 +6,8 @@
 	" 
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -14,6 +16,9 @@ String cid = node.getUniqueName();
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+
+final boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
 %>
 java.io.FileOutputStream out<%=cid%> = null;
 <% if(isAppend){%>
@@ -41,6 +46,9 @@ try {
 } catch (java.io.IOException e) {
     // TODO Auto-generated catch block
     e.printStackTrace();
+    <%if(isLog4jEnabled) {%>
+	log.error("<%=cid%> - " + e.getMessage());
+	<%}%>
 }finally{
 <%
 	if(isAppend){
@@ -64,3 +72,8 @@ globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 		createFile<%=cid%>.delete();
 	}		
 <%}%>
+
+<%
+log4jFileUtil.writeDataFinishInfo(node);
+log4jFileUtil.componentFinishInfo(node);
+%>

@@ -5,6 +5,9 @@
     org.talend.designer.codegen.config.CodeGeneratorArgument
   "
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -16,6 +19,9 @@ String sOutEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
 boolean bNeedEncode = "true".equals(ElementParameterParser.getValue(node, "__USE_INENCODING__"));
 boolean bCreateDir = "true".equals(ElementParameterParser.getValue(node, "__CREATE__"));
 String sTmpOutFileName = outFileName;
+
+log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.logParameters(node);
 
 if (outFileName.equals(inFileName)){
   sTmpOutFileName = outFileName + "+ \"_tmp\"";
@@ -64,3 +70,7 @@ in_<%=cid %>.close();
   }
 <%}%>
 globalMap.put("<%=cid %>_ISEND", true);
+
+<%
+log4jFileUtil.componentFinishInfo(node);
+%>
