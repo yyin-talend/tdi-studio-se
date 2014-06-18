@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oro.text.regex.MalformedPatternException;
@@ -793,11 +794,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     private void findTargetAll(List<INode> res, INode current) {
 
-        List conns = current.getOutgoingConnections();
+        List<? extends IConnection> conns = current.getOutgoingConnections();
 
-        if (conns == null || conns.size() == 0) {
-            return;
-        } else {
+        if (CollectionUtils.isNotEmpty(conns)) {
             for (Object obj : conns) {
                 IConnection con = (IConnection) obj;
                 INode target = con.getTarget();
@@ -902,11 +901,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             Object value = param.getValue();
             if (value instanceof Boolean) {
                 pType.setValue(((Boolean) value).toString());
-            } else {
-                if (value instanceof String) {
-                    pType.setValue((String) value);
-                }
+            } else if (value instanceof String) {
+                pType.setValue((String) value);
             }
+
             listParamType.add(pType);
         }
     }
@@ -1084,9 +1082,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         listParamType.add(pType);
     }
 
-    @SuppressWarnings("unchecked")
     private void loadElementParameters(Element elemParam, EList listParamType) {
-        boolean flag = false;
         ElementParameterType pType;
 
         for (int j = 0; j < listParamType.size(); j++) {

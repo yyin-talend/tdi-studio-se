@@ -272,7 +272,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getOriginalFamilyName() {
-        return originalFamilyName; //$NON-NLS-1$ 
+        return originalFamilyName;
     }
 
     /*
@@ -304,7 +304,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getPluginExtension() {
-        return null;
+        return ".plugin";
     }
 
     /*

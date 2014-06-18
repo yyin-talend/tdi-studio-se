@@ -4422,38 +4422,30 @@ public class Node extends Element implements IGraphicalNode {
         return false;
     }
 
-    public void setMapReduceStart(boolean isMapReduceStart) {
-        if (this.getMrGroupId() == null) {
+    public void defineAsSubjobMapReduceStart() {
+        if ((this.getMrGroupId() == null) || (!this.isActivate())) {
             this.isMapReduceStart = false;
-            return;
+        } else {
+            this.isMapReduceStart = true;
         }
-        if (!this.isActivate()) {
-            this.isMapReduceStart = false;
-            return;
-        }
-        if (this.isDesignSubjobStartNode()) {
-            this.isMapReduceStart = isMapReduceStart;
-            return;
-        }
+    }
+
+    public void checkForGroupMapReduceStart() {
         List<? extends INode> gNodeList = this.getProcess().getGraphicalNodes();
-        boolean alreadyHave = false;
+        boolean firstOfTheSubjob = true;
         for (INode node : gNodeList) {
             if (node instanceof Node) {
                 if (((Node) node).isMapReduceStart) {
                     if (((Node) node).getUniqueName().equals(this.getUniqueName())) {
                         continue;
                     } else if (((Node) node).getMrGroupId() != null && ((Node) node).getMrGroupId().equals(this.getMrGroupId())) {
-                        alreadyHave = true;
+                        firstOfTheSubjob = false;
                     }
                 }
 
             }
         }
-        if (alreadyHave) {
-            this.isMapReduceStart = false;
-        } else {
-            this.isMapReduceStart = isMapReduceStart;
-        }
+        this.isMapReduceStart = firstOfTheSubjob;
     }
 
     @Override
