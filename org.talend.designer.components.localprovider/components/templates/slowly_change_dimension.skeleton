@@ -984,7 +984,7 @@ public class CLASS {
                 insertColumns = getLProtectedChar() + surrogateKeyField + getRProtectedChar();
                 insertValues = getDBSequenceWithSchemaPrefix(scdConfiger);
             }
-            boolean isAbsenceSK="".equals(insertColumns);
+            boolean isAbsenceSK="".equals(insertColumns) || insertColumns.equals(getLProtectedChar()+getLProtectedChar());
             if(isEqualWithSK) {
                 for(Column column : sourceKeys) {
                     if(!column.getColumnName().equals(surrogateKeyField)) {
@@ -1041,8 +1041,8 @@ public class CLASS {
                 }
             }
             if(isAbsenceSK || scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT")) {
-                if(insertColumns.length() > separator.length()) {
-                    insertColumns = insertColumns.substring(separator.length());
+                if(insertColumns.length() > (separator.length()+2*getLProtectedChar().length())) {
+                    insertColumns = insertColumns.substring(separator.length()+2*getLProtectedChar().length());
                 }
                 if(insertValues.length() > separator.length()) {
                     insertValues = insertValues.substring(separator.length());
