@@ -13,6 +13,7 @@ imports="
  	nb_line_<%=cid %>++;
  	}
  }
+ 	sforceBulk_<%=cid%>.closeFileRead();
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
  	globalMap.put("<%=cid %>_NB_SUCCESS",nb_success_<%=cid %>);
 	globalMap.put("<%=cid %>_NB_REJECT",nb_reject_<%=cid %>);             
