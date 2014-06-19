@@ -5,6 +5,9 @@
         org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <% 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -13,6 +16,9 @@ String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
 String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 String append = ElementParameterParser.getValue(node,"__APPEND__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+
+log4jFileUtil.componentStartInfo(node);
+log4jFileUtil.logParameters(node);
 %>
 java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
 java.io.File parent_<%=cid%> = file_<%=cid%>.getParentFile();

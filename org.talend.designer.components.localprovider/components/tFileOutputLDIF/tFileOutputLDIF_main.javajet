@@ -13,6 +13,9 @@
 		java.util.Map
 	"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -102,6 +105,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 <%
 					}
+					
+					log4jFileUtil.collectRetriveData(conn.getName(),column.getLabel(),i,sizeColumns);
 %>
 <% 
 	if(i==0) {
@@ -440,6 +445,7 @@ Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
     	nb_line_<%=cid %>++;
     }	
 <%
+		log4jFileUtil.debugWriteData(node);
 	}
 }//here end the first for, the List "conns"
 %>    	

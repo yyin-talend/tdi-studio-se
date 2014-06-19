@@ -209,6 +209,15 @@
 		}
 		
 		//for all tFileOutput* components		
+		public void debugWriteDataWithoutCountInfo() {
+			if(isLog4jEnabled){
+			%>
+				log.trace("<%=cid%> - Content of the record : " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%		
+			}
+		}
+		
 		public void debugWriteData(INode node) {
 			if(isLog4jEnabled){
 			%>

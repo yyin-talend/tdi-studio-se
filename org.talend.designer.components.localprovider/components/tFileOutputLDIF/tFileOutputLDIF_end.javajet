@@ -5,6 +5,9 @@
 		org.talend.core.model.process.ElementParameterParser
 	"
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 		CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 		INode node = (INode)codeGenArgument.getArgument();
@@ -21,4 +24,9 @@
 	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 		file_<%=cid %>.delete();
 	}		
-<%}%>	
+<%}%>
+
+<%
+log4jFileUtil.writeDataFinishInfo(node);
+log4jFileUtil.componentFinishInfo(node);
+%>	

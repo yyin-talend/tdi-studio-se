@@ -5,6 +5,8 @@
 	"
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -12,3 +14,7 @@
 %>
 
 	globalMap.put("<%=cid%>_FILENAME_PATH", fileName_<%=cid%>);
+	
+<%
+log4jFileUtil.componentFinishInfo(node);
+%>

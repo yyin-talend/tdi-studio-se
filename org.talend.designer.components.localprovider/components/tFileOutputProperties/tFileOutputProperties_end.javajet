@@ -5,6 +5,9 @@
         org.talend.core.model.process.ElementParameterParser
 	" 
 %>
+
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -22,6 +25,11 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 <%
 }
 %>
-globalMap.put("<%=cid %>_NB_LINE", tos_count_<%=cid %>);
+int nb_line_<%=cid%> = tos_count_<%=cid %>;
+globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
+<%
+log4jFileUtil.writeDataFinishInfo(node);
+log4jFileUtil.componentFinishInfo(node);
+%>
 
 

@@ -10,6 +10,8 @@
 	"
 %>
 
+<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -19,6 +21,8 @@
 		
 	boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 	
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    
 	java.util.List<IMetadataColumn> columnList = null;
 	java.util.List<IMetadataTable> metadatas = node.getMetadataList();
 	if(metadatas != null && metadatas.size() > 0) {
@@ -34,6 +38,9 @@
 %>
 				try {
 					Object content_<%=cid%> = <%=incomingConn.getName()%>.<%=columnList.get(0).getLabel()%>;
+<%
+					log4jFileUtil.collectRetriveData(incomingConn.getName(),columnList.get(0).getLabel(),0,1);
+%>
 					if(content_<%=cid%> != null) {
 						java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);
 						java.io.File parentFile_<%=cid%>=file_<%=cid%>.getParentFile();
@@ -70,10 +77,16 @@
 %>
 						System.err.println(e_<%=cid%>);
 <%
+						if(isLog4jEnabled) {
+%>
+						log.error("<%=cid%> - " + e_<%=cid%>.getMessage());
+<%
+						}
 					}
 %>
 				}
 <%
+				log4jFileUtil.debugWriteDataWithoutCountInfo();
 			}
 		}
 	}
