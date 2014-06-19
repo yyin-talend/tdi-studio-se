@@ -304,7 +304,7 @@ public class DummyComponent extends AbstractComponent {
      */
     @Override
     public String getPluginExtension() {
-        return ".plugin";
+        return "";
     }
 
     /*
