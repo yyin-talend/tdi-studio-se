@@ -1,0 +1,38 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	    org.talend.core.model.process.IConnection
+	    org.talend.core.model.process.IConnectionCategory
+	    java.util.List
+	"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
+String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+
+if(connections!=null && connections.size()>0){
+
+	boolean hasConn = false;
+	
+	//get all the children collections of the loop node.
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+			hasConn = true;
+		}
+	}
+	if(hasConn == true && ("Dom4j").equals(mode)){
+%>
+	}//while
+<%
+	}
+}
+%>
+}
+	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

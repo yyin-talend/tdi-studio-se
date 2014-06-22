@@ -1,0 +1,214 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSortRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Processing components"><link rel="prev" href="tSampleRow.html" title="tSampleRow"><link rel="next" href="tSplitRow.html" title="tSplitRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSortRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSortRow"></a>tSortRow</h2></div></div></div><div class="mediaobject"><img src="../images/tSortRow.png"></div><div class="section" title="tSortRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa63352"></a>tSortRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Processing</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Sorts input data based on one or several columns, by sort
+										type and order</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Helps creating metrics and classification table. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema </em></span>and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+									<p> Click <span class="bold"><strong>Edit Schema</strong></span> to
+										make changes to the schema. Note that if you make changes,
+										the schema automatically becomes built-in.</p>
+									<p> Click <span class="bold"><strong>Sync columns</strong></span> to
+										retrieve the schema from the previous component connected in
+										the Job.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and Job flowcharts. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Criteria</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click + to add as many lines as required for the sort to
+										be complete. By default the first column defined in your
+										schema is selected.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Schema column</strong></span>: Select the
+										column label from your schema, which the sort will be based
+										on. Note that the order is essential as it determines the
+										sorting priority.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Sort type</strong></span>: Numerical and
+										Alphabetical order are proposed. More sorting types to
+										come.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Order</strong></span>: Ascending or
+										descending order.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Sort on disk</p>
+								</td><td valign="top">
+									<p>Customize the memory used to temporarily store output
+										data.</p>
+									<p>
+										<span class="bold"><strong>Temp data directory path</strong></span>:
+										Set the location where the temporary files should be
+										stored.</p>
+									<p>
+										<span class="bold"><strong>Create temp data directory if not
+											exists</strong></span>: Select this checkbox to create the
+										directory if it does not exist.</p>
+									<p>
+										<span class="bold"><strong>Buffer size of external
+											sort</strong></span>: Type in the size of physical memory you
+										want to allocate to sort processing. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at the Job level as well as at each component
+										level. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component handles flow of data therefore it requires
+										input and output, hence is defined as an intermediary step.
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Sorting entries"><div class="titlepage"><div><div><h3 class="title"><a name="tSortRow_scenario"></a>Scenario<span> 1</span>: Sorting entries</h3></div></div></div><p>This scenario describes a three-component Job. A <span class="bold"><strong>tRowGenerator</strong></span> is used to create random entries which are
+					directly sent to a <span class="bold"><strong>tSortRow</strong></span> to be ordered
+					following a defined value entry. In this scenario, we suppose the input flow
+					contains names of salespersons along with their respective sales and their years
+					of presence in the company. The result of the sorting operation is displayed on
+					the <span class="bold"><strong>Run</strong></span> console.</p><div class="mediaobject"><img src="../images/Use_Case_tSortRow1.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the three components required for this use case: <span class="bold"><strong>tRowGenerator</strong></span>, <span class="bold"><strong>tSortRow</strong></span> and <span class="bold"><strong>tLogRow</strong></span>
+							from the <span class="bold"><strong>Palette</strong></span> to the design
+							workspace.</p></li><li class="listitem"><p>Connect them together using <span class="bold"><strong>Row</strong></span>
+							<span class="bold"><strong>main</strong></span> links.</p></li><li class="listitem"><p>On the <span class="bold"><strong>tRowGenerator</strong></span> editor, define
+							the values to be randomly used in the Sort component. For more
+							information regarding the use of this particular component, see <a class="xref" href="tRowGenerator.html" title="tRowGenerator">the section called &#8220;tRowGenerator&#8221;</a></p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow2.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In this scenario, we want to rank each salesperson according to its
+								<span class="emphasis"><em>Sales</em></span> value and to its number of years in the
+							company.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tSortRow</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> tab panel. Set the
+							sort priority on the Sales value and as secondary criteria, set the
+							number of years in the company. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow3.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Use the plus button to add the number of rows required. Set the type
+							of sorting, in this case, both criteria being integer, the sort is
+							numerical. At last, given that the output wanted is a rank
+							classification, set the order as descending.</p></li><li class="listitem"><p>Display the <span class="bold"><strong>Advanced Settings</strong></span> tab and
+							select the <span class="bold"><strong>Sort on disk</strong></span> check box to
+							modify the temporary memory parameters. In the <span class="bold"><strong>Temp data directory path</strong></span> field, type the path to the
+							directory where you want to store the temporary data. In the <span class="bold"><strong>Buffer size of external sort</strong></span> field, set the
+							maximum buffer value you want to allocate to the processing. </p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>The default buffer value is 1000000 but the more rows and/or
+							columns you process, the higher the value needs to be to prevent the Job
+							from automatically stopping. In that event, an &#8220;out of memory&#8221; error
+							message displays. </em></span>
+					</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Make sure you connected this flow to the output component, <span class="bold"><strong>tLogRow</strong></span>, to display the result in the Job
+							console.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run the Job. The ranking
+							is based first on the Sales value and then on the number of years of
+							experience.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow4.png"></div></div><div class="section" title="Scenario 2: Sorting entries based on dynamic schema"><div class="titlepage"><div><div><h3 class="title"><a name="d0e313487"></a>Scenario 2: Sorting entries based on dynamic schema</h3></div></div></div><p>In this scenario we will sort entries in an input file based on a dynamic
+					schema, display the sorting result on the <span class="bold"><strong>Run</strong></span>
+					console, and save the sorting result in an output file. For more information
+					about the dynamic schema feature, see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tSortRow5.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the components required for this use case: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tSortRow</strong></span>, <span class="bold"><strong>tLogRow</strong></span> and
+								<span class="bold"><strong>tFileOutputDelimited</strong></span> from the
+								<span class="bold"><strong>Palette</strong></span> to the design
+							workspace.</p></li><li class="listitem"><p>Connect these components together using <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> links.
+						</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileInputDelimited</strong></span>
+							component to display its <span class="bold"><strong>Basic settings</strong></span>
+							view. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow6.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="italic">The dynamic schema feature is only supported in
+								<span class="bold"><strong>Built-In</strong></span> mode and requires the
+							input file to have a header row.</span>
+					</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select <span class="bold"><strong>Built-In</strong></span> from the <span class="bold"><strong>Property Type</strong></span> list.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to the
+								<span class="bold"><strong>File Name</strong></span> field to browse to your
+							input file. In this use case, the input file
+								<span class="emphasis"><em>cars.csv</em></span> has five columns:
+								<span class="emphasis"><em>ID_Owner</em></span>, <span class="emphasis"><em>Registration</em></span>,
+								<span class="emphasis"><em>Make</em></span>, <span class="emphasis"><em>Color</em></span>, and
+								<span class="emphasis"><em>ID_Reseller</em></span>. </p></li><li class="listitem"><p>Specify the header row in <span class="bold"><strong>Header</strong></span>
+							field. In this use case the first row is the header row.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Built-In</strong></span> from the <span class="bold"><strong>Schema</strong></span> list, and click <span class="bold"><strong>Edit schema</strong></span> to set the input schema.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow7.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>The dynamic column must be defined in the last row of the
+							schema.</em></span>
+					</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the schema editor, add two columns and name them
+								<span class="emphasis"><em>ID_Owner</em></span> and <span class="emphasis"><em>Other</em></span>
+							respectively. Set the data type of the <span class="emphasis"><em>Other</em></span> column
+							to <span class="bold"><strong>Dynamic</strong></span> to retrieve all the columns
+							undefined in the schema. </p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to propagate the schema and
+							close the schema editor.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tSortRow</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> view. </p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow8.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Add a row in the <span class="bold"><strong>Criteria</strong></span> table by
+							clicking the plus button, select <span class="emphasis"><em>Other</em></span> under
+								<span class="bold"><strong>Schema column</strong></span>, select
+								<span class="emphasis"><em>alpha</em></span> as the sorting type, and select the
+								<span class="emphasis"><em>ascending</em></span> or <span class="emphasis"><em>descending</em></span>
+							order for data output.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="italic">Dynamic column sorting works only when the sorting
+							type is set to alpha.</span>
+					</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>To view the output in the form of a table on the <span class="bold"><strong>Run</strong></span> console, double-click the <span class="bold"><strong>tLogRow</strong></span> component and select the <span class="bold"><strong>Table</strong></span> option in the <span class="bold"><strong>Basic
+								settings</strong></span> view.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileOutputDelimited</strong></span>
+							component to display its <span class="bold"><strong>Basic Settings</strong></span>
+							view.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow9.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to the
+								<span class="bold"><strong>File Name</strong></span> field to browse to the
+							directory where you want to save the output file, and then enter a name
+							for the file.</p></li><li class="listitem"><p>Select the<span class="bold"><strong> Include Header</strong></span> check box
+							to retrieve the column names as well as the sorted data.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run
+							it.</p><p> The sorting result is displayed on the <span class="bold"><strong>Run</strong></span> console and written into the output file.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tSortRow11.png"></div></div></div></body></html>

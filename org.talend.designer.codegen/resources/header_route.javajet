@@ -1,0 +1,493 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.IProcess
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IElementParameter
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.designer.runprocess.CodeGeneratorRoutine
+		org.talend.designer.codegen.i18n.Messages
+		org.talend.core.ui.branding.IBrandingService
+		org.talend.core.ui.branding.AbstractBrandingService
+		org.talend.core.GlobalServiceRegister
+		org.talend.designer.codegen.ITalendSynchronizer
+		java.util.List
+		java.util.ArrayList
+		java.util.Vector
+		org.talend.core.model.process.IContextParameter
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.utils.JavaResourcesHelper
+		java.util.Map
+		java.io.UnsupportedEncodingException
+    	java.net.URLEncoder
+	"
+	class="Header" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    Vector v = (Vector) codeGenArgument.getArgument();
+	IProcess process = (IProcess)v.get(0);
+    String version = (String)v.get(1);  
+	
+	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
+	boolean stats = codeGenArgument.isStatistics();
+	boolean trace = codeGenArgument.isTrace();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	List<IContextParameter> params = new ArrayList<IContextParameter>();
+	params=process.getContextManager().getDefaultContext().getContextParameterList();
+%>
+<%
+IBrandingService service=(IBrandingService)GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+if(service instanceof AbstractBrandingService){
+ %>
+ <%=((AbstractBrandingService) service).getJobLicenseHeader(version)%>
+<%
+ }
+  String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
+%> 
+package <%= packageName %>;
+
+<%for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
+	if(!routine.equals(ITalendSynchronizer.TEMPLATE)){%>
+import routines.<%=routine%>;
+<%	}
+}%>
+import routines.system.*;
+import routines.system.api.*; 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.math.BigDecimal;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.util.Comparator;
+
+<%=ElementParameterParser.getValue(process, "__HEADER_IMPORT__") %>
+<%=ElementParameterParser.getValue(process, "__FOOTER_IMPORT__") %>
+
+
+<%
+	List<INode> nodesWithImport = process.getNodesWithImport();
+	if(nodesWithImport != null) {
+		for(INode node:nodesWithImport){
+%>
+	//the import part of <%=node.getUniqueName() %>
+	<%=ElementParameterParser.getValue(node, "__IMPORT__") %>
+	
+<% 		}
+    } 
+%>
+
+/**
+ * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
+ * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
+ * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
+ * @version <%=version %>
+ * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
+ */                                
+ public class <%=process.getName()%> implements TalendESBRoute { 
+ 		
+	private final String jobVersion = "<%=process.getVersion() %>";
+	private final String jobName = "<%=codeGenArgument.getJobName() %>";
+	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
+	public Integer errorCode = null;
+	private String currentComponent = "";
+	public TalendESBRoute stopDelegate = null;
+	
+	public <%=process.getName()%>(){
+		initUriMap();
+	}
+	
+	public void stop() throws Exception {
+		if (stopDelegate != null) stopDelegate.stop();
+	}
+	
+	public void shutdown() throws Exception {
+		if (stopDelegate != null) stopDelegate.shutdown();
+	}
+	
+<%
+	boolean startable = false;	
+	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
+		Object value = node.getPropertyValue("STARTABLE");
+		startable = value == null? false:(Boolean)value;
+		if(startable){
+			break;
+		}
+	}
+	if (startable) { 
+%>
+	private org.osgi.framework.BundleContext bundleContext;
+
+	public void setBundleContext(org.osgi.framework.BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
+	}
+	
+<%
+	}
+%>
+<%
+	boolean hasCXFCom = false;
+	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
+		String componentName = node.getComponent().getName();
+		if("cCXF".equals(componentName)){
+			hasCXFCom = true;
+			break;
+		}
+	}
+	if(hasCXFCom){
+%>
+
+	//ESB Service Locator Feature
+	private org.apache.cxf.feature.AbstractFeature locatorFeature;
+	
+	//ESB Service Activity Monitor Feature
+	private org.apache.cxf.feature.AbstractFeature eventFeature;
+
+	public void setLocatorFeature(org.apache.cxf.feature.AbstractFeature locatorFeature) {
+		this.locatorFeature = locatorFeature;
+	}
+	
+	public void setEventFeature(org.apache.cxf.feature.AbstractFeature eventFeature) {
+		this.eventFeature = eventFeature;
+	}
+
+<%
+	}
+%>
+	private org.apache.camel.builder.RouteBuilder routeBuilder;
+
+	private java.util.Map<String, String> uriMap; 
+	
+	public java.util.Map<String,String> getUriMap(){
+		return this.uriMap;
+	}
+	
+	public void loadCustomUriMap(java.util.Map<String,String> newMap){
+		if(newMap == null){
+			return;
+		}
+		for(java.util.Map.Entry<String, String> entry: newMap.entrySet()){
+			uriMap.put(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	protected void initUriMap(){
+		uriMap = new java.util.HashMap<String, String>();
+<%
+String cid = "";
+String componentName = "";
+String uri = "";
+for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
+{
+   	IElementParameter param = node.getElementParameter("LABEL");
+   	if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+   		cid = (String)param.getValue();	
+   	}else{
+   		cid = node.getUniqueName();
+   	}
+	componentName = node.getComponent().getName();
+	uri = "";
+	if("cMessagingEndpoint".equals(componentName)){
+		uri = ElementParameterParser.getValue(node, "__URI__");
+	}else if("cFile".equals(componentName)){
+		String filePath = ElementParameterParser.getValue(node, "__URI__");
+    	String noop = ElementParameterParser.getValue(node, "__NOOP__");
+     	String flatten = ElementParameterParser.getValue(node, "__FLATTEN__");
+    	String bufferSize = ElementParameterParser.getValue(node, "__BUFFER_SIZE__");
+    	String autoCreate = ElementParameterParser.getValue(node, "__AUTOCREATE__");
+    	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    	String charset = ElementParameterParser.getValue(node, "__ENCODING__");
+ 
+     	StringBuffer arguments = new StringBuffer();
+ 
+     	uri = "\"file:///\"+" + filePath;
+ 
+     	if ("true".equals(noop)) {
+    	     arguments.append("\"noop=true\"+");
+    	 } else {
+	         arguments.append("\"noop=false\"+");
+	     }
+	 
+	     if ("false".equals(autoCreate)) {// default true, ignore.
+	         arguments.append("\"&autoCreate=false\"+");
+	     }
+	     
+	     if ("true".equals(flatten)) {// default false, ignore.
+	         arguments.append("\"&flatten=true\"+");
+	     }
+	 
+	     if (fileName != null && !fileName.equals("\"\"") && fileName.length() > 0 ) {
+	      arguments.append("\"&fileName=\"+");
+	      arguments.append(fileName);
+	      arguments.append("+");
+	     }
+	     
+	     if (charset != null  && !charset.equals("\"\"") && charset.length() > 0) {
+	      arguments.append("\"&charset=\"+");
+	      arguments.append(charset);
+	      arguments.append("+");
+	     }
+	     
+	     if (bufferSize != null && !bufferSize.equals("\"\"") && bufferSize.length() > 0) {
+	      arguments.append("\"&bufferSize=\"+");
+	      arguments.append(bufferSize);
+	      arguments.append("+");
+	     }
+	 
+	     List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	             "__ADVARGUMENTS__");
+	     for (Map<String, String> map : tableValues) {
+	         String argName = map.get("NAME");
+	         String argValue = map.get("VALUE");
+	         arguments.append("\"&\"+");
+	         arguments.append(argName);
+	         arguments.append("+\"=\"+");
+	         arguments.append(argValue);
+	         arguments.append("+");
+	     }
+	 
+	     if (arguments.length() > 0) {
+	      arguments.deleteCharAt(arguments.length()-1);
+	         uri = uri + "+\"?\"+" + arguments.toString();
+	     } else {
+	     }
+	     System.out.println(uri);
+	}else if("cCXF".equals(componentName)){
+		String url = ElementParameterParser.getValue(node,"__ADDRESS__").trim();
+		String serviceType = ElementParameterParser.getValue(node, "__SERVICE_TYPE__");
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("\"cxf://\"+");
+		sb.append(url);
+		sb.append("+\"?" + serviceType + "=\"");
+		
+		if("wsdlURL".equals(serviceType)){
+			sb.append("+");
+			String filePath = ElementParameterParser.getValue(node, "__WSDL_FILE__");
+			filePath.replaceAll("\\\\","/");
+			sb.append(filePath);
+		}else {
+			sb.append("+" + ElementParameterParser.getValue(node, "__SERVICE_CLASS__"));
+		}
+		
+	
+		String dataformat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+			sb.append("+\"&dataFormat=" + dataformat + "\"");
+		
+		String specifyService = ElementParameterParser.getValue(node, "__SPECIFY_SERVICE__");
+		if("true".equals(specifyService)){
+			sb.append("+\"&serviceName=\"+");
+			sb.append(ElementParameterParser.getValue(node, "__SERVICE_NAME__").trim());
+			sb.append("+\"&portName=\"+");
+			sb.append(ElementParameterParser.getValue(node, "__PORT_NAME__").trim());
+		}
+		
+		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__ADVARGUMENTS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+			sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+	    }
+		uri = sb.toString();
+	}else if("cFtp".equals(componentName)){
+		String type = ElementParameterParser.getValue(node, "__TYPE__");
+	    String username = ElementParameterParser.getValue(node, "__USERNAME__");
+	    String server = ElementParameterParser.getValue(node, "__SERVER__");
+	    String port = ElementParameterParser.getValue(node, "__PORT__");
+	    String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	    String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+	
+	    StringBuffer fragments = new StringBuffer();
+	    fragments.append("\"" + type + "://\"");
+	
+	    if (username.trim().length() > 0) {
+	        fragments.append("+" + username.trim());
+	        fragments.append("+\"@\"");
+	    }
+	
+	    fragments.append("+" + server.trim());
+	
+	    if (port.trim().length() > 0) {
+	        fragments.append("+\":\"");
+	        fragments.append("+" + port.trim());
+	    }
+	
+	    if (directory.trim().length() > 0) {
+	        fragments.append("+\"/\"");
+	        fragments.append("+" + directory.trim());
+	    }
+	
+	    boolean hasArg = false;
+	    if (password.trim().length() > 0) {
+	        hasArg = true;
+	        fragments.append("+\"?password=\"+" + password);
+	    }
+	
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__ADVARGUMENTS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+			 if (!hasArg) {
+	            fragments.append("+\"?\"+" + argName + "+\"=\"+" + argValue);
+	            hasArg = true;
+	        } else {
+	            fragments.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+	        }
+	
+	    }
+	    uri = fragments.toString();
+	}else if("cJMS".equals(componentName)){
+		String name = node.getUniqueName().replace("_", "");
+		name = "\"" + name + "\"";
+		//String name = ElementParameterParser.getValue(node, "__NAME__").trim();
+		//Remove unnecessary subfix
+		//name += "+";
+	    //name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
+	    String type = ElementParameterParser.getValue(node, "__TYPE__");
+	    String destination = ElementParameterParser.getValue(node, "__DESTINATION__").trim();
+	
+	    boolean hasOptions = false;
+	
+	    StringBuffer sb = new StringBuffer();
+	    sb.append(name);
+	    sb.append("+\":" + type + ":\"");
+	    sb.append("+" + destination);
+	   
+	
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__URI_OPTIONS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+	
+	         if (!hasOptions) {
+	            sb.append("+\"?\"+" + argName + "+\"=\"+" + argValue);
+	            hasOptions = true;
+	        } else {
+	            sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+	        }
+	    }
+	    
+	    uri = sb.toString();
+	}else{
+		continue;
+	}
+		%>uriMap.put("<%=cid%>", <%=uri%>);<%
+}
+	%>
+		}
+
+	private java.util.Properties defaultProps = new java.util.Properties();
+	
+	public class ContextProperties extends java.util.Properties {
+
+		public ContextProperties(java.util.Properties properties){
+			super(properties);
+		}
+		public ContextProperties(){
+			super();
+		}
+
+		public void synchronizeContext(){
+			<% for (IContextParameter ctxParam :params){
+				String cParaName = ctxParam.getName();
+			%>
+			if(<%=cParaName %> != null){
+				<%if(ctxParam.getType().equals("id_Date")){%>
+					String pattern_<%=cParaName %> = "yyyy-MM-dd HH:mm:ss";
+					String value_<%=cParaName %> = "<%=ctxParam.getValue() %>";
+					String[] parts_<%=cParaName %> = value_<%=cParaName %>.split(";");
+					if(parts_<%=cParaName %>.length > 1){
+						pattern_<%=cParaName %> = parts_<%=cParaName %>[0];
+						this.setProperty("<%=cParaName %>", pattern_<%=cParaName %> + ";" + FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+					}else{
+						this.setProperty("<%=cParaName %>", FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+					}
+				<%}else{%>
+					this.setProperty("<%=cParaName %>", <%=cParaName %>.toString());
+				<%}%>
+			}
+			<% } %>
+		}
+
+<%
+		for (IContextParameter ctxParam :params)
+		{
+				if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory"))
+				{
+		%>
+		public String <%=ctxParam.getName()%>;
+		public String get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+			return this.<%=ctxParam.getName()%>;
+		}
+		<%
+				}else
+				{
+%>
+public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> <%=ctxParam.getName()%>;
+public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+	return this.<%=ctxParam.getName()%>;
+}
+<%				}
+		}
+%>
+	}
+	private ContextProperties context = new ContextProperties();
+	public ContextProperties getContext() {
+		return this.context;
+	}
+	
+	
+
+<%
+	if(stats) {
+%>	
+
+	class MyStatThread implements Runnable {
+			
+		CamelStat stats;
+		boolean isFinished;
+		
+		public MyStatThread(CamelStat stats) {
+			this.stats = stats;
+		}
+
+		public void run() {
+			while(true) {
+				try {
+<%
+					for (INode node : processNodes) {
+						if (node.isActivate()) {
+							for(int i=0; i<node.getIncomingConnections().size(); i++) {
+%>
+								stats.updateStatOnConnection("<%=node.getIncomingConnections().get(i).getUniqueName()%>", 1, "<%=node.getUniqueName()%>");
+<%								
+							}
+						}
+					}
+%>
+											
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+<%
+	} //if stats
+%>

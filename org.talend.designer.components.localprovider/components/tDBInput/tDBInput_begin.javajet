@@ -1,0 +1,117 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		java.util.Map
+	" 
+%>
+	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
+<%
+
+	class DBInputBeginUtil extends DefaultDBInputUtil{
+	    
+		public void setURL(INode node) {
+			
+			String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
+		    String[] dbtypes = dbtypeDefinition.split(";");
+		    String javaDbtype   = dbtypes[0];
+		    String javaDbDriver   = dbtypes[1]; 
+%>
+<%
+		    if(("undef").equals(javaDbtype)) {
+%>
+		        String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
+<%
+		    } else if(("mssql").equals(javaDbtype)) {
+%>
+		        String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
+<%
+		    } else if(("oracle").equals(javaDbtype)) {
+		        String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+%>
+		        String url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+<%
+		    } else if(("postgresql").equals(javaDbtype)) {
+%>
+		        String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+<%
+		    } else if(("mysql").equals(javaDbtype)) {
+%>
+		        String url_<%=cid %> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+		    }
+%>
+<%
+		}
+		
+		public String getDirverClassName(INode node){
+			String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
+		    String[] dbtypes = dbtypeDefinition.split(";");
+		    String javaDbtype   = dbtypes[0];
+		    String javaDbDriver   = dbtypes[1]; 
+			return javaDbDriver;
+		}
+		
+		//-----------according schema type to generate ResultSet
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+		
+%>
+            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+            if(timestamp_<%=cid%> != null) {
+                <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> =  null;
+            }
+<%
+	    } 
+	    
+	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
+	   		String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
+%>
+			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(<%=currentColNo%>);
+			if(value_<%=cid%> != null) {
+<%
+				if(("Integer").equals(javaType)) {
+%>
+					value_<%=cid%> = new <%=javaType%>(<%=javaType%>.parse<%=javaType.substring(0,3)%>(value_<%=cid%>.toString()));
+<%
+				} else if(("Byte").equals(javaType) || ("Short").equals(javaType) || ("Long").equals(javaType) || 
+						("Float").equals(javaType) || ("Double").equals(javaType)) {
+%>
+					value_<%=cid%> = new <%=javaType%>(<%=javaType%>.parse<%=javaType%>(value_<%=cid%>.toString()));
+<%
+				}
+%>
+				<%=firstConnName%>.<%=column.getLabel()%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), true)%>)value_<%=cid%>;
+			} else {
+<%
+				if(column.isNullable()) {
+%>
+					<%=firstConnName%>.<%=column.getLabel()%> = null;
+<%
+				} else {
+%>
+					throw new RuntimeException("Null value in non-Nullable column");
+<%    
+				}
+%>
+			}
+<%
+	    }  
+	    //---------end according schema type to generate ResultSet
+	}//end class
+	
+	dbInputBeginUtil = new DBInputBeginUtil();
+%>
+    
+	<%@ include file="../templates/DB/Input/AbstractDBInputBegin.javajet"%>
+

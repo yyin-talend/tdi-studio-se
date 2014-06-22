@@ -1,0 +1,154 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+" 
+%>
+
+	<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	cid = cid.replaceAll("_In", "");
+	
+	String serverType = ElementParameterParser.getValue(node, "__SERVER__");
+	
+	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
+	
+	String useMsgId = ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+	String msgId = ElementParameterParser.getValue(node, "__MSG_ID__");
+	
+	boolean getJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__GET_JMS_HEADER__"));
+	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
+	
+	boolean getJmsProp =  ("true").equals(ElementParameterParser.getValue(node, "__GET_JMS_PROPERTIES__"));
+	List<Map<String,String>> jmsProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_PROPERTIES__");
+	
+	boolean getMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__GET_MQMD_FIELDS__"));
+	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
+	
+	IMetadataTable metadata=null;
+	List<IMetadataColumn> columns = null;
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		metadata = metadatas.get(0);
+		columns = metadata.getListColumns();
+	}
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+
+	if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
+		String from = ElementParameterParser.getValue(node, "__FROM__");
+		
+		//out put
+		for(IConnection conn:conns){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		 		String firstConnName = conn.getName();
+		 		
+		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
+				%>
+					<%=firstConnName%>.from=<%=from%>;	
+					<%=firstConnName%>.message=msg_<%=cid%>;	
+				<%
+				} else {
+					for(IMetadataColumn column : columns) {
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						if(("byte[]").equals(typeToGenerate)) {
+				        	typeToGenerate = "Bytes";
+			            }else if(("Character").equals(typeToGenerate)) {
+			            	typeToGenerate = "Char";
+			            }else if(("Integer").equals(typeToGenerate)) {
+			            	typeToGenerate = "Int";
+			            } else if(("Java.util.Date").equals(typeToGenerate)||"BigDecimal".equals(typeToGenerate)
+			            			||"List".equals(typeToGenerate)) {
+			            	typeToGenerate = "Object";
+			            }else {
+			                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+				        }
+						%>
+						<%=firstConnName%>.<%=column.getLabel() %> = msg_<%=cid %>.get<%=typeToGenerate%>("<%=column.getLabel()%>");
+
+					<%
+					}
+				}
+				/*---------------------------------------------get message headers------------------------------------------------------*/
+				if (getJmsHeader) {
+					for(Map<String,String> header:jmsHeaders) {
+					%>	
+						<%=firstConnName%>.<%=header.get("REFERENCE_COLUMN")%> = message_<%=cid%>.get<%=header.get("JMS_HEADER_NAME")%>();
+					<%				
+					}
+				}	
+								
+				/*---------------------------------------------4.set message headers------------------------------------------------------*/
+				if (getJmsProp) {
+					for(Map<String,String> prop:jmsProps) {
+					%>
+						<%=firstConnName%>.<%=prop.get("REFERENCE_COLUMN")%> = message_<%=cid%>.get<%=prop.get("JMS_PROPERTIES_TYPE")%>Property(<%=prop.get("JMS_PROPERTIES_NAME")%>);
+					<%				
+					}
+				}					
+
+
+				if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
+				%>		
+					<%=firstConnName%>.messageid=<%=msgId%>;
+					}
+				}
+				<%
+				}
+			}
+		}	
+		/*---------------------------------------------------------end 4----------------------------------------------------------------*/	
+		%>	    
+	<%
+	} else { //server judgement   /***WebSphere MQ*****/
+		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+
+		for(IConnection conn:conns){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	 			String firstConnName = conn.getName();
+		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
+				%>
+					<%=firstConnName%>.from=<%=queue%>;	
+					<%=firstConnName%>.message=msg_<%=cid%>;	
+				<%
+				} else {
+					for(IMetadataColumn column : columns) {
+						String columType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						%>
+						<%=firstConnName%>.<%=column.getLabel() %> = (<%=columType%>)msg_<%=cid %>.get("<%=column.getLabel()%>");
+					<%
+					}
+				}
+		
+				/*---------------------------------------------get MQMD Fields------------------------------------------------------*/
+			
+				if (getMQMDField) {
+					for(Map<String,String> field:mqmdFields) {
+					%>
+						<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = inMessage<%=cid%>.<%=field.get("MQMD_FIELD_NAME")%>;
+					<%				
+					}
+				}
+		
+				if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
+				%>
+					<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
+				<%
+				}
+			}
+		}
+	}
+	%>
+
+
+		

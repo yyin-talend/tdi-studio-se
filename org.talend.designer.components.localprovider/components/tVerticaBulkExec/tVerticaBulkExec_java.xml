@@ -1,0 +1,263 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Databases/Vertica</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="RUN_IF" MAX_OUTPUT="1"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+  
+   <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:VERTICA"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />  
+    
+	<PARAMETER 
+		NAME="DB_VERSION" 
+		FIELD="CLOSED_LIST" 
+		NUM_ROW="10"
+		REPOSITORY_VALUE="DB_VERSION"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<ITEMS DEFAULT="VERTICA_3">
+			<ITEM NAME="VERTICA_3" VALUE="vertica_3.0_jdk_5.jar" />
+			<ITEM NAME="VERTICA_3.5" VALUE="vertica_3.5_jdk_5.jar" />
+			<ITEM NAME="VERTICA_4" VALUE="vertica_4.0_jdk_5.jar" />
+			<ITEM NAME="VERTICA_4.1" VALUE="vertica_4.1.7_jdk_5.jar" />
+			<ITEM NAME="VERTICA_5.0" VALUE="vertica_4.1.14_jdk_5.jar" />
+		</ITEMS>
+	</PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="20"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tVerticaConnection"
+      NUM_ROW="20"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+      DYNAMIC_SETTINGS="true"
+    /> 
+    
+    <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      REPOSITORY_VALUE="SERVER_NAME" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"        
+    >
+      <DEFAULT>"localhost"</DEFAULT>
+    </PARAMETER>      
+
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>"5433"</DEFAULT>
+    </PARAMETER>   
+    
+    <PARAMETER
+      NAME="SERVER"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      SHOW_IF="ACTION=='EXPORT'"          
+    >
+      <DEFAULT>"DB SERVER"</DEFAULT>
+    </PARAMETER>    
+    
+    <PARAMETER
+      NAME="DBNAME"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+		NAME="SCHEMA_DB" 
+		FIELD="TEXT" 
+		NUM_ROW="40"
+		REPOSITORY_VALUE="SCHEMA" 
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+    
+    <PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="50"
+      REPOSITORY_VALUE="USERNAME"  
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"    
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PASS"
+      FIELD="TEXT"
+      NUM_ROW="50"
+      REPOSITORY_VALUE="PASSWORD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="60"
+      NOT_SHOW_IF="PARALLELIZE == 'true'"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+	
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="60"
+			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
+		>
+		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
+	</PARAMETER>	
+
+    <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="60"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="70"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="REMOTE_FILENAME"
+      FIELD="FILE"
+      NUM_ROW="90"
+      REQUIRED="true"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="130"
+      SHOW="false"
+    >       
+      <DEFAULT>vertica_id</DEFAULT>
+    </PARAMETER>
+    
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
+      NAME="DATA_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+      SHOW="false"
+    >
+      <ITEMS DEFAULT="INSERT">
+        <ITEM NAME="INSERT"           VALUE="INSERT"/>
+        <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ROS"
+      FIELD="CHECK"
+      NUM_ROW="7"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="EXIT_ON_NO_ROWS"
+      FIELD="CHECK"
+      NUM_ROW="8"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="FIELDS_TERMINATED_BY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>";"</DEFAULT>
+    </PARAMETER>
+    
+   <PARAMETER
+      NAME="NULL_STRING"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>"null"</DEFAULT>      
+    </PARAMETER>
+   </ADVANCED_PARAMETERS>
+
+   <CODEGENERATION>
+       <IMPORTS>
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="false" /> 
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" />
+		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED="false" /> 
+		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED="false" />		
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED="false" />		
+    </IMPORTS>
+  </CODEGENERATION>
+
+   <RETURNS />
+</COMPONENT>

@@ -1,0 +1,35 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+
+String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
+%>
+}
+<%}%>
+	}
+<%if(("SAX").equals(mode)){%>
+	try {
+		looper_<%=cid%>.handleTaskResponse();
+	} catch(Exception e) {
+	<% if(dieOnError) { %>
+		throw(e);
+	<% } else { %>
+		System.err.println(e.getMessage());	
+	<% } %>
+	}
+<% } %>
+	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

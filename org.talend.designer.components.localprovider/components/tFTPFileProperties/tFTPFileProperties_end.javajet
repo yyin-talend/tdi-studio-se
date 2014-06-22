@@ -1,0 +1,56 @@
+<%@ jet 
+  imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+  "
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
+String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+boolean bUseExistingConn = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+boolean sftp = false;
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+
+if (outConns == null || outConns.size() <= 0) {
+  return "";
+}
+
+if (bUseExistingConn) {
+  List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+
+  for (INode n : nodeList) {
+    if (n.getUniqueName().equals(connection)) {
+      sftp = ("true").equals(ElementParameterParser.getValue(n, "__SFTP__"));
+    }
+  }
+} else {
+  sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+}
+
+if (sftp && !bUseExistingConn) {
+%>
+  session_<%=cid%>.disconnect(); 
+<%
+} else {
+  if (!bUseExistingConn) {
+    if (("true").equals(ignoreFailureAtQuit)) {
+    %>
+      try {
+        ftp_<%=cid %>.quit();
+      } catch (java.net.SocketException se_<%=cid%>) {
+        //ignore failure
+      }
+    <%} else {%>
+      ftp_<%=cid %>.quit();
+    <%
+    }
+  }
+}
+%>

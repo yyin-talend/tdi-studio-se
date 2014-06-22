@@ -1,0 +1,118 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+        INode node = (INode)codeGenArgument.getArgument();
+        String cid = node.getUniqueName();      
+
+        String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
+        String replaceOption = ElementParameterParser.getValue(node,"__REPLACEOPTION__");
+        List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
+%>
+
+        String[] sourceFileNames_<%=cid%> = new String[]{
+<%
+			for (Map<String, String> file : filelist) {
+%>
+				<%=file.get("SOURCE")%>,
+<%          
+            }
+%>
+		};
+		
+java.io.File dir_<%=cid %> = null;
+java.io.File file_<%=cid %> = null;
+java.io.FileOutputStream out_<%=cid %> = null;
+try{
+<%
+if(("append").equals(replaceOption)){%>
+	for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+		if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+			sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
+			sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+			int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+			if(index_<%=cid %> >0){
+				dir_<%=cid %> = new java.io.File(<%=localdir %>);
+				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);	
+				file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+				if(!file_<%=cid %>.exists()){
+				  file_<%=cid %>.getParentFile().mkdirs();
+				}
+				out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, true);
+				scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
+				nb_file_<%=cid%> ++ ;
+			}
+		}
+	}
+	if(nb_file_<%=cid%>>0){
+		globalMap.put("<%=cid %>_STATUS", "File get OK.");
+	}else{
+		globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+	}
+<%
+}else{
+	if(!("overwrite").equals(replaceOption)) {%>        
+        String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
+        java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
+        for (int i_<%=cid%> = 0; i_<%=cid%> < sourceFileNames_<%=cid%>.length; i_<%=cid%>++) {
+            String fileName_<%=cid%> = sourceFileNames_<%=cid%>[i_<%=cid%>];
+            if (!new java.io.File((parentPath_<%=cid%>), (fileName_<%=cid%>)).exists()) {
+                list_<%=cid%>.add(fileName_<%=cid%>);
+            }
+        }
+        sourceFileNames_<%=cid%> = (String[]) list_<%=cid%>.toArray(new String[0]);
+<%
+	}
+%>
+	if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
+		for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+			if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+				sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
+				sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+			    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+			    if(index_<%=cid %> >0){
+					dir_<%=cid %> = new java.io.File(<%=localdir %>);
+					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
+					file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+					if(!file_<%=cid %>.exists()){
+				  		file_<%=cid %>.getParentFile().mkdirs();
+					}
+					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, false);
+					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
+					nb_file_<%=cid%> ++ ;
+				}
+			}
+		}
+		if(nb_file_<%=cid%>>0){
+			globalMap.put("<%=cid %>_STATUS", "File get OK.");
+		}else{
+			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+		}
+	}
+        
+<%
+}
+%>
+
+}catch(Exception e){
+		if(out_<%=cid %> != null){
+			out_<%=cid %>.close();
+		}
+		if(file_<%=cid%>.length() == 0){
+			file_<%=cid%>.delete();
+		}
+		globalMap.put("<%=cid %>_STATUS", "File get fail.");
+		throw e;
+}finally{
+	if(out_<%=cid %> != null){
+		out_<%=cid %>.close();
+	}
+}

@@ -1,0 +1,168 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.designer.runprocess.ProcessorUtilities
+	org.talend.designer.runprocess.ProcessorException
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
+boolean useIndependentProcess = "true".equals(ElementParameterParser.getValue(node, "__USE_INDEPENDENT_PROCESS__"));
+
+String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
+String context = "";
+
+if(useDynamicJob) {
+	context = ElementParameterParser.getValue(node,"__CONTEXT_NAME__");
+} else {
+	context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+}
+String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
+
+String[] commandLine = new String[] {"<command>"};
+
+String childJobName;
+int jobNamePosition;
+if(useDynamicJob || useIndependentProcess){
+%>
+class DealChildJobLibrary_<%=cid%> {
+
+	public String replaceJarPathsFromCrcMap(String originalClassPathLine) throws Exception {
+		String classPathLine = "";
+		String crcMapPath = new java.io.File("../crcMap").getCanonicalPath();
+		if (isNeedAddLibsPath( crcMapPath)) {
+			java.util.Map<String, String> crcMap = null;
+			java.io.ObjectInputStream ois = new ObjectInputStream(new java.io.FileInputStream(crcMapPath));
+			crcMap = (java.util.Map<String, String>) ois.readObject();
+			ois.close();
+			classPathLine = addLibsPath(originalClassPathLine, crcMap);
+		} else {
+			classPathLine = originalClassPathLine;
+		}
+		return classPathLine;
+	}
+	
+	private boolean isNeedAddLibsPath(String crcMapPath) {
+		if (!(new java.io.File(crcMapPath).exists())) {// when not use cache
+			return false;
+		}
+		return true;
+	}
+	
+	
+	private String addLibsPath(String line, java.util.Map<String, String> crcMap) {
+		for (java.util.Map.Entry<String, String> entry : crcMap.entrySet()) {
+			line = adaptLibPaths(line, entry);
+		}
+		return line;
+	}
+	
+	private String adaptLibPaths(String line, java.util.Map.Entry<String, String> entry) {
+		String jarName = entry.getValue();
+		String crc = entry.getKey();
+		String libStringFinder = "../lib/" + jarName;
+		if (line.contains(libStringFinder)) {
+			line = line.replace(libStringFinder, "../../../cache/lib/" + crc + "/" + jarName);
+		} else if (line.contains(":$ROOT_PATH/" + jarName + ":")) {
+			line = line.replace(":$ROOT_PATH/" + jarName + ":", ":$ROOT_PATH/../../../cache/lib/" + crc + "/" + jarName + ":");
+		} else if (line.contains(";" + jarName + ";")) {
+			line = line.replace(";" + jarName + ";", ";../../../cache/lib/" + crc + "/" + jarName + ";");
+		}
+		return line;
+	}
+	
+}
+	DealChildJobLibrary_<%=cid%> dealChildJobLibrary_<%=cid %> = new DealChildJobLibrary_<%=cid%>();
+
+<%
+}
+try {
+	if(useDynamicJob){
+	%>
+		//For different jobs, job name must be different, but classpath and JVM arguments are possbilely different
+		java.util.Map<String,List<String>> childJob_commandLine_Mapper_<%=cid%> = new java.util.HashMap<String,List<String>>();
+		java.util.List<String> childJob_commandLine_<%=cid%> = null;
+		String classpathSeparator_<%=cid%> = System.getProperty("path.separator");
+		<%
+	
+		//issue 19108: The context text field waits for a context name without quotes. The component removes the first quote and the last quote if they exist.
+		if(context.startsWith("\"")) {
+			context=context.substring(1, context.length());
+		}
+		if(context.endsWith("\"")) {
+			context=context.substring(0, context.length()-1);
+		}
+
+		if(process!=null && !process.equals("")){
+			String[] childJobIds = process.split(";");
+			for (int i=0;i<childJobIds.length;i++) {
+			%>
+				childJob_commandLine_<%=cid%> = new java.util.ArrayList<String>();
+				<%
+			commandLine = ProcessorUtilities.getCommandLine("win32",true, childJobIds[i], context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+			
+			    // remove the frontal 2 lines
+			    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
+					int tmpSize = commandLine.length - 2;
+					String[] tmp = new String[tmpSize];
+					System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
+					commandLine = tmp;
+			    }
+			    for (int j = 0; j < commandLine.length; j++) {
+				  // commandLine[j] = commandLine[j].replace("\n", "");
+				  if (j == 0){
+				    %>
+				    childJob_commandLine_<%=cid%>.add("<%=commandLine[j]%>");
+				    <%
+				  } else if (j > 0){
+				    if (commandLine[j].indexOf("\"") >= 0){
+				    	if(commandLine[j].indexOf(".jar")>=0){
+				    %>
+				      		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLine[j] %>).replaceAll(";",classpathSeparator_<%=cid%>));
+				    <%
+				    	}else{
+				    %>
+				    		childJob_commandLine_<%=cid%>.add(<%=commandLine[j] %>.replaceAll(";",classpathSeparator_<%=cid%>));
+				    <%
+				    	}
+				    }else{
+				    	if(commandLine[j].indexOf(".jar")>=0){
+				    %>
+				    		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLine[j] %>").replaceAll(";",classpathSeparator_<%=cid%>));
+				    <%
+				    	}else{
+				    %>
+				    		childJob_commandLine_<%=cid%>.add("<%=commandLine[j] %>".replaceAll(";",classpathSeparator_<%=cid%>));
+				    <%
+				    	}
+				    }
+				  }
+				}
+				
+				//find the job name and classpath, the job name in front of codeOptions
+			    int position = 0;
+			    for(String tempCommandLine : commandLine){
+			   		if(codeOptions[0].equals(tempCommandLine)){
+			   			break;
+			   		}
+			   		position++;
+			    }
+			    jobNamePosition = position-1;
+			    
+			    childJobName = commandLine[jobNamePosition];
+			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
+				%>
+				childJob_commandLine_Mapper_<%=cid%>.put("<%=childJobName%>",childJob_commandLine_<%=cid%>);	
+			<%
+			}
+		}
+	}
+} catch (ProcessorException e) {
+}	
+%>

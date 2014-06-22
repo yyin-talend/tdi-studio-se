@@ -1,0 +1,141 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+        java.util.Map
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
+	String cid = node.getUniqueName();
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	boolean sftp = false;
+	if(("true").equals(useExistingConn)){
+		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+		for(INode n : nodeList){
+			if(n.getUniqueName().equals(connection)){
+				sftp = ("true").equals(ElementParameterParser.getValue(n, "__SFTP__"));
+			}
+		}
+	}else{
+		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+	}
+%>
+try{
+<%
+	if(sftp){//sftp support
+%>	
+
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file renamed.");
+    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
+    	for (String key<%=cid %> : keySet<%=cid %>)
+   		{    
+   			try{
+   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+   			}catch(com.jcraft.jsch.SftpException se){
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
+   			throw se;
+   			}
+   			nb_file_<%=cid%>++;
+   		}
+	
+
+
+<%}else{%>//normal ftp
+	 	
+    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
+		String tmp_<%=cid%> = pid + System.currentTimeMillis();
+    	try{  
+    	for (String key<%=cid %> : keySet<%=cid %>)
+   		{
+     		<%if(("always").equals(overwrite)){%>
+     		  
+     			String fromFile_<%=cid%> = key<%=cid %>;
+     			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
+     			
+     		    if (!fromFile_<%=cid%>.equals(toFile_<%=cid%>)){
+     		      if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
+     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
+     		    	}
+     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
+		     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + "." + tmp_<%=cid%>);
+     		    	}
+	     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
+	     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+		     			ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
+	     			}
+	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+	     			nb_file_<%=cid%>++;
+     			  }
+     	       }
+     		<%}%>
+     		<%if(("never").equals(overwrite)){%>
+     			if(!(ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
+     			{
+     			ftp_<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+     			nb_file_<%=cid%>++;
+     			}
+     		<%}%>
+     		<%if(("size_differ").equals(overwrite)){%>
+     			if((ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
+					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp_<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
+					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp_<%=cid%>.fileDetails(key<%=cid %>);
+					long newNameSize<%=cid%>=ftpnewNamefile<%=cid%>.size();
+					long origNameSize<%=cid%>=ftporigNamefile<%=cid%>.size();
+					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
+					{
+		     			String fromFile_<%=cid%> = key<%=cid %>;
+		     			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
+						if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
+		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+		     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
+		     		    	}
+		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
+				     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + "." + tmp_<%=cid%>);
+		     		    	}
+			     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
+			     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+				     			ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
+			     			}
+			     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+			     			nb_file_<%=cid%>++;
+		     			}
+					}
+				}else{
+					ftp_<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+					nb_file_<%=cid%>++;
+				}
+     		<%}%>
+   		}
+   		}catch(com.enterprisedt.net.ftp.FTPException e){
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
+            throw e;
+   		}
+	
+
+<%}%>
+ 	}catch(Exception e){
+<%
+        if(("true").equals(dieOnError)){
+%>
+            throw(e);
+<%
+		}else{
+%>
+			System.err.print(e.getMessage());
+<%
+		}
+%>
+	}

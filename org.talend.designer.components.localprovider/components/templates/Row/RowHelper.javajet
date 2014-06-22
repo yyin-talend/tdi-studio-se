@@ -1,0 +1,112 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+	<%
+	class DefaultRowUtil {
+		String cid = "";
+	
+		boolean useV2C = false;
+		IMetadataTable V2CMetadata;
+		String V2CTargetConnName;
+		String V2CSourceValueClass;
+		String V2CSourceValueName;
+		
+		public void prepareValueToConn(IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
+			this.V2CMetadata = metadata;
+			this.V2CTargetConnName = targetConnName;
+			this.V2CSourceValueClass = sourceValueClass;
+			this.V2CSourceValueName = sourceValueName;
+			this.useV2C = true;
+		}
+		
+		public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
+		}
+		
+		public void callValueToConn(String sourceValueName, String targetConnName){
+		%>
+			rowHelper_<%=cid%>.valueToConn(<%=sourceValueName%>, <%=targetConnName%>);
+		<%
+		}
+		
+		boolean useV2CWithD = false;
+		IMetadataTable V2CWithDMetadata;
+		String V2CWithDTargetConnName;
+		String V2CWithDSourceValueClass;
+		String V2CWithDSourceValueName;
+		String V2CWithDDynamicName;
+		public void prepareValueToConnWithD(IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
+			this.V2CWithDMetadata = metadata;
+			this.V2CWithDTargetConnName = targetConnName;
+			this.V2CWithDSourceValueClass = sourceValueClass;
+			this.V2CWithDSourceValueName = sourceValueName;
+			this.V2CWithDDynamicName = dynamicName;
+			this.useV2CWithD = true;
+		}
+		
+		public void codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
+		}
+		
+		public void callValueToConnWithD(String sourceValueName, String targetConnName, String dynamicName){
+		%>
+			rowHelper_<%=cid%>.valueToConnWithD(<%=sourceValueName%>, <%=targetConnName%>, <%=dynamicName%>);
+		<%
+		}
+		
+		IMetadataTable C2CMetadata;
+		String C2CTargetConnName;
+		String C2CSourceConnName;
+		boolean useC2C = false;
+		public void prepareConnToConn(IMetadataTable metadata, String sourceConnName, String targetConnName){
+			this.C2CMetadata = metadata;
+			this.C2CTargetConnName = targetConnName;
+			this.C2CSourceConnName = sourceConnName;
+			this.useC2C = true;
+		}
+		
+		public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName){
+		}
+		
+		public void callConnToConn(String sourceConnName, String targetConnName){
+		%>
+			rowHelper_<%=cid%>.connToConn(<%=sourceConnName%>,<%=targetConnName%>);
+		<%
+		}
+		
+		
+		public void generateClass(INode node){
+			cid = node.getUniqueName();
+			%>
+			class RowHelper_<%=cid%>{
+				<%
+				if(useV2C){
+				%>
+					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws Exception{
+						<%codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName);%>
+					}
+				<%	
+				}
+				if(useV2CWithD){
+				%>
+					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws Exception{
+						<%codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName);%>
+					}
+				<%		
+				}
+				if(useC2C){
+				%>
+					public void connToConn(<%=C2CSourceConnName%>Struct <%=C2CSourceConnName%>,<%=C2CTargetConnName%>Struct <%=C2CTargetConnName%>) throws Exception{
+						<%codeForConnToConn(node, C2CMetadata, C2CSourceConnName, C2CTargetConnName);%>
+					}
+				<%
+				}
+				%>
+			}
+			RowHelper_<%=cid%> rowHelper_<%=cid%>  = new RowHelper_<%=cid%>();
+		<%
+		}
+	}
+	%>
