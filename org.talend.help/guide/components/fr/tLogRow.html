@@ -1,0 +1,94 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLogRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch13.html" title="Chapitre&nbsp;13.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="tLogCatcher.html" title="tLogCatcher"><link rel="next" href="tStatCatcher.html" title="tStatCatcher"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tLogRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLogRow"></a>tLogRow</h2></div></div></div><div class="mediaobject"><img src="../images/tLogRow.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tLogRow"><div class="titlepage"><div><div><h3 class="title"><a name="Raa83212"></a>Propri&eacute;t&eacute;s du tLogRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tLogRow</strong></span> affiche les
+                                donn&eacute;es ou les r&eacute;sultats dans la console <span class="bold"><strong>Run</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de monitorer les donn&eacute;es trait&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <span class="bold"><strong>Basic settings</strong></span>
+                        </td><td valign="top"><span class="italic">Schema</span> et <span class="italic">Edit schema</span></td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le nombre de champs qui sont trait&eacute;s
+                                et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (Built-in)
+                                soit distant dans le <span class="bold"><strong>Repository</strong></span>.
+                                    
+                            </p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Built-in</strong></span> : Le sch&eacute;ma
+                            sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le
+                                <span class="italic">Guide utilisateur de</span>
+                            <span class="bluebold">Talend Open Studio</span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Repository</strong></span> : Le sch&eacute;ma
+                            existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                            r&eacute;utilis&eacute; dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+                            <span class="bluebold">Talend Open Studio</span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Sync columns</span></td><td valign="top">Cliquez pour synchroniser le fichier de sortie avec le
+                            sch&eacute;ma du fichier d'entr&eacute;e. Cette fonction n'est disponible que quand le
+                            composant est reli&eacute; au composant pr&eacute;c&eacute;dent via un lien <span class="bold"><strong>Row</strong></span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Basic</span></td><td valign="top">Affiche le flux de sortie en mode basique.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Table</span></td><td valign="top">Affiche le flux de sortie dans des cellules de
+                            table.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Vertical</span></td><td valign="top"><p>Affiche chaque ligne du flux de sortie comme une liste
+                            de valeurs-clef.</p><p>Quand cette option est activ&eacute;e, vous pouvez, pour
+                                chaque ligne de sortie, choisir entre le nom unique, le nom du
+                                composant et les deux. </p></td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Separator</em></span>
+                            </p>
+                            <p>(mode basique uniquement)</p>
+                        </td><td valign="top">
+                            <p>Saisissez le s&eacute;parateur qui d&eacute;limitera les donn&eacute;es dans la
+                                console.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><p><span class="italic">Print header</span></p>
+                        <p>(mode basique uniquement)</p></td><td>Activez cette option pour inclure l'en-t&ecirc;te du flux d'entr&eacute;e dans
+                            l'affichage de sortie.</td></tr><tr><td>&nbsp;</td><td valign="top">
+                            <p><span class="italic">Print component unique name in front of
+                                    each output row</span></p>
+                            <p>(mode basique uniquement)</p>
+                        </td><td valign="top">
+                            <p>Cochez cette case si plusieurs composants <span class="bold"><strong>tLogRow</strong></span> sont utilis&eacute;s. Cela permet de diff&eacute;rencier
+                                les sorties.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="italic">Print schema column name in front of each
+                                    value</span></p>
+                            <p>(mode basique uniquement)</p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour r&eacute;cup&eacute;rer les libell&eacute;s des colonnes du
+                                sch&eacute;ma de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="italic">Use fixed length for
+                                values</span></p>
+                            <p>(mode basique uniquement)</p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour param&eacute;trer une largeur fixe aux valeurs
+                                affich&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant peut &ecirc;tre utilis&eacute; en composant interm&eacute;diaire dans un
+                                flux de donn&eacute;es ou en composant de fin dans un Job design.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e227647"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour plus d&#8217;informations sur l&#8217;utilisation du <span class="bold"><strong>tLogRow</strong></span>, consultez les composants&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tFileInputDelimited,</strong></span>
+                    <a class="xref" href="tMDMInput.html#Raa34575" title="Sc&eacute;nario&nbsp;: Lire les donn&eacute;es ma&icirc;tre d&#8217;un hub MDM">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Lire les donn&eacute;es ma&icirc;tre d&#8217;un hub MDM&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><span class="bold"><strong>tContextLoad</strong></span>, <a class="xref" href="tContextLoad.html#Raa15947" title="Sc&eacute;nario&nbsp;: Utiliser un contexte dynamique lors d&#8217;un insert dans une base de donn&eacute;es MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Utiliser un contexte dynamique lors d&#8217;un insert dans une base de donn&eacute;es
+            MySQL&nbsp;&raquo;</a>.</p></li><li class="listitem"><p><span class="bold"><strong>tWarn</strong></span>, <span class="bold"><strong>tDie</strong></span>
+                    et <span class="bold"><strong>tLogCatcher</strong></span>, <a class="xref" href="tLogCatcher.html#Raa67637" title="Sc&eacute;nario&nbsp;1&nbsp;: Avertissement &amp; log lors de la cr&eacute;ation d&#8217;entr&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Avertissement &amp; log lors de la cr&eacute;ation d&#8217;entr&eacute;es&nbsp;&raquo;</a> et
+                        <a class="xref" href="tLogCatcher.html#Raa74583" title="Sc&eacute;nario&nbsp;2&nbsp;: Monitorer &amp; arr&ecirc;ter un Job">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Monitorer &amp; arr&ecirc;ter un Job&nbsp;&raquo;</a>.</p></li></ul></div></div></div></body></html>

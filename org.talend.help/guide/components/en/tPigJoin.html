@@ -1,0 +1,218 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigJoin</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tPigFilterRow.html" title="tPigFilterRow"><link rel="next" href="tPigLoad.html" title="tPigLoad"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPigJoin"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigJoin"></a>tPigJoin</h2></div></div></div><div class="mediaobject"><img src="../images/tPigJoin_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">This component will be available in the <span class="bold"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="bluebold">Talend Enterprise Data Integration Big Data
+				edition</span>.</span>
+		</p></td></tr></table></div><div class="section" title="tPigJoin Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11446"></a>tPigJoin Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Hadoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component allows you to perform join of two files based on
+								join keys.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The <span class="bold"><strong>tPigJoin</strong></span> component is used to
+								perform inner joins and outer joins of two files based on join keys
+								to create data that will be used by Pig.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings </strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>To make this component work, two schemas must be set: the
+									schema of the main flow and the schema of the lookup flow. In
+									the output part of the main schema, the columns of the main
+									input file must be manually concatenated with those of the
+									lookup file.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: The schema will be created and stored
+								locally for this component only. Related topic: see
+										<span class="emphasis"><em>Talend Enterprise Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job designs. Related topic: see
+										<span class="emphasis"><em>Talend Enterprise Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Filename</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Fill in the path of the <span class="bold"><strong>Lookup
+									file</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Join key</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the plus button to add lines to set the <span class="bold"><strong>Join key</strong></span> for <span class="bold"><strong>Input
+									file</strong></span> and <span class="bold"><strong>Lookup
+								file</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Join mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select a join mode from the list:</p>
+							<p>
+								<span class="bold"><strong>inner-join</strong></span>: Select this mode to
+								perform an inner join of two or more relations based on Join
+								keys.</p>
+							<p>
+								<span class="bold"><strong>left-outer-join</strong></span>: Select this mode
+								to performs a left outer join of two or more relations based on Join
+								keys.</p>
+							<p>
+								<span class="bold"><strong>right-outer-join</strong></span>: Select this mode
+								to performs a right outer join of two or more relations based on
+								Join keys.</p>
+							<p>
+								<span class="bold"><strong>full-outer-join</strong></span>: Select this mode
+								to combine the effect of applying both left and right outer
+								joins.</p>
+							<p> For further information about inner join and outer join,
+								see:</p>
+							<p>
+								<a class="link" href="http://en.wikipedia.org/wiki/Join_%28SQL%29" target="_top">http://en.wikipedia.org/wiki/Join_%28SQL%29</a>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Optimize the join</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to optimize the performance of joins using
+									<span class="bold"><strong>REPLICATED</strong></span>, <span class="bold"><strong>SKEWED</strong></span>, or <span class="bold"><strong>MERGE</strong></span> joins. For further information about optimized
+								joins, see:</p>
+							<p>
+								<a class="link" href="http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins" target="_top">http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins</a>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use partitioner</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to specify the Hadoop Partitioner that
+								controls the partitioning of the keys of the intermediate
+								map-outputs. For further information about the usage of Hadoop
+								Partitioner, see:</p>
+							<p>
+								<a class="link" href="http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html" target="_top">http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html</a>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Increase parallelism</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to set the number of reduce tasks for the
+									<span class="bold"><strong>MapReduce</strong></span> Jobs</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at the
+								Job level as well as at each component level. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is commonly used as intermediate step together with
+								input component and output component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Knowledge of Pig scripts is required.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Scenario: Joining two files based on an exact match and saving the result to a local file"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20120516-bigdata-tpigjoin_scenario"></a>Scenario: Joining two files based on an exact match and saving the result to a local
+			file</h3></div></div></div><p>This scenario describes a four-component Job that combines data of an input file and a
+			reference file that matches a given join key, removes unwanted columns, and then saves
+			the final result to a local file.</p><p>The main input file contains the information about people's IDs, first names, last names,
+			group IDs, and salaries, as shown below: </p><pre class="programlisting">1;Woodrow;Johnson;3;1013.39
+2;Millard;Monroe;2;8077.59
+3;Calvin;Eisenhower;3;6866.88
+4;Lyndon;Wilson;3;5726.28
+5;Ronald;Garfield;2;4158.58
+6;Rutherford;Buchanan;3;2897.00
+7;Calvin;Coolidge;1;6650.66
+8;Ulysses;Roosevelt;2;7854.78
+9;Grover;Tyler;1;5226.88
+10;Bill;Tyler;2;8964.66</pre><p>The reference file contains only the information of group IDs and group names:</p><pre class="programlisting">1;group_A
+2;group_B</pre><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11823"></a>Dropping and linking the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tPigLoad</strong></span>, <span class="bold"><strong>tPigJoin</strong></span>,
+							<span class="bold"><strong>tPigFilterColumns</strong></span>, and <span class="bold"><strong>tPigStoreResult</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect these components in a series using <span class="bold"><strong>Row &gt;
+							Pig Combine</strong></span> connections.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11854"></a>Configuring the components</h4></div></div></div><div class="procedure" title="Procedure&nbsp;1.4.&nbsp;Loading the main input file"><a name="d0e11857"></a><p class="title"><b>Procedure&nbsp;1.4.&nbsp;Loading the main input file</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigLoad</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-2.png"></div></li><li class="step" title="Step 2"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to <span class="bold"><strong>Edit schema</strong></span> to open the <span class="bold"><strong>[Schema]</strong></span> dialog box.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-3.png"></div></li><li class="step" title="Step 3"><p>Click the <span class="bold"><strong>[+]</strong></span> button to add columns, name
+						them and define the column types according to the structure of the input
+						file. In this example, the input schema has five columns: <span class="italic">id</span> (integer), <span class="italic">firstName</span> (string), <span class="italic">lastName</span> (string), <span class="italic">groupId</span> (integer), and <span class="italic">salary</span> (double). </p><p>Then click <span class="bold"><strong>OK</strong></span> to validate the setting and
+						close the dialog box.</p></li><li class="step" title="Step 4"><p>Click <span class="bold"><strong>Local</strong></span> in the <span class="bold"><strong>Mode</strong></span> area.</p></li><li class="step" title="Step 5"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Load function</strong></span> list.</p></li><li class="step" title="Step 6"><p>Fill in the <span class="bold"><strong>Input file URI</strong></span> field with the
+						full path to the input file, and leave the rest of the setting as they
+						are.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.5.&nbsp;Loading the reference file and setting up an inner join"><a name="d0e11937"></a><p class="title"><b>Procedure&nbsp;1.5.&nbsp;Loading the reference file and setting up an inner join</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigJoin</strong></span> to open its <span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-4.png"></div></li><li class="step" title="Step 2"><p>Click the <span class="bold"><strong>[...]</strong></span> for the main schema to
+						open the <span class="bold"><strong>[Schema]</strong></span> dialog box.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-5.png"></div></li><li class="step" title="Step 3"><p>Check that input schema is correctly retrieved from the preceding component. If needed,
+						click the <span class="bold"><strong>[-&gt;&gt;]</strong></span> button to copy all the
+						columns of the input schema to the output schema. </p></li><li class="step" title="Step 4"><p>Click the <span class="bold"><strong>[+]</strong></span> button under the output panel to add new
+						columns according to the data structure of the reference file, <span class="italic">groupId_ref</span> (integer) and <span class="italic">groupName</span> (string) in this example. Then click
+							<span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 5"><p>Click the <span class="bold"><strong>[...]</strong></span> for the schema lookup
+						flow to open the <span class="bold"><strong>[Schema]</strong></span> dialog
+						box.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-6.png"></div></li><li class="step" title="Step 6"><p>Click the <span class="bold"><strong>[+]</strong></span> button under the output panel to add two
+						columns: <span class="italic">groupId_ref</span> (integer) and
+							<span class="italic">groupName</span> (string), and then click
+							<span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 7"><p>In the <span class="bold"><strong>Filename</strong></span> field, specify the full
+						path to the reference file.</p></li><li class="step" title="Step 8"><p>Click the <span class="bold"><strong>[+]</strong></span> button under the <span class="bold"><strong>Join key</strong></span> table to add a new line, and select
+							<span class="emphasis"><em>groupId</em></span> and <span class="emphasis"><em>groupId_ref</em></span>
+						respectively from the <span class="bold"><strong>Input</strong></span> and <span class="bold"><strong>Lookup</strong></span> lists to match data from the main input
+						flow with data from the lookup flow based on the group ID. </p></li><li class="step" title="Step 9"><p>From the <span class="bold"><strong>Join Mode</strong></span> list, select <span class="bold"><strong>inner-join</strong></span>.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.6.&nbsp;Defining the final output schema and the output file"><a name="d0e12048"></a><p class="title"><b>Procedure&nbsp;1.6.&nbsp;Defining the final output schema and the output file</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigFilterColumns</strong></span> to open its <span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-7.png"></div></li><li class="step" title="Step 2"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to <span class="bold"><strong>Edit schema</strong></span> to open the <span class="bold"><strong>[Schema]</strong></span> dialog box.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-8.png"></div></li><li class="step" title="Step 3"><p>From the input schema, select the columns you want to include in your
+						result file by clicking them one after another while pressing the <span class="bold"><strong>Shift</strong></span> key, and click the<span class="bold"><strong>
+							[-&gt;]</strong></span> button to copy them to the output schema. Then, click
+							<span class="bold"><strong>OK</strong></span> to validate the schema setting and
+						close the dialog box.</p><p>In this example, we want the result file to include all the information
+						except the group IDs. </p></li><li class="step" title="Step 4"><p>Double-click <span class="bold"><strong>tPigStoreResult</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-9.png"></div></li><li class="step" title="Step 5"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema
+						structure from the preceding component.</p></li><li class="step" title="Step 6"><p>Fill in the <span class="bold"><strong>Result file</strong></span> field with the
+						full path to the result file, and select the <span class="bold"><strong>Remove
+							result file directory if exists</strong></span> check box.</p></li><li class="step" title="Step 7"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Store function</strong></span> list, and leave rest of the
+						settings as they are.</p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12128"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="bold"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="bold"><strong>F6</strong></span> or click <span class="bold"><strong>Run</strong></span>
+						on the <span class="bold"><strong>Run</strong></span> tab to run the Job.</p><p>The result file includes all the information related to people of group A and group B,
+						except their group IDs. </p><div class="mediaobject"><img src="../images/use_case_tpigjoin-10.png"></div></li></ol></div></div></div></div></body></html>

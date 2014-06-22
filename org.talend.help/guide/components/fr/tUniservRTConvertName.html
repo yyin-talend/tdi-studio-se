@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTConvertName</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tUniservBTGeneric.html" title="tUniservBTGeneric"><link rel="next" href="tUniservRTMailBulk.html" title="tUniservRTMailBulk"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tUniservRTConvertName"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTConvertName"></a>tUniservRTConvertName</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtconvertname_icon.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio uniquement si vous
+                                avez souscrit &agrave; l'&eacute;dition correspondante de <span class="italic">Data Quality Service Hub
+                        Studio</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tUniservRTConvertName"><div class="titlepage"><div><div><h3 class="title"><a name="d0e55515"></a>Propri&eacute;t&eacute;s du tUniservRTConvertName</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Famille de
+                                                  composant</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Data Quality</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tUniservRTConvertName</strong></span> analyse un nom
+                                                  complet par rapport au contexte. S'il s'agit de
+                                                  personnes, il divise le nom en segments (nom,
+                                                  pr&eacute;nom, civilit&eacute;, pr&eacute;fixes, suffixes etc.) et
+                                                  cr&eacute;er une cl&eacute; d'adresse. </p>
+                                                  <p>Le composant reconna&icirc;t les adresses
+                                                  d'entreprise ou d'institution et est capable de
+                                                  fournir la fiche de l'organisme s&eacute;par&eacute;ment. Il
+                                                  divise &eacute;galement les lignes contenant des
+                                                  informations sur plusieurs personnes. De plus, il
+                                                  reconna&icirc;t certains mod&egrave;les n'appartenant pas aux
+                                                  informations de nom, dans la ligne de nom (num&eacute;ro
+                                                  client, notes, etc.) et les supprime ou les
+                                                  d&eacute;place dans certains champs m&eacute;mo
+                                                  sp&eacute;cifiques.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="bold"><strong>tUniservRTConvertName</strong></span> fournit une base
+                                                  pour une structure et une population uniformes de
+                                                  noms de personnes et d'entreprises dans la base de
+                                                  donn&eacute;es, ainsi que des titres
+                                                  personnalis&eacute;s.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> et
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Un sch&eacute;ma est une description de lignes,
+                                                  i.e., il d&eacute;finit le nombre de champs qui sont
+                                                  trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                                  est soit local (Built-in) soit distant dans le
+                                                  <span class="bold"><strong>Repository</strong></span>.
+                                                  </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Host name</em></span></p>
+                                                </td><td valign="top">Nom de l'h&ocirc;te du serveur, entre
+                                                  guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Port</em></span></p>
+                                                </td><td valign="top">Num&eacute;ro du port du serveur, entre
+                                                  guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Service</em></span></p>
+                                                </td><td>
+                                                  <p>Le nom/type du service est
+                                                  <code class="code">"cname_d"</code> par d&eacute;faut. Saisissez un
+                                                  nouveau nom si n&eacute;cessaire (si le suffixe du
+                                                  service change, par exemple), entre guillemets
+                                                  doubles. Les services disponibles sont : </p>
+                                                  <p>Allemagne <code class="code">"cname_d</code>" </p>
+                                                  <p>Italie <code class="code">"cname_i"</code>
+                                                  </p>
+                                                  <p>Autriche <code class="code">"cname_a"</code>
+                                                  </p>
+                                                  <p>Pays-Bas <code class="code">"cname_nl"</code>
+                                                  </p>
+                                                  <p>Suisse <code class="code">"cname_ch"</code>
+                                                  </p>
+                                                  <p>Belgique <code class="code">"cname_b"</code>
+                                                  </p>
+                                                  <p>France <code class="code">"cname_f"</code>
+                                                  </p>
+                                                  <p>Espagne <code class="code">"cname_e"</code></p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use rejects</em></span></p>
+                                                </td><td>
+                                                  <p>Cochez cette case pour &eacute;crire s&eacute;par&eacute;ment en
+                                                  sortie les ensembles de donn&eacute;es s&eacute;par&eacute;ment d'une
+                                                  certaine classe de r&eacute;sultats lors de l'analyse des
+                                                  noms. Saisissez la classe respective des r&eacute;sultats
+                                                  dans le champ <span class="bold"><strong>if result
+                                                  class is greater or equal to</strong></span>. </p>
+                                                  <p>Si cette case n'est pas coch&eacute;e, les
+                                                  ensembles sont tout de m&ecirc;me &eacute;crits en sortie via
+                                                  la connexion <span class="bold"><strong>Main</strong></span>, m&ecirc;me si l'analyse a
+                                                  &eacute;chou&eacute;.</p>
+                                                  <p>Si cette case est coch&eacute;e mais que la
+                                                  connexion <span class="bold"><strong>Rejects</strong></span>
+                                                  n'a pas &eacute;t&eacute; &eacute;tablie, les ensembles sont simplement
+                                                  tri&eacute;s quand l'analyse &eacute;choue.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Analysis Configuration</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur d'Uniserv <span class="bluebold">convert-name</span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Output
+                                                  Configuration</em></span></p>
+                                                </td><td>Pour plus d'nformations, veuillez consulter
+                                                  le manuel utilisateur d'Uniserv <span class="bluebold">convert-name</span>.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Configuration of not recognized
+                                                  input</em></span></p>
+                                                </td><td>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur d'Uniserv <span class="bluebold">convert-name</span>.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Configuration of free
+                                                  fields</em></span></p>
+                                                </td><td>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur d'Uniserv <span class="bluebold">convert-name</span>.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Cache
+                                                  Configuration</em></span></p>
+                                                </td><td>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur d'Uniserv <span class="bluebold">convert-name</span>.</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le composant <span class="bold"><strong>tUniservRTConvertName</strong></span> fournit une base
+                                                  pour une structure et une population uniformes de
+                                                  noms de personnes et d'entreprises dans la base de
+                                                  donn&eacute;es, ainsi que des titres
+                                                  personnalis&eacute;s.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">Pour
+                                                  utiliser le <span class="bold"><strong>tUniservRTConvertName</strong></span>, le logiciel
+                                                  Uniserv <span class="bluebold"></span> doit &ecirc;tre
+                                                  install&eacute;.</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Analyse d'une ligne de nom et attribution d'un titre"><div class="titlepage"><div><div><h3 class="title"><a name="d0e55839"></a>Sc&eacute;nario : Analyse d'une ligne de nom et attribution d'un titre</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job vous permettant d'analyser le nom de personnes dans
+                        un fichier et de leur attribuer un titre.</p><p>Le fichier d'entr&eacute;e de ce sc&eacute;nario est d&eacute;j&agrave; sauvegard&eacute; dans le <span class="bold"><strong>Repository</strong></span>, toutes les m&eacute;tadonn&eacute;es du sch&eacute;ma
+                        sont donc disponibles. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Veuillez noter que les donn&eacute;es d'une source d'entr&eacute;e doivent toutes
+                                &ecirc;tre li&eacute;es au m&ecirc;me pays.</p></td></tr></table></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="bold"><strong>Repository</strong></span>,
+                                        d&eacute;roulez le n&#339;ud <span class="bold"><strong>Metadata</strong></span>
+                                        et le r&eacute;pertoire dans lequel est sauvegard&eacute; le fichier.
+                                        Glissez ce fichier dans l'espace de mod&eacute;lisation
+                                        graphique.</p><p>La bo&icirc;te de dialogue suivante s'ouvre :</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> et cliquez sur
+                                                <span class="bold"><strong>OK</strong></span> pour fermer la
+                                        bo&icirc;te de dialogue. </p><p>Le composant s'affiche dans l'espace de mod&eacute;lisation
+                                        graphique. Le fichier utilis&eacute; dans ce sc&eacute;nario est appel&eacute;
+                                                <span class="italic">SampleAddresses.</span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Glissez les composants suivants de la <span class="bold"><strong>Palette</strong></span> &agrave; l'espac&eacute; de mod&eacute;lisation
+                                        graphique : deux composants <span class="bold"><strong>tMap</strong></span>, un <span class="bold"><strong>tUniservRTConvertName,</strong></span> et un<span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Reliez les composants &agrave; l'aide de liens <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_2.png"></div><p>Acceptez le sch&eacute;ma du <span class="bold"><strong>tUniservRTConvertName</strong></span> en cliquant sur
+                                                <span class="bold"><strong>Yes</strong></span> dans la fen&ecirc;tre
+                                        qui appara&icirc;t.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Double-cliquez sur le <span class="bold"><strong>tMap_1</strong></span>
+                                        pour ouvrir la fen&ecirc;tre de mapping. &Agrave; gauche se trouve la
+                                        structure de la source d'entr&eacute;e et &agrave; droite se trouve le
+                                        sch&eacute;ma du <span class="bold"><strong>tUniservRTConvertName</strong></span> (et donc l'entr&eacute;e
+                                        du Job). En bas se trouve le <span class="bold"><strong>Schema
+                                                editor</strong></span>, o&ugrave; vous pouvez trouver et &eacute;diter
+                                        les attributs de chaque colonne.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_4.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Assignez les colonnes de la source d'entr&eacute;e &agrave; leurs colonnes
+                                        respectives du <span class="bold"><strong>tUnivservRTConvertName</strong></span>. Pour ce faire,
+                                        s&eacute;lectionnez une colonne de la source d'entr&eacute;e et glissez-la
+                                        dans la colonne du m&ecirc;me nom du c&ocirc;t&eacute; droit. Si les champs du
+                                        fichier d'entr&eacute;e doivent &ecirc;tre pass&eacute;s au fichier de sortie,
+                                        comme les adresses ou les IDs, vous devrez d&eacute;finir des
+                                        champs suppl&eacute;mentaires.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+                                        bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 8"><p>Double-cliquez sur le <span class="bold"><strong>tUniservRTConvertName</strong></span> pour ouvrir sa vue
+                                                <span class="bold"><strong>Basic
+                                        settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_5.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Renseignez les informations concernant le serveur et sp&eacute;cifiez
+                                        le pays li&eacute; au service.</p></li><li class="step" title="&Eacute;tape 10"><p>Double-cliquez sur le <span class="bold"><strong>tMap_3</strong></span>
+                                        pour ouvrir la fen&ecirc;tre de mapping. &Agrave; gauche se trouve le
+                                        sch&eacute;ma du <span class="bold"><strong>tUniservRTConvertName</strong></span> (et donc la sortie
+                                        du Job) et &agrave; droite le sch&eacute;ma du fichier de sortie.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_6.png"></div></li><li class="step" title="&Eacute;tape 11"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+                                        fen&ecirc;tre.</p></li><li class="step" title="&Eacute;tape 12"><p>Double-cliquez sur le <span class="bold"><strong>tFileOutputDelimited</strong></span> et saisissez les
+                                        d&eacute;tails du fichier de sortie.</p></li></ol></div></div></div></body></html>

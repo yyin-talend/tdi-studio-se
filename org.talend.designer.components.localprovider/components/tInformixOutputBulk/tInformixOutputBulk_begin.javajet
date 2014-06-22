@@ -1,0 +1,52 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+        
+        String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
+        
+        String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
+        
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+        
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+        
+        boolean isCreateDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));
+%>
+		int nb_line_<%=cid%> = 0;
+		char rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||("").equals(rowSeparator)?"'\\n'" : rowSeparator + ".charAt(0)"%>;
+		char fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||("").equals(fieldSeparator)?"';'" : fieldSeparator + ".charAt(0)"%>;
+		
+		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);		
+		<%if(isCreateDir) {%>
+		file_<%=cid %>.getParentFile().mkdirs();
+		<%}%>
+				
+		com.csvreader.CsvWriter csvWriter_<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>)), fieldSeparator_<%=cid %>);
+        
+        csvWriter_<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>);              	
+        csvWriter_<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);      		
+      	//csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
+      	//csvWriter_<%=cid %>.setForceQualifier(true);
+      	csvWriter_<%=cid %>.setForceQualifier(false);  
+      	csvWriter_<%=cid %>.setUseTextQualifier(false);      
+<%
+    }
+}
+%>

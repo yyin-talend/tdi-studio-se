@@ -1,0 +1,30 @@
+<%@ jet 
+	imports="
+	    java.util.List
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.IConnection
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	String cid = node.getUniqueName();
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
+	if(!customSetOriginalLength){
+%>
+			}
+		}
+<%
+	}else{
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			if(conns!=null && conns.size()>0){
+%>
+				}
+				fs_<%=cid %>.close();	
+<%
+			}
+	}
+%>

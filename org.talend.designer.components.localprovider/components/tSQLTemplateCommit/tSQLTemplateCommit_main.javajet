@@ -1,0 +1,28 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.Set
+    java.util.ArrayList
+" 
+skeleton="../templates/sqlpattern.skeleton"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
+
+%>
+<%=generateSQLPatternCode(node) %>
+
+stmt_<%=cid%>.close();
+
+<%  if(close){%>
+    conn_<%=cid%>.close();
+<% }%>

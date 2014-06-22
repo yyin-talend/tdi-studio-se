@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJavaRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch05.html" title="Chapter&nbsp;5.&nbsp;Custom Code components"><link rel="prev" href="tJavaFlex.html" title="tJavaFlex"><link rel="next" href="tLibraryLoad.html" title="tLibraryLoad"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tJavaRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJavaRow"></a>tJavaRow</h2></div></div></div><div class="mediaobject"><img src="../images/tJavaRow_icon32.png"></div><div class="section" title="tJavaRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e52486"></a>tJavaRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component Family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tJavaRow</strong></span> allows you to enter
+                                customized code which you can integrate in a Talend programme. With <span class="bold"><strong>tJavaRow</strong></span>, you can enter the Java code to
+                                be applied to each row of the flow.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tJavaRow</strong></span> allows you to broaden
+                                the functionality of <span class="bold"><strong>Talend</strong></span> Jobs, using
+                                the Java language.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either <span class="bold"><strong>built-in</strong></span> or
+                                remotely stored in the <span class="bold"><strong>Repository</strong></span>.</p>
+                            <p>Click <span class="bold"><strong>Edit Schema</strong></span> to make changes
+                                to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component in the Job.</p>
+                            
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                        <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="emphasis"><em>Talend Open Studio User Guide</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Code</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code to be applied to each line of the data
+                                flow.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Import</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code required to import, if required, the external
+                                library used in the <span class="bold"><strong>Main code</strong></span> field
+                                of the <span class="bold"><strong>Basic settings</strong></span> tab.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect the log data at a component
+                                level..</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is used as an intermediary between two other
+                                components. It must be linked to both an input and an output
+                                component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Knowledge of Java language is necessary.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Transforming data line by line using tJavaRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e52705"></a>Scenario: Transforming data line by line using tJavaRow</h3></div></div></div><p>In this scenario, the information of a few cities read from an input delimited file is
+            transformed using Java code through the <span class="bold"><strong>tJavaRow</strong></span>
+            component and printed on the console.</p><div class="mediaobject"><img src="../images/use_case-tjavarow1-1.png"></div><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e52716"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop a <span class="bold"><strong>tFileInputDelimited</strong></span> component and
+                        a <span class="bold"><strong>tJavaRow</strong></span> component from the <span class="bold"><strong>Palette</strong></span> onto the design workspace, and label them
+                        to better identify their roles in the Job.</p></li><li class="step" title="Step 2"><p>Connect the two components using a <span class="bold"><strong>Row</strong></span> &gt;
+                            <span class="bold"><strong>Main</strong></span> connection. </p></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e52741"></a>Configuring the components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click the <span class="bold"><strong>tFileInputDelimited</strong></span>
+                        component to display its <span class="bold"><strong>Basic settings</strong></span>
+                        view in the <span class="bold"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/use_case-tjavarow1-2.png"></div></li><li class="step" title="Step 2"><p>In the <span class="bold"><strong>File name/Stream</strong></span> field, type in
+                        the path to the input file in double quotation marks, or browse to the path
+                        by clicking the <span class="bold"><strong>[...]</strong></span> button, and define
+                        the first line of the file as the header.</p><p>In this example, the input file has the following content:</p><pre class="programlisting">City;Population;LandArea;PopDensity
+Beijing;10233000;1418;7620
+Moscow;10452000;1081;9644
+Seoul;10422000;605;17215
+Tokyo;8731000;617;14151
+New York;8310000;789;10452</pre></li><li class="step" title="Step 3"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to Edit
+                        schema to open the <span class="bold"><strong>[Schema]</strong></span> dialog box, and
+                        define the data structure of the input file. Then, click <span class="bold"><strong>OK</strong></span> to validate the schema setting and close the
+                        dialog box.</p><div class="mediaobject"><img src="../images/use_case-tjavarow1-3.png"></div></li><li class="step" title="Step 4"><p>Double-click the <span class="bold"><strong>tJavaRow</strong></span> component to
+                        display its <span class="bold"><strong>Basic settings</strong></span> view in the
+                            <span class="bold"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/use_case-tjavarow1-4.png"></div></li><li class="step" title="Step 5"><p>Click <span class="bold"><strong>Sync columns</strong></span> to make sure that the
+                        schema is correctly retrieved from the preceding component.</p></li><li class="step" title="Step 6"><p>In the <span class="bold"><strong>Code</strong></span> field, enter the code to be
+                        applied on each line of data based on the defined schema columns.</p><p>In this example, we want to transform the city names to upper case, group
+                        digits of numbers larger than 1000 using the thousands separator for ease of
+                        reading, and print the data on the console:</p><pre class="programlisting">System.out.print("\n" + row1.City.toUpperCase() + ":");
+System.out.print("\n  - Population: " 
++ FormatterUtils.format_Number(String.valueOf(row1.Population), ',', '.')
++ " people");
+System.out.print("\n  - Land area: " 
++ FormatterUtils.format_Number(String.valueOf(row1.LandArea), ',', '.') 
++ " km2");
+System.out.print("\n  - Population density: " 
++ FormatterUtils.format_Number(String.valueOf(row1.PopDensity), ',', '.') 
++ " people/km2\n");</pre><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">In the <span class="bold"><strong>Code</strong></span>
+                                field, "row1" refers to the name of the link that connects to
+                                    <span class="bold"><strong>tJavaRow</strong></span>. If you rename the
+                                link, you have to modify the code.</span></p></td></tr></table></div></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e52829"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="bold"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="bold"><strong>F6</strong></span> or click <span class="bold"><strong>Run</strong></span> on the <span class="bold"><strong>Run</strong></span> tab to
+                        execute the Job.</p><p>The city information is transformed by the Java code set through <span class="bold"><strong>tJavaRow</strong></span> and displayed on the console.</p><div class="mediaobject"><img src="../images/use_case-tjavarow1-5.png"></div></li></ol></div></div></div></div></body></html>

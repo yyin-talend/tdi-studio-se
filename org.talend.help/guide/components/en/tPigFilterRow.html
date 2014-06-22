@@ -1,0 +1,137 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigFilterRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tPigFilterColumns.html" title="tPigFilterColumns"><link rel="next" href="tPigJoin.html" title="tPigJoin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPigFilterRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigFilterRow"></a>tPigFilterRow</h2></div></div></div><div class="mediaobject"><img src="../images/tPigFilterRow_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">This component will be available in the <span class="bold"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="bluebold">Talend Enterprise Data Integration Big Data
+				edition</span>.</span>
+		</p></td></tr></table></div><div class="section" title="tPigFilterRow Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10926"></a>tPigFilterRow Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data / Hadoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>The <span class="bold"><strong>tPigFilterRow</strong></span> component filters the input flow in
+								a Pig chain based on conditions set on given column(s).</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is used to filter the input flow in a Pig chain
+								based on conditions set on one or more columns.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+								created and stored locally for this component only. Related topic:
+								see <span class="emphasis"><em>Talend Enterprise Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused in
+								various projects and Job designs. Related topic: see
+										<span class="emphasis"><em>Talend Enterprise Studio User Guide</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Filter configuration</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click the <span class="bold"><strong>Add</strong></span> button beneath the
+									<span class="bold"><strong>Filter configuration</strong></span> table to
+								set one or more filter conditions.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This table disappears if you select <span class="bold"><strong>Use
+										advanced filter</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use advanced filter</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to define advanced filter condition by
+								entering customized filter expression in the <span class="bold"><strong>Filter</strong></span> field.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at the
+								Job level as well as at each component level. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is commonly used as an intermediate step in a Pig
+								chain.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Knowledge of Pig scripts is required.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Scenario: Filtering rows of data based on a condition and saving the result to a local file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa73213"></a>Scenario: Filtering rows of data based on a condition and saving the result to a
+			local file</h3></div></div></div><p>This scenario describes a four-component Job that filters a list of customers to find
+			out customers from a particular country, and saves the result list to a local file.
+			Before the input data is filtered, duplicate entries are first removed from the list. </p><p>The input file contains three columns: <span class="italic">Name</span>, <span class="italic">Country</span>, and <span class="italic">Age</span>, and it
+			has some duplicate entries, as shown below:</p><pre class="programlisting">Mario;PuertoRico;49
+Mike;USA;22
+Ricky;PuertoRico;37
+Silvia;Spain;20
+Billy;Canada;21
+Ricky;PuertoRico;37
+Romeo;UK;19
+Natasha;Russia;25
+Juan;Cuba;23
+Bob;Jamaica;55
+Mario;PuertoRico;49</pre><div class="section" title="Dropping and linking components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11173"></a>Dropping and linking components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tPigLoad</strong></span>, <span class="bold"><strong>tPigDistinct</strong></span>,
+							<span class="bold"><strong>tPigFilterRow</strong></span>, and <span class="bold"><strong>tPigStoreResult</strong></span>.</p></li><li class="step" title="Step 2"><p>Right-click <span class="bold"><strong>tPigLoad</strong></span>, select <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Pig
+							Combine</strong></span> from the contextual menu, and click <span class="bold"><strong>tPigDistinct</strong></span> to link these two components.</p></li><li class="step" title="Step 3"><p>Repeat this operation to link <span class="bold"><strong>tPigDistinct</strong></span> to <span class="bold"><strong>tPigFilterRow</strong></span>, and <span class="bold"><strong>tPigFilterRow</strong></span> to <span class="bold"><strong>tPigStoreResult</strong></span> using <span class="bold"><strong>Row</strong></span> &gt;
+							<span class="bold"><strong>Pig Combine</strong></span> connections to form a Pig
+						chain.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow1.png"></div></li></ol></div></div><div class="section" title="Configuring the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11234"></a>Configuring the components</h4></div></div></div><div class="procedure" title="Procedure&nbsp;1.1.&nbsp;Loading the input data and removing duplicates"><a name="d0e11237"></a><p class="title"><b>Procedure&nbsp;1.1.&nbsp;Loading the input data and removing duplicates</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigLoad</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow2.png"></div></li><li class="step" title="Step 2"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to <span class="bold"><strong>Edit schema</strong></span> to open the <span class="bold"><strong>[Schema]</strong></span> dialog box.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow3.png"></div></li><li class="step" title="Step 3"><p>Click the <span class="bold"><strong>[+]</strong></span> button to add three columns according to
+						the data structure of the input file: <span class="emphasis"><em>Name</em></span> (string),
+							<span class="emphasis"><em>Country</em></span> (string) and <span class="emphasis"><em>Age</em></span>
+						(integer), and then click <span class="bold"><strong>OK</strong></span> to save the
+						setting and close the dialog box.</p></li><li class="step" title="Step 4"><p>Click <span class="bold"><strong>Local</strong></span> in the <span class="bold"><strong>Mode</strong></span> area.</p></li><li class="step" title="Step 5"><p>Fill in the <span class="bold"><strong>Input file URI</strong></span> field with the
+						full path to the input file.</p></li><li class="step" title="Step 6"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Load function</strong></span> list, and leave rest of the
+						settings as they are.</p></li><li class="step" title="Step 7"><p>Double-click <span class="bold"><strong>tPigDistinct</strong></span> to open its <span class="bold"><strong>Basic settings</strong></span> view, and click <span class="bold"><strong>Sync columns</strong></span> to make sure that the input schema
+						structure is correctly propagated from the preceding component.</p><p>This component will remove any duplicates from the data flow.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.2.&nbsp;Configuring the filter"><a name="d0e11323"></a><p class="title"><b>Procedure&nbsp;1.2.&nbsp;Configuring the filter</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigFilterRow</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow4.png"></div></li><li class="step" title="Step 2"><p>Click <span class="bold"><strong>Sync columns</strong></span> to make sure that the input schema
+						structure is correctly propagated from the preceding component.</p></li><li class="step" title="Step 3"><p>Select <span class="bold"><strong>Use advanced filter</strong></span> and fill in
+						the <span class="bold"><strong>Filter</strong></span> field with filter
+						expression:</p><pre class="programlisting">"Country matches 'PuertoRico'"</pre><p>This filter expression selects rows of data that contains "PuertoRico" in the <span class="italic">Country</span> column.</p></li></ol></div><div class="procedure" title="Procedure&nbsp;1.3.&nbsp;Configuring the file output"><a name="d0e11360"></a><p class="title"><b>Procedure&nbsp;1.3.&nbsp;Configuring the file output</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tPigStoreResult</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow5.png"></div></li><li class="step" title="Step 2"><p>Click <span class="bold"><strong>Sync columns</strong></span> to make sure that the input schema
+						structure is correctly propagated from the preceding component.</p></li><li class="step" title="Step 3"><p>Fill in the <span class="bold"><strong>Result file</strong></span> field with the
+						full path to the result file.</p></li><li class="step" title="Step 4"><p>If the target file already exists, select the <span class="bold"><strong>Remove result
+							directory if exists</strong></span> check box. </p></li><li class="step" title="Step 5"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Store
+							function</strong></span> list, and leave rest of the settings as they
+						are.</p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11402"></a>Saving and executing the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Press <span class="bold"><strong>Ctrl+S</strong></span> to save your Job.</p></li><li class="step" title="Step 2"><p>Press <span class="bold"><strong>F6</strong></span> or click the <span class="bold"><strong>Run</strong></span> button on the <span class="bold"><strong>Run</strong></span> tab to run the Job.</p><p>The result file contains the information of customers from the specified country.</p><div class="mediaobject"><img src="../images/Use_Case_tPigFilterRow6.png"></div></li></ol></div></div></div></div></body></html>

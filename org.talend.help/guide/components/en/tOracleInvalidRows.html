@@ -1,0 +1,342 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOracleInvalidRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tMysqlValidRows.html" title="tMysqlValidRows"><link rel="next" href="tOracleValidRows.html" title="tOracleValidRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tOracleInvalidRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOracleInvalidRows"></a>tOracleInvalidRows</h2></div></div></div><div class="mediaobject"><img src="../images/tOracleInvalidRows_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="italic">This component will be available in the <span class="bold"><strong>Palette</strong></span> of the studio on the condition that you
+						have subscribed to the relevant edition of <span class="bluebold">Talend Enterprise Data Quality</span>.</span>
+				</p></td></tr></table></div><div class="section" title="tOracleInvalidRows properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e85406"></a>tOracleInvalidRows properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tOracleInvalidRows</strong></span> checks
+										database rows against specific <span class="bluebold">Talend Enterprise Data Quality</span> database
+										patterns.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tOracleInvalidRows</strong></span> allows
+										you to extract DB rows that do not match a given data
+										quality pattern, you can then implement any required
+										correction.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Validation type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Regex pattern
+											validation</strong></span> or <span class="bold"><strong>DQ rule
+											validation</strong></span>.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="bold"><strong>Regex pattern validation</strong></span>:
+										Validate data in the database against regex patterns.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="bold"><strong>DQ rule validation</strong></span>:
+										Validate data in the database against DQ rules.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Property type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span> or
+											<span class="bold"><strong>Repository</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: No property
+										data stored centrally.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										repository file where Properties are stored. The fields that
+										come after are pre-filled in using the fetched data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use an existing connection</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box when using a <span class="bold"><strong>tOracleConnection</strong></span>.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Connection Type</em></span>
+									</p>
+								</td><td valign="top">Drop-down list of available drivers.</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>DB Version</em></span>
+									</p>
+								</td><td valign="top">Select the Oracle version you are using.</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Host</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Database server IP address.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Listening port number of DB server.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Database</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Name of the database.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Oracle schema</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Name of the Oracle schema.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Username</em></span> and
+											<span class="emphasis"><em>Password</em></span></p>
+								</td><td valign="top">
+									<p>DB user authentication data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields to be processed and passed on to the next
+										component. The schema is either built-in or remotely stored
+										in the Repository. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="italic">User Guide</span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository
+										and thus reuse it when needed. Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="italic">User Guide</span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Table Name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the name of the table to be read.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Where clause</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter a WHERE clause to define a row filter on the
+										table.</p>
+									<p>You can use the WHERE clause to filter the rows you want
+										to analyze in the table. This WHERE clause enables you then
+										to retrieve valid and invalid data that match certain
+										specified criteria or conditions.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>Regex
+												pattern validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Analyzed column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the schema list the column to analyze. </p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>Regex
+												pattern validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Custom pattern</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to define manually your own
+										customized regular expression against which you want to
+										check the DB rows.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>Regex
+												pattern validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Patterns list</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the pattern list the pattern against which you
+										want to check the DB rows.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>DQ rule
+												validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>DQ rule list</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the list the rule against which you want to
+										check the DB rows.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>DQ rule
+												validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Query type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span> or
+											<span class="bold"><strong>Repository</strong></span>:</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: Fill in
+										manually the query statement or build it graphically using
+										SQLBuilder.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										relevant query stored in the Repository. The Query field are
+										filled in accordingly.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>DQ rule
+												validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Guess Query</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click the <span class="bold"><strong>Guess Querry</strong></span>
+										button to generate the query which corresponds to your table
+										schema in the <span class="bold"><strong>Query</strong></span>
+										field.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>DQ rule
+												validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Guess schema</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click the <span class="bold"><strong>Guess Schema</strong></span>
+										button to retrieve the schema from the table.</p>
+								</td></tr><tr><td valign="top">
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Available only for <span class="bold"><strong>DQ rule
+												validation</strong></span>.</p></td></tr></table></div>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Query</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter your DB query paying particular attention to
+										properly sequence the fields in order to match the schema
+										definition.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Additional JDBC Parameters</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Specify additional connection properties for the DB
+										connection you are creating. This option is not available if
+										you have selected the <span class="bold"><strong>Use an existing
+											connection</strong></span> check box in the <span class="bold"><strong>Basic settings</strong></span>.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can press <span class="bold"><strong>Ctrl+Space</strong></span> to access a list of
+											predefined global variables.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Covert XML type to Java Type</em></span>
+									</p>
+								</td><td valign="top">Select this check box and then use the table to
+									convert the types of the defined columns to Java types.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="italic">tStatCatcher Statistics</span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use cursor</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to specify the number of rows you
+										want to work with at at a given time. This option optimises
+										performance.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+									</p>
+								</td><td valign="top">Select this check box to remove leading and
+									trailing whitespace from all the String/Char columns.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Trim column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Remove leading and trailing whitespace from the defined
+										columns.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Clear the <span class="bold"><strong>Trim all the
+												String/Char columns</strong></span> to enable <span class="bold"><strong>Trim column</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>No null values</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to improve the performance if there
+										are no null values.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component can be used as a start or intermediary
+										step. It requires an output flow.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e86224"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tMysqlInvalidRows.html#Raa46471" title="Scenario: Reading email addresses from a DB table and retrieving specific data including invalid rows">the section called &#8220;Scenario: Reading email addresses from a DB table and retrieving specific
+					data including invalid rows&#8221;</a>.</p></div></div></body></html>

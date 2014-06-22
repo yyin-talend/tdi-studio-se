@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+	<!-- Talend Job OSGi blueprint descriptor -->
+
+	@ADDITIONAL_JOB_BUNDLE_CONFIG@
+
+	<bean id="job" class="@JOBCLASSNAME@">
+		@ADDITIONAL_JOB_BEAN_PARAMS@
+	</bean>
+
+	<service ref="job">
+		<interfaces>
+			<value>routines.system.api.TalendJob</value>
+			@ADDITIONAL_JOB_INTERFACE@
+		</interfaces>
+		<service-properties>
+			<entry key="name" value="@JOBNAME@" />
+			<entry key="type" value="@TYPE@" />
+			@ADDITIONAL_SERVICE_PROPERTIES@
+		</service-properties>
+	</service>
+
+</blueprint>

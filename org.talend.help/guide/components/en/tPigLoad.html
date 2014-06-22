@@ -1,0 +1,204 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tPigJoin.html" title="tPigJoin"><link rel="next" href="tPigSort.html" title="tPigSort"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPigLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigLoad"></a>tPigLoad</h2></div></div></div><div class="mediaobject"><img src="../images/tPigLoad_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you
+						have subscribed to the relevant edition of <span class="emphasis"><em>Talend
+							Enterprise Data Integration Big Data edition</em></span>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tPigLoad Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12515"></a>tPigLoad Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Big Data / Hadoop</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component allows you to set up a connection to the
+										data source for a current transaction. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>The <span class="emphasis"><strong>tPigLoad</strong></span> component
+										loads original input data to an output stream in just one
+										single transaction, once the data has been validated.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. <span>The schema is
+											either <span class="emphasis"><strong>Built-in</strong></span> or
+											stored remotely in the <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="emphasis"><em>Talend Enterprise Studio User
+											Guide</em></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and Job designs. Related topic:
+										see <span class="emphasis"><em>Talend Enterprise Studio User
+										Guide</em></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Local</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click this radio button to run Pig scripts in <span class="emphasis"><strong>Local</strong></span> mode. In this mode, all
+										files are installed and run from your local host and file
+										system.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Map/Reduce</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click this radio button to run Pig scripts in <span class="emphasis"><strong>Map/Reduce</strong></span> mode. </p>
+								  <p>Once selecting this mode, you need to
+										complete the following fields:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><strong>NameNode URI</strong></span>:
+												Type in the URI of the NameNode corresponding to
+												the Map/Reduce version to be used.</p></li><li class="listitem"><p><span class="emphasis"><strong>JobTracker
+												host</strong></span>: Type in the URI of the JobTracker
+												corresponding to the Map/Reduce version to be
+												used.</p></li><li class="listitem"><p><span class="emphasis"><strong>HCat
+												Metastore</strong></span>: Type in the URI of the HCat
+												metastore: "<span class="emphasis"><em>thrift://&lt;hcatalog server
+												hostname&gt;:9933</em></span>".</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For further information about the usage of
+												HCat Metastore, see <a class="link" href="http://incubator.apache.org/hcatalog/docs/r0.2.0/loadstore.html" target="_top">http://incubator.apache.org/hcatalog/docs/r0.2.0/loadstore.html</a>.</p></td></tr></table></div></li></ul></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Load function</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select a load function for data to be loaded:</p>
+									<p><span class="emphasis"><strong>PigStorage</strong></span>: Loads data in
+										UTF-8 format.</p>
+									<p><span class="emphasis"><strong>BinStorage</strong></span>: Loads data in
+										machine-readable format.</p>
+									<p><span class="emphasis"><strong>TextLoader</strong></span>: Loads
+										unstructured data in UTF-8 format.</p>
+									<p><span class="emphasis"><strong>HCatLoader</strong></span>: Loads data
+										from HCataLog managed tables using Pig scripts. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><strong>HCatLoader</strong></span> is
+												available only when you select <span class="emphasis"><strong>Hortonworks Data Platform 1.0</strong></span> from the
+												<span class="emphasis"><strong>Version</strong></span> list. For
+												further information about the usage of HCatLoader,
+												see <a class="link" href="http://incubator.apache.org/hcatalog/docs/r0.2.0/loadstore.html#HCatLoader" target="_top">http://incubator.apache.org/hcatalog/docs/r0.2.0/loadstore.html#HCatLoader</a>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Input file URI</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill in this field with the full local path to the input file.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is not available when you select
+												<span class="emphasis"><strong>HCatLoader</strong></span> from
+												the <span class="emphasis"><strong>Load function</strong></span>
+												list.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>HCataLog Configuration</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill the following fields to configure HCataLog managed
+										tables on HDFS(Hadoop distributed file system):</p>
+									<p>
+										<span class="emphasis"><strong>Database</strong></span>: The database in
+										which tables are placed.</p>
+									<p>
+										<span class="emphasis"><strong>Table</strong></span>: The table in which
+										data is stored.</p>
+									<p>
+										<span class="emphasis"><strong>Partition filter</strong></span>: Fill this
+										field with the partition keys to list partitions by
+										filter.</p>
+									<p>
+										<span class="emphasis"><strong>Register jar</strong></span>: Fill the
+											<span class="emphasis"><strong>Jar path</strong></span> field with the
+										path to the jar files listed in the <span class="emphasis"><strong>Column</strong></span> field. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><strong>HCataLog Configuration
+												area</strong></span> is enabled only when you select
+												<span class="emphasis"><strong>HCatLoader</strong></span> from
+												the <span class="emphasis"><strong>Load function</strong></span>
+												list. For further information about the usage of
+												HCataLog, see <a class="link" href="http://incubator.apache.org/hcatalog/docs/r0.2.0/" target="_top">http://incubator.apache.org/hcatalog/docs/r0.2.0/</a>.
+												For further information about the usage of <span class="emphasis"><strong>Partition filter</strong></span>, see <a class="link" href="https://cwiki.apache.org/confluence/display/HCATALOG/Design+Document+-+Java+APIs+for+HCatalog+DDL+Commands" target="_top">https://cwiki.apache.org/confluence/display/HCATALOG/Design+Document+-+Java+APIs+for+HCatalog+DDL+Commands</a>.</p></td></tr></table></div>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Field separator</em></span>
+								</td><td valign="top">
+									<p>Type in the separator you need to use for the input data.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is enabled only when you select
+												<span class="emphasis"><strong>PigStorage</strong></span> from
+												the <span class="emphasis"><strong>Load function</strong></span>
+												list.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Die on subjob error</em></span>
+									</p>
+								</td><td valign="top">
+									<p>This check box is cleared by default, meaning to skip the
+										row on subjob error and to complete the process for
+										error-free rows.</p>
+								</td></tr><tr><td>
+									<span class="emphasis"><strong>Advanced settings</strong></span>
+								</td><td valign="top">
+									<span class="emphasis"><em>Hadoop Properties</em></span>
+								</td><td valign="top">Complete this table using the customized Hadoop
+									parameters, if any, to override the default ones.</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Properties</em></span>
+								</td><td valign="top">Complete this table using the customized Pig set
+									configuration, if any, to override the default one. For example,
+									the <span class="emphasis"><em>default_parallel</em></span> key used
+									in Pig could be set as <span class="emphasis"><em>20</em></span>.</td></tr><tr><td valign="top">
+									<p> </p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at the Job level as well as at each component
+										level. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is always used to start a Pig chain.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Knowledge of Pig scripts is required. If you select
+										HCatLoader as the load function, knowledge of HCataLog
+										DDL(HCataLog Data Definition Language, a subset of Hive Data
+										Definition Language) is required. For further information
+										about HCataLog DDL, see <a class="link" href="http://incubator.apache.org/hcatalog/docs/r0.2.0/cli.html" target="_top">http://incubator.apache.org/hcatalog/docs/r0.2.0/cli.html</a>.</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13008"></a>Related Scenario</h3></div></div></div><p>For further infomation regarding the <span class="emphasis"><strong>tPigLoad</strong></span>
+					component in use, see <a class="xref" href="tPigFilterRow.html#Raa73213" title="Scenario: Filtering rows of data based on a condition and saving the result to a local file">the section called &#8220;Scenario: Filtering rows of data based on a condition and saving the result
+					to a local file&#8221;</a> of <span class="emphasis"><strong>tPigFilterRow</strong></span>.</p></div></div></body></html>

@@ -1,0 +1,51 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+		"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();    	
+	
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+
+	String username = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASS__");
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
+	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
+	boolean ceaseForError = ("true").equals(ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__"));
+	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+	String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
+	// if the extended insert is disabled set the commit level to 1
+	if (!extendedInsert) commitLevel = "1";
+%>       
+        int nb_line_<%=cid %> = 0;
+        int nb_success_<%=cid%> = 0;
+        int nb_reject_<%=cid%> = 0;
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+        org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
+        <%if(useExistingConn){%>
+	        if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+				throw new RuntimeException("Get null connection from <%=connection %>");
+			}
+			if(globalMap.get("callOptions_<%=connection %>")!=null ){
+				sforceManagement_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
+			}
+			sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
+		<%}else{%>
+			<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
+				sforceManagement_<%=cid%>.setClientID(<%=clientID%>);
+			<%}%>
+	        boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=endpoint %>,<%=username %>, <%=password %>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+	        if(!result_<%=cid%>){
+				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+			}
+        <%}%>

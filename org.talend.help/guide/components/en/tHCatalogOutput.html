@@ -1,0 +1,220 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHCatalogOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tHCatalogOperation.html" title="tHCatalogOperation"><link rel="next" href="tHDFSConnection.html" title="tHDFSConnection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHCatalogOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHCatalogOutput"></a>tHCatalogOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tHCatalogOutput_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you
+						have subscribed to the relevant edition of <span class="emphasis"><em>Talend
+							Enterprise Data Integration Big Data edition</em></span>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tHCatalogOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e4756"></a>tHCatalogOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Big Data / HCatalog</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component allows you to write data into an HCatalog
+										managed table using Talend data flow.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>The <span class="emphasis"><strong>tHCatalogOutput</strong></span>
+										component writes data into a HCatalog managed table using
+										Talend data flow.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. <span>The schema is
+											either <span class="emphasis"><strong>Built-in</strong></span> or
+											stored remotely in the <span class="emphasis"><strong>Repository</strong></span></span>. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="emphasis"><em>Talend Enterprise Studio User
+											Guide</em></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and Job designs. Related topic:
+										see <span class="emphasis"><em>Talend Enterprise Studio User
+										Guide</em></span>.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>HCatalog version</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the version of the Hadoop distribution you are using from the drop-down list.</p>
+									</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>NameNode URI</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the URI of the NameNode in HDFS.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>File name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Browse to, or enter the location of the file which you
+										write data to. This file is created automatically if it does
+										not exist.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Action</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select a DB operation in HDFS:</p>
+									<p><span class="emphasis"><strong>Create</strong></span>: Creates a file
+										with data using the file name defined in the <span class="emphasis"><strong>File Name</strong></span> field.</p>
+									<p><span class="emphasis"><strong>Overwrite</strong></span>: Overwrites the
+										data in the file specified in the <span class="emphasis"><strong>File
+											Name</strong></span> field.</p>
+									<p><span class="emphasis"><strong>Append</strong></span>: Inserts the data
+										into the file specified in the <span class="emphasis"><strong>File
+											Name</strong></span> field. The specified file is created
+										automatically if it does not exist.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Templeton hostname</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field with the URL of Templeton
+										Webservice.</p>
+									<p>
+										</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Templeton is a webservice API for Hadoop. It
+												allows you to move data directly into/out-of HDFS
+												through WebHDFS. For further information about
+												Templeton, see <a class="link" href="http://people.apache.org/~thejas/templeton_doc_latest" target="_top">http://people.apache.org/~thejas/templeton_doc_latest</a>.</p></td></tr></table></div><p>
+									</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Templeton port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field with the port of URL of Templeton
+										Webservice. By default, this value is <span class="emphasis"><em>50111</em></span>. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Templeton is a webservice API for Hadoop. It
+												allows you to move data directly into/out-of HDFS
+												through WebHDFS. For further information about
+												Templeton, see <a class="link" href="http://people.apache.org/~thejas/templeton_doc_latest" target="_top">http://people.apache.org/~thejas/templeton_doc_latest</a>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Database</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field to specify an existing database in
+										HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Table</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field to specify an existing table in
+										HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Partition</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field to specify one or more partitions for the
+										partition operation on the specified table. When you specify
+										multiple partitions, use commas to separate every two
+										partitions and use double quotation marks to quote the
+										partition string.</p>
+									<p>
+										</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For further information about <span class="emphasis"><strong>Partition</strong></span>, see <a class="link" href="https://cwiki.apache.org/Hive/languagemanual-ddl.html#LanguageManualDDL-AddPartitions" target="_top">https://cwiki.apache.org/Hive/languagemanual-ddl.html#LanguageManualDDL-AddPartitions</a>.</p></td></tr></table></div><p>
+									</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Username</em></span>
+								</td><td valign="top">
+									<p>Fill this field with the username for the DB
+										authentication.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>File location</em></span>
+								</td><td valign="top">
+									<p>Fill this field with the path to which source data file is
+										stored.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Die on error</em></span>
+									</p>
+								</td><td valign="top">
+									<p>This check box is cleared by default, meaning to skip the
+										row on error and to complete the process for error-free
+										rows.</p>
+								</td></tr><tr><td>
+									<span class="emphasis"><strong>Advanced settings</strong></span>
+								</td><td valign="top">
+									<span class="emphasis"><em>Retrieve the HCatalog logs</em></span>
+								</td><td valign="top">Select this check box to retrieve log files
+									generated during HCatalog operations.</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Standard Output Folder</em></span>
+								</td><td valign="top">
+									<p>Fill this field with the path to which log files are
+										stored.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is enabled only when you selected <span class="emphasis"><strong>Retrieve the HCatalog logs</strong></span>
+											check box.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Error Output Folder</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field with the path to which error log files are stored.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is enabled only when you selected
+												<span class="emphasis"><strong>Retrieve the HCatalog
+												logs</strong></span> check box.</p></td></tr></table></div>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at the Job level as well as at each component
+										level. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is commonly used together with an input
+										component. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Knowledge of Hive Data Definition Language and HCatalog
+										Data Definition Language is required. For further
+										information about Hive Data Definition Language, see <a class="link" href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL" target="_top">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL</a>.
+										For further information about HCatalog Data Definition
+										Language, see <a class="link" href="https://cwiki.apache.org/confluence/display/HCATALOG/Design+Document+-+Java+APIs+for+HCatalog+DDL+Commands" target="_top">https://cwiki.apache.org/confluence/display/HCATALOG/Design+Document+-+Java+APIs+for+HCatalog+DDL+Commands</a>.</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5245"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tHCatalogOperation.html#tHCatalogOperation_sce1_fhan" title="Scenario: HCatalog table management on Hortonworks Data Platform">the section called &#8220;Scenario: HCatalog table management on Hortonworks Data Platform&#8221;</a>.</p></div></div></body></html>

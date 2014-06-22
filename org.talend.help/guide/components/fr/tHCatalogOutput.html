@@ -1,0 +1,202 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHCatalogOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHCatalogOperation.html" title="tHCatalogOperation"><link rel="next" href="tHDFSConnection.html" title="tHDFSConnection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tHCatalogOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHCatalogOutput"></a>tHCatalogOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tHCatalogOutput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio uniquement si vous avez souscrit &agrave; l'&eacute;dition
+				correspondante de <span class="bluebold">Talend Enterprise Data Integration Big Data edition</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHCatalogOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e4708"></a>Propri&eacute;t&eacute;s du tHCatalogOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>BigData/HCatalog</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant vous permet d'&eacute;crire des donn&eacute;es dans une table g&eacute;r&eacute;e par HCatalog &agrave;
+								l'aide d'un flux Talend.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tHCatalogOutput</strong></span> &eacute;crit des donn&eacute;es dans
+								une table g&eacute;r&eacute;e par HCatalog &agrave; l'aide d'un flux Talend.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span> : Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute;
+								ponctuellement pour ce composant seulement. Voir &eacute;galement&nbsp;le
+									<span class="italic">Guide utilisateur de</span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span> : Le sch&eacute;ma existe
+								d&eacute;j&agrave; et il est stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+								&eacute;galement le <span class="italic">Guide utilisateur de</span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>HCatalog version</em></span></p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>NameNode URI</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez l'URI du NameNode dans HDFS.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File name</em></span></p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d'acc&egrave;s au fichier dans lequel vous
+								souhaitez &eacute;crire les donn&eacute;es. Ce fichier est automatiquement cr&eacute;&eacute;
+								s'il n'existe pas.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action</em></span></p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez une op&eacute;ration sur la base de donn&eacute;es dans HDFS :</p>
+							<p><span class="bold"><strong>Create</strong></span> : Cr&eacute;er un fichier avec des donn&eacute;es &agrave; l'aide du
+								nom de fichier d&eacute;fini dans le champ <span class="bold"><strong>File
+									Name</strong></span>.</p>
+							<p><span class="bold"><strong>Overwrite</strong></span> : Ecraser les donn&eacute;es dans le fichier
+								sp&eacute;cifi&eacute; dans le champ <span class="bold"><strong>File
+								Name</strong></span>.</p>
+							<p><span class="bold"><strong>Append</strong></span> : Ins&eacute;rer les donn&eacute;es dans le fichier sp&eacute;cifi&eacute;
+								dans le champ <span class="bold"><strong>File Name</strong></span>. Le fichier
+								sp&eacute;cifi&eacute; est automatiquement cr&eacute;&eacute; s'il n'existe pas.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Templeton hostname</em></span></p>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec l'URL du service Web Templeton.</p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Templeton est une API de services Web pour Hadoop. Il vous
+										permet de d&eacute;placer les donn&eacute;es directement dans /en dehors
+										de HDFS via WebHDFS. Pour plus d'informations concernant
+										Templeton, consultez <a class="link" href="http://people.apache.org/~thejas/templeton_doc_latest" target="_top">Templeton 0.1.0</a> (en anglais).</p></td></tr></table></div><p>
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Templeton port</em></span></p>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le port de l'URL du service Web
+								Templeton. Par d&eacute;faut, cette valeur est <span class="italic">50111</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Templeton est une API de services Web pour Hadoop. Il vous
+										permet de d&eacute;placer les donn&eacute;es directement dans /en dehors
+										de HDFS via WebHDFS. Pour plus d'informations concernant
+										Templeton, consultez <a class="link" href="http://people.apache.org/~thejas/templeton_doc_latest" target="_top">Templeton 0.1.0</a> (en anglais).</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez ce champ pour sp&eacute;cifier une base de donn&eacute;es existant dans HDFS.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez ce champ pour sp&eacute;cifier une table existant dans HDFS.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Partition</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez ce champ pour sp&eacute;cifier une ou plusieurs partition(s)
+								pour l'op&eacute;ration de partition sur la table sp&eacute;cifi&eacute;e. Lorsque vous
+								sp&eacute;cifiez diff&eacute;rentes partitions, utilisez une virgule pour s&eacute;parer
+								chaque groupe de deux partitions. Utilisez &eacute;galement des guillemets
+								doubles afin d'entourer la cha&icirc;ne de caract&egrave;res de la partition. </p>
+							<p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour plus d'informations concernant les partitions,
+										consultez <a class="link" href="https://cwiki.apache.org/Hive/languagemanual-ddl.html#LanguageManualDDL-AddPartitions" target="_top">Operation on Partitions in Hive</a> (en
+										anglais).</p></td></tr></table></div><p>
+							</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Username</span>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le nom d'utilisateur de connexion &agrave; la base de donn&eacute;es.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">File location</span>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le chemin d'acc&egrave;s &agrave; l'emplacement o&ugrave; est stock&eacute; le fichier des
+								donn&eacute;es source.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est d&eacute;coch&eacute;e par d&eacute;faut, afin d'ignorer les lignes en erreur et de terminer
+								le traitement avec les lignes sans erreur.</p>
+						</td></tr><tr><td>
+							<span class="bold"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<span class="italic">Retrieve the HCatalog logs</span>
+						</td><td valign="top">Cochez cette case pour r&eacute;cup&eacute;rer les fichiers de log g&eacute;n&eacute;r&eacute;s durant les
+							op&eacute;rations de HCatalog.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Standard Output Folder</span>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le chemin d'acc&egrave;s o&ugrave; sont stock&eacute;s les
+								fichiers de log.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce champ est activ&eacute; lorsque vous cochez la case <span class="bold"><strong>Retrieve the HCatalog logs</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Error Output Folder</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le chemin d'acc&egrave;s o&ugrave; sont stock&eacute;s les
+								fichiers de log d'erreurs.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce champ est activ&eacute; lorsque vous cochez la case <span class="bold"><strong>Retrieve the HCatalog logs</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du Job ainsi qu'au niveau
+								de chaque composant. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant de sortie est g&eacute;n&eacute;ralement utilis&eacute; avec un composant d'entr&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La connaissance de Hive Data Definition Language et de HCatalog Data Definition
+								Language est n&eacute;cessaire. Pour plus d'informations concernant Hive
+								Data Definition Language, consultez <a class="link" href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL" target="_top">Hive Data Definition Language</a> (en anglais). Pour plus
+								d'informations concernant HCatalog Data Definition Language,
+								consultez <a class="link" href="http://incubator.apache.org/hcatalog/docs/r0.2.0/index.html" target="_top">HCatalog Table Management</a> (en anglais).</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5198"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tHCatalogOperation.html#tHCatalogOperation_sce1_fhan" title="Sc&eacute;nario : Gestion de table HCatalog dans Hortonworks Data Platform">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Gestion de table HCatalog dans Hortonworks Data Platform&nbsp;&raquo;</a>.</p></div></div></body></html>

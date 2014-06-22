@@ -1,0 +1,247 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservBTGeneric</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tUniqRow.html" title="tUniqRow"><link rel="next" href="tUniservRTConvertName.html" title="tUniservRTConvertName"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tUniservBTGeneric"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservBTGeneric"></a>tUniservBTGeneric</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservbtgeneric_icon.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio uniquement si vous
+                                avez souscrit &agrave; l'&eacute;dition correspondante de <span class="italic">Data Quality Service Hub
+                        Studio</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tUniservBTGeneric"><div class="titlepage"><div><div><h3 class="title"><a name="d0e54831"></a>Propri&eacute;t&eacute;s du tUniservBTGeneric</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Famille de
+                                                  composant</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Data Quality</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le composant <span class="bold"><strong>tUniservBTGeneric</strong></span> permet l'ex&eacute;cution
+                                                  d'un processus (Job) cr&eacute;&eacute; avec le produit Uniserv
+                                                  <span class="italic">DQ Batch
+                                                  Suite</span>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="bold"><strong>tUniservBTGeneric</strong></span> envoie les donn&eacute;es &agrave;
+                                                  <span class="italic">DQ Batch Suite</span>
+                                                  et lance le processus sp&eacute;cifi&eacute; dans <span class="italic">DQ Batch Suite</span>. Quand
+                                                  l'ex&eacute;cution du processus est termin&eacute;e, les
+                                                  r&eacute;sultats sont renvoy&eacute;s &agrave; <span class="italic">Data Quality Service Hub Studio</span> pour
+                                                  d'autres op&eacute;rations.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> et
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Un sch&eacute;ma est une description de lignes,
+                                                  i.e., il d&eacute;finit le nombre de champs qui sont
+                                                  trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                                  est soit local (Built-in) soit distant dans le
+                                                  <span class="bold"><strong>Repository</strong></span>. </p>
+                                                  <p>Cliquez sur <span class="bold"><strong>Retrieve
+                                                  Schema</strong></span> pour cr&eacute;er un sch&eacute;ma qui pour
+                                                  les composants qui correspondra aux champs
+                                                  d'entr&eacute;e et de sortie du processus de <span class="italic">DQ Batch Suite</span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Host name</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Nom du serveur ma&icirc;tre sur lequel est lanc&eacute;
+                                                  <span class="italic">DQ Batch Suite</span>,
+                                                  entre guillemets doubles.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Port</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Num&eacute;ro du port sur lequel le serveur de
+                                                  <span class="italic">DQ Batch Suite</span>
+                                                  est lanc&eacute;, entre guillemets doubles.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Client Server</em></span></p>
+                                                </td><td>
+                                                  <p>Nom du serveur client de <span class="italic">DQ Batch Suite</span>, entre
+                                                  guillemets doubles.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>User name</em></span></p>
+                                                </td><td>
+                                                  <p>Nom d'utilisateur enregistr&eacute; pour le serveur
+                                                  de <span class="italic">DQ Batch
+                                                  Suite</span>. L'utilisateur doit avoir les
+                                                  droits pour ex&eacute;cuter le Job dans <span class="italic">DQ Batch Suite</span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Password</em></span></p>
+                                                </td><td>
+                                                  <p>Mot de passe de l'utilisateur.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Job directory</em></span></p>
+                                                </td><td>
+                                                  <p>R&eacute;pertoire de <span class="italic">DQ
+                                                  Batch Suite</span> dans lequel est sauvegard&eacute;
+                                                  le processus.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Job name</em></span></p>
+                                                </td><td>
+                                                  <p>Nom du processus <span class="italic">DQ
+                                                  Batch Suite</span> &agrave; ex&eacute;cuter.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Job file path</em></span></p>
+                                                </td><td>
+                                                  <p>Chemin d'acc&egrave;s &agrave; l'emplacement o&ugrave; le
+                                                  processus ex&eacute;cut&eacute; sera sauvegard&eacute;. Le chemin vers
+                                                  le fichier doit &ecirc;tre absolu.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Temporary directory</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>R&eacute;pertoire dans lequel les fichiers
+                                                  temporaires cr&eacute;&eacute;s lors de l'ex&eacute;cution du processus
+                                                  sont sauvegard&eacute;s.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Input Parameters</em></span></p>
+                                                </td><td>
+                                                  <p>Ces param&egrave;tres doivent correspondre aux
+                                                  param&egrave;tres de la fonction <span class="bold"><strong>Input</strong></span> de l'onglet <span class="bold"><strong>Format</strong></span> du processus. </p>
+                                                  <p><span class="bold"><strong>File
+                                                  location</strong></span> : D&eacute;finit si le fichier
+                                                  d'entr&eacute;e est sauvegard&eacute; dans le pool ou dans le
+                                                  r&eacute;pertoire du processus local.</p>
+                                                  <p><span class="bold"><strong>Directory</strong></span> :
+                                                  Si <span class="bold"><strong>File location =
+                                                  Pool</strong></span>, le r&eacute;pertoire est li&eacute; au pool. Si
+                                                  <span class="bold"><strong>File location =
+                                                  Job</strong></span>, <span class="italic">"input"</span> doit &ecirc;tre ici sp&eacute;cifi&eacute;. </p>
+                                                  <p><span class="bold"><strong>File name</strong></span> :
+                                                  Nom du fichier d&eacute;limiteur g&eacute;n&eacute;r&eacute; par le composant
+                                                  <span class="bold"><strong>tUniservBTGeneric</strong></span>
+                                                  et transf&eacute;r&eacute; &agrave; <span class="italic">DQ Batch
+                                                  Suite</span>. Le nom du fichier doit
+                                                  correspondre au nom de fichier d&eacute;fini dans la
+                                                  fonction <span class="bold"><strong>Input</strong></span> du
+                                                  processus.</p>
+                                                  <p><span class="bold"><strong>No. of header
+                                                  rec.</strong></span> : 0 = pas d'en-t&ecirc;te enregistr&eacute;, 1
+                                                  = en-t&ecirc;te dans le fichier d'entr&eacute;e. </p>
+                                                  <p><span class="bold"><strong>Field
+                                                  separator</strong></span> : S&eacute;parateur de champs d&eacute;fini
+                                                  dans la fonction <span class="bold"><strong>Input</strong></span> du processus <span class="italic">DQ Batch Suite</span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Output
+                                                  Parameters</em></span></p>
+                                                </td><td>
+                                                  <p>Ces param&egrave;tres doivent correspondre aux
+                                                  param&egrave;tres de la fonction <span class="bold"><strong>Output</strong></span> de l'onglet <span class="bold"><strong>Format</strong></span> du processus. </p>
+                                                  <p><span class="bold"><strong>File
+                                                  location</strong></span> : D&eacute;finit si le fichier
+                                                  d'entr&eacute;e est sauvegard&eacute; dans le pool ou dans le
+                                                  r&eacute;pertoire du processus local.</p>
+                                                  <p><span class="bold"><strong>Directory</strong></span> :
+                                                  Si <span class="bold"><strong>File location =
+                                                  Pool</strong></span>, le r&eacute;pertoire est bas&eacute; dans le
+                                                  pool. Si <span class="bold"><strong>File location =
+                                                  Job</strong></span>, <span class="italic">"output"</span> doit &ecirc;tre ici sp&eacute;cifi&eacute;. </p>
+                                                  <p><span class="bold"><strong>File name</strong></span> :
+                                                  Nom du fichier de sortie au format d&eacute;limiteur
+                                                  g&eacute;n&eacute;r&eacute; par le composant <span class="bold"><strong>tUniservBTGeneric</strong></span> et transf&eacute;r&eacute; &agrave;
+                                                  <span class="italic">DQ Batch Suite</span>.
+                                                  Le nom du fichier doit correspondre au nom de
+                                                  fichier d&eacute;fini dans la fonction <span class="bold"><strong>Output</strong></span> du processus. </p>
+                                                  <p><span class="bold"><strong>No. of header
+                                                  rec.</strong></span> : 0 = pas d'en-t&ecirc;te enregistr&eacute;, 1
+                                                  = en-t&ecirc;te dans le fichier de sortie. </p>
+                                                  <p><span class="bold"><strong>Field
+                                                  separator</strong></span> : S&eacute;parateur de champs d&eacute;fini
+                                                  dans la fonction <span class="bold"><strong>Output</strong></span> du processus.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le composant <span class="bold"><strong>tUniservBTGeneric</strong></span> envoie des donn&eacute;es &agrave;
+                                                  <span class="italic">DQ Batch Suite</span>
+                                                  et lance le Job sp&eacute;cifi&eacute;. Quand l'ex&eacute;cution du Job
+                                                  est termin&eacute;e, les donn&eacute;es de sortie sont renvoy&eacute;es
+                                                  &agrave; <span class="italic">Data Quality Service Hub
+                                                  Studio</span> pour d'autres op&eacute;rations.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Pour utiliser le composant <span class="bold"><strong>tUniservBTGeneric</strong></span>, le
+                                                  logiciel Uniserv <span class="italic">DQ Batch
+                                                  Suite</span> doit &ecirc;tre install&eacute;.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Veuillez noter que :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>le processus doit &ecirc;tre configur&eacute; et
+                                                  ex&eacute;cutable dans <span class="italic">DQ Batch
+                                                  Suite</span>,</p></li><li class="listitem"><p>l'utilisateur doit poss&eacute;der les droits pour
+                                                  ex&eacute;cuter le processus,</p></li><li class="listitem"><p>le processus <span class="italic">DQ
+                                                  Batch Suite</span> ne doit &ecirc;tre compos&eacute; que
+                                                  d'une seule ligne,</p></li><li class="listitem"><p>les fichiers d&eacute;finis dans les fonctions
+                                                  <span class="bold"><strong>Input</strong></span> et
+                                                  <span class="bold"><strong>Output</strong></span> doivent
+                                                  poss&eacute;der l'enregistrement du format
+                                                  d&eacute;limiteur,</p></li><li class="listitem"><p>les donn&eacute;es d'entr&eacute;e et de sortie doivent
+                                                  &ecirc;tre fournies selon le jeu de caract&egrave;res
+                                                  UTF-8.</p></li></ul></div></td></tr></table></div>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Ex&eacute;cution d'un processus dans DQ Batch Suite"><div class="titlepage"><div><div><h3 class="title"><a name="d0e55316"></a>Sc&eacute;nario : Ex&eacute;cution d'un processus dans <span class="italic">DQ Batch
+                                Suite</span></h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un processus dont les r&eacute;sultats de l'ex&eacute;cution sont trait&eacute;s
+                        dans <span class="italic">Data Quality Service Hub Studio</span>. La
+                        source d'entr&eacute;e du processus est fournie par <span class="italic">Data
+                                Quality Service Hub Studio</span>.</p><p>Le processus a &eacute;t&eacute; totalement d&eacute;fini dans <span class="italic">DQ Batch
+                                Suite</span> et sauvegard&eacute; sous le nom <span class="italic">"BTGeneric_Sample"</span>. Dans la fonction <span class="bold"><strong>Input</strong></span>, le fichier <span class="italic">"btinput.csv"</span> a &eacute;t&eacute; sp&eacute;cifi&eacute; comme fichier d'entr&eacute;e
+                        sauvegard&eacute; dans le r&eacute;pertoire du Job et tous ses champs ont &eacute;t&eacute; renseign&eacute;s.
+                        Le fichier n'est pas encore cr&eacute;&eacute;, car il sera fourni par <span class="italic">Data Quality Service Hub Studio</span>. Le
+                        processus n'est donc pas encore ex&eacute;cutable.</p><p>Dans <span class="italic">Data Quality Service Hub Studio</span>, la
+                        source d'entr&eacute;e (dans cet exemple une table d'une base de donn&eacute;es Oracle) de
+                        ce sc&eacute;nario est d&eacute;j&agrave; enregistr&eacute;e dans le <span class="bold"><strong>Repository</strong></span>, de mani&egrave;re &agrave; ce que tous les sch&eacute;mas de
+                        m&eacute;tadonn&eacute;es soient disponibles. </p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="bold"><strong>Repository</strong></span>,
+                                        d&eacute;veloppez le n&#339;ud <span class="bold"><strong>Metadata</strong></span>
+                                        et le r&eacute;pertoire dans lequel vous avez sauvegard&eacute; la source.
+                                        Glissez-la ensuite dans l'espace de mod&eacute;lisation
+                                        graphique.</p><p>La bo&icirc;te de dialogue ci-dessous appara&icirc;t.</p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez <span class="bold"><strong>tOracleInput</strong></span> et
+                                        cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer
+                                        la bo&icirc;te de dialogue. </p><p>Le composant s'affiche dans l'espace de mod&eacute;lisation
+                                        graphique. La table utilis&eacute;e dans ce sc&eacute;nario s'appelle
+                                                <span class="italic">LOCATIONS</span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Glissez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                                        graphique : deux <span class="bold"><strong>tMap</strong></span>, un
+                                                <span class="bold"><strong>tOracleOutput</strong></span> et un
+                                                <span class="bold"><strong>tUniservBTGeneric</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Reliez les composants entre eux &agrave; l'aide de liens <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>, comme illustr&eacute; ci-dessous.</p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_2.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Acceptez le sch&eacute;ma du <span class="bold"><strong>tUniservBTGeneric</strong></span> en cliquant sur
+                                                <span class="bold"><strong>Yes</strong></span> dans la fen&ecirc;tre
+                                        de propagation qui appara&icirc;t.</p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_5.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Double-cliquez sur le <span class="bold"><strong>tUniservBTGeneric</strong></span> pour afficher sa vue
+                                                <span class="bold"><strong>Basic settings</strong></span>. </p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_3.png"></div></li><li class="step" title="&Eacute;tape 7"><p>Saisissez les informations de connexion. Assurez-vous que le
+                                        chemin d'acc&egrave;s que vous saisissez dans le champ <span class="bold"><strong>Job File Path</strong></span> est
+                                        absolu.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur <span class="bold"><strong>Retrieve Schema</strong></span>
+                                        pour cr&eacute;er automatiquement un sch&eacute;ma pour le <span class="bold"><strong>tUniservBTGeneric</strong></span> &agrave; partir
+                                        des d&eacute;finitions d'entr&eacute;e et de sortie du processus et de
+                                        renseigner automatiquement les champs de la vue <span class="bold"><strong>Advanced settings</strong></span>. </p></li><li class="step" title="&Eacute;tape 9"><p>V&eacute;rifiez que les informations de la vue <span class="bold"><strong>Advanced settings</strong></span> soient correctes. Les
+                                        d&eacute;finitions d'entr&eacute;e et de sortie doivent &ecirc;tre exactement
+                                        identiques &agrave; celles du processus <span class="italic">DQ
+                                                Batch Suite</span>. Si n&eacute;cessaire, adaptez le
+                                        chemin d'acc&egrave;s aux fichiers temporaires.</p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_4.png"></div></li><li class="step" title="&Eacute;tape 10"><p>Double-cliquez sur le <span class="bold"><strong>tMap_1</strong></span>
+                                        pour ouvrir la fen&ecirc;tre de mapping du sch&eacute;ma. &Agrave; gauche se
+                                        trouve la structure de la source d'entr&eacute;e et &agrave; droite se
+                                        trouve le sch&eacute;ma du <span class="bold"><strong>tUniservBTGeneric</strong></span> (et donc l'entr&eacute;e du
+                                        processus). En bas se trouve le <span class="bold"><strong>Schema
+                                                editor</strong></span>, o&ugrave; vous pouvez trouver et &eacute;diter
+                                        les attributs de chaque colonne.</p></li><li class="step" title="&Eacute;tape 11"><p>Mappez les colonnes de la source d'entr&eacute;e &agrave; leurs colonnes du
+                                                <span class="bold"><strong>tUnivservBTGeneric</strong></span>
+                                        respectives. Pour ce faire, s&eacute;lectionnez une colonne de la
+                                        source d'entr&eacute;e et glissez-la dans la colonne du m&ecirc;me nom du
+                                        c&ocirc;t&eacute; droit.</p><div class="mediaobject"><img src="../images/use_case_tuniservbtgeneric_6.png"></div><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+                                        bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 12"><p>D&eacute;finissez comment traiter les r&eacute;sultats d'ex&eacute;cution du
+                                        processus et quels composants vont &ecirc;tre utilis&eacute;s.</p></li><li class="step" title="&Eacute;tape 13"><p>Avant d'ex&eacute;cuter le processus, assurez-vous que les chemins
+                                        d'acc&egrave;s sont corrects, que le serveur de <span class="italic">DQ Batch Suite</span> fonctionne
+                                        et que vous pouvez acc&eacute;der au processus.</p></li></ol></div></div></div></body></html>

@@ -1,0 +1,243 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever	
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+" 
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+String tableName = ElementParameterParser.getValue(node, "__TABLE__");
+String userName = ElementParameterParser.getValue(node, "__USER__");
+String password = ElementParameterParser.getValue(node, "__PASS__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+
+String lines_separator = ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") ;
+String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") ;
+boolean useEnclosed = ("true").equals(ElementParameterParser.getValue(node, "__ENCLOSED__"));
+boolean useFixedLength= ("true").equals(ElementParameterParser.getValue(node, "__FIXED_LENGTH__"));
+String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
+
+String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
+
+boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+
+List<IMetadataColumn> columnList = getColumnList(node);
+
+if(useExistingConn) {
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+%>
+	java.sql.Connection con_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+}else{
+	if ("jconn3.jar".equals(dbVersion)) {//sybase IQ 12
+%>
+
+<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %>;
+<%
+		} else {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %> + "?" + <%=dbproperties%>;
+<%
+		}
+%>
+		 String dirverName = "com.sybase.jdbc3.jdbc.SybDriver";
+<%	
+	} else {//sybase IQ 15
+		if ("DSN".equals(ElementParameterParser.getValue(node,"__DATA_SOURCE__"))) {
+%>
+			String url_<%=cid %> = "jdbc:odbc:dsn="+<%=ElementParameterParser.getValue(node,"__DATA_SOURCE_NAME__")%>;
+<%
+		}else {//FileDSN
+%>
+			String url_<%=cid %> = "jdbc:odbc:FileDSN="+<%=ElementParameterParser.getValue(node,"__FILE_DATA_SOURCE_NAME__")%>;
+<%
+		}
+		//set database
+		if (0 != dbName.trim().length()) {
+%>
+			url_<%=cid %> +=";DatabaseName="+<%=dbName%>;
+<%
+		}
+%>
+		String dirverName = "ianywhere.ml.jdbcodbc.IDriver";
+<%
+	}//end sybase IQ 15
+%>
+   
+    java.lang.Class.forName(dirverName);
+    java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=userName %>, <%=password %>);
+<%
+}
+%>
+
+	String tableName_<%=cid%> = <%=tableName%>;
+
+<%
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+List<Column> stmtStructure = null;
+Manager manager = null;
+if(columnList != null && columnList.size() > 0) {
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+    manager = getManager(dbmsId, cid);
+    if(("DROP_CREATE").equals(tableAction)) {
+        %>
+        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        stmtDrop_<%=cid%>.close();
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+        stmtCreate_<%=cid%>.close();
+        <%
+    } else if(("CREATE").equals(tableAction)) {
+        %>
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+        stmtCreate_<%=cid%>.close();
+        <%
+    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
+        %>
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
+        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean whetherExist_<%=cid%> = false;
+        while(rsTable_<%=cid%>.next()) {
+            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+            if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                whetherExist_<%=cid%> = true;
+                break;
+            }
+        }
+        rsTable_<%=cid%>.close();
+        if(!whetherExist_<%=cid%>) {
+            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+            stmtCreate_<%=cid%>.close();
+        }
+        <%
+    } else if(("CLEAR").equals(tableAction)) {
+        %>
+        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+        stmtClear_<%=cid%>.close();
+        <%
+    } else if(("TRUNCATE").equals(tableAction)) {
+        %>
+        java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+        stmtTrunc_<%=cid%>.close();
+        <%
+    }    
+}
+%>
+
+		StringBuilder loadingCols = new StringBuilder();
+<%
+if(columnList != null && columnList.size() > 0) {
+%>
+    	loadingCols.append("(");
+<%
+    int sizeColumns = columnList.size();
+    for (int i = 0; i < sizeColumns; i++) {
+        IMetadataColumn column = columnList.get(i);
+%>
+        loadingCols.append("<%=column.getOriginalDbColumnName()%>" + " ");
+<%
+		
+        if(i != sizeColumns - 1) {
+        	if(useFixedLength==true){
+%>
+		loadingCols.append("ASCII(" + <%=column.getLength()%> + "),");
+<%			}else{%>
+        loadingCols.append("'" + <%=field_separator.replaceAll("\\\\", "\\\\\\\\") %> + "'" + ",");
+<%        	}
+		}else{
+			if(useFixedLength==true){
+%>
+		loadingCols.append("ASCII(" + <%=column.getLength()%> + ")");
+<%			}else{ %>
+        	loadingCols.append("'" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\") %> + "'");
+<%			}
+      	}
+    }
+%>
+    loadingCols.append(")");
+<%
+}
+%> 
+
+    java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
+    stmt_<%=cid %>.execute("SET TEMPORARY OPTION ESCAPE_CHARACTER='ON'");
+    
+    //stmt_<%=cid %>.execute("SET TEMPORARY OPTION ALLOW_READ_CLIENT_FILE='ON'");//sybaseIQ 15 whether is set?
+        
+    String strSQL = "LOAD TABLE " + <%=userName%> + "." + tableName_<%=cid %> + loadingCols.toString() ;
+<%
+	if ("jconn3.jar".equals(dbVersion)) {
+%>
+		strSQL +=" from '" + <%=fileName %> + "' ";
+<%    
+    } else {
+%>
+		strSQL +=" USING CLIENT FILE '" + <%=fileName %> + "' ";
+<%
+    }
+%>
+    
+<%if(useFixedLength==true){ %>
+     strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "'";    
+	 strSQL=strSQL + " quotes off";
+<%}else{
+		if(useEnclosed){
+%>
+	strSQL=strSQL + " quotes on ";
+<%
+		}else{
+%>
+	strSQL=strSQL + " quotes off ";
+<%
+		}
+}
+%>
+    strSQL =strSQL + " escapes off ";
+    
+<%
+	if (isIncludeHeader) {
+%>
+	strSQL =strSQL + " skip 1 ";
+<%
+	}
+%>
+    
+    stmt_<%=cid %>.execute(strSQL);
+
+<%
+if(!useExistingConn){
+%>
+    if(con_<%=cid%> != null && !con_<%=cid%>.isClosed()) {
+        con_<%=cid%>.close();
+    }
+<%
+}
+%>

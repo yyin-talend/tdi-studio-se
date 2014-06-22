@@ -1,0 +1,56 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+String withtranslation = ElementParameterParser.getValue(node, "__TRANSLATELABELS__");
+
+String outputConnName = null;
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+if (conns!=null) {
+	if (conns.size()>0) {
+		for (int i=0;i<conns.size();i++) {
+			IConnection connTemp = conns.get(i);
+			if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				outputConnName = connTemp.getName();
+				break;
+			}
+		}
+	}
+}
+
+if (outputConnName != null){
+%>
+	int nb_line_<%=cid%> = 0;
+	org.talend.jspss.spss <%=cid%>_sp = new org.talend.jspss.spss();
+	org.talend.jspss.spssfile <%=cid%>_sf = <%=cid%>_sp.openFile(<%=filename%>);
+<%
+	if(("true").equals(withtranslation)){
+%>	
+	<%=cid%>_sf.setWithLabelTranslation(true);
+<%
+	}
+%>
+	org.talend.jspss.spssrecord <%=cid%>_sr;
+	while(!<%=cid%>_sf.isEOF()){
+<%
+}
+%>
+

@@ -1,0 +1,50 @@
+<%@ jet 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		java.util.Map
+" 
+%>
+	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
+<%
+
+	class DBInputBeginUtil extends DefaultDBInputUtil{
+	    
+		public void setURL(INode node) {
+%>
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+			String url_<%=cid%> = null;
+			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+				url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%>;    
+			} else {
+			    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%> + "," + <%=dbproperties%>;
+			}       
+<%
+		}
+		public void createStatement(INode node) {
+			super.createStatement(node);
+%>
+                stmt_<%=cid %>.setFetchSize(200000);
+<%
+        }
+		public String getDirverClassName(INode node){
+			return "com.teradata.jdbc.TeraDriver";
+		}
+		
+	}//end class
+	
+	dbInputBeginUtil = new DBInputBeginUtil();
+%>
+    
+	<%@ include file="../templates/DB/Input/AbstractDBInputBegin.javajet"%>
+
+

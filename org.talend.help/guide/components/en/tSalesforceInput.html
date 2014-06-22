@@ -1,0 +1,299 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tSalesforceGetUpdated.html" title="tSalesforceGetUpdated"><link rel="next" href="tSalesforceOutput.html" title="tSalesforceOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSalesforceInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceInput"></a>tSalesforceInput</h2></div></div></div><div class="mediaobject"><img src="../images/tSalesForceInput.png"></div><div class="section" title="tSalesforceInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13231"></a>tSalesforceInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Component family</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Business/Cloud </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Function</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSalesforceInput</strong></span> connects to an
+                                object of a Salesforce database via the relevant Web service.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Purpose</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Allows to extract data from a Salesforce DB based on a
+                                query.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the repository
+                                file where properties are stored. The fields that come after are
+                                pre-filled in using the fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+                        </td><td valign="top">
+                            <p>Click this icon to open a connection wizard and store the Excel
+                                file connection parameters you set in the component <span class="bold"><strong>Basic settings </strong></span>view.</p>
+                            <p> For more information about setting up and storing file connection
+                                parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use an existing connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to use an established connection from
+                                    <span class="bold"><strong>tSalesforceConnection</strong></span>. Once you
+                                select it, the <span class="bold"><strong>Component list</strong></span> field
+                                appear allowing you to choose the <span class="bold"><strong>tSalesforceConnection</strong></span> component to be used.</p>
+                            <p> For more information on <span class="bold"><strong>tSalesforceConnection</strong></span>, see <a class="xref" href="tSalesforceConnection.html" title="tSalesforceConnection">the section called &#8220;tSalesforceConnection&#8221;</a>.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, you can
+                                    use <span class="bold"><strong>Dynamic settings</strong></span> to share
+                                    the intended connection. In this case, make sure that the
+                                    connection name is unique and distinctive. For more information
+                                    about <span class="bold"><strong>Dynamic settings</strong></span>, see
+                                    your studio user guide.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Salesforce Webservice URL</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in the Web service URL to connect to the Salesforce
+                                DB.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Web service user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Timeout (milliseconds)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in the intended number of query timeout in
+                                Salesforce.com.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Module</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select the relevant module in the list.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>if you select the <span class="bold"><strong>Use Custom
+                                        module</strong></span> option, you display the <span class="bold"><strong>Custom Module Name</strong></span> field where you
+                                    can enter the name of the module you want to connect to. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> In this component the schema is related to the Module
+                                selected.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="italic">To retrieve a column from a linked
+                                        module it is necessary to define the column in a particular
+                                        manner in the<span class="bold"><strong> Edit schema</strong></span>
+                                        view, otherwise the relationship query will not work. The
+                                        correct syntax is:
+                                        <code class="code">NameofCurrentModule_Nameof-</code></span></p><p><span class="italic"><code class="code">LinkedModule_NameofColumnof-</code></span></p><p><span class="italic"><code class="code">Interest</code></span>
+                                </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Query condition</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Type in the query to select the data to be extracted. Example:
+                                    <code class="code">account_name= &#8216;Talend&#8217;</code>
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Maunal input of SOQL query</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to display the <span class="bold"><strong>Query</strong></span> field where you can manually enter the desired
+                                query.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Query all records (include deleted records)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to query all the records, including the
+                                deletions.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Batch Size</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Number of registrations in each processed batch.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use Socks Proxy</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want to use a proxy server. Once
+                                selected, you need enter the connection parameters that are the
+                                host, the port, the username and the passerword of the Proxy you
+                                need to use.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Normalize delimited (for child relationship)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Characters, strings or regular expressions used to normalize the
+                                data that is collected by queries set on different hierarchical
+                                Salsforce objects.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Column name delimiter (for child relationship)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Characters, strings or regular expressions used to separate the
+                                name of the parent object from the name of the child object when you
+                                use a query on the hierarchical relations among the different
+                                Salesforce objects.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use Soap Compression</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the SOAP compression.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The compression of SOAP messages optimizes system performance,
+                                    in particular for the batch operations.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Client ID</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Set the ID of the real user to differentiate between those who use
+                                the same account and password to access the salesforce
+                                website.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Usage</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Usually used as a Start component. An output component is
+                                required. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Using queries to extract data from a Salesforce database"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13797"></a>Scenario: Using queries to extract data from a Salesforce database</h3></div></div></div><p>This scenario describes a four-component Job used to extract specific sets of data
+            from parent and child objects in a Salesforce database.</p><div class="mediaobject"><img src="../images/tSalesforceInputScenario1.png"></div><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13805"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop two <span class="bold"><strong>tSalesforceInput </strong></span>components and
+                        two <span class="bold"><strong>tLogRow</strong></span> components onto the workspace.
+                    </p></li><li class="step" title="Step 2"><p>Connect each <span class="bold"><strong>tSalesforceInput</strong></span> component
+                        to a <span class="bold"><strong>tLogRow</strong></span> component using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+                        connection for each pair.</p></li><li class="step" title="Step 3"><p>Connect <span class="bold"><strong>tSalesforceInput_1</strong></span> to <span class="bold"><strong>tSalesforceInput_2 </strong></span>using an <span class="bold"><strong>OnSubjobOk</strong></span> connection.</p></li></ol></div></div><div class="section" title="Setting up the connection to the Salesforce server for the parent object"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13845"></a>Setting up the connection to the Salesforce server for the parent object</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tSalesforceInput_1</strong></span> to set
+                        its <span class="bold"><strong>Basic Settings</strong></span> in the <span class="bold"><strong>Component</strong></span> tab. </p><div class="mediaobject"><img src="../images/Use_Case_tSalesforceInput_1_Properties.png"></div></li><li class="step" title="Step 2"><p>As the <span class="bold"><strong>Property Type</strong></span>, select <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="step" title="Step 3"><p>Enter the <span class="bold"><strong>Salesforce WebService URL</strong></span> of
+                        the database you want to connect to in the corresponding field.</p></li><li class="step" title="Step 4"><p>Enter your authentication information in the corresponding <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields.</p></li><li class="step" title="Step 5"><p>Enter the desired query <span class="bold"><strong>Timeout
+                            (milliseconds</strong></span><span class="bold"><strong>) </strong></span>limit.</p></li></ol></div></div><div class="section" title="Setting the query and the schema for the parent object"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13896"></a>Setting the query and the schema for the parent object</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Select the <span class="bold"><strong>Module</strong></span> (salesforce object) you
+                        want to query.</p></li><li class="step" title="Step 2"><p>Select the <span class="bold"><strong>Manual input of SOQL Query</strong></span>
+                        check box and enter your query scripts in the enabled <span class="bold"><strong>Query</strong></span> field. </p><p>The query scripts you enter should follow the SOQL syntax.</p></li><li class="step" title="Step 3"><p>Select <span class="bold"><strong>Built-In</strong></span> as the <span class="bold"><strong>Schema</strong></span> and click <span class="bold"><strong>[...]</strong></span> next to <span class="bold"><strong>Edit schema</strong></span>
+                        to open the schema editor.</p><div class="mediaobject"><img src="../images/tSalesforceInput_Schema_Editor1.png"></div><p>In this example, the <span class="emphasis"><em>IsWon</em></span> and
+                            <span class="emphasis"><em>FiscalYear</em></span> columns in the query are located in the
+                            <span class="bold"><strong>Opportunity</strong></span> module specified. The
+                            <span class="emphasis"><em>Name</em></span> column is in a linked module called
+                            <span class="emphasis"><em>Account</em></span>. To return a column from a linked module
+                        the correct syntax is to enter the name of the linked module, followed by
+                        the period character, then the name of the column of interest. Hence, the
+                        query required in this example is: </p><p><code class="code">&#8220;SELECT IsWon, FiscalYear, Account.Name FROM
+                        Opportunity&#8221;</code>.</p></li><li class="step" title="Step 4"><p>Click the plus button to add a new column for the fields taken from the
+                            <span class="emphasis"><em>Name</em></span> column in the <span class="emphasis"><em>Account</em></span>
+                        module.</p></li><li class="step" title="Step 5"><p>Name this column <span class="emphasis"><em>Opportunity_Account_Name</em></span> and click
+                            <span class="bold"><strong>OK</strong></span> to save the changes.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                            <span class="italic">To retrieve a column from a linked module, it is
+                                necessary to define the column in a particular manner in
+                                    the<span class="bold"><strong> Edit schema</strong></span> view. The
+                                correct syntax is:
+                                    <code class="code">NameofCurrentModule_NameofLinkedModule_NameofColumnofInterest</code>.
+                                Hence, in this example, the column must be named:
+                                Opportunity_Account_Name. If this syntax is not respected then the
+                                data from the linked table will not be returned. </span>
+                        </p></td></tr></table></div></li></ol></div></div><div class="section" title="Setting up the connection to the Salesforce server for the child object"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13986"></a>Setting up the connection to the Salesforce server for the child object</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tSalesforceInput_2</strong></span> to set
+                        its <span class="bold"><strong>Basic settings</strong></span> in the <span class="bold"><strong>Component</strong></span> tab. </p><div class="mediaobject"><img src="../images/Use_Case_tSalesforceInput_2_Properties.png"></div></li><li class="step" title="Step 2"><p>From the <span class="bold"><strong>Property Type</strong></span> list, select
+                            <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="step" title="Step 3"><p>Enter the <span class="bold"><strong>Salesforce WebService URL</strong></span> of
+                        the database you want to connect to in the corresponding field.</p><p>The query scripts you enter must follow the SOQL syntax.</p></li><li class="step" title="Step 4"><p>Enter your authentication information in the corresponding <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields.</p></li><li class="step" title="Step 5"><p>Enter the desired query <span class="bold"><strong>Timeout
+                            (milliseconds</strong></span><span class="bold"><strong>) </strong></span>limit.</p></li></ol></div></div><div class="section" title="Setting the query and the schema for the child object"><div class="titlepage"><div><div><h4 class="title"><a name="d0e14039"></a>Setting the query and the schema for the child object</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Select the <span class="bold"><strong>Module</strong></span> (salesforce object) you
+                        want to query.</p></li><li class="step" title="Step 2"><p>Select the <span class="bold"><strong>Manual input of SOQL Query</strong></span>
+                        check box and enter your query scripts in the enabled <span class="bold"><strong>Query</strong></span> field. </p><p>In this example we want to extract the <span class="emphasis"><em>Id</em></span> and
+                            <span class="emphasis"><em>CaseNumber</em></span> fields from the
+                            <span class="emphasis"><em>Case</em></span> module as well as the
+                            <span class="emphasis"><em>Name</em></span> fields from the <span class="emphasis"><em>Account</em></span>
+                        module. The query is therefore: .</p><p><code class="code">&#8220;SELECT Id, CaseNumber, Account.Name FROM Case&#8221;</code></p></li><li class="step" title="Step 3"><p>Select <span class="bold"><strong>Built-In</strong></span> as the <span class="bold"><strong>Schema</strong></span> and click <span class="bold"><strong>[...]</strong></span> next to <span class="bold"><strong>Edit schema</strong></span>
+                        to open the schema editor.</p><div class="mediaobject"><img src="../images/tSalesforceInput_Schema_Editor2.png"></div></li><li class="step" title="Step 4"><p>Click the plus button to add a new column for the fields taken from the
+                            <span class="emphasis"><em>Name</em></span> column in the <span class="emphasis"><em>Account</em></span>
+                        module.</p></li><li class="step" title="Step 5"><p>Name this column <span class="emphasis"><em>Case_Account_Name</em></span> and click
+                            <span class="bold"><strong>OK</strong></span> to save the changes.</p></li></ol></div></div><div class="section" title="Job execution"><div class="titlepage"><div><div><h4 class="title"><a name="d0e14114"></a>Job execution</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Click each <span class="bold"><strong>tLogRow</strong></span> component and set
+                        their component properties in the <span class="bold"><strong>Basic
+                            settings</strong></span> view as desired. </p><p>In this example, there is no need to modify the <span class="bold"><strong>tLogRow</strong></span> settings.</p></li><li class="step" title="Step 2"><p>Press <span class="bold"><strong>CTRL+S</strong></span> to save your Job and press
+                            <span class="bold"><strong>F6</strong></span> to execute it.</p><p>The results are displayed in the <span class="bold"><strong>Run</strong></span>
+                        tab:</p><div class="mediaobject"><img src="../images/tSalesforceInput_RunTab.png"></div></li></ol></div></div></div></div></body></html>

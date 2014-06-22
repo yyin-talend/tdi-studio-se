@@ -1,0 +1,155 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Big Data components"><link rel="prev" href="tHDFSGet.html" title="tHDFSGet"><link rel="next" href="tHDFSOutput.html" title="tHDFSOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHDFSInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSInput"></a>tHDFSInput</h2></div></div></div><div class="mediaobject"><img src="../images/thdfsinput_icon32_white.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the <span class="emphasis"><strong>Palette</strong></span> of the studio on the condition that you
+						have subscribed to the relevant edition of <span class="emphasis"><em> Talend
+							Enterprise Data Integration Big Data edition</em></span>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tHDFSInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6799"></a>tHDFSInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Big Data / Hadoop</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="emphasis"><strong>tHDFSInput</strong></span> reads a file
+										located on a given Hadoop distributed file system (HDFS) and
+										puts the data of interest from this file into a Talend
+										schema. Then it passes the data to the component that
+										follows. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="emphasis"><strong>tHDFSInput</strong></span> extracts the
+										data in a HDFS file for other components to process
+										it.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. <span>The schema is
+											either <span class="emphasis"><strong>Built-in</strong></span> or
+											stored remotely in the <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+									<p>Click <span class="emphasis"><strong>Edit Schema</strong></span> to make
+										changes to the schema. <span>Note
+											that if you make changes, the schema automatically
+											becomes built-in.</span></p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="emphasis"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="emphasis"><em>Talend Enterprise Studio User
+											Guide</em></span>.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+									<p><span class="emphasis"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and Job flowcharts. Related
+										topic: see <span class="emphasis"><em>Talend Enterprise Studio User
+											Guide</em></span>.</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use an existing
+											connection</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box and in the <span class="emphasis"><strong>Component List</strong></span> click the relevant connection
+										component to reuse the connection details you already
+										defined.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+												<span class="emphasis"><strong>Component list</strong></span>
+											presents only the connection components in the same Job
+											level, so if you need to use an existing connection from
+											the other level, you can use <span class="emphasis"><strong>Dynamic settings</strong></span> to share the intended
+											connection. In this case, make sure that the connection
+											name is unique and distinctive all over through the two
+											Job levels. For more information about <span class="emphasis"><strong>Dynamic settings</strong></span>, see your
+											studio user guide.</p></td></tr></table></div>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Hadoop version</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the version of the Hadoop distribution you are using from the drop-down list.</p>
+									</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>NameNode URI</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the URI of the Hadoop NameNode.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>User name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>User authentication name of HDFS.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Group</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the membership including the authentication user
+										under which the HDFS instances were started.  This field is
+										available depending on the distribution you are using.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>File Name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Browse to, or enter the path to the source files in
+										HDFS.</p>
+								</td></tr><tr><td>
+									<p>
+										<span class="emphasis"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Hadoop properties</em></span>
+									</p>
+								</td><td valign="top">
+									<p>If you need to use custom configuration for the Hadoop of
+										interest, complete this table with the property or
+										properties to be customized. Then at runtime, the customized
+										property or properties will override those corresponding
+										ones defined earlier for the same Hadoop. </p>
+									<p>For further information about the properties required by
+										Hadoop, see the Hadoop documentation. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component needs an output link.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><strong>Limitations</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>To run <span class="emphasis"><strong>tHDFSInput</strong></span>,
+										version 1.6+ of JRE is required.</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7149"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tFileOutputDelimited.html#ychen-20111116-file-tfileoutputdelimited_scenario" title="Scenario 1: Writing data in a delimited file">the section called &#8220;Scenario 1: Writing data in a delimited file&#8221;</a>.</p></div></div></body></html>

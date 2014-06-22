@@ -1,0 +1,81 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		java.util.List
+		"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+   	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+   	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+
+String cid = node.getUniqueName();
+%>
+
+int nb_line_<%=cid%> = 0;
+
+<%
+if(useProxy){
+%>
+    java.util.Properties props_<%=cid%> = System.getProperties();
+    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
+    
+<%
+}
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		if (outgoingConns != null && outgoingConns.size() > 0){
+			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			String username = ElementParameterParser.getValue(node, "__USER__");
+			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");		
+			%>
+			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			<%if(useExistingConn){%>
+				if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+					throw new RuntimeException("Get null connection from <%=connection %>");
+				}
+				if(globalMap.get("callOptions_<%=connection %>")!=null ){
+					sfMgr_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
+				}
+				sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
+			<%}else{%>
+				<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
+					sfMgr_<%=cid%>.setClientID(<%=clientID%>);
+				<%}%>
+				boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+				if(!result_<%=cid%>){
+					throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+				}
+			<%}%>
+		<%
+		}
+	}
+}
+%>

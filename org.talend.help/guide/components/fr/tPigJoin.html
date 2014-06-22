@@ -1,0 +1,198 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigJoin</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tPigFilterRow.html" title="tPigFilterRow"><link rel="next" href="tPigLoad.html" title="tPigLoad"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tPigJoin"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigJoin"></a>tPigJoin</h2></div></div></div><div class="mediaobject"><img src="../images/tPigJoin_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> de votre studio si vous avez souscrit &agrave; l'&eacute;dition
+                correspondante de </em></span><span class="bluebold">Talend Enterprise Data Integration Big Data edition</span><span class="emphasis"><em>.</em></span>
+        </p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tPigJoin"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11566"></a>Propri&eacute;t&eacute;s du tPigJoin</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Big Data/Hadoop</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant vous permet d&#8217;effectuer des jointures entre deux
+                                fichiers &agrave; partir de cl&eacute;s de jointure.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tPigJoin</strong></span> est utilis&eacute;
+                                pour effectuer des jointures Inner Join et des jointures Outer Join
+                                &agrave; partir de cl&eacute;s de jointure de deux fichiers afin de cr&eacute;er des
+                                donn&eacute;es &agrave; utiliser par Pig.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings </strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour faire fonctionner ce composant, deux sch&eacute;mas doivent
+                                        &ecirc;tre d&eacute;finis : le sch&eacute;ma du flux principal et le sch&eacute;ma du
+                                        flux de r&eacute;f&eacute;rence. Du c&ocirc;t&eacute; sortie du sch&eacute;ma principal, les
+                                        colonnes du fichier d'entr&eacute;e principal doivent &ecirc;tre
+                                        concat&eacute;n&eacute;es manuellement avec celles du fichier de
+                                        r&eacute;f&eacute;rence.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+                                <span class="bluebold">Talend Enterprise Studio</span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement le <span class="italic">Guide utilisateur de</span>
+                                <span class="bluebold">Talend Enterprise Studio</span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Filename</em></span></p>
+                        </td><td valign="top">
+                            <p>Sp&eacute;cifiez le chemin d&#8217;acc&egrave;s au fichier <span class="bold"><strong>Lookup</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Join key</em></span></p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                                ajouter des lignes afin de configurer les cl&eacute;s de jointure <span class="bold"><strong>Join key</strong></span> pour les fichiers <span class="bold"><strong>Input file</strong></span> et <span class="bold"><strong>Lookup</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Join mode</em></span></p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez une mode de jointure dans la liste&nbsp;:</p>
+                            <p><span class="bold"><strong>inner-join&nbsp;</strong></span>: S&eacute;lectionnez ce mode
+                                afin d&#8217;effectuer une jointure Inner Join entre deux relations ou
+                                plus, &agrave; partir des cl&eacute;s de jointure.</p>
+                            <p><span class="bold"><strong>left-outer-join&nbsp;</strong></span>: S&eacute;lectionnez ce
+                                mode afin d&#8217;effectuer une jointure Left Outer Join entre deux
+                                relations ou plus, &agrave; partir de cl&eacute;s de jointure.</p>
+                            <p><span class="bold"><strong>right-outer-join</strong></span>&nbsp;: S&eacute;lectionnez
+                                ce mode afin d&#8217;effectuer une jointure Right Outer Join entre deux
+                                relations ou plus, &agrave; partir des cl&eacute;s de jointure.</p>
+                            <p><span class="bold"><strong>full-outer-join&nbsp;</strong></span>: S&eacute;lectionnez ce
+                                mode afin de combiner les effets des jointures Left et Right Outer
+                                Joins.</p>
+                            <p>Pour plus d&#8217;informations concernant les jointures Inner Join et
+                                Outer Join, consultez&nbsp;:</p>
+                            <p><a class="link" href="http://en.wikipedia.org/wiki/Join_%28SQL%29" target="_top">http://en.wikipedia.org/wiki/Join_%28SQL%29</a> (en
+                                anglais).</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Optimize the join</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin d&#8217;optimiser les performances des jointures
+                                &agrave; l&#8217;aide des jointures <span class="bold"><strong>REPLICATED</strong></span>,
+                                    <span class="bold"><strong>SKEWED</strong></span>, ou <span class="bold"><strong>MERGE</strong></span>. Pour plus d&#8217;informations
+                                concernant les jointures optimis&eacute;es, consultez&nbsp;:</p>
+                            <p><a class="link" href="http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins" target="_top">http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins</a>
+                                (en anglais).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use partitioner</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de sp&eacute;cifier le Partitioner Hadoop qui
+                                contr&ocirc;le le partitionnement des cl&eacute;s des map-sorties interm&eacute;diaires.
+                                Pour plus d&#8217;informations concernant l&#8217;utilisation du Partitioner
+                                Hadoop, consultez&nbsp;:</p>
+                            <p><a class="link" href="http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html" target="_top">http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html</a>
+                                (en anglais).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Increase parallelism</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour d&eacute;finir le nombre de t&acirc;ches &#8220;reduce&#8221; pour
+                                des Jobs <span class="bold"><strong>MapReduce</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log, aussi bien au
+                                niveau du Job qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme &eacute;tape interm&eacute;diaire.
+                                Il n&eacute;cessite donc un composant d&#8217;entr&eacute;e et un composant de
+                                sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>La connaissance des scripts Pig est n&eacute;cessaire.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Effectuer une jointure sur deux fichiers &agrave; partir d'une correspondance exacte et sauvegarder le r&eacute;sultat dans un fichier local"><div class="titlepage"><div><div><h3 class="title"><a name="jzhang-20120516-bigdata-tpigjoin_scenario"></a>Sc&eacute;nario : Effectuer une jointure sur deux fichiers &agrave; partir d'une correspondance
+            exacte et sauvegarder le r&eacute;sultat dans un fichier local</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants combinant les donn&eacute;es d'un fichier
+            d'entr&eacute;e et d'un fichier de r&eacute;f&eacute;rence correspondant &agrave; une cl&eacute; de jointure donn&eacute;e,
+            supprime les colonnes ind&eacute;sirables puis sauvegarde le r&eacute;sultat final dans un fichier
+            local.</p><p>Le fichier d'entr&eacute;e principal contient les informations concernant des personnes : ID,
+            pr&eacute;nom, nom de famille, ID de groupe et salaire, comme ci-dessous : </p><pre class="programlisting">1;Woodrow;Johnson;3;1013.39
+2;Millard;Monroe;2;8077.59
+3;Calvin;Eisenhower;3;6866.88
+4;Lyndon;Wilson;3;5726.28
+5;Ronald;Garfield;2;4158.58
+6;Rutherford;Buchanan;3;2897.00
+7;Calvin;Coolidge;1;6650.66
+8;Ulysses;Roosevelt;2;7854.78
+9;Grover;Tyler;1;5226.88
+10;Bill;Tyler;2;8964.66</pre><p>Le fichier de r&eacute;f&eacute;rence contient uniquement les informations des IDs de groupes ainsi
+            que le nom des groupes :</p><pre class="programlisting">1;group_A
+2;group_B</pre><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11912"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : <span class="bold"><strong>tPigLoad</strong></span>, <span class="bold"><strong>tPigJoin</strong></span>, <span class="bold"><strong>tPigFilterColumns</strong></span>
+                        et <span class="bold"><strong>tPigStoreResult</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Connectez ces composants &agrave; l'aide de liens <span class="bold"><strong>Row &gt;
+                            Pig Combine</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-1.png"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11943"></a>Configurer les composants</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.4.&nbsp;Charger le fichier d'entr&eacute;e principal"><a name="d0e11946"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.4.&nbsp;Charger le fichier d'entr&eacute;e principal</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tPigLoad</strong></span> pour
+                        ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+                        dialogue <span class="bold"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-3.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter
+                        des colonnes. Renommez-les et d&eacute;finissez leur type selon la structure du
+                        fichier d'entr&eacute;e. Dans cet exemple, le sch&eacute;ma d'entr&eacute;e contient cinq
+                        colonnes : <span class="italic">id</span> (integer), <span class="italic">firstName</span> (string), <span class="italic">lastName</span> (string), <span class="italic">groupId</span> (integer) et <span class="italic">salary</span> (double). </p><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider et fermer la
+                        bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="bold"><strong>Local</strong></span> dans la zone <span class="bold"><strong>Mode</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>S&eacute;lectionnez <span class="bold"><strong>PigStorage</strong></span> dans la liste
+                            <span class="bold"><strong>Load function</strong></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Renseignez le champ <span class="bold"><strong>Input file URI</strong></span> avec
+                        le chemin d'acc&egrave;s complet au fichier d'entr&eacute;e et laissez les autres
+                        param&egrave;tres tels qu'ils sont.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.5.&nbsp;Charger le fichier de r&eacute;f&eacute;rence et configurer la jointure Inner Join"><a name="d0e12026"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.5.&nbsp;Charger le fichier de r&eacute;f&eacute;rence et configurer la jointure Inner Join</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tPigJoin</strong></span> pour
+                        ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-4.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du sch&eacute;ma
+                        principal pour ouvrir la bo&icirc;te de dialogue <span class="bold"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-5.png"></div></li><li class="step" title="&Eacute;tape 3"><p>V&eacute;rifiez que le sch&eacute;ma d'entr&eacute;e a bien &eacute;t&eacute; r&eacute;cup&eacute;r&eacute; du composant
+                        pr&eacute;c&eacute;dent. Si n&eacute;cessaire, cliquez sur le bouton <span class="bold"><strong>[-&gt;&gt;]</strong></span> pour copier toutes les colonnes du sch&eacute;ma d'entr&eacute;e au
+                        sch&eacute;ma de sortie. </p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table
+                        de sortie pour ajouter de nouvelles colonnes, selon la structure des donn&eacute;es
+                        du fichier de r&eacute;f&eacute;rence, <span class="italic">groupId_ref</span>
+                        (integer) et <span class="italic">groupName</span> (string) dans cet
+                        exemple. Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+                        bo&icirc;te de dialogue.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du sch&eacute;ma du
+                        flux de r&eacute;f&eacute;rence pour ouvrir la bo&icirc;te de dialogue <span class="bold"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-6.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table
+                        de sortie pour ajouter : <span class="italic">groupId_ref</span>
+                        (integer) et <span class="italic">groupName</span> (string) puis
+                        cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                        dialogue.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans le champ <span class="bold"><strong>Filename</strong></span>, sp&eacute;cifiez le
+                        chemin d'acc&egrave;s complet au fichier de r&eacute;f&eacute;rence.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table
+                            <span class="bold"><strong>Join key</strong></span> pour ajouter une ligne et
+                        s&eacute;lectionnez <span class="emphasis"><em>groupId</em></span> et
+                            <span class="emphasis"><em>groupId_ref</em></span>, respectivement dans les liste
+                            <span class="bold"><strong>Input</strong></span> et <span class="bold"><strong>Lookup</strong></span> afin de mettre en correspondance les donn&eacute;es du flux
+                        d'entr&eacute;e principal et celles du flux de r&eacute;f&eacute;rence, selon l'ID du groupe. </p></li><li class="step" title="&Eacute;tape 9"><p>Dans la liste <span class="bold"><strong>Join Mode</strong></span>, s&eacute;lectionnez
+                            <span class="bold"><strong>inner-join</strong></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;1.6.&nbsp;D&eacute;finir le sch&eacute;ma de sortie final et le fichier de sortie"><a name="d0e12137"></a><p class="title"><b>Proc&eacute;dure&nbsp;1.6.&nbsp;D&eacute;finir le sch&eacute;ma de sortie final et le fichier de sortie</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="bold"><strong>tPigFilterColumns</strong></span> pour ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-7.png"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+                        champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir la bo&icirc;te de
+                        dialogue <span class="bold"><strong>[Schema]</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-8.png"></div></li><li class="step" title="&Eacute;tape 3"><p>Dans le sch&eacute;ma d'entr&eacute;e, s&eacute;lectionnez les colonnes &agrave; inclure dans le
+                        fichier de r&eacute;sultat en cliquant sur celles-ci une par une en maintenant la
+                        touche <span class="bold"><strong>Ctrl</strong></span> enfonc&eacute;e. Cliquez sur le bouton
+                            <span class="bold"><strong>[-&gt;]</strong></span> pour les copier dans le sch&eacute;ma de
+                        sortie. Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider le
+                        sch&eacute;ma et fermer la bo&icirc;te de dialogue.</p><p>Dans cet exemple, le fichier de r&eacute;sultat doit inclure toutes les
+                        informations, sauf l'ID des groupes. </p></li><li class="step" title="&Eacute;tape 4"><p>Double-cliquez sur le <span class="bold"><strong>tPigStoreResult</strong></span>
+                        pour afficher sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tpigjoin-9.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> afin de
+                        r&eacute;cup&eacute;rer la structure du sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="bold"><strong>Result file</strong></span>, saisissez le
+                        chemin d'acc&egrave;s complet au fichier de r&eacute;sultat et cochez la case <span class="bold"><strong>Remove result file directory if exists</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>S&eacute;lectionnez <span class="bold"><strong>PigStorage</strong></span> dans la liste
+                            <span class="bold"><strong>Store function</strong></span> et laissez les autres
+                        param&egrave;tres tels qu'ils sont.</p></li></ol></div></div><div class="section" title="Sauvegarder et ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12217"></a>Sauvegarder et ex&eacute;cuter le Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Appuyez sur les touches <span class="bold"><strong>Ctrl+S</strong></span> pour
+                        sauvegarder votre Job.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> ou cliquez sur le bouton
+                            <span class="bold"><strong>Run</strong></span> dans la vue <span class="bold"><strong>Run</strong></span> pour ex&eacute;cuter le Job.</p><p>Le fichier de r&eacute;sultat contient toutes les informations relatives aux
+                        personnes des groupes A et B, sauf l'ID des groupes. </p><div class="mediaobject"><img src="../images/use_case_tpigjoin-10.png"></div></li></ol></div></div></div></div></body></html>

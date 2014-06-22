@@ -1,0 +1,146 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSDelete</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHDFSConnection.html" title="tHDFSConnection"><link rel="next" href="tHDFSGet.html" title="tHDFSGet"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tHDFSDelete"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSDelete"></a>tHDFSDelete</h2></div></div></div><div class="mediaobject"><img src="../images/tHDFSDelete_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio si vous avez souscrit &agrave; l'&eacute;dition correspondante
+				de <span class="bluebold">Talend Enterprise Data Integration Big Data edition</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHDFSDelete"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5485"></a>Propri&eacute;t&eacute;s du tHDFSDelete</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Big Data/Hadoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tHDFSDelete</strong></span> supprime un fichier
+								situ&eacute; dans un syst&egrave;me de fichiers distribu&eacute; Hadoop (HDFS). </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tHDFSDelete</strong></span> supprime un fichier
+								stock&eacute; dans un HDFS donn&eacute;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
+							<p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma.
+									<span>Notez que si vous effectuez des
+									modifications sur le sch&eacute;ma, il devient automatiquement
+										<span class="bold"><strong>Built-in</strong></span>.</span></p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span> : Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span> : Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+								&eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<p>
+								<span class="italic">Use an existing connection</span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et s&eacute;lectionnez le composant ad&eacute;quat &agrave; partir de
+								la liste <span class="bold"><strong>Component List</strong></span> pour
+								r&eacute;utiliser les param&egrave;tres d&#8217;une connexion que vous avez d&eacute;j&agrave;
+								d&eacute;finis.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez. Pour plus d'informations concernant
+									les <span class="bold"><strong>Dynamic settings</strong></span>, consultez
+									le <span class="italic">Guide utilisateur de
+										</span><span class="bluebold">Talend Enterprise Studio</span>.</p></td></tr></table></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop version</em></span></p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>NameNode URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l'URI du NameNode Hadoop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>User name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom d'utilisateur de HDFS.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="italic">Group</span>
+							</p>
+						</td><td valign="top">
+							<p>Identifiant de l&#8217;utilisateur et nom du groupe sous lesquels les
+								instances HDFS ont &eacute;t&eacute; lanc&eacute;es. Ce champ peut &ecirc;tre disponible ou indisponible selon la distribution que vous utilisez.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File or Directory Path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez ce champ avec le chemin d'acc&egrave;s au fichier ou au
+								dossier &agrave; supprimer de HDFS.</p>
+						</td></tr><tr><td>
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">Hadoop properties</span>
+							</p>
+						</td><td valign="top">
+							<p>Si vous devez utiliser la configuration personnalis&eacute;e pour votre
+								Hadoop, renseignez dans cette table la ou les propri&eacute;t&eacute;(s) &agrave;
+								personnaliser. Lors de l'ex&eacute;cution, la ou les propri&eacute;t&eacute;(s)
+								personnalis&eacute;e(s) vont &eacute;craser celles d&eacute;finies pr&eacute;c&eacute;demment pour
+								Hadoop. </p>
+							<p>Pour plus d'informations concernant les propri&eacute;t&eacute;s requises par
+								Hadoop, consultez la documentation Hadoop. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">Ce composant s'utilise avec
+							d'autres composants Hadoop.</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitations</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La version 1.6+ de JRE est requise pour ex&eacute;cuter le composant
+									<span class="bold"><strong>tHDFSDelete</strong></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5856"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Aucun sc&eacute;nario n'est disponible pour ce composant.</p></div></div></body></html>
