@@ -146,7 +146,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 itemToBeExport.add(processItem);
                 jobName = processItem.getProperty().getLabel();
-                jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
+                jobClassName = JavaResourcesHelper.getJobClassName(processItem);
 
                 String jobVersion = processItem.getProperty().getVersion();
                 if (!isMultiNodes() && getSelectedJobVersion() != null) {
@@ -412,13 +412,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
-    }
-
-    private static String getPackageName(ProcessItem processItem) {
-        return JavaResourcesHelper.getProjectFolderName(processItem)
-                + PACKAGE_SEPARATOR
-                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                        .getVersion());
     }
 
     private boolean isRoute() {
@@ -725,7 +718,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String requireBundle = ""; //$NON-NLS-1$
         String delim = ""; //$NON-NLS-1$
         for (ProcessItem pi : itemToBeExport) {
-            exportPackage.append(delim).append(getPackageName(pi));
+		exportPackage.append(delim).append(JavaResourcesHelper.getJobClassPackageName(pi));
             delim = ","; //$NON-NLS-1$
             // Add Route Resource Export packages
             // http://jira.talendforge.org/browse/TESB-6227
