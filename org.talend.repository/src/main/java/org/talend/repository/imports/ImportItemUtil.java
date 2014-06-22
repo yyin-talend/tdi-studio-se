@@ -54,6 +54,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
@@ -641,6 +642,9 @@ public class ImportItemUtil {
             final IProgressMonitor monitor) {
         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
         resolveItem(manager, itemRecord);
+        if (!itemRecord.isValid()) {
+            return;
+        }
 
         int num = 0;
         for (Object obj : itemRecord.getResourceSet().getResources()) {
@@ -1478,6 +1482,20 @@ public class ImportItemUtil {
         return null;
     }
 
+    /**
+     * get relative Path of the Item
+     */
+    private IPath getValidItemRelativePath(ResourcesManager resManager, IPath path) {
+        IPath projectFilePath = getValidProjectFilePath(resManager, path, null);
+        if (projectFilePath != null) {
+            // remove the last segments "talend.project"
+            IPath projectRootPath = projectFilePath.removeLastSegments(1);
+            // relative to import project
+            return path.makeRelativeTo(projectRootPath);
+        }
+        return null;
+    }
+
     private ItemRecord computeItemRecord(ResourcesManager collector, IPath path) {
         ItemRecord itemRecord = new ItemRecord(path);
         computeProperty(collector, itemRecord);
@@ -1538,6 +1556,16 @@ public class ImportItemUtil {
             final Item item = itemRecord.getItem();
             boolean byteArray = (item instanceof FileItem);
             IPath itemPath = getItemPath(itemRecord.getPath(), item);
+            IPath itemRelativePath = getValidItemRelativePath(manager, itemPath);
+            Set<IPath> paths = manager.getPaths();
+            // check the item file
+            if (!paths.contains(itemPath)) {
+                itemRecord.addError(Messages.getString("ImportItemUtil.MissingItemError", itemRecord.getItemName(),
+                        itemPath.lastSegment(), itemRelativePath));
+                log.error(itemRecord.getItemName()
+                        + " " + Messages.getString("ImportItemUtil.MissingItemFile") + " - " + itemPath); //$NON-NLS-1$
+                return;
+            }
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord, itemPath, byteArray);
 
@@ -1563,8 +1591,27 @@ public class ImportItemUtil {
                 Resource rfResource = createResource(itemRecord, itemPath, true);
                 rfResource.load(stream, null);
             }
-            resetItemReference(itemRecord, resource);
-            // EcoreUtil.resolveAll(itemRecord.getResourceSet());
+
+            Iterator<EObject> itRef = item.eCrossReferences().iterator();
+            IPath parentPath = itemRecord.getPath().removeLastSegments(1);
+            while (itRef.hasNext()) {
+                EObject object = itRef.next();
+                String linkedFile = EcoreUtil.getURI(object).toFileString();
+                IPath linkedPath = parentPath.append(linkedFile);
+                if (!paths.contains(linkedPath)) {
+                    if (linkedFile != null && !linkedFile.equals(itemPath.lastSegment())
+                            && linkedFile.endsWith(itemPath.getFileExtension())) {
+                        if (object.eIsProxy()) {
+                            // if original href of the item point to some missing item file
+                            // and if we can get the original item file from the name, recover it, but add a warning
+                            ((EObjectImpl) object).eSetProxyURI(URI.createFileURI(itemPath.lastSegment()));
+                            log.warn(itemRecord.getItemName()
+                                    + " " + Messages.getString("ImportItemUtil.NotHrefCurrentItemFile") + " - " + itemRecord.getPath()); //$NON-NLS-1$
+                        }
+                    }
+                }
+                EcoreUtil.resolve(object, resource);
+            }
         } catch (IOException e) {
             // ignore
         } finally {

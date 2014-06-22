@@ -62,6 +62,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -1036,6 +1037,23 @@ class ImportItemWizardPage extends WizardPage {
 
         } catch (InterruptedException e) {
             //
+        } finally {
+            // Check Error Items
+            final List<String> errors = new ArrayList<String>();
+            for (ItemRecord itemRecord : checkedItemRecords) {
+                errors.addAll(itemRecord.getErrors());
+            }
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!errors.isEmpty()) {
+                        ShowErrorsDuringImportItemsDialog dialog = new ShowErrorsDuringImportItemsDialog(Display.getCurrent()
+                                .getActiveShell(), errors);
+                        dialog.open();
+                    }
+                }
+            });
         }
         ResourcesManager curManager = this.manager;
         if (curManager instanceof ProviderManager) {
