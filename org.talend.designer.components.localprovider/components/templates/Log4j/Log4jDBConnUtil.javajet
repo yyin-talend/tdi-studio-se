@@ -1,0 +1,166 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+<%
+	//this util class use by set log4j debug paramters
+	class DefaultLog4jCodeGenerateUtil {
+	
+		INode node = null;
+	    String cid = null;
+		String dbproperties = null;
+		String dbhost = null;
+    	String dbport = null;
+    	String dbname = null;
+    	String dbuser = null;
+ 		String dbpwd = null;
+		String connectionType = null;
+ 		String dbVersion =  null; 
+ 		String dbSchema = null;
+ 		String useCursor = null;
+ 		String trimAllColumn = null;
+ 		String noNullValues = null;
+ 		String dbquery= null;
+ 		String table = null;
+ 		boolean isLog4jEnabled = false;
+ 		
+	    public void beforeComponentProcess(INode node){
+	    	this.node = node;
+	    	init();
+	    }
+	    
+		private void init() {
+	    	cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+			connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+	 		dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
+	 		dbSchema = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
+	 		useCursor = ElementParameterParser.getValue(node,"__USE_CURSOR__");
+	 		trimAllColumn = ElementParameterParser.getValue(node,"__TRIM_ALL_COLUMN__");
+	 		noNullValues = ElementParameterParser.getValue(node,"__NO_NULL_VALUES__");
+	 		dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+			dbquery = dbquery.replaceAll("\n"," ");
+			dbquery = dbquery.replaceAll("\r"," ");
+			table= ElementParameterParser.getValue(node, "__TABLE__");
+			isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+		}
+		
+		public void infoComponentStart(INode node) {
+			beforeComponentProcess(node);
+			if (isLog4jEnabled) {
+%>
+				log.info("<%=cid%> - Start to work");
+<%
+			}
+		}
+		
+		public void initDbDebugRowBuffer() {
+			if (isLog4jEnabled) {
+%>
+				StringBuffer log4jSb_<%=cid%> = new StringBuffer();
+<%
+			}
+		}
+		
+		public void debugDriverClassName(String driverClass) {
+			if (isLog4jEnabled) {
+%>
+				log.debug("<%=cid%> - Driver ClassName: <%=driverClass %>.");
+<%
+			}
+		}
+		
+		public void debugConnectionParams(INode node,String driverClass) {
+			beforeComponentProcess(node);
+			generateConnectionParams();
+			debugDriverClassName(driverClass);
+			if (isLog4jEnabled) {
+%>
+				log.debug(log4jDebugParamters_<%=cid%>);
+<%
+			}
+		}
+	
+		public void dbConnectionParamsForELT(INode previousNode){
+			cid = previousNode.getUniqueName();
+			dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
+	    	dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
+		}
+		
+		public void additionalParameter(INode node) {
+			String needtoConvet2Upper= ElementParameterParser.getValue(node, "__Convert_to_UPPer__");
+		}
+		
+		public void generateAdditionalParameters(INode node) {
+			additionalParameter(node);
+		}
+		
+		public void generateConnectionParams() {
+			if(isLog4jEnabled) {
+%>
+				String log4jDebugParamters_<%=cid%> = "";
+				<%if(dbproperties != null && !("\"\"").equals(dbproperties) && !("").equals(dbproperties)){%>
+					String dbproperties_log4j_<%=cid%> = <%=dbproperties%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PROPERTIES = " + dbproperties_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(dbhost!= null && !("\"\"").equals(dbhost) && !("").equals(dbhost)){%>
+					String dbhost_log4j_<%=cid%> = <%=dbhost%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "HOST = " + dbhost_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(dbport!= null && !("\"\"").equals(dbport) && !("").equals(dbport)){%>
+					String dbport_log4j_<%=cid%> = <%=dbport.replace("'", "\"")%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "PORT = " + dbport_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(dbname!= null && !("\"\"").equals(dbname) && !("").equals(dbname)){%>
+					String dbname_log4j_<%=cid%> = <%=dbname%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBNAME = " + dbname_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(dbuser!= null && !("\"\"").equals(dbuser) && !("").equals(dbuser)){%>
+					String dbuser_log4j_<%=cid%> = <%=dbuser%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USERNAME = " + dbuser_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(connectionType!= null && !("\"\"").equals(connectionType) && !("").equals(connectionType)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "CONNECTION_TYPE = <%=connectionType%>" + " | ";
+				<%}%>
+				<%if(dbVersion!= null && !("\"\"").equals(dbVersion) && !("").equals(dbVersion)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBVERSION = <%=dbVersion%>" + " | ";
+				<%}%>
+				<%if(dbSchema!= null && !("\"\"").equals(dbSchema) && !("").equals(dbSchema)){%>
+					String dbSchema_log4j_<%=cid%> = <%=dbSchema%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "DBSCHEMA = " + dbSchema_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(useCursor!= null && !("\"\"").equals(useCursor) && !("").equals(useCursor)){%>	
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "USE_CURSOR = <%=useCursor%>" + " | ";
+				<%}%>
+				<%if(trimAllColumn!= null && !("\"\"").equals(trimAllColumn) && !("").equals(trimAllColumn)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TRIM_ALL_COLUMN = <%=trimAllColumn%>" + " | ";
+				<%}%>
+				<%if(noNullValues!= null && !("\"\"").equals(noNullValues) && !("").equals(noNullValues)){%>
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "NO_NULL_VALUES = <%=noNullValues%>" + " | ";
+				<%}%>
+				<%if(table!= null && !("\"\"").equals(table) && !("").equals(table)){%>
+					String table_log4j_<%=cid%> = <%=table%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "TABLE = " + table_log4j_<%=cid%> + " | ";
+				<%}%>
+				<%if(dbquery!= null && !("\"\"").equals(dbquery) && !("").equals(dbquery)){%>
+					String dbquery_log4j_<%=cid%> = <%=dbquery%>;
+					log4jDebugParamters_<%=cid%> = log4jDebugParamters_<%=cid%> + "QUERY = " + dbquery_log4j_<%=cid%> + " | ";
+				<%}%>
+				log4jDebugParamters_<%=cid%> = "<%=cid%> - Parameters:" + log4jDebugParamters_<%=cid%>;
+<%	
+			}
+	    }
+	}
+	
+	DefaultLog4jCodeGenerateUtil log4jCodeGenerateUtil = new DefaultLog4jCodeGenerateUtil();
+%>

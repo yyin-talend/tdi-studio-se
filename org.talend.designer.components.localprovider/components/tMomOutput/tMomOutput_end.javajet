@@ -1,0 +1,73 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+String cid = node.getUniqueName();
+String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+
+boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+ 
+
+if (isUseSharedConnection) {
+	for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+		if (pNode.getUniqueName().equals(connectionComponentName)) {
+			transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+			serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
+		}	
+	}
+}
+
+if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseSharedConnection){
+	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType)) ){
+		// if no commmit or rollback component exists and set transacted - commit session
+		if(!isCommitRollback && transacted){
+		%>
+			session_<%=cid%>.commit();
+		<%	
+		}
+		%>
+		producer_<%=cid %>.close();
+		<%
+        if (!isCommitRollback && !isUseSharedConnection) {
+		%> // if no commmit or rollback component exists - close session
+ 			System.out.println("Closing connection");
+            session_<%=cid %>.close();
+            connection_<%=cid %>.close();
+		<%	
+		}
+	}
+	if((("ActiveMQ").equals(serverType) || isUseSharedConnection) && !isCommitRollback && transacted){
+	%>
+		resourceMap.put("finish_<%=cid%>", true); 
+	<%
+	}
+}else{//server judgement   /***WebSphere MQ*****/
+	if (transacted) {
+	%>
+		globalMap.put("remoteQ_<%=cid%>",remoteQ_<%=cid%>);
+		globalMap.put("qMgr_<%=cid%>",qMgr_<%=cid%>);
+	<%
+	} else {
+	%>
+		System.out.println("Closing connection");
+		remoteQ_<%=cid%>.close();
+		qMgr_<%=cid%>.disconnect();
+
+	<%
+	}
+}
+%>
+
+    globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

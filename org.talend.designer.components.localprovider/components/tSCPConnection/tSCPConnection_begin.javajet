@@ -1,0 +1,127 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));    
+	
+    String cid = node.getUniqueName();
+    String host = ElementParameterParser.getValue(node, "__HOST__");
+    String port = ElementParameterParser.getValue(node, "__PORT__");
+    String user = ElementParameterParser.getValue(node, "__USERNAME__");
+    
+    String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+   
+    String privatekey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+
+    String password = ElementParameterParser.getValue(node,"__PASSWORD__");
+    
+    String passphrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
+    
+%>	
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Start to work.");
+	<%}%>
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
+    
+    /* Create a connection instance */
+<%
+        if(("").equals(port)){
+%>
+              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
+<% 
+        } else {
+%>
+              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
+<%
+        }
+%>
+              /* Now connect */
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection attempt to '" + hostname_<%=cid%> + "' as '" + <%=user%> + "'.");
+		<%}%>
+        conn_<%=cid%>.connect();
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to '" + hostname_<%=cid%> + "' has succeeded.");
+		<%}%>
+<%        
+        if (("PUBLICKEY").equals(authMethod)) {
+%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a public key");
+			log.debug("<%=cid%> - Private key: '" + <%=privatekey%> + "'." );
+		<%}%>
+        java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
+            boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
+              if (isAuthenticated_<%=cid%> == false){
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - Authentication failed.");
+					<%}%>
+                      throw new RuntimeException("Authentication failed.");
+			  }
+			  <%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+			  <%}%>
+<%
+        }
+        if (("PASSWORD").equals(authMethod)) {
+%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using a password");
+		<%}%>
+        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
+        	if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+            	throw new RuntimeException("Authentication failed.");
+            }
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+		    <%}%>
+<%
+        }
+        if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
+%>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Authentication using an interactive action");
+		<%}%>
+        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
+            new ch.ethz.ssh2.InteractiveCallback() {
+        
+        		public String[] replyToChallenge(String name,
+        				String instruction, int numPrompts,
+        				String[] prompt, boolean[] echo)
+        				throws java.lang.Exception {
+        			// TODO Auto-generated method stub
+        			String[] reply = new String[numPrompts];
+        			for (int i = 0; i < reply.length; i++) {
+        				reply[i] = <%=password%>;
+        			}
+        
+        			return reply;
+        		}
+        	}	
+        );
+        	if (isAuthenticated_<%=cid%> == false){
+				<%if(isLog4jEnabled){%>
+					log.fatal("<%=cid%> - Authentication failed.");
+				<%}%>
+            	throw new RuntimeException("Authentication failed.");
+            }
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Authentication succeeded.");
+			<%}%>
+<%
+        }%>
+		globalMap.put("conn_<%=cid%>",conn_<%=cid %>);
+<%if(isLog4jEnabled){%>
+	log.info("<%=cid%> - Done.");	
+<%}%>

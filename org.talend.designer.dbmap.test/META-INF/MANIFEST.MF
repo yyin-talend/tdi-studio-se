@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.talend.designer.dbmap.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.talend.designer.dbmap
+Require-Bundle: org.junit4,
+ org.talend.testutils

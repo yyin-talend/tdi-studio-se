@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Data Integration View Plug-in
+Bundle-SymbolicName: org.talend.repository.view.di;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.talend.repository.view.di.DIRepositoryViewPlugin
+Bundle-Vendor: .Talend SA.
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.expressions;visibility:=reexport,
+ org.eclipse.ui,
+ org.eclipse.ui.navigator,
+ org.talend.commons.ui,
+ org.talend.core.runtime,
+ org.talend.core.repository;visibility:=reexport,
+ org.talend.commons.runtime,
+ org.talend.repository.view;visibility:=reexport,
+ org.talend.repository.items.importexport,
+ org.talend.repository.items.importexport.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.talend.repository.view.di,
+ org.talend.repository.view.di.viewer.action,
+ org.talend.repository.view.di.viewer.content,
+ org.talend.repository.view.di.viewer.content.code,
+ org.talend.repository.view.di.viewer.content.doc,
+ org.talend.repository.view.di.viewer.tester
