@@ -62,7 +62,7 @@ public class HL7OutputManager extends HL7Manager {
         List<Map<String, String>> maps = (List<Map<String, String>>) ElementParameterParser.getObjectValue(hl7Component,
                 "__SCHEMAS__"); //$NON-NLS-1$
         List<String> schemaList = new ArrayList<String>();
-        List<Map<String, String>> rootTable = (List<Map<String, String>>) hl7Component.getTableList(HL7InputComponent.ROOT);
+        List<Map<String, String>> rootTable = hl7Component.getTableList(HL7InputComponent.ROOT);
         List<String> columnList = new ArrayList<String>();
         if (rootTable != null && rootTable.size() > 0) {
             for (Map<String, String> rootMap : rootTable) {
@@ -70,10 +70,11 @@ public class HL7OutputManager extends HL7Manager {
                 if (columnName.contains(":")) {
                     columnName = columnName.substring(0, columnName.indexOf(":"));
                 }
-                if (!columnList.contains(columnName)) {
+                if (!columnList.contains(columnName) && !"".equals(columnName)) {
                     columnList.add(columnName);
                 }
             }
+            HL7TreeNode rootNode = null;
             for (String rowName : columnList) {
                 IMetadataTable metadataTable = null;
                 String metadataTableName = rowName;
@@ -107,10 +108,10 @@ public class HL7OutputManager extends HL7Manager {
                 // }
 
                 treeData = new ArrayList<HL7TreeNode>();
-                if (i == 0)// the first schema as current
+                if (i == 0) {
                     currentSchema = metadataTableName;// metadataTable.getLabel();
+                }
 
-                HL7TreeNode rootNode = null;
                 HL7TreeNode current = null;
                 HL7TreeNode temp = null;
                 HL7TreeNode mainNode = null;
@@ -150,6 +151,10 @@ public class HL7OutputManager extends HL7Manager {
                         temp = addElement(current, currentPath, newPath, defaultValue);
                         if (rootNode == null) {
                             rootNode = temp;
+                        } else if (rowName.equals(columnName) && rowName.equals(temp.getLabel())) {
+                            if (!rootNode.getChildren().contains(temp)) {
+                                rootNode.addChild(temp);
+                            }
                         }
                         if (rootMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                             temp.setMain(true);
@@ -159,14 +164,26 @@ public class HL7OutputManager extends HL7Manager {
                         current = temp;
                         currentPath = newPath;
                     }
+                    temp.setRepetable(repeatable);
                     if (haveOrder) {
                         temp.setOrder(nodeOrder);
                     }
-                    temp.setRepetable(repeatable);
-                    temp.setRow(rowName);
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                         columnName = columnName.replace(schemaId, ""); // $!=Nnull-1$
-                        if (metadataTable != null) {
+                        // group node can not get the metadata table
+                        if (metadataTable == null) {
+                            IMetadataTable metadataTableTemp = null;
+                            for (IConnection connection : incomingConnections) {
+                                metadataTableTemp = connection.getMetadataTable();
+                                if (columnName.startsWith(metadataTableTemp.getLabel())) {
+                                    break;
+                                }
+                            }
+                            if (metadataTableTemp != null) {
+                                temp.setColumn(metadataTableTemp.getColumn(columnName));
+                                temp.setTable(metadataTableTemp);
+                            }
+                        } else {
                             temp.setColumn(metadataTable.getColumn(columnName));
                             temp.setTable(metadataTable);
                         }
@@ -182,10 +199,11 @@ public class HL7OutputManager extends HL7Manager {
                 if (haveOrder) {
                     orderNode(rootNode);
                 }
-                treeData.add(rootNode);
-                rootNode.setRow(rowName);
-                contents.put(metadataTableName, treeData);
                 i++;
+            }
+            if (rootNode != null && treeData != null) {
+                treeData.add(rootNode);
+                contents.put(rootNode.getColumnLabel(), treeData);
             }
             initCurrentSchema();
 
@@ -216,8 +234,9 @@ public class HL7OutputManager extends HL7Manager {
                     }
                 }
                 treeData = new ArrayList<HL7TreeNode>();
-                if (i == 0)// the first schema as current
+                if (i == 0) {
                     currentSchema = metadataTableName;// metadataTable.getLabel();
+                }
                 HL7TreeNode rootNode = null;
                 HL7TreeNode current = null;
                 HL7TreeNode temp = null;
@@ -519,7 +538,7 @@ public class HL7OutputManager extends HL7Manager {
             newMap.put(HL7InputComponent.PATH, att.getLabel());
             newMap.put(HL7InputComponent.COLUMN, att.getColumnLabel());
             newMap.put(HL7InputComponent.ATTRIBUTE, "attri"); //$NON-NLS-1$
-            newMap.put(HL7InputComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(HL7InputComponent.VALUE, att.getDefaultValue());
             newMap.put(HL7InputComponent.ORDER, String.valueOf(getNodeOrder(att)));
             newMap.put("REPEATABLE", String.valueOf(att.isRepetable()));
             table.add(newMap);
@@ -529,7 +548,7 @@ public class HL7OutputManager extends HL7Manager {
             newMap.put(HL7InputComponent.PATH, att.getLabel());
             newMap.put(HL7InputComponent.COLUMN, att.getColumnLabel());
             newMap.put(HL7InputComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
-            newMap.put(HL7InputComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(HL7InputComponent.VALUE, att.getDefaultValue());
             newMap.put("REPEATABLE", String.valueOf(att.isRepetable()));
             newMap.put(HL7InputComponent.ORDER, String.valueOf(getNodeOrder(att)));
             table.add(newMap);
@@ -608,6 +627,7 @@ public class HL7OutputManager extends HL7Manager {
         return null;
     }
 
+    @Override
     public List<HL7TreeNode> getTreeData(String curSchema) {
         if (currentSchema == null) {
             if (treeData == null) {
@@ -694,6 +714,7 @@ public class HL7OutputManager extends HL7Manager {
         }
     }
 
+    @Override
     public String getCurrentSchema(boolean sign) {
         if (sign && schemaMap.get(currentSchema) != null && !"".equals(schemaMap.get(currentSchema))) {
             return schemaMap.get(currentSchema);
@@ -751,8 +772,9 @@ public class HL7OutputManager extends HL7Manager {
                 parent = tmpParent;
             }
 
-            if (parent != null)
+            if (parent != null) {
                 parent.addChild(temp);
+            }
         }
 
         return temp;
@@ -811,6 +833,7 @@ public class HL7OutputManager extends HL7Manager {
         return this.contents;
     }
 
+    @Override
     public List<IMetadataColumn> getSchemaData(String currentSchema) {
         List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(hl7Component, IConnectionCategory.FLOW);
         for (IConnection connection : incomingConnections) {

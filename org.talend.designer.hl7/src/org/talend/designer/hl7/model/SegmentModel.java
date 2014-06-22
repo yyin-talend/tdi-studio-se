@@ -38,6 +38,7 @@ public class SegmentModel extends AbstractStructureModel {
         generateDataTypes();
     }
 
+    @Override
     protected void generateDisplayName() {
         this.displayName = seg.getName();
     }
@@ -45,16 +46,30 @@ public class SegmentModel extends AbstractStructureModel {
     private void generateDataTypes() {
         int number = this.seg.numFields();
         ArrayList<TypeModel> datatypes = new ArrayList<TypeModel>();
-        for (int i = 1; i < number; i++) {
-            try {
+        try {
+            int lastNotEmptyFiledIndex = 0;
+            for (int i = 1; i < number; i++) {
                 Type[] reps = seg.getField(i);
-                for (int j = 0; j < reps.length; j++) {
-                    TypeModel tm = new TypeModel(reps[j], seg, j, i);
+                if (reps.length > 0) {
+                    lastNotEmptyFiledIndex = i;
+                }
+            }
+            for (int i = 1; i <= lastNotEmptyFiledIndex; i++) {
+                Type[] reps = seg.getField(i);
+                if (reps.length > 0) {
+                    for (int j = 0; j < reps.length; j++) {
+                        TypeModel tm = new TypeModel(reps[j], seg, j, i);
+                        datatypes.add(tm);
+                    }
+                } else {
+                    // for empty column
+                    TypeModel tm = new TypeModel(null, seg, 0, i);
                     datatypes.add(tm);
                 }
-            } catch (HL7Exception e) {
-                e.printStackTrace();
+
             }
+        } catch (HL7Exception e) {
+            e.printStackTrace();
         }
         this.types = datatypes.toArray(new TypeModel[0]);
     }

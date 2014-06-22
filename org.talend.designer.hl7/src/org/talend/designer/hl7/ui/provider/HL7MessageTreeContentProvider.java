@@ -13,7 +13,6 @@
 package org.talend.designer.hl7.ui.provider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,11 +53,9 @@ public class HL7MessageTreeContentProvider implements ITreeContentProvider {
                             values.add(childReps[j]);
                         }
                         if (childReps[j] instanceof Group) {
+                            values.add(childReps[j]);
                             allSegmentFromGroup.clear();
                             getAllSegmentsFromGroup((Group) childReps[j]);
-                            if (allSegmentFromGroup.size() > 0) {
-                                values.addAll(Arrays.asList(allSegmentFromGroup.toArray(new SegmentModel[0])));
-                            }
                         }
                         if (childReps[j] instanceof Segment) {
                             SegmentModel sModel = new SegmentModel((Segment) childReps[j], messParent, i, j);

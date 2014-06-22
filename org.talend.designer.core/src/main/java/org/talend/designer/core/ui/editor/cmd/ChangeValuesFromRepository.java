@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
+import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -550,6 +551,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         for (IElementParameter curParam : elem.getElementParameters()) {
             if (curParam.getFieldType().equals(EParameterFieldType.AS400_CHECK)) {
                 setOtherProperties();
+            }
+            // change the HL7 Version
+            if (connection instanceof HL7Connection) {
+                if (curParam.getName().equals("HL7_VER")) {
+                    String hl7VersionString = connection.getVersion();
+                    if (hl7VersionString != null) {
+                        hl7VersionString = hl7VersionString.replace(".", "");
+                        curParam.setValue(hl7VersionString);
+                    }
+                }
             }
         }
 
