@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -87,6 +83,10 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
 
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
+
 /**
  * DOC ycbai class global comment. Detailled comment
  */
@@ -114,6 +114,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private String itemType = null;
 
     private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
+
+    //patch for TESB-12909
+	private boolean isRefJobBycTalendJob = false;
 
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
@@ -146,7 +149,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 itemToBeExport.add(processItem);
                 jobName = processItem.getProperty().getLabel();
-                jobClassName = JavaResourcesHelper.getJobClassName(processItem);
+                jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
 
                 String jobVersion = processItem.getProperty().getVersion();
                 if (!isMultiNodes() && getSelectedJobVersion() != null) {
@@ -414,6 +417,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
     }
 
+    private static String getPackageName(ProcessItem processItem) {
+        return JavaResourcesHelper.getProjectFolderName(processItem)
+                + PACKAGE_SEPARATOR
+                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                        .getVersion());
+    }
+
     private boolean isRoute() {
         return ROUTE.equals(itemType);
     }
@@ -582,6 +592,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // job OSGi DataSources
         jobInfo.put("dataSources", DataSourceConfig.getAliases(processItem)); //$NON-NLS-1$
 
+        //patch for TESB-12909
+        if(isRefJobBycTalendJob && null != EmfModelUtils.getComponentByName(processItem, "tRouteInput")){
+		 jobInfo.put("name", jobClassName); //$NON-NLS-1$
+        }
+
         // velocity template context
         Map<String, Object> contextParams = new HashMap<String, Object>();
         contextParams.put("job", jobInfo); //$NON-NLS-1$
@@ -718,7 +733,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String requireBundle = ""; //$NON-NLS-1$
         String delim = ""; //$NON-NLS-1$
         for (ProcessItem pi : itemToBeExport) {
-		exportPackage.append(delim).append(JavaResourcesHelper.getJobClassPackageName(pi));
+            exportPackage.append(delim).append(getPackageName(pi));
             delim = ","; //$NON-NLS-1$
             // Add Route Resource Export packages
             // http://jira.talendforge.org/browse/TESB-6227
@@ -1026,4 +1041,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return providedModulesSet;
     }
+
+	public void setIsRefJobByCTalendJob(boolean isRefJobBycTalendJob) {
+		this.isRefJobBycTalendJob = isRefJobBycTalendJob;
+	}
 }
