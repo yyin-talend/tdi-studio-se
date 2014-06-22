@@ -81,7 +81,10 @@ public class ConnectionFigure extends PolylineConnection {
 
         if (PluginChecker.isAutoParalelPluginLoaded()) {
             addParallelFigure();
-            initFigureMap();
+            // TDI-26611
+            if (connection != null) {
+                initFigureMap();
+            }
         }
     }
 
