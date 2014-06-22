@@ -1,0 +1,284 @@
+<%@ jet 
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+    java.util.List
+	
+" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
+	String cid = node.getUniqueName();
+	
+	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+	
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+	
+	String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
+	
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+    
+	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
+    String rejectConnName = null;
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+    
+    
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
+        %>
+        if(pstmtUpdate_<%=cid%> != null){
+
+            pstmtUpdate_<%=cid %>.close();
+            
+        } 
+        if(pstmtInsert_<%=cid %> != null){
+
+            pstmtInsert_<%=cid %>.close();
+            
+        }
+        if(pstmt_<%=cid %> != null) {
+
+            pstmt_<%=cid %>.close();
+            
+        }        
+        <%
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
+        %>
+        if(pstmtUpdate_<%=cid%> != null){
+
+            pstmtUpdate_<%=cid %>.close();
+            
+        } 
+        if(pstmtInsert_<%=cid %> != null){
+
+            pstmtInsert_<%=cid %>.close();
+            
+        }        
+        <%
+    } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
+        %>
+        
+        <%if (  (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+        %>
+                try {
+        			<%	
+					if("true".equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+					%>
+						if ( batchSizeCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+					<%
+					} else if (!useExistingConn &&!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+					%>
+						if ( commitCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+					<%
+					} else {
+					%>
+						if (pstmt_<%=cid %> !=null) {
+					<%
+					} 
+					%>		
+						<%if(isLog4jEnabled) {%>
+							log.debug("<%=cid%> - Executing the <%=dataAction%> batch.");
+						<%}%>
+            	    	int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}
+						<%if (isLog4jEnabled) {%>						
+							log.debug("<%=cid%> - The <%=dataAction%> batch execution has succeeded.");
+						<%}%>
+            	    	<%if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>
+            	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}%>
+            	    	
+						}
+                //}catch (java.sql.BatchUpdateException e){
+				}catch (java.sql.SQLException e){
+					<% if (isEnableDebug) { %>
+					java.sql.SQLException e2 = e;
+					while (e2 != null) {
+						System.out.println(e.getMessage());
+						e2 = e2.getNextException();
+					}
+					<% } %>
+			java.sql.SQLException e3 = e;
+                	boolean isFailure = false;
+                	int errorCode = 0;
+			String sqlState = "";
+			String message = "";
+			while(e != null){
+				if(e.getErrorCode() == -2801){
+					System.out.println("[Message]: " + e.getMessage());
+					e.printStackTrace();
+					System.out.println();
+				}
+				else if(e.getErrorCode() == 1339){
+					isFailure = true;
+				} else{
+					System.out.println("[Message]: " + e.getMessage());
+					e.printStackTrace();
+				}
+				e = e.getNextException();
+			}
+			if(isFailure && e != null){
+				System.out.println("[Message]: " + e.getMessage());
+				e.printStackTrace();
+			}
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+					<%if(isLog4jEnabled){%>
+						log.fatal("<%=cid%> - " + e3.getMessage());
+					<%}%>
+				throw(e3);
+                	<%
+                	}else {
+                	%>
+					<%if(isLog4jEnabled){%>
+						log.error("<%=cid%> - " + e3.getMessage());
+					<%}%>
+				System.err.println(e3.getMessage());
+                	<%
+                	}%>                	
+            	}                                  
+        <%
+        }%>
+        
+        if(pstmt_<%=cid %> != null) {
+
+            pstmt_<%=cid %>.close();
+            pstmt_<%=cid %> = null;
+        }        
+        <%
+    }
+    %>
+    <%
+	if(!useExistingConn){
+	    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+	        %>
+			if (commitCounter_<%=cid%> > 0)
+				<%if(isLog4jEnabled){%>
+					log.debug("<%=cid%> - Starting to commit " + commitCounter_<%=cid%> + " records.");
+				<%}%>
+	            conn_<%=cid%>.commit();
+				<%if(isLog4jEnabled){%>
+					log.debug("<%=cid%> - Commit has succeeded.");
+				<%}%>
+	        <%
+	    }
+	    %>
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Closing the connection to the database.");
+		<%}%>
+	    conn_<%=cid%> .close();
+		resourceMap.put("finish_<%=cid%>", true);
+		<%if(isLog4jEnabled){%>
+			log.info("<%=cid%> - Connection to the database closed.");
+		<%}%>
+	    <%
+	}
+    %>
+
+	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
+	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
+	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
+	nb_line_rejected_<%=cid%>=nb_line_rejected_<%=cid%> + rejectedCount_<%=cid%>;
+<%
+	boolean isEnableParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+	if (isEnableParallelize) {
+%>
+	if (globalMap.get("<%=cid %>_NB_LINE") == null) {
+    	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
+    } else {
+    	globalMap.put("<%=cid %>_NB_LINE",(Integer)globalMap.get("<%=cid %>_NB_LINE") + nb_line_<%=cid%>);
+    }
+    if (globalMap.get("<%=cid %>_NB_LINE_UPDATED") == null) {
+    	globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
+    } else {
+    	globalMap.put("<%=cid %>_NB_LINE_UPDATED",(Integer)globalMap.get("<%=cid %>_NB_LINE_UPDATED") + nb_line_update_<%=cid%>);
+    }
+    if (globalMap.get("<%=cid %>_NB_LINE_INSERTED") == null) {
+    	globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
+    } else {
+    	globalMap.put("<%=cid %>_NB_LINE_INSERTED",(Integer)globalMap.get("<%=cid %>_NB_LINE_INSERTED") + nb_line_inserted_<%=cid%>);
+    }
+    if (globalMap.get("<%=cid %>_NB_LINE_DELETED") == null) {
+    	globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
+    } else {
+    	globalMap.put("<%=cid %>_NB_LINE_DELETED",(Integer)globalMap.get("<%=cid %>_NB_LINE_DELETED") + nb_line_deleted_<%=cid%>);
+    }
+    if (globalMap.get("<%=cid %>_NB_LINE_REJECTED") == null) {
+    	globalMap.put("<%=cid %>_NB_LINE_REJECTED",nb_line_rejected_<%=cid%>);
+    } else {
+    	globalMap.put("<%=cid %>_NB_LINE_REJECTED",(Integer)globalMap.get("<%=cid %>_NB_LINE_REJECTED") + nb_line_rejected_<%=cid%>);
+    }
+<%
+	} else {
+%>
+    globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
+    globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
+    globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
+    globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
+    globalMap.put("<%=cid %>_NB_LINE_REJECTED", nb_line_rejected_<%=cid%>);
+    
+<%
+	}
+%>
+	
+	<%
+	if(isLog4jEnabled){
+		if (("INSERT").equals(dataAction)) { 
+	%>
+		log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
+	<%
+		} else if (("UPDATE").equals(dataAction)) {
+	%>
+	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
+	<%
+		} else if (("DELETE").equals(dataAction)) {
+	%>
+	  	log.info("<%=cid%> - Has deleted " + nb_line_deleted_<%=cid%> + " records.");
+	<%
+		} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
+	%>
+	  	log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
+	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
+	<%
+		} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
+	%>
+	  	log.info("<%=cid%> - Has updated " + nb_line_update_<%=cid%> + " records.");
+	  	log.info("<%=cid%> - Has inserted " + nb_line_inserted_<%=cid%> + " records.");
+	<%
+		}
+	    if (rejectConnName!=null) {
+	%>
+		log.info("<%=cid%> - Has rejected " + nb_line_rejected_<%=cid%> + "records.");
+	<%
+		}
+	%>
+		log.info("<%=cid%> - Done.");
+	<%
+	}
+	%>

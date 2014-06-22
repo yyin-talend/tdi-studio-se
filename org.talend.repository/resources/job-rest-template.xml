@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$service{"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+]]#
+#end
+
+#if ($endpoint.useAuthorization)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.authorization.pep" placeholder-prefix="$pep{"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+]]#
+#end
+
+#if ($job.useSAM || $endpoint.useSAM)
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
+#end
+
+	<jaxrs:server xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+			id="service"
+#if ($endpoint.useSL)
+			xmlns:tns="${endpoint.serviceNamespace}"
+			serviceName="tns:${endpoint.serviceName}"
+#end
+			address="${endpoint.address}">
+		<jaxrs:serviceBeans>
+			<ref component-id="serviceBean" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean class="${job.className}.ExceptionMapper4TalendJobRestService">
+				<argument ref="serviceBean" />
+			</bean>
+			<bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+				<property name="ignoreNamespaces" value="true" />
+				<property name="supportUnwrapped" value="${endpoint.wrapJsonRequest}" />
+				<property name="wrapperName" value="root" />
+				<property name="dropRootElement" value="${endpoint.unwrapJsonResponse}" />
+			</bean>
+			<bean class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider" />
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "BASIC")
+			<bean class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+				<property name="contextName" value="karaf" />
+			</bean>
+#end
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+			<bean class="org.apache.cxf.rs.security.saml.SamlHeaderInHandler" />
+#end
+		</jaxrs:providers>
+		<jaxrs:features>
+#if ($endpoint.useSAM)
+			<ref component-id="eventFeature" />
+#end
+#if ($endpoint.useSL)
+			<bean class="org.talend.esb.servicelocator.cxf.LocatorFeature">
+#if (!$endpoint.slCustomProps.isEmpty())
+				<property name="availableEndpointProperties">
+					<map>
+#foreach ($entry in $endpoint.slCustomProps.entrySet())
+						<entry>
+							<key><value>${entry.key}</value></key>
+							<value>${entry.value}</value>
+						</entry>
+#end ## end SL custom properties loop
+					</map>
+				</property>
+#end ## end not empty SL custom properties
+			</bean>
+#end ## end use SL
+#if ($endpoint.logMessages)
+			<bean class="org.apache.cxf.feature.LoggingFeature" />
+#end
+#if ($endpoint.useBusinesCorrelation)
+			<bean class="org.talend.esb.policy.correlation.feature.CorrelationIDFeature" />
+#end
+		</jaxrs:features>
+		<jaxrs:properties>
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+#[[
+			<entry key="ws-security.signature.username" value="$service{ws-security.signature.username}" />
+			<entry key="ws-security.signature.properties" value="$service{ws-security.signature.properties}" />
+			<entry key="ws-security.callback-handler">
+				<bean class="org.apache.cxf.interceptor.security.NamePasswordCallbackHandler">
+					<argument type="java.lang.String" value="$service{ws-security.signature.username}" />
+					<argument type="java.lang.String" value="$service{ws-security.signature.password}" />
+					<argument type="java.lang.String" value="setPassword" />
+				</bean>
+			</entry>
+]]#
+#end
+		</jaxrs:properties>
+#if ($endpoint.useAuthorization)
+		<jaxrs:inInterceptors>
+			<ref component-id="XACMLInterceptor"/>
+		</jaxrs:inInterceptors>
+#end
+	</jaxrs:server>
+
+	<bean id="serviceBean" class="${job.className}.RestServiceProviderImpl4TalendJob">
+		<argument ref="job" />
+	</bean>
+
+	<bean id="job" class="${job.className}" destroy-method="destroy">
+		<property name="runInTalendEsbRuntimeContainer" value="true" />
+#if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
+		<property name="bus" ref="cxf" />
+#end
+#if ($job.useSAM)
+		<property name="eventFeature" ref="eventFeature" />
+#end
+#if ($job.useSAML)
+		<property name="stsProps">
+			<cm:cm-properties persistent-id="org.talend.esb.job.client.sts"
+				xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" />
+		</property>
+#end
+#if (!$job.dataSources.isEmpty())
+		<property name="dataSources">
+			<map>
+#foreach ($alias in $job.dataSources)
+				<entry key="${alias}">
+					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
+				</entry>
+#end ## end data sources aliases loop
+			</map>
+		</property>
+#end
+	</bean>
+
+	<service ref="job">
+		<interfaces>
+			<value>routines.system.api.TalendJob</value>
+		</interfaces>
+		<service-properties>
+			<entry key="name" value="${job.name}" />
+			<entry key="type" value="job" />
+		</service-properties>
+	</service>
+
+#if ($endpoint.useAuthorization)
+#[[
+	<bean id="XACMLInterceptor" class="org.talend.esb.authorization.xacml.rt.pep.CXFXACMLAuthorizingInterceptor">
+		<property name="pdpAddress" value="$pep{tesb.pdp.address}"/>
+	</bean>
+]]#
+#end
+
+	<!-- Wiring the counter repository -->
+	<bean class="org.apache.cxf.management.counters.CounterRepository">
+		<property name="bus" ref="cxf" />
+	</bean>
+
+</blueprint>

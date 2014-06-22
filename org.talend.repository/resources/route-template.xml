@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
+	||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+#end
+>
+
+	<!-- Talend Route OSGi blueprint descriptor -->
+
+#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
+	||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job" placeholder-prefix="$job{" />
+]]#
+#end
+#if ($route.hasCXFSamlProvider || $route.hasCXFRegistryProvider)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.service" placeholder-prefix="$saml{" />
+]]#
+#end
+#if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
+#[[
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client.sts" placeholder-prefix="$sts{" />
+	<cm:property-placeholder persistent-id="org.talend.esb.job.client" placeholder-prefix="$client{" />
+]]#
+#end
+
+#if ($route.useSAM)
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
+#end
+
+	<bean id="route" class="${route.className}">
+		<property name="bundleContext" ref="blueprintBundleContext" />
+
+		<!-- ESB Features For CXF -->
+
+#if ($route.useSAM)
+		<property name="eventFeature" ref="eventFeature" />
+#end
+
+#if ($route.hasCXFSamlConsumer || $route.hasCXFSamlProvider
+||$route.hasCXFRegistryProvider || $route.hasCXFRegistryConsumer)
+#[[
+		<property name="policies">
+			<map>
+				<entry key="policy.username" value="$job{policy.username}" />
+				<entry key="policy.saml" value="$job{policy.saml}" />
+				<entry key="policy.saml.authz" value="$job{policy.saml.authz}" />
+			</map>
+		</property>
+]]#
+#end
+#if ($route.hasCXFSamlProvider || $route.hasCXFRegistryProvider)
+#[[
+		<property name="securityProps" >
+			<map>
+				<entry key="ws-security.signature.properties" value="$saml{ws-security.signature.properties}" />
+				<entry key="ws-security.signature.username" value="$saml{ws-security.signature.username}" />
+				<entry key="ws-security.signature.password" value="$saml{ws-security.signature.password}" />
+			</map>
+		</property>
+]]#
+#end
+#if ($route.hasCXFSamlConsumer || $route.hasCXFRegistryConsumer)
+#[[
+		<property name="clientProperties">
+			<map>
+				<entry key="ws-security.signature.properties" value="$client{ws-security.signature.properties}" />
+				<entry key="ws-security.signature.username" value="$client{ws-security.signature.username}" />
+				<entry key="ws-security.signature.password" value="$client{ws-security.signature.password}" />
+
+				<entry key="https.config" value="$client{https.config}" />
+			</map>
+		</property>
+		<property name="stsProperties">
+			<map>
+				<entry key="sts.namespace" value="$sts{sts.namespace}" />
+				<entry key="sts.service.name" value="$sts{sts.service.name}" />
+				<entry key="sts.endpoint.name" value="$sts{sts.endpoint.name}" />
+				<entry key="sts.wsdl.location" value="$sts{sts.wsdl.location}" />
+
+				<entry key="ws-security.sts.token.username" value="$sts{ws-security.sts.token.username}" />
+				<entry key="ws-security.sts.token.usecert" value="$sts{ws-security.sts.token.usecert}" />
+				<entry key="ws-security.is-bsp-compliant" value="$sts{ws-security.is-bsp-compliant}" />
+
+				<entry key="ws-security.sts.token.properties" value="$sts{ws-security.sts.token.properties}" />
+				<entry key="ws-security.encryption.properties" value="$sts{ws-security.encryption.properties}" />
+				<entry key="ws-security.encryption.username" value="$sts{ws-security.encryption.username}" />
+
+				<entry key="sts.x509.wsdl.location" value="$sts{sts.x509.wsdl.location}" />
+				<entry key="sts.x509.endpoint.name" value="$sts{sts.x509.endpoint.name}" />
+			</map>
+		</property>
+]]#
+#end
+
+#if (!$route.dataSources.isEmpty())
+		<property name="dataSources">
+			<map>
+#foreach ($alias in $route.dataSources)
+				<entry key="${alias}">
+					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
+				</entry>
+#end ## end data sources aliases loop
+			</map>
+		</property>
+#end
+	</bean>
+
+	<service ref="route">
+		<interfaces>
+			<value>routines.system.api.TalendJob</value>
+			<value>routines.system.api.TalendESBRoute</value>
+		</interfaces>
+		<service-properties>
+			<entry key="name" value="${route.name}" />
+			<entry key="type" value="route" />
+		</service-properties>
+	</service>
+
+</blueprint>

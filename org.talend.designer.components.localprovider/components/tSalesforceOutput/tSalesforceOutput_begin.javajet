@@ -1,0 +1,167 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+		"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();    	
+	
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+
+	String username = ElementParameterParser.getValue(node, "__USER__");
+
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
+	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
+	boolean ceaseForError = ("true").equals(ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__"));
+	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+	String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
+	// if the extended insert is disabled set the commit level to 1
+	if (!extendedInsert) commitLevel = "1";
+	
+	String passwordFieldName = "";
+	String loginType = ElementParameterParser.getValue(node,"__LOGIN_TYPE__");
+	boolean useOAuth = "OAUTH".equals(loginType);
+	if(!useExistingConn){
+		if(useOAuth){
+			String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
+			String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
+			%>
+			org.talend.salesforce.oauth.OAuthClient oauthClient_<%=cid%> = new org.talend.salesforce.oauth.OAuthClient();
+			org.talend.salesforce.oauth.Token token_<%=cid%>;
+			String endpointURL_<%=cid%> = null;
+			String accessToken_<%=cid%> = null;
+			oauthClient_<%=cid%>.setBaseOAuthURL(<%=endpoint%>);
+			oauthClient_<%=cid%>.setClientID(<%=oauthKey%>);
+			
+			<%
+			passwordFieldName = "__OAUTH_CLIENT_SECRET__";
+			if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {
+			%>
+				String decryptedQauthClientPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+			<%
+			} else {
+			%>
+				String decryptedQauthClientPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+			<%
+			}
+			%>			
+			
+			oauthClient_<%=cid%>.setClientSecret(decryptedQauthClientPwd_<%=cid%>);
+			String refreshToken_<%=cid%> = null;
+			<%
+			String tokenFile = ElementParameterParser.getValue(node,"__OAUTH_TOKEN_FILE__");
+			if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+			%>
+				// Attempt to load existing refresh token
+				String tokenFile_<%=cid%> = <%=tokenFile%>;
+				if(tokenFile_<%=cid%> != null){
+					java.util.Properties properties_<%=cid%> = new java.util.Properties();
+					try{
+						java.io.FileInputStream inputStream_<%=cid%> = new java.io.FileInputStream(tokenFile_<%=cid%>);
+						properties_<%=cid%>.load(inputStream_<%=cid%>);
+						inputStream_<%=cid%>.close();
+					}catch(java.io.FileNotFoundException e_<%=cid%>){
+					}catch(java.io.IOException ee_<%=cid%>){
+					}
+					String storedRefreshToken_<%=cid%> = (String) properties_<%=cid%>.get("refreshtoken");
+					
+					// Check to see if the an existing refresh token was loaded.
+					// If so, create a credential and call refreshToken() to get a new
+					// access token.
+					if(storedRefreshToken_<%=cid%> != null){
+						// Request a new Access token using the refresh token.
+						token_<%=cid%> = oauthClient_<%=cid%>.refreshToken(storedRefreshToken_<%=cid%>);
+						endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+						accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+						refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+					}
+				}
+			<%
+			}
+			%>
+			if(accessToken_<%=cid%> == null || endpointURL_<%=cid%> == null){
+				<%
+				String callbackHost = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_HOST__");
+				String callbackPort = ElementParameterParser.getValue(node,"__OAUTH_CALLBACK_PORT__");
+				%>
+				oauthClient_<%=cid%>.setCallbackHost(<%=callbackHost%>);
+				oauthClient_<%=cid%>.setCallbackPort(<%=callbackPort%>);
+				token_<%=cid%> = oauthClient_<%=cid%>.getToken();
+				endpointURL_<%=cid%> = oauthClient_<%=cid%>.getSOAPEndpoint(token_<%=cid%>, <%=apiVersion%>);
+				accessToken_<%=cid%> = token_<%=cid%>.getAccess_token();
+				refreshToken_<%=cid%> = token_<%=cid%>.getRefresh_token();
+			}
+			<%
+			if(!"".equals(tokenFile) && !"\"\"".equals(tokenFile)){
+			%>
+				if(tokenFile_<%=cid%> != null && refreshToken_<%=cid%> != null){
+					// Store the refresh token for future use.
+					java.util.Properties storeProperties_<%=cid%> = new java.util.Properties();
+					storeProperties_<%=cid%>.setProperty("refreshtoken", refreshToken_<%=cid%>);
+					java.io.FileOutputStream outputStream_<%=cid%> = new java.io.FileOutputStream(tokenFile_<%=cid%>);
+					storeProperties_<%=cid%>.store(outputStream_<%=cid%>, null);
+					if(outputStream_<%=cid%> != null){
+					    outputStream_<%=cid%>.close();
+					}
+				}
+			<%
+			}
+		}
+	}
+%>       
+        int nb_line_<%=cid %> = 0;
+        int nb_success_<%=cid%> = 0;
+        int nb_reject_<%=cid%> = 0;
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+        org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
+        <%
+        if(useExistingConn){
+        %>
+	        if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+				throw new RuntimeException("Get null connection from <%=connection %>");
+			}
+			if(globalMap.get("callOptions_<%=connection %>")!=null ){
+				sforceManagement_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
+			}
+			sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
+		<%
+		}else{
+			if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){
+			%>
+				sforceManagement_<%=cid%>.setClientID(<%=clientID%>);
+			<%
+			}
+			if(useOAuth){
+			%>
+				boolean result_<%=cid%> = sforceManagement_<%=cid%>.login(accessToken_<%=cid%>, endpointURL_<%=cid%>,<%=timeout%>,<%=needCompression%>);
+				if(!result_<%=cid%>){
+					throw new RuntimeException("Login failed!");
+				}
+			<%
+			}else{
+			%>
+    			<%
+    			passwordFieldName = "__PASS__";
+    			%>
+    			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+		        boolean result_<%=cid%> = sforceManagement_<%=cid%>.login(<%=endpoint %>,<%=username %>,decryptedPassword_<%=cid%>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+		        if(!result_<%=cid%>){
+					throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+				}
+        	<%
+        	}
+        }
+        %>
+        
+        <%if("upsert".equals(action)){%>
+ 			org.apache.axiom.om.OMFactory fac_<%=cid%> = org.apache.axiom.om.OMAbstractFactory.getOMFactory();       
+        <%}%>

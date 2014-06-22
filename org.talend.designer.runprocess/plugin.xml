@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="runprocess_view_helper" name="Runprocess View Helper" schema="schema/runprocess_view_helper.exsd"/>
+   <extension-point id="runprocess_manager" name="Runprocess Mananger" schema="schema/runprocess_manager.exsd"/>
+   <extension-point id="debugprocess_view_helper" name="Debugprocess View Helper" schema="schema/debugprocess_view_helper.exsd"/>
+ <extension
+       point="org.talend.core.runtime.filepreview_provider">
+    <preview
+          class="org.talend.designer.runprocess.shadow.ShadowFilePreview"
+          language="perl">
+    </preview>
+ </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.talend.core.root"
+            class="org.talend.designer.runprocess.ui.views.ProcessView"
+            icon="icons/process_view.gif"
+            id="org.talend.designer.runprocess.ui.views.processview"
+            name="%runJobAction.title"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <context
+            id="talend.runProcess"
+            name="Run process view"
+            parentId="org.eclipse.ui.contexts.window"/>
+      <category
+            id="Talend"
+            name="Talend"/>
+      <command
+         categoryId="talend"
+         id="showRunProcessView"
+         name="Show run process view"/>
+      <command
+            categoryId="Talend"
+            id="org.talend.common.runTalendElement"
+            name="Show and Run"/>
+      <command
+            categoryId="Talend"
+            id="debugProcess"
+            name="Debug"/>
+      <command
+            categoryId="Talend"
+            id="killProcess"
+            name="Kill"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+         commandId="showRunProcessView"
+         contextId="talend.global"
+         schemeId="org.talend.core.scheme"
+         sequence="F4"/>
+      <key
+            commandId="org.talend.common.runTalendElement"
+            contextId="talend.global"
+            schemeId="org.talend.core.scheme"
+            sequence="F6"/>
+      
+      <key
+            commandId="org.eclipse.debug.ui.commands.StepOver"
+            contextId="talend.global"
+            schemeId="org.talend.core.scheme"
+            sequence="Alt+F6"/>
+     
+      <key
+            commandId="debugProcess"
+            contextId="talend.global"
+            schemeId="org.talend.core.scheme"
+            sequence="F7"/>
+      <key
+            commandId="killProcess"
+            contextId="talend.global"
+            schemeId="org.talend.core.scheme"
+            sequence="F8"/>
+   </extension>
+   <extension
+         point="org.talend.core.global_actions">
+      <GlobalAction
+            class="org.talend.designer.runprocess.ui.actions.RunProcessShortcutAction"
+            />
+      <GlobalAction class="org.talend.designer.runprocess.ui.actions.ShowRunProcessViewAction"/>
+   </extension>
+
+	<extension
+         point="org.talend.core.runtime.service">
+      <Service
+      		serviceId="IRunProcessService" 
+      		class="org.talend.designer.runprocess.RunProcessService"/>
+   </extension>
+ <!--extension
+       point="org.eclipse.ui.actionSets">
+    <actionSet
+          id="org.talend.designer.runprocess.actionSet"
+          label="Action set"
+          visible="true">
+       <action
+             class="org.talend.designer.runprocess.ui.actions.RunProcessAction"
+             disabledIcon="icons/process_kill.gif"
+             icon="icons/process_run.gif"
+             id="org.talend.designer.runprocess.action4"
+             label="%runJobAction.title"
+             style="push"
+             toolbarPath="Default"
+             tooltip="%runJobAction.toolTip"/>
+    </actionSet>
+ </extension>-->
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.talend.designer.runprocess.prefs.RunProcessPreferenceInitializer"/>
+ </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.talend.core.prefs"
+          class="org.talend.designer.runprocess.prefs.RunProcessPreferencePage"
+          id="org.talend.designer.runprocess"
+          name="%runAndDebug"/>
+    <page
+          category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
+          class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
+          id="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
+          name="%shellSetting">
+    </page>
+ </extension>
+ <extension
+       point="org.eclipse.jdt.core.compilationParticipant">
+    <compilationParticipant
+          class="org.talend.designer.runprocess.java.JavaCompilationParticipant"
+          id="org.talend.designer.runprocess.java.javaCompilationParticipant">
+    </compilationParticipant>
+ </extension>
+ <extension
+       point="org.talend.core.runtime.tokenInfo_provider">
+    <provider
+          collector="org.talend.designer.runprocess.prefs.RunProcessTokenCollector"
+          id="org.talend.designer.runprocess.tokenProvider"
+          name="RunProcess">
+    </provider>
+ </extension>
+</plugin>
