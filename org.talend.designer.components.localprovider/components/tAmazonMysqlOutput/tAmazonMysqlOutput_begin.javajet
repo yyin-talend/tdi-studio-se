@@ -1,0 +1,399 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IProcess
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		private boolean extendedInsert;
+		private String dbVersion;
+		private String numPerInsert;
+		private boolean isDynamic;
+		private List<Column> stmtStructure;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+			defineExtendInsert(node);
+			defineDBVersion(node);
+			numPerInsert = ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__");
+		%>
+			java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
+			calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
+			long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+			calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
+			long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+			long date_<%=cid %>;
+		<%
+		}
+		public void defineExtendInsert(INode node){
+			if ("INSERT".equalsIgnoreCase(dataAction)) {
+				extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+				//to fixed: bug8422
+				if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+					extendedInsert = false;
+				}
+			}else {
+				extendedInsert = false;
+			}
+		}
+		public void defineDBVersion(INode node){
+			if(("true").equals(useExistingConn)) {
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				IProcess process = node.getProcess();
+				List<? extends INode> nodes =  process.getNodesOfType("tAmazonMysqlConnection");
+				for (INode ne:nodes) {
+					if (connection.equals(ne.getUniqueName())) {
+						dbVersion = ElementParameterParser.getValue(ne, "__DB_VERSION__");
+					}
+				}
+			}else{
+				dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+			}
+		}
+		public void setURL(INode node) {
+		%>
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+			String url_<%=cid%> = null;
+			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+				url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + "rewriteBatchedStatements=true";
+			} else {
+				if (!dbProperties_<%=cid%>.contains("rewriteBatchedStatements")) {
+					dbProperties_<%=cid%> += "&rewriteBatchedStatements=true";
+				}
+				url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + dbProperties_<%=cid%>;
+			}
+		<%
+		}
+		public String getDirverClassName(INode node){
+			return "org.gjt.mm.mysql.Driver";
+		}
+		public void defineBatchSize(INode node){
+			if (useBatchSize && "MYSQL_5".equals(dbVersion) && (("UPDATE").equals(dataAction)||("DELETE").equals(dataAction))) {
+				if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+				%>
+					int batchSize_<%=cid%> = <%=batchSize%>;
+					int batchSizeCounter_<%=cid%>=0;
+				<%
+				}
+			}
+			if(!isDynamic && extendedInsert && "MYSQL_5".equals(dbVersion)){
+			%>
+				int batchSize_<%=cid%> = <%=numPerInsert%>;
+					int batchSizeCounter_<%=cid%>=0;
+			<%
+			}
+			if (isDynamic && "MYSQL_5".equals(dbVersion) && extendedInsert){
+			%>
+				int batchSize_<%=cid%> = 0;
+					int batchSizeCounter_<%=cid%>=0;
+			<%
+			}
+		}
+		public List<Column> createColumnList(INode node,Manager manager,List<IMetadataColumn> columnList){
+			List<IMetadataTable> metadatas = node.getMetadataList();
+			if ((metadatas!=null)&&(metadatas.size()>0)) {
+				IMetadataTable metadata = metadatas.get(0);
+				isDynamic = metadata.isDynamicSchema();
+			}
+			stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+			isDynamic = isDynamic && !manager.isDynamicColumnReplaced();
+			return stmtStructure;
+		}
+
+		public void prepareDataActionMore(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt,StringBuilder updateSetStmt,StringBuilder updateWhereStmt){
+			if(("REPLACE").equals(dataAction)) {//tMysqlOutput_begin
+			%>
+				String replace_<%=cid%> = "REPLACE INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+				java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(replace_<%=cid%>);
+				<%
+			} else if(("INSERT_ON_DUPLICATE_KEY_UPDATE").equals(dataAction)) {//tMysqlOutput_begin
+				%>
+				String insertIgnore_<%=cid%> = "INSERT IGNORE INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>) ON DUPLICATE KEY UPDATE <%=updateSetStmt.toString()%>";
+				java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertIgnore_<%=cid%>);
+				<%
+			} else if(("INSERT_IGNORE").equals(dataAction)) {//tMysqlOutput_begin     manager,insertColName,insertValueStmt
+				%>
+				String insert_<%=cid%> = "INSERT IGNORE INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+				<%@ include file="../templates/_hintInsert.javajet" %>
+				java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+				<%
+			}
+		}
+		public void insert(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt){
+			Map<String, String> hintsValues = hint(node);
+			boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+			boolean supportDuplicateUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__ON_DUPLICATE_KEY_UPDATE__"));
+			if (supportDuplicateUpdate) {
+				List<Map<String, String>> duplicateKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue( node,"__DUPLICATED_KEYS__" );
+				if (duplicateKeys.size() > 0) {
+				%>
+				StringBuffer duplidateClause_<%=cid%> = new StringBuffer(" ON DUPLICATE KEY UPDATE ");
+					<%
+					for (int i=0; i< duplicateKeys.size() ; i++) {
+						if (i >0) {
+						%>
+							duplidateClause_<%=cid%>.append(",");
+						<%
+						}
+						%>
+							duplidateClause_<%=cid%>.append ("`" +  <%=duplicateKeys.get(i).get("DUPLICATED_KEY")%> + "`");
+							duplidateClause_<%=cid%>.append ("=");
+							duplidateClause_<%=cid%>.append (<%=duplicateKeys.get(i).get("DUPLICATED_VALUE")%>);
+					<%
+					}
+				}
+			}
+			if(!extendedInsert) {
+				%>
+				String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+				<%
+				if (supportDuplicateUpdate) {
+				%>
+					insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+				<%
+				}
+				%>
+				<%@ include file="../templates/_hintInsert.javajet" %>
+				<%
+				//to fixed: bug8422
+				if(!(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+				%>
+					java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+				<%
+				}
+				//to fixed: bug8422
+				if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){ %>
+					java.sql.PreparedStatement pstmt_<%=cid %> = null;
+					// [%connection%][psmt][tableName]
+					String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
+					pstmt_<%=cid %> = SharedDBPreparedStatement.getSharedPreparedStatement(conn_<%=cid%>,insert_<%=cid%>,keyPsmt_<%=cid%>);
+				<%
+				}
+			} else {//extended-insert mode(begin)
+				if ("MYSQL_4".equals(dbVersion)) {
+				%>
+					class BufferLine_<%=cid%> {
+						<%
+						for(Column column : stmtStructure) {
+							if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+								%>
+								<%=typeToGenerate%> <%=column.getName()%>;
+								<%
+							}
+						}
+						%>
+						public BufferLine_<%=cid%>(
+						<%
+						int count = 0;
+						for(Column column : stmtStructure) {
+							if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+								if(count != 0) {
+									%>
+									,
+									<%
+								}
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+								%>
+								<%=typeToGenerate%> <%=column.getName()%>
+								<%
+								count++;
+							}
+						}
+						%>
+						){
+							<%
+							for(Column column : stmtStructure) {
+								if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+									%>
+									this.<%=column.getName()%> = <%=column.getName()%>;
+									<%
+								}
+							}
+							%>
+						}
+					}
+					java.util.List<BufferLine_<%=cid%>> exInsertColValueList<%=cid%> = new java.util.ArrayList();
+					BufferLine_<%=cid%> exInsertColValue<%=cid%> = null;
+					StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
+					for(int i=0;i < <%=numPerInsert%>;i++){
+						 extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+						 if (i!=<%=numPerInsert%>-1) extendInsertValueStmt_<%=cid%>.append(",");
+					}
+					String insert_<%=cid%> = "INSERT INTO `"+<%=table%>+"` (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+					<%
+					if (supportDuplicateUpdate) {
+					%>
+						insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+					<%
+					}
+					%>
+					<%@ include file="../templates/_hintInsert.javajet" %>
+					java.sql.PreparedStatement pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+					String insertColName<%=cid%> = "<%=insertColName.toString()%>";
+					String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>";
+					int rowCount<%=cid%> = 0;
+				<%
+				} else if ("MYSQL_5".equals(dbVersion)) {
+				%>
+					String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+					<%
+					if (supportDuplicateUpdate) {
+					%>
+					insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+					<%
+					}
+					%>
+					<%@ include file="../templates/_hintInsert.javajet" %>
+					java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+				<%
+					}
+			}//extended-insert mode(end)
+		}
+		public Map<String, String> hint(INode node){
+			///// hint options/////
+			boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+			Map<String, String> hintsValues = null;
+			if (useHintOptions) {
+				List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
+				hintsValues = new HashMap<String, String>();
+				String hintValue = null;
+				boolean firstInsert = true;
+				boolean firstUpdate = true;
+				boolean firstDelete = true;
+				boolean firstTableName = true;
+				for(java.util.Map<String, String> option : hintOptions) {
+					//get
+					hintValue = option.get("HINT");
+					//set
+					if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){
+						if(firstInsert){
+							hintsValues.put("INSERT", hintValue) ;
+							firstInsert = false;
+						}else {
+							hintsValues.put("INSERT", hintsValues.get("INSERT") + "+" + hintValue) ;
+						}
+					}else if ("UPDATE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if(firstUpdate){
+							hintsValues.put("UPDATE", hintValue) ;
+							firstUpdate = false;
+						}else {
+							hintsValues.put("UPDATE", hintsValues.get("UPDATE") + "+" + hintValue) ;
+						}
+					}else if ("DELETE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if (firstDelete){
+							hintsValues.put("DELETE", hintValue) ;
+							firstDelete =false;
+						}else {
+							hintsValues.put("DELETE", hintsValues.get("DELETE") + "+" + hintValue) ;
+						}
+					}
+				}
+			}
+			return hintsValues;
+			//// hint options end ////
+		}
+		public void end(INode node){
+			if(isDynamic) {
+				if ("MYSQL_4".equals(dbVersion) && extendedInsert) {
+			%>
+					class BufferLine_<%=cid%> {
+						<%
+						for(Column column : stmtStructure) {
+							if(!column.isReplaced() && !column.isAddCol() && column.isInsertable() && !column.isDynamic()) {
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+								%>
+								<%=typeToGenerate%> <%=column.getName()%>;
+								<%
+							}
+						}
+						if(isDynamic) {
+							Column dynamicColumn = getColumn(getDynamicColumn());
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+							if("Dynamic".equals(typeToGenerate)) {
+							%>
+								Dynamic <%=dynamicColumn.getName()%>;
+							<%
+							}
+						}
+						%>
+						public BufferLine_<%=cid%>(
+						<%
+						int count = 0;
+						for(Column column : stmtStructure) {
+							if(!column.isReplaced() && !column.isAddCol() && column.isInsertable() && !column.isDynamic()) {
+								if(count != 0) {
+									%>
+									,
+									<%
+								}
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+								%>
+								<%=typeToGenerate%> <%=column.getName()%>
+								<%
+								count++;
+							}
+						}
+						if(isDynamic) {
+							Column dynamicColumn = getColumn(getDynamicColumn());
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+							if("Dynamic".equals(typeToGenerate)) {
+							%>
+								, Dynamic <%=dynamicColumn.getName()%>
+							<%
+							}
+						}
+						%>
+						){
+							<%
+							for(Column column : stmtStructure) {
+								if(!column.isReplaced() && !column.isAddCol() && column.isInsertable() && !column.isDynamic()) {
+									%>
+									this.<%=column.getName()%> = <%=column.getName()%>;
+									<%
+								}
+							}
+							if(isDynamic) {
+								Column dynamicColumn = getColumn(getDynamicColumn());
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+								if("Dynamic".equals(typeToGenerate)) {
+								%>
+									this.<%=dynamicColumn.getName()%>=<%=dynamicColumn.getName()%>;
+								<%
+								}
+							}
+							%>
+						}
+					}
+					java.util.List<BufferLine_<%=cid%>> exInsertColValueList<%=cid%> = new java.util.ArrayList();
+					BufferLine_<%=cid%> exInsertColValue<%=cid%> = null;
+					String insert_<%=cid%>="";
+					String insertColValue<%=cid%>="";
+					String insertColName<%=cid%>="";
+					int counter<%=cid%>=1;
+			<%
+				}
+			%>
+				int rowCount<%=cid%>=0;
+			<%
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>

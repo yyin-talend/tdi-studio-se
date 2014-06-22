@@ -1,0 +1,309 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IConnectionCategory
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+		}
+		public void executeBatch(INode node){
+			if (rejectConnName==null && executeBatch) {
+			%>
+				if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+					try {
+						<%log4jCodeGenerateUtil.executeBatch(node,2);%>
+						<%if (("INSERT").equals(dataAction)) {
+						%>
+							insertedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("UPDATE").equals(dataAction)) {
+						%>
+							updatedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("DELETE").equals(dataAction)) {
+						%>
+							deletedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}%>
+						batchSizeCounter_<%=cid%> = 0;
+					}catch (java.sql.BatchUpdateException e_<%=cid%>){
+						<%if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+						%>
+							throw(e_<%=cid%>);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+							%>
+							int countSum_<%=cid%> = 0;
+							for(int countEach_<%=cid%>: e_<%=cid%>.getUpdateCounts()) {
+								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+							}
+							<%if (("INSERT").equals(dataAction)) {
+							%>
+								insertedCount_<%=cid%> += countSum_<%=cid%>;
+							<%
+							}else if (("UPDATE").equals(dataAction)) {
+							%>
+								updatedCount_<%=cid%> += countSum_<%=cid%>;
+							<%
+							}else if (("DELETE").equals(dataAction)) {
+							%>
+								deletedCount_<%=cid%> += countSum_<%=cid%>;
+							<%
+							}%>
+							System.err.println(e_<%=cid%>.getMessage());
+						<%
+						}
+						%>
+					}
+				}
+			<%
+			}
+		}
+		public void commitEvery(INode node){
+			if(!"true".equals(useExistingConn)) {
+				if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+					%>
+					commitCounter_<%=cid%>++;
+					if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+						<%if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+						%>
+							try {
+								<%log4jCodeGenerateUtil.executeBatch(node,2);%>
+								<%if (("INSERT").equals(dataAction)) {
+								%>
+									insertedCount_<%=cid%> += countSum_<%=cid%>;
+								<%
+								}else if (("UPDATE").equals(dataAction)) {
+								%>
+									updatedCount_<%=cid%> += countSum_<%=cid%>;
+								<%
+								}else if (("DELETE").equals(dataAction)) {
+								%>
+									deletedCount_<%=cid%> += countSum_<%=cid%>;
+								<%
+								}%>
+							}catch (java.sql.BatchUpdateException e_<%=cid%>){
+								<%
+								if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+								%>
+									throw(e_<%=cid%>);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+								%>
+									System.err.println(e_<%=cid%>.getMessage());
+									int countSum_<%=cid%> = 0;
+									for(int countEach_<%=cid%>: e_<%=cid%>.getUpdateCounts()) {
+										countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+									}
+									<%if (("INSERT").equals(dataAction)) {
+									%>
+										insertedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}else if (("UPDATE").equals(dataAction)) {
+									%>
+										updatedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}else if (("DELETE").equals(dataAction)) {
+									%>
+										deletedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}
+								}
+								%>
+							}
+						<%
+						}
+						log4jCodeGenerateUtil.commit(node);
+						%>
+						commitCounter_<%=cid%>=0;
+					}
+				<%
+				}
+			}
+		}
+		public void insertData(INode node,List<Column> colStruct,Manager manager,String incomingConnName,boolean isDynamic,int actionType,List<IMetadataColumn> rejectColumnList,List<IMetadataColumn> columnList,IMetadataColumn talendDynCol){
+			int counter = 1;
+			for(Column column : colStruct) {
+				if(column.isInsertable()) {
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+				 	%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%
+					if(isEnableDebug) {
+					%>
+						query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+					<%
+					}
+					if (typeToGenerate.equals("Geometry")) {
+						counter++;
+						boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+						boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
+						boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+						boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+						boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+						if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize && createTable) {
+						%>
+							geometryColumnName_<%=cid %> = "<%=column.getColumn().getLabel() %>";
+							if (firstGeometry_<%=cid %>) {
+								dimension_<%=cid %> = 2;
+								// A null first geometry will lead to unknown coordinate system
+								if (<%=incomingConnName%>.<%=column.getName()%> == null) {
+									SRID_<%=cid %> = -1;
+								} else {
+									org.opengis.referencing.crs.CoordinateReferenceSystem refSys_<%=cid %> =
+									((org.talend.sdi.geometry.Geometry) <%=incomingConnName%>.<%=column.getName()%>).getCRS();
+									if (refSys_<%=cid %> != null) {
+										dimension_<%=cid %> = refSys_<%=cid %>.getCoordinateSystem().getDimension();
+										try {
+											java.util.Set ident_<%=cid %> = refSys_<%=cid %>.getIdentifiers();
+											if ((ident_<%=cid %> == null || ident_<%=cid %>.isEmpty()) && refSys_<%=cid %> == org.geotools.referencing.crs.DefaultGeographicCRS.WGS84) {
+												SRID_<%=cid %> = 4326;
+											} else {
+												String code_<%=cid %> = ((org.geotools.referencing.NamedIdentifier) ident_<%=cid %>.toArray()[0]).getCode();
+												SRID_<%=cid %> = Integer.parseInt(code_<%=cid %>);
+											}
+										} catch (java.lang.Exception e_<%=cid%>) {
+											System.out.println("SRID_<%=cid %> could not be determined");
+											SRID_<%=cid %> = -1;
+										}
+									}  else {
+										SRID_<%=cid %> = -1;
+									}
+									firstGeometry_<%=cid %> = false;
+								}
+							}
+						<%
+						}
+					}
+					counter++;
+				}
+			}
+			if(isDynamic) {
+				Column dynamicColumn = getColumn(talendDynCol);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+				if("Dynamic".equals(typeToGenerate)) {
+				%>
+					DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
+				<%
+				}
+			}
+			if(isEnableDebug) {
+				%>
+				globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
+				<%
+			}
+			if (addBatch()) {
+				log4jCodeGenerateUtil.defineDataOperationPrefix(node,"Adding");
+				%>
+				pstmt_<%=cid %>.addBatch();
+				nb_line_<%=cid%>++;
+				<%
+				if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+				%>
+					batchSizeCounter_<%=cid%>++;
+				<%
+				}
+			}else {
+				log4jCodeGenerateUtil.defineDataOperationPrefix(node,"Inserting");
+				boolean showSavePoint = showSavePoint(node);
+				%>
+				try {
+					nb_line_<%=cid%>++;
+					<%if(showSavePoint){%>
+						sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
+					<%}%>
+					insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+					<%if(showSavePoint){%>
+						conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
+					<%}%>
+				} catch(java.lang.Exception e_<%=cid%>) {
+					<%if(showSavePoint){%>
+						conn_<%=cid%>.rollback(sp_<%=cid %>);
+					<%}%>
+					whetherReject_<%=cid%> = true;
+					<%
+					if (("true").equals(dieOnError)) {
+						log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+						%>
+						throw(e_<%=cid%>);
+					<%
+					} else {
+						log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+						if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+						%>
+							<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+							<%
+							for(IMetadataColumn column : columnList) {
+							%>
+								<%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+							<%
+							}
+							%>
+							rejectedCount_<%=cid%> = rejectedCount_<%=cid%> + 1;
+							<%=rejectConnName%>.errorCode = ((java.sql.SQLException)e_<%=cid%>).getSQLState();
+							<%=rejectConnName%>.errorMessage = e_<%=cid%>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+						<%
+						} else {
+						%>
+							System.err.print(e_<%=cid%>.getMessage());
+						<%
+						}
+					}
+					%>
+				}
+			<%
+			}
+		}
+		public List<Column> getColStruct(List<Column> stmtStructure){
+			List<Column> colStruct =  new ArrayList();
+			for(Column colStmt:stmtStructure){
+				if (!colStmt.isReplaced()&&!colStmt.isAddCol()&&!colStmt.isDynamic()) {
+					colStruct.add(colStmt);
+				} else if ( colStmt.isReplaced() ) {
+					List <Column> replacements = colStmt.getReplacement() ;
+					for (int i=0; i < replacements.size() ; i++) {
+						Column columnTest =columnTest = replacements.get(i);
+						String sqlExpression = columnTest.getSqlStmt();
+						if (sqlExpression.contains("?")) {
+							colStruct.add(colStmt);
+						}
+					}
+				}
+			}
+			return colStruct;
+		}
+		public boolean showSavePoint(INode node){
+			//return false;
+			boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
+			boolean showSavePoint = false;
+			if(("true").equals(useExistingConn)) {
+				showSavePoint =  savePoint && !useBatchSize && !("true").equals(dieOnError);
+			}else{
+				showSavePoint =  savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery));
+			}
+			return showSavePoint;
+		}
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

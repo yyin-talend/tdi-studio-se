@@ -1,0 +1,50 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+	
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
+String username = ElementParameterParser.getValue(node, "__USER__");
+
+String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
+boolean useTransaction = "false".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
+%>
+
+org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
+xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
+org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
+org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
+
+// Authentification
+<%if(universe==null || ("").equals(universe.trim())){%>
+stub_<%=cid %>.setUsername(<%=username %>);
+<%}else{%>
+stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
+<%}%>
+
+<%
+String passwordFieldName = "__PASS__";
+%>
+
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
+
+<%if(useTransaction) {%>
+String turl_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.getMDMTransactionURL(<%=mdmUrl %>);
+com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = com.talend.mdm.transaction.client.MDMTransactionClient.newTransaction(turl_<%=cid%>,stub_<%=cid %>.getUsername(),stub_<%=cid %>.getPassword());
+stub_<%=cid %>.setHeader(new org.apache.axis.message.SOAPHeaderElement("http://www.talend.com/mdm", "transaction-id", mdmTransaction_<%=cid%>.getId()));
+globalMap.put("mdmTransaction_<%=cid %>", mdmTransaction_<%=cid%>);
+<%}%>
+
+stub_<%=cid %>.ping(new org.talend.mdm.webservice.WSPing());<%//For TDI-26109%>
+
+globalMap.put("xtentisWS_<%=cid %>", xtentisWS_<%=cid %>);

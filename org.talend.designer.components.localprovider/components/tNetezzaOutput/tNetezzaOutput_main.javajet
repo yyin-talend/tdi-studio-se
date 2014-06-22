@@ -1,0 +1,148 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IConnectionCategory
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+		}
+		public void executeBatch(INode node){
+			if (rejectConnName==null && executeBatch) {
+			%>
+				if (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+					try {
+						batchSizeCounter_<%=cid%> = 0;
+						<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+						pstmt_<%=cid %>.clearBatch();
+						<%
+						 if (("INSERT").equals(dataAction)) {
+						%>
+							insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+						<%
+						}else if (("UPDATE").equals(dataAction)) {
+						%>
+							updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+						<%
+						}else if (("DELETE").equals(dataAction)) {
+						%>
+							deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+						<%
+						}
+						%>						 
+					}catch (java.sql.BatchUpdateException e_<%=cid%>){
+						<%
+						if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+						%>
+							throw(e_<%=cid%>);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+						%>
+							System.err.println(e_<%=cid%>.getMessage());
+						<%
+						}
+						%>
+					}catch (java.sql.SQLException e_<%=cid%>){
+						<%
+						if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+						%>
+							throw(e_<%=cid%>);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+						%>
+							System.err.println(e_<%=cid%>.getMessage());
+						<%
+						}
+						%>
+					}
+				}
+			<%
+			}
+		}
+		public void commitEvery(INode node){
+			if(!("true").equals(useExistingConn)){
+				if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+				%>
+					commitCounter_<%=cid%>++;
+					<%
+					if (addBatch() && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+					%>
+						if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>){
+							try {
+								if(batchSizeCounter_<%=cid%> >0){
+									batchSizeCounter_<%=cid%> = 0;
+									<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+									pstmt_<%=cid %>.clearBatch();
+								}
+								<%if (("INSERT").equals(dataAction)) {
+								%>
+									insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+								<%
+								}else if (("UPDATE").equals(dataAction)) {
+								%>
+									updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+								<%
+								}else if (("DELETE").equals(dataAction)) {
+								%>
+									deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+								<%
+								}%>
+							}catch (java.sql.BatchUpdateException e_<%=cid%>){
+								<%
+								if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+								%>
+									throw(e_<%=cid%>);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+								%>
+									System.out.println(e_<%=cid%>.getMessage());
+								<%
+								}
+								%>
+							}catch (java.sql.SQLException e_<%=cid%>){
+								<%if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+								%>
+									throw(e_<%=cid%>);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+								%>
+									System.err.println(e_<%=cid%>.getMessage());
+								<%
+								}
+								%>
+							}
+							<%log4jCodeGenerateUtil.commit(node);%>
+							commitCounter_<%=cid%>=0;
+						}
+					<%
+					}
+				}
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

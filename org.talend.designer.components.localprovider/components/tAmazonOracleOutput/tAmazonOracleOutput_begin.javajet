@@ -1,0 +1,202 @@
+<%@ jet
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		private String connectionType;
+		private boolean convertToUppercase;
+		private boolean isLog4jEnabled;
+		private List<Column> stmtStructure;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+			dbschema = ElementParameterParser.getValue(node,"__TABLESCHEMA__");
+			convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
+			isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+			connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+		}
+		public void setURL(INode node) {
+		%>
+			String url_<%=cid%> = null;
+			<%
+			if(("ORACLE_SID").equals(connectionType)) {
+			%>
+				url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+			<%
+			}
+		}
+		public String getDirverClassName(INode node){
+			return "oracle.jdbc.OracleDriver";
+		}
+		public void defineSchema(INode node,Manager manager){
+			defineSchemaTable(node,manager,"dbschema_");
+		}
+		public void addSchemaToTable(Manager manager){
+		%>
+			if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+				tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+			} else {
+				tableName_<%=cid%> = dbschema_<%=cid%> + "<%=manager.getRProtectedChar()%>.<%=manager.getLProtectedChar()%>" + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+			}
+		<%
+		}
+
+		public void newConnection(){
+			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+			%>
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+			<%
+			} else {
+			%>
+				String atnParams_<%=cid%> = <%=dbproperties%>;
+				atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+				java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+				atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+				atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+				atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+			<%
+			}
+		}
+		public void defineOtherParameters(INode node){
+		%>
+			int tmp_batchUpdateCount_<%=cid%> = 0;
+		<%
+		}
+		public void prepareColumn(List<Column> stmtStructure){
+			this.stmtStructure = stmtStructure;
+			if(convertToUppercase) {
+				for(Column column : stmtStructure) {
+					if(column.isReplaced()) {
+						for (Column replacedColumn : column.getReplacement()) {
+							replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
+						}
+					} else if(!column.isDynamic()){
+						column.setColumnName(column.getColumnName().toUpperCase());
+					}
+				}
+			}
+		}
+		public Map<String, String> hint(INode node){
+			///// hint options/////
+			boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+			Map<String, String> hintsValues = null;
+			if (useHintOptions) {
+				List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
+				hintsValues = new HashMap<String, String>();
+				String hintValue = null;
+				boolean firstInsert = true;
+				boolean firstUpdate = true;
+				boolean firstDelete = true;
+				boolean firstTableName = true;
+				for(java.util.Map<String, String> option : hintOptions) {
+					//get
+					if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
+						String id = cid.replace(node.getComponent().getName() + "_", "");
+						hintValue = "\"/*\"+" + table + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id	+  "+\"*/\" " ;
+					}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
+						hintValue = option.get("HINT");
+					}
+					//set
+					if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){
+						if(firstInsert){
+							hintsValues.put("INSERT", hintValue) ;
+							firstInsert = false;
+						}else {
+							hintsValues.put("INSERT", hintsValues.get("INSERT") + "+" + hintValue) ;
+						}
+					}else if ("UPDATE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if(firstUpdate){
+							hintsValues.put("UPDATE", hintValue) ;
+							firstUpdate = false;
+						}else {
+							hintsValues.put("UPDATE", hintsValues.get("UPDATE") + "+" + hintValue) ;
+						}
+					}else if ("DELETE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if (firstDelete){
+							hintsValues.put("DELETE", hintValue) ;
+							firstDelete =false;
+						}else {
+							hintsValues.put("DELETE", hintsValues.get("DELETE") + "+" + hintValue) ;
+						}
+					}else if ("TABLE_NAME".equalsIgnoreCase(option.get("SQL_STMT"))){
+						if (firstTableName){
+							hintsValues.put("TABLE_NAME", hintValue) ;
+							firstTableName = false;
+						}else {
+							hintsValues.put("TABLE_NAME", hintsValues.get("TABLE_NAME") + "+" + hintValue) ;
+						}
+					}
+				}
+			}
+			return hintsValues;
+			//// hint options end ////
+		}
+		public void end(INode node){
+			boolean xmlTypeExist = false;
+			for(Column column : stmtStructure) {
+				//when use Additional column column.getColumn() == null
+				if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType()) && !column.isDynamic()) {
+					column.setSqlStmt("XMLType(?)");
+					xmlTypeExist = true;
+				}
+			}
+			if (xmlTypeExist) {
+			%>
+				class XMLTypeUtil_<%=cid%> {
+					public oracle.sql.CLOB getCLOB(String xmlData, java.sql.Connection conn) throws java.sql.SQLException{
+						oracle.sql.CLOB tempClob = null;
+						try{
+							// If the temporary CLOB has not yet been created, create one
+							tempClob = oracle.sql.CLOB.createTemporary(conn, true, oracle.sql.CLOB.DURATION_SESSION);
+							// Open the temporary CLOB in readwrite mode, to enable writing
+							tempClob.open(oracle.sql.CLOB.MODE_READWRITE);
+							// Get the output stream to write
+							java.io.Writer tempClobWriter = tempClob.getCharacterOutputStream();
+							// Write the data into the temporary CLOB
+							tempClobWriter.write(xmlData);
+							// Flush and close the stream
+							tempClobWriter.flush();
+							tempClobWriter.close();
+							// Close the temporary CLOB
+							tempClob.close();
+						} catch( java.sql.SQLException sqlexp){
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid %> - " + sqlexp.getMessage());
+							<%}%>
+							tempClob.freeTemporary();
+							sqlexp.printStackTrace();
+						} catch(java.lang.Exception exp){
+							<%if(isLog4jEnabled){%>
+								log.error("<%=cid %> - " + exp.getMessage());
+							<%}%>
+							tempClob.freeTemporary();
+							exp.printStackTrace();
+						}
+						return tempClob;
+					}
+				}
+				XMLTypeUtil_<%=cid%> xmlTypeUtil_<%=cid%> = null;
+				xmlTypeUtil_<%=cid%> = new XMLTypeUtil_<%=cid%>();
+			<%
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>

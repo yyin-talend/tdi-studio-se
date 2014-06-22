@@ -1,0 +1,172 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();      
+    String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
+    String replaceOption = ElementParameterParser.getValue(node,"__REPLACEOPTION__");
+    List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+%>
+	String[] sourceFileNames_<%=cid%> = new String[]{
+<%
+		for (Map<String, String> file : filelist) {
+%>
+			<%=file.get("SOURCE")%>,
+<%          
+        }
+%>
+	};
+	java.io.File dir_<%=cid %> = null;
+	try{
+<%
+		if(("append").equals(replaceOption)){%>
+			for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+				if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+					sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
+					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+					int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+					if(index_<%=cid %> >0){
+						dir_<%=cid %> = new java.io.File(<%=localdir %>);
+						String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
+						java.io.File file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+						if(!file_<%=cid %>.exists()){
+						  file_<%=cid %>.getParentFile().mkdirs();
+						}
+						java.io.FileOutputStream out_<%=cid %> = null;
+						
+						//copy action
+						java.io.InputStream is_<%=cid%> = null;
+						byte[] buffer_<%=cid%> = new byte[8192];
+						int receive_<%=cid%> = -1;
+						try {
+							out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, true);
+							is_<%=cid%> = scp_<%=cid %>.get(sourceFile_<%=cid %>);
+							
+		    				while((receive_<%=cid%> = is_<%=cid%>.read(buffer_<%=cid%>))!=-1) {
+		    					out_<%=cid %>.write(buffer_<%=cid%>, 0, receive_<%=cid%>);
+		    				}
+						} catch(java.lang.Exception e_<%=cid%>) {
+		                	if(out_<%=cid %> != null){
+		                		out_<%=cid %>.close();
+		                	}
+							//only delete empty file when exception happen?this is old action,we keep it.
+		            		if(file_<%=cid%>.length() == 0){
+		            			file_<%=cid%>.delete();
+		            		}
+							<%if(isLog4jEnabled){%>
+								log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+							<%}%>
+		            		throw e_<%=cid%>;
+						} finally {
+		                	if(out_<%=cid %> != null){
+		                		out_<%=cid %>.close();
+		                	}
+		                	
+		                	if(is_<%=cid%> != null) {
+		                		is_<%=cid%>.close();
+		                	}
+						}
+						nb_file_<%=cid%> ++ ;
+						<%if(isLog4jEnabled){%>
+							log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
+						<%}%>
+					}
+				}
+			}
+			if(nb_file_<%=cid%>>0){
+				globalMap.put("<%=cid %>_STATUS", "File get OK.");
+			}else{
+				globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+			}
+		<%
+		}else{
+			if(!("overwrite").equals(replaceOption)) {%>        
+		    	String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
+				java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
+				for (int i_<%=cid%> = 0; i_<%=cid%> < sourceFileNames_<%=cid%>.length; i_<%=cid%>++) {
+		        	String fileName_<%=cid%> = sourceFileNames_<%=cid%>[i_<%=cid%>];
+		            if (!new java.io.File((parentPath_<%=cid%>), (fileName_<%=cid%>)).exists()) {
+		                list_<%=cid%>.add(fileName_<%=cid%>);
+		            }
+		        }
+		        sourceFileNames_<%=cid%> = (String[]) list_<%=cid%>.toArray(new String[0]);
+		<%
+			}
+		%>
+			if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
+				for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+					if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+						sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
+						sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+					    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+					    if(index_<%=cid %> >0){
+							dir_<%=cid %> = new java.io.File(<%=localdir %>);
+							String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
+							java.io.File file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
+							if(!file_<%=cid %>.exists()){
+						  		file_<%=cid %>.getParentFile().mkdirs();
+							}
+							java.io.FileOutputStream out_<%=cid %> = null;
+		    				//copy action
+		    				java.io.InputStream is_<%=cid%> = null;
+		    				byte[] buffer_<%=cid%> = new byte[8192];
+		    				int receive_<%=cid%> = -1;
+		    				try {
+		    					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, false);
+		    					is_<%=cid%> = scp_<%=cid %>.get(sourceFile_<%=cid %>);
+		    					
+		        				while((receive_<%=cid%> = is_<%=cid%>.read(buffer_<%=cid%>))!=-1) {
+		        					out_<%=cid %>.write(buffer_<%=cid%>, 0, receive_<%=cid%>);
+		        				}
+		    				} catch(java.lang.Exception e_<%=cid%>) {
+		                    	if(out_<%=cid %> != null){
+		                    		out_<%=cid %>.close();
+		                    	}
+		    					//only delete empty file when exception happen?this is old action,we keep it.
+		                		if(file_<%=cid%>.length() == 0){
+		                			file_<%=cid%>.delete();
+		                		}
+								<%if(isLog4jEnabled){%>
+									log.fatal("<%=cid%> - " + e_<%=cid%>.getMessage());
+								<%}%>
+		                		throw e_<%=cid%>;
+		    				} finally {
+		                    	if(out_<%=cid %> != null){
+		                    		out_<%=cid %>.close();
+		                    	}
+		                    	if(is_<%=cid%> != null) {
+		                    		is_<%=cid%>.close();
+		                    	}
+		    				}
+							nb_file_<%=cid%> ++ ;
+							<%if(isLog4jEnabled){%>
+								log.debug("<%=cid%> - Downloaded file " + nb_file_<%=cid%> +  ": " + sourceFile_<%=cid %> + " successfully.");
+							<%}%>
+						}
+					}
+				}
+				if(nb_file_<%=cid%>>0){
+					globalMap.put("<%=cid %>_STATUS", "File get OK.");
+				}else{
+					globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+				}
+			}
+		<%
+		}
+		%>
+	}catch(java.lang.Exception e_<%=cid%>){
+		globalMap.put("<%=cid %>_STATUS", "File get fail.");
+		<%if(isLog4jEnabled){%>
+			log.fatal("<%=cid%> - "  + e_<%=cid%>.getMessage());
+		<%}%>
+		throw e_<%=cid%>;
+	}

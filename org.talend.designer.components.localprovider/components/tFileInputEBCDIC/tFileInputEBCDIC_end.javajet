@@ -1,0 +1,49 @@
+<%@ jet 
+	imports="
+	    java.util.List
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.IConnection
+	" 
+%>
+	<%@ include file="../templates/Log4j/Log4jFileUtil.javajet"%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	String cid = node.getUniqueName();
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
+	if(!customSetOriginalLength){
+%>
+			}
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
+				log.trace("<%=cid%> - Content of the record " + tos_count_<%=cid%> + ": " + log4jSb_<%=cid%>);
+				log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+			<%}%>
+		}
+<%
+	}else{
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			if(conns!=null && conns.size()>0){
+%>
+				<%if(isLog4jEnabled){%>
+					log.debug("<%=cid%> - Retrieving the record " + tos_count_<%=cid%> + ".");
+					log.trace("<%=cid%> - Content of the record " + tos_count_<%=cid%> + ": " + log4jSb_<%=cid%>);
+					log4jSb_<%=cid%>.delete(0,log4jSb_<%=cid%>.length());
+				<%}%>
+				}
+				fs_<%=cid %>.close();
+<%
+			}
+	}
+%>
+	globalMap.put("<%=cid%>_NB_LINE", tos_count_<%=cid%>);
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%>- Retrieved records count: "+ tos_count_<%=cid%> + ".");
+	<%}%>
+<%
+	log4jFileUtil.componentFinishInfo(node);
+%>

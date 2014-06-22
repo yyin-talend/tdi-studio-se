@@ -1,0 +1,38 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+    String cid = node.getUniqueName();      
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+%>
+	try{
+        if(destFile_<%=cid %>!=null && destFile_<%=cid %>.length()!=0){
+   			java.io.OutputStream out_<%=cid%> = null;
+			try {
+				out_<%=cid%> = scp_<%=cid%>.put(destFile_<%=cid%>, 0, <%=remotedir %>, "0644");
+				out_<%=cid %>.write(new byte[]{});
+			} finally {
+            	if(out_<%=cid %> != null){
+        			out_<%=cid %>.close();
+            	}
+			}
+			
+            nb_file_<%=cid%> ++;
+			<%if(isLog4jEnabled){%>
+				log.debug("<%=cid%> - '" + destFile_<%=cid %>  + "' truncate OK.");
+			<%}%>
+            globalMap.put("<%=cid %>_STATUS", "File truncate OK.");
+        }
+    }catch(java.lang.Exception e_<%=cid%>){
+		<%if(isLog4jEnabled){%>
+			log.warn("<%=cid%> - " + e_<%=cid%>.getMessage());
+		<%}%>
+		globalMap.put("<%=cid %>_STATUS", "File truncate fail.");
+    }

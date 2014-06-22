@@ -1,0 +1,80 @@
+<%@ jet
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		private String javaDbType;
+		private String javaDbDriver;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+			String dbTypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
+			String [] dbtypes = dbTypeDefinition.split(";");
+			javaDbType = dbtypes[0];
+			javaDbDriver = dbtypes[1];
+			dbmsId = dbtypes[3];
+			String clearTable = ElementParameterParser.getValue(node, "__CLEAR_TABLE__");
+			if(("true").equals(clearTable)) {
+				tableAction = "CLEAR";
+			}
+		}
+		public String getDirverClassName(INode node){
+			return javaDbDriver;
+		}
+		public void setURL(INode node) {
+			if(("undef").equals(javaDbType)) {
+				%>
+				String url_<%=cid %> = "jdbc:odbc:" + <%=dbname%>;
+				<%
+			} else if(("mssql").equals(javaDbType)) {
+				%>
+				String url_<%=cid %> = "jdbc:odbc:" + <%=dbname%>;
+				<%
+			} else if(("oracle").equals(javaDbType)) {
+				%>
+				String url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+				<%
+			} else if(("postgresql").equals(javaDbType)) {
+				%>
+				String url_<%=cid %> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+				<%
+			} else if(("mysql").equals(javaDbType)) {
+				%>
+				String url_<%=cid %> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+				<%
+			}
+		}
+		public void newConnection(){
+		%>
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+			}else{
+				dbProperties_<%=cid%> = dbProperties_<%=cid%>.replaceAll("&", "\n");
+				java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+				atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+				atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+				atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(dbProperties_<%=cid%>.getBytes()));
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+			}
+		<%
+		}
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>

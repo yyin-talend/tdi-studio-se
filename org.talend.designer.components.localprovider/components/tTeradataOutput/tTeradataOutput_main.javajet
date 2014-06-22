@@ -1,0 +1,201 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IConnectionCategory
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		boolean isBatchSize = false;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+		}
+		public void executeBatch(INode node){
+			if ((rejectConnName==null) && executeBatch) {
+				isBatchSize = true;
+				%>
+				if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+					try {
+						batchSizeCounter_<%=cid%> = 0;
+						int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>:pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}
+						<%if (("INSERT").equals(dataAction)) {
+						%>
+							insertedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("UPDATE").equals(dataAction)) {
+						%>
+							updatedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("DELETE").equals(dataAction)) {
+						%>
+							deletedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}%>
+					}catch(java.sql.SQLException e_<%=cid%>){
+						<% if (isEnableDebug) { %>
+						java.sql.SQLException e2_<%=cid%> = e_<%=cid%>;
+						while (e2_<%=cid%> != null) {
+							System.out.println(e_<%=cid%>.getMessage());
+							e2_<%=cid%> = e2_<%=cid%>.getNextException();
+						}
+						<% } %>
+						java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
+						boolean isFailure = false;
+						while(e_<%=cid%> != null){
+							if(e_<%=cid%>.getErrorCode() == -2801){
+								System.out.println(" Message: " + e_<%=cid%>.getMessage());
+								e_<%=cid%>.printStackTrace();
+								System.out.println();
+							}
+							else if(e_<%=cid%>.getErrorCode() == 1339){
+								isFailure = true;
+							}
+							else{
+								System.out.println(" Message: " + e_<%=cid%>.getMessage());
+								e_<%=cid%>.printStackTrace();
+							}
+							e_<%=cid%> = e_<%=cid%>.getNextException();
+						}
+						if(isFailure && e_<%=cid%> != null){
+							System.out.println(" Message: " + e_<%=cid%>.getMessage());
+							e_<%=cid%>.printStackTrace();
+						}
+						<%if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e3_"+cid);
+						%>
+							throw (e3_<%=cid%>);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error","e3_"+cid);
+						%>
+							System.err.println(e3_<%=cid%>.getMessage());
+						<%
+						}
+						%>
+					}
+				}
+			<%
+			}
+		}
+		public void commitEvery(INode node){
+			if(!("true").equals(useExistingConn)) {
+				if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+					%>
+					commitCounter_<%=cid%>++;
+					if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+						<%if((("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ){
+						%>
+							try {
+								<%
+								if (isBatchSize) {
+								%>
+								batchSizeCounter_<%=cid%> = 0;
+								<%
+								}
+								if(useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+								%>
+									if ( batchSizeCounter_<%=cid%> > 0 ) {
+								<%
+								}
+								if(rejectConnName==null){
+									log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - Executing the "+dataAction+" batch.");
+									%>
+									int countSum_<%=cid%> = 0;
+									for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+										countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+									}
+									<%log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - The "+dataAction+" batch execution has succeeded.");%>
+									<%if (("INSERT").equals(dataAction)) {
+									%>
+										insertedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}else if (("UPDATE").equals(dataAction)) {
+									%>
+										updatedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}else if (("DELETE").equals(dataAction)) {
+									%>
+										deletedCount_<%=cid%> += countSum_<%=cid%>;
+									<%
+									}%>
+								<%
+								}
+								if(useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+								%>
+									}
+								<%
+								}
+								log4jCodeGenerateUtil.commit();
+								%>
+							}catch(java.sql.SQLException e_<%=cid%>){
+								<%log4jCodeGenerateUtil.logError(node,"error","e_"+cid);%>
+								<% if (isEnableDebug) { %>
+								java.sql.SQLException e2_<%=cid%> = e_<%=cid%>;
+								while (e2_<%=cid%> != null) {
+									System.out.println(e_<%=cid%>.getMessage());
+									e2_<%=cid%> = e2_<%=cid%>.getNextException();
+								}
+								<% } %>
+								java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
+										boolean isFailure = false;
+								while(e_<%=cid%> != null){
+									if(e_<%=cid%>.getErrorCode() == -2801){
+										System.out.println(" Message: " + e_<%=cid%>.getMessage());
+										e_<%=cid%>.printStackTrace();
+										System.out.println();
+									}
+									else if(e_<%=cid%>.getErrorCode() == 1339){
+										isFailure = true;
+									}
+									else{
+										System.out.println(" Message: " + e_<%=cid%>.getMessage());
+										e_<%=cid%>.printStackTrace();
+									}
+									e_<%=cid%> = e_<%=cid%>.getNextException();
+								}
+								if(isFailure && e_<%=cid%> != null){
+									System.out.println(" Message: " + e_<%=cid%>.getMessage());
+									e_<%=cid%>.printStackTrace();
+								}
+								<%if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal","e3_"+cid);
+								%>
+									throw (e3_<%=cid%>);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error","e3_"+cid);
+								%>
+									System.err.println(e3_<%=cid%>.getMessage());
+								<%
+								}
+								%>
+							}finally{
+								commitCounter_<%=cid%> = 0;
+							}
+						<%
+						}%>
+					}
+					<%
+				}
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

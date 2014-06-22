@@ -1,0 +1,291 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IConnectionCategory
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		private boolean isUseBatchByDBVersion;
+		private boolean convertToUppercase;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			isUseBatchByDBVersion = !"ORACLE_8".equalsIgnoreCase(dbVersion);
+			convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
+		}
+		public void setDBVersion(INode node,Manager manager){
+			if(("true").equals(useExistingConn)) {
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
+				for(INode targetNode : nodes){
+					if (targetNode.getUniqueName().equals(connection)) {
+						dbVersion = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
+					}
+				}
+			}
+			((OracleManager)manager).setDbVersion(dbVersion);
+		}
+		public boolean addBatch(){
+			boolean addBatch = rejectConnName == null && isUseBatchByDBVersion && !("true").equals(useExistingConn);
+			return addBatch;
+		}
+		public void generateInsertSetStmt(INode node,Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
+			String dbType = column.getColumn().getType();
+			String columnName = column.getName();
+			if( null == dbType) {
+				dbType="";
+			}
+			if (typeToGenerate.equals("Geometry")) {
+				int targetSRID = -1;
+				try {
+				  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+				}
+				catch (NumberFormatException e) {
+				%>
+				 	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+				 	// TODO error: <%=e.getMessage()%>
+					<%
+				 	e.printStackTrace();
+				}
+				%>
+				org.talend.sdi.geometry.Geometry tGeometry_<%=cid%> = (org.talend.sdi.geometry.Geometry)<%=incomingConnName%>.<%=column.getName() %>;
+				com.vividsolutions.jts.geom.Geometry geometry_<%=cid%> = tGeometry_<%=cid%>._getInternalGeometry();
+				com.vividsolutions.jts.geom.Envelope extends_<%=cid%> = geometryColumnToExtends.get("<%=columnName%>");
+				if (extends_<%=cid%> == null) {
+					geometryColumnToExtends.put("<%=columnName%>", geometry_<%=cid%>.getEnvelopeInternal());
+				}
+				else {
+					extends_<%=cid%>.expandToInclude(geometry_<%=cid%>.getEnvelopeInternal());
+				}
+				String wkt_<%=cid%> = geometry_<%=cid%>.toText();
+				oracle.spatial.util.WKT oracle_wkt_<%=cid%> = new oracle.spatial.util.WKT();
+				oracle.spatial.geometry.JGeometry jgeometry_<%=cid%> = oracle_wkt_<%=cid%>.toJGeometry(wkt_<%=cid%>.getBytes());
+				<%
+				if (targetSRID > 0) {
+				%>
+					jgeometry_<%=cid%>.setSRID(<%=targetSRID%>);
+				<%
+				}
+				%>
+				pstmt_<%=cid%>.setObject(<%=index%>, oracle.spatial.geometry.JGeometry.store(jgeometry_<%=cid%>, conn_<%=cid%>));
+			<%
+			}
+			else {
+			%>
+			<%=manager.generateSetStmt(typeToGenerate, dbType, column, index, incomingConnName, cid, actionType)%>
+			<%
+			}
+		}
+		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
+			String dbType = column.getColumn().getType();
+			if( null == dbType) {
+				dbType="";
+			}
+			%>
+			<%=manager.generateSetStmt(typeToGenerate,dbType, column, index, incomingConnName, cid,actionType)%>
+		<%
+		}
+
+		public void changeSQL(){
+			if(convertToUppercase){
+				if(("INSERT").equals(dataAction)) {
+				%>
+					insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+				<%
+				} else if (("UPDATE").equals(dataAction)) {
+				%>
+					update_<%=cid%> = update_<%=cid%>.toUpperCase();
+				<%
+				} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
+				%>
+					checkExist_<%=cid%> = checkExist_<%=cid%>.toUpperCase();
+					insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+					update_<%=cid%> = update_<%=cid%>.toUpperCase();
+				<%
+				} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
+				%>
+					update_<%=cid%> = update_<%=cid%>.toUpperCase();
+					insert_<%=cid%> = insert_<%=cid%>.toUpperCase();
+				<%
+				} else if (("DELETE").equals(dataAction)) {
+				%>
+					delete_<%=cid%> = delete_<%=cid%>.toUpperCase();
+				<%
+				}
+			}
+		}
+		public void generateSetStmt(Manager manager,String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType,String dynamic) {
+			String dbType = column.getColumn().getType();
+			if( null == dbType) {
+				dbType="";
+			}
+			%>
+			<%=manager.generateSetStmt(typeToGenerate,dbType, column, index, incomingConnName, cid,actionType,dynamic)%>
+		<%
+		}
+		public Map<String, String> hint(INode node){
+			///// hint options/////
+			boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+			Map<String, String> hintsValues = null;
+			if (useHintOptions) {
+				List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
+				hintsValues = new HashMap<String, String>();
+				String hintValue = null;
+				boolean firstInsert = true;
+				boolean firstUpdate = true;
+				boolean firstDelete = true;
+				boolean firstTableName = true;
+				for(java.util.Map<String, String> option : hintOptions) {
+					//get
+					if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
+						String id = cid.replace(node.getComponent().getName() + "_", "");
+						hintValue = "\"/*\"+" + table + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id	+  "+\"*/\" " ;
+					}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
+						hintValue = option.get("HINT");
+					}
+					//set
+					if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){
+						if(firstInsert){
+							hintsValues.put("INSERT", hintValue) ;
+							firstInsert = false;
+						}else {
+							hintsValues.put("INSERT", hintsValues.get("INSERT") + "+" + hintValue) ;
+						}
+					}else if ("UPDATE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if(firstUpdate){
+							hintsValues.put("UPDATE", hintValue) ;
+							firstUpdate = false;
+						}else {
+							hintsValues.put("UPDATE", hintsValues.get("UPDATE") + "+" + hintValue) ;
+						}
+					}else if ("DELETE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+						if (firstDelete){
+							hintsValues.put("DELETE", hintValue) ;
+							firstDelete =false;
+						}else {
+							hintsValues.put("DELETE", hintsValues.get("DELETE") + "+" + hintValue) ;
+						}
+					}else if ("TABLE_NAME".equalsIgnoreCase(option.get("SQL_STMT"))){
+						if (firstTableName){
+							hintsValues.put("TABLE_NAME", hintValue) ;
+							firstTableName = false;
+						}else {
+							hintsValues.put("TABLE_NAME", hintsValues.get("TABLE_NAME") + "+" + hintValue) ;
+						}
+					}
+				}
+			}
+			return hintsValues;
+			//// hint options end ////
+		}
+		public void executeBatch(INode node){
+			//////////batch execute by batch size///////
+			if (useBatchSize) {
+				if(!("").equals(batchSize) && !("0").equals(batchSize)) {
+					if ( (addBatch()) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+					%>
+					if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+						try {
+							<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+						}catch (java.sql.BatchUpdateException e_<%=cid%>){
+						<%if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+						%>
+							throw(e_<%=cid%>);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+						%>
+							System.err.println(e_<%=cid%>.getMessage());
+						<%
+						}%>
+						}
+						tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();
+						<%if (("INSERT").equals(dataAction)) {
+						%>
+							insertedCount_<%=cid%>
+						<%
+						}else if (("UPDATE").equals(dataAction)) {
+						%>
+							updatedCount_<%=cid%>
+						<%
+						}else if (("DELETE").equals(dataAction)) {
+						%>
+							deletedCount_<%=cid%>
+						<%
+						}%>
+						+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);
+						batchSizeCounter_<%=cid%> = 0;
+					}
+					<%
+					}
+				}
+			}
+		}
+		public void commitEvery(INode node){
+			////////////commit every////////////
+			if(!("true").equals(useExistingConn)) {
+				if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+				%>
+					commitCounter_<%=cid%>++;
+					if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+						<%
+						if ((addBatch()) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+						%>
+							try {
+								<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+							}catch (java.sql.BatchUpdateException e_<%=cid%>){
+								<%if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+								%>
+									throw(e_<%=cid%>);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+								%>
+									System.out.println(e_<%=cid%>.getMessage());
+								<%
+								}%>
+							}
+							tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();
+							<%if (("INSERT").equals(dataAction)) {
+							%>
+								insertedCount_<%=cid%>
+							<%
+							}else if (("UPDATE").equals(dataAction)) {
+							%>
+								updatedCount_<%=cid%>
+							<%
+							}else if (("DELETE").equals(dataAction)) {
+							%>
+								deletedCount_<%=cid%>
+							<%
+							}%>
+							+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);
+						<%
+						}
+						log4jCodeGenerateUtil.commit(node);
+						%>
+						commitCounter_<%=cid%>=0;
+					}
+					<%
+				}
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

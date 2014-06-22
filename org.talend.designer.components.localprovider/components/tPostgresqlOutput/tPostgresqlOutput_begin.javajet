@@ -1,0 +1,80 @@
+<%@ jet
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+		}
+		public String getDirverClassName(INode node){
+			return "org.postgresql.Driver";
+		}
+		public void setURL(INode node) {
+		%>
+			String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+		<%
+		}
+		public void defineSchema(INode node,Manager manager){
+			defineSchemaTable(node,manager,"schema_");
+		}
+		public void savePoint(INode node){
+			String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+			boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
+			if(("true").equals(useExistingConn)) {
+			%>
+				<%if(savePoint && !useBatchSize && !("true").equals(dieOnError)){%>
+					java.sql.Savepoint  sp_<%=cid %> = null;
+				<%}
+			} else {
+				%>
+				<%if(savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery))){%>
+					java.sql.Savepoint  sp_<%=cid %> = null;
+				<%}
+			}
+			%>
+			<%if(("true").equals(useExistingConn) && savePoint){%>
+				if(conn_<%=cid%>.getAutoCommit()){
+					throw new RuntimeException("Connection autocommit must be off to use savePoint");
+				}
+			<%}
+		}
+		public void useSpatialOptions(INode node){
+			boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+			boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+			boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+			boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+			boolean createTable = "CREATE".equals(tableAction) || "DROP_CREATE".equals(tableAction) || "CREATE_IF_NOT_EXISTS".equals(tableAction) || "DROP_IF_EXISTS_AND_CREATE".equals(tableAction);
+			if((createGeometryColumns || createSpatialIndex) && useSpatialOptions && !isParallelize && createTable) {
+			%>
+				String geometryColumnName_<%=cid %> = null;
+				// Initialize SRID
+				int SRID_<%=cid %> = 0;
+				int dimension_<%=cid %> = 0;
+				boolean firstGeometry_<%=cid %> = true;
+			<%
+			}
+		}
+		public void end(INode node){
+			savePoint(node);
+			useSpatialOptions(node);
+		}
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>

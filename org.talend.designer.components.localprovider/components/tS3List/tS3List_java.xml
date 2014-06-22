@@ -1,0 +1,167 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20130810A"
+    STARTABLE="true"
+    PARTITIONING="NONE"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Cloud/AmazonS3</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+    <PARAMETERS>
+    <PARAMETER NAME="USE_EXISTING_CONNECTION" FIELD="CHECK"
+        NUM_ROW="2"  GROUP="CONNECTION_CONFIG">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST" REQUIRED="true" FILTER="tS3Connection"
+        NUM_ROW="2" SHOW_IF="USE_EXISTING_CONNECTION == 'true'" GROUP="CONNECTION_CONFIG"/>
+
+    <PARAMETER
+      NAME="ACCESS_KEY"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+      GROUP="CONNECTION_CONFIG"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SECRET_KEY"
+      FIELD="PASSWORD"
+      NUM_ROW="20"
+      REQUIRED="true"
+      GROUP="CONNECTION_CONFIG"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+        <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LISTALL"
+      FIELD="CHECK"
+      NUM_ROW="25"
+      REQUIRED="true"
+    >
+        <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="OBJECTS_PREFIX"
+      FIELD="TEXT"
+      NUM_ROW="25"
+      REQUIRED="false"
+      SHOW_IF="LISTALL == 'true'"
+    >
+    </PARAMETER>
+
+    <PARAMETER 
+		NAME="BUCKETS"
+		FIELD="TABLE"
+		NUM_ROW="30"
+		REQUIRED="true"
+		NB_LINES="5"
+		SHOW_IF="LISTALL == 'false'"
+	>
+        <ITEMS>
+            <ITEM NAME="BUCKET_NAME"/>
+            <ITEM NAME="OBJECT_PREFIX"/>
+        </ITEMS>
+    </PARAMETER>
+	<PARAMETER
+	    NAME="DIE_ON_ERROR"
+	    FIELD="CHECK"
+	    NUM_ROW="90"
+	>
+	    <DEFAULT>false</DEFAULT>
+	</PARAMETER>
+   </PARAMETERS>
+
+    <ADVANCED_PARAMETERS>
+		<PARAMETER
+		  NAME="CONFIG_CLIENT"
+		  FIELD="CHECK"
+		  NUM_ROW="10"
+		  NB_LINES="5"
+		  SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+		  GROUP="CLIENT_CONFIG"
+		>
+		</PARAMETER>
+		
+		<PARAMETER
+		  NAME="CLIENT_CONFIGURATION"
+		  FIELD="TABLE"
+		  NUM_ROW="30"
+		  NB_LINES="5"
+		  REQUIRED="true"
+		  GROUP="CLIENT_CONFIG"
+		  SHOW_IF="(CONFIG_CLIENT =='true') AND (USE_EXISTING_CONNECTION == 'false')"
+		>
+          <ITEMS>
+            <ITEM NAME="CLIENT_PARAMETER" FIELD="CLOSED_LIST">
+                <ITEMS DEFAULT="CONNECTIONTIMEOUT">
+                    <ITEM NAME="CONNECTIONTIMEOUT" VALUE="ConnectionTimeout"/>
+                    <ITEM NAME="MAXCONNECTIONS" VALUE="MaxConnections"/>
+                    <ITEM NAME="MAXERRORRETRY" VALUE="MaxErrorRetry"/>
+                    <ITEM NAME="PROTOCOL" VALUE="Protocol"/>
+                    <ITEM NAME="PROXYDOMAIN" VALUE="ProxyDomain"/>
+                    <ITEM NAME="PROXYHOST" VALUE="ProxyHost"/>
+                    <ITEM NAME="PROXYPASSWORD" VALUE="ProxyPassword"/>
+                    <ITEM NAME="PROXYPORT" VALUE="ProxyPort"/>
+                    <ITEM NAME="PROXYUSERNAME" VALUE="ProxyUsername"/>
+                    <ITEM NAME="PROXYWORKSTATION" VALUE="ProxyWorkstation"/>
+                    <ITEM NAME="SOCKETTIMEOUT" VALUE="SocketTimeout"/>
+                    <ITEM NAME="USERAGENT" VALUE="UserAgent"/>
+                    <ITEM NAME="SOCKETRECEIVEBUFFERSIZEHINT" VALUE="SocketReceiveBufferSizeHints"/>
+                    <ITEM NAME="SOCKETSENDBUFFERSIZEHINT" VALUE="SocketSendBufferSizeHints"/>
+                </ITEMS>
+            </ITEM>
+            <ITEM NAME="VALUE" />
+          </ITEMS>
+        </PARAMETER>
+
+    </ADVANCED_PARAMETERS>
+
+   <CODEGENERATION>
+    <IMPORTS>
+       <IMPORT NAME="aws-java-sdk-1.5.4" MODULE="aws-java-sdk-1.5.4.jar" UrlPath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-1.5.4.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Commons-Logging-1.1.1" MODULE="commons-logging-1.1.1.jar" UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED="true"/>
+       <IMPORT NAME="httpcore-4.2.1" MODULE="httpcore-4.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.2.1.jar" REQUIRED="true"/>
+       <IMPORT NAME="httpclient-4.2.1" MODULE="httpclient-4.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpclient-4.2.1.jar" REQUIRED="true"/>
+       <IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar" UrlPath="platform:/base/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar" REQUIRED="true" />
+    </IMPORTS>
+   </CODEGENERATION>
+
+    <RETURNS>
+        <RETURN NAME="CURRENT_BUCKET" TYPE="id_String" AVAILABILITY="FLOW" />
+        <RETURN NAME="CURRENT_KEY" TYPE="id_String" AVAILABILITY="FLOW" />
+        <RETURN NAME="NB_BUCKET" TYPE="id_Integer" AVAILABILITY="AFTER" />
+        <RETURN NAME="NB_BUCKET_OBJECT" TYPE="id_Integer" AVAILABILITY="AFTER" />
+    </RETURNS>
+</COMPONENT>

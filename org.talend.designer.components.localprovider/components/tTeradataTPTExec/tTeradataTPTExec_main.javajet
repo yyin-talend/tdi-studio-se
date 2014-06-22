@@ -1,0 +1,321 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.lang.StringBuilder
+" 
+%>
+<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String tdpid= ElementParameterParser.getValue(node, "__TDPID__");
+String jobName= ElementParameterParser.getValue(node, "__JOB_NAME__");
+String operatorLoad= ElementParameterParser.getValue(node, "__OPERATOR_LOAD__");
+String operatorDataConnector= ElementParameterParser.getValue(node, "__OPERATOR_DATA_CONNECTOR__");
+String layoutName= ElementParameterParser.getValue(node, "__LAYOUT_NAME__");
+String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser= ElementParameterParser.getValue(node, "__USER__");
+
+String table= ElementParameterParser.getValue(node, "__TABLE__");
+
+String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
+String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
+String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
+String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
+String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
+String beginLoad= ElementParameterParser.getValue(node, "__BEGINLOAD_ADVANCEDPARAM__");
+boolean returnCodeDie= ElementParameterParser.getValue(node, "__RETURN_CODE_DIE__").equals("true");
+String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
+boolean specifyLogTable= ElementParameterParser.getValue(node, "__SPECIFY_LOG_TABLE__").equals("true");
+String logTable= ElementParameterParser.getValue(node, "__LOG_TABLE_TABLE__");
+
+String defineCharset = ElementParameterParser.getValue(node, "__DEFINE_CHARSET__");
+String charset = ElementParameterParser.getValue(node, "__CHARSET__");
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+log4jCodeGenerateUtil.infoComponentStart(node);
+//windows line separator as default
+String lineSeparator = "\\r\\n";
+if("Unix".equals(execution)){
+	lineSeparator = "\\n";
+}
+if(!scriptPath.endsWith("/\"")){
+	scriptPath = scriptPath+	"+\"/\"";
+}
+if(loadFile.indexOf("/") !=0 && ("Windows").equals(execution)){
+	loadFile = loadFile.replaceAll("/", "\\\\\\\\");
+}
+
+String dbmsId = "teradata_id";
+
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		columnList = metadata.getListColumns();
+	}
+}
+%>
+String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
+java.io.File file_<%=cid %> = new java.io.File(<%=scriptPath%>+<%=table%>+ <%if("Windows".equals(execution)){%>".script"<%}else{%>".scr"<%}%>);
+
+<%//build script---------------------------------------------------------%>
+
+try{
+java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(file_<%=cid%>);
+fw_<%=cid %>.write("/* 1 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 2 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 3 */  DEFINE JOB " + <%=jobName%> +"<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 4 */  ("+"<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 5 */  	DEFINE OPERATOR " + <%=operatorLoad%> + "<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 6 */  	TYPE LOAD<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 7 */  	SCHEMA *<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 8 */  	ATTRIBUTES<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 9 */  	(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 10 */  		VARCHAR UserName, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 11 */  		VARCHAR UserPassword, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 12 */  		VARCHAR LogTable, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 13 */  		VARCHAR TargetTable, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 14 */  		INTEGER BufferSize, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 15 */  		INTEGER ErrorLimit, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 16 */  		INTEGER MaxSessions, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 17 */  		INTEGER MinSessions, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 18 */  		INTEGER TenacityHours, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 19 */  		INTEGER TenacitySleep, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 20 */  		VARCHAR AccountID, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 21 */  		VARCHAR DateForm, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 22 */  		VARCHAR ErrorTable1, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 23 */  		VARCHAR ErrorTable2, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 24 */  		VARCHAR NotifyExit, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 25 */  		VARCHAR NotifyExitIsDLL, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 26 */  		VARCHAR NotifyLevel, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 27 */  		VARCHAR NotifyMethod, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 28 */  		VARCHAR NotifyString, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 29 */  		VARCHAR PauseAcq, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 30 */  		VARCHAR PrivateLogName,<%=lineSeparator%>"); 
+fw_<%=cid %>.write("/* 31 */  		VARCHAR TdpId, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 32 */  		VARCHAR TraceLevel, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 33 */  		VARCHAR WorkingDatabase<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 34 */  	);<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 35 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 36 */  	DEFINE SCHEMA " + <%=layoutName%> + "<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 37 */  	(<%=lineSeparator%>");
+
+<%
+if(columnList!=null){
+	int counter = 1;
+	for(IMetadataColumn column:columnList){	
+		if( columnList.size() != counter){	%>
+		fw_<%=cid %>.write("               <%=column.getOriginalDbColumnName()%>"+" VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>),<%=lineSeparator%>");
+	<%
+		} else {
+	%>
+			fw_<%=cid %>.write("               <%=column.getOriginalDbColumnName()%>"+" VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)<%=lineSeparator%>");
+	<% 	}
+		counter++;
+	}
+}
+%>
+
+fw_<%=cid %>.write("/* 45 */  	);<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 46 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 47 */  	DEFINE OPERATOR " + <%=operatorDataConnector%> + "<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 48 */  	TYPE DATACONNECTOR PRODUCER<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 49 */  	SCHEMA " + <%=layoutName%> + "<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 50 */  	ATTRIBUTES<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 51 */  	(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 52 */  		VARCHAR FileName, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 53 */  		VARCHAR Format, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 54 */  		VARCHAR OpenMode, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 55 */  		INTEGER BlockSize, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 56 */  		INTEGER BufferSize, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 57 */  		INTEGER RetentionPeriod, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 58 */  		INTEGER RowsPerInstance, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 59 */  		INTEGER SecondarySpace, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 60 */  		INTEGER UnitCount, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 61 */  		INTEGER VigilElapsedTime, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 62 */  		INTEGER VigilWaitTime, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 63 */  		INTEGER VolumeCount, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 64 */  		VARCHAR AccessModuleName, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 65 */  		VARCHAR AccessModuleInitStr, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 66 */  		VARCHAR DirectoryPath, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 67 */  		VARCHAR ExpirationDate, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 68 */  		VARCHAR IndicatorMode, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 69 */  		VARCHAR PrimarySpace, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 70 */  		VARCHAR PrivateLogName, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 71 */  		VARCHAR RecordFormat, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 72 */  		VARCHAR RecordLength, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 73 */  		VARCHAR SpaceUnit, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 74 */  		VARCHAR TextDelimiter, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 75 */  		VARCHAR VigilNoticeFileName, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 76 */  		VARCHAR VigilStartTime, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 77 */  		VARCHAR VigilStopTime, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 78 */  		VARCHAR VolSerNumber, <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 79 */  		VARCHAR UnitType<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 80 */  	);<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 81 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 82 */  	APPLY<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 83 */  		(<%=lineSeparator%>");
+
+<%
+StringBuilder insertColSQL = new StringBuilder();
+StringBuilder insertValueSQL = new StringBuilder();
+if(columnList!=null){
+	String columnName = "";
+ 	for(IMetadataColumn column:columnList){	
+ 		columnName= column.getOriginalDbColumnName();
+ 		if(insertColSQL.length()>0){
+ 			insertColSQL.append(",");
+ 		}
+ 		insertColSQL.append(columnName);
+ 		
+ 		if(insertValueSQL.length()>0){
+ 			insertValueSQL.append(",");
+ 		}
+ 		insertValueSQL.append(":").append(columnName);
+	}
+}
+%>
+fw_<%=cid %>.write("'INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=insertColSQL.toString()%>) VALUES (<%=insertValueSQL.toString()%>);'<%=lineSeparator%>");
+
+
+
+
+fw_<%=cid %>.write("/* 85 */  		)<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 86 */  	TO OPERATOR<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 87 */  	(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 88 */  		" + <%=operatorLoad%> + "[1]<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 89 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 90 */  		ATTRIBUTES<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 91 */  		(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 92 */  			UserName = '" + <%=dbuser%> + "', <%=lineSeparator%>");
+	        
+<%
+String passwordFieldName = "__PASS__";
+%>
+
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+fw_<%=cid %>.write("/* 93 */  			UserPassword = '" + decryptedPassword_<%=cid%> + "', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 94 */  			LogTable = '" + tableFullName_<%=cid%> + "_log',<%=lineSeparator%>"); 
+fw_<%=cid %>.write("/* 95 */  			TargetTable = '" + tableFullName_<%=cid%> + "', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 96 */  			TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 97 */  		)<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 98 */  	)<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 99 */  	SELECT * FROM OPERATOR<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 100 */  	(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 101 */  		" + <%=operatorDataConnector%> + "[1]<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 102 */  <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 103 */  		ATTRIBUTES<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 104 */  		(<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 105 */  			FileName = '" + <%=loadFile%> + "', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 106 */  			Format = 'DELIMITED', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 107 */  			OpenMode = 'Read', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 108 */  			DirectoryPath = '', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 109 */  			IndicatorMode = 'N', <%=lineSeparator%>");
+fw_<%=cid %>.write("/* 110 */  			TextDelimiter = '" + <%=separator%> + "'<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 111 */  		)<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 112 */  	);<%=lineSeparator%>");
+fw_<%=cid %>.write("/* 113 */  );<%=lineSeparator%>");
+
+<%//write script to file-------------------------------------------------%>
+fw_<%=cid %>.close();
+
+<%//run tbuild (TPT) command----------------------------------------------------%>
+<%if("true".equals(defineCharset)) {
+	if(!("".equals(charset))) {
+		if("Windows".equals(execution)){%>
+			String[] sb_<%=cid%>= {"cmd","/c","tbuild -f "+<%=charset%>+" \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
+		<%}else{%>
+			String[] sb_<%=cid%>= {"sh","-c","tbuild -f "+<%=charset%>+" \""+<%=scriptPath%>+<%=table%>+".scr\" > \""+<%=errorFile%>+"\" 2>&1"};
+		<%}
+	}
+} else {
+	if("Windows".equals(execution)){%>
+		String[] sb_<%=cid%>= {"cmd","/c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
+	<%}else{%>
+		String[] sb_<%=cid%>= {"sh","-c","tbuild -f \""+<%=scriptPath%>+<%=table%>+".scr\" > \""+<%=errorFile%>+"\" 2>&1"};
+	<%}
+}%>
+<%if(isLog4jEnabled){%>
+    log.info("<%=cid%> - Executing command '" + sb_<%=cid%> + "'.");
+<%}%>
+final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
+Thread normal_<%=cid %> = new Thread() {
+    public void run() {
+    	try {
+    		java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getInputStream()));
+    		String line = "";
+    		try {
+    			while((line = reader.readLine()) != null) {
+    			   System.out.println(line);
+    	        }
+    	    } finally {
+    	         reader.close();
+    	    }
+        }catch(java.io.IOException ioe) {
+            <%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
+    		ioe.printStackTrace();
+    	}
+    }
+};
+normal_<%=cid %>.start();
+
+Thread error_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+					System.err.println(line);
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+            <%log4jCodeGenerateUtil.logError(node,"error","ioe");%>
+		   ioe.printStackTrace();
+		}
+	}
+};
+error_<%=cid %>.start();
+
+process_<%=cid %>.waitFor();
+
+normal_<%=cid %>.interrupt();
+
+error_<%=cid %>.interrupt();
+
+globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
+
+<%
+if(returnCodeDie) {
+%>
+	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
+        <%if(isLog4jEnabled){%>
+            log.fatal("<%=cid%> - "+"TPT returned exit code "+process_<%=cid %>.exitValue()+".");
+        <%}%>
+		throw new RuntimeException("TPT returned exit code "+process_<%=cid %>.exitValue());
+	}
+<%	
+}
+%>
+<%if(isLog4jEnabled){%>
+    log.info("<%=cid%> - Excute '" + sb_<%=cid%> + "' has finished.");
+<%}%>
+}finally{
+	try{
+		file_<%=cid %>.delete();
+	}catch(Exception e_<%=cid%>){
+        <%log4jCodeGenerateUtil.logError(node,"warn","e_"+cid);%>
+	}
+}
+<%log4jCodeGenerateUtil.infoComponentEnd(node);%>

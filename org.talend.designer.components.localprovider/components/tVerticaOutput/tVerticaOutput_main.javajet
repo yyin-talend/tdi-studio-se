@@ -1,0 +1,283 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.utils.NodeUtil
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		boolean manualCommit;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__BATCH_MODE__"));
+			manualCommit = !("0").equals(commitEvery);
+			dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+			if(("true").equals(useExistingConn)){
+				String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
+				INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
+				if(con_node!=null){
+					dbVersion = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
+				}
+			}
+			executeBatch = useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction) ||"COPY".equals(dataAction));
+		}
+		public boolean addBatch(){
+			boolean addBatch = rejectConnName==null && (useBatchSize||(!("true").equals(useExistingConn) && manualCommit));
+			return addBatch;
+		}
+		public void dataActionMore(INode node,List<Column> colStruct,Manager manager,String incomingConnName,List<IMetadataColumn> rejectColumnList,List<IMetadataColumn> columnList){
+			if ("COPY".equals(dataAction)) {
+				int counter = 1;
+				for(int i = 0; i < columnList.size(); i++) {
+					IMetadataColumn column = columnList.get(i);
+					//if(column.isInsertable()) {
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+					%>
+						stmtBuilder_<%=cid%>.append("|");
+						stmtBuilder_<%=cid%>.append(String.valueOf(<%=incomingConnName %>.<%=column.getLabel() %>));
+						stmtBuilder_<%=cid%>.append("|");
+					<%
+					}else {
+					%>
+						if(<%=incomingConnName %>.<%=column.getLabel() %> == null){
+							stmtBuilder_<%=cid%>.append("");
+						}else{
+							stmtBuilder_<%=cid%>.append("|");
+							<%
+							if(javaType == JavaTypesManager.STRING ){
+							%>
+								stmtBuilder_<%=cid%>.append(<%=incomingConnName %>.<%=column.getLabel() %>.replaceAll("\\|","\\\\|"));
+							<%
+							}else if(javaType == JavaTypesManager.DATE && pattern != null){
+							%>
+								stmtBuilder_<%=cid%>.append(FormatterUtils.format_Date(<%=incomingConnName %>.<%=column.getLabel() %>, <%= pattern %>));
+							<%
+							}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+							%>
+								stmtBuilder_<%=cid%>.append(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=incomingConnName %>.<%=column.getLabel() %>)).toString());
+							<%
+							} else if(JavaTypesManager.isNumberType(javaType, column.isNullable())) {
+							%>
+								<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+									stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? incomingConnName + "." + column.getLabel() : incomingConnName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), null, '.'));
+								<%
+								} else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT) {
+								%>
+									if (<%=incomingConnName %>.<%=column.getLabel() %> != null) {
+										BigDecimal decimal_<%=cid%> = new BigDecimal(<%=incomingConnName %>.<%=column.getLabel() %>);
+										stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? incomingConnName + "." + column.getLabel() : "decimal_"+cid+".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), null, '.'));
+									}
+								<%
+								} else {
+								%>
+									stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=incomingConnName %>.<%=column.getLabel() %>), null, '.'));
+								<%
+								}
+							} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+							%>
+								stmtBuilder_<%=cid%>.append(String.valueOf(<%=column.getPrecision() == null? incomingConnName + "." + column.getLabel() : incomingConnName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>));
+							<%
+							}else{
+							%>
+								stmtBuilder_<%=cid%>.append(String.valueOf(<%=incomingConnName %>.<%=column.getLabel() %>));
+							<%
+							}
+							%>
+							stmtBuilder_<%=cid%>.append("|");
+						}
+					<%
+					}
+					counter++;
+					%>
+					stmtBuilder_<%=cid%>.append("<%= i == columnList.size() - 1 ? "\\n" : ";"%>");
+				<%
+				}
+				if(rejectConnName == null ) {%>
+					nb_line_<%=cid%>++;
+					<%
+					if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+					%>
+						batchSizeCounter_<%=cid%>++;
+					<%
+					}
+				}
+			}
+		}
+		public void executeBatch(INode node){
+			if (rejectConnName==null && executeBatch) {
+			%>
+				if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+					try {
+						<%
+						if (!"COPY".equals(dataAction)) {
+							log4jCodeGenerateUtil.executeBatch(node,1);
+							if (("INSERT").equals(dataAction)) {
+							%>
+								insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+							<%
+							}else if (("UPDATE").equals(dataAction)) {
+							%>
+								updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+							<%
+							}else if (("DELETE").equals(dataAction)) {
+							%>
+								deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+							<%
+							}
+						} else {
+						%>
+							java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+							<%if("VERTICA_7_0_X".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){%>
+							com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+							vcs_<%=cid%>.start();
+							vcs_<%=cid%>.addStream(bais_<%=cid%>);
+							vcs_<%=cid%>.execute();
+							vcs_<%=cid%>.finish();
+							<%}else{%>
+							((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+							<%}%>
+							stmtBuilder_<%=cid%> = null;
+							if (bais_<%=cid%> != null) {
+								bais_<%=cid%>.close();
+								bais_<%=cid%> = null;
+							}
+							stmtBuilder_<%=cid%> = new StringBuilder();
+							<%
+							if("VERTICA_7_0_X".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)){
+							%>
+								copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
+							<%
+							}else{
+							%>
+								copiedCount_<%=cid%> += stmt_<%=cid %>. getUpdateCount();
+							<%
+							}
+						}
+						%>
+						batchSizeCounter_<%=cid%> = 0;
+					}catch (java.sql.SQLException e){
+						<%if(("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal");
+						%>
+							throw(e);
+						<%
+						}else {
+							log4jCodeGenerateUtil.logError(node,"error");
+						%>
+							System.err.println(e.getMessage());
+						<%
+						}
+						%>
+					}
+				}
+			<%
+			}
+		}
+		public void commitEvery(INode node){
+			if(!"true".equals(useExistingConn) && (!("VERTICA_7_0_X".equals(dbVersion) || "VERTICA_6_1_X".equals(dbVersion) || "VERTICA_6_0".equals(dbVersion) || "VERTICA_5_1".equals(dbVersion)) || !"COPY".equals(dataAction))) {
+				if(manualCommit) {
+					%>
+					commitCounter_<%=cid%>++;
+					if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+						<%
+						if ((rejectConnName==null && !"true".equals(useExistingConn)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
+						%>
+							try {
+								<%
+								if (!"COPY".equals(dataAction)) {
+									if (useBatchSize) {//manual commit and batch mode
+									%>
+										boolean isCountResult_<%=cid%> = false;
+										if(batchSizeCounter_<%=cid%> > 0){
+											<%log4jCodeGenerateUtil.executeBatch(node,1);%>
+											isCountResult_<%=cid%> = true;
+											batchSizeCounter_<%=cid%> = 0;
+										}
+									<%
+									}else{//manual commit
+										log4jCodeGenerateUtil.executeBatch(node,1);
+									}
+									if (useBatchSize){
+									%>
+									 	if(isCountResult_<%=cid%>){
+									<%
+									}
+									if (("INSERT").equals(dataAction)) {
+									%>
+										insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+									<%
+									}else if (("UPDATE").equals(dataAction)) {
+									%>
+										updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+									<%
+									}else if (("DELETE").equals(dataAction)) {
+									%>
+										deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+									<%
+									}
+									if (useBatchSize){
+									%>
+										}
+									<%
+									}
+								} else {
+								%>
+									if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) { // stmtBuilder_<%=cid%> start
+										java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+										((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+										stmtBuilder_<%=cid%> = null;
+										if (bais_<%=cid%> != null) {
+											bais_<%=cid%>.close();
+											bais_<%=cid%> = null;
+										}
+										stmtBuilder_<%=cid%> = new StringBuilder();
+										copiedCount_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+									} // stmtBuilder_<%=cid %> end
+								<%
+								}
+								%>
+							}catch (java.sql.SQLException e){
+								<%if(("true").equals(dieOnError)) {
+									log4jCodeGenerateUtil.logError(node,"fatal");
+								%>
+									throw(e);
+								<%
+								}else {
+									log4jCodeGenerateUtil.logError(node,"error");
+								%>
+									System.out.println(e.getMessage());
+								<%
+								}
+								%>
+							}
+						<%
+						}
+						log4jCodeGenerateUtil.commit();
+						%>
+						commitCounter_<%=cid%>=0;
+					}
+				<%
+				}
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

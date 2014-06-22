@@ -1,0 +1,91 @@
+<%@ jet
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.MappingTypeRetriever
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.process.IConnectionCategory
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputMainUtil extends DefaultDBOutputUtil{
+		private boolean useTransaction;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
+		}
+		public boolean addBatch(){
+			boolean addBatch = rejectConnName == null  && useBatchSize && !("true").equals(useExistingConn);
+			return addBatch;
+		}
+		public void executeBatch(INode node){
+			if (addBatch() && executeBatch) {
+			%>
+				if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {
+					try {
+						batchSizeCounter_<%=cid%> = 0;			 
+						<%
+						log4jCodeGenerateUtil.executeBatch(node,2);
+						if (("INSERT").equals(dataAction)) {
+						%>
+							insertedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("UPDATE").equals(dataAction)) {
+						%>
+							updatedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}else if (("DELETE").equals(dataAction)) {
+						%>
+							deletedCount_<%=cid%> += countSum_<%=cid%>;
+						<%
+						}
+						%>						 
+					}catch (java.sql.BatchUpdateException e_<%=cid%>){
+						<%
+						if (("true").equals(dieOnError)) {
+							log4jCodeGenerateUtil.logError(node,"fatal","e_"+cid);
+							%>
+							throw(e_<%=cid%>);
+						<%
+						} else {
+							log4jCodeGenerateUtil.logError(node,"error","e_"+cid);
+							%>
+							System.err.println(e_<%=cid%>.getMessage());
+						<%
+						}
+						%>
+					}
+				}
+				<%
+			}
+		}
+		public void commitEvery(INode node){
+			if(!("true").equals(useExistingConn) && useTransaction &&  !("").equals(commitEvery) && !("0").equals(commitEvery)) {
+			%>
+				commitCounter_<%=cid%>++;
+				if(commitEvery_<%=cid%><=commitCounter_<%=cid%>) {
+					conn_<%=cid%>.commit();
+					commitCounter_<%=cid%> = 0;
+				}
+			<%
+			}
+		}
+		public void checkExist(Manager manager,String updateWhereStmt){
+        %>
+            String checkExist_<%=cid%> = "SELECT COUNT(*) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt%>";
+        <%
+        }
+	}
+	dbOutputBeginUtil = new DBOutputMainUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputMain.javajet"%>

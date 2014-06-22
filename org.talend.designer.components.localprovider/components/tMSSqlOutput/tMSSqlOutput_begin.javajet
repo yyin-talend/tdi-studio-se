@@ -1,0 +1,171 @@
+<%@ jet
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		private List<Column> stmtStructure;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+			dbschema = ElementParameterParser.getValue(node,"__DB_SCHEMA__");
+			%>
+			java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
+			long year1_<%=cid %> = TalendDate.parseDate("yyyy-MM-dd","0001-01-01").getTime();
+			long year2_<%=cid %> = TalendDate.parseDate("yyyy-MM-dd","1753-01-01").getTime();
+			long year10000_<%=cid %> = TalendDate.parseDate("yyyy-MM-dd HH:mm:ss","9999-12-31 24:00:00").getTime();
+			long date_<%=cid %>;
+			java.util.Calendar calendar_datetimeoffset_<%=cid%> = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
+			<%
+		}
+		public void setURL(INode node) {
+		%>
+			String port_<%=cid%> = <%=dbport%>;
+			String dbname_<%=cid%> = <%=dbname%> ;
+			String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> ;
+			if (!"".equals(port_<%=cid%>)) {
+				url_<%=cid %> += ":" + <%=dbport%>;
+			}
+			if (!"".equals(dbname_<%=cid%>)) {
+				url_<%=cid%> += "//" + <%=dbname%>;
+			}
+			url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;
+		<%
+		}
+		public String getDirverClassName(INode node){
+			return "net.sourceforge.jtds.jdbc.Driver";
+		}
+		public void defineSchema(INode node,Manager manager){
+			defineSchemaTable(node,manager,"dbschema_");
+		}
+		public List<Column> createColumnList(INode node,Manager manager,List<IMetadataColumn> columnList){
+			boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+			if(isParallelize){
+				stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+				return stmtStructure;
+			}else{
+				boolean isSpecifyIdentityField = ("true").equals(ElementParameterParser.getValue(node,"__SPECIFY_IDENTITY_FIELD__"));
+				String identityField = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
+				int startValue = Integer.parseInt(ElementParameterParser.getValue(node, "__START_VALUE__"));
+				int step = Integer.parseInt(ElementParameterParser.getValue(node, "__STEP__"));
+				stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols, isSpecifyIdentityField, identityField, startValue, step);
+				return stmtStructure;
+			}
+		}
+		
+		public void prepareDataActionMore(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt,StringBuilder updateSetStmt,StringBuilder updateWhereStmt){
+			if (("INSERT_IF_NOT_EXIST").equals(dataAction)) {//MSSQL
+			%>
+				java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> WHERE <%=updateWhereStmt.toString()%>");
+				String insert_<%=cid%> = "INSERT INTO <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+				java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+			<%
+			}else if("SINGLE_INSERT".equals(dataAction)){//for tMSSqlOutput
+				singleInsert(stmtStructure,node,manager,insertColName,insertValueStmt);
+			}
+		}
+		public void singleInsert(List<Column> stmtStructure,INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt){
+			if("SINGLE_INSERT".equals(dataAction)){//for tMSSqlOutput
+		%>
+				class BufferLine_<%=cid%> {
+					<%
+					for(Column column : stmtStructure) {
+						if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+							%>
+							<%=typeToGenerate%> <%=column.getName()%>;
+							<%
+						}
+					}
+					%>
+					public BufferLine_<%=cid%>(
+					<%
+					int count = 0;
+					for(Column column : stmtStructure) {
+						if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+							if(count != 0) {
+								%>
+								,
+								<%
+							}
+							String typeToGenerate = org.talend.core.model.metadata.types.JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+							%>
+							<%=typeToGenerate%> <%=column.getName()%>
+							<%
+							count++;
+						}
+					}
+					%>
+					){
+						<%
+						for(Column column : stmtStructure) {
+							if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+								%>
+								this.<%=column.getName()%> = <%=column.getName()%>;
+								<%
+							}
+						}
+						%>
+					}
+				}
+				java.util.List<BufferLine_<%=cid%>> sInsertColValueList<%=cid%> = new java.util.ArrayList();
+				BufferLine_<%=cid%> sInsertColValue<%=cid%> = null;
+				StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
+				for(int i=0;i < <%=batchSize%>;i++){
+					 extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+					 if (i!=<%=batchSize%>-1) extendInsertValueStmt_<%=cid%>.append(",");
+				}
+				String insert_<%=cid%> = "INSERT INTO "+<%=table%>+" (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+				java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+				String insertColName<%=cid%> = "<%=insertColName.toString()%>";
+				String insertColValue<%=cid%> = "<%=insertValueStmt.toString()%>";
+				int rowCount<%=cid%> = 0;
+			<%
+			}
+		}
+		public void end(INode node){
+			//identityInsert part
+			if(("true").equals(useExistingConn)) {
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+			%>
+				boolean isShareIdentity_<%=cid%> = globalMap.get("shareIdentitySetting_<%=connection%>") != null && (Boolean)globalMap.get("shareIdentitySetting_<%=connection%>") == true;
+			<%
+ 			}
+			String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+			if(("true").equals(identityInsert) ) {
+				%>
+				java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+				<%
+				if(("true").equals(useExistingConn)) {
+					String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				%>
+					if ( !isShareIdentity_<%=cid%> ) {
+						stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+					}
+				<%
+				} else {
+			 	%>
+			 		stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+			 	<%
+				}
+			}
+		}
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+	dbOutputBeginUtil.setIsSharedStatement(true);
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>

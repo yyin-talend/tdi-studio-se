@@ -1,0 +1,50 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+String cid = node.getUniqueName();
+String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+
+boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+ 
+
+if (isUseSharedConnection) {
+	for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+		if (pNode.getUniqueName().equals(connectionComponentName)) {
+			transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+			serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
+		}	
+	}
+}
+
+if((("ActiveMQ").equals(serverType) || isUseSharedConnection) && !isCommitRollback && transacted){
+%>
+
+	if(resourceMap.get("finish_<%=cid%>") == null){
+		if(resourceMap.get("session_<%=cid%>") != null){
+			((javax.jms.Session)resourceMap.get("session_<%=cid%>")).rollback();
+	    	<%if(!isUseSharedConnection){%>
+	    		if(resourceMap.get("producer_<%=cid%>") != null){
+		    		((javax.jms.MessageProducer)resourceMap.get("producer_<%=cid%>")).close();
+				}
+   	    	 	((javax.jms.Session)resourceMap.get("session_<%=cid%>")).close();
+   	    	 	if(resourceMap.get("connection_<%=cid%>") != null){
+	    	    	((javax.jms.Connection)resourceMap.get("connection_<%=cid%>")).close();
+	    	    }
+			<%}%>
+		}
+	}
+<%
+}
+%>

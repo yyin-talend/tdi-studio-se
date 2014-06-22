@@ -1,0 +1,46 @@
+<%@ jet 
+%>
+<%@ include file="../Log4j/Log4jDBConnUtil.javajet"%>
+java.sql.Connection conn_<%=cid%> = null;
+<%
+log4jCodeGenerateUtil.infoComponentStart(node);
+boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+if(useExistingConnection) {
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+	String schema = "dbschema_" + connection;
+	%>
+	dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
+	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	<%
+	log4jCodeGenerateUtil.useExistConnection(node);
+} else {
+    %>
+    dbschema_<%=cid%> = <%=dbschema%>;
+    String driverClass_<%=cid%> = "net.sourceforge.jtds.jdbc.Driver";
+    java.lang.Class.forName(driverClass_<%=cid%>);
+    String port_<%=cid%> = <%=dbport%>;
+    String dbname_<%=cid%> = <%=dbname%> ;
+    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> ; 
+    if (!"".equals(port_<%=cid%>)) {
+    	url_<%=cid %> += ":" + <%=dbport%>;
+    }
+    if (!"".equals(dbname_<%=cid%>)) {
+    	url_<%=cid%> += "//" + <%=dbname%>; 
+    }
+    url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;
+    String dbUser_<%=cid %> = <%=dbuser%>;
+
+    <%
+    String passwordFieldName = "__PASS__";
+    %>
+
+    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+    String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+
+    <%
+    log4jCodeGenerateUtil.debugConnectionParams(node);
+    log4jCodeGenerateUtil.connect(node);
+}
+%>

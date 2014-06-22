@@ -1,0 +1,326 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+class="MomInput"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+	String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+
+	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
+	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
+	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	String to = ElementParameterParser.getValue(node, "__TO__");
+	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
+	
+	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
+	
+	boolean failover =  ("true").equals(ElementParameterParser.getValue(node, "__FAILOVER__"));
+	List<Map<String,String>> servers = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SERVERS__");
+	List<Map<String,String>> additionalOpts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADDITIONAL_OPTIONS__");
+
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+
+		
+	String strHost = null;
+	String strPort = null;
+	
+	boolean setJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__SET_JMS_HEADER__"));
+	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
+
+	IMetadataTable metadata=null;
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		metadata = metadatas.get(0);
+	}
+
+	boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+		|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+
+	if (isUseSharedConnection) {
+		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+			if (pNode.getUniqueName().equals(connectionComponentName)) {
+				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+				serverType=ElementParameterParser.getValue(pNode, "__SERVER__");
+                           	failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
+			}	
+		}
+	}
+	%>
+	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+	int nb_line_<%=cid%> = 0;
+
+	<%	
+	if (isUseSharedConnection) { 
+	%>
+        javax.jms.Connection connection_<%=cid %> = null;
+	    javax.jms.Session session_<%=cid %> = null;
+        try {
+	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+            connection_<%=cid %>.start();
+			session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+		} catch (NullPointerException npe) {
+		    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
+		}
+		
+		javax.jms.MessageProducer producer_<%=cid %> = (javax.jms.MessageProducer)globalMap.get("producer_<%=cid %>");
+		
+		if(producer_<%=cid %> == null) {
+		
+			javax.jms.Destination des_<%=cid %>;
+			<%
+			if (("Queue").equals(msgType)) {
+			%>
+				des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
+			<%
+			} else {
+			%>
+	    		des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
+			<%
+			}
+			%>
+ 
+		 	producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+		
+			<%
+			if ("N_PERSISTENT".equals(deliverMode)) {
+			%>
+				producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+			<%
+			} else if ("PERSISTENT".equals(deliverMode)) {
+			%>
+				producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+			<%
+			}
+			%>
+		}
+
+		<%
+		if(!isCommitRollback && transacted){
+		%>
+        	resourceMap.put("session_<%=cid%>", session_<%=cid%>);
+        	resourceMap.put("producer_<%=cid%>", producer_<%=cid%>);
+			resourceMap.put("connection_<%=cid%>", connection_<%=cid%>);
+		<%
+		}
+		%>
+		    
+	<%	
+	} else if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
+	
+	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
+		if(("JBoss").equals(serverType)){ 
+		%>
+			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
+			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+			
+			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+			javax.jms.ConnectionFactory factory_<%=cid%>
+				= (javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+				
+		<%
+		}else if(("ActiveMQ").equals(serverType)) {
+		%>	
+			String url_<%=cid %> ="";
+
+      		<%if(failover){%>
+				url_<%=cid %> = "failover:(";
+				<%
+				int i=0;
+				for(Map<String, String> serversMap : servers) {
+					strHost = serversMap.get("SERVERS_HOST");
+					strPort = serversMap.get("SERVERS_PORT");
+	
+					if(i>0) {
+					%>
+						url_<%=cid %> = url_<%=cid %> +",";
+					<%
+					}
+					%>
+					url_<%=cid %> = url_<%=cid %> +"tcp://";
+					url_<%=cid %> = url_<%=cid %> +<%=strHost%>;
+					url_<%=cid %> = url_<%=cid %> +":";
+					url_<%=cid %> = url_<%=cid %> +<%=strPort%>;
+					<%
+					i++;
+				}
+				%>
+				url_<%=cid %> = url_<%=cid %> +")?randomize=false";
+				<%
+				for(Map<String, String> optrion : additionalOpts) {
+				%>
+					url_<%=cid %> = url_<%=cid %> +"&"+<%=optrion.get("OPTION_NAME")%>+"="+<%=optrion.get("OPTION_VALUE")%>;
+				<%
+				}
+			}else{%>
+				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+			<%}%>			
+			
+			System.out.println("Connecting to URL: " + url_<%=cid %>);
+			System.out.println("Producing " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
+			
+			
+			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+				new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
+		<%
+		}
+		
+		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
+		%>	
+				
+		<%
+		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
+			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+		<%
+		} else { 
+		%>
+		
+			<%
+			String passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+				
+			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,decryptedPassword_<%=cid%>);
+		<%
+		} 
+		%>
+			
+		connection_<%=cid %>.start();
+	
+		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
+		
+		javax.jms.Destination des_<%=cid %>;
+		<%
+		if (("Queue").equals(msgType)) {
+		%>
+			des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
+		<%
+		} else {
+		%>
+	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
+		<%
+		}
+		%>
+		javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+		
+		<%
+		if ("N_PERSISTENT".equals(deliverMode)) {
+		%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+		<%
+		} else if ("PERSISTENT".equals(deliverMode)) {
+		%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+		<%
+		}
+		%>
+		<%if(!isCommitRollback && transacted){%>
+			resourceMap.put("session_<%=cid%>", session_<%=cid%>);
+			resourceMap.put("producer_<%=cid%>", producer_<%=cid%>);
+			resourceMap.put("connection_<%=cid%>", connection_<%=cid%>);
+
+		<%
+		}
+		%>
+	<%
+	}else{ //server judgement   /***WebSphere MQ*****/
+		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
+		String qm=ElementParameterParser.getValue(node, "__QM__");
+		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
+		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
+		%>
+	    props_<%=cid%>.put("hostname", <%=host%>);
+	    props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
+	    props_<%=cid%>.put("channel", <%=channel%>);
+	    props_<%=cid%>.put("CCSID", new Integer(1208));
+	    props_<%=cid%>.put("transport", "MQSeries");
+	    
+	    <%
+		if(needSSLCipher){
+		%>
+			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
+		<%
+		}
+		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
+		%>
+			props_<%=cid%>.put("userID",<%=dbuser%>);
+			
+			<%
+			String passwordFieldName = "__PASS__";
+			%>
+
+			<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>			
+			
+			props_<%=cid%>.put("password",decryptedPassword_<%=cid%>);
+		<%
+		}
+		%>
+	
+		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
+	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
+	    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
+		<%	    
+	    if (transacted) {
+		%>	
+			opM_<%=cid%>.options=opM_<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+		<%
+	    }
+	}
+	if(isUseSharedConnection ||("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
+		if(setJmsHeader && jmsHeaders !=null && jmsHeaders.size()>0){
+		%>
+			if(producer_<%=cid %>!=null){
+				<%
+				for(Map<String,String> header:jmsHeaders) {
+					java.util.List<String> senderHeaderParams = java.util.Arrays.asList(new String[]{"JMSExpiration","JMSPriority","JMSTimestamp","JMSDeliveryMode"});
+					String senderHeaderParam = header.get("JMS_HEADER_NAME");
+					if(!senderHeaderParams.contains(senderHeaderParam)){
+						continue;
+					}
+					if("JMSExpiration".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setTimeToLive(<%=header.get("JMS_HEADER_VALUE")%>);
+					<%
+					}
+					if("JMSPriority".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setPriority(<%=header.get("JMS_HEADER_VALUE")%>);	
+					<%
+					}
+					if("JMSTimestamp".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setDisableMessageTimestamp(false);
+					<%
+					}
+					if("JMSDeliveryMode".equals(senderHeaderParam)){
+					%>
+						producer_<%=cid %>.setDeliveryMode(<%=header.get("JMS_HEADER_VALUE")%>);
+					<%
+					}
+				}
+				%>
+			}
+			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+			globalMap.put("session_<%=cid %>",session_<%=cid %>);
+			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+		<%
+		}
+	}
+	%>
+	

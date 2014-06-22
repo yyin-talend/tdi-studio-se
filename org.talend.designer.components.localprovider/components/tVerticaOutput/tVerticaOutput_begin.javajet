@@ -1,0 +1,150 @@
+<%@ jet
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%@ include file="../templates/DB/Output/HelpClass.javajet"%>
+<%
+	class DBOutputBeginUtil extends DefaultDBOutputUtil{
+		private String insertColName;
+		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
+			cid = node.getUniqueName();
+			useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__BATCH_MODE__"));
+		}
+		public String getDirverClassName(INode node){
+			String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
+			if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+				return "com.vertica.jdbc.Driver";
+			}else{
+				return "com.vertica.Driver";
+			}
+		}
+		public void setURL(INode node) {
+		%>
+			String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		<%
+		}
+		public void defineSchema(INode node,Manager manager){
+			defineSchemaTable(node,manager,"dbschema_");
+		}
+		public void defineBatchSize(INode node){
+			if (useBatchSize) {
+				if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+			%>
+				int batchSize_<%=cid%> = <%=batchSize%>;
+				int batchSizeCounter_<%=cid%>=0;
+			<%
+				}
+			}
+		}
+		public void defineOtherParameters(INode node){
+		%>
+			int nb_line_copied_<%=cid%> = 0;
+			int copiedCount_<%=cid%>=0;
+		<%
+		}
+		public void createProjection(boolean createProjection,List<Column> stmtStructure){
+			if(createProjection){
+				StringBuilder columnListStr = new StringBuilder();
+				boolean firstColumn = true;
+				for(Column column : stmtStructure) {
+					if(column.isReplaced()) {
+						List<Column> replacedColumns = column.getReplacement();
+						for(Column replacedColumn : replacedColumns) {
+							if(firstColumn) {
+								firstColumn = false;
+							} else {
+								columnListStr.append(", ");
+							}
+							columnListStr.append(replacedColumn.getName());
+						}
+					} else {
+						if(firstColumn) {
+							firstColumn = false;
+						} else {
+							columnListStr.append(", ");
+						}
+						columnListStr.append(column.getName());
+					}
+				}
+			%>
+				java.sql.Statement stmtCreateProjection_<%=cid%> = conn_<%=cid%>.createStatement();
+				stmtCreateProjection_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + tableName_<%=cid%>);//
+				stmtCreateProjection_<%=cid%>.close();
+			<%
+			}
+		}
+		public void actionOnTable(INode node,List<Column> stmtStructure){
+			boolean createProjection = "true".equals(ElementParameterParser.getValue(node,"__CREATE_PROJECTION__"))&&
+				!"true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+			if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
+				%>
+				if(!whetherExist_<%=cid%>) {
+				<%
+					createProjection(createProjection,stmtStructure);
+				%>
+				}
+				<%
+			}else{
+				if(!("CLEAR").equals(tableAction) && !("NONE").equals(tableAction)){
+					createProjection(createProjection,stmtStructure);
+				}
+			}
+		}
+		public void insert(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt){
+			Map<String, String> hintsValues = hint(node);
+			boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+			%>
+			String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+			<%
+			if(useBatchSize){
+			%>
+				int batchCount_<%=cid %> = 0;
+			<%
+			}
+		}
+
+		public void prepareDataActionMore(INode node,Manager manager,StringBuilder insertColName,StringBuilder insertValueStmt,StringBuilder updateSetStmt,StringBuilder updateWhereStmt){
+			if (("COPY").equals(dataAction)) {
+				boolean abortOnError = "true".equals(ElementParameterParser.getValue(node,"__ABORT_ON_ERROR__"));
+				String rejectMax = ElementParameterParser.getValue(node,"__REJECT_MAX__");
+				String exceptionsPath = ElementParameterParser.getValue(node,"__EXCEPTIONS_PATH__");
+				String rejectsPath = ElementParameterParser.getValue(node,"__REJECTED_DATA__");
+				boolean noCommit = "true".equals(ElementParameterParser.getValue(node,"__NO_COMMIT__"));
+				String exceptionNode = ElementParameterParser.getValue(node,"__EXCEPTIONS_NODE__");
+				String rejectsNode = ElementParameterParser.getValue(node,"__REJECTED_NODE__");
+				rejectMax = rejectMax == null || "".equals(rejectMax.trim()) ? "" : " REJECTMAX "+rejectMax+" ";
+				exceptionsPath = exceptionsPath == null || "".equals(exceptionsPath.trim()) ? "" : " EXCEPTIONS '\"+"+exceptionsPath+"+\"' ";
+				exceptionNode = exceptionNode == null || "".equals(exceptionNode.trim()) ? "" : " ON "+exceptionNode+" ";
+				rejectsPath = rejectsPath == null || "".equals(rejectsPath.trim()) ? "" : " REJECTED DATA '\"+"+rejectsPath+"+\"' ";
+				rejectsNode = rejectsNode == null || "".equals(rejectsNode.trim()) ? "" : " ON "+rejectsNode+" ";
+				String exceptionString = !"".equals(exceptionsPath) ? exceptionsPath + exceptionNode : "";
+				String rejectString = !"".equals(rejectsPath) ? rejectsPath + rejectsNode : "";
+				String noComm = !noCommit ? "" : " NO COMMIT ";
+				String abort = abortOnError ? " ABORT ON ERROR " : "";
+				%>
+				StringBuilder stmtBuilder_<%=cid%> = new StringBuilder();
+				java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+				String template_<%=cid%> = "COPY " + tableName_<%=cid%> +" (<%=insertColName.toString()%>)" + " FROM STDIN UNCOMPRESSED WITH DELIMITER ';' RECORD TERMINATOR '\n' ENCLOSED BY '|' NULL AS '' <%=rejectMax%><%=exceptionString%><%=rejectString%><%=abort%>DIRECT<%=noComm%>";
+			<%
+			}
+		}
+
+	}
+	dbOutputBeginUtil = new DBOutputBeginUtil();
+%>
+<%@ include file="../templates/DB/Output/AbstractDBOutputBegin.javajet"%>
