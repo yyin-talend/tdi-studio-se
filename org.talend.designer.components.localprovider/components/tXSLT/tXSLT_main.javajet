@@ -1,0 +1,50 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+	java.util.List
+    java.util.Map	
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String xmlFile = ElementParameterParser.getValue(node, "__XML_FILE__");
+String xslFile = ElementParameterParser.getValue(node, "__XSLT_FILE__");
+String outputFile = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
+
+List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
+%>
+	
+	System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+
+	java.io.File xsltFile<%=cid%> = new java.io.File(<%=xslFile%>);
+	javax.xml.transform.stream.StreamSource styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource(xsltFile<%=cid%>);
+	javax.xml.transform.Transformer t<%=cid%> = javax.xml.transform.TransformerFactory.newInstance().newTransformer(styleSource<%=cid%>);
+	
+	<%
+	    for (int i = 0; i < params.size(); i++) {
+	        Map<String, String> line = params.get(i);
+	%>
+			t<%=cid%>.setParameter(<%= line.get("NAME") %>, <%= line.get("VALUE") %>);
+	<%		
+		}
+	%>
+
+	javax.xml.transform.stream.StreamSource xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File(<%=xmlFile%>));
+	t<%=cid%>.transform(xmlSource<%=cid%>, new javax.xml.transform.stream.StreamResult(new java.io.File(<%=outputFile%>)));
+		
+	if((<%=outputFile%>).indexOf("/") != -1)
+	{
+		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", (<%=outputFile%>).substring(0,(<%=outputFile%>).lastIndexOf("/")));
+		globalMap.put("<%=cid %>_OUTPUT_FILENAME", (<%=outputFile%>).substring((<%=outputFile%>).lastIndexOf("/") + 1));
+	}
+	else
+	{
+		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", <%=outputFile%>);
+		globalMap.put("<%=cid %>_OUTPUT_FILENAME", <%=outputFile%>);	
+	}					

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+	<!-- Talend Job OSGi blueprint descriptor -->
+
+#if ($job.useSAM)
+	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature"
+		ext:proxy-method="classes" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" />
+#end
+
+	<bean id="job" class="${job.className}" destroy-method="destroy">
+#if ($job.useSAM)
+		<property name="eventFeature" ref="eventFeature" />
+#end
+#if (!$job.dataSources.isEmpty())
+		<property name="dataSources">
+			<map>
+#foreach ($alias in $job.dataSources)
+				<entry key="${alias}">
+					<reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=${alias})" />
+				</entry>
+#end ## end data sources aliases loop
+			</map>
+		</property>
+#end
+	</bean>
+
+	<service ref="job">
+		<interfaces>
+			<value>routines.system.api.TalendJob</value>
+#if ($job.isESBJob)
+			<value>routines.system.api.TalendESBJob</value>
+#if ($job.isESBJobFactory)
+			<value>routines.system.api.TalendESBJobFactory</value>
+#end
+#end
+		</interfaces>
+		<service-properties>
+			<entry key="name" value="${job.name}" />
+			<entry key="type" value="job" />
+#if ($job.isESBJobFactory)
+			<entry key="multithreading" value="true" />
+#end
+		</service-properties>
+	</service>
+
+</blueprint>

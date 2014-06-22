@@ -1,0 +1,158 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+%>
+	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
+<%
+
+	class ConnectionUtil extends DefaultConnectionUtil{
+		private String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
+	
+		public void createURL(INode node) {
+			super.createURL(node);
+			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
+			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+			String fsDefalutName = "fs.default.name";
+			String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
+			
+			boolean setMapredJT = "true".equals(ElementParameterParser.getValue(node, "__SET_MAPRED_JT__"));
+			boolean setNamenode = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
+			List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
+			
+			boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+			
+			if(hiveServer!=null && !"".equals(hiveServer.trim()) && (isCustom || ("HDP_1_2".equals(hiveVersion) || "Cloudera_CDH4".equals(hiveVersion)))) {
+				hiveServer = hiveServer.toLowerCase();
+				if ("hive2".equals(hiveServer)) {
+					javaDbDriver = "org.apache.hive.jdbc.HiveDriver";
+				}
+			} else {
+				hiveServer = "hive";
+			}
+			if(!isCustom && (("HDP_1_0".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("HDP_1_2".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("APACHE_0_20_203".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("MAPR1".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("MapR_EMR".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("Cloudera_CDH3".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)))) {
+%>
+				if(true) {
+					throw new java.lang.Exception("The Hive version and the connection mode are not compatible together. Please check your component configuration.");
+				}
+<%
+			}
+			
+			if(hadoopProps.size() > 0){
+				for(Map<String, String> item : hadoopProps){
+%>
+					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+<%
+				} 
+			}
+			
+			if(setMapredJT) {
+				String mapredJT = ElementParameterParser.getValue(node, "__MAPRED_JT__");
+%>
+				System.setProperty("mapred.job.tracker", <%=mapredJT%>);
+<%
+			}
+			
+			if(setNamenode) {
+				String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
+%>
+				System.setProperty("<%=fsDefalutName%>", <%=namenode%>);
+<%
+			}
+			
+			if("EMBEDDED".equals(connectionMode)) {
+%>
+				System.setProperty("hive.metastore.local", "false");
+				System.setProperty("hive.metastore.uris", "thrift://" + <%=dbhost%> + ":" + <%=dbport%>);
+				System.setProperty("hive.metastore.execute.setugi", "true");
+				String url_<%=cid%> = "jdbc:<%=hiveServer%>://";
+<%
+			} else {
+%>
+				String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%	
+			}
+		}
+		
+		public void setAutoCommit(INode node) {
+			boolean useTransaction = false;//("true").equals(ElementParameterParser.getValue(node,"__IS_USE_AUTO_COMMIT__"));
+			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
+			if (useTransaction) {
+%>
+			conn_<%=cid%>.setAutoCommit(<%=setAutoCommit%>);
+<%
+			}
+		}
+		
+		public String getDirverClassName(INode node){
+			return javaDbDriver;
+		}
+	}//end class
+	
+	connUtil = new ConnectionUtil();
+%>
+<%//----------------------------component codes-----------------------------------------%>
+
+	<%@ include file="../templates/DB/AbstractDBConnection.javajet"%>
+
+<%
+	String storeByHBase = ElementParameterParser.getValue(node, "__STORE_BY_HBASE__");
+	String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
+	String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+	String zookeeperQuorumForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_QUORUM__");
+	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
+	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
+	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
+	String yarnClasspathSeparator = ElementParameterParser.getValue(node, "__CLASSPATH_SEPARATOR__");
+%>
+	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
+	System.setProperty("path.separator", <%=yarnClasspathSeparator%>);
+<%
+	boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+    if(!isCustom && "HDP_1_2".equals(hiveVersion)) {
+        String mapMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_MAP_MEMORY_MB__");
+        String reduceMemory = ElementParameterParser.getValue(node,"__MAPRED_JOB_REDUCE_MEMORY_MB__");
+%>
+		java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
+        init_<%=cid%>.execute("SET mapred.job.map.memory.mb=" + <%=mapMemory%>);
+	    init_<%=cid%>.execute("SET mapred.job.reduce.memory.mb=" + <%=reduceMemory%>);
+	    init_<%=cid%>.close();
+<%
+	}
+%>
+
+	<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
+		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
+		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
+			statement_<%=cid%>.execute("SET hbase.zookeeper.quorum="+<%=zookeeperQuorumForHBase%>);
+		<%}%>
+		
+		<%if(zookeeperClientPortForHBase!=null && !"".equals(zookeeperClientPortForHBase) && !"\"\"".equals(zookeeperClientPortForHBase)) {%>
+			statement_<%=cid%>.execute("SET hbase.zookeeper.property.clientPort="+<%=zookeeperClientPortForHBase%>);
+		<%}%>
+		
+		<%if("true".equalsIgnoreCase(defineRegisterJar) && registerJarForHBase!=null && registerJarForHBase.size()>0) {
+			for(Map<String, String> jar : registerJarForHBase){
+				String path = jar.get("JAR_PATH");
+				if(path == null || "".equals(path) || "\"\"".equals(path)) {
+					continue;
+				}
+		%>
+				statement_<%=cid%>.execute("add jar "+<%=path%>);
+		<%
+			}
+		}%>
+		statement_<%=cid%>.close();
+	<%}%>
+	globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
+
+	globalMap.put("db_<%=cid%>",<%=dbname%>);
+	String currentClientPathSeparator_<%=cid%> = (String)globalMap.get("current_client_path_separator");
+	if(currentClientPathSeparator_<%=cid%>!=null) {
+		System.setProperty("path.separator", currentClientPathSeparator_<%=cid%>);
+		globalMap.put("current_client_path_separator", null);
+	}

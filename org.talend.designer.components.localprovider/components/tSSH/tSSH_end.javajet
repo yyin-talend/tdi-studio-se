@@ -1,0 +1,46 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode 
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	java.util.List 
+"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+	boolean stats = codeGenArgument.isStatistics();
+	String standardOutput = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
+	String errorOutput = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    	if (metadata!=null) {	
+			if(("TO_CONSOLE").equals(standardOutput)){
+%>
+				System.out.println(stringStdout_<%=cid%>.toString());
+<%
+			}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(standardOutput)){
+%>
+				System.out.println(stringStdout_<%=cid%>.toString());
+<%
+			}
+			if(("TO_CONSOLE").equals(errorOutput)){
+%>
+				System.out.println(stringStderr_<%=cid%>.toString());
+<%		
+			}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(errorOutput)){
+%>
+				System.out.println(stringStderr_<%=cid%>.toString());
+<%
+			}
+		}
+	}
+%>
+	/* Close the connection */
+	conn_<%=cid%>.close();
+	globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
+	
