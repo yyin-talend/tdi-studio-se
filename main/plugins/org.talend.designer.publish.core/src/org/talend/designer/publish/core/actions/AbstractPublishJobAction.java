@@ -41,9 +41,9 @@ import org.talend.repository.utils.JobContextUtils;
 
 public abstract class AbstractPublishJobAction implements IRunnableWithProgress {
 
-	private static final String THMAP_COMPONENT_NAME = "tHMap";
+    private static final String THMAP_COMPONENT_NAME = "tHMap";
 
-	private final IRepositoryNode node;
+    private final IRepositoryNode node;
 
     private final String groupId;
 
@@ -53,10 +53,10 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
     private final String bundleVersion;
 
-    private String jobVersion;
+    private final String jobVersion;
 
-    public AbstractPublishJobAction(IRepositoryNode node, String groupId,
-            String artifactName, String artifactVersion, String bundleVersion, String jobVersion) {
+    public AbstractPublishJobAction(IRepositoryNode node, String groupId, String artifactName, String artifactVersion,
+            String bundleVersion, String jobVersion) {
         this.node = node;
         this.groupId = groupId;
         this.artifactName = artifactName;
@@ -65,7 +65,8 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
         this.bundleVersion = bundleVersion;
     }
 
-    protected abstract void process(ProcessItem processItem, FeaturesModel featuresModel, IProgressMonitor monitor) throws IOException;
+    protected abstract void process(ProcessItem processItem, FeaturesModel featuresModel, IProgressMonitor monitor)
+            throws IOException;
 
     public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         File tmpJob;
@@ -99,18 +100,19 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             featuresModel.addBundle(bundleModel);
 
             // [TESB-12036] add talend-data-mapper feature
-			NodeType tHMapNode = EmfModelUtils.getComponentByName(processItem, THMAP_COMPONENT_NAME);
-			if (tHMapNode != null) {
-				featuresModel.addFeature(new FeatureModel(FeaturesModel.TALEND_DATA_MAPPER_FEATURE_NAME,
-						FeaturesModel.ESB_FEATURE_VERSION_RANGE));
-			}
+            NodeType tHMapNode = EmfModelUtils.getComponentByName(processItem, THMAP_COMPONENT_NAME);
+            if (tHMapNode != null) {
+                featuresModel.addFeature(new FeatureModel(FeaturesModel.TALEND_DATA_MAPPER_FEATURE_NAME,
+                        FeaturesModel.ESB_FEATURE_VERSION_RANGE));
+            }
 
-			Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tActionInput", "tActionOutput");
-			if(!tIPaasComponents.isEmpty()){
-				addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) manager).getExcludedModuleNeededs());
-			}
+            Collection<NodeType> tIPaasComponents = EmfModelUtils.getComponentsByName(processItem, "tActionInput",
+                    "tActionOutput");
+            if (!tIPaasComponents.isEmpty()) {
+                addMissingBundles(featuresModel, ((JobJavaScriptOSGIForESBManager) manager).getExcludedModuleNeededs());
+            }
 
-			process(processItem, featuresModel, monitor);
+            process(processItem, featuresModel, monitor);
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         } finally {
@@ -126,11 +128,17 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
     }
 
     @SuppressWarnings("serial")
-    private static final Map<String, BundleModel> BUNDLE_MAPPING = new HashMap<String, BundleModel>() {{
-        put("org.apache.servicemix.bundles.dom4j", new BundleModel("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.dom4j", "1.6.1_5"));
-        put("org.apache.servicemix.bundles.jaxen", new BundleModel("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxen", "1.1.1_2"));
-        put("org.apache.servicemix.bundles.wsdl4j", new BundleModel("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.wsdl4j", "1.6.3_1"));
-    }};
+    private static final Map<String, BundleModel> BUNDLE_MAPPING = new HashMap<String, BundleModel>() {
+
+        {
+            put("org.apache.servicemix.bundles.dom4j", new BundleModel("org.apache.servicemix.bundles",
+                    "org.apache.servicemix.bundles.dom4j", "1.6.1_5"));
+            put("org.apache.servicemix.bundles.jaxen", new BundleModel("org.apache.servicemix.bundles",
+                    "org.apache.servicemix.bundles.jaxen", "1.1.1_2"));
+            put("org.apache.servicemix.bundles.wsdl4j", new BundleModel("org.apache.servicemix.bundles",
+                    "org.apache.servicemix.bundles.wsdl4j", "1.6.3_1"));
+        }
+    };
 
     private static void addMissingBundles(FeaturesModel featuresModel, Collection<ModuleNeeded> modules) {
         for (ModuleNeeded moduleNeeded : modules) {
