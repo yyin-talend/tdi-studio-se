@@ -77,7 +77,12 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      */
     @Override
     public void syncAllRoutines() throws SystemException {
-        syncRoutineItems(getRoutines());
+        syncRoutineItems(getRoutines(),false);
+    }
+
+    @Override
+    public void syncAllRoutinesForLogOn() throws SystemException {
+	syncRoutineItems(getRoutines(),true);
     }
 
     /*
@@ -87,13 +92,18 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      */
     @Override
     public void syncAllPigudf() throws SystemException {
-        syncRoutineItems(getAllPigudf());
+        syncRoutineItems(getAllPigudf(),false);
     }
 
-    private void syncRoutineItems(List<IRepositoryViewObject> routineObjects) throws SystemException {
+    @Override
+    public void syncAllPigudfForLogOn() throws SystemException {
+        syncRoutineItems(getAllPigudf(), true);
+    }
+
+    private void syncRoutineItems(List<IRepositoryViewObject> routineObjects, boolean forceUpdate) throws SystemException {
         for (IRepositoryViewObject routine : routineObjects) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-            syncRoutine(routineItem, true);
+            syncRoutine(routineItem, true,forceUpdate);
         }
 
         try {
